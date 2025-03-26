@@ -4,55 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60239C3600D
-	for <linux-um@archiver.kernel.org>; Wed, 26 Mar 2025 07:01:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F2ECC3600D
+	for <linux-um@archiver.kernel.org>; Wed, 26 Mar 2025 07:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/hSiE2712rnv6nkqOZF47WE7j8sN9Oxcu8SeU1kf72w=; b=GlfcBaYgIaaod295rQvV6ZagB3
-	CuT8DDCl/T2oKe99jpdXB3O+kFMisHmigcUJ8Pu9RcDls6gnG2PpKeltP6TVUtn4zehwspvUU1kJJ
-	gJjK/DLKXNs9Ff1+yfrIQ1b3oIfi5uTFCSVmh84p/kj8PI9RiXVhSAx0XkgTWUsO04uhvE76weG0p
-	zGpgmaSknol/Co2E+FWBKVFWfXNnaTQ4LRkccLUQ4iiEPpG9Y0id5/9yNVw2HYr5caPQQLHaClRwf
-	CvP+fJ28lAvd5+2swFdCgFQiEtKOWXvj6fM/S08LMujMVJ1HZy7Nzeo8jlo6euHlFVZQ3lguHvoTP
-	CjS9+yHA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=wvd0OJ44K5w+np0/QivAVSUvw4m6lF/nF2H0AyTchyY=; b=kaKAafI5WLgGW4L8BVsHVQAOz9
+	ZZ3wQeTflslxzbRb6yzfZ2XwupWguCWaP6fDWsMJ5xIFqmwR2o+QQ/OWRdOcaACJ5WrYaQvi12zYO
+	AqKqBNKuHe4skgSypRoZHCjeH1wVUxTcG08i6bNBPi9nePP+8BxzOXZfP2NqU4+12YlD0RIjCRqeb
+	G7CVkF6QyPpxHNxapW7ma5ulMR3OK7HEz+HzsyX3+jLsgO3Mx9aH7Wa0X9mb2UALt4jZCqgOaZoMV
+	b+Io24Mji3P9+Sm2xaJtE3vMYgjqFvFEPt3YhEDQQglcLF4KBqvI0BhOjS88LT12qg24Kl3H+io+/
+	ESDoiyOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txKlX-00000007ixi-0Yag;
-	Wed, 26 Mar 2025 07:01:31 +0000
-Received: from out0-215.mail.aliyun.com ([140.205.0.215])
+	id 1txL12-00000007l8h-0cbg;
+	Wed, 26 Mar 2025 07:17:32 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1txKlT-00000007iw1-3VTc
+	id 1txKy3-00000007ksg-0yVW
 	for linux-um@lists.infradead.org;
-	Wed, 26 Mar 2025 07:01:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1742972485; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=/hSiE2712rnv6nkqOZF47WE7j8sN9Oxcu8SeU1kf72w=;
-	b=eJuSUqgGwoxugMFbiDumFdTTg0ddUY4x0eLjCrRj+gMfKSJ9F3TADlqHctfZld7PbYvk1bTn6hG3DWmidX6BeXIWtXaDiEUK171wPc7lW3zjMMCC7AifIH1/diD0FjESiWQ8wl98KmTC4SAZo4RngyJUIPvZAvptn7CD4tIgEB8=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.c3eI03y_1742972481 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Wed, 26 Mar 2025 15:01:22 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 2/2] um: xterm: Update options for gnome-terminal
-Date: Wed, 26 Mar 2025 15:01:13 +0800
-Message-Id: <20250326070113.401857-3-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250326070113.401857-1-tiwei.btw@antgroup.com>
-References: <20250326070113.401857-1-tiwei.btw@antgroup.com>
+	Wed, 26 Mar 2025 07:14:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=wvd0OJ44K5w+np0/QivAVSUvw4m6lF/nF2H0AyTchyY=;
+	t=1742973263; x=1744182863; b=LdtipaUG5AY1IMm0X6QYwtByjbKAmpXK/Yc0teEFvUHfNUa
+	jXRe2X7U5TB79xeh9H+eViSZNO4oudm7odz/YUQx18At271T0BPgDMyZO+/g414Ej/otXWZIvoZIe
+	N5fFkqdQ0laYYBANdeXKjoUJQAiV0ColL4R61Gcb7g/BYWdF07JzQe0z0CtxwNu58d0yDK/PwrC5t
+	PYLUSIo9r51gVCWbRyR40pHWWzFQzYTv3/cLWAlznXBQXKSE90gXJqi2Xexv0AZKZAkhjWA5/Nq6K
+	6jJMCvezSNFuT7vDaNCQgdou5VXo7GhpisZMI0CHaobZ1nMaz6ZgEdPl80KsmHRw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1txKxk-000000060qg-16cB;
+	Wed, 26 Mar 2025 08:14:13 +0100
+Message-ID: <55789848dc2367f3cfe09d7c89635ab218c53658.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 4/4] um: Prohibit the VM_CLONE flag in
+ run_helper_thread()
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org
+Date: Wed, 26 Mar 2025 08:13:58 +0100
+In-Reply-To: <22d09a9d-d00a-40ca-80e1-86fb07caa0a6@antgroup.com>
+References: <20250319135523.97050-1-tiwei.btw@antgroup.com>
+	 <20250319135523.97050-5-tiwei.btw@antgroup.com>
+	 <495e4b66edcc65ba9630cf1bbbb119b971af2df6.camel@sipsolutions.net>
+	 <22d09a9d-d00a-40ca-80e1-86fb07caa0a6@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250326_000128_017459_E9429B60 
-X-CRM114-Status: UNSURE (   7.05  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250326_001427_545656_0D89F4E5 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,28 +77,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The -x option is deprecated and might be removed in a future release
-of gnome-terminal. Let's recommend using -- instead.
+On Wed, 2025-03-26 at 14:54 +0800, Tiwei Bie wrote:
+> On 2025/3/20 16:32, Johannes Berg wrote:
+> > On Wed, 2025-03-19 at 21:55 +0800, Tiwei Bie wrote:
+> > > Directly creating helper threads with VM_CLONE using clone can
+> > > compromise the thread safety of errno. Since all these helper
+> > > threads have been converted to use os_run_helper_thread(), let's
+> > > prevent using this flag in run_helper_thread().
+> > >=20
+> >=20
+> > I notice that now there's only one user left, the SIGWINCH handler,
+> > maybe we could change that too? Anyway not related to this patch, of
+> > course.
+>=20
+> After taking a closer look, changing the SIGWINCH handler seems to
+> be tricky. It requires setting itself up as a session leader and
+> configuring the controlling terminal. So it seems that it can't be
+> turned into a real thread..
+>=20
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/drivers/xterm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fair enough. Thanks for checking!
 
-diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
-index f607af738eac..d05918e422f9 100644
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -81,7 +81,7 @@ __uml_setup("xterm=", xterm_setup,
- "    '<switch> command arg1 arg2 ...'.\n"
- "    The default values are 'xterm=" CONFIG_XTERM_CHAN_DEFAULT_EMULATOR
-      ",-T,-e'.\n"
--"    Values for gnome-terminal are 'xterm=gnome-terminal,-t,-x'.\n\n"
-+"    Values for gnome-terminal are 'xterm=gnome-terminal,-t,--'.\n\n"
- );
- 
- static int xterm_open(int input, int output, int primary, void *d,
--- 
-2.34.1
-
+johannes
 
