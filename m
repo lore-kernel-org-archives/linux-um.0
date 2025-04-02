@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 985A1C28B20
-	for <linux-um@archiver.kernel.org>; Wed,  2 Apr 2025 07:51:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 069C3C28B20
+	for <linux-um@archiver.kernel.org>; Wed,  2 Apr 2025 07:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8Uxm9+F0fhp9GGuGeAfwRTxu3LheUGZ+7gyp1IVY2Dg=; b=VFEKNv+54kE+Rv8MVmyE2sKWxb
-	EwaJPBZnG/R6i0WF2RNxpLJxF4uvc3lILm4WS5GzN/Z0iBqcys1cu5CpdoDxvXUAUf01SPx7ZyBJz
-	VngYMWZhe3lnW8C8752SayQSJ3UY+PS/t+GbvfzWc08VBkWofYvALtU0cEF2WzMnhtW4A5g8A6K8m
-	ylVPatZKpplScwHjDUi8Q+pithY+OprH3QtNchO/da+k5CcKqqqd0VaOHppsk3wwahgrxUz3JA0na
-	abAgs8ZXBDdDetp8OWu0UuYD4HleK3tSWLC40o3aDUEzEeeJbRs3gVedWcjjtroaieEPYzulP3KB5
-	5zT7BFxw==;
+	bh=B8AiNSptqMEvFsMfI5jyx79B10U1DkDao5ESEb572/M=; b=p0kYxJkVsfiq/CTiktxmSwgflE
+	kd9Eend5XixoAdlTA6biAZVOgQnvWP6HGp4WYYpUcRI/m8eL+QcGVb/6yMvlFJeR92naEuoQfI8Ee
+	IuUrRyFFc303mtjw9ij1YegYQxYLYu+KFvK0/FF5o3BZr+THwuYif+3jUhPC9rk2cJZSvoZ0hxHcS
+	oJVzcByNF0yX2ADR45wSCYbQzDwpy497Zrv3GQNXXW6FM8LJspfGQa6+c52YjLsbf74XFEfeN9A2R
+	Xg2H7sI8VgpUFh/GSNKtG+pFlM+WYWFNa4dzNnNuGiMl6OVruUhv/ZOmQct3COALSR+IcBPjI0ekV
+	7/hb8d/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzssc-00000005REg-3eJv;
-	Wed, 02 Apr 2025 07:51:22 +0000
+	id 1tzsw6-00000005Rq0-2pQV;
+	Wed, 02 Apr 2025 07:54:58 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tzspS-00000005QgB-2jBu
+	id 1tzst5-00000005RME-1UHE
 	for linux-um@lists.infradead.org;
-	Wed, 02 Apr 2025 07:48:07 +0000
+	Wed, 02 Apr 2025 07:51:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=8Uxm9+F0fhp9GGuGeAfwRTxu3LheUGZ+7gyp1IVY2Dg=; t=1743580083; x=1744789683; 
-	b=yN/YWnroMtMSgJhDHtjYzfUXkzusm6LRlQ9+0YY/JP2jI/yfM7lp6CSEDs7zHTZ3HnCUxyX93Q8
-	ACkI3F1dzAF31Ha3BgtECS6Qh8x6Kg1rpig3bhm4wkoqHxRRnQCNf1QQpJn14pfQXQAx5D6x1Eq9Y
-	Fk9NwziBajGxhqjGEynq85kPpzqbAzssx3uM96v+u0Cn+JYVWqN13khFh5hUpLEzLjEa6SHFqENlN
-	PZJNXNkJ1BeVsLo5THAZUC7Ur5Nc/Edzkrha5KPe2Z0XrGa4+1iHDRJYJ123UQVc4lkngEw5VKFyB
-	xVI9kzMjF7hWXLUa+m5/Y+lF24Ak/NjRTGpA==;
+	bh=B8AiNSptqMEvFsMfI5jyx79B10U1DkDao5ESEb572/M=; t=1743580310; x=1744789910; 
+	b=bXs+zPvGnBap6sAB2TfDeUrLzhNNVh8Ffc8eEh89WkuneiuBKG82vtoERrdLBpnOyH8cKZ1t3ZS
+	l3Q2Pgo9VdtGa0numpthIZKSBf6WJffVzQTf+adhYysTlbDoT+Q7qh8fijryTFwe5padQetew7ik+
+	N/xhtM6q1dd4k7ji/PYXkm2LkZChZXftQnW/Npu+0HpqE5d/Z6pidm+YHwkl/7WaxXddCNSJ9WO7s
+	e+yQJcEVohGBLegv3jPDzH1DTF0Vd8tJI8BdH8uPPJZcRXSRAUTalfMjDc8nMA8nSeTpHxPuU3Baq
+	NLxehLmKJXXdBMyQreJUOUs1awTanWMxWhnQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1tzspA-0000000DGET-0s9L;
-	Wed, 02 Apr 2025 09:47:49 +0200
+	id 1tzssx-0000000DGNC-180A;
+	Wed, 02 Apr 2025 09:51:44 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@kernel.org,
+Cc: linux-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: pull-request: uml 6.15-rc1
-Date: Wed,  2 Apr 2025 09:47:09 +0200
-Message-ID: <20250402074725.12307-3-johannes@sipsolutions.net>
+Subject: pull-request: uml 6.15-rc1 [resend]
+Date: Wed,  2 Apr 2025 09:49:03 +0200
+Message-ID: <20250402075115.12455-3-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250402_004806_699618_5EF28004 
-X-CRM114-Status: GOOD (  14.13  )
+X-CRM114-CacheID: sfid-20250402_005151_663964_D1D16E39 
+X-CRM114-Status: GOOD (  16.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,7 +72,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+Hi Linus, again,
+
+And of course only I can get it wrong and mess up the most
+basic list address. Sorry. This is just resend with the
+correct address for linux-kernel this time, for the archive.
 
 So I'm filling in for Richard (CC'ed) since he's been busy
 and I've been mostly working on getting things reviewed and
