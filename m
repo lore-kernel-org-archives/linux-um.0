@@ -4,96 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60AF6C3601A
-	for <linux-um@archiver.kernel.org>; Fri,  4 Apr 2025 17:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDB24C36010
+	for <linux-um@archiver.kernel.org>; Fri,  4 Apr 2025 18:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CVpjpyZ90nxMR9O1nH7CdqvQxhWzU4ekajBODCtUhYQ=; b=au0UzDE6OQNVptU+hVl8ia0TL3
-	3u+KL8LRS7D+DH0VUE8bdy+V0bb/ulVyWKCNHaOwCvOw749sOVjY4quAczDqzxOO5pQK/Aep+wE2r
-	DHKzjDdR1yv5MCfxrrMhOBWwL03St6Vwfxne+YINY3PaWAyj9UU06lQ2GM4w076Sb6GInUjQGPtRf
-	OB6+y0Tt2WP3rcNpAiZrgXsh1H+kXRuHFJUOWqN3XEGh5udt7tVDPZz2UUGA0i1v7EPxjo7y0t92t
-	qFxBHwJBNcj2Tr+DZKtyvvz4+aIObJCg0K7vwl1vSIB5a8eU8kScQKc+fsAg4pAQCSJXANTGjmSeS
-	DiZtsOow==;
+	bh=4gfzC1kaXPJBeIoczqDFpLahGxMxOt2ucNV2CUeZ1pg=; b=3U/PGNM5QM5PhqQjOJOxfsvjrh
+	rpMLhPee3LJzmLbZmj7kgwsnuTmIqXQRqeVXym/DHTrNPXSC2UD9Bm9piERikfqBx8xN7Q92KJQcP
+	ZuCHnCod+YsbTsfMtCnZf1RaB8U7jGmxU6yR5xD2zYx6R2Pe1cjdqc0YYgNry39tBqpz7k8+UTbxD
+	NV6YzffAdhDofP2SXq7Qh/o3eNZEG/nVrgfVS+TIPIMvzDCULHU+ycfuWMmz6ph27bbD/rSbRZYrb
+	alkErLNvwM46ys0q0jSo7z1GZ7axDvrnB/ax5tGiYKbiW2ocDv2QBk7jObsgxpbdippSlsW6a0RhP
+	ld+OQh2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0l51-0000000CRCJ-07O8;
-	Fri, 04 Apr 2025 17:43:47 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1u0lqg-0000000CXK0-0yxS;
+	Fri, 04 Apr 2025 18:33:02 +0000
+Received: from frasgout.his.huawei.com ([185.176.79.56])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0l4y-0000000CRBw-459I
+	id 1u0kiH-0000000COdN-1OX1
 	for linux-um@lists.infradead.org;
-	Fri, 04 Apr 2025 17:43:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 7641BA41702;
-	Fri,  4 Apr 2025 17:38:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C47B2C4CEDD;
-	Fri,  4 Apr 2025 17:43:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743788622;
-	bh=WJeqcUtnD+JvPCp95BzhzODUCYYMvFFmmq3rDIUcqSs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J4KPLgyY3xGfSNoxx05BGJCDtfOgYphVQM1ZoldOdeeso2SYhM1km51rPHKPwB/pQ
-	 GJ06NvvjBNhsMQzJIvUMvXMETtTXsO0LWkcjP7CtqBfxJSSCZoye7qjPeoiOx1kiDt
-	 ZWKMHiBmHZU27kWXOQI7fbYGkDq4pvMtkkRYR1VoVIR6ij5Gkg20gJVinnvxc+4Hln
-	 0pLMb4KNxVCrO46a7TfFtjc086KPWG07DJC5spzimeJtmGzO94ULDmiHBAOlWDVvJp
-	 ZHbUkDK/UYEW9K0mv7yvUZ5RZIpRiMCeq9pji34ELH1v5T9ZN5jyVg1V4+LWXJ2tCM
-	 WVxxdgswoKZSw==
-From: SeongJae Park <sj@kernel.org>
-To: =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= <nfraprado@collabora.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Vinod Koul <vkoul@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>,
-	"Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	netdev@vger.kernel.org,
-	workflows@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-um@lists.infradead.org
+	Fri, 04 Apr 2025 17:20:19 +0000
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZTld74xBKz6K9J8;
+	Sat,  5 Apr 2025 01:16:27 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id BEE601402C7;
+	Sat,  5 Apr 2025 01:20:08 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 4 Apr
+ 2025 19:20:07 +0200
+Date: Fri, 4 Apr 2025 18:20:06 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: "=?ISO-8859-1?Q?N=EDcolas?= F. R. A. Prado" <nfraprado@collabora.com>
+CC: Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet
+	<corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>, Eric Biggers
+	<ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim
+	<jaegeuk@kernel.org>, Jonathan Cameron <jic23@kernel.org>, "Lars-Peter
+ Clausen" <lars@metafoo.de>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, "Maxime
+ Chevallier" <maxime.chevallier@bootlin.com>, James Bottomley
+	<James.Bottomley@HansenPartnership.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+	Mimi Zohar <zohar@linux.ibm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Richard
+ Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>, <kernel@collabora.com>,
+	<linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+	<linux-fscrypt@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <workflows@vger.kernel.org>,
+	<linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<linux-um@lists.infradead.org>
 Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
-Date: Fri,  4 Apr 2025 10:43:39 -0700
-Message-Id: <20250404174339.59650-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
+Message-ID: <20250404182006.000038cc@huawei.com>
 In-Reply-To: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
-References: 
+References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.203.177.66]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250404_104345_080438_5A50DFA5 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20250404_102017_646398_F3E4D1EF 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,7 +88,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 04 Apr 2025 11:37:28 -0400 Nícolas F. R. A. Prado <nfraprado@collabora.com> wrote:
+On Fri, 04 Apr 2025 11:37:28 -0400
+N=EDcolas F. R. A. Prado <nfraprado@collabora.com> wrote:
 
 > Given that the automarkup Sphinx plugin cross-references
 > "Documentation/*.rst" strings in the text to the corresponding
@@ -116,20 +97,44 @@ On Fri, 04 Apr 2025 11:37:28 -0400 Nícolas F. R. A. Prado <nfraprado@collabora.
 > only adds unnecessary markup in the source files, but actually prevents
 > the automatic cross-referencing to happen (as it doesn't happen in
 > literal blocks).
-> 
+>=20
 > Remove all the occurrences of the literal markup in
 > "Documentation/*.rst" paths, except when the actual source file is being
 > referred. Also change the surrounding text when needed so it reads well
 > both in the source and the web page (eg. 'see file Doc...' -> 'see
 > Doc...').
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+>=20
+> Signed-off-by: N=EDcolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+>  Documentation/admin-guide/mm/numa_memory_policy.rst       | 2 +-
+>  Documentation/admin-guide/serial-console.rst              | 2 +-
+>  Documentation/driver-api/dmaengine/client.rst             | 2 +-
+>  Documentation/driver-api/nvdimm/security.rst              | 2 +-
+>  Documentation/filesystems/fscrypt.rst                     | 4 ++--
+>  Documentation/iio/adis16475.rst                           | 4 ++--
+>  Documentation/iio/adis16480.rst                           | 4 ++--
+>  Documentation/iio/adis16550.rst                           | 4 ++--
+>  Documentation/iio/adxl380.rst                             | 4 ++--
 
-Acked-by: SeongJae Park <sj@kernel.org>
+Split patch up by subsystem would be a good thing here as we may
+get other changes to these docs during the cycle and resulting
+merge conflicts if this all goes in as one patch.
 
 
-Thanks,
-SJ
-
-[...]
+>  Documentation/kernel-hacking/hacking.rst                  | 6 +++---
+>  Documentation/kernel-hacking/locking.rst                  | 2 +-
+>  Documentation/networking/dsa/b53.rst                      | 2 +-
+>  Documentation/networking/dsa/bcm_sf2.rst                  | 2 +-
+>  Documentation/networking/dsa/dsa.rst                      | 2 +-
+>  Documentation/networking/dsa/lan9303.rst                  | 2 +-
+>  Documentation/networking/phy-link-topology.rst            | 2 +-
+>  Documentation/process/adding-syscalls.rst                 | 2 +-
+>  Documentation/process/submit-checklist.rst                | 7 ++++---
+>  Documentation/security/keys/trusted-encrypted.rst         | 4 ++--
+>  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
+>  Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst  | 2 +-
+>  Documentation/userspace-api/media/v4l/diff-v4l.rst        | 2 +-
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++--
+>  Documentation/virt/uml/user_mode_linux_howto_v2.rst       | 2 +-
+>  24 files changed, 36 insertions(+), 35 deletions(-)
 
