@@ -4,76 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDB24C36010
-	for <linux-um@archiver.kernel.org>; Fri,  4 Apr 2025 18:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34745C36010
+	for <linux-um@archiver.kernel.org>; Fri,  4 Apr 2025 21:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4gfzC1kaXPJBeIoczqDFpLahGxMxOt2ucNV2CUeZ1pg=; b=3U/PGNM5QM5PhqQjOJOxfsvjrh
-	rpMLhPee3LJzmLbZmj7kgwsnuTmIqXQRqeVXym/DHTrNPXSC2UD9Bm9piERikfqBx8xN7Q92KJQcP
-	ZuCHnCod+YsbTsfMtCnZf1RaB8U7jGmxU6yR5xD2zYx6R2Pe1cjdqc0YYgNry39tBqpz7k8+UTbxD
-	NV6YzffAdhDofP2SXq7Qh/o3eNZEG/nVrgfVS+TIPIMvzDCULHU+ycfuWMmz6ph27bbD/rSbRZYrb
-	alkErLNvwM46ys0q0jSo7z1GZ7axDvrnB/ax5tGiYKbiW2ocDv2QBk7jObsgxpbdippSlsW6a0RhP
-	ld+OQh2Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=b051QUX3UtX/R5LwAMioVLK4E9rgok5BIu5BrEoTuDA=; b=CLcEosZqzoprpEhemO3rpNM6c+
+	pOHU0gz4c7dTpVpUo3mhPW1rVT+eUWUIGopvhaRyWWxfiuGqxJhlI211gBqqI/rtwzzEqS3+EOej4
+	0EN53VSNxOxBVzU36FMGqZGSPmc60k+6MOurcLpE6kMukyWn4gypMBddO4498ls3vN3K+Q6fEhGMR
+	sCVL/4KpMUsI97bwI0cxmZVmloM+UW1VWdPGHzIAIzURwO7j3n6pXzxImSkwUVoTPpVYrQhW/fu/r
+	aFTSCNXbfmVDBrYNGYqxVdF70DsC0HB8QJtYOgkCcXR5JIO3VLULQbZO4O1/E423iKbm65RuPhoRa
+	vpfNROVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0lqg-0000000CXK0-0yxS;
-	Fri, 04 Apr 2025 18:33:02 +0000
-Received: from frasgout.his.huawei.com ([185.176.79.56])
+	id 1u0oKe-0000000CrUC-2XQW;
+	Fri, 04 Apr 2025 21:12:08 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0kiH-0000000COdN-1OX1
+	id 1u0oKc-0000000CrTY-3Fdp
 	for linux-um@lists.infradead.org;
-	Fri, 04 Apr 2025 17:20:19 +0000
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ZTld74xBKz6K9J8;
-	Sat,  5 Apr 2025 01:16:27 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id BEE601402C7;
-	Sat,  5 Apr 2025 01:20:08 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 4 Apr
- 2025 19:20:07 +0200
-Date: Fri, 4 Apr 2025 18:20:06 +0100
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: "=?ISO-8859-1?Q?N=EDcolas?= F. R. A. Prado" <nfraprado@collabora.com>
-CC: Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet
-	<corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>, Eric Biggers
-	<ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim
-	<jaegeuk@kernel.org>, Jonathan Cameron <jic23@kernel.org>, "Lars-Peter
- Clausen" <lars@metafoo.de>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, "Maxime
- Chevallier" <maxime.chevallier@bootlin.com>, James Bottomley
-	<James.Bottomley@HansenPartnership.com>, Jarkko Sakkinen <jarkko@kernel.org>,
-	Mimi Zohar <zohar@linux.ibm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Richard
- Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>, <kernel@collabora.com>,
-	<linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-	<linux-fscrypt@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <workflows@vger.kernel.org>,
-	<linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>,
-	<linux-sound@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<linux-um@lists.infradead.org>
-Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
-Message-ID: <20250404182006.000038cc@huawei.com>
-In-Reply-To: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
-References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	Fri, 04 Apr 2025 21:12:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id A8AAAA468C0;
+	Fri,  4 Apr 2025 21:06:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5478FC4CEDD;
+	Fri,  4 Apr 2025 21:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743801125;
+	bh=c41VoVob9JxIaXHt65iyTULs+UIrvUrhj7v93r/214U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JhGHUAC76KC7nIuwxuLSz406addg7bxZ9rycXCDim12I1I+rhOPbdebKSm5vLNye1
+	 ZqxMenwSxEN0/ARJhUUO+oER7TWGWkvn+1hmXEdHz5qVyA53A2WYa1RubDetkmZft6
+	 q8UmB6gTVb1NXoRQqFNcQbF86ttCRYNL8h3SGs02HDUlpOi4+lFSNKgin3c0NwuqeU
+	 YkTq1tbxJrO0dIToD92DJsnxhucSI+6VE7mPDuzVEp4J/rYAsWKHa85aydVCR4X3OB
+	 KFI6syerKy1IHevUn8lgj+esJjigA21eZOcPkH1ti92ehqeP5hOBU1lyjRR5pr3WFJ
+	 QWxEOWkH36VpQ==
+Date: Fri, 4 Apr 2025 14:12:01 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, Johannes Berg <johannes.berg@intel.com>
+Subject: Re: [PATCH] um: fix _nofault accesses
+Message-ID: <20250404211201.GB299251@ax162>
+References: <20250404170518.e88e8ad2d4cc.Ia93876fd0393b68c171d47cd9678aa458ed10d98@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.203.177.66]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250404170518.e88e8ad2d4cc.Ia93876fd0393b68c171d47cd9678aa458ed10d98@changeid>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250404_102017_646398_F3E4D1EF 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20250404_141206_946676_1D5BF6F5 
+X-CRM114-Status: GOOD (  25.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,53 +70,128 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 04 Apr 2025 11:37:28 -0400
-N=EDcolas F. R. A. Prado <nfraprado@collabora.com> wrote:
+On Fri, Apr 04, 2025 at 05:05:19PM +0200, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Nathan reported [1] that when built with clang, the um kernel
+> crashes pretty much immediately. This turned out to be an issue
+> with the inline assembly I had added, when clang used %rax/%eax
+> for both operands. Reorder it so current->thread.segv_continue
+> is written first, and then the lifetime of _faulted won't have
+> overlap with the lifetime of segv_continue.
+> 
+> In the email thread Benjamin also pointed out that current->mm
+> is only NULL for true kernel tasks, but we could do this for a
+> userspace task, so the current->thread.segv_continue logic must
+> be lifted out of the mm==NULL check.
+> 
+> Finally, while looking at this, put a barrier() so the NULL
+> assignment to thread.segv_continue cannot be reorder before
+> the possibly faulting operation.
+> 
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Closes: https://lore.kernel.org/r/20250402221254.GA384@ax162 [1]
+> Fixes: d1d7f01f7cd3 ("um: mark rodata read-only and implement _nofault accesses")
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-> Given that the automarkup Sphinx plugin cross-references
-> "Documentation/*.rst" strings in the text to the corresponding
-> documents, surrounding those strings with the literal markup (``) not
-> only adds unnecessary markup in the source files, but actually prevents
-> the automatic cross-referencing to happen (as it doesn't happen in
-> literal blocks).
->=20
-> Remove all the occurrences of the literal markup in
-> "Documentation/*.rst" paths, except when the actual source file is being
-> referred. Also change the surrounding text when needed so it reads well
-> both in the source and the web page (eg. 'see file Doc...' -> 'see
-> Doc...').
->=20
-> Signed-off-by: N=EDcolas F. R. A. Prado <nfraprado@collabora.com>
+Thanks, this makes my test case happy.
+
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->  Documentation/admin-guide/mm/numa_memory_policy.rst       | 2 +-
->  Documentation/admin-guide/serial-console.rst              | 2 +-
->  Documentation/driver-api/dmaengine/client.rst             | 2 +-
->  Documentation/driver-api/nvdimm/security.rst              | 2 +-
->  Documentation/filesystems/fscrypt.rst                     | 4 ++--
->  Documentation/iio/adis16475.rst                           | 4 ++--
->  Documentation/iio/adis16480.rst                           | 4 ++--
->  Documentation/iio/adis16550.rst                           | 4 ++--
->  Documentation/iio/adxl380.rst                             | 4 ++--
-
-Split patch up by subsystem would be a good thing here as we may
-get other changes to these docs during the cycle and resulting
-merge conflicts if this all goes in as one patch.
-
-
->  Documentation/kernel-hacking/hacking.rst                  | 6 +++---
->  Documentation/kernel-hacking/locking.rst                  | 2 +-
->  Documentation/networking/dsa/b53.rst                      | 2 +-
->  Documentation/networking/dsa/bcm_sf2.rst                  | 2 +-
->  Documentation/networking/dsa/dsa.rst                      | 2 +-
->  Documentation/networking/dsa/lan9303.rst                  | 2 +-
->  Documentation/networking/phy-link-topology.rst            | 2 +-
->  Documentation/process/adding-syscalls.rst                 | 2 +-
->  Documentation/process/submit-checklist.rst                | 7 ++++---
->  Documentation/security/keys/trusted-encrypted.rst         | 4 ++--
->  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
->  Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst  | 2 +-
->  Documentation/userspace-api/media/v4l/diff-v4l.rst        | 2 +-
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++--
->  Documentation/virt/uml/user_mode_linux_howto_v2.rst       | 2 +-
->  24 files changed, 36 insertions(+), 35 deletions(-)
+>  arch/um/include/asm/uaccess.h            |  2 ++
+>  arch/um/kernel/trap.c                    | 26 ++++++++++++------------
+>  arch/x86/um/shared/sysdep/faultinfo_32.h |  2 +-
+>  arch/x86/um/shared/sysdep/faultinfo_64.h |  2 +-
+>  4 files changed, 17 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+> index 3a08f9029a3f..1c6e0ae41b0c 100644
+> --- a/arch/um/include/asm/uaccess.h
+> +++ b/arch/um/include/asm/uaccess.h
+> @@ -55,6 +55,7 @@ do {									\
+>  		goto err_label;						\
+>  	}								\
+>  	*((type *)dst) = get_unaligned((type *)(src));			\
+> +	barrier();							\
+>  	current->thread.segv_continue = NULL;				\
+>  } while (0)
+>  
+> @@ -66,6 +67,7 @@ do {									\
+>  	if (__faulted)							\
+>  		goto err_label;						\
+>  	put_unaligned(*((type *)src), (type *)(dst));			\
+> +	barrier();							\
+>  	current->thread.segv_continue = NULL;				\
+>  } while (0)
+>  
+> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+> index ce073150dc20..ef2272e92a43 100644
+> --- a/arch/um/kernel/trap.c
+> +++ b/arch/um/kernel/trap.c
+> @@ -225,20 +225,20 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+>  			panic("Failed to sync kernel TLBs: %d", err);
+>  		goto out;
+>  	}
+> -	else if (current->mm == NULL) {
+> -		if (current->pagefault_disabled) {
+> -			if (!mc) {
+> -				show_regs(container_of(regs, struct pt_regs, regs));
+> -				panic("Segfault with pagefaults disabled but no mcontext");
+> -			}
+> -			if (!current->thread.segv_continue) {
+> -				show_regs(container_of(regs, struct pt_regs, regs));
+> -				panic("Segfault without recovery target");
+> -			}
+> -			mc_set_rip(mc, current->thread.segv_continue);
+> -			current->thread.segv_continue = NULL;
+> -			goto out;
+> +	else if (current->pagefault_disabled) {
+> +		if (!mc) {
+> +			show_regs(container_of(regs, struct pt_regs, regs));
+> +			panic("Segfault with pagefaults disabled but no mcontext");
+>  		}
+> +		if (!current->thread.segv_continue) {
+> +			show_regs(container_of(regs, struct pt_regs, regs));
+> +			panic("Segfault without recovery target");
+> +		}
+> +		mc_set_rip(mc, current->thread.segv_continue);
+> +		current->thread.segv_continue = NULL;
+> +		goto out;
+> +	}
+> +	else if (current->mm == NULL) {
+>  		show_regs(container_of(regs, struct pt_regs, regs));
+>  		panic("Segfault with no mm");
+>  	}
+> diff --git a/arch/x86/um/shared/sysdep/faultinfo_32.h b/arch/x86/um/shared/sysdep/faultinfo_32.h
+> index ab5c8e47049c..9193a7790a71 100644
+> --- a/arch/x86/um/shared/sysdep/faultinfo_32.h
+> +++ b/arch/x86/um/shared/sysdep/faultinfo_32.h
+> @@ -31,8 +31,8 @@ struct faultinfo {
+>  
+>  #define ___backtrack_faulted(_faulted)					\
+>  	asm volatile (							\
+> -		"mov $0, %0\n"						\
+>  		"movl $__get_kernel_nofault_faulted_%=,%1\n"		\
+> +		"mov $0, %0\n"						\
+>  		"jmp _end_%=\n"						\
+>  		"__get_kernel_nofault_faulted_%=:\n"			\
+>  		"mov $1, %0;"						\
+> diff --git a/arch/x86/um/shared/sysdep/faultinfo_64.h b/arch/x86/um/shared/sysdep/faultinfo_64.h
+> index 26fb4835d3e9..61e4ca1e0ab5 100644
+> --- a/arch/x86/um/shared/sysdep/faultinfo_64.h
+> +++ b/arch/x86/um/shared/sysdep/faultinfo_64.h
+> @@ -31,8 +31,8 @@ struct faultinfo {
+>  
+>  #define ___backtrack_faulted(_faulted)					\
+>  	asm volatile (							\
+> -		"mov $0, %0\n"						\
+>  		"movq $__get_kernel_nofault_faulted_%=,%1\n"		\
+> +		"mov $0, %0\n"						\
+>  		"jmp _end_%=\n"						\
+>  		"__get_kernel_nofault_faulted_%=:\n"			\
+>  		"mov $1, %0;"						\
+> -- 
+> 2.49.0
+> 
 
