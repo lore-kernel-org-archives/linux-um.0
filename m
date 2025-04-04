@@ -4,67 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7A31C3601A
-	for <linux-um@archiver.kernel.org>; Thu,  3 Apr 2025 20:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BEDEC36010
+	for <linux-um@archiver.kernel.org>; Fri,  4 Apr 2025 15:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gLHvTlsS+s3jhc0v07AaO/IvSIJovAXmGpHhTOc1o5I=; b=peG2LNuX5gqxmmjoLnU7iEY6P1
-	fpdnoEb4T0Iufhz5hvvc/FTHhutW3fkaI/xq2QTLBZ9If/HA249ZujkEGCCyWACzy1VBSRBYGzmV8
-	f1Jv8G+MpuwnPST/DsbwsC5yDM71c5FvzqbdFEUA1TADMrzRJiRiv8szkmOI+BWnGhKlNMpjjAXw7
-	0/copnJ5g/EquD36zrJqUObuR+/nAWtx5n80NgDXendEy9aXNpfQBnr4fqkKqgtrSxxystup5Z8QM
-	lWfqulVn04/m0XIciUsrQBF5MKtA9fmpeatlhCoBxMVrfCZHlF9j48ZS4z4zrIKHEgCY6uEWMwl7K
-	QBgO/W3Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=hpxcIuD5HsqJ5CiEEdtrVwqDIkDCLo7rIQyfGLvVh9w=; b=yvlUxdLhMMegEYE5ejV2JLW+XS
+	wo6VvWHQ0sErT5v5HaBezJTRcdO+FOMPFLM8J+4bDYLBb+k60bxa6hzf1Pw1YnQyaswAJhRn/HPSh
+	5CZE37Y6NPlRw5j7e0z9vF2AJFOItmkKf3sHu67mleWjcXxjcjzQl/y4/OcdPoVL8EpagYw29PFAz
+	bLOULr6gDcaSMvIiD9HvBQJS1hPStqwvIkxlL9ycLehIK8dJ1Q/WNX4rseS7YT6f1gftyYd4y/Zej
+	tvwX+lHYToHdR7VBPSOFlOgpQ4hZh91/92xQ/gRvXiBi4rt/Yz3K1uYZ4+r+CUo29fYEYcmxNlatg
+	XGUlSn9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0Rb3-0000000A39v-0e3b;
-	Thu, 03 Apr 2025 20:55:33 +0000
+	id 1u0ibp-0000000C6UA-2nme;
+	Fri, 04 Apr 2025 15:05:29 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u0RTV-0000000A1Yd-1ebb
+	id 1u0ibn-0000000C6Sx-1rAw
 	for linux-um@lists.infradead.org;
-	Thu, 03 Apr 2025 20:47:47 +0000
+	Fri, 04 Apr 2025 15:05:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=gLHvTlsS+s3jhc0v07AaO/IvSIJovAXmGpHhTOc1o5I=;
-	t=1743713263; x=1744922863; b=g4gzB5uNfoK4ANEyhGXshDb8qZ9evnZa6nBYY5DT1oRNnN5
-	MYElGvyvSM33S8jtNGVWdKY/IqF0RSVqrDo/eUVbzsJZlUA+dn3Oa+W4lyoNcAUKe21uk02wQFfNq
-	H+aGhXkEGOeLAx4V6PtQSk/2U115sWeYvoFstkSXH5rlFz8JFESR716J+T/irpSOoduajsAgIfrRL
-	2jLpH63IiWiAoAAVGtTbt/iL9DcY89VwFg5PT3XQNFiziwbjo72wD/PUGuiRMCh9q0UmP/XTW2oK4
-	K+50RG/i7cAB14v9gU9+Oe9BF09FfL9ARbtuRMjj8YSzEvmA3NV1P9lqVag2N7Hg==;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=hpxcIuD5HsqJ5CiEEdtrVwqDIkDCLo7rIQyfGLvVh9w=; t=1743779126; x=1744988726; 
+	b=p6Hk0E8EUF9Y2aVnI9vnxC7ggEARegwurZolxWc37U6ZJcuRJQaFYOvZIYlxEtuPSFVMqaDeP1I
+	rB2iySNOgnRY0hRqJwIPNf4FYeuPIzryJxM4jWPqAmSe52YnAeN7/zZ/bs8PoIgZfNYZbmCSfNnob
+	BE2ruu+pOCUW5fGPuWnP91hEzszIUkt+r7usZq1VVgRBTj03pFPIgwQ79WfiYaQU8dXyIOqPo1xBc
+	3293XSefYKuxv68P1P4SBGru+nxg4r0lpRdat1w974bQsNV7jHk/kvHcXb9V2SMzSgIzpRFtwSC+8
+	nLVipHPwZJS3J719ywADuOrtRc64RwnYf3kw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.1)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1u0RTQ-0000000FOb6-0742;
-	Thu, 03 Apr 2025 22:47:40 +0200
-Message-ID: <5c8f9b27e77c793295c2f6a0c3a3794ec4c05c3c.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] um: mark rodata read-only and implement _nofault
- accesses
+	id 1u0ibj-0000000GImp-40ae;
+	Fri, 04 Apr 2025 17:05:24 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Nathan Chancellor <nathan@kernel.org>, Benjamin Berg
-	 <benjamin@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, llvm@lists.linux.dev
-Date: Thu, 03 Apr 2025 22:47:39 +0200
-In-Reply-To: <20250403191910.GA3085607@ax162>
-References: <20250210160926.420133-1-benjamin@sipsolutions.net>
-	 <20250210160926.420133-2-benjamin@sipsolutions.net>
-	 <20250402221254.GA384@ax162>
-	 <413669a192e65d67059245d38c03828f85d20717.camel@sipsolutions.net>
-	 <20250403191910.GA3085607@ax162>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] um: fix _nofault accesses
+Date: Fri,  4 Apr 2025 17:05:19 +0200
+Message-ID: <20250404170518.e88e8ad2d4cc.Ia93876fd0393b68c171d47cd9678aa458ed10d98@changeid>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250403_134745_715697_F9D0DC19 
-X-CRM114-Status: UNSURE (   7.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250404_080527_485928_96F5FC4A 
+X-CRM114-Status: GOOD (  15.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,55 +70,122 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-04-03 at 12:19 -0700, Nathan Chancellor wrote:
->=20
-> Thanks, I applied that change, which shows a slightly different crash
-> message now:
+From: Johannes Berg <johannes.berg@intel.com>
 
-Pretty sure it's all just a bug in my inline assembly, and clang
-allocates registers differently:
+Nathan reported [1] that when built with clang, the um kernel
+crashes pretty much immediately. This turned out to be an issue
+with the inline assembly I had added, when clang used %rax/%eax
+for both operands. Reorder it so current->thread.segv_continue
+is written first, and then the lifetime of _faulted won't have
+overlap with the lifetime of segv_continue.
 
-#define ___backtrack_faulted(_faulted)                                  \
-        asm volatile (                                                  \
-                "mov $0, %0\n"                                          \
-                "movq $__get_kernel_nofault_faulted_%=3D,%1\n"            \
-                "jmp _end_%=3D\n"                                         \
-                "__get_kernel_nofault_faulted_%=3D:\n"                    \
-                "mov $1, %0;"                                           \
-                "_end_%=3D:"                                              \
-                : "=3Dr" (_faulted),                                      \
-                  "=3Dm" (current->thread.segv_continue) ::               \
-        )
+In the email thread Benjamin also pointed out that current->mm
+is only NULL for true kernel tasks, but we could do this for a
+userspace task, so the current->thread.segv_continue logic must
+be lifted out of the mm==NULL check.
 
+Finally, while looking at this, put a barrier() so the NULL
+assignment to thread.segv_continue cannot be reorder before
+the possibly faulting operation.
 
-It _looks_ as though both %0 and %1 are output only, but clang compiles
-it to:
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Closes: https://lore.kernel.org/r/20250402221254.GA384@ax162 [1]
+Fixes: d1d7f01f7cd3 ("um: mark rodata read-only and implement _nofault accesses")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/include/asm/uaccess.h            |  2 ++
+ arch/um/kernel/trap.c                    | 26 ++++++++++++------------
+ arch/x86/um/shared/sysdep/faultinfo_32.h |  2 +-
+ arch/x86/um/shared/sysdep/faultinfo_64.h |  2 +-
+ 4 files changed, 17 insertions(+), 15 deletions(-)
 
-  51:   48 83 fb 08             cmp    $0x8,%rbx
-  55:   72 44                   jb     9b <_end_0+0x2a>
-  57:   48 8b 01                mov    (%rcx),%rax
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 3a08f9029a3f..1c6e0ae41b0c 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -55,6 +55,7 @@ do {									\
+ 		goto err_label;						\
+ 	}								\
+ 	*((type *)dst) = get_unaligned((type *)(src));			\
++	barrier();							\
+ 	current->thread.segv_continue = NULL;				\
+ } while (0)
+ 
+@@ -66,6 +67,7 @@ do {									\
+ 	if (__faulted)							\
+ 		goto err_label;						\
+ 	put_unaligned(*((type *)src), (type *)(dst));			\
++	barrier();							\
+ 	current->thread.segv_continue = NULL;				\
+ } while (0)
+ 
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index ce073150dc20..ef2272e92a43 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -225,20 +225,20 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 			panic("Failed to sync kernel TLBs: %d", err);
+ 		goto out;
+ 	}
+-	else if (current->mm == NULL) {
+-		if (current->pagefault_disabled) {
+-			if (!mc) {
+-				show_regs(container_of(regs, struct pt_regs, regs));
+-				panic("Segfault with pagefaults disabled but no mcontext");
+-			}
+-			if (!current->thread.segv_continue) {
+-				show_regs(container_of(regs, struct pt_regs, regs));
+-				panic("Segfault without recovery target");
+-			}
+-			mc_set_rip(mc, current->thread.segv_continue);
+-			current->thread.segv_continue = NULL;
+-			goto out;
++	else if (current->pagefault_disabled) {
++		if (!mc) {
++			show_regs(container_of(regs, struct pt_regs, regs));
++			panic("Segfault with pagefaults disabled but no mcontext");
+ 		}
++		if (!current->thread.segv_continue) {
++			show_regs(container_of(regs, struct pt_regs, regs));
++			panic("Segfault without recovery target");
++		}
++		mc_set_rip(mc, current->thread.segv_continue);
++		current->thread.segv_continue = NULL;
++		goto out;
++	}
++	else if (current->mm == NULL) {
+ 		show_regs(container_of(regs, struct pt_regs, regs));
+ 		panic("Segfault with no mm");
+ 	}
+diff --git a/arch/x86/um/shared/sysdep/faultinfo_32.h b/arch/x86/um/shared/sysdep/faultinfo_32.h
+index ab5c8e47049c..9193a7790a71 100644
+--- a/arch/x86/um/shared/sysdep/faultinfo_32.h
++++ b/arch/x86/um/shared/sysdep/faultinfo_32.h
+@@ -31,8 +31,8 @@ struct faultinfo {
+ 
+ #define ___backtrack_faulted(_faulted)					\
+ 	asm volatile (							\
+-		"mov $0, %0\n"						\
+ 		"movl $__get_kernel_nofault_faulted_%=,%1\n"		\
++		"mov $0, %0\n"						\
+ 		"jmp _end_%=\n"						\
+ 		"__get_kernel_nofault_faulted_%=:\n"			\
+ 		"mov $1, %0;"						\
+diff --git a/arch/x86/um/shared/sysdep/faultinfo_64.h b/arch/x86/um/shared/sysdep/faultinfo_64.h
+index 26fb4835d3e9..61e4ca1e0ab5 100644
+--- a/arch/x86/um/shared/sysdep/faultinfo_64.h
++++ b/arch/x86/um/shared/sysdep/faultinfo_64.h
+@@ -31,8 +31,8 @@ struct faultinfo {
+ 
+ #define ___backtrack_faulted(_faulted)					\
+ 	asm volatile (							\
+-		"mov $0, %0\n"						\
+ 		"movq $__get_kernel_nofault_faulted_%=,%1\n"		\
++		"mov $0, %0\n"						\
+ 		"jmp _end_%=\n"						\
+ 		"__get_kernel_nofault_faulted_%=:\n"			\
+ 		"mov $1, %0;"						\
+-- 
+2.49.0
 
-// start inline assembly ---vvv--- //
-  5a:   b8 00 00 00 00          mov    $0x0,%eax
-  5f:   48 c7 80 90 07 00 00    movq   $0x0,0x790(%rax)       // crash
-  66:   00 00 00 00=20
-                        66: R_X86_64_32S        .text+0x6c
-  6a:   eb 05                   jmp    71 <_end_0>
-
-000000000000006c <__get_kernel_nofault_faulted_0>:
-  6c:   b8 01 00 00 00          mov    $0x1,%eax
-// end inline assembly ---^^^--- //
-
-0000000000000071 <_end_0>:
-  71:   85 c0                   test   %eax,%eax
-  73:   75 56                   jne    cb <_end_1+0x10>
-
-
-which clearly cannot work? I must be missing something. Switching the
-first two instructions fixes it, of course, but right now I can't see
-what I forgot in terms of constraints to make the compiler not do that.
-Probably trivial to someone more familiar with inline assembly.
-Modifying the _faulted to be +r instead of =3Dr also fixes it.
-
-johannes
 
