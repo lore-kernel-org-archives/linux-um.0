@@ -4,81 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 242FBC3601A
-	for <linux-um@archiver.kernel.org>; Sat,  5 Apr 2025 17:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54D2CC36002
+	for <linux-um@archiver.kernel.org>; Mon,  7 Apr 2025 03:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=b3Kx3WcHaCshZaunVEkbII7fyp2B54EZnHGN6XDAJSE=; b=lrfJ4WAbKUDirvlv+HiJlSjiea
-	9/wO+rrgqRkDOZSaTVXd6YwSVejqmBbEa7fUivPXCz6cofcZaA4yo6uq83W/lzMURDcsaFUE2OpaH
-	AAjGkKsFMCZmX6J09I5xFTnxyCUuLlqOV6ukNAr3nP02/oFG5my4vZVOU7SZdhoTKu1IZ4OcOhwmD
-	AzhW6Qw/1UGpfWNtgnk6oZgaZc+LjkUwPEWC9eEenabPRTMSV+jRc71Qk+MKhUyPqGmC/6jCzGJLN
-	+SZbAJcvDLKSRE2oH8AgyTIKj3cU1rF18DeHRrQQ/kvNRhh0J8e4NTbfrXFtE5ykpS7kN+htxr9xM
-	x3t38YTw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2Nk4Ns4pxixfTzembRfA0mg5JVbfiFHOZANfn5RoZPc=; b=FqEJdinSuJs9bHMyhU12YLuMq/
+	R3ZdbZuQSdATfzShY0n7DfnL5mAFb2urPaLs+c0f7vvHVzPLk4aSWDAJxeGIbJXj9eykjqR8WTfws
+	LxXqEjY7fYqgQ/72LF9lAoifeW3uHOfzW/A7QJv0O05pdPBxWKR08rjaYSBw66a6aiCkCbUwU1P/e
+	d80Ne85ZK/RcqiTGutGsacd5Kzf4ao/nHaf33CgJAOpCZI0Dhn3F8yQHVEVbE+hRCRWOq50sep9No
+	Rh2ihOX4v6f861BS2KOgzBy54zKM1EEivtO/1hsn0zeCkaXoX9pT5O4dH5algwSbdpWv0o9QUEaCz
+	RMxBv1tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u17FO-0000000EH2h-2Kn2;
-	Sat, 05 Apr 2025 17:23:58 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1u1cr9-0000000GEtW-3Sy9;
+	Mon, 07 Apr 2025 03:09:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u17Dc-0000000EGrn-09vb;
-	Sat, 05 Apr 2025 17:22:10 +0000
+	id 1u1cr8-0000000GEsu-0LyK
+	for linux-um@bombadil.infradead.org;
+	Mon, 07 Apr 2025 03:09:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=b3Kx3WcHaCshZaunVEkbII7fyp2B54EZnHGN6XDAJSE=; t=1743873728; x=1744478528; 
-	b=N2brHMDbJjLOj5z8fbDAdrA/ys6Eg9uXCVeV2Q64WFzh91/dvNZRh0PjkBTgKW5R6SbI6X5Ulw3
-	Yawwyg/IvcgSQn5W/cq4IxSXHUtWizhHzkb02cI6VRkqPCIQMgp2EkLzrnEb4x7BmK3PBWQY/meFF
-	svKtFBOxlXaotiEVgwbeXUvfINF+igtSlNKWLuPLWS/Lcktjz1gX8dzzxEnNwExtqVfTZTS5Qq0uA
-	Es76Q7oJ5qLCsIc+NKUgfcFxiP1NUdWwY5o0vw5IS5qDun4eyb/OUrXj4OzZV+qDPln16rVQsrClv
-	Jc1FIbbcSQpjb9zFUDQcFQdxLTsT0R39WYdA==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1u17DS-00000003woY-1k4y; Sat, 05 Apr 2025 19:21:58 +0200
-Received: from dynamic-002-242-014-214.2.242.pool.telefonica.de ([2.242.14.214] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1u17DS-00000000biA-0QUK; Sat, 05 Apr 2025 19:21:58 +0200
-Message-ID: <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 1/1] mm: pgtable: fix pte_swp_exclusive
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Magnus Lindholm <linmag7@gmail.com>, richard.henderson@linaro.org, 
-	mattst88@gmail.com, ink@unseen.parts, kees@kernel.org, arnd@arndb.de, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org
-Cc: chris@zankel.net, dinguyen@kernel.org, jcmvbkbc@gmail.com, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-um@lists.infradead.org, loongarch@lists.linux.dev, monstr@monstr.eu, 
-	sparclinux@vger.kernel.org, x86@kernel.org
-Date: Sat, 05 Apr 2025 19:21:56 +0200
-In-Reply-To: <20250218175735.19882-2-linmag7@gmail.com>
-References: <20250218175735.19882-1-linmag7@gmail.com>
-	 <20250218175735.19882-2-linmag7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.0 
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=2Nk4Ns4pxixfTzembRfA0mg5JVbfiFHOZANfn5RoZPc=; b=URwPO8QUVWdTUMTVTDRsL/eu95
+	yi0yWO0AWuG/NvJa5Lr9Z4kKm27PoXZUc9YMGMXTmqZzxIhSb3yVJ35Ba3heWTiH9jZ0oSCH0g5Du
+	x6QFzcTmfJBCaW6u0CCmpKT2OPg/k5stwuOSvj8VVKCv7i/H4fxaPXwju5xb3w/d76mLRSPsqItVF
+	lQblvvoszjr/BeHighfrsGudMUCpQiPVyvrix3StVOFKr4qLfWVRe/zLRZTs9mSmmgxwBBCYOg4ww
+	aDtqwsUWr2sS6YSu82xkFRtbwQ2sF0fbo5KjbPUdae3bK45h1E+Z5CMZNhbxPrY2zf/w9KMzsaYoN
+	VufbXdMg==;
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u1cr1-00000007q9U-2cIG
+	for linux-um@lists.infradead.org;
+	Mon, 07 Apr 2025 03:08:58 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 70AE65C3EF9;
+	Mon,  7 Apr 2025 03:06:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 933EFC4CEE7;
+	Mon,  7 Apr 2025 03:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743995330;
+	bh=bTc1KqQ/qml9IyNeZIircEE9ArDM0SBO7cWrEeQDOg4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ib7GUncRswcuuLZwHO8rBBRGPZXUywrBwZtqdQMBlHvNkkm4YD/Zy6qfZXIjDn4CN
+	 bNeXW+cj8YCh6E53ftemXApE62LoHgp6OrlzEypzHykrFcJ824GEFuxWmKV49FXwRa
+	 wGxmJOtpeBLT/gW13/Mz2UeYg3A+EPAgMvlbLtNaYqk7avLFBz4thV9YVOSXHdJTnn
+	 EXWgt1dkqfqM3xerlxfvxQ8cGP135WZiAMetRb0p7InHHKQKr9/70fmvehqzNSCPGx
+	 7+s283lB913j1oUB/E/m3nXEek2G5Zwh9Q6q5fk41MO3qOmogj644TaYLwOGSAMxxe
+	 jF55hKnZwD8gA==
+Date: Mon, 7 Apr 2025 11:08:30 +0800
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To: "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@collabora.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet
+ <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>, Eric Biggers
+ <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim
+ <jaegeuk@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter
+ Clausen <lars@metafoo.de>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Maxime
+ Chevallier <maxime.chevallier@bootlin.com>, James Bottomley
+ <James.Bottomley@HansenPartnership.com>, Jarkko Sakkinen
+ <jarkko@kernel.org>, Mimi Zohar <zohar@linux.ibm.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, kernel@collabora.com, linux-mm@kvack.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-iio@vger.kernel.org, netdev@vger.kernel.org,
+ workflows@vger.kernel.org, linux-integrity@vger.kernel.org,
+ keyrings@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
+Message-ID: <20250407110830.736cd160@sal.lan>
+In-Reply-To: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 2.242.14.214
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250405_102208_383144_24962EDE 
-X-CRM114-Status: GOOD (  13.01  )
+X-CRM114-CacheID: sfid-20250407_040857_233079_0B6D6A46 
+X-CRM114-Status: GOOD (  41.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,451 +105,560 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Magnus,
+Em Fri, 04 Apr 2025 11:37:28 -0400
+N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com> escreveu:
 
-On Tue, 2025-02-18 at 18:55 +0100, Magnus Lindholm wrote:
-> Make pte_swp_exclusive return bool instead of int. This will better refle=
-ct
-> how pte_swp_exclusive is actually used in the code. This fixes swap/swapo=
-ff
-> problems on Alpha due pte_swp_exclusive not returning correct values when
-> _PAGE_SWP_EXCLUSIVE bit resides in upper 32-bits of PTE (like on alpha).
+> Given that the automarkup Sphinx plugin cross-references
+> "Documentation/*.rst" strings in the text to the corresponding
+> documents, surrounding those strings with the literal markup (``) not
+> only adds unnecessary markup in the source files, but actually prevents
+> the automatic cross-referencing to happen (as it doesn't happen in
+> literal blocks).
+>=20
+> Remove all the occurrences of the literal markup in
+> "Documentation/*.rst" paths, except when the actual source file is being
+> referred. Also change the surrounding text when needed so it reads well
+> both in the source and the web page (eg. 'see file Doc...' -> 'see
+> Doc...').
 
-Minor nitpick:
-
-"when _PAGE_SWP_EXCLUSIVE" =3D> "when the _PAGE_SWP_EXCLUSIVE"
+Better to apply it after my kernel-doc.py patch series, as it also
+touches some things like this. So, we might have a conflict with
+this series.
 
 >=20
-> Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
 > ---
->  arch/alpha/include/asm/pgtable.h             | 2 +-
->  arch/arc/include/asm/pgtable-bits-arcv2.h    | 2 +-
->  arch/arm/include/asm/pgtable.h               | 2 +-
->  arch/arm64/include/asm/pgtable.h             | 2 +-
->  arch/csky/include/asm/pgtable.h              | 2 +-
->  arch/hexagon/include/asm/pgtable.h           | 2 +-
->  arch/loongarch/include/asm/pgtable.h         | 2 +-
->  arch/m68k/include/asm/mcf_pgtable.h          | 2 +-
->  arch/m68k/include/asm/motorola_pgtable.h     | 2 +-
->  arch/m68k/include/asm/sun3_pgtable.h         | 2 +-
->  arch/microblaze/include/asm/pgtable.h        | 2 +-
->  arch/mips/include/asm/pgtable.h              | 4 ++--
->  arch/nios2/include/asm/pgtable.h             | 2 +-
->  arch/openrisc/include/asm/pgtable.h          | 2 +-
->  arch/parisc/include/asm/pgtable.h            | 2 +-
->  arch/powerpc/include/asm/book3s/32/pgtable.h | 2 +-
->  arch/powerpc/include/asm/book3s/64/pgtable.h | 2 +-
->  arch/powerpc/include/asm/nohash/pgtable.h    | 2 +-
->  arch/riscv/include/asm/pgtable.h             | 2 +-
->  arch/s390/include/asm/pgtable.h              | 2 +-
->  arch/sh/include/asm/pgtable_32.h             | 2 +-
->  arch/sparc/include/asm/pgtable_32.h          | 2 +-
->  arch/sparc/include/asm/pgtable_64.h          | 2 +-
->  arch/um/include/asm/pgtable.h                | 2 +-
->  arch/x86/include/asm/pgtable.h               | 2 +-
->  arch/xtensa/include/asm/pgtable.h            | 2 +-
->  26 files changed, 27 insertions(+), 27 deletions(-)
+>  Documentation/admin-guide/mm/numa_memory_policy.rst       | 2 +-
+>  Documentation/admin-guide/serial-console.rst              | 2 +-
+>  Documentation/driver-api/dmaengine/client.rst             | 2 +-
+>  Documentation/driver-api/nvdimm/security.rst              | 2 +-
+>  Documentation/filesystems/fscrypt.rst                     | 4 ++--
+>  Documentation/iio/adis16475.rst                           | 4 ++--
+>  Documentation/iio/adis16480.rst                           | 4 ++--
+>  Documentation/iio/adis16550.rst                           | 4 ++--
+>  Documentation/iio/adxl380.rst                             | 4 ++--
+>  Documentation/kernel-hacking/hacking.rst                  | 6 +++---
+>  Documentation/kernel-hacking/locking.rst                  | 2 +-
+>  Documentation/networking/dsa/b53.rst                      | 2 +-
+>  Documentation/networking/dsa/bcm_sf2.rst                  | 2 +-
+>  Documentation/networking/dsa/dsa.rst                      | 2 +-
+>  Documentation/networking/dsa/lan9303.rst                  | 2 +-
+>  Documentation/networking/phy-link-topology.rst            | 2 +-
+>  Documentation/process/adding-syscalls.rst                 | 2 +-
+>  Documentation/process/submit-checklist.rst                | 7 ++++---
+>  Documentation/security/keys/trusted-encrypted.rst         | 4 ++--
+>  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
+>  Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst  | 2 +-
+>  Documentation/userspace-api/media/v4l/diff-v4l.rst        | 2 +-
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 4 ++--
+>  Documentation/virt/uml/user_mode_linux_howto_v2.rst       | 2 +-
+>  24 files changed, 36 insertions(+), 35 deletions(-)
 >=20
-> diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pg=
-table.h
-> index 02e8817a8921..b0870de4b5b8 100644
-> --- a/arch/alpha/include/asm/pgtable.h
-> +++ b/arch/alpha/include/asm/pgtable.h
-> @@ -334,7 +334,7 @@ extern inline pte_t mk_swap_pte(unsigned long type, u=
-nsigned long offset)
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Docume=
+ntation/admin-guide/mm/numa_memory_policy.rst
+> index a70f20ce1ffb4ffd0cdcb8e575dce5547c76e73a..e431a93c82a6ac0be1ea2504c=
+727565293f3be77 100644
+> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
+> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> @@ -13,7 +13,7 @@ document attempts to describe the concepts and APIs of =
+the 2.6 memory policy
+>  support.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include=
-/asm/pgtable-bits-arcv2.h
-> index 8ebec1b21d24..3084c53f402d 100644
-> --- a/arch/arc/include/asm/pgtable-bits-arcv2.h
-> +++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
-> @@ -130,7 +130,7 @@ void update_mmu_cache_range(struct vm_fault *vmf, str=
-uct vm_area_struct *vma,
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+>  Memory policies should not be confused with cpusets
+> -(``Documentation/admin-guide/cgroup-v1/cpusets.rst``)
+> +(Documentation/admin-guide/cgroup-v1/cpusets.rst)
+>  which is an administrative mechanism for restricting the nodes from which
+>  memory may be allocated by a set of processes. Memory policies are a
+>  programming interface that a NUMA-aware application can take advantage o=
+f.  When
+> diff --git a/Documentation/admin-guide/serial-console.rst b/Documentation=
+/admin-guide/serial-console.rst
+> index 1609e7479249f0721fd0b4fbbd70eda13ffc09e4..70c067aad724e08fc11457b9a=
+792da965809f116 100644
+> --- a/Documentation/admin-guide/serial-console.rst
+> +++ b/Documentation/admin-guide/serial-console.rst
+> @@ -86,7 +86,7 @@ You will need to create a new device to use ``/dev/cons=
+ole``. The official
+>  ``/dev/console`` is now character device 5,1.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtabl=
-e.h
-> index be91e376df79..aa4f3f71789c 100644
-> --- a/arch/arm/include/asm/pgtable.h
-> +++ b/arch/arm/include/asm/pgtable.h
-> @@ -303,7 +303,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t ne=
-wprot)
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(swp)	__pte((swp).val)
+>  (You can also use a network device as a console.  See
+> -``Documentation/networking/netconsole.rst`` for information on that.)
+> +Documentation/networking/netconsole.rst for information on that.)
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_isset(pte, L_PTE_SWP_EXCLUSIVE);
->  }
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pg=
-table.h
-> index 0b2a2ad1b9e8..b48b70d8d12d 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -496,7 +496,7 @@ static inline pte_t pte_swp_mkexclusive(pte_t pte)
->  	return set_pte_bit(pte, __pgprot(PTE_SWP_EXCLUSIVE));
->  }
+>  Here's an example that will use ``/dev/ttyS1`` (COM2) as the console.
+>  Replace the sample values as needed.
+> diff --git a/Documentation/driver-api/dmaengine/client.rst b/Documentatio=
+n/driver-api/dmaengine/client.rst
+> index d491e385d61a98b8a804cd823caf254a2dc62cf4..884b96bdf90081ad17a315b15=
+132a7e5ada07e37 100644
+> --- a/Documentation/driver-api/dmaengine/client.rst
+> +++ b/Documentation/driver-api/dmaengine/client.rst
+> @@ -5,7 +5,7 @@ DMA Engine API Guide
+>  Vinod Koul <vinod dot koul at intel.com>
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & PTE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgta=
-ble.h
-> index a397e1718ab6..e68722eb33d9 100644
-> --- a/arch/csky/include/asm/pgtable.h
-> +++ b/arch/csky/include/asm/pgtable.h
-> @@ -200,7 +200,7 @@ static inline pte_t pte_mkyoung(pte_t pte)
->  	return pte;
->  }
+>  .. note:: For DMA Engine usage in async_tx please see:
+> -          ``Documentation/crypto/async-tx-api.rst``
+> +          Documentation/crypto/async-tx-api.rst
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/as=
-m/pgtable.h
-> index 8c5b7a1c3d90..fa007eb9aad3 100644
-> --- a/arch/hexagon/include/asm/pgtable.h
-> +++ b/arch/hexagon/include/asm/pgtable.h
-> @@ -390,7 +390,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  		(((type & 0x1f) << 1) | \
->  		 ((offset & 0x3ffff8) << 10) | ((offset & 0x7) << 7)) })
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/includ=
-e/asm/pgtable.h
-> index da346733a1da..bac946693d87 100644
-> --- a/arch/loongarch/include/asm/pgtable.h
-> +++ b/arch/loongarch/include/asm/pgtable.h
-> @@ -302,7 +302,7 @@ static inline pte_t mk_swap_pte(unsigned long type, u=
-nsigned long offset)
->  #define __pmd_to_swp_entry(pmd) ((swp_entry_t) { pmd_val(pmd) })
->  #define __swp_entry_to_pmd(x)	((pmd_t) { (x).val | _PAGE_HUGE })
+>  Below is a guide to device driver writers on how to use the Slave-DMA AP=
+I of the
+> diff --git a/Documentation/driver-api/nvdimm/security.rst b/Documentation=
+/driver-api/nvdimm/security.rst
+> index eb3d35e6a95c9faf683fd9591d0ea10a1264ec49..6bb732d08fc698b1c3d37263e=
+78ad194081d46f2 100644
+> --- a/Documentation/driver-api/nvdimm/security.rst
+> +++ b/Documentation/driver-api/nvdimm/security.rst
+> @@ -51,7 +51,7 @@ all the keys are in the kernel user keyring for unlock.
+>  A nvdimm encrypted-key of format enc32 has the description format of:
+>  nvdimm:<bus-provider-specific-unique-id>
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/=
-mcf_pgtable.h
-> index 48f87a8a8832..7e9748b29c44 100644
-> --- a/arch/m68k/include/asm/mcf_pgtable.h
-> +++ b/arch/m68k/include/asm/mcf_pgtable.h
-> @@ -274,7 +274,7 @@ extern pgd_t kernel_pg_dir[PTRS_PER_PGD];
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	(__pte((x).val))
+> -See file ``Documentation/security/keys/trusted-encrypted.rst`` for creat=
+ing
+> +See Documentation/security/keys/trusted-encrypted.rst for creating
+>  encrypted-keys of enc32 format. TPM usage with a master trusted key is
+>  preferred for sealing the encrypted-keys.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include=
-/asm/motorola_pgtable.h
-> index 9866c7acdabe..26da9b985c5f 100644
-> --- a/arch/m68k/include/asm/motorola_pgtable.h
-> +++ b/arch/m68k/include/asm/motorola_pgtable.h
-> @@ -191,7 +191,7 @@ extern pgd_t kernel_pg_dir[128];
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+> diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesy=
+stems/fscrypt.rst
+> index e803299085492217f946fafd79f2bbaf85a7f974..7aae828ae9040586bbd0bde00=
+9386855c11e1645 100644
+> --- a/Documentation/filesystems/fscrypt.rst
+> +++ b/Documentation/filesystems/fscrypt.rst
+> @@ -873,7 +873,7 @@ as follows:
+>    hash of the key.  To add this type of key, the calling process does
+>    not need any privileges.  However, the number of keys that can be
+>    added is limited by the user's quota for the keyrings service (see
+> -  ``Documentation/security/keys/core.rst``).
+> +  Documentation/security/keys/core.rst).
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm=
-/sun3_pgtable.h
-> index 30081aee8164..ac0793f57f31 100644
-> --- a/arch/m68k/include/asm/sun3_pgtable.h
-> +++ b/arch/m68k/include/asm/sun3_pgtable.h
-> @@ -175,7 +175,7 @@ extern pgd_t kernel_pg_dir[PTRS_PER_PGD];
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+>  - ``raw_size`` must be the size of the ``raw`` key provided, in bytes.
+>    Alternatively, if ``key_id`` is nonzero, this field must be 0, since
+> @@ -955,7 +955,7 @@ access encrypted files.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/incl=
-ude/asm/pgtable.h
-> index e4ea2ec3642f..b281c2bbd6c0 100644
-> --- a/arch/microblaze/include/asm/pgtable.h
-> +++ b/arch/microblaze/include/asm/pgtable.h
-> @@ -406,7 +406,7 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) >> 2 })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val << 2 })
+>  Nevertheless, to add a key to one of the process-subscribed keyrings,
+>  the add_key() system call can be used (see:
+> -``Documentation/security/keys/core.rst``).  The key type must be
+> +Documentation/security/keys/core.rst).  The key type must be
+>  "logon"; keys of this type are kept in kernel memory and cannot be
+>  read back by userspace.  The key description must be "fscrypt:"
+>  followed by the 16-character lower case hex representation of the
+> diff --git a/Documentation/iio/adis16475.rst b/Documentation/iio/adis1647=
+5.rst
+> index 4bf0998be36efced97ecb93372df84790351e36b..89a388490ab735f6f4bc1c4dd=
+a10a87881ae82aa 100644
+> --- a/Documentation/iio/adis16475.rst
+> +++ b/Documentation/iio/adis16475.rst
+> @@ -374,11 +374,11 @@ Obtain buffered data:
+>          00001740  01 1a 00 00 ff ff fe 31  00 00 46 aa 00 03 37 f7  |...=
+....1..F...7.|
+>          ...
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgta=
-ble.h
-> index c29a551eb0ca..c19da4ab7552 100644
-> --- a/arch/mips/include/asm/pgtable.h
-> +++ b/arch/mips/include/asm/pgtable.h
-> @@ -540,7 +540,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t ne=
-wprot)
->  #endif
+> -See ``Documentation/iio/iio_devbuf.rst`` for more information about how =
+buffered
+> +See Documentation/iio/iio_devbuf.rst for more information about how buff=
+ered
+>  data is structured.
 > =20
->  #if defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte.pte_low & _PAGE_SWP_EXCLUSIVE;
->  }
-> @@ -557,7 +557,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte=
-)
->  	return pte;
->  }
->  #else
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pg=
-table.h
-> index eab87c6beacb..64ce06bae8ac 100644
-> --- a/arch/nios2/include/asm/pgtable.h
-> +++ b/arch/nios2/include/asm/pgtable.h
-> @@ -265,7 +265,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  #define __swp_entry_to_pte(swp)	((pte_t) { (swp).val })
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
+>  4. IIO Interfacing Tools
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/=
-asm/pgtable.h
-> index 60c6ce7ff2dc..34cad9177a48 100644
-> --- a/arch/openrisc/include/asm/pgtable.h
-> +++ b/arch/openrisc/include/asm/pgtable.h
-> @@ -413,7 +413,7 @@ static inline void update_mmu_cache_range(struct vm_f=
-ault *vmf,
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+> -See ``Documentation/iio/iio_tools.rst`` for the description of the avail=
+able IIO
+> +See Documentation/iio/iio_tools.rst for the description of the available=
+ IIO
+>  interfacing tools.
+> diff --git a/Documentation/iio/adis16480.rst b/Documentation/iio/adis1648=
+0.rst
+> index 4a2d40e0daa7989dd9dc7c1991de24ac6184fb0c..cce5f3e0174158cf20f12e96b=
+ff5c79bced84aab 100644
+> --- a/Documentation/iio/adis16480.rst
+> +++ b/Documentation/iio/adis16480.rst
+> @@ -436,11 +436,11 @@ Obtain buffered data::
+>    00006b60  09 63 00 00 00 00 1b 13  00 00 22 2f 00 03 23 91  |.c.......=
+."/..#.|
+>    ...
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/=
-pgtable.h
-> index babf65751e81..dfeba45b6d6f 100644
-> --- a/arch/parisc/include/asm/pgtable.h
-> +++ b/arch/parisc/include/asm/pgtable.h
-> @@ -431,7 +431,7 @@ static inline void set_ptes(struct mm_struct *mm, uns=
-igned long addr,
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+> -See ``Documentation/iio/iio_devbuf.rst`` for more information about how =
+buffered
+> +See Documentation/iio/iio_devbuf.rst for more information about how buff=
+ered
+>  data is structured.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/=
-include/asm/book3s/32/pgtable.h
-> index 42c3af90d1f0..92d21c6faf1e 100644
-> --- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> @@ -365,7 +365,7 @@ static inline void __ptep_set_access_flags(struct vm_=
-area_struct *vma,
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) >> 3 })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val << 3 })
+>  4. IIO Interfacing Tools
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/=
-include/asm/book3s/64/pgtable.h
-> index 6d98e6f08d4d..dbf772bef20d 100644
-> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> @@ -693,7 +693,7 @@ static inline pte_t pte_swp_mkexclusive(pte_t pte)
->  	return __pte_raw(pte_raw(pte) | cpu_to_be64(_PAGE_SWP_EXCLUSIVE));
->  }
+> -See ``Documentation/iio/iio_tools.rst`` for the description of the avail=
+able IIO
+> +See Documentation/iio/iio_tools.rst for the description of the available=
+ IIO
+>  interfacing tools.
+> diff --git a/Documentation/iio/adis16550.rst b/Documentation/iio/adis1655=
+0.rst
+> index 25db7b8060c42153f9acbc1b5dd689c79f8da70b..c9bbc0a857b03bc1894e3fbba=
+792bba705966636 100644
+> --- a/Documentation/iio/adis16550.rst
+> +++ b/Documentation/iio/adis16550.rst
+> @@ -366,11 +366,11 @@ Obtain buffered data:
+>          0000ceb0  00 00 0d 2f 00 00 05 25  00 00 07 8d 00 00 a2 ce  |...=
+/...%........|
+>          ...
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return !!(pte_raw(pte) & cpu_to_be64(_PAGE_SWP_EXCLUSIVE));
->  }
-> diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/inc=
-lude/asm/nohash/pgtable.h
-> index 8d1f0b7062eb..7d6b9e5b286e 100644
-> --- a/arch/powerpc/include/asm/nohash/pgtable.h
-> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
-> @@ -286,7 +286,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t ne=
-wprot)
->  	return __pte((pte_val(pte) & _PAGE_CHG_MASK) | pgprot_val(newprot));
->  }
+> -See ``Documentation/iio/iio_devbuf.rst`` for more information about how =
+buffered
+> +See Documentation/iio/iio_devbuf.rst for more information about how buff=
+ered
+>  data is structured.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
-table.h
-> index 050fdc49b5ad..433c78c44e02 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -880,7 +880,7 @@ extern pmd_t pmdp_collapse_flush(struct vm_area_struc=
-t *vma,
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+>  4. IIO Interfacing Tools
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgta=
-ble.h
-> index 3ca5af4cfe43..cb86dbf7126a 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -913,7 +913,7 @@ static inline int pmd_protnone(pmd_t pmd)
->  }
->  #endif
+> -See ``Documentation/iio/iio_tools.rst`` for the description of the avail=
+able IIO
+> +See Documentation/iio/iio_tools.rst for the description of the available=
+ IIO
+>  interfacing tools.
+> diff --git a/Documentation/iio/adxl380.rst b/Documentation/iio/adxl380.rst
+> index 66c8a4d4f767e5a6faa20b1c0fad57b954624a95..61cafa2f98bf36e4c1b035fc4=
+ffd73fab6b2058d 100644
+> --- a/Documentation/iio/adxl380.rst
+> +++ b/Documentation/iio/adxl380.rst
+> @@ -223,11 +223,11 @@ Obtain buffered data:
+>          002bc3c0  f7 fd 00 cb fb 94 24 80  f7 e3 00 f2 fb b8 24 80  |...=
+...$.......$.|
+>          ...
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/sh/include/asm/pgtable_32.h b/arch/sh/include/asm/pgtab=
-le_32.h
-> index f939f1215232..5f221f3269e3 100644
-> --- a/arch/sh/include/asm/pgtable_32.h
-> +++ b/arch/sh/include/asm/pgtable_32.h
-> @@ -478,7 +478,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  /* In both cases, we borrow bit 6 to store the exclusive marker in swap =
-PTEs. */
->  #define _PAGE_SWP_EXCLUSIVE	_PAGE_USER
+> -See ``Documentation/iio/iio_devbuf.rst`` for more information about how =
+buffered
+> +See Documentation/iio/iio_devbuf.rst for more information about how buff=
+ered
+>  data is structured.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte.pte_low & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm=
-/pgtable_32.h
-> index 62bcafe38b1f..0362f8357371 100644
-> --- a/arch/sparc/include/asm/pgtable_32.h
-> +++ b/arch/sparc/include/asm/pgtable_32.h
-> @@ -353,7 +353,7 @@ static inline swp_entry_t __swp_entry(unsigned long t=
-ype, unsigned long offset)
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+>  4. IIO Interfacing Tools
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & SRMMU_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm=
-/pgtable_64.h
-> index 2b7f358762c1..65e53491fe07 100644
-> --- a/arch/sparc/include/asm/pgtable_64.h
-> +++ b/arch/sparc/include/asm/pgtable_64.h
-> @@ -1027,7 +1027,7 @@ pgtable_t pgtable_trans_huge_withdraw(struct mm_str=
-uct *mm, pmd_t *pmdp);
->  #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+> -See ``Documentation/iio/iio_tools.rst`` for the description of the avail=
+able IIO
+> +See Documentation/iio/iio_tools.rst for the description of the available=
+ IIO
+>  interfacing tools.
+> diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/ker=
+nel-hacking/hacking.rst
+> index 0042776a9e17cfc5d09b5de043cd4131b54192a9..53cf502ccf3706b15b7c1da17=
+7cc28d6decee2b3 100644
+> --- a/Documentation/kernel-hacking/hacking.rst
+> +++ b/Documentation/kernel-hacking/hacking.rst
+> @@ -736,7 +736,7 @@ make a neat patch, there's administrative work to be =
+done:
+>  -  Usually you want a configuration option for your kernel hack. Edit
+>     ``Kconfig`` in the appropriate directory. The Config language is
+>     simple to use by cut and paste, and there's complete documentation in
+> -   ``Documentation/kbuild/kconfig-language.rst``.
+> +   Documentation/kbuild/kconfig-language.rst.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.=
-h
-> index 5601ca98e8a6..c32309614a15 100644
-> --- a/arch/um/include/asm/pgtable.h
-> +++ b/arch/um/include/asm/pgtable.h
-> @@ -316,7 +316,7 @@ extern pte_t *virt_to_pte(struct mm_struct *mm, unsig=
-ned long addr);
->  	((swp_entry_t) { pte_val(pte_mkuptodate(pte)) })
->  #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+>     In your description of the option, make sure you address both the
+>     expert user and the user who knows nothing about your feature.
+> @@ -746,7 +746,7 @@ make a neat patch, there's administrative work to be =
+done:
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_get_bits(pte, _PAGE_SWP_EXCLUSIVE);
->  }
-> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtabl=
-e.h
-> index 593f10aabd45..4c7ce40023d3 100644
-> --- a/arch/x86/include/asm/pgtable.h
-> +++ b/arch/x86/include/asm/pgtable.h
-> @@ -1586,7 +1586,7 @@ static inline pte_t pte_swp_mkexclusive(pte_t pte)
->  	return pte_set_flags(pte, _PAGE_SWP_EXCLUSIVE);
->  }
+>  -  Edit the ``Makefile``: the CONFIG variables are exported here so you
+>     can usually just add a "obj-$(CONFIG_xxx) +=3D xxx.o" line. The syntax
+> -   is documented in ``Documentation/kbuild/makefiles.rst``.
+> +   is documented in Documentation/kbuild/makefiles.rst.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_flags(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-> diff --git a/arch/xtensa/include/asm/pgtable.h b/arch/xtensa/include/asm/=
-pgtable.h
-> index 1647a7cc3fbf..6da0aa0604f1 100644
-> --- a/arch/xtensa/include/asm/pgtable.h
-> +++ b/arch/xtensa/include/asm/pgtable.h
-> @@ -355,7 +355,7 @@ ptep_set_wrprotect(struct mm_struct *mm, unsigned lon=
-g addr, pte_t *ptep)
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+>  -  Put yourself in ``CREDITS`` if you consider what you've done
+>     noteworthy, usually beyond a single file (your name should be at the
+> @@ -755,7 +755,7 @@ make a neat patch, there's administrative work to be =
+done:
+>     it implies a more-than-passing commitment to some part of the code.
 > =20
-> -static inline int pte_swp_exclusive(pte_t pte)
-> +static inline bool pte_swp_exclusive(pte_t pte)
->  {
->  	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
->  }
-
-I'm not so sure about this implicit cast from unsigned long to bool though.
-
-Is this verified to work correctly on all architectures? I wonder why this
-bug was not caught earlier on alpha on the other hand.
-
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+>  -  Finally, don't forget to read
+> -   ``Documentation/process/submitting-patches.rst``
+> +   Documentation/process/submitting-patches.rst
+> =20
+>  Kernel Cantrips
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/ker=
+nel-hacking/locking.rst
+> index dff0646a717bff27f6b82d3a8090876e99d23cec..d479c2459895cd8cd5df5b2c9=
+180aafb19f8b7fb 100644
+> --- a/Documentation/kernel-hacking/locking.rst
+> +++ b/Documentation/kernel-hacking/locking.rst
+> @@ -1370,7 +1370,7 @@ Futex API reference
+>  Further reading
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> --  ``Documentation/locking/spinlocks.rst``: Linus Torvalds' spinlocking
+> +-  Documentation/locking/spinlocks.rst: Linus Torvalds' spinlocking
+>     tutorial in the kernel sources.
+> =20
+>  -  Unix Systems for Modern Architectures: Symmetric Multiprocessing and
+> diff --git a/Documentation/networking/dsa/b53.rst b/Documentation/network=
+ing/dsa/b53.rst
+> index 1cb3ff648f8890ea1063789672f19a1fea9f01e5..51fd39ca52019c84ab5583321=
+38e94f34aa3c293 100644
+> --- a/Documentation/networking/dsa/b53.rst
+> +++ b/Documentation/networking/dsa/b53.rst
+> @@ -14,7 +14,7 @@ Implementation details
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+>  The driver is located in ``drivers/net/dsa/b53/`` and is implemented as a
+> -DSA driver; see ``Documentation/networking/dsa/dsa.rst`` for details on =
+the
+> +DSA driver; see Documentation/networking/dsa/dsa.rst for details on the
+>  subsystem and what it provides.
+> =20
+>  The switch is, if possible, configured to enable a Broadcom specific 4-b=
+ytes
+> diff --git a/Documentation/networking/dsa/bcm_sf2.rst b/Documentation/net=
+working/dsa/bcm_sf2.rst
+> index d2571435696f6b777fa682660b9e5310bad765c1..ba7371aad142408a9d95644c4=
+7813cba968affc2 100644
+> --- a/Documentation/networking/dsa/bcm_sf2.rst
+> +++ b/Documentation/networking/dsa/bcm_sf2.rst
+> @@ -39,7 +39,7 @@ Implementation details
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+>  The driver is located in ``drivers/net/dsa/bcm_sf2.c`` and is implemente=
+d as a DSA
+> -driver; see ``Documentation/networking/dsa/dsa.rst`` for details on the =
+subsystem
+> +driver; see Documentation/networking/dsa/dsa.rst for details on the subs=
+ystem
+>  and what it provides.
+> =20
+>  The SF2 switch is configured to enable a Broadcom specific 4-bytes switc=
+h tag
+> diff --git a/Documentation/networking/dsa/dsa.rst b/Documentation/network=
+ing/dsa/dsa.rst
+> index 7b2e69cd7ef0b92f1da4666581c03d07928e6e1b..6e185a08396b91ea8bbfeec31=
+302527555df0cfd 100644
+> --- a/Documentation/networking/dsa/dsa.rst
+> +++ b/Documentation/networking/dsa/dsa.rst
+> @@ -1110,7 +1110,7 @@ interface with a physical switch port does not prod=
+uce the expected result).
+> =20
+>  A driver which is able of offloading certain functions of a DANP or DANH=
+ should
+>  declare the corresponding netdev features as indicated by the documentat=
+ion at
+> -``Documentation/networking/netdev-features.rst``. Additionally, the foll=
+owing
+> +Documentation/networking/netdev-features.rst. Additionally, the following
+>  methods must be implemented:
+> =20
+>  - ``port_hsr_join``: function invoked when a given switch port is added =
+to a
+> diff --git a/Documentation/networking/dsa/lan9303.rst b/Documentation/net=
+working/dsa/lan9303.rst
+> index ab81b4e0139e340e7025c7b1e1fb0ddd65b232ff..97456316a8d9ec42ef7eb3477=
+36d6a9e0de08869 100644
+> --- a/Documentation/networking/dsa/lan9303.rst
+> +++ b/Documentation/networking/dsa/lan9303.rst
+> @@ -10,7 +10,7 @@ host conduit network interface (e.g. fixed link).
+>  Driver details
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> -The driver is implemented as a DSA driver, see ``Documentation/networkin=
+g/dsa/dsa.rst``.
+> +The driver is implemented as a DSA driver, see Documentation/networking/=
+dsa/dsa.rst.
+> =20
+>  See ``Documentation/devicetree/bindings/net/dsa/lan9303.txt`` for device=
+ tree
+>  binding.
+> diff --git a/Documentation/networking/phy-link-topology.rst b/Documentati=
+on/networking/phy-link-topology.rst
+> index 4dec5d7d6513d9946ccdabd6733228aa61ff1ea1..ff01d70ef61b42909ec4b3ab6=
+730a08c4b271505 100644
+> --- a/Documentation/networking/phy-link-topology.rst
+> +++ b/Documentation/networking/phy-link-topology.rst
+> @@ -98,7 +98,7 @@ UAPI
+>  =3D=3D=3D=3D
+> =20
+>  There exist a set of netlink commands to query the link topology from us=
+erspace,
+> -see ``Documentation/networking/ethtool-netlink.rst``.
+> +see Documentation/networking/ethtool-netlink.rst.
+> =20
+>  The whole point of having a topology representation is to assign the phy=
+index
+>  field in :c:type:`struct phy_device <phy_device>`. This index is reporte=
+d to
+> diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/pr=
+ocess/adding-syscalls.rst
+> index 906c47f1a9e5086a1c5f451b1d8bebe19b0c6ff0..5e6d26ef31eb937f43e74e919=
+3dbecb8bfa5ae14 100644
+> --- a/Documentation/process/adding-syscalls.rst
+> +++ b/Documentation/process/adding-syscalls.rst
+> @@ -33,7 +33,7 @@ interface.
+>         to a somewhat opaque API.
+> =20
+>   - If you're just exposing runtime system information, a new node in sys=
+fs
+> -   (see ``Documentation/filesystems/sysfs.rst``) or the ``/proc`` filesy=
+stem may
+> +   (see Documentation/filesystems/sysfs.rst) or the ``/proc`` filesystem=
+ may
+>     be more appropriate.  However, access to these mechanisms requires th=
+at the
+>     relevant filesystem is mounted, which might not always be the case (e=
+.g.
+>     in a namespaced/sandboxed/chrooted environment).  Avoid adding any AP=
+I to
+> diff --git a/Documentation/process/submit-checklist.rst b/Documentation/p=
+rocess/submit-checklist.rst
+> index beb7f94279fdb6a1d9b4aa86b2bea031f140732b..3ae31c5af2cb5c374658c1fb7=
+125e70bf36e911c 100644
+> --- a/Documentation/process/submit-checklist.rst
+> +++ b/Documentation/process/submit-checklist.rst
+> @@ -30,7 +30,8 @@ Review Kconfig changes
+> =20
+>  1) Any new or modified ``CONFIG`` options do not muck up the config menu=
+ and
+>     default to off unless they meet the exception criteria documented in
+> -   ``Documentation/kbuild/kconfig-language.rst`` Menu attributes: defaul=
+t value.
+> +   Documentation/kbuild/kconfig-language.rst, under "Menu attributes", "=
+default
+> +   value".
+> =20
+>  2) All new ``Kconfig`` options have help text.
+> =20
+> @@ -47,7 +48,7 @@ Provide documentation
+>  2) All new ``/proc`` entries are documented under ``Documentation/``
+> =20
+>  3) All new kernel boot parameters are documented in
+> -   ``Documentation/admin-guide/kernel-parameters.rst``.
+> +   Documentation/admin-guide/kernel-parameters.rst.
+> =20
+>  4) All new module parameters are documented with ``MODULE_PARM_DESC()``
+> =20
+> @@ -58,7 +59,7 @@ Provide documentation
+>     linux-api@vger.kernel.org.
+> =20
+>  6) If any ioctl's are added by the patch, then also update
+> -   ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
+> +   Documentation/userspace-api/ioctl/ioctl-number.rst.
+> =20
+>  Check your code with tools
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Document=
+ation/security/keys/trusted-encrypted.rst
+> index f4d7e162d5e475bf01baafcd4dbbd9dfda9f5e6f..7eef16778ae4f43f6ee538ae4=
+317f0c3d48c3c7f 100644
+> --- a/Documentation/security/keys/trusted-encrypted.rst
+> +++ b/Documentation/security/keys/trusted-encrypted.rst
+> @@ -107,7 +107,7 @@ safe.
+>       (2) TEE
+> =20
+>           TEEs have well-documented, standardized client interface and AP=
+Is. For
+> -         more details refer to ``Documentation/driver-api/tee.rst``.
+> +         more details refer to Documentation/driver-api/tee.rst.
+> =20
+>       (3) CAAM
+> =20
+> @@ -407,7 +407,7 @@ Other uses for trusted and encrypted keys, such as fo=
+r disk and file encryption
+>  are anticipated.  In particular the new format 'ecryptfs' has been defin=
+ed
+>  in order to use encrypted keys to mount an eCryptfs filesystem.  More de=
+tails
+>  about the usage can be found in the file
+> -``Documentation/security/keys/ecryptfs.rst``.
+> +Documentation/security/keys/ecryptfs.rst.
+> =20
+>  Another new format 'enc32' has been defined in order to support encrypte=
+d keys
+>  with payload size of 32 bytes. This will initially be used for nvdimm se=
+curity
+> diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/=
+Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> index 895752cbcedd6b1202ff481cbae6f5001dd3d903..975e9dfb29009f481e7bae243=
+285d2a93a82f5dc 100644
+> --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> @@ -2466,7 +2466,7 @@ Mic boost
+>  Mic-boost switch is set as =E2=80=9CMic Boost=E2=80=9D or =E2=80=9CMic B=
+oost (6dB)=E2=80=9D.
+> =20
+>  More precise information can be found in
+> -``Documentation/sound/designs/control-names.rst``.
+> +Documentation/sound/designs/control-names.rst.
+> =20
+>  Access Flags
+>  ------------
+> diff --git a/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst b/D=
+ocumentation/userspace-api/media/v4l/dev-sliced-vbi.rst
+> index 42cdb0a9f786066a2d4b8ebc2c72a9318dabebf5..d7524b65a2fccc5ce16abcac7=
+aae3ae0f9f461c7 100644
+> --- a/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst
+> +++ b/Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst
+> @@ -430,7 +430,7 @@ MPEG stream.
+>  *Historical context*: This format specification originates from a
+>  custom, embedded, sliced VBI data format used by the ``ivtv`` driver.
+>  This format has already been informally specified in the kernel sources
+> -in the file ``Documentation/userspace-api/media/drivers/cx2341x-uapi.rst=
+`` . The
+> +in Documentation/userspace-api/media/drivers/cx2341x-uapi.rst. The
+>  maximum size of the payload and other aspects of this format are driven
+>  by the CX23415 MPEG decoder's capabilities and limitations with respect
+>  to extracting, decoding, and displaying sliced VBI data embedded within
+> diff --git a/Documentation/userspace-api/media/v4l/diff-v4l.rst b/Documen=
+tation/userspace-api/media/v4l/diff-v4l.rst
+> index 33243ecb50336abe845aa44232917134b21280f7..b087835a147fc0a2285992b8d=
+2bc9a56e83b1cb7 100644
+> --- a/Documentation/userspace-api/media/v4l/diff-v4l.rst
+> +++ b/Documentation/userspace-api/media/v4l/diff-v4l.rst
+> @@ -634,7 +634,7 @@ devices is documented in :ref:`extended-controls`.
+>     compatible with V4L or V4L2.
+> =20
+>  .. [#f2]
+> -   According to ``Documentation/admin-guide/devices.rst`` a symbolic lin=
+k to
+> +   According to Documentation/admin-guide/devices.rst a symbolic link to
+>     ``/dev/radio0``.
+> =20
+>  .. [#f3]
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
+Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 4a379bd9e3fbdb78dfda8e7bc4b25de079d61208..7b463d1ffc906a6b519cc7c2f=
+2d6526c3e53eae5 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -108,8 +108,8 @@ enum v4l2_mpeg_stream_vbi_fmt -
+>        - No VBI in the MPEG stream
+>      * - ``V4L2_MPEG_STREAM_VBI_FMT_IVTV``
+>        - VBI in private packets, IVTV format (documented in the kernel
+> -	sources in the file
+> -	``Documentation/userspace-api/media/drivers/cx2341x-uapi.rst``)
+> +	sources in
+> +	Documentation/userspace-api/media/drivers/cx2341x-uapi.rst)
+> =20
+> =20
+> =20
+> diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Docume=
+ntation/virt/uml/user_mode_linux_howto_v2.rst
+> index 584000b743f381747f7bced26d60f0d92b6c1fbe..71d1258a5002acb4716221351=
+b60579892862cca 100644
+> --- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> +++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> @@ -1118,7 +1118,7 @@ new feature, please send it to ``linux-um@lists.inf=
+radead.org``.
+> =20
+>  Please follow all standard Linux patch guidelines such as cc-ing
+>  relevant maintainers and run ``./scripts/checkpatch.pl`` on your patch.
+> -For more details see ``Documentation/process/submitting-patches.rst``
+> +For more details see Documentation/process/submitting-patches.rst
+> =20
+>  Note - the list does not accept HTML or attachments, all emails must
+>  be formatted as plain text.
+>=20
+> ---
+> base-commit: 405e2241def89c88f008dcb899eb5b6d4be8b43c
+> change-id: 20250404-doc-paths-unliteral-b9d2bd13a4bd
+>=20
+> Best regards,
 
