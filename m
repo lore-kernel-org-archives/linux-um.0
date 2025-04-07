@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6CD7C3601E
-	for <linux-um@archiver.kernel.org>; Mon,  7 Apr 2025 08:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D921C369A2
+	for <linux-um@archiver.kernel.org>; Mon,  7 Apr 2025 14:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=em0yD0kIpDtyZFKdGXKgNdHuMfrDjAXLZIWfYU3VNv0=; b=gk9MIvzA4dSdJe5BbVmfhGtJ6e
-	adEsbt36EWJsFKttzsDbPL222qpS5IEg86cNh2Q4hqJ1ojzOsl4HJ7kM6qD4rjgCjkzbmkjLA9iWX
-	/EWu/6RGzgPEG36FOBiNKDIBrMsYfFsa/UuAWrwN3xucXF/qEvFH1O1/jmJNOFxiQ+e82gmyJFQAe
-	EIi+/XhTqMJkjqZS26o1rgsdTG6qgo8oNBBP09rBiCMB9LNRoWV3wuiJsW9Xm6NGng7gJoMuKGcpK
-	aBwSU0wVi7E+k/xcL0glxeezBvdzfUsmb1d0gB7QLyTY9uj1F/QhE+Z6cG96lUBQ3WYBN8YXX/zaK
-	8DLxIGlg==;
+	bh=vqPo4BJw+Ec/ACl21W0maFoVCJxW/RDcMRbTDnWNsJI=; b=AjFbeaJegJ079ZYa92D7zznV4S
+	K3laPn8rLnkGeCzNZszd7H3BcUrvCMJk/KMNscbNqggjgZwnSAXdsPFvLvfbaIHwOLyuOTeHECcK2
+	f4/MmCNmNx9mc0I+HAzTfGIPRLH4IUeHf/BB3vE70G/nm/DkYjmYJNRV0TqMv0oT1ls/gCwhxIcKG
+	qQVcHSYKF/W+Km+FgtEu+TS74bBnmRJh830xM4Lt6Y4r9V6OPR6U2iryWTMzoePNubaBMaV7/EOKL
+	THqixO11yNVgRIic6S3kiAApbfKidh7y6QFrqNuYEiw+Uo+C8Bxy1FhH9fJMPppminMiYpwOBRvv+
+	SYuiHfuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1hcU-0000000Gwx3-0nM7;
-	Mon, 07 Apr 2025 08:14:14 +0000
-Received: from mail-vk1-f175.google.com ([209.85.221.175])
+	id 1u1n4e-00000000eHX-1SvS;
+	Mon, 07 Apr 2025 14:03:40 +0000
+Received: from bali.collaboradmins.com ([2a01:4f8:201:9162::2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1hUp-0000000Gvf5-3PeY;
-	Mon, 07 Apr 2025 08:06:21 +0000
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-523de5611a3so1808877e0c.1;
-        Mon, 07 Apr 2025 01:06:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744013177; x=1744617977;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=em0yD0kIpDtyZFKdGXKgNdHuMfrDjAXLZIWfYU3VNv0=;
-        b=slp7KPyMfSOPGg93zcSuTtaL3cyTFaEiilNp93X9wn9xSxFojx0ybw3AZ8bUqQVFqV
-         lX54eOhNgwRyl5ly5htUVRgPTGcJ18l9ZRjMk15K28ZItoIXWxZYCyCt7lymMHxRzaOo
-         EblDXnukOBAuoEpnhXuCXoWYSczLV0F45ZbauHUq7cDPArY9xouwUT39TWcVZeRxmHBJ
-         KGVocCDIy2KzWmBRA5WGVdjvFC6rXHtAb1USx+TdkTyccExZiiEapBFHWpRZyE/rBOgx
-         ZsvnXoZvACLjFca3feDMIq7NQd0u/BjZLON5Nl8TrA1SShLlk1nhikeGQDfbj/kOONpq
-         jwSg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4AJRa4x4WREWCEKpLRWiqu8LLILLxWP6T2Im58j7D3tZjKQzWxIM+Lb7TLlTXuv6C4rQDmSz11tZqJkSi51s=@lists.infradead.org, AJvYcCW+jjbtCghQ47LJiW1Kw3lJGIj6iEtl2z/Se5AHRSfgN8EJ/+na50Wd66OYWnoNjkmWT0o56hXMFwDsbNv7cZvs@lists.infradead.org, AJvYcCWP/WEIC9vuDGfMtI/rVg5cDgCHixN8da26wHCkAEPQO6t46Cq0jm/gTDsjxvVIw9Z1ERj9YBd+JhaCgkg=@lists.infradead.org, AJvYcCX404Kq9BwND+HMyfQF9lqjxeVc//j8n3Yrrj9uruNw7HQLNaZKFy5KmXmZBP7mGTVx49xYw0EO9OY=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw3shT3pCUTAulHMx8H04qt6upVW65zdZgEOeTe41nfafyxmAI2
-	fKrDJmBx0rRqXa0rusvPJJUiApQNE1bTeRfGnpzsHvWf/ZxzBGi2z9zDl+tx
-X-Gm-Gg: ASbGncu3ZGZbtsIM1cAUbetc0EnfYj1FAY9e4iKxvLrVhHIFRHs9ZuMi2JmO7i0VOv6
-	JoXYH+14SdLg2jsoLxrXQt/4k+87lXwbWgqyYPdhytY7Hvu3Q5NRTSIotqxpLsehcJYuD15Zgv8
-	o5efg5gcrl0TwsmOB+3AODhKIZEFXMTzQvrGcdfga+oBgSlkln1mAIgYSk4IW/xl17AHsfCLNZ6
-	GW+kyON1SfGVK/XL9d7BVU90Va1Q8qRNdOgRch1toSx6X0TebfSNRvMbsNnEupAzv5xn0qFP4X8
-	EmbP1G+92BDfnBtTf0BwswPk44XJeKHChQjuElgDeJr3Uknp5580xOCbHbHWd2dvohEXN2f/HZb
-	/9tP3pmY=
-X-Google-Smtp-Source: AGHT+IHQ+MYl5RRJTujY4oYX2pqJBFucZEPAxztRZsOKcEJits9/HLTYm00mNvzDiTYFp+0w9ImMAQ==
-X-Received: by 2002:a05:6122:2217:b0:520:420a:a07a with SMTP id 71dfb90a1353d-5276455eeddmr7822992e0c.8.1744013176947;
-        Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-52767d8f9f8sm1303026e0c.37.2025.04.07.01.06.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-86cce5dac90so1702787241.0;
-        Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVIi6f9oSmZrdne1woPlGE0JyJaxaV6VcuFhDl5GhNL2taN0XR2LAq2YaOvxYbzIPa0Cd6OFeClCIPeZTuxZd4=@lists.infradead.org, AJvYcCWtbSGX0eKzXetFLunlb3uOx8vFxkB7wvpiRN/QcHn4Sj6Pt0dRXZKnGbL+1AhFh0PGLTq5GQU6w0D0uBU=@lists.infradead.org, AJvYcCX+Q+J8WPIUCEOvMKnjw2VbBzgygbxfWTSt3vYedSsyRIYNEcgISSpdhQSyZRKCowP9cB/1jRn/3tw=@lists.infradead.org, AJvYcCXKMlboZ0SfK3t2KaG3pO/Qml+MxpllDVRQko2XFl+u/Nz88kIIS6f1wOclgF23pxexAQGawpyLlqC6h/h3Ia25@lists.infradead.org
-X-Received: by 2002:a05:6102:1622:b0:4c3:221:8f47 with SMTP id
- ada2fe7eead31-4c8553d0fafmr8533368137.13.1744013176401; Mon, 07 Apr 2025
- 01:06:16 -0700 (PDT)
+	id 1u1n4b-00000000eG2-0yP1
+	for linux-um@lists.infradead.org;
+	Mon, 07 Apr 2025 14:03:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1744034614;
+	bh=LwpFHqtTF6aiM+1soPf8ma0ZkEP2mzQ1iN1O5ga09M4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XbK+zNlmEYMyXgy9EE+nYDPMS6CNvfQvS4m8Ns622tsZ+iUYZZUmQVKBc+XlC+Ex0
+	 LaVUBaVnuHyN4MmHQRM5lw75L9OtxOhDCkjuYODTe+qjTI/m5+AMTxT0Gka7jc0QE8
+	 IifRhyjZZYK5QvnI+mMIhrnYhTnAo9KP5sABY5mQ6fcU6WPvsT9xj3IKWxPUaa7KsX
+	 WNf9C7FVgUYYMwv/V1hMAOJBiisS+blTU874Zclxv4aFp9RB6gJyAyCkEp32WSgf2b
+	 YGO6OexvWQ9aiFyaesw8sjta8FGk9hz0lRUCH2EruQhXMFQ6T/BIolXXN9TstLXeHQ
+	 P+ItjRt/WHB3Q==
+Received: from notapiano (unknown [70.107.117.78])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by bali.collaboradmins.com (Postfix) with ESMTPSA id D60C917E02BE;
+	Mon,  7 Apr 2025 16:03:28 +0200 (CEST)
+Date: Mon, 7 Apr 2025 10:03:26 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Akira Yokosawa <akiyks@gmail.com>
+Cc: James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
+	anton.ivanov@cambridgegreys.com, corbet@lwn.net,
+	davem@davemloft.net, dmaengine@vger.kernel.org, ebiggers@kernel.org,
+	edumazet@google.com, horms@kernel.org, jaegeuk@kernel.org,
+	jarkko@kernel.org, jic23@kernel.org, johannes@sipsolutions.net,
+	kernel@collabora.com, keyrings@vger.kernel.org, kuba@kernel.org,
+	lars@metafoo.de, linux-doc@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mm@kvack.org,
+	linux-sound@vger.kernel.org, linux-um@lists.infradead.org,
+	maxime.chevallier@bootlin.com, mchehab@kernel.org,
+	netdev@vger.kernel.org, pabeni@redhat.com, perex@perex.cz,
+	richard@nod.at, tiwai@suse.com, tytso@mit.edu, vkoul@kernel.org,
+	workflows@vger.kernel.org, zohar@linux.ibm.com
+Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
+Message-ID: <9bc7b77b-73a7-4d6d-9187-ac452f8cad23@notapiano>
+References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
+ <811c4103-08b1-4288-9a15-bd9795bc59f4@gmail.com>
 MIME-Version: 1.0
-References: <20250218175735.19882-1-linmag7@gmail.com> <20250218175735.19882-2-linmag7@gmail.com>
- <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
-In-Reply-To: <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 7 Apr 2025 10:06:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
-X-Gm-Features: ATxdqUEtUaFZruSQ19joR0gbmVyVokHgxasQdxoPHK2-UPmtdbKL5noyYxpgMcc
-Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm: pgtable: fix pte_swp_exclusive
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Magnus Lindholm <linmag7@gmail.com>, richard.henderson@linaro.org, mattst88@gmail.com, 
-	ink@unseen.parts, kees@kernel.org, arnd@arndb.de, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, chris@zankel.net, 
-	dinguyen@kernel.org, jcmvbkbc@gmail.com, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	loongarch@lists.linux.dev, monstr@monstr.eu, sparclinux@vger.kernel.org, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <811c4103-08b1-4288-9a15-bd9795bc59f4@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_010619_852610_8AAD8DAD 
-X-CRM114-Status: GOOD (  25.15  )
+X-CRM114-CacheID: sfid-20250407_070337_424656_4B098E8F 
+X-CRM114-Status: GOOD (  17.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,68 +88,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Adrian,
+On Sat, Apr 05, 2025 at 10:17:16AM +0900, Akira Yokosawa wrote:
+> Hi,
+> 
+> Nícolas F. R. A. Prado wrote:
+> > Given that the automarkup Sphinx plugin cross-references
+> > "Documentation/*.rst" strings in the text to the corresponding
+> > documents, surrounding those strings with the literal markup (``) not
+> > only adds unnecessary markup in the source files, but actually prevents
+> > the automatic cross-referencing to happen (as it doesn't happen in
+> > literal blocks).
+> > 
+> > Remove all the occurrences of the literal markup in
+> > "Documentation/*.rst" paths, except when the actual source file is being
+> > referred. Also change the surrounding text when needed so it reads well
+> > both in the source and the web page (eg. 'see file Doc...' -> 'see
+> > Doc...').
+> > 
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > ---
+[..]
+> >  
+> >  2) All new ``Kconfig`` options have help text.
+> >  
+> > @@ -47,7 +48,7 @@ Provide documentation
+> >  2) All new ``/proc`` entries are documented under ``Documentation/``
+> >  
+> >  3) All new kernel boot parameters are documented in
+> > -   ``Documentation/admin-guide/kernel-parameters.rst``.
+> > +   Documentation/admin-guide/kernel-parameters.rst.
+> 
+> Hmm, this item is asking "Have you documented the new params in that
+> particular file?", so I don't think this change should be made.
 
-On Sat, 5 Apr 2025 at 19:22, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On Tue, 2025-02-18 at 18:55 +0100, Magnus Lindholm wrote:
-> > Make pte_swp_exclusive return bool instead of int. This will better reflect
-> > how pte_swp_exclusive is actually used in the code. This fixes swap/swapoff
-> > problems on Alpha due pte_swp_exclusive not returning correct values when
-> > _PAGE_SWP_EXCLUSIVE bit resides in upper 32-bits of PTE (like on alpha).
->
-> Minor nitpick:
->
-> "when _PAGE_SWP_EXCLUSIVE" => "when the _PAGE_SWP_EXCLUSIVE"
->
-> >
-> > Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
+Right, that makes sense. I'll drop this and the below change for v2.
 
-> > --- a/arch/alpha/include/asm/pgtable.h
-> > +++ b/arch/alpha/include/asm/pgtable.h
-> > @@ -334,7 +334,7 @@ extern inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
-> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
-> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
-> >
-> > -static inline int pte_swp_exclusive(pte_t pte)
-> > +static inline bool pte_swp_exclusive(pte_t pte)
-> >  {
-> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
-> >  }
+Thanks,
+Nícolas
 
-> > --- a/arch/xtensa/include/asm/pgtable.h
-> > +++ b/arch/xtensa/include/asm/pgtable.h
-> > @@ -355,7 +355,7 @@ ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
-> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
-> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
-> >
-> > -static inline int pte_swp_exclusive(pte_t pte)
-> > +static inline bool pte_swp_exclusive(pte_t pte)
-> >  {
-> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
-> >  }
->
-> I'm not so sure about this implicit cast from unsigned long to bool though.
->
-> Is this verified to work correctly on all architectures? I wonder why this
-
-Should work fine: any non-zero value is mapped to one.
-
-> bug was not caught earlier on alpha on the other hand.
-
-On Alpha, "pte_val(pte) & _PAGE_SWP_EXCLUSIVE" is either
-_PAGE_SWP_EXCLUSIVE == 0x8000000000UL or zero.  Due to the return
-type being int, the return value was truncated, and the function always
-returned zero.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> >  
+> >  4) All new module parameters are documented with ``MODULE_PARM_DESC()``
+> >  
+> > @@ -58,7 +59,7 @@ Provide documentation
+> >     linux-api@vger.kernel.org.
+> >  
+> >  6) If any ioctl's are added by the patch, then also update
+> > -   ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
+> > +   Documentation/userspace-api/ioctl/ioctl-number.rst.
+> 
+> Ditto.
+> 
+>         Thanks, Akira
+> 
+> >  
+> >  Check your code with tools
+> >  ==========================
+> 
 
