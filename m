@@ -4,76 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D921C369A2
-	for <linux-um@archiver.kernel.org>; Mon,  7 Apr 2025 14:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91537C36018
+	for <linux-um@archiver.kernel.org>; Mon,  7 Apr 2025 19:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vqPo4BJw+Ec/ACl21W0maFoVCJxW/RDcMRbTDnWNsJI=; b=AjFbeaJegJ079ZYa92D7zznV4S
-	K3laPn8rLnkGeCzNZszd7H3BcUrvCMJk/KMNscbNqggjgZwnSAXdsPFvLvfbaIHwOLyuOTeHECcK2
-	f4/MmCNmNx9mc0I+HAzTfGIPRLH4IUeHf/BB3vE70G/nm/DkYjmYJNRV0TqMv0oT1ls/gCwhxIcKG
-	qQVcHSYKF/W+Km+FgtEu+TS74bBnmRJh830xM4Lt6Y4r9V6OPR6U2iryWTMzoePNubaBMaV7/EOKL
-	THqixO11yNVgRIic6S3kiAApbfKidh7y6QFrqNuYEiw+Uo+C8Bxy1FhH9fJMPppminMiYpwOBRvv+
-	SYuiHfuQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Odf4Ddk1ak3Z8BBw/cVBJ2e/0hHw2GU4Sp3rBfDN88A=; b=BVBEsmEivY1xanbYNLwgzUayVa
+	Hyra0D8tCg8HALYWuS/yWk4zxOKtYWS0/PwYNuQzgF2Z3tU4zbW87Rgwsk2QXa8venDuryOsHM1uL
+	q2rStjFePVJSlCaXzf5jJ6nPBlBF5IUb+Sm2Zs5tGWV/HMyOwXSfVJE+8lWxOq/2PzD/Tgr/9/XDg
+	HbvPJbxmFKufRFPjDFzDKBde14muhShn9GGO2dLzrNjsTqsQaZIG4QOPThigRdK0w+R9i4ggz+7ko
+	Qo5S3kI8PwpSYJsP6n7LoKPb2+5QsgsO6NqV29BPFhpAWWkkVchhYQsDU7kM+FtOrWextSNF4j6XU
+	FdihgAkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1n4e-00000000eHX-1SvS;
-	Mon, 07 Apr 2025 14:03:40 +0000
-Received: from bali.collaboradmins.com ([2a01:4f8:201:9162::2])
+	id 1u1rjS-00000001jhH-0900;
+	Mon, 07 Apr 2025 19:02:06 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u1n4b-00000000eG2-0yP1
+	id 1u1qwy-00000001U6O-3GM0
 	for linux-um@lists.infradead.org;
-	Mon, 07 Apr 2025 14:03:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1744034614;
-	bh=LwpFHqtTF6aiM+1soPf8ma0ZkEP2mzQ1iN1O5ga09M4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XbK+zNlmEYMyXgy9EE+nYDPMS6CNvfQvS4m8Ns622tsZ+iUYZZUmQVKBc+XlC+Ex0
-	 LaVUBaVnuHyN4MmHQRM5lw75L9OtxOhDCkjuYODTe+qjTI/m5+AMTxT0Gka7jc0QE8
-	 IifRhyjZZYK5QvnI+mMIhrnYhTnAo9KP5sABY5mQ6fcU6WPvsT9xj3IKWxPUaa7KsX
-	 WNf9C7FVgUYYMwv/V1hMAOJBiisS+blTU874Zclxv4aFp9RB6gJyAyCkEp32WSgf2b
-	 YGO6OexvWQ9aiFyaesw8sjta8FGk9hz0lRUCH2EruQhXMFQ6T/BIolXXN9TstLXeHQ
-	 P+ItjRt/WHB3Q==
-Received: from notapiano (unknown [70.107.117.78])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by bali.collaboradmins.com (Postfix) with ESMTPSA id D60C917E02BE;
-	Mon,  7 Apr 2025 16:03:28 +0200 (CEST)
-Date: Mon, 7 Apr 2025 10:03:26 -0400
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Akira Yokosawa <akiyks@gmail.com>
-Cc: James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
-	anton.ivanov@cambridgegreys.com, corbet@lwn.net,
-	davem@davemloft.net, dmaengine@vger.kernel.org, ebiggers@kernel.org,
-	edumazet@google.com, horms@kernel.org, jaegeuk@kernel.org,
-	jarkko@kernel.org, jic23@kernel.org, johannes@sipsolutions.net,
-	kernel@collabora.com, keyrings@vger.kernel.org, kuba@kernel.org,
-	lars@metafoo.de, linux-doc@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mm@kvack.org,
-	linux-sound@vger.kernel.org, linux-um@lists.infradead.org,
-	maxime.chevallier@bootlin.com, mchehab@kernel.org,
-	netdev@vger.kernel.org, pabeni@redhat.com, perex@perex.cz,
-	richard@nod.at, tiwai@suse.com, tytso@mit.edu, vkoul@kernel.org,
-	workflows@vger.kernel.org, zohar@linux.ibm.com
-Subject: Re: [PATCH] docs: Remove literal markup from Documentation/ paths
-Message-ID: <9bc7b77b-73a7-4d6d-9187-ac452f8cad23@notapiano>
-References: <20250404-doc-paths-unliteral-v1-1-74718785444e@collabora.com>
- <811c4103-08b1-4288-9a15-bd9795bc59f4@gmail.com>
+	Mon, 07 Apr 2025 18:12:02 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1486B5C561A;
+	Mon,  7 Apr 2025 18:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC00FC4CEDD;
+	Mon,  7 Apr 2025 18:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744049519;
+	bh=gU6hkKGDdvk7K7dSuye72CQjJX8W0AKAn4D7NbahrSw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XH5rZBW6srTSd+yJvhIe3cLRB8CQS9m9lhRenOm0atgLI2MKNEKO4g9bQOGgtLZON
+	 mRhj3du3m+Py3okBA+cmDBMxt9lOOKEvZUdtagsUPROZie3Lu9P0srNFiuQm3N2/PR
+	 CYiSUMkcO8koB6yUNejYRIt0qFNWwqseeR8BtTDR7ChBz/k+UO68CrK/+KRO2c8Xnu
+	 Fl7WEApgITIvR8kZD+T4YLSAU3qUAjVDfdwOyUEGiju855+xlfN/OlrER75QUUQDVc
+	 fJxNicHVn2hwdqO8lNb3koRredYgpBLZAUSzkZtqPz0ptqeEEcYT+PoJb9wE7XfE3A
+	 Q1A8dTqE29D5Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	linux-um@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.14 25/31] um: Switch to the pthread-based helper in sigio workaround
+Date: Mon,  7 Apr 2025 14:10:41 -0400
+Message-Id: <20250407181054.3177479-25-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250407181054.3177479-1-sashal@kernel.org>
+References: <20250407181054.3177479-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.14.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <811c4103-08b1-4288-9a15-bd9795bc59f4@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_070337_424656_4B098E8F 
-X-CRM114-Status: GOOD (  17.91  )
+X-CRM114-CacheID: sfid-20250407_111200_930952_99077E5B 
+X-CRM114-Status: GOOD (  18.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,61 +80,154 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Apr 05, 2025 at 10:17:16AM +0900, Akira Yokosawa wrote:
-> Hi,
-> 
-> Nícolas F. R. A. Prado wrote:
-> > Given that the automarkup Sphinx plugin cross-references
-> > "Documentation/*.rst" strings in the text to the corresponding
-> > documents, surrounding those strings with the literal markup (``) not
-> > only adds unnecessary markup in the source files, but actually prevents
-> > the automatic cross-referencing to happen (as it doesn't happen in
-> > literal blocks).
-> > 
-> > Remove all the occurrences of the literal markup in
-> > "Documentation/*.rst" paths, except when the actual source file is being
-> > referred. Also change the surrounding text when needed so it reads well
-> > both in the source and the web page (eg. 'see file Doc...' -> 'see
-> > Doc...').
-> > 
-> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> > ---
-[..]
-> >  
-> >  2) All new ``Kconfig`` options have help text.
-> >  
-> > @@ -47,7 +48,7 @@ Provide documentation
-> >  2) All new ``/proc`` entries are documented under ``Documentation/``
-> >  
-> >  3) All new kernel boot parameters are documented in
-> > -   ``Documentation/admin-guide/kernel-parameters.rst``.
-> > +   Documentation/admin-guide/kernel-parameters.rst.
-> 
-> Hmm, this item is asking "Have you documented the new params in that
-> particular file?", so I don't think this change should be made.
+From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Right, that makes sense. I'll drop this and the below change for v2.
+[ Upstream commit d295beeed2552a987796d627ba7d0985b1e2d72f ]
 
-Thanks,
-Nícolas
+The write_sigio thread and UML kernel thread share the same errno,
+which can lead to conflicts when both call syscalls concurrently.
+Switch to the pthread-based helper to address this issue.
 
-> 
-> >  
-> >  4) All new module parameters are documented with ``MODULE_PARM_DESC()``
-> >  
-> > @@ -58,7 +59,7 @@ Provide documentation
-> >     linux-api@vger.kernel.org.
-> >  
-> >  6) If any ioctl's are added by the patch, then also update
-> > -   ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
-> > +   Documentation/userspace-api/ioctl/ioctl-number.rst.
-> 
-> Ditto.
-> 
->         Thanks, Akira
-> 
-> >  
-> >  Check your code with tools
-> >  ==========================
-> 
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Link: https://patch.msgid.link/20250319135523.97050-4-tiwei.btw@antgroup.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/os-Linux/sigio.c | 44 +++++++++++++++++-----------------------
+ 1 file changed, 19 insertions(+), 25 deletions(-)
+
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 9aac8def4d635..61b348a2ea974 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -21,8 +21,7 @@
+  * Protected by sigio_lock(), also used by sigio_cleanup, which is an
+  * exitcall.
+  */
+-static int write_sigio_pid = -1;
+-static unsigned long write_sigio_stack;
++static struct os_helper_thread *write_sigio_td;
+ 
+ /*
+  * These arrays are initialized before the sigio thread is started, and
+@@ -48,15 +47,15 @@ static struct pollfds current_poll;
+ static struct pollfds next_poll;
+ static struct pollfds all_sigio_fds;
+ 
+-static int write_sigio_thread(void *unused)
++static void *write_sigio_thread(void *unused)
+ {
+ 	struct pollfds *fds, tmp;
+ 	struct pollfd *p;
+ 	int i, n, respond_fd;
+ 	char c;
+ 
+-	os_set_pdeathsig();
+-	os_fix_helper_signals();
++	os_fix_helper_thread_signals();
++
+ 	fds = &current_poll;
+ 	while (1) {
+ 		n = poll(fds->poll, fds->used, -1);
+@@ -98,7 +97,7 @@ static int write_sigio_thread(void *unused)
+ 		}
+ 	}
+ 
+-	return 0;
++	return NULL;
+ }
+ 
+ static int need_poll(struct pollfds *polls, int n)
+@@ -152,11 +151,10 @@ static void update_thread(void)
+ 	return;
+  fail:
+ 	/* Critical section start */
+-	if (write_sigio_pid != -1) {
+-		os_kill_process(write_sigio_pid, 1);
+-		free_stack(write_sigio_stack, 0);
++	if (write_sigio_td) {
++		os_kill_helper_thread(write_sigio_td);
++		write_sigio_td = NULL;
+ 	}
+-	write_sigio_pid = -1;
+ 	close(sigio_private[0]);
+ 	close(sigio_private[1]);
+ 	close(write_sigio_fds[0]);
+@@ -220,7 +218,7 @@ int __ignore_sigio_fd(int fd)
+ 	 * sigio_cleanup has already run, then update_thread will hang
+ 	 * or fail because the thread is no longer running.
+ 	 */
+-	if (write_sigio_pid == -1)
++	if (!write_sigio_td)
+ 		return -EIO;
+ 
+ 	for (i = 0; i < current_poll.used; i++) {
+@@ -279,14 +277,14 @@ static void write_sigio_workaround(void)
+ 	int err;
+ 	int l_write_sigio_fds[2];
+ 	int l_sigio_private[2];
+-	int l_write_sigio_pid;
++	struct os_helper_thread *l_write_sigio_td;
+ 
+ 	/* We call this *tons* of times - and most ones we must just fail. */
+ 	sigio_lock();
+-	l_write_sigio_pid = write_sigio_pid;
++	l_write_sigio_td = write_sigio_td;
+ 	sigio_unlock();
+ 
+-	if (l_write_sigio_pid != -1)
++	if (l_write_sigio_td)
+ 		return;
+ 
+ 	err = os_pipe(l_write_sigio_fds, 1, 1);
+@@ -312,7 +310,7 @@ static void write_sigio_workaround(void)
+ 	 * Did we race? Don't try to optimize this, please, it's not so likely
+ 	 * to happen, and no more than once at the boot.
+ 	 */
+-	if (write_sigio_pid != -1)
++	if (write_sigio_td)
+ 		goto out_free;
+ 
+ 	current_poll = ((struct pollfds) { .poll 	= p,
+@@ -325,18 +323,15 @@ static void write_sigio_workaround(void)
+ 	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
+ 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
+ 
+-	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
+-					    CLONE_FILES | CLONE_VM,
+-					    &write_sigio_stack);
+-
+-	if (write_sigio_pid < 0)
++	err = os_run_helper_thread(&write_sigio_td, write_sigio_thread, NULL);
++	if (err < 0)
+ 		goto out_clear;
+ 
+ 	sigio_unlock();
+ 	return;
+ 
+ out_clear:
+-	write_sigio_pid = -1;
++	write_sigio_td = NULL;
+ 	write_sigio_fds[0] = -1;
+ 	write_sigio_fds[1] = -1;
+ 	sigio_private[0] = -1;
+@@ -394,12 +389,11 @@ void maybe_sigio_broken(int fd)
+ 
+ static void sigio_cleanup(void)
+ {
+-	if (write_sigio_pid == -1)
++	if (!write_sigio_td)
+ 		return;
+ 
+-	os_kill_process(write_sigio_pid, 1);
+-	free_stack(write_sigio_stack, 0);
+-	write_sigio_pid = -1;
++	os_kill_helper_thread(write_sigio_td);
++	write_sigio_td = NULL;
+ }
+ 
+ __uml_exitcall(sigio_cleanup);
+-- 
+2.39.5
+
 
