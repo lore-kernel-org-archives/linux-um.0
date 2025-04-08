@@ -4,59 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE53C3600C
-	for <linux-um@archiver.kernel.org>; Tue,  8 Apr 2025 04:38:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C8FC3600C
+	for <linux-um@archiver.kernel.org>; Tue,  8 Apr 2025 06:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xc3RQHbbWhjaENeV54tCo3uz4MbXYhwQLPGC2Mc716Q=; b=SQ9IFWCtgIx8VbE81JR6sagbHK
-	8RxX2M3jPfZ8TBOP2p0PUtvqfV+zOclzroGjMHtdiv/zrjSMj8GOOrFgXif9Sxum4IZkcPnwiHP8f
-	InF81MzzH1XkkiSDddmQwEX1qbbZPFKatXAYjNevyuTTSGWkBt9aKibt2/GDN8GDRx44iramv77Mw
-	wcnQXNM9mOCCqGATEiha/ngoRNG251Kj+tPEx0xeSDCbCP2QM6z7FVIhwWiq3qrJ4gs7+PqGgdqNm
-	qfYvYflpiLfJpvBYT0om8cw33hEfdmuec8m1Vgq46Ua3CsQchR9xtF4U8EwjGcHSxqHwwI+IJfuKO
-	p5nK1MDA==;
+	bh=ZxMGG04EPMAWKey8j7JhNalgvxUnjwJSpyC2cpoCPyA=; b=cI4H+/EF2TyGsfcS5m6RCSFWN8
+	o9A3rXvg53eEVBTgZpuIMsrpw6isS1twaX+jbC85BHCnIcJwb7OKwXYOLMuj00NG4EpDwvf119ALI
+	3CdjsKYixz8CQ+Bxr2xAof74r1cEaIG8cbZWqnad1EGPEI5sFpqyAjm+Cgvqb4cCwnwG/iyeqlKrN
+	5NppsmIkZHK7Ug+e0JnaS2iOgkNHma2jU719g/1ld4jqA0RNkJ4/HkSFuCiMFfkK+L4pqb+zPIvq0
+	/98vMsw3blK0qByfFHu1/cHzsE5Nrvue5SvWpCqkM8qfIBqgII3BjfWnsRTzexUMSOHv3v3BDsSs+
+	9IqTcluA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u20j6-00000002hml-1Ua1;
-	Tue, 08 Apr 2025 04:38:20 +0000
-Received: from out0-222.mail.aliyun.com ([140.205.0.222])
-	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u20j3-00000002hly-3Ljy
-	for linux-um@lists.infradead.org;
-	Tue, 08 Apr 2025 04:38:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1744087095; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=xc3RQHbbWhjaENeV54tCo3uz4MbXYhwQLPGC2Mc716Q=;
-	b=Amw6OeYOXQE2rUfENOatiHCJFpshqP+q2LRiVnHX2qsMJAr/lMDyDOJoCi9IdNpiUZxzbQUJC0qrQqBsJS5tLHZrp26hgfavk1dBfJR80CZSjaxYc8gTlpjpQ/fwqq2pOuF8voj1OQPzB7I3MWRP1kuGerj3R+RkvXLLEtFMt6c=
-Received: from 30.174.97.68(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.cGd.uV9_1744087093 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Tue, 08 Apr 2025 12:38:13 +0800
-Message-ID: <621e867f-5427-4062-8783-e474e3dcdb3f@antgroup.com>
-Date: Tue, 08 Apr 2025 12:38:12 +0800
+	id 1u22KB-00000002tRl-2usE;
+	Tue, 08 Apr 2025 06:20:43 +0000
+Received: from pegase1.c-s.fr ([93.17.236.30])
+	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u22K7-00000002tQO-08rH;
+	Tue, 08 Apr 2025 06:20:40 +0000
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4ZWw9P60QFz9vkm;
+	Tue,  8 Apr 2025 07:48:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 42ojJD_HJEii; Tue,  8 Apr 2025 07:48:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4ZWw9N2JlBz9vkp;
+	Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 369B28B76C;
+	Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id aUNb9W1lbxmx; Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id DC9078B767;
+	Tue,  8 Apr 2025 07:48:21 +0200 (CEST)
+Message-ID: <ff31c2ff-55be-452e-b94a-6a84c4583258@csgroup.eu>
+Date: Tue, 8 Apr 2025 07:48:22 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH AUTOSEL 6.13 23/28] um: Rewrite the sigio workaround based
- on epoll and tgkill
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, richard@nod.at,
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
- benjamin.berg@intel.com, linux-um@lists.infradead.org
-References: <20250407181224.3180941-1-sashal@kernel.org>
- <20250407181224.3180941-23-sashal@kernel.org>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20250407181224.3180941-23-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 09/13] arch, mm: set max_mapnr when allocating memory
+ map for FLATMEM
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+ Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Guo Ren
+ <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>, Mark Brown <broonie@kernel.org>,
+ Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Stafford Horne <shorne@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20250313135003.836600-1-rppt@kernel.org>
+ <20250313135003.836600-10-rppt@kernel.org>
+ <4b9627f2-65ff-4baf-931f-4e23b5732e6b@csgroup.eu>
+Content-Language: fr-FR
+In-Reply-To: <4b9627f2-65ff-4baf-931f-4e23b5732e6b@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250407_213818_037161_02E31003 
-X-CRM114-Status: UNSURE (   7.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250407_232039_225630_C33F7E58 
+X-CRM114-Status: GOOD (  12.72  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,36 +111,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025/4/8 02:12, Sasha Levin wrote:
-> From: Tiwei Bie <tiwei.btw@antgroup.com>
-> 
-> [ Upstream commit 33c9da5dfb18c2ff5a88d01aca2cf253cd0ac3bc ]
-> 
-> The existing sigio workaround implementation removes FDs from the
-> poll when events are triggered, requiring users to re-add them via
-> add_sigio_fd() after processing. This introduces a potential race
-> condition between FD removal in write_sigio_thread() and next_poll
-> update in __add_sigio_fd(), and is inefficient due to frequent FD
-> removal and re-addition. Rewrite the implementation based on epoll
-> and tgkill for improved efficiency and reliability.
-> 
-> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-> Link: https://patch.msgid.link/20250315161910.4082396-2-tiwei.btw@antgroup.com
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/um/drivers/random.c       |   2 +-
->  arch/um/drivers/rtc_user.c     |   2 +-
->  arch/um/include/shared/os.h    |   2 +-
->  arch/um/include/shared/sigio.h |   1 -
->  arch/um/kernel/sigio.c         |  26 ---
->  arch/um/os-Linux/sigio.c       | 330 +++++----------------------------
->  6 files changed, 47 insertions(+), 316 deletions(-)
+Hi Mike,
 
-Please drop this patch. Thanks! Details can be found here: 
+Le 14/03/2025 à 10:25, Christophe Leroy a écrit :
+> 
+> 
+> Le 13/03/2025 à 14:49, Mike Rapoport a écrit :
+>> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+>>
+>> max_mapnr is essentially the size of the memory map for systems that use
+>> FLATMEM. There is no reason to calculate it in each and every 
+>> architecture
+>> when it's anyway calculated in alloc_node_mem_map().
+>>
+>> Drop setting of max_mapnr from architecture code and set it once in
+>> alloc_node_mem_map().
+> 
+> As far as I can see alloc_node_mem_map() is called quite late.
+> 
+> I fear that it will regress commit daa9ada2093e ("powerpc/mm: Fix boot 
+> crash with FLATMEM")
+> 
+> Can you check ?
 
-https://lore.kernel.org/linux-um/ffa0b6af-523d-4e3e-9952-92f5b04b82b3@antgroup.com/
+I see this patch is now merged into mainline (v6.15-rc1). Have you been 
+able to check and/or analyse whether it doesn't regress the fix in 
+commit daa9ada2093e ("powerpc/mm: Fix boot crash with FLATMEM") ?
 
-Regards,
-Tiwei
+Thanks
+Christophe
+
 
