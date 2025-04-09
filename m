@@ -4,58 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B675BC369A1
-	for <linux-um@archiver.kernel.org>; Tue,  8 Apr 2025 07:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC45C36002
+	for <linux-um@archiver.kernel.org>; Wed,  9 Apr 2025 06:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9llnL/axqmEUzjeX7hNnkgDjMD+ldU7RxHS4bdZ4ImY=; b=JhIiELVtgFfXTyrJ7XGgzCyspJ
-	HPrLlFp8B8Se+nqcluh6dU+/yO/FCCOWFzeMc7AePb2OWkuNJx4JgluFUQGLH3KlG7Q9yCtIf9/wD
-	5Wj9zftFm5UwY0Q/CiXQDz6ZjvEYhugia3fj3eBxRMmGBqmr67dJWvnb8E5X1nLcfpQD8DYOA/pqH
-	+EvVGtGV5YeKZpjhPAx6AZ4TLa63k/kczISTY1qKr/rc8rrzFHZwuXuUuZLX25/XuJGUEoXVRahGs
-	nT2cmekwwOGyejJM6yrBFn/qGJljuubDP8ORA4ZvdzJbD5uTXCmoPlv64XxG7RF1azueuO4jPMcrT
-	KpNYqyCg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=; b=HJUIU3ljlMhxEeYQk9KzopIoCO
+	ILsXhgyYrwOmRpOQs4xsHlkroU6gZpTWBn/Y/LKZZxD741V1Lb0G2Av9WIOCDlDHyiuptt6u2osr4
+	vdPQGt+0IPjbdT4BPvtfx2wuuzRym+TnI/Dcqcn/6lO+tW8jmPrw7AseJFnThfzqjLknAYvkgTu6W
+	bEwWUapdQ+wR9kLYSm3Hg/PzRryD7+D9P/DD9Ke/yQ+0CEpSVAFDw4PonTqa36UNeGwCmtGBL2q4+
+	dao0OiUtHWn3ooIJ8EEGhqSVTX2Z6vgSTOc1NujUR/2T0oPiTzugqS+uWHMIak0PR88HezKPP9oTI
+	sICS+08A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u23mG-000000039tS-40FK;
-	Tue, 08 Apr 2025 07:53:48 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
-	by bombadil.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1u23g3-000000038pR-1aZd
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u2Ofk-00000006FE7-35cV;
+	Wed, 09 Apr 2025 06:12:28 +0000
+Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1u2Ofi-00000006FDm-0MgU
 	for linux-um@lists.infradead.org;
-	Tue, 08 Apr 2025 07:47:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=9llnL/axqmEUzjeX7hNnkgDjMD+ldU7RxHS4bdZ4ImY=;
-	t=1744098441; x=1745308041; b=tvJ42Ozvll1FexHr7njf5qiLbNhP2117l0nO3Jbo1weGLwc
-	ESWBAuk5nGY6x3vBjQWkVuDdxQIWuG8KlSSlgilc9QozsSWhpG2QyLsWyoEjPa4oZc0Ptgu6an3Zl
-	n6Z/pZRqwoArNf5DnwjOdHrr5W2TRFCcrjQojLp30XjJ51oq+UvdeiEs6evjPmsTsH5IhZpQJnRs0
-	+ifQZcGY+8Z0LC7+CnzdcSkRd8HzmyvyRTbR7pZ4cBgqRcUddZVYowhw9tL5NWrDJ1jhDnJMUb0O1
-	6iR9HNb4A+u69kNoHiolggohF4dn+X7GrR4bffMDuGrF7FJes5tYSpheRO3uy/GA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.1)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1u23fz-00000003Ylg-064w;
-	Tue, 08 Apr 2025 09:47:19 +0200
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 2/2] um: use proper care when taking mmap lock during segfault
-Date: Tue,  8 Apr 2025 09:45:24 +0200
-Message-ID: <20250408074524.300153-2-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250408074524.300153-1-benjamin@sipsolutions.net>
-References: <20250408074524.300153-1-benjamin@sipsolutions.net>
+	Wed, 09 Apr 2025 06:12:27 +0000
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-af59c920d32so4514178a12.0
+        for <linux-um@lists.infradead.org>; Tue, 08 Apr 2025 23:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744179145; x=1744783945; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=;
+        b=lWcUiVooL7RJmVIxdHYmBYHZ3eIilkMhvqncaR4MV4Va7USF+UtWyGE6mgwnToj3FQ
+         VABPFGFZ2sfmpinkdlJ812REnCUaiEApoH1+cBPd71IVZ4M8CUmBht965cuDGpriQDNq
+         4qbbF50FrzLlu2GVBL7ZE96aBo1AxQU1j+Ox+AbENgyAeH0ng4loeXvxWBcsNpQWgtEb
+         9rARfVxVtdVsRXtN/hKit/+xjwpDSbsuIn3YmVNuAnI29PKB0BFzbfcD5H28cf5MvMRK
+         ST1j4tcAxUbBIK8pQkm4n+z2iGOJv7bBxWa4nOt2BBF/GCiKpmOPv5wqjesxUwQIWRc9
+         +SIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744179145; x=1744783945;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=;
+        b=EKL09/lppOO52EXqlyfTnw48YP9hmdHw9E1kSUg4WPUP68npX1EVcUUOeAhnejOu4V
+         nMYnLdQfqmti3v7S9yYYeLcydAlelAa8ZHLMRs9t6hPruPT1iicNcpL3pbqlniq1W6Ih
+         SQJU8LOHMgL2m/h3sAmZM0CsIiXBS+/f5PRsZZftTqQDZksX2nPzD030aEGsIYBPLO0b
+         57K9Rg0LFB+eeMtskPNTg9JDq6iXPSVY37pQPj++Z738MxttQLUaTyThPp0rTIemw2CS
+         XSaGr6V6GAjOu2EfnCRJ6dizOSc47PP0I7BYCdjfUgeuW9Kh0uM2TZm6ObGRzq7v5uL+
+         euww==
+X-Forwarded-Encrypted: i=1; AJvYcCUkz0xcVIdC8gdURPAAYyKCSFkWVh85bA/ODeFk2TQ8O0sGRU/qpe3OLquD0a5fXO/uvAQCxX+M/A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwB9B5DgkGVqCDgDGQgOE6ijYuu8RPUDrmkjsfdLIlY0tza8AUR
+	hC1R7+Qn9XAGM0La6QuLV0sgAJnbbU37LtEX8PXMAizXWyE05SmW
+X-Gm-Gg: ASbGnctx+S/dCBJCy1fgUdSHWsXYZiA1+wOqum9tyDkZTwRlDDfUzY83y3Sg4fRLzkX
+	Wxwh9ilEJ+wjVPYyQFKxYQEExj6HWCzgHjMWUl9JC+mnhk4ym/pTSNULAp1hr30RTFVIrhPKtBE
+	ZUcRZldXhbtk8OULDhS3EQdzq6cL25Jfjm17+0PhqVjNjiZz6LWXBjHlMFfQ4g93kkxpXYQ7/2Y
+	5lLVo+cdTIH6/Zr7zpjRUD8xFh97c8E3ns7OY7iRwHPdoSplZZMhaG4/23Hj/e3P6X0pgeAvJSU
+	Y6UdF3LYxVEEKbBCkh7avV6tiUz6O57CXaDgEErqGPJHHV0B0pfkhivVqY72q6c9fnPzXRVUXgf
+	IdsTcfouN4OrlvSXucQ==
+X-Google-Smtp-Source: AGHT+IFGiqW2qskrqgDwvIQltpBvtl1olae4VZELvymcrigFhnNPIoe4mErrMW378w8tWc44LV65pQ==
+X-Received: by 2002:a17:90b:2811:b0:2ee:f076:20f1 with SMTP id 98e67ed59e1d1-306dba7dfe3mr3160703a91.0.1744179144759;
+        Tue, 08 Apr 2025 23:12:24 -0700 (PDT)
+Received: from mew.. (p4204131-ipxg22701hodogaya.kanagawa.ocn.ne.jp. [153.160.176.131])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306df06a767sm594492a91.6.2025.04.08.23.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 23:12:24 -0700 (PDT)
+From: FUJITA Tomonori <fujita.tomonori@gmail.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	rust-for-linux@vger.kernel.org
+Subject: [PATCH v1] um: fix incompatible argument type in iounmap()
+Date: Wed,  9 Apr 2025 15:11:29 +0900
+Message-ID: <20250409061129.136788-1-fujita.tomonori@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250408_004723_440723_1C9E55B0 
-X-CRM114-Status: GOOD (  23.46  )
+X-CRM114-CacheID: sfid-20250408_231226_122484_A8839124 
+X-CRM114-Status: GOOD (  11.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,171 +98,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+Align iounmap() signature with other architectures.
 
-Segfaults can occur at times where the mmap lock cannot be taken. If
-that happens the segfault handler may not be able to take the mmap lock.
+This fixes the following build error on CONFIG_RUST enabled:
 
-Fix the code to use the same approach as most other architectures.
-Unfortunately, this requires copying code from mm/memory.c and modifying
-it slightly as UML does not have exception tables.
+In file included from /home/fujita/git/linux-rust/rust/helpers/helpers.c:19:
+/home/fujita/git/linux-rust/rust/helpers/io.c:12:10: error: passing 'volatile void *' to parameter of type 'void *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+   12 |         iounmap(addr);
+      |                 ^~~~
+/home/fujita/git/linux-rust/arch/um/include/asm/io.h:19:42: note: passing argument to parameter 'addr' here
+   19 | static inline void iounmap(void __iomem *addr)
+      |                                          ^
+1 error generated.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Fixes: ce30d94e6855 ("rust: add `io::{Io, IoRaw}` base types")
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
 ---
- arch/um/kernel/trap.c | 129 ++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 117 insertions(+), 12 deletions(-)
+ arch/um/include/asm/io.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index ce073150dc20..cbe924a0fa87 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -18,6 +18,122 @@
- #include <skas.h>
- #include <arch.h>
+diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
+index 9ea42cc746d9..ce0e8cf4834d 100644
+--- a/arch/um/include/asm/io.h
++++ b/arch/um/include/asm/io.h
+@@ -16,7 +16,7 @@ static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
  
-+/*
-+ * NOTE: UML does not have exception tables. As such, this is almost a copy
-+ * of the code in mm/memory.c, only adjusting the logic to simply check whether
-+ * we are coming from the kernel instead of doing an additional lookup in the
-+ * exception table.
-+ * We can do this simplification because we never get here if the exception was
-+ * fixable.
-+ */
-+static inline bool get_mmap_lock_carefully(struct mm_struct *mm, bool is_user)
-+{
-+	if (likely(mmap_read_trylock(mm)))
-+		return true;
-+
-+	if (!is_user)
-+		return false;
-+
-+	return !mmap_read_lock_killable(mm);
-+}
-+
-+static inline bool mmap_upgrade_trylock(struct mm_struct *mm)
-+{
-+	/*
-+	 * We don't have this operation yet.
-+	 *
-+	 * It should be easy enough to do: it's basically a
-+	 *    atomic_long_try_cmpxchg_acquire()
-+	 * from RWSEM_READER_BIAS -> RWSEM_WRITER_LOCKED, but
-+	 * it also needs the proper lockdep magic etc.
-+	 */
-+	return false;
-+}
-+
-+static inline bool upgrade_mmap_lock_carefully(struct mm_struct *mm, bool is_user)
-+{
-+	mmap_read_unlock(mm);
-+	if (!is_user)
-+		return false;
-+
-+	return !mmap_write_lock_killable(mm);
-+}
-+
-+/*
-+ * Helper for page fault handling.
-+ *
-+ * This is kind of equivalend to "mmap_read_lock()" followed
-+ * by "find_extend_vma()", except it's a lot more careful about
-+ * the locking (and will drop the lock on failure).
-+ *
-+ * For example, if we have a kernel bug that causes a page
-+ * fault, we don't want to just use mmap_read_lock() to get
-+ * the mm lock, because that would deadlock if the bug were
-+ * to happen while we're holding the mm lock for writing.
-+ *
-+ * So this checks the exception tables on kernel faults in
-+ * order to only do this all for instructions that are actually
-+ * expected to fault.
-+ *
-+ * We can also actually take the mm lock for writing if we
-+ * need to extend the vma, which helps the VM layer a lot.
-+ */
-+static struct vm_area_struct *
-+um_lock_mm_and_find_vma(struct mm_struct *mm,
-+			unsigned long addr, bool is_user)
-+{
-+	struct vm_area_struct *vma;
-+
-+	if (!get_mmap_lock_carefully(mm, is_user))
-+		return NULL;
-+
-+	vma = find_vma(mm, addr);
-+	if (likely(vma && (vma->vm_start <= addr)))
-+		return vma;
-+
-+	/*
-+	 * Well, dang. We might still be successful, but only
-+	 * if we can extend a vma to do so.
-+	 */
-+	if (!vma || !(vma->vm_flags & VM_GROWSDOWN)) {
-+		mmap_read_unlock(mm);
-+		return NULL;
-+	}
-+
-+	/*
-+	 * We can try to upgrade the mmap lock atomically,
-+	 * in which case we can continue to use the vma
-+	 * we already looked up.
-+	 *
-+	 * Otherwise we'll have to drop the mmap lock and
-+	 * re-take it, and also look up the vma again,
-+	 * re-checking it.
-+	 */
-+	if (!mmap_upgrade_trylock(mm)) {
-+		if (!upgrade_mmap_lock_carefully(mm, is_user))
-+			return NULL;
-+
-+		vma = find_vma(mm, addr);
-+		if (!vma)
-+			goto fail;
-+		if (vma->vm_start <= addr)
-+			goto success;
-+		if (!(vma->vm_flags & VM_GROWSDOWN))
-+			goto fail;
-+	}
-+
-+	if (expand_stack_locked(vma, addr))
-+		goto fail;
-+
-+success:
-+	mmap_write_downgrade(mm);
-+	return vma;
-+
-+fail:
-+	mmap_write_unlock(mm);
-+	return NULL;
-+}
-+
- /*
-  * Note this is constrained to return 0, -EFAULT, -EACCES, -ENOMEM by
-  * segv().
-@@ -44,21 +160,10 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 	if (is_user)
- 		flags |= FAULT_FLAG_USER;
- retry:
--	mmap_read_lock(mm);
--	vma = find_vma(mm, address);
--	if (!vma)
--		goto out;
--	if (vma->vm_start <= address)
--		goto good_area;
--	if (!(vma->vm_flags & VM_GROWSDOWN))
--		goto out;
--	if (is_user && !ARCH_IS_STACKGROW(address))
--		goto out;
--	vma = expand_stack(mm, address);
-+	vma = um_lock_mm_and_find_vma(mm, address, is_user);
- 	if (!vma)
- 		goto out_nosemaphore;
- 
--good_area:
- 	*code_out = SEGV_ACCERR;
- 	if (is_write) {
- 		if (!(vma->vm_flags & VM_WRITE))
+ #ifndef iounmap
+ #define iounmap iounmap
+-static inline void iounmap(void __iomem *addr)
++static inline void iounmap(volatile void __iomem *addr)
+ {
+ }
+ #endif /* iounmap */
+
+base-commit: c59026c0570a2a97ce2e7d5ae5e9c48fc841542b
 -- 
-2.49.0
+2.43.0
 
 
