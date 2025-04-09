@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC45C36002
-	for <linux-um@archiver.kernel.org>; Wed,  9 Apr 2025 06:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D726C36002
+	for <linux-um@archiver.kernel.org>; Wed,  9 Apr 2025 15:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=; b=HJUIU3ljlMhxEeYQk9KzopIoCO
-	ILsXhgyYrwOmRpOQs4xsHlkroU6gZpTWBn/Y/LKZZxD741V1Lb0G2Av9WIOCDlDHyiuptt6u2osr4
-	vdPQGt+0IPjbdT4BPvtfx2wuuzRym+TnI/Dcqcn/6lO+tW8jmPrw7AseJFnThfzqjLknAYvkgTu6W
-	bEwWUapdQ+wR9kLYSm3Hg/PzRryD7+D9P/DD9Ke/yQ+0CEpSVAFDw4PonTqa36UNeGwCmtGBL2q4+
-	dao0OiUtHWn3ooIJ8EEGhqSVTX2Z6vgSTOc1NujUR/2T0oPiTzugqS+uWHMIak0PR88HezKPP9oTI
-	sICS+08A==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=t+sfbVV4SiI1C5sy+DzovZKb19HUWpMy4SsLijVQ49c=; b=4wuLkaPwDzav4nB/+9oPKLQTNX
+	Cr+iCrw2Z1qdzw9A+KuWlkIR2g+BHe1DK1gUAgzBgdq273nFruO5XkeRPjsizFFMshluxoeGn9Ndz
+	xAyAITLFms1Ve8gIVZuigqEmNrD5tpEpr627I12DlNA6fQclxRuE0ZD2+rNKvnUenWb+7uNv/MUW1
+	l0ZshV9IGhLFeRYPHKSXBoYnQmtu6o7/JD1pwZdclAWUlC1GhClylaIjMjOnmZCWGS0RMtANqHkW0
+	CE63iuTBjcaWr0gHwL4Kyz3MVmsJo/gQEPsGorCgA1F7+0HB2iG0tA1rL2JZVAOaA4whigMPpFQJI
+	Y0tCvPdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Ofk-00000006FE7-35cV;
-	Wed, 09 Apr 2025 06:12:28 +0000
-Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
+	id 1u2Wy0-00000007awR-0iqS;
+	Wed, 09 Apr 2025 15:03:52 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u2Ofi-00000006FDm-0MgU
+	id 1u2Wik-00000007X88-49dW
 	for linux-um@lists.infradead.org;
-	Wed, 09 Apr 2025 06:12:27 +0000
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-af59c920d32so4514178a12.0
-        for <linux-um@lists.infradead.org>; Tue, 08 Apr 2025 23:12:25 -0700 (PDT)
+	Wed, 09 Apr 2025 14:48:08 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-223f7b10cbbso5918385ad.3
+        for <linux-um@lists.infradead.org>; Wed, 09 Apr 2025 07:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744179145; x=1744783945; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=;
-        b=lWcUiVooL7RJmVIxdHYmBYHZ3eIilkMhvqncaR4MV4Va7USF+UtWyGE6mgwnToj3FQ
-         VABPFGFZ2sfmpinkdlJ812REnCUaiEApoH1+cBPd71IVZ4M8CUmBht965cuDGpriQDNq
-         4qbbF50FrzLlu2GVBL7ZE96aBo1AxQU1j+Ox+AbENgyAeH0ng4loeXvxWBcsNpQWgtEb
-         9rARfVxVtdVsRXtN/hKit/+xjwpDSbsuIn3YmVNuAnI29PKB0BFzbfcD5H28cf5MvMRK
-         ST1j4tcAxUbBIK8pQkm4n+z2iGOJv7bBxWa4nOt2BBF/GCiKpmOPv5wqjesxUwQIWRc9
-         +SIA==
+        d=gmail.com; s=20230601; t=1744210086; x=1744814886; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t+sfbVV4SiI1C5sy+DzovZKb19HUWpMy4SsLijVQ49c=;
+        b=fr1jD9AcAKnDjWfiVt3epFDnG5PDLokoXArFqjY1+uRSNamfU/mgH+f0pmsqPmyXzM
+         +8SZ80NMI7TXceAfReWbcV4RH3HkC/M2LA1Iq+I3kE55WA1RR9NVYKtn/nSQTpd1J4Kz
+         FX/gog7abrflk5AGQmmg+RyEVxTKk1VYY40eqgd7C+OWZ/tHwGjDsAyp6WiuTvm5O1Bf
+         nAXKVfw/EolWRrj+I5u5JJTnTiuvoKphDCBPLIfR3KlYTSsnla+M2Z1QK7cQE/pWJN5E
+         tH2xmXW9Yb4OIKrWC/BJq/x3AZ2JWt7eX4Ge0bETu576+utfMVp+y3fjv8/JZZfNq3hf
+         sLRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744179145; x=1744783945;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M5d1vrdeOAvtBGH1S7JlUf/9cb5pC5XVB1481DKZGqQ=;
-        b=EKL09/lppOO52EXqlyfTnw48YP9hmdHw9E1kSUg4WPUP68npX1EVcUUOeAhnejOu4V
-         nMYnLdQfqmti3v7S9yYYeLcydAlelAa8ZHLMRs9t6hPruPT1iicNcpL3pbqlniq1W6Ih
-         SQJU8LOHMgL2m/h3sAmZM0CsIiXBS+/f5PRsZZftTqQDZksX2nPzD030aEGsIYBPLO0b
-         57K9Rg0LFB+eeMtskPNTg9JDq6iXPSVY37pQPj++Z738MxttQLUaTyThPp0rTIemw2CS
-         XSaGr6V6GAjOu2EfnCRJ6dizOSc47PP0I7BYCdjfUgeuW9Kh0uM2TZm6ObGRzq7v5uL+
-         euww==
-X-Forwarded-Encrypted: i=1; AJvYcCUkz0xcVIdC8gdURPAAYyKCSFkWVh85bA/ODeFk2TQ8O0sGRU/qpe3OLquD0a5fXO/uvAQCxX+M/A==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwB9B5DgkGVqCDgDGQgOE6ijYuu8RPUDrmkjsfdLIlY0tza8AUR
-	hC1R7+Qn9XAGM0La6QuLV0sgAJnbbU37LtEX8PXMAizXWyE05SmW
-X-Gm-Gg: ASbGnctx+S/dCBJCy1fgUdSHWsXYZiA1+wOqum9tyDkZTwRlDDfUzY83y3Sg4fRLzkX
-	Wxwh9ilEJ+wjVPYyQFKxYQEExj6HWCzgHjMWUl9JC+mnhk4ym/pTSNULAp1hr30RTFVIrhPKtBE
-	ZUcRZldXhbtk8OULDhS3EQdzq6cL25Jfjm17+0PhqVjNjiZz6LWXBjHlMFfQ4g93kkxpXYQ7/2Y
-	5lLVo+cdTIH6/Zr7zpjRUD8xFh97c8E3ns7OY7iRwHPdoSplZZMhaG4/23Hj/e3P6X0pgeAvJSU
-	Y6UdF3LYxVEEKbBCkh7avV6tiUz6O57CXaDgEErqGPJHHV0B0pfkhivVqY72q6c9fnPzXRVUXgf
-	IdsTcfouN4OrlvSXucQ==
-X-Google-Smtp-Source: AGHT+IFGiqW2qskrqgDwvIQltpBvtl1olae4VZELvymcrigFhnNPIoe4mErrMW378w8tWc44LV65pQ==
-X-Received: by 2002:a17:90b:2811:b0:2ee:f076:20f1 with SMTP id 98e67ed59e1d1-306dba7dfe3mr3160703a91.0.1744179144759;
-        Tue, 08 Apr 2025 23:12:24 -0700 (PDT)
-Received: from mew.. (p4204131-ipxg22701hodogaya.kanagawa.ocn.ne.jp. [153.160.176.131])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306df06a767sm594492a91.6.2025.04.08.23.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Apr 2025 23:12:24 -0700 (PDT)
-From: FUJITA Tomonori <fujita.tomonori@gmail.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org
-Subject: [PATCH v1] um: fix incompatible argument type in iounmap()
-Date: Wed,  9 Apr 2025 15:11:29 +0900
-Message-ID: <20250409061129.136788-1-fujita.tomonori@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1744210086; x=1744814886;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t+sfbVV4SiI1C5sy+DzovZKb19HUWpMy4SsLijVQ49c=;
+        b=kw0m9VnvvF0EO5sgP6hZXibF8YCYSilh0cAr7fJWRjdU4l4UXSipCGxGP+sudOnk8M
+         Qcq5Hth3tr6pmSOJIcJCkiKZKeNwQi/8B2b8lYrbxhMU76r7HdnzBReeaCVVHFXKBRt3
+         PU0wKpl4ZTvRggBOv9Pnx0PjdBPrcYUepmMKHmIl7lm1GYZEYwu50HtiPKAJi4LTfHxr
+         8z6/dspbT4EdgsRooPp/Ve367mkKDcreS08SIT+3m52I3COHuWizzpmXS5l/1yrXLBWo
+         mPRT96tnpXo/dxjFD59p3O/zgqXg/Uq0nHYPxNEJIxYW4orvrXxwuekBYgqdQrw2lqtC
+         gx5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWJpRWUYoPSR2vrn1cAt8jboCIWU/MpYa59iWJ8vX3cUcBmoWLNHJaqdqaOPGvYnUUDBL0MSsey6Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0YytmXfUXx6Ng3dMcOzwA5G8z5NRl0mNa+9jDHDGE8wUw8SqKlqi
+	snH55ceAOZf/P3+JWUZWMipqcSE9TGCF15hz6hgW02PnUn1nimJqna9BYts6m+H9jKiTx9LsS97
+	t40hgyko5qGPcNI3z4i7+ZlpNwlI=
+X-Gm-Gg: ASbGncs+lib4K2FrdtlCrgX6nFlfQ1k3/1v4wEz96W+u2FJWNw0Cgrmj4eoc+jHRXm8
+	BFP2r0JNGdP54IZabqgq/tVkdKPTBtEcD+EaWXZIAOOg0iCoDXA3SoT4XfLCfWce1KGRvyejBq4
+	d6lKKu1p0Lqw3+H08FgNzo7ivI2BABvoZn
+X-Google-Smtp-Source: AGHT+IFu3m+E2XPPJm9CpPYU0T8chUkLDG5jm5xrgDt4moQJnQIHZ/KUoOKRsStmjsw1fnexQET8vOP2opD9TB+qELU=
+X-Received: by 2002:a17:902:db0d:b0:224:10a2:cad1 with SMTP id
+ d9443c01a7336-22ac3f13978mr17062085ad.10.1744210085546; Wed, 09 Apr 2025
+ 07:48:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250409061129.136788-1-fujita.tomonori@gmail.com>
+In-Reply-To: <20250409061129.136788-1-fujita.tomonori@gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 9 Apr 2025 16:47:52 +0200
+X-Gm-Features: ATxdqUFqVu5MaC3L7mL4r0bbWRkrPzcLXrBDchUoh9IuHJeyx16OliIVVo32LbY
+Message-ID: <CANiq72mbci8kxEx5jrq=HVc6WKuJqq8NCLzNsjH1wFcJNoHm+w@mail.gmail.com>
+Subject: Re: [PATCH v1] um: fix incompatible argument type in iounmap()
+To: FUJITA Tomonori <fujita.tomonori@gmail.com>
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>, 
+	Stephen Bates <sbates@raithlin.com>, Danilo Krummrich <dakr@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250408_231226_122484_A8839124 
-X-CRM114-Status: GOOD (  11.95  )
+X-CRM114-CacheID: sfid-20250409_074807_025710_46A6D01F 
+X-CRM114-Status: UNSURE (   5.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,41 +98,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Align iounmap() signature with other architectures.
+On Wed, Apr 9, 2025 at 8:16=E2=80=AFAM FUJITA Tomonori
+<fujita.tomonori@gmail.com> wrote:
+>
+> Align iounmap() signature with other architectures.
 
-This fixes the following build error on CONFIG_RUST enabled:
+Most indeed have `volatile`, but nios2 and m68k don't -- Cc'ing them
+just in case.
 
-In file included from /home/fujita/git/linux-rust/rust/helpers/helpers.c:19:
-/home/fujita/git/linux-rust/rust/helpers/io.c:12:10: error: passing 'volatile void *' to parameter of type 'void *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
-   12 |         iounmap(addr);
-      |                 ^~~~
-/home/fujita/git/linux-rust/arch/um/include/asm/io.h:19:42: note: passing argument to parameter 'addr' here
-   19 | static inline void iounmap(void __iomem *addr)
-      |                                          ^
-1 error generated.
+Cc'ing also the original authors of both sides too.
 
-Fixes: ce30d94e6855 ("rust: add `io::{Io, IoRaw}` base types")
-Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
----
- arch/um/include/asm/io.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
-index 9ea42cc746d9..ce0e8cf4834d 100644
---- a/arch/um/include/asm/io.h
-+++ b/arch/um/include/asm/io.h
-@@ -16,7 +16,7 @@ static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
- 
- #ifndef iounmap
- #define iounmap iounmap
--static inline void iounmap(void __iomem *addr)
-+static inline void iounmap(volatile void __iomem *addr)
- {
- }
- #endif /* iounmap */
-
-base-commit: c59026c0570a2a97ce2e7d5ae5e9c48fc841542b
--- 
-2.43.0
-
+Cheers,
+Miguel
 
