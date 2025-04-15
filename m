@@ -4,90 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB97EC369BD
-	for <linux-um@archiver.kernel.org>; Tue, 15 Apr 2025 18:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B46BC369AB
+	for <linux-um@archiver.kernel.org>; Tue, 15 Apr 2025 19:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3dii88vxy+0kWYHHaG5dKqAQf7HwnhiHLf0E63iO/PI=; b=RBtJYSKxzjL254JMEypyeXTK59
-	CaBABCh0OJuELIon5VpVQ8I5Ad+uevFr0FQuJ306t6MKHZ0lhtDO9J0FvbWgAtvOuEQFjXuwVFNhg
-	4f0VvQ+KnVshQDYpDPbx3HDkb721dqYnjxDG/A4Mc/UPFW6yXkdY0ef7DLfP3s+3BWqa7calKPUTR
-	yg91HrofKi16vsxV0W2YurV3PnrNeKgjr2SR5XXjoYfOQYTS3POcTYIgL44RLquS9olGIYC9FLtGa
-	bf7isGJpepYXdX/EyUewXtfYP3SIaWwIrmH7E764Z2inuo5ujJbuyKlrtT8IchoimpFTaxz5pZMV8
-	wdbyr9SQ==;
+	bh=Ntkk2EuJ1XJRKx1RttSweaGGZM6MW37mEH+h/pvePak=; b=fapmgll3O3dX3ZYWzsoVVBrBzW
+	R6HrSgkPJUI4zLiRP2wHooGSJc1LZTrjMlFUc5Ho1sscffvWMfBwEiChxECEECSEyipPHdS0n+N9G
+	7rIB6GDrPJvd+aldg1GnfEezKAfLQ1CU+rqzcL0K42mRwJtOxuwUl5V+OfcifyySXJQbYPAxn6yjG
+	iGw7ARaN8skQZLtfKpb8I1ZcCv3ZW5Kk4UKpRPWtfQRAzTLTPLoNsY8ZhdE5pmhBbwy5ZzZHa+RIX
+	A3xSvrlmhLmwowPxdHVt6ga5YYkOQD5ooLPWQ+2tyrbr0z5cMNxYhxL0rtate0RgYcID2tUM3VMhi
+	7FfVuf0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4khe-00000006frm-23Y6;
-	Tue, 15 Apr 2025 18:08:10 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1u4lmg-00000006rHC-2QPe;
+	Tue, 15 Apr 2025 19:17:26 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4kVu-00000006dwr-1nCN
+	id 1u4lkL-00000006qjH-1Bac
 	for linux-um@lists.infradead.org;
-	Tue, 15 Apr 2025 17:56:03 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-43cf0d787eeso67781485e9.3
-        for <linux-um@lists.infradead.org>; Tue, 15 Apr 2025 10:56:02 -0700 (PDT)
+	Tue, 15 Apr 2025 19:15:02 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2ff5544af03so1766254a91.1
+        for <linux-um@lists.infradead.org>; Tue, 15 Apr 2025 12:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744739761; x=1745344561; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1744744500; x=1745349300; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3dii88vxy+0kWYHHaG5dKqAQf7HwnhiHLf0E63iO/PI=;
-        b=NB9rOw3Z2brdiKCEeWGsrnsozWqBjylc4C4MEwkCO+xC/XYZ4f9DRm/qkd4HFxT6Y5
-         +kfy78D65RvCSG4921lOtr/XmmRoaS5YqxuDKf98dtTRGuicQ/8biVkGp9TTr9fIcBdi
-         A+QwjVeLeYykJRsd3IEtvffF14T6tQlq7FMk5bIDwP1RlyddyDTh3xn2Rx2H2GpvceGO
-         Fk56XrA/Fjpw6XBXsZIK8WH/0NiuCK6RwlIoGWFiqc8nf7TC8iMSh3Is8BuTRgATVDT6
-         7yShMcqREm6le/GZyxyJ7qXM1az06mvNrNKh2AHmhW88xZlyybwdkTKnos7j8ysEULgi
-         X+lg==
+        bh=Ntkk2EuJ1XJRKx1RttSweaGGZM6MW37mEH+h/pvePak=;
+        b=cHoYFIOt4DajzHDcIBP4DQmcEC+bPvXV/W2pmGrgg0k3iEd2gtLb2C/Nm0PIZ2iNY0
+         AuXfTByCpiEbgMKhSeQ4Xyg9DZekhOqTvo+Gz4k41L/vPdp+x+jxutW1+dpyO3n43lcu
+         SK9c11BLdAy6/CGyNJJwkFv0iwPfScoF70CLCM1qYJpga2YEcLzeZHT8BDaFeMGCBUyy
+         9+/PHl8SC0d+XEjdj0cdsNMm/8Eqq8KSjIH1svLHq/nQcL6M6t10SftI5y1ql/rTQAMf
+         FlOfrBDJZrk0Cx/39843PJIkjslie4l/yaxPpYTgyns4UVHM8ZRypRKyKH9tDkQ7V5Nf
+         uLtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744739761; x=1745344561;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1744744500; x=1745349300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3dii88vxy+0kWYHHaG5dKqAQf7HwnhiHLf0E63iO/PI=;
-        b=VUTdMvwJp5m60amtYIx1owmvEbu8MHC+Q1hs3/x5ualEYp3Fma84STSW2yKyshbA6B
-         mPHToebZQ+oA+3mH9eYMZmy4zYOcpu+BbAVZ4WGNnQsmKN7L35Sav0hv1Q7keTvJsbVw
-         0B/jxIh2jD6uGOvGjtVMbgA5i9EG2FbBKefGYWcbiX2xf+0oLH1RStmNlFC9NkQdKELh
-         aOj4CksAbeApjwGxEmqnEDzXqk7ftARwJDIsa0ehYsF83rnQ2mHgnwM4DV2om7+9Bsj1
-         IrUT1p6slUtq05a9+DTO4UyrpZkBRLY0Lh480FhOivmJaplU3av99ctpiXnBokctDuEV
-         7nLw==
-X-Gm-Message-State: AOJu0Ywc24mGg+48Mg/E0j//c1rvRvb5YrlTptPtbdd9JavcEivLaxhu
-	24jcK1KzQiRPQNzdneIILpuF9k7n2fykmmEBjQDBYYOwyso0YSg0
-X-Gm-Gg: ASbGncuHUF79ZWBNrVx26ZFOjD+Rxo7wPqSvRK4DugdIt6BZR95b5tFB8S+dMFwDAaD
-	dIjEBzgf0CFvbdL1lFbLgIU0DcnR081eBHb60oRXB3LgaUqjOxagT/zWiJzVvhe32knlaNk5xlU
-	1dMZZ/dbrR4Lv1u5Ef1okxncmA+Bp3Q+Nmj0Qu6h+dx4LnD0C0h6TCk/64Xb+w7ff0JrKtaXuiJ
-	DAux22SjM4xKt2H4fkTWiridfLikw/LaWeNFThIM+ktg1ppuxXMILVp/V+k1UAaBxotGsBOZaLk
-	9TBOUEqdyhi3ZtwelBKanrilDtRA8bt7tffCPiQEcYpO3HLym1xDiyXO0ibDrNv89S5eoAuxWgL
-	dz0ULLsD0DgtfcQ==
-X-Google-Smtp-Source: AGHT+IGptWUhUPghhzbUlnMiXUjXKLkOLTWNhwNQRBrnxW8Pmu0xPEUxkmF80iqK/Ldomew+G/oa5A==
-X-Received: by 2002:a05:600c:a42:b0:43c:fdbe:4398 with SMTP id 5b1f17b1804b1-4405a001461mr524545e9.6.1744739760718;
-        Tue, 15 Apr 2025 10:56:00 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f2066d069sm221245635e9.17.2025.04.15.10.55.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Apr 2025 10:56:00 -0700 (PDT)
-Date: Tue, 15 Apr 2025 18:55:58 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: linux-um@lists.infradead.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton
- Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] um/asm: Replace "REP; NOP" with PAUSE mnemonic
-Message-ID: <20250415185558.112621df@pumpkin>
-In-Reply-To: <20250414145650.10776-1-ubizjak@gmail.com>
-References: <20250414145650.10776-1-ubizjak@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        bh=Ntkk2EuJ1XJRKx1RttSweaGGZM6MW37mEH+h/pvePak=;
+        b=lu/u8F0wfP6Z5CJUmuW4N0LG4nRSQBJiN8YxCody/AUfhPRxFKS5marPbq/HE7kBnC
+         DuwDWLUkOhq/Ulmji10hl0LXwe0OyFLRiplXCAhiX20OuiSKo054Ti47h4iq3zaxw+ia
+         SJC20YfB8aUMQRosZl6AASr4SN9zhJfl2joG4h6ZzEqTJ69KqxKqGgwX/6C4SXBoLX6T
+         CpobYirrqjWG4ECrf0c+vYjix0vANaBmzet4lXyZKVHSsubEAUkjMwtIuVg2f8WY2zIm
+         WCqWTZHgABlDaoKlCtQMkA38EZC3xWHtaz4CWMhtE/qKd+OLeUdhZ84zB/5qe4i/3KCn
+         1pjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKx8sIxxyhradw7D4AxQf3P1MO0eTt7p5ynU+hqFdTj++kcOxAdMO3VrvWk9xPpjK/rkKop8Z30Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyWODa7omfLq05yiyu0n3ZI3XlCExL37x4rD8XAi/UvPEYQTy9B
+	KGsOrmZN4/dlur5xTSAdvuqGBvVFW9qGlU4KK3IqBZx/dCEKDuKD4jVfWeeB7x7teVpMY/+9KR3
+	aAvEjAzCJqmUXHcYAlbb5XE8NYf4=
+X-Gm-Gg: ASbGnctDvY7+AJ0m2J8/hruQ/NgWWosd/ze3azQ5fgpFWDhWh8sM5pNgdfCJkmtmJA3
+	gNTvtPODRlEqgsB75Wejpf9F4KGYPFvRifKxKB85vZdSM84ZWRrcXYx/pMUH4sUQKSDZvnyXdzV
+	H45gRLaAlHjKo/wdMEgnmRiw==
+X-Google-Smtp-Source: AGHT+IGc5DVYt2SE6BYaqtTqo6hk2/0tRd0JrYscIn68HrcFugnLC6Gj9XZ3iEbYFgiGu0SCjkXVZRFhjUt7k/6oerU=
+X-Received: by 2002:a17:90b:17c2:b0:306:e75e:dbc7 with SMTP id
+ 98e67ed59e1d1-3085ed78171mr234636a91.0.1744744500072; Tue, 15 Apr 2025
+ 12:15:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250412005341.157150-1-fujita.tomonori@gmail.com>
+In-Reply-To: <20250412005341.157150-1-fujita.tomonori@gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 15 Apr 2025 21:14:47 +0200
+X-Gm-Features: ATxdqUHlXfvqgCSoo4-vySZAgrgL2xgqbfG1d1cB0y3EXvoKuokh17lk5we2yzg
+Message-ID: <CANiq72kKhkVRAmg26DNG=Q8-s_+zkz8jVe5MZa__9RPjRs7f6A@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: helpers: Remove volatile qualifier from io helpers
+To: FUJITA Tomonori <fujita.tomonori@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, geert@linux-m68k.org, logang@deltatee.com, 
+	sbates@raithlin.com, dakr@kernel.org, dinguyen@kernel.org, arnd@arndb.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_105602_471782_B109F742 
-X-CRM114-Status: GOOD (  18.45  )
+X-CRM114-CacheID: sfid-20250415_121501_320005_85FB10EF 
+X-CRM114-Status: UNSURE (   7.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,46 +97,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 14 Apr 2025 16:55:57 +0200
-Uros Bizjak <ubizjak@gmail.com> wrote:
+On Sat, Apr 12, 2025 at 2:54=E2=80=AFAM FUJITA Tomonori
+<fujita.tomonori@gmail.com> wrote:
+>
+> Remove the `volatile` qualifier used with __iomem in helper functions
+> in io.c. These helper functions are just wrappers around the
+> corresponding accessors so they are unnecessary.
+>
+> This fixes the following UML build error with CONFIG_RUST enabled:
 
-> Current minimum required version of binutils is 2.25,
-> which supports PAUSE instruction mnemonic.
-> 
-> Replace "REP; NOP" with this proper mnemonic.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> ---
->  arch/x86/um/asm/processor.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.h
-> index 478710384b34..233a7a0d29c9 100644
-> --- a/arch/x86/um/asm/processor.h
-> +++ b/arch/x86/um/asm/processor.h
-> @@ -24,7 +24,7 @@
->  /* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
->  static __always_inline void rep_nop(void)
->  {
-> -	__asm__ __volatile__("rep;nop": : :"memory");
-> +	__asm__ __volatile__("pause": : :"memory");
->  }
->  
+Applied to `rust-fixes` -- thanks everyone!
 
-That only makes sense if you also change the function name.
+    [ Reworded for relative paths. - Miguel ]
 
-	David
-
->  static __always_inline void cpu_relax(void)
-
+Cheers,
+Miguel
 
