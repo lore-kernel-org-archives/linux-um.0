@@ -4,83 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C999AC369B1
-	for <linux-um@archiver.kernel.org>; Wed, 16 Apr 2025 06:59:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C33D1C369C9
+	for <linux-um@archiver.kernel.org>; Fri, 18 Apr 2025 08:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3eFYkiEenzg/4pej5bcdOHyZ5zn5C2EU9yY/WMDy+oU=; b=Ol0h69eD9pYVw/gYRfEIJPBJQQ
-	3lecE89gCHte3BfvIZ+U9j6yX9H7ec29epd0dRRRFkG608bgthlZaugSXW5q168BPpU05esw0BLTX
-	3oBmj3cBD8Pzl8fy6ME1mYmqRuazgk//XatyM6QIajNcnfQvsJ80n4ieb38GsFPaATaegeyeC3ckJ
-	qTAGRULqpVfAbEFpb67W2EBhU6kmTj/YKDiSIL86V7XzeOf7P20gnpdI154aNYno3NVGFsvVXTrWq
-	ilM6eYvqTuYWfQ0mLcS9F+W9p5WOGfhiXmkP/IIqCev/3hF73w8YwQYk8ohn5+S+2GJKAAgHH5DAf
-	sWT18i+g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=iwc4mfYSXYiH4MmePOdLJBQ3MQuMPTvYksMJAz49SvQ=; b=V6Uj8LlT6eFuYeqfUiWYtu6BCR
+	sRxr4yTwJiXxPwn8hy9GwMR4XFT8i69mNqjXPweiZ3Wz1iI+1qlUKAqTxmy8nD36PsyBPyIMWIHCH
+	j9ZWTTLr0+Y/EK5FmyscYI2FV+sjpD8e4XRfU1245T/JOtNzGzJX9r1Msd37sajJSTVW+/sq6sF4d
+	Zm9M0JNCCt8jvkwykg9yeb6nR+nF4t8/Tx+aFwz7++BpMidOFuowXmOsJHv0ZFt3nUaLlF5lQ6JNm
+	mZtqAQCvJJCnzSzX8qrwxMdyn4vBzaisRSMVc9a3P+8sGJ+mHmbnOEPmU6a8o8ln3JZPas4tgv+Lh
+	ndTR7pEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4wkK-00000008Wrt-48Iu;
-	Wed, 16 Apr 2025 06:59:44 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1u5hOy-0000000Ffg8-04KU;
+	Fri, 18 Apr 2025 08:48:48 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u4wid-00000008WBY-2VrD
+	id 1u5hBL-0000000FdSh-0DW1
 	for linux-um@lists.infradead.org;
-	Wed, 16 Apr 2025 06:58:00 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-54af20849bbso7916576e87.0
-        for <linux-um@lists.infradead.org>; Tue, 15 Apr 2025 23:57:59 -0700 (PDT)
+	Fri, 18 Apr 2025 08:34:44 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5e5e8274a74so2496343a12.1
+        for <linux-um@lists.infradead.org>; Fri, 18 Apr 2025 01:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744786677; x=1745391477; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3eFYkiEenzg/4pej5bcdOHyZ5zn5C2EU9yY/WMDy+oU=;
-        b=HJsh6dhNFZutlLoHZQaQGdwRoDRVG+/4zJBmNiECi263UiT2ZYu6rKXGpQaA7n/gcv
-         WZzW3yFxXtlPBBea/+t00wrcX/wfOlIUbGUSst0IlB8t8w2kQmnJo1RQfXRk5EEsBNjy
-         Akf4oPfC+UsEEYSMmvwkkus0FpND8+0567Qt1gWYTtDztJadt8r8ag6UVWoeKZAu5L29
-         d/GE08ltjxgggopYGMj3lxHNx0P7lv0JTkTUbVASVCejNVAWSkj/J5LWMJM/jcEPry3s
-         Fkd84a6yQcZ1MORJMKldaj9x4LY7VHOsDw12/CLDghqUH/LyTWCtPpXt6KjyEvoIvFUQ
-         9BzQ==
+        d=gmail.com; s=20230601; t=1744965280; x=1745570080; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iwc4mfYSXYiH4MmePOdLJBQ3MQuMPTvYksMJAz49SvQ=;
+        b=TxKDAvdVNtPw+/JyUGl58LMgolRl5ZhggBHlbVf3y0sVwbHQ5iM084fAvCdXDgLMSs
+         N0EBz3imtQbZYEnnHVirNwZgWnY2DjRKG3LS7/nUR+PfVsokj27brKNwOo+6XX01GGI2
+         RiBW/wWm2hMpzI47HKwIvFbjEj6mzghPL0M60S6ut7MsIFbJqjxqDm5HE2LkpDlYLyTa
+         YzAltvkfVucIlEG2Q4l3CrlGaVrKi+SCSlWS2VeI0w3yWyrKTexuWQdc8aHYdoh7C7S7
+         ohmueDmP3f/qlFCl6oibd2arSieeRJZRfoREwsswTZTkw6xoxE8lemtFdn2JcsQBVXgv
+         NnYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744786677; x=1745391477;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3eFYkiEenzg/4pej5bcdOHyZ5zn5C2EU9yY/WMDy+oU=;
-        b=G4PvuUpTFiMVrVnQHFGkIvmJljpO5Dk+EiyhPJLGHhF6B5I92SMHGx4Vw7/fYryMBf
-         bUN4H89EhPi17HMGAqMuDVLN49rkRowQdEFJ2xL2WZC4mLBVx9il9oUZ0AP08xkSXWl+
-         YqCeBDYo9ch/3wsMGpt4nbKCuqfdKNp7sOwhVL7lRMZ5RE2+V6iWStbZFGmxmn2HAIVF
-         o1tge05GC9ujdlMt4uL2JX/7uKgLMXTeMg5kZyVHgvlAzejGLZEfhpZMbe5pUVGTEAU2
-         Op+153uCjQt8fuqEb5jOcpmhqrhHyafLyqI2NIVCrgwWwZvSZE/yQVur9k9ML/7GCXSI
-         64IQ==
-X-Gm-Message-State: AOJu0YwR507wf3JXmFt3xIYEVsLJx+KbZuE7zvD12EotFrV1XGazAB2G
-	IAc0vUXUeKkNp7pSBcLFIpYEZmnGu176SmTYQIs9JdR0KkY89m9mZvW4nFUzg1OqkIcSQKqTsIL
-	aowIIOuLbCaIla1IJu4I6JEW3rWA=
-X-Gm-Gg: ASbGncvG3UYeLNf9cECxOkZZo+5HqnXwx7zLdIMbs9Yw9bw/K+t3oW54fshVX9qkZ9T
-	ldKyrX/yJ6lCGDUJmp2uelc+tbYmbA8o13fULnONRl1PrvdQ9rkj1z5kiaA3iYT49ijM87eydLc
-	yAyh99W3hB9oAiKONjtb4l/w==
-X-Google-Smtp-Source: AGHT+IGDG8EQyu2e91PlMcGHXOQUUS2M/UX2zORD22uy6GUwCCzWVy4INZkGFxhlM4V0q+NcTSO0+g+TDefdHJold44=
-X-Received: by 2002:a05:6512:ac8:b0:54a:f7fb:ff82 with SMTP id
- 2adb3069b0e04-54d64aa9f8amr176461e87.26.1744786677184; Tue, 15 Apr 2025
- 23:57:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20250414145650.10776-1-ubizjak@gmail.com> <20250415185558.112621df@pumpkin>
- <CAFULd4YV0yKTULPM-+Y0b72EJ48tqfW_ni8RjHsQTULT8TGaTQ@mail.gmail.com>
-In-Reply-To: <CAFULd4YV0yKTULPM-+Y0b72EJ48tqfW_ni8RjHsQTULT8TGaTQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1744965280; x=1745570080;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iwc4mfYSXYiH4MmePOdLJBQ3MQuMPTvYksMJAz49SvQ=;
+        b=hMc+y3sSNg7ESlQNmyEfiD7ZshfuHn09D+RnsUZsddieZ+y8UcBGowSRdcnYTlII++
+         BqHW8jLzZPwwfGXnKPZadCC3QIj25pLzVjjk5ZG8fEnbY6GpsgrZ6QLeFeHDrzYMqSRr
+         Cpe6+7hNS/Tv1BJDkt9Fa8R0Oubvx7nCELtHrelmlTKbjUIOcfXbNIBfEUlTvJwOA23H
+         ESsA7qC+S5a90f8MdQcW0ljC3wyc+Zx3VVKtgXkHcshEiEzOh6F8z41sUGHKR8NlrRYd
+         2r1k6qn61TA8xoXut/Ok+PbZDOJ4+LshuCnvXMP3ass36QUlFRYT9GBVBEr8HiMssEjz
+         Q4Mw==
+X-Gm-Message-State: AOJu0YzR7MmLSlS/DnJVCpJBlddJ4rJSDrAFpLav6I/pt2z769R3Q90b
+	Tgq7Et81zDRcaMkeN8Q8JgXtA5SEUeI7NaGbzGFVwQN3jgilkwFUtd1R+346kq0=
+X-Gm-Gg: ASbGncuubX3/dU1rOI9xT029/d/v0g63DgerjNpouaMC6xWzqY098bwigJVnMeW4V0c
+	GkwD9JqCltrEmD2pNIVA3aPXgUSu+3oLoWR23kDjZN2iL6pFKZDEJXO3d203XU8YGyz9uRS2cK7
+	RLyHwkmer9VQJYhDGQq3aCy5uB5W6QQU9j+/rep4rcc9yckbeqZw5qzAG1LSl2UhAuroJGm6B8B
+	j6nULCFEleh1A5QqpQoF7rUj0bxi5l66FRMBXdnD5QR05GJssTyQcwcZBij25JfxJv9c5SQIz5Z
+	/GFvvKQnyeVIW3PN8LtKNzrNqRMCUlEw
+X-Google-Smtp-Source: AGHT+IEA48lUG8wBLPhPExAjeHlOBbEVqFiNpA99DqGcRwnr+5seRmJHWexkbH0GJZj2p8x907eLbQ==
+X-Received: by 2002:a05:6402:84d:b0:5f4:d4a7:dab1 with SMTP id 4fb4d7f45d1cf-5f62854cb97mr1415586a12.18.1744965280426;
+        Fri, 18 Apr 2025 01:34:40 -0700 (PDT)
+Received: from fedora.. ([193.77.86.199])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f625833ef1sm720914a12.51.2025.04.18.01.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Apr 2025 01:34:39 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
-Date: Wed, 16 Apr 2025 08:57:45 +0200
-X-Gm-Features: ATxdqUExvVnEnRY0cmxDSz2Qf3qDtQT8dPVM3sFFqvWDSsanRiYI8WlkpkYb-0w
-Message-ID: <CAFULd4ZtMrj+5Le0GArm5eTLw1AYiWLXPb_nXKaMDHy8TW60wA@mail.gmail.com>
-Subject: Re: [PATCH] um/asm: Replace "REP; NOP" with PAUSE mnemonic
-To: David Laight <david.laight.linux@gmail.com>
-Cc: linux-um@lists.infradead.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: multipart/mixed; boundary="0000000000001a60c40632dfce69"
+To: linux-um@lists.infradead.org,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	David Laight <david.laight.linux@gmail.com>
+Subject: [PATCH v2 2/2] um/asm: Replace "REP; NOP" with PAUSE mnemonic
+Date: Fri, 18 Apr 2025 10:33:59 +0200
+Message-ID: <20250418083436.133148-2-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250418083436.133148-1-ubizjak@gmail.com>
+References: <20250418083436.133148-1-ubizjak@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250415_235759_648722_621DB623 
-X-CRM114-Status: GOOD (  27.85  )
+X-CRM114-CacheID: sfid-20250418_013443_095645_D1666C85 
+X-CRM114-Status: GOOD (  11.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,118 +106,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---0000000000001a60c40632dfce69
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Current minimum required version of binutils is 2.25,
+which supports PAUSE instruction mnemonic.
 
-On Wed, Apr 16, 2025 at 7:53=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
->
-> On Tue, Apr 15, 2025 at 7:56=E2=80=AFPM David Laight
-> <david.laight.linux@gmail.com> wrote:
-> >
-> > On Mon, 14 Apr 2025 16:55:57 +0200
-> > Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > > Current minimum required version of binutils is 2.25,
-> > > which supports PAUSE instruction mnemonic.
-> > >
-> > > Replace "REP; NOP" with this proper mnemonic.
-> > >
-> > > No functional change intended.
-> > >
-> > > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > > Cc: Richard Weinberger <richard@nod.at>
-> > > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> > > Cc: Johannes Berg <johannes@sipsolutions.net>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Ingo Molnar <mingo@kernel.org>
-> > > Cc: Borislav Petkov <bp@alien8.de>
-> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > > ---
-> > >  arch/x86/um/asm/processor.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.=
-h
-> > > index 478710384b34..233a7a0d29c9 100644
-> > > --- a/arch/x86/um/asm/processor.h
-> > > +++ b/arch/x86/um/asm/processor.h
-> > > @@ -24,7 +24,7 @@
-> > >  /* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. *=
-/
-> > >  static __always_inline void rep_nop(void)
-> > >  {
-> > > -     __asm__ __volatile__("rep;nop": : :"memory");
-> > > +     __asm__ __volatile__("pause": : :"memory");
-> > >  }
-> > >
-> >
-> > That only makes sense if you also change the function name.
->
-> This function is used in several places, and is also defined for x86
-> in arch/x86/include/asm/vdso/processor.h. The renaming should be
-> coordinated with x86 and should definitely be a separate patch.
+Replace "REP; NOP" with this proper mnemonic.
 
-Something like the attached patch that also moves (duplicated)
-function definition to a shared place.
+No functional change intended.
 
-Uros.
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: David Laight <david.laight.linux@gmail.com>
+---
+v2: Rename rep_nop() to native_pause() first.
+---
+ arch/x86/um/asm/processor.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---0000000000001a60c40632dfce69
-Content-Type: text/plain; charset="US-ASCII"; name="pause.diff.txt"
-Content-Disposition: attachment; filename="pause.diff.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_m9jkxe900>
-X-Attachment-Id: f_m9jkxe900
+diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.h
+index d50549e0089c..e222d2ae28fd 100644
+--- a/arch/x86/um/asm/processor.h
++++ b/arch/x86/um/asm/processor.h
+@@ -21,10 +21,10 @@
+ 
+ #include <asm/user.h>
+ 
+-/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
++/* PAUSE is a good thing to insert into busy-wait loops. */
+ static __always_inline void native_pause(void)
+ {
+-	__asm__ __volatile__("rep;nop": : :"memory");
++	__asm__ __volatile__("pause": : :"memory");
+ }
+ 
+ static __always_inline void cpu_relax(void)
+-- 
+2.49.0
 
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCBiL2FyY2gv
-eDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaAppbmRleCA2MjY2ZDZiOWUwYjguLjU5YmQy
-NWFjNzI5MiAxMDA2NDQKLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lhbF9pbnNucy5o
-CisrKyBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaApAQCAtMTE1LDYgKzEx
-NSwxMiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgd3Jwa3J1KHUzMiBwa3J1KQogfQogI2VuZGlmCiAK
-Ky8qIFBBVVNFIGlzIGEgZ29vZCB0aGluZyB0byBpbnNlcnQgaW50byBidXN5LXdhaXQgbG9vcHMu
-ICovCitzdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgbmF0aXZlX3BhdXNlKHZvaWQpCit7CisJ
-YXNtIHZvbGF0aWxlKCJwYXVzZSI6IDogOiJtZW1vcnkiKTsKK30KKwogc3RhdGljIF9fYWx3YXlz
-X2lubGluZSB2b2lkIHdiaW52ZCh2b2lkKQogewogCWFzbSB2b2xhdGlsZSgid2JpbnZkIjogOiA6
-Im1lbW9yeSIpOwpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVkZS9hc20vdmRzby9wcm9jZXNz
-b3IuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3Zkc28vcHJvY2Vzc29yLmgKaW5kZXggYzliMmJh
-N2E5ZWM0Li4xNjkyMTk4NjRkNjEgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3Zk
-c28vcHJvY2Vzc29yLmgKKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vdmRzby9wcm9jZXNzb3Iu
-aApAQCAtNywxNSArNywxMSBAQAogCiAjaWZuZGVmIF9fQVNTRU1CTEVSX18KIAotLyogUkVQIE5P
-UCAoUEFVU0UpIGlzIGEgZ29vZCB0aGluZyB0byBpbnNlcnQgaW50byBidXN5LXdhaXQgbG9vcHMu
-ICovCi1zdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgcmVwX25vcCh2b2lkKQotewotCWFzbSB2
-b2xhdGlsZSgicmVwOyBub3AiIDo6OiAibWVtb3J5Iik7Ci19CisjaW5jbHVkZSA8YXNtL3NwZWNp
-YWxfaW5zbnMuaD4KIAogc3RhdGljIF9fYWx3YXlzX2lubGluZSB2b2lkIGNwdV9yZWxheCh2b2lk
-KQogewotCXJlcF9ub3AoKTsKKwluYXRpdmVfcGF1c2UoKTsKIH0KIAogc3RydWN0IGdldGNwdV9j
-YWNoZTsKZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5lbC9hcGljL2lvX2FwaWMuYyBiL2FyY2gv
-eDg2L2tlcm5lbC9hcGljL2lvX2FwaWMuYwppbmRleCBlZWJjMzYwZWQxYmIuLmJhNWE0Y2NkYTM3
-YSAxMDA2NDQKLS0tIGEvYXJjaC94ODYva2VybmVsL2FwaWMvaW9fYXBpYy5jCisrKyBiL2FyY2gv
-eDg2L2tlcm5lbC9hcGljL2lvX2FwaWMuYwpAQCAtMTQ4Niw3ICsxNDg2LDcgQEAgc3RhdGljIHZv
-aWQgX19pbml0IGRlbGF5X3dpdGhfdHNjKHZvaWQpCiAJICogMSBHSHogPT0gNDAgamlmZmllcwog
-CSAqLwogCWRvIHsKLQkJcmVwX25vcCgpOworCQluYXRpdmVfcGF1c2UoKTsKIAkJbm93ID0gcmR0
-c2MoKTsKIAl9IHdoaWxlICgobm93IC0gc3RhcnQpIDwgNDAwMDAwMDAwMDBVTEwgLyBIWiAmJgl0
-aW1lX2JlZm9yZV9lcShqaWZmaWVzLCBlbmQpKTsKIH0KZGlmZiAtLWdpdCBhL2FyY2gveDg2L2xp
-Yi9kZWxheS5jIGIvYXJjaC94ODYvbGliL2RlbGF5LmMKaW5kZXggZTg2ZWRhMmMwYjA0Li5lYjJk
-MmUxY2JkZGQgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2xpYi9kZWxheS5jCisrKyBiL2FyY2gveDg2
-L2xpYi9kZWxheS5jCkBAIC03NSw3ICs3NSw3IEBAIHN0YXRpYyB2b2lkIGRlbGF5X3RzYyh1NjQg
-Y3ljbGVzKQogCiAJCS8qIEFsbG93IFJUIHRhc2tzIHRvIHJ1biAqLwogCQlwcmVlbXB0X2VuYWJs
-ZSgpOwotCQlyZXBfbm9wKCk7CisJCW5hdGl2ZV9wYXVzZSgpOwogCQlwcmVlbXB0X2Rpc2FibGUo
-KTsKIAogCQkvKgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oIGIvYXJj
-aC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oCmluZGV4IDQ3ODcxMDM4NGIzNC4uMzFkNzExOTg3Nzhl
-IDEwMDY0NAotLS0gYS9hcmNoL3g4Ni91bS9hc20vcHJvY2Vzc29yLmgKKysrIGIvYXJjaC94ODYv
-dW0vYXNtL3Byb2Nlc3Nvci5oCkBAIC0xOSwyMSArMTksMTYgQEAKICNkZWZpbmUgQVJDSF9JU19T
-VEFDS0dST1coYWRkcmVzcykgXAogICAgICAgIChhZGRyZXNzICsgNjU1MzYgKyAzMiAqIHNpemVv
-Zih1bnNpZ25lZCBsb25nKSA+PSBVUFRfU1AoJmN1cnJlbnQtPnRocmVhZC5yZWdzLnJlZ3MpKQog
-CisjaW5jbHVkZSA8YXNtL3NwZWNpYWxfaW5zbnMuaD4KICNpbmNsdWRlIDxhc20vdXNlci5oPgog
-Ci0vKiBSRVAgTk9QIChQQVVTRSkgaXMgYSBnb29kIHRoaW5nIHRvIGluc2VydCBpbnRvIGJ1c3kt
-d2FpdCBsb29wcy4gKi8KLXN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgdm9pZCByZXBfbm9wKHZvaWQp
-Ci17Ci0JX19hc21fXyBfX3ZvbGF0aWxlX18oInJlcDtub3AiOiA6IDoibWVtb3J5Iik7Ci19Ci0K
-IHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgdm9pZCBjcHVfcmVsYXgodm9pZCkKIHsKIAlpZiAodGlt
-ZV90cmF2ZWxfbW9kZSA9PSBUVF9NT0RFX0lORkNQVSB8fAogCSAgICB0aW1lX3RyYXZlbF9tb2Rl
-ID09IFRUX01PREVfRVhURVJOQUwpCiAJCXRpbWVfdHJhdmVsX25kZWxheSgxKTsKIAllbHNlCi0J
-CXJlcF9ub3AoKTsKKwkJbmF0aXZlX3BhdXNlKCk7CiB9CiAKICNkZWZpbmUgdGFza19wdF9yZWdz
-KHQpICgmKHQpLT50aHJlYWQucmVncykK
---0000000000001a60c40632dfce69--
 
