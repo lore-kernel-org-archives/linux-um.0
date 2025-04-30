@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AD01C3ABAD
-	for <linux-um@archiver.kernel.org>; Wed, 30 Apr 2025 16:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32B7BC3ABB5
+	for <linux-um@archiver.kernel.org>; Wed, 30 Apr 2025 16:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i31+ifXRsq1f8JJxkeTINKUs4ubQuQKfIdW7ev5pdoQ=; b=BSBT/CQeCw5ll2Cl0ILKncy3FA
-	iN01qz+t2vKIrubXWAjASb954O43XHSoUxKp474uTGK2C2ruQyBwox4nL7CB5C77AAaF4o05eanhx
-	nWErtejxGlJl3CbWjKZmLwfKwqQl7arPIEAT5R65P9+JmvYsVTTIISv7QNayfKNEReLDLGGKWdE4f
-	MlQiT1t64PTldAL3+IiuaSgJ5wbqhf1CqquqITviVnManEH9qHO4b9XnnMGkhBeENEEBOu9OZykij
-	4aMlF/zlrFyJesnGZPK4nt9DaLNuYMPpqKJeVI30pOJxXclz96zqC9nR5tE3rywQlhys5MLJX7WOC
-	WlNLjCMA==;
+	bh=Lfgl2PRBGDTmnLNnXIsMguAGQIHF6zw81qS+Lc6/FX0=; b=J4DA2E8Eo5RPltLeAZ0oDisLuV
+	0WvLVCrg9tM8sJ/deWESnQFcSHZ4aiLLKDIw9VZrFtbcVbveSP2O/K5+Oj0WN5rJ1UvjtmDG4wu99
+	fs0svL5ljQm6oR2dPaubIdD+dlyh9Qw338TEMBO8bi8nzOkriBvQSUljHPYZtDd53gHc8OPWrbu6r
+	1zDyZcpOqoZ0bkpA6IfclB+RCn4yjA1twfchCOObvoYSbLjRLr8SsiHRNQUIYSvH4E+o6PccigwYD
+	w9PMte1oQ8tSECw8Zs3sp6kPKJ+lR7FvGNGOaM48SogvPtNBfTv1yNaPYF9Q8S+arVlVAyUMxT9bo
+	FgqRJtvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uA9zU-0000000DO1L-3bs2;
-	Wed, 30 Apr 2025 16:08:56 +0000
+	id 1uA9zV-0000000DO2O-3JYy;
+	Wed, 30 Apr 2025 16:08:57 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uA9ws-0000000DNfM-2I9N
+	id 1uA9wu-0000000DNgG-2r8c
 	for linux-um@lists.infradead.org;
-	Wed, 30 Apr 2025 16:06:15 +0000
+	Wed, 30 Apr 2025 16:06:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=i31+ifXRsq1f8JJxkeTINKUs4ubQuQKfIdW7ev5pdoQ=;
-	t=1746029174; x=1747238774; b=Bm+5Pt4KNbib3uUIWbmvUUPS21lwdUgimw1JQA5evYIGDo8
-	tsdTcLye9ceF+Ne7zWOxMHmIq8pKTOVnSSUy+khr2vDJWGRDo62sD6cep/SgMNQJUHgvaFA/sPgnU
-	IZnu88UauFYLUUCIlPyb8GbNktWg6d++BRDj1wP/7nP7In6/kJ2EZj8Irc5XDhUZAdMOgHxxIrWuG
-	lPqJF+z4R/ZjDXX1wqDz05gKpWC/q/tTAKdnqo4r6SdO4Fu4XWFmA9qg5J5S+glwwymRjcTVYR8W3
-	7W4QK7lzrkpZOwQ0qglKyCcGXrWq8iHQLucLlFTjh+q128qFevl+EqR1GYB+4NTA==;
+	Resent-Cc:Resent-Message-ID; bh=Lfgl2PRBGDTmnLNnXIsMguAGQIHF6zw81qS+Lc6/FX0=;
+	t=1746029176; x=1747238776; b=r+Y40cx8B9YQ5lRHH5yN67MefOG8dFHmFAMex0QlMaw1Vq7
+	Tdvmqz0bxed3nUbMbdN7JOoriS+hAZVkjMJQtwQl9JvhHF3le+TQ12LEbMxG52sBIjiR30ntASLiK
+	Rav+NtRkWg6DtSlxAPs3HIsrP/+V6/3L8DQUNCIc9GOErwiHxn7fgjs0anp2tXXZt1lAf3gFAgpHF
+	dltV+MArMAlZVec6OH0sneAvMc0OCuBs53+erubAdOJzdSsIqKw9MhDM4LMs4U/yNf7EJNv53MlzF
+	9mEmflcEy1aB/G1K5cZj9Aai+4aBzvD5td1IJ0EG4404yR4QsH/XeCCv6dPHzvJw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.1)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uA9wp-0000000DxyX-1lzW;
-	Wed, 30 Apr 2025 18:06:11 +0200
+	id 1uA9wr-0000000DxyX-1GA5;
+	Wed, 30 Apr 2025 18:06:13 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2 3/8] um: Add helper functions to get/set state for SECCOMP
-Date: Wed, 30 Apr 2025 18:04:08 +0200
-Message-ID: <20250430160413.3250227-4-benjamin@sipsolutions.net>
+Subject: [PATCH v2 5/8] um: Track userspace children dying in SECCOMP mode
+Date: Wed, 30 Apr 2025 18:04:10 +0200
+Message-ID: <20250430160413.3250227-6-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250430160413.3250227-1-benjamin@sipsolutions.net>
 References: <20250430160413.3250227-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250430_090614_734133_A248B2F7 
-X-CRM114-Status: GOOD (  23.68  )
+X-CRM114-CacheID: sfid-20250430_090616_899223_4CD7E77D 
+X-CRM114-Status: GOOD (  31.05  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,409 +71,397 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When not using ptrace, we need to both save and restore registers
-through the mcontext as provided by the host kernel to our signal
-handlers.
+When in seccomp mode, we would hang forever on the futex if a child has
+died unexpectedly. In contrast, ptrace mode will notice it and kill the
+corresponding thread when it fails to run it.
 
-Add corresponding functions to store the state to an mcontext and
-helpers to access the mcontext of the subprocess through the stub data.
+Fix this issue using a new IRQ that is fired after a SIGCHLD and keeping
+an (internal) list of all MMs. In the IRQ handler, find the affected MM
+and set its PID to -1 as well as the futex variable to FUTEX_IN_KERN.
+
+This, together with futex returning -EINTR after the signal is
+sufficient to implement a race-free detection of a child dying.
+
+Note that this also enables IRQ handling while starting a userspace
+process. This should be safe and SECCOMP requires the IRQ in case the
+process does not come up properly.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
 ---
 
-RFCv2:
-- Proper FP register handling
----
- arch/x86/um/os-Linux/mcontext.c      | 220 ++++++++++++++++++++++++++-
- arch/x86/um/ptrace.c                 |  76 ++++++---
- arch/x86/um/shared/sysdep/mcontext.h |   9 ++
- 3 files changed, 285 insertions(+), 20 deletions(-)
+v2:
+- Fix whitespace issue
 
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
-index 37decaa74761..f3e34e87e8f2 100644
---- a/arch/x86/um/os-Linux/mcontext.c
-+++ b/arch/x86/um/os-Linux/mcontext.c
-@@ -1,7 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <sys/ucontext.h>
- #define __FRAME_OFFSETS
-+#include <linux/errno.h>
-+#include <linux/string.h>
-+#include <sys/ucontext.h>
- #include <asm/ptrace.h>
-+#include <asm/sigcontext.h>
- #include <sysdep/ptrace.h>
- #include <sysdep/mcontext.h>
- #include <arch.h>
-@@ -18,6 +21,10 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
- 	COPY2(UESP, ESP); /* sic */
- 	COPY(EBX); COPY(EDX); COPY(ECX); COPY(EAX);
- 	COPY(EIP); COPY_SEG_CPL3(CS); COPY(EFL); COPY_SEG_CPL3(SS);
-+#undef COPY2
-+#undef COPY
-+#undef COPY_SEG
-+#undef COPY_SEG_CPL3
+v1:
+- Permit IRQs during startup to enable detection there
+
+RFCv2:
+- Use "struct list_head" for the list by placing it into the mm_context
+---
+ arch/um/include/asm/irq.h           |  5 +-
+ arch/um/include/asm/mmu.h           |  3 ++
+ arch/um/include/shared/irq_user.h   |  2 +
+ arch/um/include/shared/os.h         |  1 +
+ arch/um/include/shared/skas/mm_id.h |  2 +
+ arch/um/kernel/irq.c                |  6 +++
+ arch/um/kernel/skas/mmu.c           | 82 +++++++++++++++++++++++++++--
+ arch/um/os-Linux/process.c          | 31 +++++++++++
+ arch/um/os-Linux/signal.c           | 19 ++++++-
+ 9 files changed, 143 insertions(+), 8 deletions(-)
+
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index 749dfe8512e8..36dbedd1af48 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -13,17 +13,18 @@
+ #define TELNETD_IRQ 		8
+ #define XTERM_IRQ 		9
+ #define RANDOM_IRQ 		10
++#define SIGCHLD_IRQ		11
+ 
+ #ifdef CONFIG_UML_NET_VECTOR
+ 
+-#define VECTOR_BASE_IRQ		(RANDOM_IRQ + 1)
++#define VECTOR_BASE_IRQ		(SIGCHLD_IRQ + 1)
+ #define VECTOR_IRQ_SPACE	8
+ 
+ #define UM_FIRST_DYN_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
+ 
  #else
- #define COPY2(X,Y) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##Y]
- #define COPY(X) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##X]
-@@ -29,6 +36,8 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
- 	COPY2(EFLAGS, EFL);
- 	COPY2(CS, CSGSFS);
- 	regs->gp[SS / sizeof(unsigned long)] = mc->gregs[REG_CSGSFS] >> 48;
-+#undef COPY2
-+#undef COPY
- #endif
- }
  
-@@ -42,3 +51,212 @@ void mc_set_rip(void *_mc, void *target)
- 	mc->gregs[REG_RIP] = (unsigned long)target;
+-#define UM_FIRST_DYN_IRQ (RANDOM_IRQ + 1)
++#define UM_FIRST_DYN_IRQ (SIGCHLD_IRQ + 1)
+ 
  #endif
+ 
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index a3eaca41ff61..4d0e4239f3cc 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -6,11 +6,14 @@
+ #ifndef __ARCH_UM_MMU_H
+ #define __ARCH_UM_MMU_H
+ 
++#include "linux/types.h"
+ #include <mm_id.h>
+ 
+ typedef struct mm_context {
+ 	struct mm_id id;
+ 
++	struct list_head list;
++
+ 	/* Address range in need of a TLB sync */
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
+diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
+index 88835b52ae2b..746abc24a5d5 100644
+--- a/arch/um/include/shared/irq_user.h
++++ b/arch/um/include/shared/irq_user.h
+@@ -17,6 +17,8 @@ enum um_irq_type {
+ struct siginfo;
+ extern void sigio_handler(int sig, struct siginfo *unused_si,
+ 			  struct uml_pt_regs *regs, void *mc);
++extern void sigchld_handler(int sig, struct siginfo *unused_si,
++			   struct uml_pt_regs *regs, void *mc);
+ void sigio_run_timetravel_handlers(void);
+ extern void free_irq_by_fd(int fd);
+ extern void deactivate_fd(int fd, int irqnum);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 152a60080d5b..39a6828bf78a 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -198,6 +198,7 @@ extern int create_mem_file(unsigned long long len);
+ extern void report_enomem(void);
+ 
+ /* process.c */
++pid_t os_reap_child(void);
+ extern void os_alarm_process(int pid);
+ extern void os_kill_process(int pid, int reap_child);
+ extern void os_kill_ptraced_process(int pid, int reap_child);
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index 140388c282f6..0654c57bb28e 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -14,4 +14,6 @@ struct mm_id {
+ 
+ void __switch_mm(struct mm_id *mm_idp);
+ 
++void notify_mm_kill(int pid);
++
+ #endif
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index abe8f30a521c..f1787be3983c 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -690,3 +690,9 @@ void __init init_IRQ(void)
+ 	/* Initialize EPOLL Loop */
+ 	os_setup_epoll();
  }
 +
-+#ifdef CONFIG_UML_SECCOMP
-+/* Same thing, but the copy macros are turned around. */
-+void get_mc_from_regs(struct uml_pt_regs *regs, mcontext_t *mc, int single_stepping)
++extern void sigchld_handler(int sig, struct siginfo *unused_si,
++			    struct uml_pt_regs *regs, void *mc)
 +{
-+#ifdef __i386__
-+#define COPY2(X,Y) mc->gregs[REG_##Y] = regs->gp[X]
-+#define COPY(X) mc->gregs[REG_##X] = regs->gp[X]
-+#define COPY_SEG(X) mc->gregs[REG_##X] = regs->gp[X] & 0xffff;
-+#define COPY_SEG_CPL3(X) mc->gregs[REG_##X] = (regs->gp[X] & 0xffff) | 3;
-+	COPY_SEG(GS); COPY_SEG(FS); COPY_SEG(ES); COPY_SEG(DS);
-+	COPY(EDI); COPY(ESI); COPY(EBP);
-+	COPY2(UESP, ESP); /* sic */
-+	COPY(EBX); COPY(EDX); COPY(ECX); COPY(EAX);
-+	COPY(EIP); COPY_SEG_CPL3(CS); COPY(EFL); COPY_SEG_CPL3(SS);
-+#else
-+#define COPY2(X,Y) mc->gregs[REG_##Y] = regs->gp[X/sizeof(unsigned long)]
-+#define COPY(X) mc->gregs[REG_##X] = regs->gp[X/sizeof(unsigned long)]
-+	COPY(R8); COPY(R9); COPY(R10); COPY(R11);
-+	COPY(R12); COPY(R13); COPY(R14); COPY(R15);
-+	COPY(RDI); COPY(RSI); COPY(RBP); COPY(RBX);
-+	COPY(RDX); COPY(RAX); COPY(RCX); COPY(RSP);
-+	COPY(RIP);
-+	COPY2(EFLAGS, EFL);
-+	mc->gregs[REG_CSGSFS] = mc->gregs[REG_CSGSFS] & 0xffffffffffffl;
-+	mc->gregs[REG_CSGSFS] |= (regs->gp[SS / sizeof(unsigned long)] & 0xffff) << 48;
-+#endif
++	do_IRQ(SIGCHLD_IRQ, regs);
++}
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index 0eb5a1d3ba70..1e146a0f9549 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -8,6 +8,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/slab.h>
+ 
++#include <shared/irq_kern.h>
+ #include <asm/pgalloc.h>
+ #include <asm/sections.h>
+ #include <asm/mmu_context.h>
+@@ -19,6 +20,9 @@
+ /* Ensure the stub_data struct covers the allocated area */
+ static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
+ 
++spinlock_t mm_list_lock;
++struct list_head mm_list;
 +
-+	if (single_stepping)
-+		mc->gregs[REG_EFL] |= X86_EFLAGS_TF;
-+	else
-+		mc->gregs[REG_EFL] &= ~X86_EFLAGS_TF;
+ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ {
+ 	struct mm_id *new_id = &mm->context.id;
+@@ -31,10 +35,12 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ 
+ 	new_id->stack = stack;
+ 
+-	block_signals_trace();
+-	new_id->pid = start_userspace(stack);
+-	unblock_signals_trace();
++	scoped_guard(spinlock_irqsave, &mm_list_lock) {
++		/* Insert into list, used for lookups when the child dies */
++		list_add(&mm->context.list, &mm_list);
++	}
+ 
++	new_id->pid = start_userspace(stack);
+ 	if (new_id->pid < 0) {
+ 		ret = new_id->pid;
+ 		goto out_free;
+@@ -60,13 +66,79 @@ void destroy_context(struct mm_struct *mm)
+ 	 * zero, resulting in a kill(0), which will result in the
+ 	 * whole UML suddenly dying.  Also, cover negative and
+ 	 * 1 cases, since they shouldn't happen either.
++	 *
++	 * Negative cases happen if the child died unexpectedly.
+ 	 */
+-	if (mmu->id.pid < 2) {
++	if (mmu->id.pid >= 0 && mmu->id.pid < 2) {
+ 		printk(KERN_ERR "corrupt mm_context - pid = %d\n",
+ 		       mmu->id.pid);
+ 		return;
+ 	}
+-	os_kill_ptraced_process(mmu->id.pid, 1);
++
++	if (mmu->id.pid > 0) {
++		os_kill_ptraced_process(mmu->id.pid, 1);
++		mmu->id.pid = -1;
++	}
+ 
+ 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
++
++	guard(spinlock_irqsave)(&mm_list_lock);
++
++	list_del(&mm->context.list);
 +}
 +
-+#ifdef CONFIG_X86_32
-+struct _xstate_64 {
-+	struct _fpstate_64		fpstate;
-+	struct _header			xstate_hdr;
-+	struct _ymmh_state		ymmh;
-+	/* New processor state extensions go here: */
-+};
-+
-+/* Not quite the right structures as these contain more information */
-+int um_i387_from_fxsr(struct _fpstate_32 *i387,
-+		      const struct _fpstate_64 *fxsave);
-+int um_fxsr_from_i387(struct _fpstate_64 *fxsave,
-+		      const struct _fpstate_32 *from);
-+#else
-+#define _xstate_64 _xstate
-+#endif
-+
-+static struct _fpstate *get_fpstate(struct stub_data *data,
-+				    mcontext_t *mcontext,
-+				    int *fp_size)
++static irqreturn_t mm_sigchld_irq(int irq, void* dev)
 +{
-+	struct _fpstate *res;
++	struct mm_context *mm_context;
++	pid_t pid;
 +
-+	/* Assume floating point registers are on the same page */
-+	res = (void *)(((unsigned long)mcontext->fpregs &
-+			(UM_KERN_PAGE_SIZE - 1)) +
-+		       (unsigned long)&data->sigstack[0]);
++	guard(spinlock)(&mm_list_lock);
 +
-+	if ((void *)res + sizeof(struct _fpstate) >
-+	    (void *)data->sigstack + sizeof(data->sigstack))
-+		return NULL;
++	while ((pid = os_reap_child()) > 0) {
++		/*
++		* A child died, check if we have an MM with the PID. This is
++		* only relevant in SECCOMP mode (as ptrace will fail anyway).
++		*
++		* See wait_stub_done_seccomp for more details.
++		*/
++		list_for_each_entry(mm_context, &mm_list, list) {
++			if (mm_context->id.pid == pid) {
++				struct stub_data *stub_data;
++				printk("Unexpectedly lost MM child! Affected tasks will segfault.");
 +
-+	if (res->sw_reserved.magic1 != FP_XSTATE_MAGIC1) {
-+		*fp_size = sizeof(struct _fpstate);
-+	} else {
-+		char *magic2_addr;
++				/* Marks the MM as dead */
++				mm_context->id.pid = -1;
 +
-+		magic2_addr = (void *)res;
-+		magic2_addr += res->sw_reserved.extended_size;
-+		magic2_addr -= FP_XSTATE_MAGIC2_SIZE;
++				/*
++				 * NOTE: If SMP is implemented, a futex_wake
++				 * needs to be added here.
++				 */
++				stub_data = (void *)mm_context->id.stack;
++				stub_data->futex = FUTEX_IN_KERN;
 +
-+		/* We still need to be within our stack */
-+		if ((void *)magic2_addr >
-+		    (void *)data->sigstack + sizeof(data->sigstack))
-+			return NULL;
-+
-+		/* If we do not read MAGIC2, then we did something wrong */
-+		if (*(__u32 *)magic2_addr != FP_XSTATE_MAGIC2)
-+			return NULL;
-+
-+		/* Remove MAGIC2 from the size, we do not save/restore it */
-+		*fp_size = res->sw_reserved.extended_size -
-+			   FP_XSTATE_MAGIC2_SIZE;
++				/*
++				 * NOTE: Currently executing syscalls by
++				 * affected tasks may finish normally.
++				 */
++				break;
++			}
++		}
 +	}
 +
-+	return res;
++	return IRQ_HANDLED;
 +}
 +
-+int get_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
-+		   unsigned long *fp_size_out)
++static int __init init_child_tracking(void)
 +{
-+	mcontext_t *mcontext;
-+	struct _fpstate *fpstate_stub;
-+	struct _xstate_64 *xstate_stub;
-+	int fp_size, xstate_size;
++	int err;
 +
-+	/* mctx_offset is verified by wait_stub_done_seccomp */
-+	mcontext = (void *)&data->sigstack[data->mctx_offset];
++	spin_lock_init(&mm_list_lock);
++	INIT_LIST_HEAD(&mm_list);
 +
-+	get_regs_from_mc(regs, mcontext);
-+
-+	fpstate_stub = get_fpstate(data, mcontext, &fp_size);
-+	if (!fpstate_stub)
-+		return -EINVAL;
-+
-+#ifdef CONFIG_X86_32
-+	xstate_stub = (void *)&fpstate_stub->_fxsr_env;
-+	xstate_size = fp_size - offsetof(struct _fpstate_32, _fxsr_env);
-+#else
-+	xstate_stub = (void *)fpstate_stub;
-+	xstate_size = fp_size;
-+#endif
-+
-+	if (fp_size_out)
-+		*fp_size_out = xstate_size;
-+
-+	if (xstate_size > host_fp_size)
-+		return -ENOSPC;
-+
-+	memcpy(&regs->fp, xstate_stub, xstate_size);
-+
-+	/* We do not need to read the x86_64 FS_BASE/GS_BASE registers as
-+	 * we do not permit userspace to set them directly.
-+	 */
-+
-+#ifdef CONFIG_X86_32
-+	/* Read the i387 legacy FP registers */
-+	if (um_fxsr_from_i387((void *)&regs->fp, fpstate_stub))
-+		return -EINVAL;
-+#endif
++	err = request_irq(SIGCHLD_IRQ, mm_sigchld_irq, 0, "SIGCHLD", NULL);
++	if (err < 0)
++		panic("Failed to register SIGCHLD IRQ: %d", err);
 +
 +	return 0;
-+}
-+
-+/* Copied because we cannot include regset.h here. */
-+struct task_struct;
-+struct user_regset;
-+struct membuf {
-+	void *p;
-+	size_t left;
-+};
-+
-+int fpregs_legacy_get(struct task_struct *target,
-+		      const struct user_regset *regset,
-+		      struct membuf to);
-+
-+int set_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
-+		   int single_stepping)
-+{
-+	mcontext_t *mcontext;
-+	struct _fpstate *fpstate_stub;
-+	struct _xstate_64 *xstate_stub;
-+	int fp_size, xstate_size;
-+
-+	/* mctx_offset is verified by wait_stub_done_seccomp */
-+	mcontext = (void *)&data->sigstack[data->mctx_offset];
-+
-+	if ((unsigned long)mcontext < (unsigned long)data->sigstack ||
-+	    (unsigned long)mcontext >
-+			(unsigned long) data->sigstack +
-+			sizeof(data->sigstack) - sizeof(*mcontext))
-+		return -EINVAL;
-+
-+	get_mc_from_regs(regs, mcontext, single_stepping);
-+
-+	fpstate_stub = get_fpstate(data, mcontext, &fp_size);
-+	if (!fpstate_stub)
-+		return -EINVAL;
-+
-+#ifdef CONFIG_X86_32
-+	xstate_stub = (void *)&fpstate_stub->_fxsr_env;
-+	xstate_size = fp_size - offsetof(struct _fpstate_32, _fxsr_env);
-+#else
-+	xstate_stub = (void *)fpstate_stub;
-+	xstate_size = fp_size;
-+#endif
-+
-+	memcpy(fpstate_stub, &regs->fp, fp_size);
-+
-+#ifdef __i386__
-+	/*
-+	 * On x86, the GDT entries are updated by arch_set_tls.
-+	 */
-+
-+	/* Store the i387 legacy FP registers which the host will use */
-+	if (um_i387_from_fxsr(fpstate_stub, (void *)&regs->fp))
-+		return -EINVAL;
-+#else
-+	/*
-+	 * On x86_64, we need to sync the FS_BASE/GS_BASE registers using the
-+	 * arch specific data.
-+	 */
-+	if (data->arch_data.fs_base != regs->gp[FS_BASE / sizeof(unsigned long)]) {
-+		data->arch_data.fs_base = regs->gp[FS_BASE / sizeof(unsigned long)];
-+		data->arch_data.sync |= STUB_SYNC_FS_BASE;
-+	}
-+	if (data->arch_data.gs_base != regs->gp[GS_BASE / sizeof(unsigned long)]) {
-+		data->arch_data.gs_base = regs->gp[GS_BASE / sizeof(unsigned long)];
-+		data->arch_data.sync |= STUB_SYNC_GS_BASE;
-+	}
-+#endif
-+
-+	return 0;
-+}
-+#endif
-diff --git a/arch/x86/um/ptrace.c b/arch/x86/um/ptrace.c
-index 57c504fd5626..3275870330fe 100644
---- a/arch/x86/um/ptrace.c
-+++ b/arch/x86/um/ptrace.c
-@@ -25,7 +25,8 @@ static inline unsigned short twd_i387_to_fxsr(unsigned short twd)
- 	return tmp;
  }
++early_initcall(init_child_tracking)
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 184566edeee9..00b49e90d05f 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -18,17 +18,29 @@
+ #include <init.h>
+ #include <longjmp.h>
+ #include <os.h>
++#include <skas/skas.h>
  
--static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
-+static inline unsigned long
-+twd_fxsr_to_i387(const struct user_fxsr_struct *fxsave)
+ void os_alarm_process(int pid)
  {
- 	struct _fpxreg *st = NULL;
- 	unsigned long twd = (unsigned long) fxsave->twd;
-@@ -69,12 +70,16 @@ static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
- 	return ret;
++	if (pid <= 0)
++		return;
++
+ 	kill(pid, SIGALRM);
  }
  
--/* Get/set the old 32bit i387 registers (pre-FPX) */
--static int fpregs_legacy_get(struct task_struct *target,
--			     const struct user_regset *regset,
--			     struct membuf to)
-+/*
-+ * Get/set the old 32bit i387 registers (pre-FPX)
-+ *
-+ * We provide simple wrappers for mcontext.c, they are only defined locally
-+ * because mcontext.c is userspace facing and needs to a different definition
-+ * of the structures.
-+ */
-+static int _um_i387_from_fxsr(struct membuf to,
-+			      const struct user_fxsr_struct *fxsave)
+ void os_kill_process(int pid, int reap_child)
  {
--	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
- 	int i;
- 
- 	membuf_store(&to, (unsigned long)fxsave->cwd | 0xffff0000ul);
-@@ -91,23 +96,36 @@ static int fpregs_legacy_get(struct task_struct *target,
- 	return 0;
++	if (pid <= 0)
++		return;
++
++	/* Block signals until child is reaped */
++	block_signals();
++
+ 	kill(pid, SIGKILL);
+ 	if (reap_child)
+ 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
++
++	unblock_signals();
  }
  
--static int fpregs_legacy_set(struct task_struct *target,
-+int um_i387_from_fxsr(struct user_i387_struct *i387,
-+		      const struct user_fxsr_struct *fxsave);
+ /* Kill off a ptraced child by all means available.  kill it normally first,
+@@ -38,11 +50,27 @@ void os_kill_process(int pid, int reap_child)
+ 
+ void os_kill_ptraced_process(int pid, int reap_child)
+ {
++	if (pid <= 0)
++		return;
 +
-+int um_i387_from_fxsr(struct user_i387_struct *i387,
-+		      const struct user_fxsr_struct *fxsave)
-+{
-+	struct membuf to = {
-+		.p = i387,
-+		.left = sizeof(*i387),
-+	};
++	/* Block signals until child is reaped */
++	block_signals();
 +
-+	return _um_i387_from_fxsr(to, fxsave);
+ 	kill(pid, SIGKILL);
+ 	ptrace(PTRACE_KILL, pid);
+ 	ptrace(PTRACE_CONT, pid);
+ 	if (reap_child)
+ 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
++
++	unblock_signals();
 +}
 +
-+static int fpregs_legacy_get(struct task_struct *target,
- 			     const struct user_regset *regset,
--			     unsigned int pos, unsigned int count,
--			     const void *kbuf, const void __user *ubuf)
-+			     struct membuf to)
- {
- 	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
--	const struct user_i387_struct *from;
--	struct user_i387_struct buf;
--	int i;
- 
--	if (ubuf) {
--		if (copy_from_user(&buf, ubuf, sizeof(buf)))
--			return -EFAULT;
--		from = &buf;
--	} else {
--		from = kbuf;
--	}
-+	return _um_i387_from_fxsr(to, fxsave);
-+}
-+
-+int um_fxsr_from_i387(struct user_fxsr_struct *fxsave,
-+		      const struct user_i387_struct *from);
-+
-+int um_fxsr_from_i387(struct user_fxsr_struct *fxsave,
-+		      const struct user_i387_struct *from)
++pid_t os_reap_child(void)
 +{
-+	int i;
- 
- 	fxsave->cwd = (unsigned short)(from->cwd & 0xffff);
- 	fxsave->swd = (unsigned short)(from->swd & 0xffff);
-@@ -125,6 +143,26 @@ static int fpregs_legacy_set(struct task_struct *target,
- 
- 	return 0;
++	int status;
++
++	/* Try to reap a child */
++	return waitpid(-1, &status, WNOHANG);
  }
+ 
+ /* Don't use the glibc version, which caches the result in TLS. It misses some
+@@ -151,6 +179,9 @@ void init_new_thread_signals(void)
+ 	set_handler(SIGBUS);
+ 	signal(SIGHUP, SIG_IGN);
+ 	set_handler(SIGIO);
++	/* We (currently) only use the child reaper IRQ in seccomp mode */
++	if (using_seccomp)
++		set_handler(SIGCHLD);
+ 	signal(SIGWINCH, SIG_IGN);
+ }
+ 
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index e71e5b4878d1..11f07f498270 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -29,6 +29,7 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) =
+ 	[SIGBUS]	= relay_signal,
+ 	[SIGSEGV]	= segv_handler,
+ 	[SIGIO]		= sigio_handler,
++	[SIGCHLD]	= sigchld_handler,
+ };
+ 
+ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+@@ -44,7 +45,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ 	}
+ 
+ 	/* enable signals if sig isn't IRQ signal */
+-	if ((sig != SIGIO) && (sig != SIGWINCH))
++	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGCHLD))
+ 		unblock_signals_trace();
+ 
+ 	(*sig_info[sig])(sig, si, &r, mc);
+@@ -64,6 +65,9 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ #define SIGALRM_BIT 1
+ #define SIGALRM_MASK (1 << SIGALRM_BIT)
+ 
++#define SIGCHLD_BIT 2
++#define SIGCHLD_MASK (1 << SIGCHLD_BIT)
 +
-+static int fpregs_legacy_set(struct task_struct *target,
-+			     const struct user_regset *regset,
-+			     unsigned int pos, unsigned int count,
-+			     const void *kbuf, const void __user *ubuf)
-+{
-+	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
-+	const struct user_i387_struct *from;
-+	struct user_i387_struct buf;
-+
-+	if (ubuf) {
-+		if (copy_from_user(&buf, ubuf, sizeof(buf)))
-+			return -EFAULT;
-+		from = &buf;
-+	} else {
-+		from = kbuf;
+ int signals_enabled;
+ #if IS_ENABLED(CONFIG_UML_TIME_TRAVEL_SUPPORT)
+ static int signals_blocked, signals_blocked_pending;
+@@ -102,6 +106,11 @@ static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ 		return;
+ 	}
+ 
++	if (!enabled && (sig == SIGCHLD)) {
++		signals_pending |= SIGCHLD_MASK;
++		return;
 +	}
 +
-+	return um_fxsr_from_i387(fxsave, &buf);
-+}
- #endif
+ 	block_signals_trace();
  
- static int genregs_get(struct task_struct *target,
-diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sysdep/mcontext.h
-index b724c54da316..6fe490cc5b98 100644
---- a/arch/x86/um/shared/sysdep/mcontext.h
-+++ b/arch/x86/um/shared/sysdep/mcontext.h
-@@ -6,7 +6,16 @@
- #ifndef __SYS_SIGCONTEXT_X86_H
- #define __SYS_SIGCONTEXT_X86_H
+ 	sig_handler_common(sig, si, mc);
+@@ -181,6 +190,8 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
  
-+#include <stub-data.h>
+ 	[SIGIO] = sig_handler,
+ 	[SIGWINCH] = sig_handler,
++	/* SIGCHLD is only actually registered in seccomp mode. */
++	[SIGCHLD] = sig_handler,
+ 	[SIGALRM] = timer_alarm_handler,
+ 
+ 	[SIGUSR1] = sigusr1_handler,
+@@ -309,6 +320,12 @@ void unblock_signals(void)
+ 		if (save_pending & SIGIO_MASK)
+ 			sig_handler_common(SIGIO, NULL, NULL);
+ 
++		if (save_pending & SIGCHLD_MASK) {
++			struct uml_pt_regs regs = {};
 +
- extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
-+extern void get_mc_from_regs(struct uml_pt_regs *regs, mcontext_t *mc,
-+			     int single_stepping);
++			sigchld_handler(SIGCHLD, NULL, &regs, NULL);
++		}
 +
-+extern int get_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
-+			  unsigned long *fp_size_out);
-+extern int set_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
-+			  int single_stepping);
+ 		/* Do not reenter the handler */
  
- #ifdef __i386__
- 
+ 		if ((save_pending & SIGALRM_MASK) && (!(signals_active & SIGALRM_MASK)))
 -- 
 2.49.0
 
