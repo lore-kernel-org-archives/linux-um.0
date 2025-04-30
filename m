@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 492C4C3DA4A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87386C3ABAA
 	for <linux-um@archiver.kernel.org>; Wed, 30 Apr 2025 04:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,82 +12,96 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+Rda5w8ftnYQQ6W3q5FgOQJiq+Hj9EhDJE6pWtJC4Ow=; b=w6aSZJaVfoHghLxd2s3U5VmowQ
-	x5opkOT2Dn4AvuMHpKtSfIzqwuVCJuSaGGokDpvtP4bqpQozKXD2norhwkiE7L6/q87+7IG95vKrt
-	svymFzSrvp8usL9yt1tDj0LUJBANqZbVXwOMMQHrHm4v7sKHnwyKXUU8WN4JRM69fDuU+t/2rkRJf
-	gqPwsjNYTZRJnqDdLwFC8sMVpp39VtT9RfRFrph/seY9hTtJNskhZGksh3OG4+qC3PaQ7bcG0NDjl
-	jDdAu276G6Sj9mVOuh8P2Adevm6zF84gtA0VFL9nZajwLUcGsYNQqGZ0gffRrhNNWQYw7Oc7DwjrV
-	vvFpQThg==;
+	bh=OCuYr2KP3wBxDodLMaPRY+onEFYkqYFG8HFmFD5AH3Q=; b=TBv85Z1h7PyiGfFXoQdaNfZWny
+	tjaCXgL8JIGzkCxrq5ZbYkQUmf4psd6lKL5JyqAVfrR6lFiF80YuI7npEuVgN1YHjG7nmQg4+5Nzd
+	1IkHg2uxpLy2oBL44an6JssDOvyTUNefOpNOid/YjBE8hW9Uwput0FxSfP2OUZ74m1ReX0/y5qbW4
+	a5nss2jaqgL9mBpaUbOI2fUMbEVJzXdK4hy51Ctj919EMiqyMH9nuUwqWQ+uuFXvoN0lpoLzRyImU
+	htYipdAOtBuzonHm1F1Qcjvp8h7rnAj+wmXL5kPywEjB01j/Mvogl85tzLC8c7pYaUr4gd2jYF9Ld
+	1twgGV4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z4B-0000000Bffs-1Nvh;
-	Wed, 30 Apr 2025 04:29:03 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1u9z4C-0000000BfhA-0TxX;
+	Wed, 30 Apr 2025 04:29:04 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z31-0000000BfRP-06cu
+	id 1u9z36-0000000BfSg-1FcH
+	for linux-um@bombadil.infradead.org;
+	Wed, 30 Apr 2025 04:27:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=OCuYr2KP3wBxDodLMaPRY+onEFYkqYFG8HFmFD5AH3Q=; b=c2sI6HbbAOLQDZDJEDgFXoKSVc
+	PMA6j8B9+OvRp0z8XAAxL+btJiPYMVYVRQPv/49MqgeW8OPYkq9MQdiRZX+ByCQ5S3mejFBu3Xwof
+	JM2sEyOkx9RKjjXMId41a+TMJ/e+7ipB4MZ52g907q5j3TCPY3PPEnagqqVtSRJAFX5X0qCx0SgJM
+	B1Lm72X+r8mUcoHGNytRaQo0FDVeLBwCNzxMWsCY5NRZh9ZuBugjqdXJNnObtVmNFNaJMA3Q9QL6x
+	e4suTUvgkWKLb6MfpkNEGJz+rdR1tPzR2NHDUIa6BOtYmrGhxZ4o2zo9wULcszGeo1KWAwkp44vxf
+	uE1vykVA==;
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	by desiato.infradead.org with esmtps (Exim 4.98.1 #2 (Red Hat Linux))
+	id 1u9z2y-0000000DgC2-2BOd
 	for linux-um@lists.infradead.org;
-	Wed, 30 Apr 2025 04:27:52 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-2295d78b45cso96735725ad.0
-        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:27:50 -0700 (PDT)
+	Wed, 30 Apr 2025 04:27:50 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-7396f13b750so7548930b3a.1
+        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745987270; x=1746592070; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1745987265; x=1746592065; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Rda5w8ftnYQQ6W3q5FgOQJiq+Hj9EhDJE6pWtJC4Ow=;
-        b=LOt1UQQ2he+Wp0H63f0jw9WotOxBuze9EB8F5SGx0Rka9A6yKskGpVvWR3fL6b5/kg
-         DXAoLMdPQPhTO5vC7nNP31gxuHdu7LyANxmMkjy1KCV4mgOwvpeYXT1t6xrqQsb4RUWg
-         RBbPYD0ZbTLZYFzoqGHYLi5ogoyA80Q/lpjIaa8yG5edTcHKpQQBJyY850TsLNgB0FW0
-         ylEvjEUP5wivOMuYbyZ7shOsHSxDdfP9MuoDawEsyH3pOiXGs306DyHAQKjodsjtJreL
-         XupLsVwKODSief0yCMp5xYS3okY8Kg7+h+Czdxlqnw9GO4W4JO1pRVGsg2ibSsLqOkgv
-         98xw==
+        bh=OCuYr2KP3wBxDodLMaPRY+onEFYkqYFG8HFmFD5AH3Q=;
+        b=Y17HiTd1g9y2gtvBk9/Mwn29rcAcDxzTOrw7vrtN909Va4yE13UlzUWuFYjlSDm1zo
+         wg0ydRKIF1FunMOnlbNvsfBnsiTh0qCHh9RZT73/Mf0KFqQv2p8sokdbGHTVz7dhIowW
+         VJNLkvYYtdqD72sguP8tTDmogU1cd6HSLpEHpwybH1jezCU6g1EYorSEdXgqObGuVkzJ
+         41xOeVBUJ6tZoZf96/ohXstHQtrzy1iPpbfRyf08SJRSN4hGiDx9KVjgu+wWIvKYV9zm
+         f69kQ8qus3Eblnvv4u+/eYzaFOPWeFSmuZi/Ac1aA/LaSaHg2UccAwJW/Txdat6hiMMK
+         6jGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745987270; x=1746592070;
+        d=1e100.net; s=20230601; t=1745987265; x=1746592065;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Rda5w8ftnYQQ6W3q5FgOQJiq+Hj9EhDJE6pWtJC4Ow=;
-        b=YuPsUF1BSyKcCZsKO/bgg51hKKLNuap3bVQxB7FM3DtheggxGv3emIA9NanNOawQer
-         E5WJ4vpqM5/zLowv00jL7cULXER+M+FekDNGa/rsPMm1O15QPPvQY621xdNI1LGZoG7V
-         /gzFklQEl4T+nLwJ58b/04XwFR1pNF5bJ/ffN2OexLw1qQmyPB3IaPgUs2J+6iCwYrIg
-         ecAmEvq3p8icnhyaYz18UQDPWESRjGrqAAV09P+a28H99Ul/48LP6gC5iJhDvLUT1siT
-         huPOQP12LlGp2KlvO5wnqyPUFIw6CWiorAiuUoU+O7jxpsFsWkSYDOsrc5a2VhWPth1J
-         3IBg==
-X-Gm-Message-State: AOJu0Yygi18xXdd6WSJLv0f4kKtq2QDB3BzHT1MpoMuXeB2InTkw5UWy
-	iqq1caxqy/0xhdfE+BcwFyJe6pJharLB6wQdETSm+OcNS4rrlyVk
-X-Gm-Gg: ASbGncvm5Fz/NbHzipiUMZBVoZhVM0f5unS/taEZ0VFVanhTutetw7d6ik1I/TDHif7
-	kvOEAKJPPgkSUp1tPDrOSyoBFxYYvRK8a9WBer72Crx3gna/q8GqrDgNF7U/6GfYhbI5ksuRyQ8
-	uu1vri1mKnKkdxNBxAdER1Ftn5e3CIBYytPhH55/MUWNSW7CrfNwPdqq3fXVxKH7+zjBSG7cynG
-	NozGLh5aCw7r9CDt9VjIKeEdsXPza7fM577Ou4yw9hTPpR6qoCKYjmkF/atsGactRMr+T5w1TIE
-	snVpurKjGLFeSddETEH8IWlO1Het+e8Iv6gHNTj7VmacJnoTL6FqfrhSMsB/hn5j/s8v5PF4ZcM
-	qdfk1n5tW4Qw=
-X-Google-Smtp-Source: AGHT+IFM9+qSbHZo6PrAllTRnzE6ZKUFkumQZ/B0AYyUyUFgvdPZvBGr40PMIlqIRsils5Ezf29wWA==
-X-Received: by 2002:a17:902:e84b:b0:223:5c33:56a8 with SMTP id d9443c01a7336-22df581e52cmr18188695ad.35.1745987269925;
-        Tue, 29 Apr 2025 21:27:49 -0700 (PDT)
+        bh=OCuYr2KP3wBxDodLMaPRY+onEFYkqYFG8HFmFD5AH3Q=;
+        b=ITt1ElGyxso2Bdv9xwEdQ5fPn/EcjMa/bc6RVEgKNoz/ue8ZrsqHfzHOV8IOFnSBiA
+         hHI3IJ8oLVCZTI2Wj/X7MI/89i1wrM33EFnNELdSjMzJqF+GRHPBCHjgmJDy9KPsvSky
+         XDH3VnDu50zhX4X2ggaYZofQbuQta130521DEBWSoRTb4vgOPKWWNP4ZzftsVgP5OfIX
+         JareT8OQ2nrOjY86TqibwZKzIoj86F4D7TlttoLJ30htK/qDCS0gr0u7W7Xd6P3jDFWj
+         zMdlHt3i72HqDAul6Uf9vZFIJpEkCLBrNmsfoQf9ckUsUjnuL+StqCNXSpYvfm26lwqp
+         UnXg==
+X-Gm-Message-State: AOJu0YyYGQdHS/267L5gk1/dfcctj+pW0kVujIAylqSne+jGD5R+Es+c
+	1gaEsvSWZ50n1MAPE5unq/qi7v+bhPKWiwDc5ZEV0mwJ4inPDGyC
+X-Gm-Gg: ASbGnctQDQeykwyxxCg9KJj1JGmG3/V/QPgDsyt3PFEGTPIANCgvIJHCBTqqN8s3Y5/
+	JY7L6ovJnyOL3AIN+OBK+5VbUIWjP4CzLDoyPgcczAf+XAqlB4f9X1cTW9CyxmW+9B/f0Q+rAKK
+	M9H7EWZx3/SwAtoqi5F5Nps2LYSf9/LwyqkQ/E0F1mBVfMUiYdW7oGi/qgN28SZJVh8S/F4+bZc
+	VZU+5qYQ9MzBEZZrDi4TYDyqNxq0lmALGwYD3wz1jl6r7ZHrVBWRhJJrJHECkapQUo6ep7M6Lf5
+	jDTtlovoZMSV9/sLh7h0oRB5DRuC1OyRyHu+rfGr0peLP4katnJXmP8R4r4bnkBrwkP0h89XBrf
+	UjBmLEPiX82o=
+X-Google-Smtp-Source: AGHT+IH0FbwVRr3MAmvHuDKfwKvFcYAl32DVyoxymDr2Jear3LyL+Hz5Wp7hXom+GZQca10gjxHCUA==
+X-Received: by 2002:a05:6a00:130e:b0:736:6043:69f9 with SMTP id d2e1a72fcca58-74038a85c28mr2474451b3a.19.1745987264935;
+        Tue, 29 Apr 2025 21:27:44 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db50e7c1bsm112367585ad.107.2025.04.29.21.27.49
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-74039a62bfdsm628293b3a.142.2025.04.29.21.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 21:27:49 -0700 (PDT)
+        Tue, 29 Apr 2025 21:27:44 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 6F158E9481C; Wed, 30 Apr 2025 13:27:47 +0900 (JST)
+	id 2BA51E94818; Wed, 30 Apr 2025 13:27:42 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
-	linux-kernel@vger.kernel.org,
-	Kenichi Yasukata <kenichi.yasukata@gmail.com>
-Subject: [PATCH v8 05/12] um: nommu: seccomp syscalls hook
-Date: Wed, 30 Apr 2025 13:27:11 +0900
-Message-ID: <1a00eb90cbfa24befe9bdd5416a8fb837881deae.1745980082.git.thehajime@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8 03/12] um: nommu: memory handling
+Date: Wed, 30 Apr 2025 13:27:09 +0900
+Message-ID: <2598e5207a53e4ec1f2077b5c5a9f03fc3782506.1745980082.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1745980082.git.thehajime@gmail.com>
 References: <cover.1745980082.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250429_212751_065271_81060998 
-X-CRM114-Status: GOOD (  23.39  )
+X-CRM114-CacheID: sfid-20250430_052748_801870_41EC7A81 
+X-CRM114-Status: GOOD (  16.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,331 +116,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This commit adds syscall hook with seccomp.
+This commit adds memory operations on UML under !MMU environment.
 
-Using seccomp raises SIGSYS to UML process, which is captured in the
-(UML) kernel, then jumps to the syscall entry point, __kernel_vsyscall,
-to hook the original syscall instructions.
-
-The SIGSYS signal is raised upon the execution from uml_reserved and
-high_physmem, which locates userspace memory.
+Some part of the original UML code relying on CONFIG_MMU are excluded
+from compilation when !CONFIG_MMU.  Additionally, generic functions such as
+uaccess, futex, memcpy/strnlen/strncpy can be used as user- and
+kernel-space share the address space in !CONFIG_MMU mode.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Kenichi Yasukata <kenichi.yasukata@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/include/shared/kern_util.h    |  2 +
- arch/um/include/shared/os.h           | 10 +++
- arch/um/kernel/um_arch.c              |  3 +
- arch/um/nommu/Makefile                |  3 +
- arch/um/nommu/os-Linux/Makefile       |  7 +++
- arch/um/nommu/os-Linux/signal.c       | 16 +++++
- arch/um/os-Linux/Makefile             |  5 ++
- arch/um/os-Linux/seccomp.c            | 87 +++++++++++++++++++++++++++
- arch/um/os-Linux/signal.c             |  8 +++
- arch/x86/um/nommu/Makefile            |  2 +-
- arch/x86/um/nommu/os-Linux/Makefile   |  6 ++
- arch/x86/um/nommu/os-Linux/mcontext.c | 13 ++++
- arch/x86/um/shared/sysdep/mcontext.h  |  3 +
- 13 files changed, 164 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/nommu/Makefile
- create mode 100644 arch/um/nommu/os-Linux/Makefile
- create mode 100644 arch/um/nommu/os-Linux/signal.c
- create mode 100644 arch/um/os-Linux/seccomp.c
- create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
- create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
+ arch/um/Makefile                  | 4 ++++
+ arch/um/include/asm/futex.h       | 4 ++++
+ arch/um/include/asm/mmu.h         | 3 +++
+ arch/um/include/asm/mmu_context.h | 2 ++
+ arch/um/include/asm/uaccess.h     | 7 ++++---
+ arch/um/kernel/mem.c              | 3 ++-
+ arch/um/os-Linux/mem.c            | 4 ++++
+ arch/um/os-Linux/process.c        | 4 ++--
+ 8 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 00ca3e12fd9a..2c8c18bd5860 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -66,6 +66,8 @@ extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs
- extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
- 		  void *mc);
- extern void fatal_sigsegv(void) __attribute__ ((noreturn));
-+extern void sigsys_handler(int sig, struct siginfo *si, struct uml_pt_regs *,
-+			   void *mc);
- 
- void um_idle_sleep(void);
- 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 152a60080d5b..7f6703869dde 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -338,4 +338,14 @@ extern void um_trace_signals_off(void);
- /* time-travel */
- extern void deliver_time_travel_irqs(void);
- 
-+/* seccomp.c */
-+#ifdef CONFIG_MMU
-+static inline int os_setup_seccomp(void)
-+{
-+	return 0;
-+}
-+#else
-+extern int os_setup_seccomp(void);
-+#endif
-+
- #endif
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 7f050783885a..2b591e929eca 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -433,6 +433,9 @@ void __init setup_arch(char **cmdline_p)
- 		add_bootloader_randomness(rng_seed, sizeof(rng_seed));
- 		memzero_explicit(rng_seed, sizeof(rng_seed));
- 	}
-+
-+	/* install seccomp filter */
-+	os_setup_seccomp();
- }
- 
- void __init arch_cpu_finalize_init(void)
-diff --git a/arch/um/nommu/Makefile b/arch/um/nommu/Makefile
-new file mode 100644
-index 000000000000..baab7c2f57c2
---- /dev/null
-+++ b/arch/um/nommu/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y := os-Linux/
-diff --git a/arch/um/nommu/os-Linux/Makefile b/arch/um/nommu/os-Linux/Makefile
-new file mode 100644
-index 000000000000..68833c576437
---- /dev/null
-+++ b/arch/um/nommu/os-Linux/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y := signal.o
-+USER_OBJS := $(obj-y)
-+
-+include $(srctree)/arch/um/scripts/Makefile.rules
-+USER_CFLAGS+=-I$(srctree)/arch/um/os-Linux
-diff --git a/arch/um/nommu/os-Linux/signal.c b/arch/um/nommu/os-Linux/signal.c
-new file mode 100644
-index 000000000000..19043b9652e2
---- /dev/null
-+++ b/arch/um/nommu/os-Linux/signal.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <signal.h>
-+#include <kern_util.h>
-+#include <os.h>
-+#include <sysdep/mcontext.h>
-+#include <sys/ucontext.h>
-+
-+void sigsys_handler(int sig, struct siginfo *si,
-+		    struct uml_pt_regs *regs, void *ptr)
-+{
-+	mcontext_t *mc = (mcontext_t *) ptr;
-+
-+	/* hook syscall via SIGSYS */
-+	set_mc_sigsys_hook(mc);
-+}
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 331564888400..6bfdfec8cbcc 100644
---- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -21,4 +21,9 @@ USER_OBJS := $(user-objs-y) elf_aux.o execvp.o file.o helper.o irq.o \
- 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
- 	tty.o umid.o util.o
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1d36a613aad8..fcf4bb915a31 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -46,6 +46,10 @@ ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
+ ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
  
 +ifneq ($(CONFIG_MMU),y)
-+obj-y += seccomp.o
-+USER_OBJS += seccomp.o
++core-y += $(ARCH_DIR)/nommu/
 +endif
 +
- include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/um/os-Linux/seccomp.c b/arch/um/os-Linux/seccomp.c
-new file mode 100644
-index 000000000000..d1cfa6e3d632
---- /dev/null
-+++ b/arch/um/os-Linux/seccomp.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <sys/prctl.h>
-+#include <sys/syscall.h>   /* For SYS_xxx definitions */
-+#include <init.h>
-+#include <as-layout.h>
-+#include <os.h>
-+#include <linux/filter.h>
-+#include <linux/seccomp.h>
-+
-+int __init os_setup_seccomp(void)
-+{
-+	int err;
-+	unsigned long __userspace_start = uml_reserved,
-+		__userspace_end = high_physmem;
-+
-+	struct sock_filter filter[] = {
-+		/* if (IP_high > __userspace_end) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JGT + BPF_K, __userspace_end >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
-+
-+		/* if (IP_high == __userspace_end && IP_low >= __userspace_end) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, __userspace_end >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/3),
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer)),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_end,
-+			 /*true-skip=*/0, /*false-skip=*/1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
-+
-+		/* if (IP_high < __userspace_start) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_start >> 32,
-+			 /*true-skip=*/1, /*false-skip=*/0),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
-+
-+		/* if (IP_high == __userspace_start && IP_low < __userspace_start) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, __userspace_start >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/3),
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer)),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_start,
-+			 /*true-skip=*/1, /*false-skip=*/0),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
-+
-+		/* other address; trap  */
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_TRAP),
-+	};
-+	struct sock_fprog prog = {
-+		.len = ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+
-+	err = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	if (err)
-+		os_warn("PR_SET_NO_NEW_PRIVS (err=%d, ernro=%d)\n",
-+		       err, errno);
-+
-+	err = syscall(SYS_seccomp, SECCOMP_SET_MODE_FILTER,
-+		      SECCOMP_FILTER_FLAG_TSYNC, &prog);
-+	if (err) {
-+		os_warn("SECCOMP_SET_MODE_FILTER (err=%d, ernro=%d)\n",
-+		       err, errno);
-+		exit(1);
-+	}
-+
-+	set_handler(SIGSYS);
-+
-+	os_info("seccomp: setup filter syscalls in the range: 0x%lx-0x%lx\n",
-+		__userspace_start, __userspace_end);
-+
-+	return 0;
-+}
-+
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index e71e5b4878d1..9adc729c20bd 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -20,6 +20,7 @@
- #include <um_malloc.h>
- #include <sys/ucontext.h>
- #include <timetravel.h>
-+#include <linux/compiler_attributes.h>
+ # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
+ # named - it's a common symbol in libpcap, so we get a binary which crashes.
+ #
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+index 780aa6bfc050..785fd6649aa2 100644
+--- a/arch/um/include/asm/futex.h
++++ b/arch/um/include/asm/futex.h
+@@ -7,8 +7,12 @@
+ #include <asm/errno.h>
  
- void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) = {
- 	[SIGTRAP]	= relay_signal,
-@@ -29,6 +30,7 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) =
- 	[SIGBUS]	= relay_signal,
- 	[SIGSEGV]	= segv_handler,
- 	[SIGIO]		= sigio_handler,
-+	[SIGSYS]	= sigsys_handler,
- };
  
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
-@@ -167,6 +169,11 @@ static void sigusr1_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
- 	uml_pm_wake();
- }
- 
-+__weak void sigsys_handler(int sig, struct siginfo *unused_si,
-+			   struct uml_pt_regs *regs, void *mc)
-+{
-+}
-+
- void register_pm_wake_signal(void)
- {
- 	set_handler(SIGUSR1);
-@@ -178,6 +185,7 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 	[SIGILL] = sig_handler,
- 	[SIGFPE] = sig_handler,
- 	[SIGTRAP] = sig_handler,
-+	[SIGSYS] = sig_handler,
- 
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
-diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
-index d72c63afffa5..ebe47d4836f4 100644
---- a/arch/x86/um/nommu/Makefile
-+++ b/arch/x86/um/nommu/Makefile
-@@ -5,4 +5,4 @@ else
- 	BITS := 64
- endif
- 
--obj-y = do_syscall_$(BITS).o entry_$(BITS).o
-+obj-y = do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
-diff --git a/arch/x86/um/nommu/os-Linux/Makefile b/arch/x86/um/nommu/os-Linux/Makefile
-new file mode 100644
-index 000000000000..4571e403a6ff
---- /dev/null
-+++ b/arch/x86/um/nommu/os-Linux/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y = mcontext.o
-+USER_OBJS := mcontext.o
-+
-+include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nommu/os-Linux/mcontext.c
-new file mode 100644
-index 000000000000..c4ef877d5ea0
---- /dev/null
-+++ b/arch/x86/um/nommu/os-Linux/mcontext.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <sys/ucontext.h>
-+#define __FRAME_OFFSETS
-+#include <asm/ptrace.h>
-+#include <sysdep/ptrace.h>
-+#include <sysdep/mcontext.h>
-+#include <sysdep/syscalls.h>
-+
-+void set_mc_sigsys_hook(mcontext_t *mc)
-+{
-+	mc->gregs[REG_RCX] = mc->gregs[REG_RIP];
-+	mc->gregs[REG_RIP] = (unsigned long) __kernel_vsyscall;
-+}
-diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sysdep/mcontext.h
-index b724c54da316..15e9ff287021 100644
---- a/arch/x86/um/shared/sysdep/mcontext.h
-+++ b/arch/x86/um/shared/sysdep/mcontext.h
-@@ -7,6 +7,9 @@
- #define __SYS_SIGCONTEXT_X86_H
- 
- extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
-+#ifndef CONFIG_MMU
-+extern void set_mc_sigsys_hook(mcontext_t *mc);
++#ifdef CONFIG_MMU
+ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 			      u32 oldval, u32 newval);
++#else
++#include <asm-generic/futex.h>
 +#endif
  
- #ifdef __i386__
+ #endif
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index 01422b761aa0..d4087f9499e2 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -15,10 +15,13 @@ typedef struct mm_context {
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
  
++#ifndef CONFIG_MMU
++	unsigned long   end_brk;
+ #ifdef CONFIG_BINFMT_ELF_FDPIC
+ 	unsigned long   exec_fdpic_loadmap;
+ 	unsigned long   interp_fdpic_loadmap;
+ #endif
++#endif /* !CONFIG_MMU */
+ } mm_context_t;
+ 
+ #endif
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 23dcc914d44e..033a70166066 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -36,11 +36,13 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	}
+ }
+ 
++#ifdef CONFIG_MMU
+ #define init_new_context init_new_context
+ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
+ 
+ #define destroy_context destroy_context
+ extern void destroy_context(struct mm_struct *mm);
++#endif
+ 
+ #include <asm-generic/mmu_context.h>
+ 
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 3a08f9029a3f..eb9b7d577062 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -23,6 +23,7 @@
+ #define __addr_range_nowrap(addr, size) \
+ 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+ 
++#ifdef CONFIG_MMU
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+@@ -34,9 +35,6 @@ static inline int __access_ok(const void __user *ptr, unsigned long size);
+ 
+ #define INLINE_COPY_FROM_USER
+ #define INLINE_COPY_TO_USER
+-
+-#include <asm-generic/uaccess.h>
+-
+ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ {
+ 	unsigned long addr = (unsigned long)ptr;
+@@ -68,5 +66,8 @@ do {									\
+ 	put_unaligned(*((type *)src), (type *)(dst));			\
+ 	current->thread.segv_continue = NULL;				\
+ } while (0)
++#endif
++
++#include <asm-generic/uaccess.h>
+ 
+ #endif
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index cbe8b9d03d8c..1e18384381e2 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -64,7 +64,8 @@ void __init mem_init(void)
+ 	 * to be turned on.
+ 	 */
+ 	brk_end = (unsigned long) UML_ROUND_UP(sbrk(0));
+-	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
++	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1,
++		   !IS_ENABLED(CONFIG_MMU));
+ 	memblock_free((void *)brk_end, uml_reserved - brk_end);
+ 	uml_reserved = brk_end;
+ 	min_low_pfn = PFN_UP(__pa(uml_reserved));
+diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
+index 72f302f4d197..4f5d9a94f8e2 100644
+--- a/arch/um/os-Linux/mem.c
++++ b/arch/um/os-Linux/mem.c
+@@ -213,6 +213,10 @@ int __init create_mem_file(unsigned long long len)
+ {
+ 	int err, fd;
+ 
++	/* NOMMU kernel uses -1 as a fd for further use (e.g., mmap) */
++	if (!IS_ENABLED(CONFIG_MMU))
++		return -1;
++
+ 	fd = create_tmp_file(len);
+ 
+ 	err = os_set_exec_close(fd);
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 2331e32c4898..8a615875d1a1 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -70,8 +70,8 @@ int os_map_memory(void *virt, int fd, unsigned long long off, unsigned long len,
+ 	prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
+ 		(x ? PROT_EXEC : 0);
+ 
+-	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED,
+-		     fd, off);
++	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED |
++		     (!IS_ENABLED(CONFIG_MMU) ? MAP_ANONYMOUS : 0), fd, off);
+ 	if (loc == MAP_FAILED)
+ 		return -errno;
+ 	return 0;
 -- 
 2.43.0
 
