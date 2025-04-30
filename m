@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2593DC369DC
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 467B9C3ABAD
 	for <linux-um@archiver.kernel.org>; Wed, 30 Apr 2025 04:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q5NKRA2Vd8iUo2TNfSXqtZxbhUvo/xKWVJfwrs+7skI=; b=o19OeGMk8w1lHmVD23ajLCeeia
-	ysFs8aMH0UakSBru2/aRt/51AXd1OZc37kIeArPaGBd7sToPleK53asi3vLw1nuhxCqDM/gYs49AM
-	K6ESOz13f/BVMQZNIOEmMy7i6zcH2mecb+R+AoIt++RR4uYCe9d0fTBZv05N8FCWdndu6G+SXGRq0
-	om5Yi5BOv148cJg/J7/rlcF9duIgiidNxXA61dOjbQmLuUx/9TG+YnaQV/NmpTn1pPUvGKGEwdA95
-	T/HIQ5wDleol4CvPKRRZOUXZ8FVa/NQMcVNfG8olndUIuUldZ3EwvRwroJ3lxKL7cCDtzVubEbQTC
-	10IUPnVw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=yisMRp57N4S0wfYh8oqiHXWJMZDekJ9wSMzIJzMXX/Y=; b=VkMuKKUFIxT/zT/GVubaCuSH05
+	8XXubV94lwiTVP+TrJCtQt8tBVAS7N62A2R5hHHmCTZuooTU7mMiSEJO0RJFMhD8fNktftHM6gEzv
+	FD1BeknHtLeSBoFPlsiTe4XSgNScy5kBdn3P/uHqubl0Y25jqKZIaFPQyMuxR0y2+fkWhxFN4owJK
+	DtJQ7tmUffanT5TSPOWHQ2LytHWodlV2Wte6A+51rouQCBia+PJGmRLpIuBviI2GAiAUFbORJ33WX
+	BRecK+hXjEHF69g2kBRR34PxP6fZ/IgtLVqHRzWzHcYmL1Pr3z52//UUiCAOkhyoF0ICqNtwEV87k
+	MZMTjl4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z4B-0000000Bfg2-2eJo;
-	Wed, 30 Apr 2025 04:29:03 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1u9z4A-0000000BffW-1mrA;
+	Wed, 30 Apr 2025 04:29:02 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z32-0000000BfRi-3CBM
+	id 1u9z2j-0000000BfOo-2Spw
 	for linux-um@lists.infradead.org;
-	Wed, 30 Apr 2025 04:27:53 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-22409077c06so109264315ad.1
-        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:27:52 -0700 (PDT)
+	Wed, 30 Apr 2025 04:27:35 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-223fd89d036so85387775ad.1
+        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:27:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745987272; x=1746592072; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q5NKRA2Vd8iUo2TNfSXqtZxbhUvo/xKWVJfwrs+7skI=;
-        b=CVWJ/W/Z6YOqEQS6w//VLoeUyMrR4TZvh3FB0cYzawLSyu22HWV/oAhbABEwL2Lx0Q
-         R3EvKe3GfcgsSd3N1FgmmoSpXa+Bhh8XQSpgbAbseGUbe5iyO3ZUV22ySaQL7gPvCP4n
-         v2KWTwCHLM4U8lqdYMzLw+gegiW+wVM/Il+HVGra4gkfWv/XDjUx30WJ4eUQRkpPY3JU
-         ILm+zxEqf5Otdd2iHiFD/HfYe5lkGpw129qa+wgLYM0ghGwWZtdMJrQpKJunikxmHuQn
-         IdMFpb9ihy87PtA8T2CyZDTE2D0WAy5Y73oGm/IEcIyyG+qMZYshTVAcNbsgt/htx6do
-         6Ulg==
+        d=gmail.com; s=20230601; t=1745987252; x=1746592052; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yisMRp57N4S0wfYh8oqiHXWJMZDekJ9wSMzIJzMXX/Y=;
+        b=AQ5U49fDiQv0EPexjDqpuMrP6zs5Tgu0pK+6vBxUNIZEKovrA6tTfxGKCnjULClnJT
+         qpYk0zWy/fpWIluUdpC7z006Gm6C9N4VpiSlaN8BMAD0HrS06gR1/UhE2n24ZSQDh9FM
+         pFjP2FWHrWFpxtg/zSluYc4PUAfdL2JpaUnQiQaO+9kYFIqCIfgXMmdGkxbQodrPnmLu
+         8Sh3sgBjJU5djfzrq/94CvL0lrDZe93uNCztbVG3YTRBjnz9OMyQHfjWKCzQYOg/l0lI
+         gJRDhXaQLIazCiUT+JnP7mNokTHQREqDGiqoYP7PgEglx9MdDw0JtzrRc94Za8C6YYcF
+         /D0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745987272; x=1746592072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q5NKRA2Vd8iUo2TNfSXqtZxbhUvo/xKWVJfwrs+7skI=;
-        b=OxzgK9ejrkI+CSYk864qLYj+DP9eypxQqZJ0b956UoOsrgLx0+Aky6x7Luv0ImQHgo
-         /lSfXz5zpy6kr6D2EAoFsCV0HL5EuvWvfbCX6H9CHf/vOVKhEj1Z+9llh8QU5aMG067V
-         cWQw0TEW96XbsK7JFGoYz0mf5SL2BDTYAY3sZTfZjs/ls07ZEcb+Tbd43v+jfd5GAXvW
-         +DrNim7ERyAbLgY3MNId59abAvpound7x36YcIkw2CxQpkvjsX3ieGTLaN8tCXpU8S7P
-         o/YFpmTR7/tOCG3CsKDO3UWoSVs5N7CdwmRco/MaNLvGhY5GIedJbv8C1pLOs93tcG4d
-         p6FQ==
-X-Gm-Message-State: AOJu0Yxf3T+cEbLwHyLbsdoyQWBXjs6RreFHR2Ix1Jh/24a3aH5iVE3p
-	YFx4GiFFoFHyQaR14QqE32YfP3mu5UCvqp0qhpfUdfcpxPDajipeXUsVoLF1
-X-Gm-Gg: ASbGncslS406ek7Gp6V3iJznOQqNFbYKCLt1uH/1sRRv6fI6XvDnlOD8IzaQ4SupsA6
-	PHJZRHwA1Ps0+UhWrBPzgRX0fFwwWgjJ7JGRa/2EA71vsej5GkUMbzAlqCnwlvGSHUVPWQbhijy
-	v0hID501QRCjU44CJYzs/ZdBdPuduzndnvtzllTvE2oOR5paVk9pqie7JxoAlfUNoOkDHjIrfk4
-	oHTqYuBUEDEeiz4/l95XqJrSBwpGaACYKK7NbORF6kfcrRD5NwqsWpG8zEj1btpHwA5gFFRnNss
-	tPkdbDMs5/sfBLgOEBk4jgX6YQ5zEWyxMf4jm6/Cg9MUcsSkg54pkLaIIZN2gEjsP3bT0IZQQEo
-	CYON+VrLgCm0=
-X-Google-Smtp-Source: AGHT+IGOxIjchaID2CDqMQJI7v4ig2oBAAKA/o5gORT6xH9R/bvvse4aK4O3R8Prfqt9cmDnq/3Z6A==
-X-Received: by 2002:a17:903:298e:b0:224:1c1:4ac1 with SMTP id d9443c01a7336-22df358f9c2mr28149925ad.47.1745987271755;
-        Tue, 29 Apr 2025 21:27:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745987252; x=1746592052;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yisMRp57N4S0wfYh8oqiHXWJMZDekJ9wSMzIJzMXX/Y=;
+        b=JVJ1NNfkh996xcwsUwx8NgZjcwG/bGabaB3TbVqgKmDiKXGLOO7N1t6waHLg1HYbX3
+         yAZ8bkNwWJq69n1esVQR1x84gB4wkVzokAa+wdCSrWxc1XsFAMZXlp+KfdK5yWGJw5sY
+         Mw7swl0UsZW2uBl3vYqYC+3n8WdD8L8AmS/QcxBVhdJuJNCJXDTScROi7GX3Vzc5Jl5I
+         rKCX2NU8DMKrm5FHwJgeu+7AjgIShx0ncFu0RmBVYp2FkjH8hpUCbtimHONc8vjUwdAm
+         f+f9YJb4irfD/E+2HFloFqY0MCib4+v95zuEOdZuUkYmPjqJ0ibIK1KlCKyt/+lXjwdc
+         c+Vw==
+X-Gm-Message-State: AOJu0YzzxHChFAJqy3vPX/Y53j6COWXQIVfwMb0BkEUd+NXXlqiTcBlB
+	RPQVheSEMkFyqT9OLcNSC+RGyRVFohdgDi00oDNuDS7v284kjMSr
+X-Gm-Gg: ASbGncvhUabYthbD3hT+HelkIAoxoqhifjR3RBdGaW0NVnfDPYXgHpkwdNLO/onnbO3
+	ZlZ7e/jSB1Sjvo8gGbZ0X7lEkgfxfXkyQ95DrmEEfcGckXgzXV/C1QwiFiDE1zrczQJhSvM8D/b
+	ylK8VfOnukjgdmd3n8WByX05QDUU3C2K+FxK9JgClrGGekgzzSsMhXre0MMcK5CGKWlvTys0I0C
+	qSGv4Jedeq+xsiSWC53f52ldH08wCJWk8qhZc6QMP0UrQ8m3PdmfZ7FljlCE4k8DY3zNV2xw82/
+	DF1xIhEkaKu0lkTefmmkTd7gQHXYpO+3tmo7tyUeul46Z5cfYqob+kH5WYXExVBj2EGpH4h/0m9
+	YL/jg/M+XyRJ4TMDc6AKBJg==
+X-Google-Smtp-Source: AGHT+IGz+n4eA0EfImRh+nJJwNNRW/jRDDM+weYXGUXjyWriWtExutVfGVYvVxhjAZdB3/oAoBwgQg==
+X-Received: by 2002:a17:902:e546:b0:229:1717:882a with SMTP id d9443c01a7336-22df5764855mr15094535ad.4.1745987252183;
+        Tue, 29 Apr 2025 21:27:32 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db50e7a33sm112187705ad.146.2025.04.29.21.27.50
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db50e7b50sm112281735ad.130.2025.04.29.21.27.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 21:27:51 -0700 (PDT)
+        Tue, 29 Apr 2025 21:27:31 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id C7F08E9481E; Wed, 30 Apr 2025 13:27:49 +0900 (JST)
+	id 02A30E94812; Wed, 30 Apr 2025 13:27:28 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v8 06/12] x86/um: nommu: process/thread handling
-Date: Wed, 30 Apr 2025 13:27:12 +0900
-Message-ID: <71d4afcd72f3ea4a513c012c8bc6db04419f57e9.1745980082.git.thehajime@gmail.com>
+Subject: [PATCH v8 00/12] nommu UML
+Date: Wed, 30 Apr 2025 13:27:06 +0900
+Message-ID: <cover.1745980082.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1745980082.git.thehajime@gmail.com>
-References: <cover.1745980082.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250429_212752_797699_D7EEDCAA 
-X-CRM114-Status: GOOD (  18.99  )
+X-CRM114-CacheID: sfid-20250429_212733_675113_019E709F 
+X-CRM114-Status: GOOD (  19.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,170 +98,157 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Since ptrace facility isn't used under !MMU of UML, there is different
-code path to invoke processes/threads; there are no external process
-used, and need to properly configure some of registers (fs segment
-register for TLS, etc) on every context switch, etc.
+This patchset is another spin of nommu mode addition to UML.  It would
+be nice to hear about your opinions on that.
 
-Signals aren't delivered in non-ptrace syscall entry/leave so, we also
-need to handle pending signal by ourselves.
+There are still several limitations/issues which we already found;
+here is the list of those issues.
 
-ptrace related syscalls are not tested yet so, marked
-arch_has_single_step() unsupported in !MMU environment.
+- memory mapped by loadable modules are not distinguished from
+  userspace memory.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Ricardo Koller <ricarkol@google.com>
----
- arch/um/include/asm/ptrace-generic.h |  2 +-
- arch/um/os-Linux/process.c           |  6 ++++
- arch/x86/um/Makefile                 |  3 +-
- arch/x86/um/nommu/Makefile           |  2 +-
- arch/x86/um/nommu/entry_64.S         | 22 ++++++++++++++
- arch/x86/um/nommu/syscalls_64.c      | 44 ++++++++++++++++++++++++++++
- 6 files changed, 76 insertions(+), 3 deletions(-)
+-- Hajime
+
+v8:
+- rebase with the latest uml/next branch
+- clean up segv_handler to align with the latest uml ([9/12])
+
+v7:
+- properly handle FP register upon signal delivery [10/13]
+- update benchmark result with new FP register handling [12/13]
+- fix arch_has_single_step() for !MMU case [07/13]
+- revert stack alignment as it is in uml/fixes tree [10/13]
+- https://lore.kernel.org/all/cover.1737348399.git.thehajime@gmail.com/
+
+v6:
+- rebase to the latest uml/next tree
+- more clean up on mmu/nommu for signal handling [10/13]
+- rename functions of mcontext routines [06,10/13]
+- added Acked-by tag for binfmt_elf_fdpic [02/13]
+- https://lore.kernel.org/linux-um/cover.1736853925.git.thehajime@gmail.com/
+
+v5:
+- clean up stack manipulation code [05,06,07,10/13]
+- https://lore.kernel.org/linux-um/cover.1733998168.git.thehajime@gmail.com/
+
+v4:
+- add arch/um/nommu, arch/x86/um/nommu to contain !MMU specific codes
+- remove zpoline patch
+- drop binfmt_elf_fdpic patch
+- reduce ifndef CONFIG_MMU if possible
+- split to elf header cleanup patch [01/13]
+- fix kernel test robot warnings [06/13]
+- fix coding styles [07/13]
+- move task_top_of_stack definition [05/13]
+- https://lore.kernel.org/linux-um/cover.1733652929.git.thehajime@gmail.com/
+
+v3:
+- https://lore.kernel.org/linux-um/cover.1733199769.git.thehajime@gmail.com/
+- add seccomp-based syscall hook in addition to zpoline [06/13]
+- remove RFC, add a line to MAINTAINERS file
+- fix kernel test robot warnings [02/13,08/13,10/13]
+- add base-commit tag to cover letter
+- pull the latest uml/next
+- clean up SIGSEGV handling [10/13]
+- detect fsgsbase availability with elf aux vector [08/13]
+- simplify vdso code with macros [09/13]
+
+RFC v2:
+- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
+- base branch is now uml/linux.git instead of torvalds/linux.git.
+- reorganize the patch series to clean up
+- fixed various coding styles issues
+- clean up exec code path [07/13]
+- fixed the crash/SIGSEGV case on userspace programs [10/13]
+- add seccomp filter to limit syscall caller address [06/13]
+- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
+- removes unrelated changes
+- removes unneeded ifndef CONFIG_MMU
+- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
+- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
+  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
+
+RFC:
+- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
+
+Hajime Tazaki (12):
+  x86/um: nommu: elf loader for fdpic
+  um: decouple MMU specific code from the common part
+  um: nommu: memory handling
+  x86/um: nommu: syscall handling
+  um: nommu: seccomp syscalls hook
+  x86/um: nommu: process/thread handling
+  um: nommu: configure fs register on host syscall invocation
+  x86/um/vdso: nommu: vdso memory update
+  x86/um: nommu: signal handling
+  um: change machine name for uname output
+  um: nommu: add documentation of nommu UML
+  um: nommu: plug nommu code into build system
+
+ Documentation/virt/uml/nommu-uml.rst    | 177 +++++++++++++++++++++
+ MAINTAINERS                             |   1 +
+ arch/um/Kconfig                         |  14 +-
+ arch/um/Makefile                        |  10 ++
+ arch/um/configs/x86_64_nommu_defconfig  |  64 ++++++++
+ arch/um/include/asm/futex.h             |   4 +
+ arch/um/include/asm/mmu.h               |   8 +
+ arch/um/include/asm/mmu_context.h       |   2 +
+ arch/um/include/asm/ptrace-generic.h    |   8 +-
+ arch/um/include/asm/uaccess.h           |   7 +-
+ arch/um/include/shared/kern_util.h      |   6 +
+ arch/um/include/shared/os.h             |  16 ++
+ arch/um/kernel/Makefile                 |   5 +-
+ arch/um/kernel/mem-pgtable.c            |  55 +++++++
+ arch/um/kernel/mem.c                    |  38 +----
+ arch/um/kernel/process.c                |  25 +++
+ arch/um/kernel/skas/process.c           |  27 ----
+ arch/um/kernel/um_arch.c                |   3 +
+ arch/um/nommu/Makefile                  |   3 +
+ arch/um/nommu/os-Linux/Makefile         |   7 +
+ arch/um/nommu/os-Linux/signal.c         |  29 ++++
+ arch/um/nommu/trap.c                    | 194 ++++++++++++++++++++++++
+ arch/um/os-Linux/Makefile               |   8 +-
+ arch/um/os-Linux/internal.h             |   5 +
+ arch/um/os-Linux/mem.c                  |   4 +
+ arch/um/os-Linux/process.c              | 149 +++++++++++++++++-
+ arch/um/os-Linux/seccomp.c              |  87 +++++++++++
+ arch/um/os-Linux/signal.c               |   8 +
+ arch/um/os-Linux/skas/process.c         | 132 ----------------
+ arch/um/os-Linux/start_up.c             |  20 +++
+ arch/um/os-Linux/util.c                 |   3 +-
+ arch/x86/um/Makefile                    |   7 +-
+ arch/x86/um/asm/elf.h                   |   8 +-
+ arch/x86/um/nommu/Makefile              |   8 +
+ arch/x86/um/nommu/do_syscall_64.c       |  80 ++++++++++
+ arch/x86/um/nommu/entry_64.S            | 113 ++++++++++++++
+ arch/x86/um/nommu/os-Linux/Makefile     |   6 +
+ arch/x86/um/nommu/os-Linux/mcontext.c   |  24 +++
+ arch/x86/um/nommu/syscalls.h            |  16 ++
+ arch/x86/um/nommu/syscalls_64.c         | 115 ++++++++++++++
+ arch/x86/um/shared/sysdep/mcontext.h    |   4 +
+ arch/x86/um/shared/sysdep/ptrace.h      |   2 +-
+ arch/x86/um/shared/sysdep/syscalls_64.h |   6 +
+ arch/x86/um/vdso/vma.c                  |  17 ++-
+ fs/Kconfig.binfmt                       |   2 +-
+ 45 files changed, 1313 insertions(+), 214 deletions(-)
+ create mode 100644 Documentation/virt/uml/nommu-uml.rst
+ create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+ create mode 100644 arch/um/kernel/mem-pgtable.c
+ create mode 100644 arch/um/nommu/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/signal.c
+ create mode 100644 arch/um/nommu/trap.c
+ create mode 100644 arch/um/os-Linux/seccomp.c
+ create mode 100644 arch/x86/um/nommu/Makefile
+ create mode 100644 arch/x86/um/nommu/do_syscall_64.c
+ create mode 100644 arch/x86/um/nommu/entry_64.S
+ create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
+ create mode 100644 arch/x86/um/nommu/syscalls.h
  create mode 100644 arch/x86/um/nommu/syscalls_64.c
 
-diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
-index 4ff844bcb1cd..a9778c9a59a3 100644
---- a/arch/um/include/asm/ptrace-generic.h
-+++ b/arch/um/include/asm/ptrace-generic.h
-@@ -14,7 +14,7 @@ struct pt_regs {
- 	struct uml_pt_regs regs;
- };
- 
--#define arch_has_single_step()	(1)
-+#define arch_has_single_step()	(IS_ENABLED(CONFIG_MMU))
- 
- #define EMPTY_REGS { .regs = EMPTY_UML_PT_REGS }
- 
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index 8a615875d1a1..3ac01881e905 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -28,6 +28,9 @@ int unscheduled_userspace_iterations;
- 
- void os_alarm_process(int pid)
- {
-+	if (pid <= 0)
-+		return;
-+
- 	kill(pid, SIGALRM);
- }
- 
-@@ -45,6 +48,9 @@ void os_kill_process(int pid, int reap_child)
- 
- void os_kill_ptraced_process(int pid, int reap_child)
- {
-+	if (pid <= 0)
-+		return;
-+
- 	kill(pid, SIGKILL);
- 	ptrace(PTRACE_KILL, pid);
- 	ptrace(PTRACE_CONT, pid);
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 227af2a987e2..53c9ebb3c41c 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -27,7 +27,8 @@ subarch-y += ../kernel/sys_ia32.o
- 
- else
- 
--obj-y += syscalls_64.o vdso/
-+obj-y += vdso/
-+obj-$(CONFIG_MMU) += syscalls_64.o
- 
- subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o \
- 	../lib/memmove_64.o ../lib/memset_64.o
-diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
-index ebe47d4836f4..4018d9e0aba0 100644
---- a/arch/x86/um/nommu/Makefile
-+++ b/arch/x86/um/nommu/Makefile
-@@ -5,4 +5,4 @@ else
- 	BITS := 64
- endif
- 
--obj-y = do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
-+obj-y = do_syscall_$(BITS).o entry_$(BITS).o syscalls_$(BITS).o os-Linux/
-diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
-index e9bfc7b93c84..950447dfa66b 100644
---- a/arch/x86/um/nommu/entry_64.S
-+++ b/arch/x86/um/nommu/entry_64.S
-@@ -89,3 +89,25 @@ ENTRY(__kernel_vsyscall)
- 	jmp	*%rcx
- 
- END(__kernel_vsyscall)
-+
-+// void userspace(struct uml_pt_regs *regs)
-+ENTRY(userspace)
-+
-+	/* align the stack for x86_64 ABI */
-+	and     $-0x10, %rsp
-+	/* Handle any immediate reschedules or signals */
-+	call	interrupt_end
-+
-+	movq	current_ptregs, %rsp
-+
-+	POP_REGS
-+
-+	addq	$8, %rsp	/* skip orig_ax */
-+	popq	%r11		/* pt_regs->ip */
-+	addq	$8, %rsp	/* skip cs */
-+	addq	$8, %rsp	/* skip flags */
-+	popq	%rsp
-+
-+	jmp	*%r11
-+
-+END(userspace)
-diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls_64.c
-new file mode 100644
-index 000000000000..c78c442aed1d
---- /dev/null
-+++ b/arch/x86/um/nommu/syscalls_64.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Copyright 2003 PathScale, Inc.
-+ *
-+ * Licensed under the GPL
-+ */
-+
-+#include <linux/sched.h>
-+#include <linux/sched/mm.h>
-+#include <linux/syscalls.h>
-+#include <linux/uaccess.h>
-+#include <asm/prctl.h> /* XXX This should get the constants from libc */
-+#include <registers.h>
-+#include <os.h>
-+#include "syscalls.h"
-+
-+void arch_switch_to(struct task_struct *to)
-+{
-+	/*
-+	 * In !CONFIG_MMU, it doesn't ptrace thus,
-+	 * The FS_BASE/GS_BASE registers are saved here.
-+	 */
-+	current_top_of_stack = task_top_of_stack(to);
-+	current_ptregs = (long)task_pt_regs(to);
-+
-+	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0) ||
-+	    (to->mm == NULL))
-+		return;
-+
-+	/* this changes the FS on every context switch */
-+	arch_prctl(to, ARCH_SET_FS,
-+		   (void __user *) to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)]);
-+}
-+
-+SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-+		unsigned long, prot, unsigned long, flags,
-+		unsigned long, fd, unsigned long, off)
-+{
-+	if (off & ~PAGE_MASK)
-+		return -EINVAL;
-+
-+	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
-+}
+
+base-commit: 33c9da5dfb18c2ff5a88d01aca2cf253cd0ac3bc
 -- 
 2.43.0
 
