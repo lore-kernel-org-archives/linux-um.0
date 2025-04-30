@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4676EC3ABAC
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2C94C3ABB0
 	for <linux-um@archiver.kernel.org>; Wed, 30 Apr 2025 04:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,81 +12,81 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XxkcTNzm3D6nL0kwz3FotmEhOp0HbpyTDMavm76nXag=; b=Jfr61skhVuwyTFu5Hkpe1xu2Ni
-	yNUtjMAcSX28syriAL7BoVdIU8P6o7XZj9/LZPop1Ubl9K8h4xemY6l5aUWHwBsDM/u7BBICpcH3C
-	knxF1UxY+kFAKMWLEuOg8tRxRi9LZ+VaQqrhgu75t1Iy4+/G+SNbMJv7drbUI2Mtkf1GA9FPRbvki
-	6L/QCOpYKkZcIoep7RNE+tDa4366f8nS9Wb9R4RlhKRv3dkk7gFReqxNEpDS8MwvPxt9d74hyKma0
-	9aq2b5oM2OJhQ7Vlzhmq9ppEsbKK3FuvruBwTHAE6S0z8Sr7810uslY0F54uSiRH/6Td0vLVhQMOb
-	nZYt6I4g==;
+	bh=mp6eKKbWpiSHyJXYBVOlGqFhgugHf5gGjyOnElsYIQ8=; b=QKOShYN19iYZsD4elJRw4L3Hz7
+	vVT3PV3aQiLrroWLx+Xv/KVl5I3BUbfrD5fSt9ZYwUnsTKavx0ESchnSb0Q6UjpjZCqMgZWHi/4vH
+	sBX1HMUR9ezSmlc+8z8WRT7fW1D2552I3Y0v0tdiMxFyfpTTsHo1rKesHv4ncZNyQVpGrr1thmEVH
+	1JpLdYzONz3rSvX7TzgbmpoOJpt3H2LR7xnhx07IMMVv8PjO2TZSipJK4rN4v0bJ2+EGJpRGdXW2Y
+	k0phtGR6u2mCxiBGBfszx9InKB5tV+B8RhiKd2pdZoOeU9bErglIfI9XXmZIETbhvYw/krMW951o9
+	/mSUJ8aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z4B-0000000Bffk-07Af;
-	Wed, 30 Apr 2025 04:29:03 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1u9z4C-0000000Bfhh-20Iv;
+	Wed, 30 Apr 2025 04:29:04 +0000
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1u9z2q-0000000BfPd-2j2I
+	id 1u9z3B-0000000BfTm-0cjV
 	for linux-um@lists.infradead.org;
-	Wed, 30 Apr 2025 04:27:42 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-227d6b530d8so75747535ad.3
-        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:27:40 -0700 (PDT)
+	Wed, 30 Apr 2025 04:28:02 +0000
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-7369ce5d323so5752408b3a.1
+        for <linux-um@lists.infradead.org>; Tue, 29 Apr 2025 21:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745987260; x=1746592060; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1745987280; x=1746592080; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XxkcTNzm3D6nL0kwz3FotmEhOp0HbpyTDMavm76nXag=;
-        b=lo4S9wPpNawHdsZKdqB2DyOlIWPJM8baVJxnzeRN455rsGpkB/JzWopfV/kcaaJ1R4
-         YMZifyvJ7c/Iay1/awIf4BhBRF2Wy4HjHx0tG7/ZDzYtV385Ls+CqNu2F0IdawKNZmcV
-         e1xP5i8iJyFkGGIxKW9emSLiAA5CKRwrOD5ONPd8Clr+PAU4ZYAvto/B3Y6CdWKSL8Id
-         0ldilPt2zsa1MY0xQrTMe2QKJk/xnxTpJYIhYTarYVTqWW/bBvsiEQFnvSmRHg2ZgJSH
-         5bXUKJsEtwVXhRBKHjNmIFbAOTTNHluRtA0ibicxkZs4lMTjwm9fKHu+sq5wHStzBHlC
-         xJsw==
+        bh=mp6eKKbWpiSHyJXYBVOlGqFhgugHf5gGjyOnElsYIQ8=;
+        b=dh9wd3AA1J/0wrWJWPtZVUXCNvVFIN1ZQa+Yadux8i+D3eRyJx+i8HQAifADu7GBOc
+         Hr7kTLD4jzi32N19988g5uAcVSKbmttAV0101/rUSgCKGp/uwjL1KCfN0RD4gEryq6rB
+         qFpPcYrYc9bsY0eVMwvF/rtT6cgoq9FAMZLRUXekpnvv8EDqKOrBPzcd3A4zqj5eyWVu
+         TD8iYMCnDiAX9A+xFQ8Cixyq3zSlBucs5cQrsbRZT45wgnyI14QrAvHIuWrx0jpdAMQg
+         Qg5UITRbWXOkx9oH8/AxJVcDxabcr/+XOggh/x74eo7Mn4T/XivW/UBCg9w9D57srqCd
+         WnYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745987260; x=1746592060;
+        d=1e100.net; s=20230601; t=1745987280; x=1746592080;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XxkcTNzm3D6nL0kwz3FotmEhOp0HbpyTDMavm76nXag=;
-        b=NQAQun0/YRUuVlIYOrGvjXDao/kWY7B2UYvybJUpiIZxJpScqA9Cp0ba4b0bzwMi+W
-         TOP2vK2zJUkP75UYqaJzSemAyzECocWiOMZERluaIUrpqsSiYeT9WIN0X6oKGOmEHl/Y
-         pShwQaemW3VMMcTtg5Us2EL3tTvyPTJPGSRc1ELxw7azAZJdK4PE9zqc+PLQjElANmlw
-         CLgtno1J4fCo/H8iOfbyHSdJjSWoJh4pjt7rOQnvryI2XNMnaMuGl73S1KYI5DKwXsp+
-         XlMUF0ej3Z5lCTXaA2NlOMYcpvCD/sgBrda2msQqjB1AvZWpP00U4UqoTkn8Y8IHRhKJ
-         xMWw==
-X-Gm-Message-State: AOJu0Yy24yNzasWV4Hc4ajjqhkHqR3tTJXemJ3CSQRX1ROoHnjTu7fOL
-	9EdPs3LyKYA5qnWTbH0vHHoRsbuXUGwEf1N6ZQ2dZ2onMMNSy3o1
-X-Gm-Gg: ASbGncsFTes5A46qFwe9h8p5ctwovkuqdzGfdzQtBCjgbd02xhmWr+SUBTwRfzK6MBn
-	Benszur2HTK5mE2aTXuYNxfz5jxGRoSUHP7VOr0IAh7tQS9vQOh/qWASHIdUHlTrWpbnkzKritj
-	yqnFGfCmr/SKgr23NGa1gmUolDORaaiZe3fPkQlCOpUzlhdhKCRU4QSXfiP+xcmHBXxJHRElz6B
-	WsWXDXbVq3VrfUR+gLIKAWAiHw0/526h/KZZwB1WMejAhKC6yhSxQ3DcBAJGt8ze3+X6wDJ6JpK
-	X3QnXSZ6HArFKCtz/9sWlXszIoNSDXCiAPE+mWgbiG8K5aGzdC7Mhol7QV6bxl3AnduPwJTSk5k
-	tLSBcYAvPkCJ+E6JXrgALWQ==
-X-Google-Smtp-Source: AGHT+IHgdjbusCjYmIH+ACOzIzDAu13eai9H3Z92dIgixBY5dCjEqln5XxlFGM+akjniyzUkMjrgLw==
-X-Received: by 2002:a17:902:c950:b0:224:c47:cbd with SMTP id d9443c01a7336-22df32b7e5dmr29296215ad.0.1745987259538;
-        Tue, 29 Apr 2025 21:27:39 -0700 (PDT)
+        bh=mp6eKKbWpiSHyJXYBVOlGqFhgugHf5gGjyOnElsYIQ8=;
+        b=A4t9QO1Oiy6ydx1VbaCuWxosY4jG1bhlYWKlTFoJM/EK1qw0YmG+mtJBF53IDp2MCh
+         FZMjZ2QiWxK4vmA/d9JFIqTORBz+Z713ebNtV3PjNbC/35yHNsPf1+139Nz8Wi5k2rPC
+         RTcjS2havavGd2BrjBO0r2dJwUlRgspNBcvTSqs3QWmBZQ59sm9X5/ejx9WWl5PotvX/
+         8CvRv/6UI+naF7Kk/9jO91sGVTeI+ek5f1utErLwEmhlpNNfpuzD9GTGajRecG/QxXN+
+         M0O+JxBxnkh4i8PhTAP6PsWl6aOFQS1TX2Hs+UOG1sBHV1JcYMC5QO0JiEhJAplOb+3K
+         L5Qw==
+X-Gm-Message-State: AOJu0YxZ7aWE/alWMiFf7HhKeDYJQAtktW/BdSTftMghFXpKe7/dQE8N
+	M1XvyHK9C2ixJqJFw6Hh4ealzJyKqIUdEEfGlEOPDV+Nq68vjexd
+X-Gm-Gg: ASbGncvDeJcKgY3Mcy/zGOopLfDG4mu4FA/u31cFurVXVBRAbN/AL8Jt4hpHwzcqp9O
+	8XSZGkywdD8dTbGqEcQVdFxx1qOFr5LpusVls+J2EDDUfIuqtEtxCM1XKvO2fw7sTko7a/pxOhR
+	8oYwg1QsukGYtPKyD2BJrOcmDajoZkjcGi+9Y13JQhdAEaD3xVddt5Ln4rE5KgrfJzpDSBQqn5W
+	ZnPaM2QGbXcwE2u6L5qgmiPV1orwXc+rAIZEUAIdh+qA7alhvosc6h9/saPLBb88kGvcSjRpm4B
+	ZRmpcnpUCYonhXFFAGi2pStE2wdYTikzl/13R+DIGD2xkrzroW44SprU9agOBTz2HdnTtmvxp3B
+	H6wCEEyVm/zE=
+X-Google-Smtp-Source: AGHT+IFs9TraF1kR6FW5u1Q5u6Tmlb0LDMb+CsM3q0Udn9dfC/0UdzNr3zkLiVA4e0ssPjXNHc5cNA==
+X-Received: by 2002:a05:6a20:d046:b0:1f5:8220:7452 with SMTP id adf61e73a8af0-20a87d4eb30mr2154035637.24.1745987280011;
+        Tue, 29 Apr 2025 21:28:00 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4dbd20dsm112320725ad.79.2025.04.29.21.27.38
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b1b7efab4a5sm6348034a12.19.2025.04.29.21.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Apr 2025 21:27:38 -0700 (PDT)
+        Tue, 29 Apr 2025 21:27:59 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 9C164E94816; Wed, 30 Apr 2025 13:27:36 +0900 (JST)
+	id 98529E94824; Wed, 30 Apr 2025 13:27:57 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v8 02/12] um: decouple MMU specific code from the common part
-Date: Wed, 30 Apr 2025 13:27:08 +0900
-Message-ID: <7663e05099b914d3b978a521b2d3f67791a3abe9.1745980082.git.thehajime@gmail.com>
+Subject: [PATCH v8 09/12] x86/um: nommu: signal handling
+Date: Wed, 30 Apr 2025 13:27:15 +0900
+Message-ID: <ca8b6d4da1d7028731d88fa8b8fd9c98c4fbebd2.1745980082.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1745980082.git.thehajime@gmail.com>
 References: <cover.1745980082.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250429_212740_701258_F12CB0D5 
-X-CRM114-Status: GOOD (  24.48  )
+X-CRM114-CacheID: sfid-20250429_212801_192146_8C49E079 
+X-CRM114-Status: GOOD (  33.52  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,611 +101,351 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This splits the memory, process related code with common and MMU
-specific parts in order to avoid ifdefs in .c file and duplication
-between MMU and !MMU.
+This commit updates the behavior of signal handling under !MMU
+environment. It adds the alignment code for signal frame as the frame
+is used in userspace as-is.
+
+floating point register is carefully handling upon entry/leave of
+syscall routine so that signal handlers can read/write the contents of
+the register.
+
+It also adds the follow up routine for SIGSEGV as a signal delivery runs
+in the same stack frame while we have to avoid endless SIGSEGV.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/kernel/Makefile         |   5 +-
- arch/um/kernel/mem-pgtable.c    |  55 +++++++++++++
- arch/um/kernel/mem.c            |  35 ---------
- arch/um/kernel/process.c        |  25 ++++++
- arch/um/kernel/skas/process.c   |  27 -------
- arch/um/os-Linux/Makefile       |   3 +-
- arch/um/os-Linux/internal.h     |   5 ++
- arch/um/os-Linux/process.c      | 133 ++++++++++++++++++++++++++++++++
- arch/um/os-Linux/skas/process.c | 132 -------------------------------
- 9 files changed, 223 insertions(+), 197 deletions(-)
- create mode 100644 arch/um/kernel/mem-pgtable.c
+ arch/um/include/shared/kern_util.h    |   4 +
+ arch/um/nommu/Makefile                |   2 +-
+ arch/um/nommu/os-Linux/signal.c       |  13 ++
+ arch/um/nommu/trap.c                  | 194 ++++++++++++++++++++++++++
+ arch/x86/um/nommu/do_syscall_64.c     |   6 +
+ arch/x86/um/nommu/os-Linux/mcontext.c |  11 ++
+ arch/x86/um/shared/sysdep/mcontext.h  |   1 +
+ arch/x86/um/shared/sysdep/ptrace.h    |   2 +-
+ 8 files changed, 231 insertions(+), 2 deletions(-)
+ create mode 100644 arch/um/nommu/trap.c
 
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 4df1cd0d2017..827a7438509d 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -16,9 +16,10 @@ extra-y := vmlinux.lds
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index 2c8c18bd5860..85a4f154423b 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -73,4 +73,8 @@ void um_idle_sleep(void);
  
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
--	signal.o sysrq.o time.o tlb.o trap.o \
--	um_arch.o umid.o kmsg_dump.o capflags.o skas/
-+	signal.o sysrq.o time.o \
-+	um_arch.o umid.o kmsg_dump.o capflags.o
- obj-y += load_file.o
-+obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o trap.o skas/
+ void kasan_map_memory(void *start, size_t len);
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
-new file mode 100644
-index 000000000000..549da1d3bff0
---- /dev/null
-+++ b/arch/um/kernel/mem-pgtable.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ */
++#ifndef CONFIG_MMU
++extern void arch_sigsegv_handler(int sig, struct siginfo *si, void *mc);
++#endif
 +
-+#include <linux/stddef.h>
-+#include <linux/module.h>
-+#include <linux/memblock.h>
-+#include <linux/swap.h>
-+#include <linux/slab.h>
-+#include <asm/page.h>
-+#include <asm/pgalloc.h>
-+#include <as-layout.h>
-+#include <init.h>
-+#include <kern.h>
-+#include <kern_util.h>
-+#include <mem_user.h>
-+#include <os.h>
-+#include <um_malloc.h>
-+
-+
-+/* Allocate and free page tables. */
-+
-+pgd_t *pgd_alloc(struct mm_struct *mm)
-+{
-+	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
-+
-+	if (pgd) {
-+		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
-+		memcpy(pgd + USER_PTRS_PER_PGD,
-+		       swapper_pg_dir + USER_PTRS_PER_PGD,
-+		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
-+	}
-+	return pgd;
-+}
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_READONLY,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
-+};
-+DECLARE_VM_GET_PAGE_PROT
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 61b5a5ede01c..cbe8b9d03d8c 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -6,7 +6,6 @@
- #include <linux/stddef.h>
- #include <linux/module.h>
- #include <linux/memblock.h>
--#include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
- #include <linux/init.h>
-@@ -206,45 +205,11 @@ void free_initmem(void)
- {
- }
+ #endif
+diff --git a/arch/um/nommu/Makefile b/arch/um/nommu/Makefile
+index baab7c2f57c2..096221590cfd 100644
+--- a/arch/um/nommu/Makefile
++++ b/arch/um/nommu/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
  
--/* Allocate and free page tables. */
--
--pgd_t *pgd_alloc(struct mm_struct *mm)
--{
--	pgd_t *pgd = __pgd_alloc(mm, 0);
--
--	if (pgd)
--		memcpy(pgd + USER_PTRS_PER_PGD,
--		       swapper_pg_dir + USER_PTRS_PER_PGD,
--		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
--
--	return pgd;
--}
--
- void *uml_kmalloc(int size, int flags)
- {
- 	return kmalloc(size, flags);
- }
- 
--static const pgprot_t protection_map[16] = {
--	[VM_NONE]					= PAGE_NONE,
--	[VM_READ]					= PAGE_READONLY,
--	[VM_WRITE]					= PAGE_COPY,
--	[VM_WRITE | VM_READ]				= PAGE_COPY,
--	[VM_EXEC]					= PAGE_READONLY,
--	[VM_EXEC | VM_READ]				= PAGE_READONLY,
--	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
--	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
--	[VM_SHARED]					= PAGE_NONE,
--	[VM_SHARED | VM_READ]				= PAGE_READONLY,
--	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
--	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
--};
--DECLARE_VM_GET_PAGE_PROT
--
- void mark_rodata_ro(void)
- {
- 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 0cd6fad3d908..08959745c30d 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -25,6 +25,7 @@
- #include <linux/tick.h>
- #include <linux/threads.h>
- #include <linux/resume_user_mode.h>
-+#include <linux/start_kernel.h>
- #include <asm/current.h>
- #include <asm/mmu_context.h>
- #include <asm/switch_to.h>
-@@ -46,6 +47,8 @@
- struct task_struct *cpu_tasks[NR_CPUS];
- EXPORT_SYMBOL(cpu_tasks);
- 
-+static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
-+
- void free_stack(unsigned long stack, int order)
- {
- 	free_pages(stack, order);
-@@ -295,3 +298,25 @@ unsigned long __get_wchan(struct task_struct *p)
- 
- 	return 0;
- }
-+
-+
-+static int __init start_kernel_proc(void *unused)
-+{
-+	block_signals_trace();
-+
-+	start_kernel();
-+	return 0;
-+}
-+
-+int __init start_uml(void)
-+{
-+	stack_protections((unsigned long) &cpu0_irqstack);
-+	set_sigstack(cpu0_irqstack, THREAD_SIZE);
-+
-+	init_new_thread_signals();
-+
-+	init_task.thread.request.thread.proc = start_kernel_proc;
-+	init_task.thread.request.thread.arg = NULL;
-+	return start_idle_thread(task_stack_page(&init_task),
-+				 &init_task.thread.switch_buf);
-+}
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index 05dcdc057af9..5247121d3419 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -16,33 +16,6 @@
- #include <skas.h>
- #include <kern_util.h>
- 
--extern void start_kernel(void);
--
--static int __init start_kernel_proc(void *unused)
--{
--	block_signals_trace();
--
--	start_kernel();
--	return 0;
--}
--
--extern int userspace_pid[];
--
--static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
--
--int __init start_uml(void)
--{
--	stack_protections((unsigned long) &cpu0_irqstack);
--	set_sigstack(cpu0_irqstack, THREAD_SIZE);
--
--	init_new_thread_signals();
--
--	init_task.thread.request.thread.proc = start_kernel_proc;
--	init_task.thread.request.thread.arg = NULL;
--	return start_idle_thread(task_stack_page(&init_task),
--				 &init_task.thread.switch_buf);
--}
--
- unsigned long current_stub_stack(void)
- {
- 	if (current->mm == NULL)
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 049dfa5bc9c6..331564888400 100644
---- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -8,7 +8,8 @@ KCOV_INSTRUMENT                := n
- 
- obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	registers.o sigio.o signal.o start_up.o time.o tty.o \
--	umid.o user_syms.o util.o drivers/ skas/
-+	umid.o user_syms.o util.o drivers/
-+obj-$(CONFIG_MMU) += skas/
- 
- CFLAGS_signal.o += -Wframe-larger-than=4096
- 
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-index 317fca190c2b..bcbf64ce8cd1 100644
---- a/arch/um/os-Linux/internal.h
-+++ b/arch/um/os-Linux/internal.h
-@@ -2,6 +2,11 @@
- #ifndef __UM_OS_LINUX_INTERNAL_H
- #define __UM_OS_LINUX_INTERNAL_H
- 
-+/*
-+ * process.c
-+ */
-+extern int userspace_pid[];
-+
- /*
-  * elf_aux.c
-  */
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index 184566edeee9..2331e32c4898 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -6,6 +6,7 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
-+#include <stdbool.h>
- #include <unistd.h>
- #include <errno.h>
- #include <signal.h>
-@@ -15,9 +16,15 @@
- #include <sys/prctl.h>
- #include <sys/wait.h>
- #include <asm/unistd.h>
-+#include <linux/threads.h>
- #include <init.h>
- #include <longjmp.h>
+-obj-y := os-Linux/
++obj-y := trap.o os-Linux/
+diff --git a/arch/um/nommu/os-Linux/signal.c b/arch/um/nommu/os-Linux/signal.c
+index 19043b9652e2..b2cd0470b67c 100644
+--- a/arch/um/nommu/os-Linux/signal.c
++++ b/arch/um/nommu/os-Linux/signal.c
+@@ -5,6 +5,7 @@
  #include <os.h>
+ #include <sysdep/mcontext.h>
+ #include <sys/ucontext.h>
++#include <as-layout.h>
+ 
+ void sigsys_handler(int sig, struct siginfo *si,
+ 		    struct uml_pt_regs *regs, void *ptr)
+@@ -14,3 +15,15 @@ void sigsys_handler(int sig, struct siginfo *si,
+ 	/* hook syscall via SIGSYS */
+ 	set_mc_sigsys_hook(mc);
+ }
++
++void arch_sigsegv_handler(int sig, struct siginfo *si, void *ptr)
++{
++	mcontext_t *mc = (mcontext_t *) ptr;
++
++	/* !MMU specific part; detection of userspace */
++	if (mc->gregs[REG_RIP] > uml_reserved &&
++	    mc->gregs[REG_RIP] < high_physmem) {
++		/* !MMU: force handle signals after rt_sigreturn() */
++		set_mc_userspace_relay_signal(mc);
++	}
++}
+diff --git a/arch/um/nommu/trap.c b/arch/um/nommu/trap.c
+new file mode 100644
+index 000000000000..2053a3b5071b
+--- /dev/null
++++ b/arch/um/nommu/trap.c
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/mm.h>
++#include <linux/sched/signal.h>
++#include <linux/hardirq.h>
++#include <linux/module.h>
++#include <linux/uaccess.h>
++#include <linux/sched/debug.h>
++#include <asm/current.h>
++#include <asm/tlbflush.h>
++#include <arch.h>
 +#include <as-layout.h>
 +#include <kern_util.h>
++#include <os.h>
++#include <skas.h>
 +
-+int userspace_pid[NR_CPUS];
-+int unscheduled_userspace_iterations;
- 
- void os_alarm_process(int pid)
- {
-@@ -158,3 +165,129 @@ void os_set_pdeathsig(void)
- {
- 	prctl(PR_SET_PDEATHSIG, SIGKILL);
- }
-+
-+int is_skas_winch(int pid, int fd, void *data)
++/*
++ * Note this is constrained to return 0, -EFAULT, -EACCES, -ENOMEM by
++ * segv().
++ */
++int handle_page_fault(unsigned long address, unsigned long ip,
++		      int is_write, int is_user, int *code_out)
 +{
-+	return pid == getpgrp();
++	/* !MMU has no pagefault */
++	return -EFAULT;
 +}
 +
-+void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
++static void show_segv_info(struct uml_pt_regs *regs)
 +{
-+	(*buf)[0].JB_IP = (unsigned long) handler;
-+	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
-+		sizeof(void *);
++	struct task_struct *tsk = current;
++	struct faultinfo *fi = UPT_FAULTINFO(regs);
++
++	if (!unhandled_signal(tsk, SIGSEGV))
++		return;
++
++	pr_warn_ratelimited("%s%s[%d]: segfault at %lx ip %p sp %p error %x",
++			    task_pid_nr(tsk) > 1 ? KERN_INFO : KERN_EMERG,
++			    tsk->comm, task_pid_nr(tsk), FAULT_ADDRESS(*fi),
++			    (void *)UPT_IP(regs), (void *)UPT_SP(regs),
++			    fi->error_code);
 +}
 +
-+#define INIT_JMP_NEW_THREAD 0
-+#define INIT_JMP_CALLBACK 1
-+#define INIT_JMP_HALT 2
-+#define INIT_JMP_REBOOT 3
-+
-+void switch_threads(jmp_buf *me, jmp_buf *you)
++static void bad_segv(struct faultinfo fi, unsigned long ip)
 +{
-+	unscheduled_userspace_iterations = 0;
-+
-+	if (UML_SETJMP(me) == 0)
-+		UML_LONGJMP(you, 1);
++	current->thread.arch.faultinfo = fi;
++	force_sig_fault(SIGSEGV, SEGV_ACCERR, (void __user *) FAULT_ADDRESS(fi));
 +}
 +
-+static jmp_buf initial_jmpbuf;
-+
-+/* XXX Make these percpu */
-+static void (*cb_proc)(void *arg);
-+static void *cb_arg;
-+static jmp_buf *cb_back;
-+
-+int start_idle_thread(void *stack, jmp_buf *switch_buf)
++void fatal_sigsegv(void)
 +{
-+	int n;
-+
-+	set_handler(SIGWINCH);
-+
++	force_fatal_sig(SIGSEGV);
++	do_signal(&current->thread.regs);
 +	/*
-+	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
-+	 * and restore signals, with the possible side-effect of
-+	 * trying to handle any signals which came when they were
-+	 * blocked, which can't be done on this stack.
-+	 * Signals must be blocked when jumping back here and restored
-+	 * after returning to the jumper.
++	 * This is to tell gcc that we're not returning - do_signal
++	 * can, in general, return, but in this case, it's not, since
++	 * we just got a fatal SIGSEGV queued.
 +	 */
-+	n = setjmp(initial_jmpbuf);
-+	switch (n) {
-+	case INIT_JMP_NEW_THREAD:
-+		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
-+		(*switch_buf)[0].JB_SP = (unsigned long) stack +
-+			UM_THREAD_SIZE - sizeof(void *);
-+		break;
-+	case INIT_JMP_CALLBACK:
-+		(*cb_proc)(cb_arg);
-+		longjmp(*cb_back, 1);
-+		break;
-+	case INIT_JMP_HALT:
-+		kmalloc_ok = 0;
-+		return 0;
-+	case INIT_JMP_REBOOT:
-+		kmalloc_ok = 0;
-+		return 1;
-+	default:
-+		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
-+		       __func__, n);
-+		fatal_sigsegv();
++	os_dump_core();
++}
++
++/**
++ * segv_handler() - the SIGSEGV handler
++ * @sig:	the signal number
++ * @unused_si:	the signal info struct; unused in this handler
++ * @regs:	the ptrace register information
++ *
++ * The handler first extracts the faultinfo from the UML ptrace regs struct.
++ * If the userfault did not happen in an UML userspace process, bad_segv is called.
++ * Otherwise the signal did happen in a cloned userspace process, handle it.
++ */
++void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
++		  void *mc)
++{
++	struct faultinfo *fi = UPT_FAULTINFO(regs);
++
++	/* !MMU specific part; detection of userspace */
++	/* mark is_user=1 when the IP is from userspace code. */
++	if (UPT_IP(regs) > uml_reserved && UPT_IP(regs) < high_physmem)
++		regs->is_user = 1;
++
++	if (UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)) {
++		show_segv_info(regs);
++		bad_segv(*fi, UPT_IP(regs));
++		return;
 +	}
-+	longjmp(*switch_buf, 1);
++	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs, mc);
 +
-+	/* unreachable */
-+	printk(UM_KERN_ERR "impossible long jump!");
-+	fatal_sigsegv();
++	/* !MMU specific part; detection of userspace */
++	arch_sigsegv_handler(sig, unused_si, mc);
++}
++
++/*
++ * We give a *copy* of the faultinfo in the regs to segv.
++ * This must be done, since nesting SEGVs could overwrite
++ * the info in the regs. A pointer to the info then would
++ * give us bad data!
++ */
++unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
++		   struct uml_pt_regs *regs, void *mc)
++{
++	int si_code;
++	int err;
++	int is_write = FAULT_WRITE(fi);
++	unsigned long address = FAULT_ADDRESS(fi);
++
++	if (!is_user && regs)
++		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
++
++	if (current->mm == NULL) {
++		show_regs(container_of(regs, struct pt_regs, regs));
++		panic("Segfault with no mm");
++	} else if (!is_user && address > PAGE_SIZE && address < TASK_SIZE) {
++		show_regs(container_of(regs, struct pt_regs, regs));
++		panic("Kernel tried to access user memory at addr 0x%lx, ip 0x%lx",
++		       address, ip);
++	}
++
++	if (SEGV_IS_FIXABLE(&fi))
++		err = handle_page_fault(address, ip, is_write, is_user,
++					&si_code);
++	else {
++		err = -EFAULT;
++		/*
++		 * A thread accessed NULL, we get a fault, but CR2 is invalid.
++		 * This code is used in __do_copy_from_user() of TT mode.
++		 * XXX tt mode is gone, so maybe this isn't needed any more
++		 */
++		address = 0;
++	}
++
++	if (!err)
++		goto out;
++	else if (!is_user && arch_fixup(ip, regs))
++		goto out;
++
++	if (!is_user) {
++		show_regs(container_of(regs, struct pt_regs, regs));
++		panic("Kernel mode fault at addr 0x%lx, ip 0x%lx",
++		      address, ip);
++	}
++
++	show_segv_info(regs);
++
++	if (err == -EACCES) {
++		current->thread.arch.faultinfo = fi;
++		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address);
++	} else {
++		WARN_ON_ONCE(err != -EFAULT);
++		current->thread.arch.faultinfo = fi;
++		force_sig_fault(SIGSEGV, si_code, (void __user *) address);
++	}
++
++out:
++	if (regs)
++		current->thread.segv_regs = NULL;
++
 +	return 0;
 +}
 +
-+void initial_thread_cb_skas(void (*proc)(void *), void *arg)
++void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs,
++		  void *mc)
 +{
-+	jmp_buf here;
++	int code, err;
 +
-+	cb_proc = proc;
-+	cb_arg = arg;
-+	cb_back = &here;
++	if (!UPT_IS_USER(regs)) {
++		if (sig == SIGBUS)
++			pr_err("Bus error - the host /dev/shm or /tmp mount likely just ran out of space\n");
++		panic("Kernel mode signal %d", sig);
++	}
 +
-+	block_signals_trace();
-+	if (UML_SETJMP(&here) == 0)
-+		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
-+	unblock_signals_trace();
++	arch_examine_signal(sig, regs);
 +
-+	cb_proc = NULL;
-+	cb_arg = NULL;
-+	cb_back = NULL;
++	/* Is the signal layout for the signal known?
++	 * Signal data must be scrubbed to prevent information leaks.
++	 */
++	code = si->si_code;
++	err = si->si_errno;
++	if ((err == 0) && (siginfo_layout(sig, code) == SIL_FAULT)) {
++		struct faultinfo *fi = UPT_FAULTINFO(regs);
++
++		current->thread.arch.faultinfo = *fi;
++		force_sig_fault(sig, code, (void __user *)FAULT_ADDRESS(*fi));
++	} else {
++		pr_err("Attempted to relay unknown signal %d (si_code = %d) with errno %d\n",
++		       sig, code, err);
++		force_sig(sig);
++	}
 +}
 +
-+void halt_skas(void)
++void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
++	   void *mc)
 +{
-+	block_signals_trace();
-+	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
++	do_IRQ(WINCH_IRQ, regs);
 +}
-+
-+static bool noreboot;
-+
-+static int __init noreboot_cmd_param(char *str, int *add)
-+{
-+	*add = 0;
-+	noreboot = true;
-+	return 0;
-+}
-+
-+__uml_setup("noreboot", noreboot_cmd_param,
-+"noreboot\n"
-+"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
-+"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
-+"    crashes in CI\n");
-+
-+void reboot_skas(void)
-+{
-+	block_signals_trace();
-+	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
-+}
-+
-+void __switch_mm(struct mm_id *mm_idp)
-+{
-+	userspace_pid[0] = mm_idp->pid;
-+}
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index ae2aea062f06..40136102fc11 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -5,7 +5,6 @@
-  */
+diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_syscall_64.c
+index 796beb0089fc..48b3d29e2db1 100644
+--- a/arch/x86/um/nommu/do_syscall_64.c
++++ b/arch/x86/um/nommu/do_syscall_64.c
+@@ -48,6 +48,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
+ 	/* set fs register to the original host one */
+ 	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
  
- #include <stdlib.h>
--#include <stdbool.h>
- #include <unistd.h>
- #include <sched.h>
- #include <errno.h>
-@@ -16,7 +15,6 @@
- #include <sys/wait.h>
- #include <sys/stat.h>
- #include <asm/unistd.h>
--#include <as-layout.h>
- #include <init.h>
- #include <kern_util.h>
- #include <mem.h>
-@@ -25,15 +23,9 @@
- #include <registers.h>
- #include <skas.h>
- #include <sysdep/stub.h>
--#include <linux/threads.h>
- #include <timetravel.h>
- #include "../internal.h"
++	/* save fp registers */
++	asm volatile("fxsaveq %0" : "=m"(*(struct _xstate *)regs->regs.fp));
++
+ 	if (likely(syscall < NR_syscalls)) {
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+@@ -66,6 +69,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
+ 	set_thread_flag(TIF_SIGPENDING);
+ 	interrupt_end();
  
--int is_skas_winch(int pid, int fd, void *data)
--{
--	return pid == getpgrp();
--}
--
- static const char *ptrace_reg_name(int idx)
++	/* restore fp registers */
++	asm volatile("fxrstorq %0" : : "m"((current->thread.regs.regs.fp)));
++
+ 	/* restore back fs register to userspace configured one */
+ 	os_x86_arch_prctl(0, ARCH_SET_FS,
+ 		      (void *)(current->thread.regs.regs.gp[FS_BASE
+diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nommu/os-Linux/mcontext.c
+index c4ef877d5ea0..955e7d9f4765 100644
+--- a/arch/x86/um/nommu/os-Linux/mcontext.c
++++ b/arch/x86/um/nommu/os-Linux/mcontext.c
+@@ -6,6 +6,17 @@
+ #include <sysdep/mcontext.h>
+ #include <sysdep/syscalls.h>
+ 
++static void __userspace_relay_signal(void)
++{
++	/* XXX: dummy syscall */
++	__asm__ volatile("call *%0" : : "r"(__kernel_vsyscall), "a"(39) :);
++}
++
++void set_mc_userspace_relay_signal(mcontext_t *mc)
++{
++	mc->gregs[REG_RIP] = (unsigned long) __userspace_relay_signal;
++}
++
+ void set_mc_sigsys_hook(mcontext_t *mc)
  {
- #define R(n) case HOST_##n: return #n
-@@ -315,8 +307,6 @@ static int __init init_stub_exe_fd(void)
- }
- __initcall(init_stub_exe_fd);
+ 	mc->gregs[REG_RCX] = mc->gregs[REG_RIP];
+diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sysdep/mcontext.h
+index 15e9ff287021..0efe5ddf95af 100644
+--- a/arch/x86/um/shared/sysdep/mcontext.h
++++ b/arch/x86/um/shared/sysdep/mcontext.h
+@@ -9,6 +9,7 @@
+ extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
+ #ifndef CONFIG_MMU
+ extern void set_mc_sigsys_hook(mcontext_t *mc);
++extern void set_mc_userspace_relay_signal(mcontext_t *mc);
+ #endif
  
--int userspace_pid[NR_CPUS];
--
- /**
-  * start_userspace() - prepare a new userspace process
-  * @stub_stack:	pointer to the stub stack.
-@@ -398,7 +388,6 @@ int start_userspace(unsigned long stub_stack)
- 	return err;
- }
+ #ifdef __i386__
+diff --git a/arch/x86/um/shared/sysdep/ptrace.h b/arch/x86/um/shared/sysdep/ptrace.h
+index 8f7476ff6e95..7d553d9f05be 100644
+--- a/arch/x86/um/shared/sysdep/ptrace.h
++++ b/arch/x86/um/shared/sysdep/ptrace.h
+@@ -65,7 +65,7 @@ struct uml_pt_regs {
+ 	int is_user;
  
--int unscheduled_userspace_iterations;
- extern unsigned long tt_extra_sched_jiffies;
+ 	/* Dynamically sized FP registers (holds an XSTATE) */
+-	unsigned long fp[];
++	unsigned long fp[] __attribute__((aligned(16)));
+ };
  
- void userspace(struct uml_pt_regs *regs)
-@@ -560,124 +549,3 @@ void userspace(struct uml_pt_regs *regs)
- 		}
- 	}
- }
--
--void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
--{
--	(*buf)[0].JB_IP = (unsigned long) handler;
--	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
--		sizeof(void *);
--}
--
--#define INIT_JMP_NEW_THREAD 0
--#define INIT_JMP_CALLBACK 1
--#define INIT_JMP_HALT 2
--#define INIT_JMP_REBOOT 3
--
--void switch_threads(jmp_buf *me, jmp_buf *you)
--{
--	unscheduled_userspace_iterations = 0;
--
--	if (UML_SETJMP(me) == 0)
--		UML_LONGJMP(you, 1);
--}
--
--static jmp_buf initial_jmpbuf;
--
--/* XXX Make these percpu */
--static void (*cb_proc)(void *arg);
--static void *cb_arg;
--static jmp_buf *cb_back;
--
--int start_idle_thread(void *stack, jmp_buf *switch_buf)
--{
--	int n;
--
--	set_handler(SIGWINCH);
--
--	/*
--	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
--	 * and restore signals, with the possible side-effect of
--	 * trying to handle any signals which came when they were
--	 * blocked, which can't be done on this stack.
--	 * Signals must be blocked when jumping back here and restored
--	 * after returning to the jumper.
--	 */
--	n = setjmp(initial_jmpbuf);
--	switch (n) {
--	case INIT_JMP_NEW_THREAD:
--		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
--		(*switch_buf)[0].JB_SP = (unsigned long) stack +
--			UM_THREAD_SIZE - sizeof(void *);
--		break;
--	case INIT_JMP_CALLBACK:
--		(*cb_proc)(cb_arg);
--		longjmp(*cb_back, 1);
--		break;
--	case INIT_JMP_HALT:
--		kmalloc_ok = 0;
--		return 0;
--	case INIT_JMP_REBOOT:
--		kmalloc_ok = 0;
--		return 1;
--	default:
--		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
--		       __func__, n);
--		fatal_sigsegv();
--	}
--	longjmp(*switch_buf, 1);
--
--	/* unreachable */
--	printk(UM_KERN_ERR "impossible long jump!");
--	fatal_sigsegv();
--	return 0;
--}
--
--void initial_thread_cb_skas(void (*proc)(void *), void *arg)
--{
--	jmp_buf here;
--
--	cb_proc = proc;
--	cb_arg = arg;
--	cb_back = &here;
--
--	block_signals_trace();
--	if (UML_SETJMP(&here) == 0)
--		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
--	unblock_signals_trace();
--
--	cb_proc = NULL;
--	cb_arg = NULL;
--	cb_back = NULL;
--}
--
--void halt_skas(void)
--{
--	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
--}
--
--static bool noreboot;
--
--static int __init noreboot_cmd_param(char *str, int *add)
--{
--	*add = 0;
--	noreboot = true;
--	return 0;
--}
--
--__uml_setup("noreboot", noreboot_cmd_param,
--"noreboot\n"
--"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
--"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
--"    crashes in CI\n");
--
--void reboot_skas(void)
--{
--	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
--}
--
--void __switch_mm(struct mm_id *mm_idp)
--{
--	userspace_pid[0] = mm_idp->pid;
--}
+ #define EMPTY_UML_PT_REGS { }
 -- 
 2.43.0
 
