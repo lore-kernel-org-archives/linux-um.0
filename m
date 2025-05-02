@@ -4,49 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B158EC3ABB6
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA59C3DA4A
 	for <linux-um@archiver.kernel.org>; Fri,  2 May 2025 22:54:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ONTWqXPK16P/0zEJ7tS2nkTgsRlCDOKxvUHOtWHZvaE=; b=jXzX4o/sqHUkcSpLh3R/tlVqJj
-	jr6dR9+vdsauboLcaBMgEiyhK3hkhlP+H2gHtLWPbpb1NmXHd4Lwbwo99CHqm4sPyQ9t0gF2hmXaT
-	o+ukMfGjcXcB9b5gpfxdWDlmYGO7hvTfOWeUB9rHeVdE9+vYvQ0N06muh1Itbut6IJdAgquIRWr7Y
-	f5eOcDMph40QTJX+boRtchkEcdavbXliCQdzQ89XQSl1ystZmrtDZbO8crEcmQ18y+p1UUlmI391I
-	Jkm+LW9uW4rLrlcgVaJAIq3AXXWdHus6QgPDB+gwWxg7M4AFEdKD00eXz8VLr2rb4BYg1ig57jZUE
-	m2IXYZvQ==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jIBtEyAokjAEkZnBAUAX5LDb5f/8nH7cHbyE0gJC8u8=; b=OoZu7w8Tiy348xGcEDb+V6Ddzy
+	4Oa/yXoRGjFeUZG6upbCVgro2ZSPa1NsSWYxzZjNVEHPjvsA46a6gVbrlXIdgAJGLA3H9zM9H9x6B
+	MngcUbKz7dsBoohttehox16ABzyXodpJFCWJ/WchOdN3R+fFzdvArtLJIwaUgwxah9ZL1tcayHu/V
+	6no03jdmbM9NsrkrMduT/T48OMdvZDqeuE2BNRINUl5ht90prKWllEZ319jrW1c0AU4gzBqSx5t70
+	rqPE5ECSLJj1sgxkqUeYTkCqp+jFk7ChbR6dXn0ZQDcs1I8QQzjz+HuQRmuzMhxwuHwMCHuqdoIUZ
+	uVg6OrrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAzGx-00000003C8v-2aE9;
+	id 1uAzGx-00000003C8i-0EbR;
 	Fri, 02 May 2025 22:54:23 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAzGv-00000003C7K-01Ku
+	id 1uAzGu-00000003C7I-3KHJ
 	for linux-um@lists.infradead.org;
-	Fri, 02 May 2025 22:54:22 +0000
+	Fri, 02 May 2025 22:54:21 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0C1495C5C85;
-	Fri,  2 May 2025 22:52:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C407DC4AF0B;
+	by sea.source.kernel.org (Postfix) with ESMTP id 97E534A88A;
+	Fri,  2 May 2025 22:54:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6EC5C4AF0C;
 	Fri,  2 May 2025 22:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1746226459;
-	bh=WdmZa5l99Vhwe/hFJDeUIG6hQ5O76/7JBHbFIhtajXs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mosauOqkxwLCmrF6kKUM0Ys45QpPFJotZsAsfrJWceDUgkC5uIJ/Rxh6TUpH8Emrq
-	 7H0gfHbVxPbigbxSx08rlCCOSJFIomzKDzsINhG1PzkXhVwh+0mDXfiZAN79x2ih2I
-	 WHnfFIMnVaoE81Ivdex81HcLXf5mRDyvuVvC3chp7Bst2V4beOikMiJsy7IuDiPu7F
-	 wZOQ877oEHqjOAwM0MrKFcL5exqAhEvl6ZCB3XOkTK/x8snrF4WtHYuDUnQgpY4D4G
-	 QAppMMclUn/+cWRO0+OyXP/XjNfalLChyp7pPSrOYYqE5QsCXyxoHYxp5c9IGfP+7L
-	 E9Mewxx5aoTsg==
+	bh=p3LCBG41fA+N9OOg7h+A3NTLbRHrJjxplvYJ9i2fjRY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ssm7w/5OZHMhxTzwMP4B4UgKSyqDS49B4LzQoeqpM6gq8fFj67ZCjSc9HH7u9EGhG
+	 D5p6tcYMU1FvQqDasRC4ueS8g3cJQLabkV4DBDMSf01s2i9Hqb+fvrMZz/vhZiCjbl
+	 q59u9hK4c9qNtDCDZ/PpSnmg/qgPvpx/tJl0NjdeXCX7d1aZedvHwOSQpBvN8Ot1RM
+	 MZhVSvW4V7VSJzDtAz9K89UvV2KYeqFIRjRnRE7Wm5dT3nPJxX49BpoHcA+33YS0tT
+	 zEUc00UOuVESsiTC5v26JvoMPHZwyD+mRB4CfW5ctFR+Wkhez7Dx3Pynf+GjMni1S1
+	 fSpRGPEgXylIg==
 From: Kees Cook <kees@kernel.org>
 To: Masahiro Yamada <masahiroy@kernel.org>
 Cc: Kees Cook <kees@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nicolas Schier <nicolas.schier@linux.dev>,
+	linux-hardening@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
 	Petr Pavlu <petr.pavlu@suse.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Justin Stitt <justinstitt@google.com>,
@@ -57,21 +59,21 @@ Cc: Kees Cook <kees@kernel.org>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
 	kasan-dev@googlegroups.com,
 	linux-um@lists.infradead.org
-Subject: [PATCH v2 0/3] Detect changed compiler dependencies for full rebuild
-Date: Fri,  2 May 2025 15:54:12 -0700
-Message-Id: <20250502224512.it.706-kees@kernel.org>
+Subject: [PATCH v2 1/3] gcc-plugins: Force full rebuild when plugins change
+Date: Fri,  2 May 2025 15:54:13 -0700
+Message-Id: <20250502225416.708936-1-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250502224512.it.706-kees@kernel.org>
+References: <20250502224512.it.706-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2704; i=kees@kernel.org; h=from:subject:message-id; bh=WdmZa5l99Vhwe/hFJDeUIG6hQ5O76/7JBHbFIhtajXs=; b=owGbwMvMwCVmps19z/KJym7G02pJDBmivmLBof3JZfffi9rwZtw7k6/bbaezi+3JSpdr0XPDs s7wqC3uKGVhEONikBVTZAmyc49z8XjbHu4+VxFmDisTyBAGLk4BmEi1HiND56y7zgsOn5/caBvL LfxQ6GifRFBVWdwigd+l/Ac1fQtuMvx34tjpIpfatU6iObfAvlz2Uh5X7+Vuc869+hoTXMp+JLI DAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3599; i=kees@kernel.org; h=from:subject; bh=p3LCBG41fA+N9OOg7h+A3NTLbRHrJjxplvYJ9i2fjRY=; b=owGbwMvMwCVmps19z/KJym7G02pJDBmivmJ2fLZvdZtuL3ln0FN9zyeba4Wj2k17D3nRxQXrd vdMr2PqKGVhEONikBVTZAmyc49z8XjbHu4+VxFmDisTyBAGLk4BmEjGNEaG31vtb+Y+u61978cH qSv9Qt/MA2r2XlX+dImj81RrVk9POMP/KOPbz/fsmLXErj3kugvzgqC892Eblgc1Mnx9/1GLbac cJwA=
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250502_155421_155219_5252BA75 
-X-CRM114-Status: GOOD (  15.49  )
+X-CRM114-CacheID: sfid-20250502_155420_879827_49CA461C 
+X-CRM114-Status: GOOD (  16.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,72 +88,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
- v2:
-  - switch from -include to -I with a -D gated include compiler-version.h
- v1: https://lore.kernel.org/lkml/20250501193839.work.525-kees@kernel.org/
+There was no dependency between the plugins changing and the rest of the
+kernel being built. Enforce this by including a synthetic header file
+when using plugins, that is regenerated any time the plugins are built.
 
-Hi,
+This cannot be included via '-include ...' because Makefiles use the
+"filter-out" string function, which removes individual words. Removing
+all instances of "-include" from the CFLAGS will cause a lot of
+problems. :)
 
-This is my attempt to introduce dependencies that track the various
-compiler behaviors that may globally change the build that aren't
-represented by either compiler flags nor the compiler version
-(CC_VERSION_TEXT). Namely, this is to detect when the contents of a
-file the compiler uses changes. We have 3 such situations currently in
-the tree:
+Instead, use -I to include the gcc-plugins directory, and depend on the
+new -DGCC_PLUGINS_ENABLED flag to include the generated header file via
+include/linux/compiler-version.h, which is already being used to control
+full rebuilds. The UM build requires that the -I be explicitly added.
 
-- If any of the GCC plugins change, we need to rebuild everything that
-  was built with them, as they may have changed their behavior and those
-  behaviors may need to be synchronized across all translation units.
-  (The most obvious of these is the randstruct GCC plugin, but is true
-  for most of them.)
+Signed-off-by: Kees Cook <kees@kernel.org>
+---
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas.schier@linux.dev>
+Cc: <linux-hardening@vger.kernel.org>
+Cc: <linux-kbuild@vger.kernel.org>
+---
+ arch/um/Makefile                 | 1 +
+ include/linux/compiler-version.h | 4 ++++
+ scripts/Makefile.gcc-plugins     | 2 +-
+ scripts/gcc-plugins/Makefile     | 8 ++++++++
+ 4 files changed, 14 insertions(+), 1 deletion(-)
 
-- If the randstruct seed itself changes (whether for GCC plugins or
-  Clang), the entire tree needs to be rebuilt since the randomization of
-  structures may change between compilation units if not.
-
-- If the integer-wrap-ignore.scl file for Clang's integer wrapping
-  sanitizer changes, a full rebuild is needed as the coverage for wrapping
-  types may have changed, once again cause behavior differences between
-  compilation units.
-
-The best way I found to deal with this is to:
-- Generate a .h file that is updated when the specific dependencies change.
-  e.g.: randstruct_hash.h depends on randstruct.seed
-
-- Add a -I argument globally to be able to locate the .h file.
-  e.g.: -I$(objtree)/scripts/basic
-
-- Add a conditional -D argument for each separate case
-  e.g.: RANDSTRUCT_CFLAGS += -DRANDSTRUCT
-
-- Include the .h file from compiler-version.h through an #ifdef for the define
-  e.g.:
-  #ifdef RANDSTUCT
-  #include "randstruct_hash.h"
-  #endif
-
-This means that all targets gain the dependency (via fixdep), but only
-when the defines are active, which means they are trivially controlled
-by the existing CFLAGS removal mechanisms that are already being used
-to turn off each of the above features.
-
--Kees
-
-Kees Cook (3):
-  gcc-plugins: Force full rebuild when plugins change
-  randstruct: Force full rebuild when seed changes
-  integer-wrap: Force full rebuild when .scl file changes
-
- Makefile                         |  1 +
- arch/um/Makefile                 |  2 ++
- include/linux/compiler-version.h | 10 ++++++++++
- include/linux/vermagic.h         |  1 -
- scripts/Makefile.gcc-plugins     |  2 +-
- scripts/Makefile.ubsan           |  1 +
- scripts/basic/Makefile           | 20 +++++++++++++++-----
- scripts/gcc-plugins/Makefile     |  8 ++++++++
- 8 files changed, 38 insertions(+), 7 deletions(-)
-
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1d36a613aad8..8cc0f22ebefa 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -72,6 +72,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
+ 		$(ARCH_INCLUDE) $(MODE_INCLUDE) $(filter -I%,$(CFLAGS)) \
+ 		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
+ 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__ \
++		-I$(objtree)/scripts/gcc-plugins \
+ 		-include $(srctree)/include/linux/compiler-version.h \
+ 		-include $(srctree)/include/linux/kconfig.h
+ 
+diff --git a/include/linux/compiler-version.h b/include/linux/compiler-version.h
+index 573fa85b6c0c..08943df04ebb 100644
+--- a/include/linux/compiler-version.h
++++ b/include/linux/compiler-version.h
+@@ -12,3 +12,7 @@
+  * and add dependency on include/config/CC_VERSION_TEXT, which is touched
+  * by Kconfig when the version string from the compiler changes.
+  */
++
++#ifdef GCC_PLUGINS_ENABLED
++#include "gcc-plugins-deps.h"
++#endif
+diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+index 5b8a8378ca8a..468bb8faa9d1 100644
+--- a/scripts/Makefile.gcc-plugins
++++ b/scripts/Makefile.gcc-plugins
+@@ -38,7 +38,7 @@ export DISABLE_STACKLEAK_PLUGIN
+ 
+ # All the plugin CFLAGS are collected here in case a build target needs to
+ # filter them out of the KBUILD_CFLAGS.
+-GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
++GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y)) -I$(objtree)/scripts/gcc-plugins -DGCC_PLUGINS_ENABLED
+ export GCC_PLUGINS_CFLAGS
+ 
+ # Add the flags to the build!
+diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
+index 320afd3cf8e8..24671d39ec90 100644
+--- a/scripts/gcc-plugins/Makefile
++++ b/scripts/gcc-plugins/Makefile
+@@ -66,3 +66,11 @@ quiet_cmd_plugin_cxx_o_c = HOSTCXX $@
+ 
+ $(plugin-objs): $(obj)/%.o: $(src)/%.c FORCE
+ 	$(call if_changed_dep,plugin_cxx_o_c)
++
++quiet_cmd_gcc_plugins_updated = UPDATE  $@
++      cmd_gcc_plugins_updated = echo '/* $^ */' > $(obj)/gcc-plugins-deps.h
++
++$(obj)/gcc-plugins-deps.h: $(plugin-single) $(plugin-multi) FORCE
++	$(call if_changed,gcc_plugins_updated)
++
++always-y += gcc-plugins-deps.h
 -- 
 2.34.1
 
