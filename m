@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B8DDC3ABA3
-	for <linux-um@archiver.kernel.org>; Fri,  2 May 2025 09:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F489C3ABB2
+	for <linux-um@archiver.kernel.org>; Fri,  2 May 2025 09:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dr3RS1GejzF7L1g6f4YpBpfxM/ugtMJXE4CPNeiJiGM=; b=FNi2izGcmdXMrGKyWsmPbWIruH
-	t50rG/cPqnng/ETAs9GJVNP3/+g1tBOXTZ0lZqCpa6ErAcLwWEqqddTK5f5mh2j3Flv6ulFcC6YwA
-	pJMyBjywHSEKFuLbRe4Gt5H6VLgNOWmMddzyeJlc/DIjcK0tWKDAaYSPvHv6WViV7mkapctiuE0DA
-	MZWhpG64rc7KMzPNmZ1Y2H97Mq684ghDfJXPZM/p8ncZp9Ge+cC2Tg09BsPF/Uo0revkYJfB9+mdK
-	YZswlxnCzXLzyKASP1O+4O6D/Un8TunV5RvGfn+YqklDgsf+2zVjskJdaJmKTH/Vd9848nTuEO4aj
-	nxI3hZKA==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0V5wrq54od5alxMmzQQRqRqb1Zw/7YocuHaG0apsRzQ=; b=eddTrDNE7DZ9oFSHr1FK1jR2Ix
+	mKaxzsPCb6uiZPI6KW3p2JijSOs/QzwypYgPSVKStoz09E+AaJiKwEuGhrsNMstnhQv7Dv58Jl2bF
+	uy3zQIV0m/uccDsMK1NoP1+RBEwZ5ft8gMKuMR08jcWkMTq06w6rQbQIheEG1Nw8Ig4GUK8l2cwIY
+	wim1Mn4uUJsAixVrcalzjukiIJQFZf5XgrVkYwjIE1bZ5J9jHgcYoLZ9RPut5+pKsLhd61aoulTem
+	9OBqsM6v1QHyVbNypRDCztwdP+0GgBET4KdbVMc3yj8QKmjPcZmHMd71hsNRrLNmRxYe7/DzE4vLK
+	PHDXAtdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAmaW-00000001KaC-3jUC;
-	Fri, 02 May 2025 09:21:44 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1uAmnx-00000001Mbw-3KOU;
+	Fri, 02 May 2025 09:35:37 +0000
+Received: from out0-206.mail.aliyun.com ([140.205.0.206])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAmOJ-00000001IhS-3xs2
+	id 1uAmhB-00000001LsZ-3T3Q
 	for linux-um@lists.infradead.org;
-	Fri, 02 May 2025 09:09:10 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1uAmOG-00AHNE-2O; Fri, 02 May 2025 09:09:04 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1uAmOC-001n7o-0i;
-	Fri, 02 May 2025 10:09:03 +0100
-Message-ID: <7f55fde9-9753-42b4-856f-2e22a29a555b@cambridgegreys.com>
-Date: Fri, 2 May 2025 10:08:59 +0100
+	Fri, 02 May 2025 09:28:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1746178114; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=0V5wrq54od5alxMmzQQRqRqb1Zw/7YocuHaG0apsRzQ=;
+	b=PqOOChC2Lsim8ExoOla08xsbJZIdCBQjHNVwTbW7P+vs2ldP6fd/jDIf8f/uV6TUOsJxN0PVr45qdpCRqerOxxbseCvGI5WO3lyImDyHYst6YaKEqmUZyLOVwuwtGHlmT9CzG98og6RuPdoME4fbB3Z7SbrRwELmZOvOs8kTzx4=
+Received: from 30.174.83.177(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.cdIcShx_1746178105 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Fri, 02 May 2025 17:28:30 +0800
+Message-ID: <37dd9f6f-c63c-40ab-b429-b519b73f8a10@antgroup.com>
+Date: Fri, 02 May 2025 17:28:24 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] um: Merge os-Linux/drivers/ into drivers/
-To: Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org,
- Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, johannes@sipsolutions.net
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, richard@nod.at,
+ johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org
 References: <20250502083152.3791637-1-tiwei.btw@antgroup.com>
- <2E84324B-747A-4216-804B-921A7AA2F29F@m3y3r.de>
+ <15ae5fe8-63e1-4155-85b7-3b958dc1f24c@cambridgegreys.com>
 Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <2E84324B-747A-4216-804B-921A7AA2F29F@m3y3r.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Clacks-Overhead: GNU Terry Pratchett
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <15ae5fe8-63e1-4155-85b7-3b958dc1f24c@cambridgegreys.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250502_020908_144789_FFC2AFFE 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20250502_022838_341208_E0762B53 
+X-CRM114-Status: GOOD (  10.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,129 +67,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-DQoNCk9uIDAyLzA1LzIwMjUgMDk6MzUsIFRob21hcyBNZXllciB3cm90ZToNCj4gSGksDQo+
-IA0KPiBBcmVuJ3QgdGhvc2UgZHJpdmVycyB1bmRlciBleGFjdGx5IHRoaXMgZm9sZGVyIGJl
-Y2F1c2UgdGhvc2UgZHJpdmVycyB3aWxsIHdvcmsgb25seSB3aXRoIHdoZW4gdGhlIGhvc3Qg
-T1MgaXMgTGludXg/IEkgbWVhbiB0aGlzIGlzIGFsbCBoeXBvdGhldGljYWwgYnV0IHdoZW4g
-c29tZWJvZHkgaXMgZ29pbmcgdG8gaW1wbGVtZW50IFVNTCB1bmRlciBNYWMgT1MsIHRoaXMg
-bGF5b3V0IHdvbid0IHdvcmsgYW55bW9yZSwgb3IgZG8gSSBlcnI/DQoNClllcyBpbmRlZWQu
-DQoNCkhvd2V2ZXIsIHdlIGhhdmUgcGxlbnR5IG9mIGxpbnV4IHNwZWNpZmljIGRlcGVuZGVu
-Y2llcyB0aHJvdWdob3V0IG5vd2FkYXlzOiBFUE9MTCwgdmhvc3QtbmV0LCBldGMuDQpQVFJB
-Q0UgdXNhZ2UgaXMgcHJvYmFibHkgT1Mgc3BlY2lmaWMgdG9vLiBTRUNDT01QLiBBbmQgc28g
-b24uDQoNClRoZSBvcmlnaW5hbCBpZGVhIHRvIGtlZXAgTGludXggZGVwZW5kZW50IHN0dWZm
-IHVuZGVyIG9zLUxpbnV4IGlzIG5vIGxvbmdlciByZWFsaXN0aWMuDQoNCj4gDQo+IE1mZw0K
-PiBUaG9tYXMNCj4gDQo+IA0KPiBBbSAyLiBNYWkgMjAyNSAxMDozMTo1MiBNRVNaIHNjaHJp
-ZWIgVGl3ZWkgQmllIDx0aXdlaS5idHdAYW50Z3JvdXAuY29tPjoNCj4gDQo+ICAgICBNb3N0
-IG9mIHRoZSBkcml2ZXJzIGFyZSBzdG9yZWQgaW4gZHJpdmVycy8sIHdpdGggb25seSB0d28g
-ZHJpdmVycw0KPiAgICAga2VwdCBpbiBvcy1MaW51eC9kcml2ZXJzLy4gTWVyZ2Ugb3MtTGlu
-dXgvZHJpdmVycy8gaW50byBkcml2ZXJzLw0KPiAgICAgdG8gc2ltcGxpZnkgYW5kIHVuaWZ5
-IHRoZSBjb2RlIG9yZ2FuaXphdGlvbi4NCj4gDQo+ICAgICBTaWduZWQtb2ZmLWJ5OiBUaXdl
-aSBCaWUgPHRpd2VpLmJ0d0BhbnRncm91cC5jb20+DQo+ICAgICAtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0NCj4gICAgIGFyY2gvdW0vZHJpdmVycy9NYWtlZmlsZSB8IDQgKysrKw0KPiAgICAgYXJj
-aC91bS97b3MtTGludXggPT4gfS9kcml2ZXJzL2V0YXAuaCB8IDANCj4gICAgIGFyY2gvdW0v
-e29zLUxpbnV4ID0+IH0vZHJpdmVycy9ldGhlcnRhcF9rZXJuLmMgfCAwDQo+ICAgICBhcmNo
-L3VtL3tvcy1MaW51eCA9PiB9L2RyaXZlcnMvZXRoZXJ0YXBfdXNlci5jIHwgMA0KPiAgICAg
-YXJjaC91bS97b3MtTGludXggPT4gfS9kcml2ZXJzL3R1bnRhcC5oIHwgMA0KPiAgICAgYXJj
-aC91bS97b3MtTGludXggPT4gfS9kcml2ZXJzL3R1bnRhcF9rZXJuLmMgfCAwDQo+ICAgICBh
-cmNoL3VtL3tvcy1MaW51eCA9PiB9L2RyaXZlcnMvdHVudGFwX3VzZXIuYyB8IDANCj4gICAg
-IGFyY2gvdW0vb3MtTGludXgvTWFrZWZpbGUgfCAyICstDQo+ICAgICBhcmNoL3VtL29zLUxp
-bnV4L2RyaXZlcnMvTWFrZWZpbGUgfCAxMyAtLS0tLS0tLS0tLS0tDQo+ICAgICA5IGZpbGVz
-IGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pDQo+ICAgICByZW5h
-bWUgYXJjaC91bS97b3MtTGludXggPT4gfS9kcml2ZXJzL2V0YXAuaCAoMTAwJSkNCj4gICAg
-IHJlbmFtZSBhcmNoL3VtL3tvcy1MaW51eCA9PiB9L2RyaXZlcnMvZXRoZXJ0YXBfa2Vybi5j
-ICgxMDAlKQ0KPiAgICAgcmVuYW1lIGFyY2gvdW0ve29zLUxpbnV4ID0+IH0vZHJpdmVycy9l
-dGhlcnRhcF91c2VyLmMgKDEwMCUpDQo+ICAgICByZW5hbWUgYXJjaC91bS97b3MtTGludXgg
-PT4gfS9kcml2ZXJzL3R1bnRhcC5oICgxMDAlKQ0KPiAgICAgcmVuYW1lIGFyY2gvdW0ve29z
-LUxpbnV4ID0+IH0vZHJpdmVycy90dW50YXBfa2Vybi5jICgxMDAlKQ0KPiAgICAgcmVuYW1l
-IGFyY2gvdW0ve29zLUxpbnV4ID0+IH0vZHJpdmVycy90dW50YXBfdXNlci5jICgxMDAlKQ0K
-PiAgICAgZGVsZXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vb3MtTGludXgvZHJpdmVycy9NYWtl
-ZmlsZQ0KPiANCj4gICAgIGRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMvTWFrZWZpbGUg
-Yi9hcmNoL3VtL2RyaXZlcnMvTWFrZWZpbGUNCj4gICAgIGluZGV4IDBhNTgyMDM0M2FkMy4u
-NDE4MGE1OWRmOTI5IDEwMDY0NA0KPiAgICAgLS0tIGEvYXJjaC91bS9kcml2ZXJzL01ha2Vm
-aWxlDQo+ICAgICArKysgYi9hcmNoL3VtL2RyaXZlcnMvTWFrZWZpbGUNCj4gICAgIEBAIC02
-LDYgKzYsOCBAQA0KPiAgICAgIyBwY2FwIGlzIGJyb2tlbiBpbiAyLjUgYmVjYXVzZSBrYnVp
-bGQgZG9lc24ndCBhbGxvdyBwY2FwLmEgdG8gYmUgbGlua2VkDQo+ICAgICAjIGluIHRvIHBj
-YXAubw0KPiANCj4gICAgICtldGhlcnRhcC1vYmpzIDo9IGV0aGVydGFwX2tlcm4ubyBldGhl
-cnRhcF91c2VyLm8NCj4gICAgICt0dW50YXAtb2JqcyA6PSB0dW50YXBfa2Vybi5vIHR1bnRh
-cF91c2VyLm8NCj4gICAgIHNsaXAtb2JqcyA6PSBzbGlwX2tlcm4ubyBzbGlwX3VzZXIubw0K
-PiAgICAgc2xpcnAtb2JqcyA6PSBzbGlycF9rZXJuLm8gc2xpcnBfdXNlci5vDQo+ICAgICBk
-YWVtb24tb2JqcyA6PSBkYWVtb25fa2Vybi5vIGRhZW1vbl91c2VyLm8NCj4gICAgIEBAIC0z
-OCw2ICs0MCw4IEBAIG9iai15IDo9IHN0ZGlvX2NvbnNvbGUubyBmZC5vIGNoYW5fa2Vybi5v
-IGNoYW5fdXNlci5vIGxpbmUubw0KPiAgICAgb2JqLSQoQ09ORklHX1NTTCkgKz0gc3NsLm8N
-Cj4gICAgIG9iai0kKENPTkZJR19TVERFUlJfQ09OU09MRSkgKz0gc3RkZXJyX2NvbnNvbGUu
-bw0KPiANCj4gICAgICtvYmotJChDT05GSUdfVU1MX05FVF9FVEhFUlRBUCkgKz0gZXRoZXJ0
-YXAubw0KPiAgICAgK29iai0kKENPTkZJR19VTUxfTkVUX1RVTlRBUCkgKz0gdHVudGFwLm8N
-Cj4gICAgIG9iai0kKENPTkZJR19VTUxfTkVUX1NMSVApICs9IHNsaXAubyBzbGlwX2NvbW1v
-bi5vDQo+ICAgICBvYmotJChDT05GSUdfVU1MX05FVF9TTElSUCkgKz0gc2xpcnAubyBzbGlw
-X2NvbW1vbi5vDQo+ICAgICBvYmotJChDT05GSUdfVU1MX05FVF9EQUVNT04pICs9IGRhZW1v
-bi5vDQo+ICAgICBkaWZmIC0tZ2l0IGEvYXJjaC91bS9vcy1MaW51eC9kcml2ZXJzL2V0YXAu
-aCBiL2FyY2gvdW0vZHJpdmVycy9ldGFwLmgNCj4gICAgIHNpbWlsYXJpdHkgaW5kZXggMTAw
-JQ0KPiAgICAgcmVuYW1lIGZyb20gYXJjaC91bS9vcy1MaW51eC9kcml2ZXJzL2V0YXAuaA0K
-PiAgICAgcmVuYW1lIHRvIGFyY2gvdW0vZHJpdmVycy9ldGFwLmgNCj4gICAgIGRpZmYgLS1n
-aXQgYS9hcmNoL3VtL29zLUxpbnV4L2RyaXZlcnMvZXRoZXJ0YXBfa2Vybi5jIGIvYXJjaC91
-bS9kcml2ZXJzL2V0aGVydGFwX2tlcm4uYw0KPiAgICAgc2ltaWxhcml0eSBpbmRleCAxMDAl
-DQo+ICAgICByZW5hbWUgZnJvbSBhcmNoL3VtL29zLUxpbnV4L2RyaXZlcnMvZXRoZXJ0YXBf
-a2Vybi5jDQo+ICAgICByZW5hbWUgdG8gYXJjaC91bS9kcml2ZXJzL2V0aGVydGFwX2tlcm4u
-Yw0KPiAgICAgZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvZHJpdmVycy9ldGhlcnRh
-cF91c2VyLmMgYi9hcmNoL3VtL2RyaXZlcnMvZXRoZXJ0YXBfdXNlci5jDQo+ICAgICBzaW1p
-bGFyaXR5IGluZGV4IDEwMCUNCj4gICAgIHJlbmFtZSBmcm9tIGFyY2gvdW0vb3MtTGludXgv
-ZHJpdmVycy9ldGhlcnRhcF91c2VyLmMNCj4gICAgIHJlbmFtZSB0byBhcmNoL3VtL2RyaXZl
-cnMvZXRoZXJ0YXBfdXNlci5jDQo+ICAgICBkaWZmIC0tZ2l0IGEvYXJjaC91bS9vcy1MaW51
-eC9kcml2ZXJzL3R1bnRhcC5oIGIvYXJjaC91bS9kcml2ZXJzL3R1bnRhcC5oDQo+ICAgICBz
-aW1pbGFyaXR5IGluZGV4IDEwMCUNCj4gICAgIHJlbmFtZSBmcm9tIGFyY2gvdW0vb3MtTGlu
-dXgvZHJpdmVycy90dW50YXAuaA0KPiAgICAgcmVuYW1lIHRvIGFyY2gvdW0vZHJpdmVycy90
-dW50YXAuaA0KPiAgICAgZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgvZHJpdmVycy90
-dW50YXBfa2Vybi5jIGIvYXJjaC91bS9kcml2ZXJzL3R1bnRhcF9rZXJuLmMNCj4gICAgIHNp
-bWlsYXJpdHkgaW5kZXggMTAwJQ0KPiAgICAgcmVuYW1lIGZyb20gYXJjaC91bS9vcy1MaW51
-eC9kcml2ZXJzL3R1bnRhcF9rZXJuLmMNCj4gICAgIHJlbmFtZSB0byBhcmNoL3VtL2RyaXZl
-cnMvdHVudGFwX2tlcm4uYw0KPiAgICAgZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgv
-ZHJpdmVycy90dW50YXBfdXNlci5jIGIvYXJjaC91bS9kcml2ZXJzL3R1bnRhcF91c2VyLmMN
-Cj4gICAgIHNpbWlsYXJpdHkgaW5kZXggMTAwJQ0KPiAgICAgcmVuYW1lIGZyb20gYXJjaC91
-bS9vcy1MaW51eC9kcml2ZXJzL3R1bnRhcF91c2VyLmMNCj4gICAgIHJlbmFtZSB0byBhcmNo
-L3VtL2RyaXZlcnMvdHVudGFwX3VzZXIuYw0KPiAgICAgZGlmZiAtLWdpdCBhL2FyY2gvdW0v
-b3MtTGludXgvTWFrZWZpbGUgYi9hcmNoL3VtL29zLUxpbnV4L01ha2VmaWxlDQo+ICAgICBp
-bmRleCAwNDlkZmE1YmM5YzYuLmZhZTgzNjcxMzQ4NyAxMDA2NDQNCj4gICAgIC0tLSBhL2Fy
-Y2gvdW0vb3MtTGludXgvTWFrZWZpbGUNCj4gICAgICsrKyBiL2FyY2gvdW0vb3MtTGludXgv
-TWFrZWZpbGUNCj4gICAgIEBAIC04LDcgKzgsNyBAQCBLQ09WX0lOU1RSVU1FTlQgOj0gbg0K
-PiANCj4gICAgIG9iai15ID0gZXhlY3ZwLm8gZmlsZS5vIGhlbHBlci5vIGlycS5vIG1haW4u
-byBtZW0ubyBwcm9jZXNzLm8gXA0KPiAgICAgcmVnaXN0ZXJzLm8gc2lnaW8ubyBzaWduYWwu
-byBzdGFydF91cC5vIHRpbWUubyB0dHkubyBcDQo+ICAgICAtIHVtaWQubyB1c2VyX3N5bXMu
-byB1dGlsLm8gZHJpdmVycy8gc2thcy8NCj4gICAgICsgdW1pZC5vIHVzZXJfc3ltcy5vIHV0
-aWwubyBza2FzLw0KPiANCj4gICAgIENGTEFHU19zaWduYWwubyArPSAtV2ZyYW1lLWxhcmdl
-ci10aGFuPTQwOTYNCj4gDQo+ICAgICBkaWZmIC0tZ2l0IGEvYXJjaC91bS9vcy1MaW51eC9k
-cml2ZXJzL01ha2VmaWxlIGIvYXJjaC91bS9vcy1MaW51eC9kcml2ZXJzL01ha2VmaWxlDQo+
-ICAgICBkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQNCj4gICAgIGluZGV4IGNmMmQ3NWJiMTg4
-NC4uMDAwMDAwMDAwMDAwDQo+ICAgICAtLS0gYS9hcmNoL3VtL29zLUxpbnV4L2RyaXZlcnMv
-TWFrZWZpbGUNCj4gICAgICsrKyAvZGV2L251bGwNCj4gICAgIEBAIC0xLDEzICswLDAgQEAN
-Cj4gICAgIC0jIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wDQo+ICAgICAtIw0K
-PiAgICAgLSMgQ29weXJpZ2h0IChDKSAyMDAwLCAyMDAyIEplZmYgRGlrZSAoamRpa2VAa2Fy
-YXlhLmNvbSkNCj4gICAgIC0jDQo+ICAgICAtDQo+ICAgICAtZXRoZXJ0YXAtb2JqcyA6PSBl
-dGhlcnRhcF9rZXJuLm8gZXRoZXJ0YXBfdXNlci5vDQo+ICAgICAtdHVudGFwLW9ianMgOj0g
-dHVudGFwX2tlcm4ubyB0dW50YXBfdXNlci5vDQo+ICAgICAtDQo+ICAgICAtb2JqLXkgPQ0K
-PiAgICAgLW9iai0kKENPTkZJR19VTUxfTkVUX0VUSEVSVEFQKSArPSBldGhlcnRhcC5vDQo+
-ICAgICAtb2JqLSQoQ09ORklHX1VNTF9ORVRfVFVOVEFQKSArPSB0dW50YXAubw0KPiAgICAg
-LQ0KPiAgICAgLWluY2x1ZGUgJChzcmN0cmVlKS9hcmNoL3VtL3NjcmlwdHMvTWFrZWZpbGUu
-cnVsZXMNCj4gDQo+IC0tIA0KPiBEaWVzZSBOYWNocmljaHQgd3VyZGUgdm9uIG1laW5lbSBB
-bmRyb2lkLUdlcsOkdCBtaXQgSy05IE1haWwgZ2VzZW5kZXQuDQoNCi0tIA0KQW50b24gUi4g
-SXZhbm92DQpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQu
-IENvbXBhbnkgTnVtYmVyIDEwMjczNjYxDQpodHRwczovL3d3dy5jYW1icmlkZ2VncmV5cy5j
-b20vDQoNCg==
+On 2025/5/2 16:58, Anton Ivanov wrote:
+> On 02/05/2025 09:31, Tiwei Bie wrote:
+>> Most of the drivers are stored in drivers/, with only two drivers
+>> kept in os-Linux/drivers/. Merge os-Linux/drivers/ into drivers/
+>> to simplify and unify the code organization.
+>>
+>> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+>> ---
+>>   arch/um/drivers/Makefile                       |  4 ++++
+>>   arch/um/{os-Linux => }/drivers/etap.h          |  0
+>>   arch/um/{os-Linux => }/drivers/ethertap_kern.c |  0
+>>   arch/um/{os-Linux => }/drivers/ethertap_user.c |  0
+>>   arch/um/{os-Linux => }/drivers/tuntap.h        |  0
+>>   arch/um/{os-Linux => }/drivers/tuntap_kern.c   |  0
+>>   arch/um/{os-Linux => }/drivers/tuntap_user.c   |  0
+>>   arch/um/os-Linux/Makefile                      |  2 +-
+>>   arch/um/os-Linux/drivers/Makefile              | 13 -------------
+>>   9 files changed, 5 insertions(+), 14 deletions(-)
+>>   rename arch/um/{os-Linux => }/drivers/etap.h (100%)
+>>   rename arch/um/{os-Linux => }/drivers/ethertap_kern.c (100%)
+>>   rename arch/um/{os-Linux => }/drivers/ethertap_user.c (100%)
+>>   rename arch/um/{os-Linux => }/drivers/tuntap.h (100%)
+>>   rename arch/um/{os-Linux => }/drivers/tuntap_kern.c (100%)
+>>   rename arch/um/{os-Linux => }/drivers/tuntap_user.c (100%)
+>>   delete mode 100644 arch/um/os-Linux/drivers/Makefile
+>>
+>> diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+>> index 0a5820343ad3..4180a59df929 100644
+>> --- a/arch/um/drivers/Makefile
+>> +++ b/arch/um/drivers/Makefile
+>> @@ -6,6 +6,8 @@
+>>   # pcap is broken in 2.5 because kbuild doesn't allow pcap.a to be linked
+>>   # in to pcap.o
+>>   +ethertap-objs := ethertap_kern.o ethertap_user.o
+>> +tuntap-objs := tuntap_kern.o tuntap_user.o
+>>   slip-objs := slip_kern.o slip_user.o
+>>   slirp-objs := slirp_kern.o slirp_user.o
+>>   daemon-objs := daemon_kern.o daemon_user.o
+>> @@ -38,6 +40,8 @@ obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
+>>   obj-$(CONFIG_SSL) += ssl.o
+>>   obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
+>>   +obj-$(CONFIG_UML_NET_ETHERTAP) += ethertap.o
+>> +obj-$(CONFIG_UML_NET_TUNTAP) += tuntap.o
+>>   obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
+>>   obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
+>>   obj-$(CONFIG_UML_NET_DAEMON) += daemon.o
+>> diff --git a/arch/um/os-Linux/drivers/etap.h b/arch/um/drivers/etap.h
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/etap.h
+>> rename to arch/um/drivers/etap.h
+>> diff --git a/arch/um/os-Linux/drivers/ethertap_kern.c b/arch/um/drivers/ethertap_kern.c
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/ethertap_kern.c
+>> rename to arch/um/drivers/ethertap_kern.c
+>> diff --git a/arch/um/os-Linux/drivers/ethertap_user.c b/arch/um/drivers/ethertap_user.c
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/ethertap_user.c
+>> rename to arch/um/drivers/ethertap_user.c
+>> diff --git a/arch/um/os-Linux/drivers/tuntap.h b/arch/um/drivers/tuntap.h
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/tuntap.h
+>> rename to arch/um/drivers/tuntap.h
+>> diff --git a/arch/um/os-Linux/drivers/tuntap_kern.c b/arch/um/drivers/tuntap_kern.c
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/tuntap_kern.c
+>> rename to arch/um/drivers/tuntap_kern.c
+>> diff --git a/arch/um/os-Linux/drivers/tuntap_user.c b/arch/um/drivers/tuntap_user.c
+>> similarity index 100%
+>> rename from arch/um/os-Linux/drivers/tuntap_user.c
+>> rename to arch/um/drivers/tuntap_user.c
+>> diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+>> index 049dfa5bc9c6..fae836713487 100644
+>> --- a/arch/um/os-Linux/Makefile
+>> +++ b/arch/um/os-Linux/Makefile
+>> @@ -8,7 +8,7 @@ KCOV_INSTRUMENT                := n
+>>     obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
+>>       registers.o sigio.o signal.o start_up.o time.o tty.o \
+>> -    umid.o user_syms.o util.o drivers/ skas/
+>> +    umid.o user_syms.o util.o skas/
+>>     CFLAGS_signal.o += -Wframe-larger-than=4096
+>>   diff --git a/arch/um/os-Linux/drivers/Makefile b/arch/um/os-Linux/drivers/Makefile
+>> deleted file mode 100644
+>> index cf2d75bb1884..000000000000
+>> --- a/arch/um/os-Linux/drivers/Makefile
+>> +++ /dev/null
+>> @@ -1,13 +0,0 @@
+>> -# SPDX-License-Identifier: GPL-2.0
+>> -#
+>> -# Copyright (C) 2000, 2002 Jeff Dike (jdike@karaya.com)
+>> -#
+>> -
+>> -ethertap-objs := ethertap_kern.o ethertap_user.o
+>> -tuntap-objs := tuntap_kern.o tuntap_user.o
+>> -
+>> -obj-y =
+>> -obj-$(CONFIG_UML_NET_ETHERTAP) += ethertap.o
+>> -obj-$(CONFIG_UML_NET_TUNTAP) += tuntap.o
+>> -
+>> -include $(srctree)/arch/um/scripts/Makefile.rules
+> 
+> They are both marked as obsolete since 5.6.
+> 
+> 40814b98a57089463eb4be09c72205f551481f39 2019-12-10 22:34:03
+> um: Mark non-vector net transports as obsolete
+> 
+> We should probably consider removing them.
+> 
+
++1. I think that's a good idea! :)
+
+Regards,
+Tiwei
 
