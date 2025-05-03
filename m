@@ -4,76 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA59C3DA4A
-	for <linux-um@archiver.kernel.org>; Fri,  2 May 2025 22:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9E2AC369D9
+	for <linux-um@archiver.kernel.org>; Sat,  3 May 2025 04:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jIBtEyAokjAEkZnBAUAX5LDb5f/8nH7cHbyE0gJC8u8=; b=OoZu7w8Tiy348xGcEDb+V6Ddzy
-	4Oa/yXoRGjFeUZG6upbCVgro2ZSPa1NsSWYxzZjNVEHPjvsA46a6gVbrlXIdgAJGLA3H9zM9H9x6B
-	MngcUbKz7dsBoohttehox16ABzyXodpJFCWJ/WchOdN3R+fFzdvArtLJIwaUgwxah9ZL1tcayHu/V
-	6no03jdmbM9NsrkrMduT/T48OMdvZDqeuE2BNRINUl5ht90prKWllEZ319jrW1c0AU4gzBqSx5t70
-	rqPE5ECSLJj1sgxkqUeYTkCqp+jFk7ChbR6dXn0ZQDcs1I8QQzjz+HuQRmuzMhxwuHwMCHuqdoIUZ
-	uVg6OrrQ==;
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=NjC677D2QKT6l7B4bbwK1QRma2CFb697KBKGL3X43mc=; b=qws8WRJENv49wzlSWWQf7O+Sro
+	Vc7HR+sVLEH2KbeStRGMEhIBE57gWuqbjdQQSpfyPzDo1PZRcCg96GHNHHaEITodIPCTly8SdwzC9
+	QpBjwJReZsmRHMyc/AoDfFwKE6mAcK9HUdcKFeZKjurS9Tr8qS5tSUkJX2Ptp3rXG2ZpcSrT9aREj
+	A706TJWm9vIouWqZPLIvEh7SWv+/UBkJjwGMGS61fwGzZAYetDGe/q6/6UUiS2ZtqXdPiQ+8qUvqz
+	RSTV+uW62dTP4hOw1lErf8IMJxvYlsl30K/05/unnxGKdJTSabyKSI9cSD4kt7QpF7YUPUxkFl8I/
+	0k5fGpvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAzGx-00000003C8i-0EbR;
-	Fri, 02 May 2025 22:54:23 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uB4Ja-00000003Tr5-2rbM;
+	Sat, 03 May 2025 04:17:26 +0000
+Received: from out0-206.mail.aliyun.com ([140.205.0.206])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uAzGu-00000003C7I-3KHJ
+	id 1uB4JX-00000003Tqc-0jGr
 	for linux-um@lists.infradead.org;
-	Fri, 02 May 2025 22:54:21 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 97E534A88A;
-	Fri,  2 May 2025 22:54:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6EC5C4AF0C;
-	Fri,  2 May 2025 22:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746226459;
-	bh=p3LCBG41fA+N9OOg7h+A3NTLbRHrJjxplvYJ9i2fjRY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ssm7w/5OZHMhxTzwMP4B4UgKSyqDS49B4LzQoeqpM6gq8fFj67ZCjSc9HH7u9EGhG
-	 D5p6tcYMU1FvQqDasRC4ueS8g3cJQLabkV4DBDMSf01s2i9Hqb+fvrMZz/vhZiCjbl
-	 q59u9hK4c9qNtDCDZ/PpSnmg/qgPvpx/tJl0NjdeXCX7d1aZedvHwOSQpBvN8Ot1RM
-	 MZhVSvW4V7VSJzDtAz9K89UvV2KYeqFIRjRnRE7Wm5dT3nPJxX49BpoHcA+33YS0tT
-	 zEUc00UOuVESsiTC5v26JvoMPHZwyD+mRB4CfW5ctFR+Wkhez7Dx3Pynf+GjMni1S1
-	 fSpRGPEgXylIg==
-From: Kees Cook <kees@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Kees Cook <kees@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	linux-hardening@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Justin Stitt <justinstitt@google.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-kernel@vger.kernel.org,
-	kasan-dev@googlegroups.com,
-	linux-um@lists.infradead.org
-Subject: [PATCH v2 1/3] gcc-plugins: Force full rebuild when plugins change
-Date: Fri,  2 May 2025 15:54:13 -0700
-Message-Id: <20250502225416.708936-1-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250502224512.it.706-kees@kernel.org>
-References: <20250502224512.it.706-kees@kernel.org>
+	Sat, 03 May 2025 04:17:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1746245838; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=NjC677D2QKT6l7B4bbwK1QRma2CFb697KBKGL3X43mc=;
+	b=FXBQ/soPZC72e6Ot8Z781FBtmc2OGwxW+LjkfuqKpmKscynRAbaO32A7BCZJ0+nhJgVP9NCroFCw+8Px8FUYPkNby9H7TAD9fTGzxL6UwV5FSr6JLZnO/ShI3Thl43oZOgU+nAX2uYn6A7SwjbBr2KhO2uWYo8bryfU2RFiuEds=
+Received: from 30.174.103.17(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.cdokazs_1746245829 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sat, 03 May 2025 12:17:16 +0800
+Message-ID: <92df1143-f935-41bb-aa58-430319391a05@antgroup.com>
+Date: Sat, 03 May 2025 12:17:09 +0800
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3599; i=kees@kernel.org; h=from:subject; bh=p3LCBG41fA+N9OOg7h+A3NTLbRHrJjxplvYJ9i2fjRY=; b=owGbwMvMwCVmps19z/KJym7G02pJDBmivmJ2fLZvdZtuL3ln0FN9zyeba4Wj2k17D3nRxQXrd vdMr2PqKGVhEONikBVTZAmyc49z8XjbHu4+VxFmDisTyBAGLk4BmEjGNEaG31vtb+Y+u61978cH qSv9Qt/MA2r2XlX+dImj81RrVk9POMP/KOPbz/fsmLXErj3kugvzgqC892Eblgc1Mnx9/1GLbac cJwA=
-X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] um: Merge os-Linux/drivers/ into drivers/
+To: Johannes Berg <johannes@sipsolutions.net>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org, richard@nod.at
+References: <20250502083152.3791637-1-tiwei.btw@antgroup.com>
+ <2E84324B-747A-4216-804B-921A7AA2F29F@m3y3r.de>
+ <7f55fde9-9753-42b4-856f-2e22a29a555b@cambridgegreys.com>
+ <62bd586a078ff81ca8cdf4db66f548489f3a3535.camel@sipsolutions.net>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <62bd586a078ff81ca8cdf4db66f548489f3a3535.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250502_155420_879827_49CA461C 
-X-CRM114-Status: GOOD (  16.39  )
+X-CRM114-CacheID: sfid-20250502_211723_719704_46E3BDAB 
+X-CRM114-Status: GOOD (  10.49  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,88 +69,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-There was no dependency between the plugins changing and the rest of the
-kernel being built. Enforce this by including a synthetic header file
-when using plugins, that is regenerated any time the plugins are built.
+On 2025/5/3 00:09, Johannes Berg wrote:
+> On Fri, 2025-05-02 at 10:08 +0100, Anton Ivanov wrote:
+>>
+>> On 02/05/2025 09:35, Thomas Meyer wrote:
+>>> Hi,
+>>>
+>>> Aren't those drivers under exactly this folder because those drivers will work only with when the host OS is Linux? I mean this is all hypothetical but when somebody is going to implement UML under Mac OS, this layout won't work anymore, or do I err?
+>>
+>> Yes indeed.
+>>
+>> However, we have plenty of linux specific dependencies throughout nowadays: EPOLL, vhost-net, etc.
+>> PTRACE usage is probably OS specific too. SECCOMP. And so on.
+>>
+>> The original idea to keep Linux dependent stuff under os-Linux is no longer realistic.
+>>
+> 
+> Indeed. Also, there's really no need to have that anyway - there are
+> plenty of drivers that only work on some architectures, and these ones
+> are anyway going to depend on UM. They could depend on a hypothetical
+> UM_LINUX_HOST in the future instead?
+> 
 
-This cannot be included via '-include ...' because Makefiles use the
-"filter-out" string function, which removes individual words. Removing
-all instances of "-include" from the CFLAGS will cause a lot of
-problems. :)
+Good idea! If necessary, it would be much better to introduce a
+UM_LINUX_HOST option in the future instead.
 
-Instead, use -I to include the gcc-plugins directory, and depend on the
-new -DGCC_PLUGINS_ENABLED flag to include the generated header file via
-include/linux/compiler-version.h, which is already being used to control
-full rebuilds. The UM build requires that the -I be explicitly added.
-
-Signed-off-by: Kees Cook <kees@kernel.org>
----
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas.schier@linux.dev>
-Cc: <linux-hardening@vger.kernel.org>
-Cc: <linux-kbuild@vger.kernel.org>
----
- arch/um/Makefile                 | 1 +
- include/linux/compiler-version.h | 4 ++++
- scripts/Makefile.gcc-plugins     | 2 +-
- scripts/gcc-plugins/Makefile     | 8 ++++++++
- 4 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 1d36a613aad8..8cc0f22ebefa 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -72,6 +72,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		$(ARCH_INCLUDE) $(MODE_INCLUDE) $(filter -I%,$(CFLAGS)) \
- 		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__ \
-+		-I$(objtree)/scripts/gcc-plugins \
- 		-include $(srctree)/include/linux/compiler-version.h \
- 		-include $(srctree)/include/linux/kconfig.h
- 
-diff --git a/include/linux/compiler-version.h b/include/linux/compiler-version.h
-index 573fa85b6c0c..08943df04ebb 100644
---- a/include/linux/compiler-version.h
-+++ b/include/linux/compiler-version.h
-@@ -12,3 +12,7 @@
-  * and add dependency on include/config/CC_VERSION_TEXT, which is touched
-  * by Kconfig when the version string from the compiler changes.
-  */
-+
-+#ifdef GCC_PLUGINS_ENABLED
-+#include "gcc-plugins-deps.h"
-+#endif
-diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-index 5b8a8378ca8a..468bb8faa9d1 100644
---- a/scripts/Makefile.gcc-plugins
-+++ b/scripts/Makefile.gcc-plugins
-@@ -38,7 +38,7 @@ export DISABLE_STACKLEAK_PLUGIN
- 
- # All the plugin CFLAGS are collected here in case a build target needs to
- # filter them out of the KBUILD_CFLAGS.
--GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
-+GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y)) -I$(objtree)/scripts/gcc-plugins -DGCC_PLUGINS_ENABLED
- export GCC_PLUGINS_CFLAGS
- 
- # Add the flags to the build!
-diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
-index 320afd3cf8e8..24671d39ec90 100644
---- a/scripts/gcc-plugins/Makefile
-+++ b/scripts/gcc-plugins/Makefile
-@@ -66,3 +66,11 @@ quiet_cmd_plugin_cxx_o_c = HOSTCXX $@
- 
- $(plugin-objs): $(obj)/%.o: $(src)/%.c FORCE
- 	$(call if_changed_dep,plugin_cxx_o_c)
-+
-+quiet_cmd_gcc_plugins_updated = UPDATE  $@
-+      cmd_gcc_plugins_updated = echo '/* $^ */' > $(obj)/gcc-plugins-deps.h
-+
-+$(obj)/gcc-plugins-deps.h: $(plugin-single) $(plugin-multi) FORCE
-+	$(call if_changed,gcc_plugins_updated)
-+
-+always-y += gcc-plugins-deps.h
--- 
-2.34.1
+Regards,
+Tiwei
 
 
