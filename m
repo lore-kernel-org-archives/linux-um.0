@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD19C3ABBE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA21DC3ABAC
 	for <linux-um@archiver.kernel.org>; Tue,  6 May 2025 04:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,55 +12,54 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3//fPmFFCtxpVU2sp6og8z5EnTcFJbEbbMvNc1DzSeI=; b=VSmdY+AhKe7iG3FO22zict/lck
-	PQFgU9N7owhyfQIRi66LmWy+1Pp45nufS+XkC6n2DVVNSdLvM7Nia/coeKm6K4y4/mS+UjfOJHKsL
-	sZUvQmLOBMlkrc4X98JHAd+DTWU4G9ueVJ6JeXVBxbYZY72gzoX2CAsJ6n5HiyOh1J2VaNTqSmYE3
-	K7Xe2ym04BYTjqtrinCbDoIjCSJ7f7lJlDB8JNTnjnEgyEsw8mYCs8CDJd4h/fqa3wO7vuuV0IqzG
-	9eYRsjFFCyGbHRJAE9ajem4Pa9zD31OPOQEUSH1skhWlktT494WOYeDZyGHl8k/M/b/A+WQxJnvGL
-	fEB6Oy+A==;
+	bh=tgnN4Domvqg2C9gUVOcTsb3vsqp3L1SX9kWq7T1Rkh4=; b=LluDS0uYmhj/tqOtEe9f5ZrCYM
+	pTJxDO7UXEGPQo5aoBduDyrW9e+so/13eAcBsprdaf0KNjzshE/rvnOL+LZgEyOfL6qBHdhkZdirA
+	XDuf9B52lHY/mnPjKuKbfiR9Y+dzeErEw/TDn5KW8htYScd90hjAagxhMipeS6PL/vbznnNmC8bZw
+	FKeT40s0cRt01YUABI7Z/Ih2Cql3hv7BqAd/j3ZNXtlWcZNgbJc153JKCv82RfSQmYsv3q+dYCNA/
+	WEOdf+x70YlLQPn5flCcN0eOMItIZqQ6N8pxQqClUxBD+zViZi5KXzrwrWd5m5XYA7fTlNE86Zklb
+	NicgkbTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCAIt-0000000AJ4s-1B75;
-	Tue, 06 May 2025 04:53:15 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1uCAIs-0000000AJ4m-4Ads;
+	Tue, 06 May 2025 04:53:14 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uC58h-000000091sD-3ou1
+	id 1uC58e-000000091ra-3rVo
 	for linux-um@lists.infradead.org;
-	Mon, 05 May 2025 23:22:25 +0000
+	Mon, 05 May 2025 23:22:22 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1475C5C5BB5;
-	Mon,  5 May 2025 23:20:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 605FFC4CEE4;
-	Mon,  5 May 2025 23:22:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id D283544447;
+	Mon,  5 May 2025 23:22:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D7FC4CEE4;
+	Mon,  5 May 2025 23:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487342;
-	bh=dhO1wySfaom7bX0z5B2dpNT2HGt71Dc6VZn6YqH1lgI=;
+	s=k20201202; t=1746487340;
+	bh=o6vPQm8ORAMEIjP7fhptjMtwSNq9nMRVlWGY99NWjZw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pm69Mmf7cPq4nylToYoYWEqM5zGM6MzPyHAgrFywlKUKQGIgTwhb2lxvzxbbloPUD
-	 Iz1IEkDRfyxjDt9pYfwUHt4FiG1WZfoN2D63XXtji6w6HbN00hGW9Ao6YxyeFsx8Je
-	 DpgXsKQBZPCjIlXPgVgxfgvoZdaYneJivwyLE9hzu9A/Ci3DrfNhuD0cTf/K1bqO8U
-	 hrbIaI6UJrR4vv/GAZwKXKq/8bV9XSJIpLm+cnYcM1wfgmJmt0yQPmG73aF7T3O31u
-	 0DN6kWI/l+nXlARbZzxwNffCCeWRXTNxetl29SUK391hVJ02WR0/VrA1QmhRWZZFL9
-	 6xHI1M1MJpB/A==
+	b=TMypXH/o+fPZO1iiX6csIFuhWyFem3lNzKsjYnfhjpORBUC5+tZ/8ZisIIVhtT/R/
+	 eYBZAroow6K+OL6dtnw38k1thFpggo2EwzKVwGgPez6f208W2a2r6YI9uAsZjJWme4
+	 6M3OtMCeHeSz4yJPRd6xJwo69ENjtuKyOzyugE/roZnOLwpG2iW90JORUvpyHWiiBm
+	 ZO1re0/sSVTXLu9o3BjlzK/53fKY+LZihJyzc0uGt58LUrQNt74nrRwZDdynExwmHL
+	 7TsQlKpxpbH/7MtzTALWV1dxKD0JytLSCqw0KvzS7iQkamIxNF4/nQVnHpbnUW7Q0Q
+	 gROF/UU33D8RQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
+Cc: Benjamin Berg <benjamin@sipsolutions.net>,
 	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	rppt@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
 	dave.hansen@linux.intel.com,
-	akpm@linux-foundation.org,
-	richard.weiyang@gmail.com,
-	kevin.brodsky@arm.com,
-	benjamin.berg@intel.com,
+	x86@kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 17/79] um: Update min_low_pfn to match changes in uml_reserved
-Date: Mon,  5 May 2025 19:20:49 -0400
-Message-Id: <20250505232151.2698893-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 16/79] um: Store full CSGSFS and SS register from mcontext
+Date: Mon,  5 May 2025 19:20:48 -0400
+Message-Id: <20250505232151.2698893-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505232151.2698893-1-sashal@kernel.org>
 References: <20250505232151.2698893-1-sashal@kernel.org>
@@ -70,8 +69,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.293
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250505_162224_005781_E7B3C4CD 
-X-CRM114-Status: UNSURE (   7.74  )
+X-CRM114-CacheID: sfid-20250505_162220_973329_CE26E735 
+X-CRM114-Status: UNSURE (   9.90  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,34 +86,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+From: Benjamin Berg <benjamin@sipsolutions.net>
 
-[ Upstream commit e82cf3051e6193f61e03898f8dba035199064d36 ]
+[ Upstream commit cef721e0d53d2b64f2ba177c63a0dfdd7c0daf17 ]
 
-When uml_reserved is updated, min_low_pfn must also be updated
-accordingly. Otherwise, min_low_pfn will not accurately reflect
-the lowest available PFN.
+Doing this allows using registers as retrieved from an mcontext to be
+pushed to a process using PTRACE_SETREGS.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-Link: https://patch.msgid.link/20250221041855.1156109-1-tiwei.btw@antgroup.com
+It is not entirely clear to me why CSGSFS was masked. Doing so creates
+issues when using the mcontext as process state in seccomp and simply
+copying the register appears to work perfectly fine for ptrace.
+
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+Link: https://patch.msgid.link/20250224181827.647129-2-benjamin@sipsolutions.net
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/mem.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/um/os-Linux/mcontext.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 417ff647fb377..06fb50218136d 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -49,6 +49,7 @@ void __init mem_init(void)
- 	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
- 	memblock_free(__pa(brk_end), uml_reserved - brk_end);
- 	uml_reserved = brk_end;
-+	min_low_pfn = PFN_UP(__pa(uml_reserved));
- 
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
+index 49c3744cac371..81b9d1f9f4e68 100644
+--- a/arch/x86/um/os-Linux/mcontext.c
++++ b/arch/x86/um/os-Linux/mcontext.c
+@@ -26,7 +26,6 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
+ 	COPY(RIP);
+ 	COPY2(EFLAGS, EFL);
+ 	COPY2(CS, CSGSFS);
+-	regs->gp[CS / sizeof(unsigned long)] &= 0xffff;
+-	regs->gp[CS / sizeof(unsigned long)] |= 3;
++	regs->gp[SS / sizeof(unsigned long)] = mc->gregs[REG_CSGSFS] >> 48;
+ #endif
+ }
 -- 
 2.39.5
 
