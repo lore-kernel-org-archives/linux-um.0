@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FD3C3ABB0
-	for <linux-um@archiver.kernel.org>; Mon,  5 May 2025 08:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D6BEC3ABB0
+	for <linux-um@archiver.kernel.org>; Mon,  5 May 2025 08:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=yqYrW0kL68U4pB/ROcFLjIt0w7CoMEKnknDWg+6P7ZY=; b=tsszXO6fc5QsfKlxZe3BiYR7/x
-	JW0Xo3I4wnjZP2IMFhlmr1LyrNoeUgCVCkfpFLY+2gIZnc9BWj4meUlAFvn8B/fpgWy5qME2RfJ/1
-	c8/6XZuG0AyKGXbZo+gtC0b+mhrSFwPzHn7l/1XxvlnrqY6681GBYhAP0n8aYXKqkM5frAYu8cEqi
-	v1rsnPN2Ts0VTgHy+Ue26CKJXJYHS1D9zwNgZqZM6piHOtb4b9t6NgMSw+hramoMXz+L4Vw//PUET
-	+PRtIExSM1bm8ctLSFa72wxtziUmddqPvbodgTX8CadeICE6tOUPzk6g9nZL1IpU7xEDzF54qEOxx
-	z8lHR+IQ==;
+	bh=mH54UZ2XgdTbH/mJDFAclr0Gkcxe9PqEGsY/iPZaH+s=; b=b4YeuJE1HOet2uMtoDqGI8cpnC
+	V3iy5Y/NfDt+d8zw06Fsx/5pLZulVOYc4ILMGjRgTN2WJPNOnree+aidy9rHMtWlmoacqaTW6lbx+
+	sl9/duZbFu7Pr5q0JiYvKzo/nHYiLewk0Nu42VfHHYhZIZ4gx1l++y0JTHJU26kUkzxV8fgi7WfQu
+	IxdmxaeHDkO9Cs2Bmdr//eO8JX83t8/vdZ/lnYtVkenvihg+iU+VyNjCnKUuMyiuBsjQ7PR0j4jmm
+	M7kfcfqpf0IVfcNy30S5onOIitkTHzhEMD/vNpjBjHK5NENJFkcS8FRRm4dkpec8t0oxPX4Uk9Fn/
+	++PdJKfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uBr1f-00000006lID-3YDB;
-	Mon, 05 May 2025 08:18:11 +0000
+	id 1uBrPN-00000006oIU-3Bc9;
+	Mon, 05 May 2025 08:42:41 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uBr1c-00000006lG9-41nL
+	id 1uBrH2-00000006nLy-3bSw
 	for linux-um@lists.infradead.org;
-	Mon, 05 May 2025 08:18:10 +0000
+	Mon, 05 May 2025 08:34:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=yqYrW0kL68U4pB/ROcFLjIt0w7CoMEKnknDWg+6P7ZY=; t=1746433086; x=1747642686; 
-	b=rlGnLSJlHtN19DnAUwV5X1BH1wltt1u7B2lof0pxPEvbfcJLa57SPJHhGPFkqW5yjTfkNWAryyR
-	La/Wf7haaKvzpDuOLYtbJL0KgIicvXgrobzY5O0scZIJrI9NPdYdveWzaQ+DwC9lhOGh2N/GmeDjD
-	uVReXLO87AfdEf3NFUWKBEE4jgjsv4UrUjLUTocU1zIu+iJiE5z1QtIkVwZJzgSaBxiYuTfbq5i5J
-	9mN55xRbuY/BzUlZDecNrInIQAgtkDIxevCSYBjfnEGBKAnXa1dweu9IvOuwZwLHVuJo1I1Kf+hAS
-	o9+iX0HqNq2GsDVR3Hmpw4GzfC4RPaTO/vVA==;
+	bh=mH54UZ2XgdTbH/mJDFAclr0Gkcxe9PqEGsY/iPZaH+s=; t=1746434044; x=1747643644; 
+	b=J9GtqztUTkc2CE44XKTimRnaSGqzLY4gAjfmCosLHHptDtLRUcLIv238fuULF/YIdNgdAXwRwmm
+	3qG6sidXW9NOIbEZ8xjjmGEKH2yAQP4LW5I414h3qe9FRaNQaq68jLoLn7PwleY9gZ9hSazHsyPRQ
+	0P7xk8FchEiZ0PWBGYscMaDj3lMFwXcfYN+A5jYm7UrMJlMStqTW94+SKDZxKRyjQ6v85ltBmTVOp
+	68gxVBiBQq4hqjK1zPwNLPuRIiBZ2YcwZArs99ngn5WTLoc2IFXtXbQvpi4opCQJch4hYu1kixjrj
+	B8PB9aDBC8VkGbX1m/Cakhv2+juvziaPjGfA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.1)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1uBr1X-000000043hu-2IA3;
-	Mon, 05 May 2025 10:18:03 +0200
+	id 1uBrGy-000000044ea-2vwd;
+	Mon, 05 May 2025 10:34:01 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [GIT PULL] uml 6.15-rc6
-Date: Mon,  5 May 2025 10:15:32 +0200
-Message-ID: <20250505081753.12266-3-johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] um: chan_kern: use raw spinlock for irqs_to_free_lock
+Date: Mon,  5 May 2025 10:33:59 +0200
+Message-ID: <20250505103358.ae7dc659f8b4.I64ca7aece30e0b4b0b5b35ad89cdd63db197c0ce@changeid>
 X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250505_011808_995802_3FC671D5 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250505_013404_899596_B64D0CED 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,42 +69,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+From: Johannes Berg <johannes.berg@intel.com>
 
-We really should've sent this much earlier, apologies.
-There's just a single fix here for the _nofault changes
-that were causing issues with clang, and then when we
-looked at it some other issues seemed to exist.
+Since this is called deep in the ARCH=um IRQ infrastructure
+it must use a raw spinlock. It's not really part of the
+driver, but rather the core UML IRQ code.
 
-Please pull and let us know if there's any problem.
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/drivers/chan_kern.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-johannes
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index e78a99816c86..26442db7d608 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -212,7 +212,7 @@ int enable_chan(struct line *line)
+  * be permanently disabled.  This is discovered in IRQ context, but
+  * the freeing of the IRQ must be done later.
+  */
+-static DEFINE_SPINLOCK(irqs_to_free_lock);
++static DEFINE_RAW_SPINLOCK(irqs_to_free_lock);
+ static LIST_HEAD(irqs_to_free);
+ 
+ void free_irqs(void)
+@@ -222,9 +222,9 @@ void free_irqs(void)
+ 	struct list_head *ele;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&irqs_to_free_lock, flags);
++	raw_spin_lock_irqsave(&irqs_to_free_lock, flags);
+ 	list_splice_init(&irqs_to_free, &list);
+-	spin_unlock_irqrestore(&irqs_to_free_lock, flags);
++	raw_spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 
+ 	list_for_each(ele, &list) {
+ 		chan = list_entry(ele, struct chan, free_list);
+@@ -246,9 +246,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ 		return;
+ 
+ 	if (delay_free_irq) {
+-		spin_lock_irqsave(&irqs_to_free_lock, flags);
++		raw_spin_lock_irqsave(&irqs_to_free_lock, flags);
+ 		list_add(&chan->free_list, &irqs_to_free);
+-		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
++		raw_spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 	} else {
+ 		if (chan->input && chan->enabled)
+ 			um_free_irq(chan->line->read_irq, chan);
+-- 
+2.49.0
 
-
-
-The following changes since commit 92a09c47464d040866cf2b4cd052bc60555185fb:
-
-  Linux 6.15-rc5 (2025-05-04 13:55:04 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linux-6.15-rc6
-
-for you to fetch changes up to 68025adfc13e6cd15eebe2293f77659f47daf13b:
-
-  um: fix _nofault accesses (2025-05-05 10:06:51 +0200)
-
-----------------------------------------------------------------
-A single fix for _nofault infrastructure.
-
-----------------------------------------------------------------
-Johannes Berg (1):
-      um: fix _nofault accesses
-
- arch/um/include/asm/uaccess.h            |  2 ++
- arch/um/kernel/trap.c                    | 26 +++++++++++++-------------
- arch/x86/um/shared/sysdep/faultinfo_32.h |  2 +-
- arch/x86/um/shared/sysdep/faultinfo_64.h |  2 +-
- 4 files changed, 17 insertions(+), 15 deletions(-)
 
