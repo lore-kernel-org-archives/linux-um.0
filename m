@@ -4,56 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57153C3ABBC
-	for <linux-um@archiver.kernel.org>; Tue,  6 May 2025 06:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98BD7C3ABAC
+	for <linux-um@archiver.kernel.org>; Tue,  6 May 2025 13:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/c0IkIHpl63z6TVpEmRXxzmcqlidNTsTsQWWdba3DHc=; b=g9iTwRlSsToIlDByiHXHlb/siK
-	HUirwMOMOgwfFxUZHPXhZOpnV1d/wy+OJAZS0ieyo1NLKgZnikHl3GuooQNu/sgQLq622L03N3Lgr
-	kwB71rh3wgF+fVGt7gehwkSt6gjAgvXhvoPjRKyH1Au6QofLYdvU0R4IgkmGC9LrmihNIJBr6JbNj
-	TPtV2wptQ/uM5piOoxzMCcB0dWByxatPxFG0lVdQGeXg+iwcKIvQo63soASdMkpJroWV2P77pwa2J
-	fq+u5hF0zKAIaWUdeawPIVSAu+7u7ZVFFapRPZRCatikX0xDPv2OcIp4vxbtYOYtHrtwkixPqclkK
-	i9643YXQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6MuGPS2ySSDlOXD7jSIEnkN4LXNgvummQIZto8RtO/A=; b=swKJTS9u4fFCGml4S06UcXdCmc
+	Dxj6qnQ+0echvtqZI9PCkQr4pdPxOhybXrF9esAlWRwuHdlym/2CExsCTt+TxtWqjSBldE5b2BlX7
+	KZdlT99N820Zv0Co6xv6/6JOUGmSezb6f9acMkmXtVXyfkgutnZhcffs7EfJZe2Mn/k16dDww5loH
+	ypjtUWBVb7hpMeEZ3NwYuj3eTLajctZ+2F4poP7nVdsbAVztw/7DBaUaNNbLSVV0+0MwX+jczILOX
+	lb/AfsHge35zgjCngpFMMrKRmxoI6EnBWDX5TKMJiATH35HItjny6ByXRx5jSMofbulHSYqaCdaoQ
+	h6Svhj2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCBYy-0000000AcbL-2XHf;
-	Tue, 06 May 2025 06:13:56 +0000
-Received: from out0-212.mail.aliyun.com ([140.205.0.212])
+	id 1uCIF2-0000000C5Ln-2A9G;
+	Tue, 06 May 2025 13:21:48 +0000
+Received: from out-174.mta0.migadu.com ([91.218.175.174])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCAHJ-0000000AIjV-2Vw2
+	id 1uCFv7-0000000BdHE-2Kcz
 	for linux-um@lists.infradead.org;
-	Tue, 06 May 2025 04:51:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1746507093; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=/c0IkIHpl63z6TVpEmRXxzmcqlidNTsTsQWWdba3DHc=;
-	b=vknLW3vQeo9GhhVwHrjDtjK1rVR/avWm5PM0Xaoqua45mqAfFgM2i5CY8v7LWpS6k0/7B6Z135WHvRCcijCWq8C3kLUg9r61E8v+cxWyKFHpH1Zo8UCo6l62yQ/n3Ot6M3PSr9r4EBlmzANc6Zy3nMELIiI1PBVo2XJj6LmpI+M=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.cfhx6wL_1746507091 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Tue, 06 May 2025 12:51:31 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-   <geert@linux-m68k.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 2/2] um: vector: Use mac_pton() for MAC address parsing
-Date: Tue, 06 May 2025 12:51:17 +0800
-Message-Id: <20250506045117.1896661-3-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250506045117.1896661-1-tiwei.btw@antgroup.com>
-References: <20250506045117.1896661-1-tiwei.btw@antgroup.com>
+	Tue, 06 May 2025 10:53:07 +0000
+Date: Tue, 6 May 2025 12:52:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746528769;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6MuGPS2ySSDlOXD7jSIEnkN4LXNgvummQIZto8RtO/A=;
+	b=VTyXDrG59T5tyP6Rs9eEqTTHJxK8Tf+aNyp5H7Kap14LChkQyPU/rQPkFih+dJ9gTTwTnD
+	gl6sw9KY8ssLno1yasZPvURFGE64lkPaM7FJb1+liF2dl+vuA7YyIR2ZagnfZ6zFI6hv04
+	I3I7fFkU/0LrJy3tm9CaMjCsjuy0KnE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Nicolas Schier <nicolas.schier@linux.dev>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kees Cook <kees@kernel.org>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+Subject: Re: [PATCH] kbuild: introduce include/generated/global-rebuild.h
+Message-ID: <20250506-innocent-calm-grouse-ebbc2e@l-nschier-aarch64>
+References: <20250503084145.1994176-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250503084145.1994176-1-masahiroy@kernel.org>
+Organization: AVM GmbH
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250505_215138_138197_D4B18B46 
-X-CRM114-Status: UNSURE (   9.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250506_035305_744941_5B388D18 
+X-CRM114-Status: GOOD (  14.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,45 +72,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Use mac_pton() instead of custom approach.
+On Sat, May 03, 2025 at 05:41:43PM +0900, Masahiro Yamada wrote:
+> Sometimes we need to trigger a global rebuild of the kernel tree -
+> for instance, when any of the GCC plugins changes. [1]
+> 
+> This commit provides a simple mechanism to force a global rebuild
+> using a single header file.
+> 
+> The top-level Makefile creates include/generated/global-rebuild.h if
+> it does not exist, and this file is included by all kernel sources.
+> 
+> You can touch it in a build rule when a global rebuild is required.
+> 
+> The following is an example change to the GCC plugin build rule.
+> 
+>   quiet_cmd_plugin_cxx_so_c = HOSTCXX $@
+>  -      cmd_plugin_cxx_so_c = $(HOSTCXX) $(plugin_cxxflags) $(plugin_ldflags) -o $@ $<
+>  +      cmd_plugin_cxx_so_c = $(HOSTCXX) $(plugin_cxxflags) $(plugin_ldflags) -o $@ $<; touch include/generated/global-rebuild.h
+> 
+> Link: https://lore.kernel.org/linux-kbuild/CAK7LNATDbxc+3HQ6zoSk9t-Lkf4MSNmEUN6S5EqoVWnBQw_K6g@mail.gmail.com/T/#me069145443a17f0b464c13814424dbba0d970863 [1]
+> Cc: Kees Cook <kees@kernel.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  Makefile         | 9 ++++++++-
+>  arch/um/Makefile | 3 ++-
+>  2 files changed, 10 insertions(+), 2 deletions(-)
+> 
 
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/drivers/vector_kern.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Looks good to me, thanks!
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 7822421057ea..5226d2c52e6a 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1543,21 +1543,14 @@ static void vector_timer_expire(struct timer_list *t)
- static void vector_setup_etheraddr(struct net_device *dev, char *str)
- {
- 	u8 addr[ETH_ALEN];
--	char *end;
--	int i;
- 
- 	if (str == NULL)
- 		goto random;
- 
--	for (i = 0; i < 6; i++) {
--		addr[i] = simple_strtoul(str, &end, 16);
--		if ((end == str) ||
--		   ((*end != ':') && (*end != ',') && (*end != '\0'))) {
--			netdev_err(dev,
--				"Failed to parse '%s' as an ethernet address\n", str);
--			goto random;
--		}
--		str = end + 1;
-+	if (!mac_pton(str, addr)) {
-+		netdev_err(dev,
-+			"Failed to parse '%s' as an ethernet address\n", str);
-+		goto random;
- 	}
- 	if (is_multicast_ether_addr(addr)) {
- 		netdev_err(dev,
--- 
-2.34.1
-
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
+Tested-by: Nicolas Schier <n.schier@avm.de>
 
