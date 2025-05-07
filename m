@@ -4,62 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1CD2C3ABC0
-	for <linux-um@archiver.kernel.org>; Wed,  7 May 2025 08:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6422C3ABC0
+	for <linux-um@archiver.kernel.org>; Wed,  7 May 2025 11:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=lbFgYWNa4ic7ubtFoCwYiMTMfA9HXSjJ+JUdvkdBZF4=; b=Fb8oCh9HRUWEjaSMDLkGZw7Us9
-	QaIBTx/+jSMdDxGlhWBXqBkJUISxbUcjJXOHpvTcAusnXzNzhpWg/htpi4mhJLcfXNrpyT4DCrzm8
-	S/PY/juG7p1uNdm6pXGNLgNgxNZ5T8CS6tfgsOK/iU/efJ9z0U2LNZWb0pD8WBc1qktF+Pbq/tjP+
-	cJTHmY2NpZOQUFH+JA4gspkh83BfEI202aTRdQ/uYUIHE2bT2sSsPKhR36P9U+lXQPr40ZDtD6bCk
-	qb65+bVUUGxBy755Zp2UFRE7SBZXZgU9UTdUVLTTT9+a3ClYCeSDU7kFKoTicj9Nxegfjd04+riWx
-	6KSviJfA==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IdnAOnCRq90p308A+UdFioQ4SgHht6IUlP0dVVbjW0U=; b=o3kxkm+BBHoCXyszgJER4fwmpP
+	B5yn0jZPQLRyi0gnWOBDKX+8UVWKWpnaWTKxgsY600IGc4sa1IvaDT8zru2MV08eDqdjVSpF4bxX/
+	Enq8xOOoUMtolbP9WSgwTjOECveuaTdr7DUYiPYBQUNzW6QUqJk5YL9CELwDgKiKqdZiLYA4ZDqgB
+	NYi6IDi0EqIU5HWh9SC0X+NUkxUarWH6sghoyqcBHJjc3PbosCP5nF2YgI54uI/SU2ya87BlRQidq
+	nemzooruKWwBE67IONb/VchQHbWJfV+Ga1Jv/2QAV3fRmHhEwqjcB2FLcKUPJpkV28uCDdKN8aDNn
+	z1WqHY3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCaMu-0000000EnjE-2FBH;
-	Wed, 07 May 2025 08:43:08 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uCdKT-0000000FHOg-3TUF;
+	Wed, 07 May 2025 11:52:49 +0000
+Received: from out0-201.mail.aliyun.com ([140.205.0.201])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCZXE-0000000EbHm-3RdO
+	id 1uCdKQ-0000000FHNo-0m22
 	for linux-um@lists.infradead.org;
-	Wed, 07 May 2025 07:49:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 9AFC1A474BD;
-	Wed,  7 May 2025 07:49:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BA50C4CEE7;
-	Wed,  7 May 2025 07:49:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746604182;
-	bh=aKVeXsVP1cmcQfXqQm3R+VpM9vL3zBUMDZE6Vqz1Ib0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TmRVgbtwaSR0HjomtUmH68y8XAFpWC7aZdgMOanCq7iAvSBE3Y7b8GevOKidbrHdt
-	 I9EjH22spCzKxxSUQVsmpX54b2ZwCpHtHEXdY7OJ7Pa7jSxfwVXWds8V15ybapQ2yr
-	 xhAWUdNH+5IzqwnRprjbAALxBg3F0bqfiTHeLgwaHz8SjPUl9JkBht4mQSefAEhnaB
-	 cwkMV9EUC5Yzm/YZy3ymc6dEy7KjLIu9WMApSZr1MiC6P04OL284KUT9zFJ5CU0zEf
-	 Ag/qa4jq5jdGjEsXaxaLj+Xtasl2riVoHXhg+8eiGwHT0x5OdPSnYLq1yLVX7ITyeR
-	 SddZSSct/WJCg==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Richard Weinberger <richard@nod.at>,
-	linux-um@lists.infradead.org
-Subject: [PATCH] um: let 'make clean' properly clean underlying SUBARCH as well
-Date: Wed,  7 May 2025 16:49:33 +0900
-Message-ID: <20250507074936.486648-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	Wed, 07 May 2025 11:52:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1746618760; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=IdnAOnCRq90p308A+UdFioQ4SgHht6IUlP0dVVbjW0U=;
+	b=BfvEqMyWHfXVAwnA42+wxD/MIGIQPe4Ihw3SaedwcNIm0p84vnno0fCazV/Rf7DxykIcUeifjOLXSzkuzrPVLpXAaYgZuX7l1QPYO2Awynygy2AomHnzIf7t3OObV80E2M9PoxGacwUqvOarrnlHCKaz5zp4nF6l6atdV+MfbRY=
+Received: from 30.174.106.64(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.cgyj98E_1746618744 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Wed, 07 May 2025 19:52:35 +0800
+Message-ID: <2ac70b02-7841-4355-ae71-5b57a6ce15e2@antgroup.com>
+Date: Wed, 07 May 2025 19:52:22 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MAINTAINERS: remove obsolete file entry in TUN/TAP DRIVER
+To: Lukas Bulwahn <lbulwahn@redhat.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lukas Bulwahn <lukas.bulwahn@redhat.com>
+References: <20250507071004.35120-1-lukas.bulwahn@redhat.com>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <20250507071004.35120-1-lukas.bulwahn@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250507_004944_922230_BAB56853 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20250507_045246_723830_DAAC2F8C 
+X-CRM114-Status: GOOD (  11.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,51 +68,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Building the kernel with O= is affected by stale in-tree build artifacts.
+On 2025/5/7 15:10, Lukas Bulwahn wrote:
+> From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+> 
+> Commit 65eaac591b75 ("um: Remove obsolete legacy network transports")
+> removes the directory arch/um/os-Linux/drivers/, but misses to remove the
+> file entry in TUN/TAP DRIVER referring to that directory.
+> 
+> Remove this obsolete file entry. While at it, put the section name in
+> capital letters.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+> ---
+>  MAINTAINERS | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9c166503cc6b..34a55e3ff863 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -24981,13 +24981,12 @@ L:	linux-parisc@vger.kernel.org
+>  S:	Orphan
+>  F:	drivers/net/ethernet/dec/tulip/
+>  
+> -TUN/TAP driver
+> +TUN/TAP DRIVER
+>  M:	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+>  M:	Jason Wang <jasowang@redhat.com>
+>  S:	Maintained
+>  W:	http://vtun.sourceforge.net/tun
+>  F:	Documentation/networking/tuntap.rst
+> -F:	arch/um/os-Linux/drivers/
+>  F:	drivers/net/tap.c
+>  F:	drivers/net/tun*
+>  
 
-So, if the source tree is not clean, Kbuild displays the following:
+I missed that. Thanks for the fix!
 
-  $ make ARCH=um O=build defconfig
-  make[1]: Entering directory '/.../linux/build'
-  ***
-  *** The source tree is not clean, please run 'make ARCH=um mrproper'
-  *** in /.../linux
-  ***
-  make[2]: *** [/.../linux/Makefile:673: outputmakefile] Error 1
-  make[1]: *** [/.../linux/Makefile:248: __sub-make] Error 2
-  make[1]: Leaving directory '/.../linux/build'
-  make: *** [Makefile:248: __sub-make] Error 2
+Reviewed-by: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Usually, running 'make mrproper' is sufficient for cleaning the source
-tree for out-of-tree builds.
-
-However, building UML generates build artifacts not only in arch/um/,
-but also in the SUBARCH directory (i.e., arch/x86/). If in-tree stale
-files remain under arch/x86/, Kbuild will reuse them instead of creating
-new ones under the specified build directory.
-
-This commit makes 'make ARCH=um clean' recurse into the SUBARCH directory.
-
-Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-Closes: https://lore.kernel.org/lkml/20250502172459.14175-1-skhan@linuxfoundation.org/
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/um/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 1d36a613aad8..9ed792e565c9 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -154,5 +154,6 @@ MRPROPER_FILES += $(HOST_DIR)/include/generated
- archclean:
- 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
- 		-o -name '*.gcov' \) -type f -print | xargs rm -f
-+	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) clean
- 
- export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING DEV_NULL_PATH
--- 
-2.43.0
-
+Regards,
+Tiwei
 
