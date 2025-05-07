@@ -4,65 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AC2EC369DC
-	for <linux-um@archiver.kernel.org>; Wed,  7 May 2025 05:44:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7203C369DC
+	for <linux-um@archiver.kernel.org>; Wed,  7 May 2025 07:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LEtuTQ95S5zNWQ6ILd3h8AYtfPMOrGBJmza5TNoXkrw=; b=Ce/NWldA1NTjrC8pD3HIbm9f1B
-	hnX46znf1F2MMt3S7vl+L1Z8KDciYqHq3cua54RG92PcqUXGzzvrvA5b18tLDuPGX3UIkv/rK5tec
-	/RUfU5NhGi7lH4oB2olVImqdugVz8W4KJO5MBFzBVs+b0I69QHdRP+qkC5jqINW3JZQ+9ArF7ERNr
-	KEL8yOe9e7wDjk3Oq3AcRjVD45VHMyebQPyHHHj0m0vSDrr0RGwebgaAeKxoiwz4FcLAqffqq0vAL
-	ToFvAIp2AW8kWxIbwumaOv0gp6u3s0QmmoTf2+jyZcPV7IGOuAsCehqaNxHZgQJQ7A4f5mjKklUnN
-	ERnJiqdg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:content-type:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=C0GKFC8KldnbZQE+xBqEHBh0rPqBW1RKl0FzVBfySkA=; b=uEPdE/nuVtwX/rCWh5ssIiYqP1
+	bTSLhz/Sao/KIOFChjrgb4rtwzXz/599H5MvGRBYKxcSK3cueFeQGNgVqYXQ06iUM/u2Pv5ENSghS
+	xZ579afeFkScGNpJDpV7Xv6k+DblRuJZe+gYOMcygf4a//aQqffxHTv/BdkjZvmrPewiNrmuvV838
+	0RkmAo7TgZifuSLUuJYNm1rZwVB3y9244t00RhAxeoTZY4wI2I+HPS6P0BK3GrM4zPXt/JjeBHGV9
+	ODOFPfW8Yqr7eJzTzJLOrAVGgZ78calVhRoAKXKI/0k6kgB+Lcva+Cl7SmEbnAw+1luHoH4wPcZBe
+	ZHB2X59w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCXZa-0000000EI0T-3DAZ;
-	Wed, 07 May 2025 05:44:02 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uCZ51-0000000EV7C-3FAn;
+	Wed, 07 May 2025 07:20:35 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCXXR-0000000EHoJ-2PyH
+	id 1uCYxj-0000000ETN2-0aYR
 	for linux-um@lists.infradead.org;
-	Wed, 07 May 2025 05:41:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=LEtuTQ95S5zNWQ6ILd3h8AYtfPMOrGBJmza5TNoXkrw=;
-	t=1746596507; x=1747806107; b=fZ3GIziWD8QeQp9HQ4HzqgD9IaisLC4TgKOZXtYgezPowvs
-	n2G6EdpKM4xnleWtJmR+uZ3Wp6GUj5pjV0+3jTVOUfg5y76SnvMBknJTKczCfDsRd3RgsDCqhsCu7
-	Iv0LvYLZ5j3I2dbIN2j4uKWXA8AeGxen7KlQhoqJUc49GgQ3YjdNOxDr082qirf/1i6Si65lFTOQu
-	1v38jacMjN/pbPZ7qeT9G2esBrjO2S6DWDz5JHvKzc16qWPXg3V8mURO1FIMz/p5BeDE9SAXaLdcv
-	Eun2Q5f+Wv2Bwaa0vPYiFiSbL+RJ7hKBm36IoQPB9+ycepgDj3Ya1/+HonHu5EXw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.1)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1uCXXF-00000007LGf-2K7m;
-	Wed, 07 May 2025 07:41:38 +0200
-Message-ID: <1fff027e24110fe1692ab8bef06da99b31391b00.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Include linux/types.h in asm/fpu/api.h
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Herbert Xu <herbert@gondor.apana.org.au>, kernel test robot
- <lkp@intel.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, 
-	linux-crypto@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton
- Ivanov	 <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Date: Wed, 07 May 2025 07:41:36 +0200
-In-Reply-To: <aBq6X-UYlQG9HUQd@gondor.apana.org.au>
-References: <202505070045.vWc04ygs-lkp@intel.com>
-	 <aBq6X-UYlQG9HUQd@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Wed, 07 May 2025 07:13:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746601981;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=C0GKFC8KldnbZQE+xBqEHBh0rPqBW1RKl0FzVBfySkA=;
+	b=R4a4Xac0IcSQfMOAqU8XCF19cMZ/kRaUUa8WHPqi7RcMZgxXL2eU+QTZ8K/SsSgQJnIi6H
+	fdqPi5nOW3MbgW9OVIGOh2DGnrAotc1XlaURxkjLZpvCD9ytlYGG0J5oMVSwbCU1KEz1O1
+	SxAhtTlkQQWcj67JAt/9FDHjgk75mmU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-gPuVdrffP1uNmsqbdzrMaQ-1; Wed, 07 May 2025 03:10:14 -0400
+X-MC-Unique: gPuVdrffP1uNmsqbdzrMaQ-1
+X-Mimecast-MFC-AGG-ID: gPuVdrffP1uNmsqbdzrMaQ_1746601813
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-441c122fa56so16003355e9.2
+        for <linux-um@lists.infradead.org>; Wed, 07 May 2025 00:10:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746601813; x=1747206613;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C0GKFC8KldnbZQE+xBqEHBh0rPqBW1RKl0FzVBfySkA=;
+        b=ntZLCs0URGfKCKaLSw0BgDYRrmEHNm7i+LwVsjknbLtsrHJBl3Z2I3U00mcyRfjpot
+         UC6kDi3wP9EN64jQRnHLVtI2YseCddSJIi6yfiCxQ5f94347iqf/beFlwpAPyWsMl4es
+         CEWvU1MzGZPUi+yVessjA9trQQ5A1VK7kps3g/fnJ0RnOUsG/HEJMIp9hjUvisfaCyNz
+         5ZfaJK7fpd9sJuElvNc+teCNjSgSfy4IIIDl2qgGjL+1eXU21tKzyZmCqWcnQwiGKVHI
+         FEvP89plnLJMtNNig6Nsah23SH22bXrHH6hDg/lF6esyZ358nJxI/3EIOKjcZY6Y4oi0
+         6/wA==
+X-Forwarded-Encrypted: i=1; AJvYcCWjiuxfgs+/l4EiluZv2j7ysWIfAjJJGfWkL1vlpJuuaBR/ZwP0p/GuNcjwaESi8eAfz6dyBupckQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy2xM7lK3PWGkGwxKngWduJKSU9pdprIdSGlA1UCpTWlsSyJrdZ
+	T3UZFyY9K+NmTe7Pv4zxN374HRhuIbWdUh8ZJuKiqfEx1M6nVZjSVtPRX4ukmKCQGQA7Hf98uyE
+	9ZhtyNNHbEWnGOpeZHF51C/sLU1xVkmClriY0pI0mbPiUeyw7MsXTstJyu50xIA==
+X-Gm-Gg: ASbGncuPLBYiTPAXU9g37t9HA1cjwfmO+8AEezvWHQWkG+p5g3qgl3rVW0ANEktE0zw
+	kcnlREhURmCc8RRURvVcQTI3rrxoUxXeyyQg5b+4m+/RZj2UOL+WKciJkse2VZnvAwnk0K1ALf0
+	6j+7mwxVehaMbV2jUH2bUyn4yeDgzj+JB8VjILlUSfYPK3GfidRaBh35NFnH6+Q2+jy3lezHM+A
+	M1s1vOx5IKfIWN6d3P2PzUVzJO6eqiCIg2JwgqZyZuylOdAAWOdx/z9Wg4e1TlUHXfgrFQug6Ej
+	VhvY814iV0xq49YLqI5aV+pjWjuhUaOst29A+CiJEx6SObYgQpE488oxgQ==
+X-Received: by 2002:a05:600c:3115:b0:43d:172:50b1 with SMTP id 5b1f17b1804b1-441d44dffc6mr13755965e9.29.1746601812769;
+        Wed, 07 May 2025 00:10:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH9fskhTRs+MwvCppLYelBRlCfT20TAw6J9cuN0tMrz3HMBb7GdWxRU+1hCm6NmREYeaXZ5kA==
+X-Received: by 2002:a05:600c:3115:b0:43d:172:50b1 with SMTP id 5b1f17b1804b1-441d44dffc6mr13755735e9.29.1746601812359;
+        Wed, 07 May 2025 00:10:12 -0700 (PDT)
+Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e01:ef00:b52:2ad9:f357:f709])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099ae0d3csm15667725f8f.3.2025.05.07.00.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 May 2025 00:10:11 -0700 (PDT)
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+To: Tiwei Bie <tiwei.btw@antgroup.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: [PATCH] MAINTAINERS: remove obsolete file entry in TUN/TAP DRIVER
+Date: Wed,  7 May 2025 09:10:04 +0200
+Message-ID: <20250507071004.35120-1-lukas.bulwahn@redhat.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: iLr3SaveE-ww7hmFc6hUwBPZJUECA8zxZZDcbwnqW2I_1746601813
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+content-type: text/plain; charset="US-ASCII"; x-default=true
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250506_224149_611119_B035E598 
-X-CRM114-Status: UNSURE (   6.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250507_001303_241180_181C775D 
+X-CRM114-Status: GOOD (  10.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,25 +111,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2025-05-07 at 09:41 +0800, Herbert Xu wrote:
->=20
-> I'll add this to the crypto tree if it's OK with the UML maintainers.
+From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
 
-Sure, seems trivial enough and nobody is likely to touch that file.
+Commit 65eaac591b75 ("um: Remove obsolete legacy network transports")
+removes the directory arch/um/os-Linux/drivers/, but misses to remove the
+file entry in TUN/TAP DRIVER referring to that directory.
 
-Thanks.
+Remove this obsolete file entry. While at it, put the section name in
+capital letters.
 
-> ---8<---
-> Include linux/types.h before using bool.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202505070045.vWc04ygs-lkp@i=
-ntel.com/
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+---
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-
-johannes
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9c166503cc6b..34a55e3ff863 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -24981,13 +24981,12 @@ L:	linux-parisc@vger.kernel.org
+ S:	Orphan
+ F:	drivers/net/ethernet/dec/tulip/
+ 
+-TUN/TAP driver
++TUN/TAP DRIVER
+ M:	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+ M:	Jason Wang <jasowang@redhat.com>
+ S:	Maintained
+ W:	http://vtun.sourceforge.net/tun
+ F:	Documentation/networking/tuntap.rst
+-F:	arch/um/os-Linux/drivers/
+ F:	drivers/net/tap.c
+ F:	drivers/net/tun*
+ 
+-- 
+2.49.0
 
 
