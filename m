@@ -4,62 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1796FC3ABC6
-	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 17:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 543A3C3ABBE
+	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 22:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ViC3Vp7dErVibjpIJ8GsP8Af1EHoNwDVFisWnZ+tltY=; b=xMpcQfWjA82NwHe8kP7vdYdkD2
-	sGm6j0wQlnl6xtFUA22+bRBLaVHOCrLJBpKirc9kG5A7XuUHwPJKBIzm57jOVd30SFFSPq/tjevQ+
-	LjwuY0orMmANi4bmXL28EY/nP4rUwiHReWNMHM1SSTBcy5Kc/EZyIYlDeM3IUUADJeBbRNHBkYM9i
-	aUHnVgTa4gBG+wXODmPWfEIUWIk9QZBlo0dhX9XKXW7MN/hefFFGLPgv217a9yB4z6auCTvgPRj7X
-	vPp0v/OOZynz9USK4WmOr/RXLSLbgr3LlTzRwyaV9jKDAiqV4Q5LG3KEE4XtguhuRRHnN9C3cLzfO
-	0MMJjgvw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9CK1elPKWXClSLPdRPqW5P03MZNYsbIZRsBDl9jKU4I=; b=JqFV3SHtwH7TmpOwRnj+Ig3VZX
+	nU42iXCyyG5w+yBrHrOQhSr65Upne78UIfS4BAyf6TU1P4OeiujWczRaxUd6s1Y4r61S2OJogTlHK
+	tHzkbt+Zp86sx75IJkYdeNWIAP1LZrI6XoqasUA+HyW5jl1WnDoW6gDjLOgDPzmCq4VK8yHJcLAMS
+	HWGvZ/1VDtKBvybwzn4N9j+hWVgxx2MfD7os7Gzkxm9mzBokxGlVCMXosWH9RW2/vc41KGpp9epDb
+	qTMrTNtekBcWQceQN30FZmkS6zpF+Rj8t398QUM5ScvG9CFVKxlPubmzoinQa1NNjQgna46Sa49Cd
+	9Ko38x6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uD4wE-00000001Nu2-3BLf;
-	Thu, 08 May 2025 17:21:38 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uD9Vv-00000001tIr-1ClY;
+	Thu, 08 May 2025 22:14:47 +0000
+Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uD4nv-00000001Lsy-3zc4
+	id 1uD9Vs-00000001tIP-1z2b
 	for linux-um@lists.infradead.org;
-	Thu, 08 May 2025 17:13:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=ViC3Vp7dErVibjpIJ8GsP8Af1EHoNwDVFisWnZ+tltY=;
-	t=1746724381; x=1747933981; b=wQwa0nQ7y7+ZEa7e+yKTGyb8d8U9LJMCpEQ75b7NJCGTy8o
-	2STuzvx+REXrizIfvBXwK2GaOhvTZnnjcsqhc9gjg8KIDgFnVh0MBz7AHAu+sGlXrdo0azgU/vLP3
-	r5EUlR5zCJb6dJzNklgMip0OAfr0ZPi/66s5ILrcKSGNNho/eK1qoEipuB6qZBmGO4jyZNOPp/+50
-	z1DOf5pOBu0kcPx+VQUQDGTD8/JlhoNsNQZKvKc1QPZgBAgkFYLg6KuI1xorYTkhpWzkOWv9vhKj9
-	R61caaCwerzEdTSUYR9tKav+0OiygE6VOFTbXh6/Lwin3/OrEgmA2lJUQCCht4Jw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.1)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uD4nq-0000000Apcs-3tlu;
-	Thu, 08 May 2025 19:12:59 +0200
-Message-ID: <8ce0b6056a9726e540f61bce77311278654219eb.camel@sipsolutions.net>
-Subject: Re: Missing patch in 6.12.27 - breaks UM target builds
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>, 
-	linux-um@lists.infradead.org, stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Thu, 08 May 2025 19:12:57 +0200
-In-Reply-To: <0df8de9f-d24a-4ffb-8234-7d7bbe1660a4@isd.uni-stuttgart.de>
-References: <20250314130815.226872-1-benjamin@sipsolutions.net>
-	 <0df8de9f-d24a-4ffb-8234-7d7bbe1660a4@isd.uni-stuttgart.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Thu, 08 May 2025 22:14:46 +0000
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-864a22fcdf2so51780539f.0
+        for <linux-um@lists.infradead.org>; Thu, 08 May 2025 15:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1746742483; x=1747347283; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9CK1elPKWXClSLPdRPqW5P03MZNYsbIZRsBDl9jKU4I=;
+        b=ZCrVAWZuCE9n4eQLs7yVC7kygl0WqO0YNPrs4EFRoWmOkl7VhFAN+grxUx9DCIJocw
+         AC17XXgCMZDPDqWC1KvN+xxWzKfncir5HHsBNqqYqqKPyV9s19gJGOEMEJMO/whU1AHy
+         TeYiv9nCdwtZE25BP/hVWa47dmpP1iOhbYWo0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746742483; x=1747347283;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9CK1elPKWXClSLPdRPqW5P03MZNYsbIZRsBDl9jKU4I=;
+        b=JENeswV8Ez1xXQHrunCpHBIfBLAbrYzr1sRpo13CxI/JKxb5ImvwCEaOnEO/runl9n
+         yaUHkOI6cYAwS1Z/JkrtutjQ92BArHwejslb6CedKNWc8x5oVeXu2BZkGHyogSwG9JnE
+         qUMn79mDW0G4bYITvYx9A/lLuT4uJNFEiCp085Y+4E7eFsqXMCMnYraK7s2G/0ZIFMbx
+         f2uEzlpwaWwDmslXzx8vgrqit1VJQIfi2Mv9FhD+Jsk2sFl/TPFnNtRA9x4euT1mQdkD
+         iVopXvuUSSlKPDr+Ei+1Ymz4+rs2np16fE6i5Lh/MW1JjOTEX5Gs2P14EySYedfHzQTe
+         /EJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVD7kaCbysBdJO9P23pzzqcHfbI5mg7xp+9CUcJWW4uaf+JUeaQSaL2UWrppZ4jHavQrXlp7h1D6Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwnKLcPgJ4XGCOYMPVzJRLLg5eZK+rRwla8aB3CLmwIONbC/bxV
+	qBQTQq8k5S3Bpw/fd1HGbWJjhEDlfQcwoMEY/prE2uZRuqo+UT5Oillw5eUfbS0=
+X-Gm-Gg: ASbGncsl5PCGVIMKpUwe8Jzo3BeZkijuLtAb+NrjgarpoMrx9WM8nN6WrrImuq7oGUZ
+	5Tc8kOQK14L+Jsr4vANKVB3/GI2ujCktJ4azqlQNs5aMyyRhySeZO0dn1tJaGL8cipo6YPnwl4Q
+	GVaRdsCZ2E++US6VH3OC61FAq1VmuBmf129maR/F7KJ88i8dqT7j2bgxb+0wZiw3rNVlnByPb/7
+	v5w8O1uWNf7FH5QAta3x4NiJvqKxyUKZVHjWmzpbOWSprIHyB6vAECiTidzFwudYmai/Ibdwzvb
+	rQcYU7Sje3ndz9j2ZtWWLjlVJlBr+/72CR3U1TO1vRirNgjmFsU=
+X-Google-Smtp-Source: AGHT+IH5MQwed+065d9LOVuxEKO6ubkA9Ob6pEePe9HD+g9AN4JF3g2On82Lij+nTEGd4vyd0n7qaQ==
+X-Received: by 2002:a05:6602:1401:b0:867:c17:a6ff with SMTP id ca18e2360f4ac-86764496f6fmr113977539f.8.1746742483142;
+        Thu, 08 May 2025 15:14:43 -0700 (PDT)
+Received: from [192.168.1.14] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-867636e0efdsm15990639f.29.2025.05.08.15.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 May 2025 15:14:42 -0700 (PDT)
+Message-ID: <a4558815-f400-41c9-973d-90680ceb3ede@linuxfoundation.org>
+Date: Thu, 8 May 2025 16:14:41 -0600
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] um: let 'make clean' properly clean underlying SUBARCH as
+ well
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org,
+ David Gow <davidgow@google.com>, Shuah Khan <skhan@linuxfoundation.org>
+References: <20250507074936.486648-1-masahiroy@kernel.org>
+ <9ec50ce0-f60b-4d87-bc44-adaf2a1a97a1@linuxfoundation.org>
+ <CAK7LNARF=ANEEeENSwcWeayympi6Svci+ScWGpWQimyWm8xUzA@mail.gmail.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <CAK7LNARF=ANEEeENSwcWeayympi6Svci+ScWGpWQimyWm8xUzA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250508_101304_012581_4EB8E280 
-X-CRM114-Status: GOOD (  36.52  )
+X-CRM114-CacheID: sfid-20250508_151444_744059_EFA9D6DF 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,137 +102,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On 5/7/25 17:49, Masahiro Yamada wrote:
+> On Thu, May 8, 2025 at 6:38 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 5/7/25 01:49, Masahiro Yamada wrote:
+>>> Building the kernel with O= is affected by stale in-tree build artifacts.
+>>>
+>>> So, if the source tree is not clean, Kbuild displays the following:
+>>>
+>>>     $ make ARCH=um O=build defconfig
+>>>     make[1]: Entering directory '/.../linux/build'
+>>>     ***
+>>>     *** The source tree is not clean, please run 'make ARCH=um mrproper'
+>>>     *** in /.../linux
+>>>     ***
+>>>     make[2]: *** [/.../linux/Makefile:673: outputmakefile] Error 1
+>>>     make[1]: *** [/.../linux/Makefile:248: __sub-make] Error 2
+>>>     make[1]: Leaving directory '/.../linux/build'
+>>>     make: *** [Makefile:248: __sub-make] Error 2
+>>>
+>>> Usually, running 'make mrproper' is sufficient for cleaning the source
+>>> tree for out-of-tree builds.
+>>>
+>>> However, building UML generates build artifacts not only in arch/um/,
+>>> but also in the SUBARCH directory (i.e., arch/x86/). If in-tree stale
+>>> files remain under arch/x86/, Kbuild will reuse them instead of creating
+>>> new ones under the specified build directory.
+>>>
+>>> This commit makes 'make ARCH=um clean' recurse into the SUBARCH directory.
+>>>
+>>> Reported-by: Shuah Khan <skhan@linuxfoundation.org>
+>>> Closes: https://lore.kernel.org/lkml/20250502172459.14175-1-skhan@linuxfoundation.org/
+>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>
+>> It doesn't solve the problem. I still see arch/x86/realmode/rm/pasyms.h
+>> after running make ARCH=um mrproper
+> 
+> 
+> Why not?
+> 
+> This patch allows 'make ARCH=um mrproper'
+> to clean up both arch/um and arch/x86/.
+> 
+> It is really simple to test the behavior.
+> 
+> 
+> [Without this patch]
+> 
+> masahiro@zoe:~/workspace/linux-kbuild(master)$ touch
+> arch/x86/realmode/rm/pasyms.h
+> masahiro@zoe:~/workspace/linux-kbuild(master)$ make ARCH=um mrproper
+> masahiro@zoe:~/workspace/linux-kbuild(master)$ ls arch/x86/realmode/rm/pasyms.h
+> arch/x86/realmode/rm/pasyms.h
+> 
+> [With this patch]
+> 
+> masahiro@zoe:~/workspace/linux-kbuild(kbuild)$ touch
+> arch/x86/realmode/rm/pasyms.h
+> masahiro@zoe:~/workspace/linux-kbuild(kbuild)$ make ARCH=um mrproper
+>    CLEAN   arch/x86/realmode/rm
+> masahiro@zoe:~/workspace/linux-kbuild(kbuild)$ ls arch/x86/realmode/rm/pasyms.h
+> ls: cannot access 'arch/x86/realmode/rm/pasyms.h': No such file or directory
+> 
 
-I think it is better to just not backport
-0b8b2668f9981c1fefc2ef892bd915288ef01f33 ("um: insert scheduler ticks
-when userspace does not yield").
+I ran another controlled test starting from a totally clean repo
+and the building - looks good to me.
 
-Benjamin
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 
-On Thu, 2025-05-08 at 19:00 +0200, Christian Lamparter wrote:
-> Hi,
->=20
-> On 3/14/25 2:08 PM, Benjamin Berg wrote:
-> > From: Benjamin Berg <benjamin.berg@intel.com>
-> > =C2=A0=C2=A0=C2=A0 um: work around sched_yield not yielding in time-tra=
-vel mode
-> >=20
-> > sched_yield by a userspace may not actually cause scheduling in
-> > time-travel mode as no time has passed. In the case seen it appears
-> > to
-> > be a badly implemented userspace spinlock in ASAN. Unfortunately,
-> > with
-> > time-travel it causes an extreme slowdown or even deadlock
-> > depending on
-> > the kernel configuration (CONFIG_UML_MAX_USERSPACE_ITERATIONS).
-> >=20
-> > Work around it by accounting time to the process whenever it
-> > executes a
-> > sched_yield syscall.
-> >=20
-> > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
->=20
-> =C2=A0From what I can tell the patch mentioned above was backported to
-> 6.12.27 by:
-> <
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commi
-> t/arch/um?id=3D887c5c12e80c8424bd471122d2e8b6b462e12874>
->=20
-> but without the upstream
-> > Commit 0b8b2668f9981c1fefc2ef892bd915288ef01f33
-> > Author: Benjamin Berg <benjamin.berg@intel.com>
-> > Date: =C2=A0=C2=A0Thu Oct 10 16:25:37 2024 +0200
-> > =C2=A0 um: insert scheduler ticks when userspace does not yield
-> >=20
-> > =C2=A0=C2=A0 In time-travel mode userspace can do a lot of work without=
- any
-> > time
-> > =C2=A0=C2=A0 passing. Unfortunately, this can result in OOM situations =
-as the
-> > RCU
-> > =C2=A0 core code will never be run. [...]
->=20
-> the kernel build for 6.12.27 for the UM-Target will fail:
->=20
-> > /usr/bin/ld: arch/um/kernel/skas/syscall.o: in function
-> > `handle_syscall': linux-
-> > 6.12.27/arch/um/kernel/skas/syscall.c:43:(.text+0xa2): undefined
-> > reference to `tt_extra_sched_jiffies'
-> > collect2: error: ld returned 1 exit status
->=20
-> is it possible to backport 0b8b2668f9981c1fefc2ef892bd915288ef01f33
-> too?
-> Or is it better to revert 887c5c12e80c8424bd471122d2e8b6b462e12874
-> again
-> in the stable releases?
->=20
-> Best Regards,
-> Christian Lamparter
->=20
-> >=20
-> > ---
-> >=20
-> > I suspect it is this code in ASAN that uses sched_yield
-> > =C2=A0=C2=A0
-> > https://github.com/llvm/llvm-project/blob/main/compiler-rt/lib/sanitize=
-r_common/sanitizer_mutex.cpp
-> > though there are also some other places that use sched_yield.
-> >=20
-> > I doubt that code is reasonable. At the same time, not sure that
-> > sched_yield is behaving as advertised either as it obviously is not
-> > necessarily relinquishing the CPU.
-> > ---
-> > =C2=A0 arch/um/include/linux/time-internal.h |=C2=A0 2 ++
-> > =C2=A0 arch/um/kernel/skas/syscall.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | 11 +++++++++++
-> > =C2=A0 2 files changed, 13 insertions(+)
-> >=20
-> > diff --git a/arch/um/include/linux/time-internal.h
-> > b/arch/um/include/linux/time-internal.h
-> > index b22226634ff6..138908b999d7 100644
-> > --- a/arch/um/include/linux/time-internal.h
-> > +++ b/arch/um/include/linux/time-internal.h
-> > @@ -83,6 +83,8 @@ extern void time_travel_not_configured(void);
-> > =C2=A0 #define time_travel_del_event(...) time_travel_not_configured()
-> > =C2=A0 #endif /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
-> > =C2=A0=20
-> > +extern unsigned long tt_extra_sched_jiffies;
-> > +
-> > =C2=A0 /*
-> > =C2=A0=C2=A0 * Without CONFIG_UML_TIME_TRAVEL_SUPPORT this is a linker =
-error
-> > if used,
-> > =C2=A0=C2=A0 * which is intentional since we really shouldn't link it i=
-n that
-> > case.
-> > diff --git a/arch/um/kernel/skas/syscall.c
-> > b/arch/um/kernel/skas/syscall.c
-> > index b09e85279d2b..a5beaea2967e 100644
-> > --- a/arch/um/kernel/skas/syscall.c
-> > +++ b/arch/um/kernel/skas/syscall.c
-> > @@ -31,6 +31,17 @@ void handle_syscall(struct uml_pt_regs *r)
-> > =C2=A0=C2=A0		goto out;
-> > =C2=A0=20
-> > =C2=A0=C2=A0	syscall =3D UPT_SYSCALL_NR(r);
-> > +
-> > +	/*
-> > +	 * If no time passes, then sched_yield may not actually
-> > yield, causing
-> > +	 * broken spinlock implementations in userspace (ASAN) to
-> > hang for long
-> > +	 * periods of time.
-> > +	 */
-> > +	if ((time_travel_mode =3D=3D TT_MODE_INFCPU ||
-> > +	=C2=A0=C2=A0=C2=A0=C2=A0 time_travel_mode =3D=3D TT_MODE_EXTERNAL) &&
-> > +	=C2=A0=C2=A0=C2=A0 syscall =3D=3D __NR_sched_yield)
-> > +		tt_extra_sched_jiffies +=3D 1;
-> > +
-> > =C2=A0=C2=A0	if (syscall >=3D 0 && syscall < __NR_syscalls) {
-> > =C2=A0=C2=A0		unsigned long ret =3D EXECUTE_SYSCALL(syscall,
-> > regs);
-> > =C2=A0=20
->=20
->=20
+thanks,
+-- Shuah
 
 
