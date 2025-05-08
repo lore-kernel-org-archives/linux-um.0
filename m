@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73741C3ABBE
-	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 09:18:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0710CC3ABBE
+	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 09:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=69xk8QN9LbecGAAun+SdXIlnEDtczaO/7wGswwvBris=; b=mywjTpx+mxiv5EPgzv/TtGuqw2
-	Tv8Y+8P4jTinSgCVpmy8IFGrFxuABmZJVtu0Wqkv8MS1r/pV4b1tnaeF8fJ1qHCTt5QZfNUmOvE+x
-	LRpHEJYX3H8nzuE/smK1Awd4M5+i7QOs4+sbOGsBLJEjpjoDXiLnw3HUqlRmShZijOLUMlcAhtZ50
-	/Wm3cJrHvFoZT/Qm4WKMa5FZUUzclixCqTMYRSCKvI+C2JdG/vNLrx7TsDiEtxoNQwZTG04yslZ2Z
-	OtWxPuo54mD38GR51FgBGhbfPJf/8MhGnvHeRR4Igs2RWBGO/7qm6xHVzy8ilq/QWuIkBpRYRlsaz
-	bzfqvWkQ==;
+	bh=8Rypyay4AhyqMCAVMP7o+y3EI6xc+qzYvwlMDd5Jl4g=; b=hZAgZWsEObjlOaib+bRwuWlRN3
+	N8KpJZGayNJfqm+mbMk7AHbRWzHhpk7SpgKUM6ScPwcGa2KrmDqjp6UUg5HrXzSH6/ZIQL8u2MSkx
+	M0AreIlz0yOsgYbhri8wbkhdY95z4YTd4KyPrrXY8k0HHXS9A472tb9/YMFnlCjgLM7fvjzNTEJX+
+	kqRbAnMIoYn4REv/+DrjazcssVD80nu2AVbgyluC3ZmgD2OOEHMAZoF+nTVnHYnr68riaBhgYCZTr
+	VBZ59EPQfgmnQq52CisQkAfZdSrO+UkzEOM80KTmU2NapJBUzQP9MtrgNtZL6P+B9gqLP20HDCFmz
+	mLA8zx/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCxOI-00000000EiI-0MHQ;
-	Thu, 08 May 2025 09:18:06 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1uCxUP-00000000FYs-1o9u;
+	Thu, 08 May 2025 09:24:25 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCx4n-00000000BiA-0JJe
+	id 1uCx95-00000000CJX-1Ynk
 	for linux-um@lists.infradead.org;
-	Thu, 08 May 2025 08:57:59 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 2A677A4AFCE;
-	Thu,  8 May 2025 08:57:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48B85C4CEEB;
-	Thu,  8 May 2025 08:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746694675;
-	bh=wHPATXC9LkJsZRMeS2x8lNdgUXoYaxjzLb5iBN80POk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m+bi/J7r34LfUr94fxQXkxjMN93ATfTaQ26PPYNkdilIHd3MkJ78rtWPVgL7iTZ3c
-	 DZZEL8XgkNfveoCLgQemc6R6LWGfBb98fV4a/b9oqP+4ttnKUy7KLhFbwHZYBtQgKE
-	 kaWTMbPIwphXJyXeF3QoOwjNv4B7c7egGeE/fiAzh57y9UdQx0acsfVHhWmVHBeeGu
-	 DcDcmZlpKWfcHJfQeAwvwfTyo7RyhpSvmnPKdUhic3BKS8Gh7m0ZLad/d4DcHQhLaA
-	 hPd5scmwhnFt8Acf71o5Tz8i1C/PxZyzByZBIDgJd0u2pznhweP4PDli34VM/Wrnn/
-	 vaGJoIVprpjpQ==
-Date: Thu, 8 May 2025 10:57:51 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
-	lkp <lkp@intel.com>, "x86@kernel.org" <x86@kernel.org>,
-	linux-um@lists.infradead.org
-Subject: [PATCH -v2] accel/habanalabs: Don't build the driver on UML
-Message-ID: <aBxyDyVT5QbOlhPq@gmail.com>
+	Thu, 08 May 2025 09:02:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=8Rypyay4AhyqMCAVMP7o+y3EI6xc+qzYvwlMDd5Jl4g=;
+	t=1746694941; x=1747904541; b=db5j4QU1Unter884lEnf9/ruPxiS+GXznWMJr2DlCw5Yza9
+	gutc5XMeM306ZN+Xvjawcw91Y3bOAnQ28U+og7WKYHn3Pdolos8lPsAZPqX+VpWAszrZCBSVK/24R
+	nbZWHaqTzAmeZKjUKi7kMbYXbSdgTkDN46APlG9/X98LD+BsY6ozsVsjttVKhobh7Mvi2UJ9xe5ze
+	FGJr82tpBAzlX6lezvwfHCa7f+UOI1GzmyQLBaetIz8icRkZID9E1wcEIxGPfcXuCDq4FwgO4wloT
+	mDHiDZ9nZPdcag6kmjvNOp9Ds83ttAtWCya95PwYwX25+HkE5xIVkMUDDHRCrK9A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.1)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1uCx90-00000009zND-059U;
+	Thu, 08 May 2025 11:02:18 +0200
+Message-ID: <709b486f4cfb93e0feac12300e4f06a34f49fd27.camel@sipsolutions.net>
+Subject: Re: [PATCH -v2] accel/habanalabs: Don't build the driver on UML
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "linux-tip-commits@vger.kernel.org"
+	 <linux-tip-commits@vger.kernel.org>, lkp <lkp@intel.com>, "x86@kernel.org"
+	 <x86@kernel.org>, linux-um@lists.infradead.org
+Date: Thu, 08 May 2025 11:02:17 +0200
+In-Reply-To: <aBxyDyVT5QbOlhPq@gmail.com>
 References: <202505080003.0t7ewxGp-lkp@intel.com>
- <174664324585.406.10812098910624084030.tip-bot2@tip-bot2>
- <007a7132d1396912b1381e96cc4401a10071ed24.camel@sipsolutions.net>
+	 <174664324585.406.10812098910624084030.tip-bot2@tip-bot2>
+	 <007a7132d1396912b1381e96cc4401a10071ed24.camel@sipsolutions.net>
+	 <aBxyDyVT5QbOlhPq@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <007a7132d1396912b1381e96cc4401a10071ed24.camel@sipsolutions.net>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250508_015757_252149_D681D070 
-X-CRM114-Status: GOOD (  29.94  )
+X-CRM114-CacheID: sfid-20250508_020223_406354_34DA008B 
+X-CRM114-Status: GOOD (  10.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,107 +78,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Thu, 2025-05-08 at 10:57 +0200, Ingo Molnar wrote:
+> >=20
+> > I dunno. I guess we can put rdtsc() into UML on x86 as I suggested abou=
+t
+> > the file placement, or we can also just fix the Kconfig there.
+>=20
+> The Kconfig solution looks much simpler to me too :)
+>=20
+> Patch attached, does this look good to you?
 
-* Johannes Berg <johannes@sipsolutions.net> wrote:
+Yeah looks good to me. Common gotcha really.
 
-> +linux-um
-> 
-> On Wed, 2025-05-07 at 18:40 +0000, tip-bot2 for Ingo Molnar wrote:
-> > 
-> > To resolve these kinds of problems and to allow <asm/tsc.h> to be included on UML,
-> > add a simplified version of <asm/tsc.h>, which only adds the rdtsc() definition.
-> 
-> OK, weird, why would that be needed - UM isn't really X86.
-> 
-> >  arch/um/include/asm/tsc.h | 25 +++++++++++++++++++++++++
-> 
-> Feels that should be in arch/x86/um/asm/ instead, which I believe is
-> also included but then at least pretends to keep the notion that UML
-> could be ported to other architectures ;-)
-> 
-> > +static __always_inline u64 rdtsc(void)
-> > +{
-> > +       EAX_EDX_DECLARE_ARGS(val, low, high);
-> > +
-> > +       asm volatile("rdtsc" : EAX_EDX_RET(val, low, high));
-> > +
-> > +       return EAX_EDX_VAL(val, low, high);
-> > +}
-> 
-> Though I also wonder where this is called at all that would be relevant
-> for UML? If it's not then perhaps we should just make using it
-> unbuildable, a la
-> 
-> u64 __um_has_no_rdtsc(void);
-> #define rdtsc() __um_has_no_rdtsc()
-> 
-> or something like that... (and then of course keep it in the current
-> location). But looking at the 0-day report that'd probably break
-> building the driver on UML; while the driver doesn't seem important we
-> wouldn't really want that...
-> 
-> Actually, that's just because of the stupid quirk in UML/X86:
-> 
-> config DRM_ACCEL_HABANALABS
->         tristate "HabanaLabs AI accelerators"
->         depends on DRM_ACCEL
->         depends on X86_64
-> 
-> that last line should almost certainly be "depends on X86 && X86_64"
-> because ARCH=um will set UM and X86_64, but not X86 since the arch
-> Kconfig symbols are X86 and UM respectively, but the UML subarch still
-> selects X86_64 ...
-> 
-> 
-> I dunno. I guess we can put rdtsc() into UML on x86 as I suggested about
-> the file placement, or we can also just fix the Kconfig there.
+Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
 
-The Kconfig solution looks much simpler to me too :)
+If anyone _really_ needs to have this driver built on UML (say for
+simulations/testing, we do build iwlwifi for all the time), then they'd
+probably want to replace the rdtsc() anyway with something else there.
 
-Patch attached, does this look good to you?
-
-Thanks,
-
-	Ingo
-
-===================================>
-From: Ingo Molnar <mingo@kernel.org>
-Date: Wed, 7 May 2025 20:25:59 +0200
-Subject: [PATCH] accel/habanalabs: Don't build the driver on UML
-
-The following commit:
-
-  288a4ff0ad29 ("x86/msr: Move rdtsc{,_ordered}() to <asm/tsc.h>")
-
-removed the <asm/msr.h> include from the accel/habanalabs driver, which broke
-the build on UML:
-
-   drivers/accel/habanalabs/common/habanalabs_ioctl.c:326:23: error: call to undeclared function 'rdtsc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-
-Make the driver depend on 'X86 && X86_64', instead of just 'X86_64',
-thus it won't be built on UML.
-
-Suggested-by: Johannes Berg <johannes.berg@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Ofir Bitton <obitton@habana.ai>
-Cc: Oded Gabbay <ogabbay@kernel.org>
-Link: https://lore.kernel.org/r/202505080003.0t7ewxGp-lkp@intel.com
----
- drivers/accel/habanalabs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/accel/habanalabs/Kconfig b/drivers/accel/habanalabs/Kconfig
-index be85336107f9..1919fbb169c7 100644
---- a/drivers/accel/habanalabs/Kconfig
-+++ b/drivers/accel/habanalabs/Kconfig
-@@ -6,7 +6,7 @@
- config DRM_ACCEL_HABANALABS
- 	tristate "HabanaLabs AI accelerators"
- 	depends on DRM_ACCEL
--	depends on X86_64
-+	depends on X86 && X86_64
- 	depends on PCI && HAS_IOMEM
- 	select GENERIC_ALLOCATOR
- 	select HWMON
+johannes
 
