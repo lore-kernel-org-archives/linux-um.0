@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E876BC3ABC0
-	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 17:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48CF4C3ABC6
+	for <linux-um@archiver.kernel.org>; Thu,  8 May 2025 17:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vMN+iMGvFhpjV0lE7tYmN8eikr2AxmfQ/1RJzjUb7HA=; b=Qc2HK36RIg+W+EeLrb2jWD+gZs
-	oopDXw7ivk1weYGmbctydSQvcUSYkzP0mHU35zt/Kpfrs61yRGdG7njTmsg4fFy3qlY4jJ3UuXe13
-	pBd+og2IgQ5hfW/kUcrq7Bu1w1Mm9oeSkNzAYIibsLJqcIcnKgZRdnm4GSLWoAsz+X5oQ6Wf1o5YR
-	GSiY+LSKw0CidHNMJ+9FmiWzVUFsZv2g8pyK3TqNQoBAyS3kBW3dh1gW/twmRLsRQXjBR837ekdSf
-	sPOIKbHcvDFZ/tfz9jzVMR4LAsidKpKNAfd08l/0eo3iQKgXcx3PQxUzU7Q+l+ZaWslihXT/64kaR
-	ht2uC3JQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=DaPmEK3MeKb1iMh1NlJFKZhNyNIIPi6dL7yTJklAm38=; b=bMlfBeaA9hZM/5X3o2NxzMCi/I
+	5hm3Rd5ZZF9yIK+4LfIkYkoezcMvVoe1EGTMtZ5EcV4fg+8CpgoMVaunxBCCyW1m/3BJUsRKgKowr
+	Reim4YQMZ1Q3sBySEDLS2T1c13u9hh2uN1xTNwfCIyEaCvv5+lmgNwjtUH2h8O7ZAsB/RuTWJuXn6
+	0tSlRn5BT7miOSxMw3t4SdV3cghad0G8+BtcsMdR9gOTa/SXbjTUpUPe24Groa9iNYFwVUuKkbU+1
+	T0/iB4nMzFv/BbE+o5PUuisGVzcwc3/3MMfEeqI61vCTOwsbCgNb6IZ+26YlHkM35qi2j6mm54Pu9
+	bS1R77/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uD4w3-00000001NZY-25t5;
-	Thu, 08 May 2025 17:21:27 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uD4w4-00000001NcZ-40iz;
+	Thu, 08 May 2025 17:21:28 +0000
+Received: from mxex2.tik.uni-stuttgart.de ([2001:7c0:2041:24::a:2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uD4Xw-00000001KSp-35Ls
+	id 1uD4c3-00000001Kk5-0rqh
 	for linux-um@lists.infradead.org;
-	Thu, 08 May 2025 16:56:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id CEE79A4DF8D;
-	Thu,  8 May 2025 16:56:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46EFAC4CEE7;
-	Thu,  8 May 2025 16:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746723391;
-	bh=kCC/RC1xjDARRLa7SAcxuLQRIDrsjd8nQJwVZfH9pX8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ChcionI4QpBcr/AH77gTgk1kCLQT1l9LMAfmwMVaNf+bDRP6Op1BYMt0tvnyZCJsn
-	 xV61+2za141yy7hFSI4I+u5IMD2WXBmr47eZ0zVO2m47go2gDtBsreS+sJ0dc9HUAf
-	 3+TOt49NRBZVC6JUNMUCRALtckKCB/Kx41RnBtPXefVPpjLz7BQutjJpXiJZ8FwJMA
-	 Lxy8sJkRr67dZJjkZI0gv1XsigXkr8albkRm3IKimy2/+lxM0dKKsujroALWXRTzTe
-	 zEIyalnW83GX4AWc/VuCmGqORHqrQDoQZHE+sddRHD9gkjQT7JuZzPmP5jR/TwgXrP
-	 8h7EKAY1c0FVA==
-Date: Thu, 8 May 2025 09:56:28 -0700
-From: Kees Cook <kees@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas.schier@linux.dev>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Justin Stitt <justinstitt@google.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, kasan-dev@googlegroups.com,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 0/3] Detect changed compiler dependencies for full
- rebuild
-Message-ID: <202505080953.789B3381@keescook>
-References: <20250502224512.it.706-kees@kernel.org>
- <CAK7LNAQCZMmAGfPTr1kgp5cNSdnLWMU5kC_duU0WzWnwZrqt2A@mail.gmail.com>
- <202505031028.7022F10061@keescook>
- <CAK7LNAQehmFgB3kJtrkVhUKM1NEXGQrfJ3v3piToh7YV7-3ccw@mail.gmail.com>
+	Thu, 08 May 2025 17:00:49 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id ACA2B6072C;
+	Thu,  8 May 2025 19:00:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
+	 h=content-transfer-encoding:content-type:content-type
+	:in-reply-to:organization:from:from:content-language:references
+	:subject:subject:user-agent:mime-version:date:date:message-id;
+	 s=dkim; i=@isd.uni-stuttgart.de; t=1746723630; x=1748462431;
+	 bh=OyuIWm4IMT0P5Xd3YnD3AKzFv4vivn4bMHgsgz1kcIY=; b=mJuYCmEEFUYp
+	4u7feMXMlPso9JTU/eitCoLd7BlbbWH4c18h+vDPlmKz/Q9m4joYCXZh+Fvia186
+	RU22Y1WpP6ykAn1tbYou/UjfDzRsz2qJ2n41wyXMC7CzHzupVzU0IfqpVcdqIMfS
+	Yh927rkaoxpEc3IPvk4U4Z3PJ4UVcK0yQECj68tLltGVRvjNoaCsyeflzmtHJjPJ
+	SnTn93d4VUrVM3YcnsTyc5fdogTIKGjQkMSYgkafQKqdPfl7YE2hGrZWKKp/1pZ5
+	jj4ZE7ikS40qs5Jk/mXe4DuT5iq0HJDkKjhHYjEw2tuTeiO+ZM1lqWKBqXsVhOfh
+	nKMqzG3/tQ==
+X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
+Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
+ by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
+ with ESMTP id vQ7Sv7mdwQ-X; Thu,  8 May 2025 19:00:30 +0200 (CEST)
+Received: from authenticated client
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
+Message-ID: <0df8de9f-d24a-4ffb-8234-7d7bbe1660a4@isd.uni-stuttgart.de>
+Date: Thu, 8 May 2025 19:00:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Missing patch in 6.12.27 - breaks UM target builds
+To: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org,
+ stable@vger.kernel.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20250314130815.226872-1-benjamin@sipsolutions.net>
+Content-Language: de-DE
+From: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>
+Organization: Universitaet Stuttgart - ISD
+In-Reply-To: <20250314130815.226872-1-benjamin@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQehmFgB3kJtrkVhUKM1NEXGQrfJ3v3piToh7YV7-3ccw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250508_095632_910919_4E529CF7 
-X-CRM114-Status: GOOD (  37.82  )
+X-CRM114-CacheID: sfid-20250508_100047_958371_0F98ED9D 
+X-CRM114-Status: GOOD (  29.69  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,101 +84,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 09, 2025 at 01:44:09AM +0900, Masahiro Yamada wrote:
-> On Sun, May 4, 2025 at 2:37 AM Kees Cook <kees@kernel.org> wrote:
-> >
-> > On Sat, May 03, 2025 at 06:39:28PM +0900, Masahiro Yamada wrote:
-> > > On Sat, May 3, 2025 at 7:54 AM Kees Cook <kees@kernel.org> wrote:
-> > > >
-> > > >  v2:
-> > > >   - switch from -include to -I with a -D gated include compiler-version.h
-> > > >  v1: https://lore.kernel.org/lkml/20250501193839.work.525-kees@kernel.org/
-> > >
-> > >
-> > > What do you think of my patch as a prerequisite?
-> > > https://lore.kernel.org/linux-kbuild/20250503084145.1994176-1-masahiroy@kernel.org/T/#u
-> > > Perhaps, can you implement this series more simply?
-> > >
-> > > My idea is to touch a single include/generated/global-rebuild.h
-> > > rather than multiple files such as gcc-plugins-deps.h, integer-wrap.h, etc.
-> > >
-> > > When the file is touched, the entire kernel source tree will be rebuilt.
-> > > This may rebuild more than needed (e.g. vdso) but I do not think
-> > > it is a big deal.
-> >
-> > This is roughly where I started when trying to implement this, but I
-> > didn't like the ergonomics of needing to scatter "touch" calls all over,
-> > which was especially difficult for targets that shared a build rule but
-> > may not all need to trigger a global rebuild. But what ultimately pushed
-> > me away from it was when I needed to notice if a non-built source file
-> > changed (the Clang .scl file), and I saw that I need to be dependency
-> > driven rather than target driven. (Though perhaps there is a way to
-> > address this with your global-rebuild.h?)
-> >
-> > As far as doing a full rebuild, if it had been available last week, I
-> > probably would have used it, but now given the work that Nicolas, you,
-> > and I have put into this, we have a viable way (I think) to make this
-> > more specific. It does end up being a waste of time/resources to rebuild
-> > stuff that doesn't need to be (efi-stub, vdso, boot code, etc), and that
-> > does add up when I'm iterating on something that keeps triggering a full
-> > rebuild. We already have to do the argument filtering for targets that
-> > don't want randstruct, etc, so why not capitalize on that and make the
-> > rebuild avoid those files too?
-> 
-> 
-> efi-stub, vdso are very small.
-> 
-> Unless this turns out to be painful, I prefer
-> a simpler implementation.
-> 
-> You will see how .scl file is handled.
-> 
-> See the below code:
-> 
-> 
-> diff --git a/Kbuild b/Kbuild
-> index f327ca86990c..85747239314c 100644
-> --- a/Kbuild
-> +++ b/Kbuild
-> @@ -67,10 +67,20 @@ targets += $(atomic-checks)
->  $(atomic-checks): $(obj)/.checked-%: include/linux/atomic/%  FORCE
->         $(call if_changed,check_sha1)
-> 
-> +rebuild-$(CONFIG_GCC_PLUGINS)          += $(addprefix
-> scripts/gcc-plugins/, $(GCC_PLUGIN))
-> +rebuild-$(CONFIG_RANDSTRUCT)           += include/generated/randstruct_hash.h
+Hi,
 
-These are in $(objtree)
+On 3/14/25 2:08 PM, Benjamin Berg wrote:
+> From: Benjamin Berg <benjamin.berg@intel.com>
+>     um: work around sched_yield not yielding in time-travel mode
+>
+> sched_yield by a userspace may not actually cause scheduling in
+> time-travel mode as no time has passed. In the case seen it appears to
+> be a badly implemented userspace spinlock in ASAN. Unfortunately, with
+> time-travel it causes an extreme slowdown or even deadlock depending on
+> the kernel configuration (CONFIG_UML_MAX_USERSPACE_ITERATIONS).
+>
+> Work around it by accounting time to the process whenever it executes a
+> sched_yield syscall.
+>
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
-> +rebuild-$(CONFIG_UBSAN_INTEGER_WRAP)   += scripts/integer-wrap-ignore.scl
+ From what I can tell the patch mentioned above was backported to 6.12.27 by:
+<https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/arch/um?id=887c5c12e80c8424bd471122d2e8b6b462e12874>
 
-This is in $(srctree)
+but without the upstream
+|Commit 0b8b2668f9981c1fefc2ef892bd915288ef01f33
+|Author: Benjamin Berg <benjamin.berg@intel.com>
+|Date:   Thu Oct 10 16:25:37 2024 +0200
+|  um: insert scheduler ticks when userspace does not yield
+|
+|   In time-travel mode userspace can do a lot of work without any time
+|   passing. Unfortunately, this can result in OOM situations as the RCU
+|  core code will never be run. [...]
 
+the kernel build for 6.12.27 for the UM-Target will fail:
+
+| /usr/bin/ld: arch/um/kernel/skas/syscall.o: in function `handle_syscall': linux-6.12.27/arch/um/kernel/skas/syscall.c:43:(.text+0xa2): undefined reference to `tt_extra_sched_jiffies'
+| collect2: error: ld returned 1 exit status
+
+is it possible to backport 0b8b2668f9981c1fefc2ef892bd915288ef01f33 too?
+Or is it better to revert 887c5c12e80c8424bd471122d2e8b6b462e12874 again
+in the stable releases?
+
+Best Regards,
+Christian Lamparter
+
+>
+> ---
+>
+> I suspect it is this code in ASAN that uses sched_yield
+>    https://github.com/llvm/llvm-project/blob/main/compiler-rt/lib/sanitizer_common/sanitizer_mutex.cpp
+> though there are also some other places that use sched_yield.
+>
+> I doubt that code is reasonable. At the same time, not sure that
+> sched_yield is behaving as advertised either as it obviously is not
+> necessarily relinquishing the CPU.
+> ---
+>   arch/um/include/linux/time-internal.h |  2 ++
+>   arch/um/kernel/skas/syscall.c         | 11 +++++++++++
+>   2 files changed, 13 insertions(+)
+>
+> diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
+> index b22226634ff6..138908b999d7 100644
+> --- a/arch/um/include/linux/time-internal.h
+> +++ b/arch/um/include/linux/time-internal.h
+> @@ -83,6 +83,8 @@ extern void time_travel_not_configured(void);
+>   #define time_travel_del_event(...) time_travel_not_configured()
+>   #endif /* CONFIG_UML_TIME_TRAVEL_SUPPORT */
+>   
+> +extern unsigned long tt_extra_sched_jiffies;
 > +
-> +quiet_cmd_touch = TOUCH   $@
-> +      cmd_touch = touch $@
+>   /*
+>    * Without CONFIG_UML_TIME_TRAVEL_SUPPORT this is a linker error if used,
+>    * which is intentional since we really shouldn't link it in that case.
+> diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+> index b09e85279d2b..a5beaea2967e 100644
+> --- a/arch/um/kernel/skas/syscall.c
+> +++ b/arch/um/kernel/skas/syscall.c
+> @@ -31,6 +31,17 @@ void handle_syscall(struct uml_pt_regs *r)
+>   		goto out;
+>   
+>   	syscall = UPT_SYSCALL_NR(r);
 > +
-> +include/generated/global-rebuild.h: $(rebuild-y)
-> +       $(call cmd,touch)
+> +	/*
+> +	 * If no time passes, then sched_yield may not actually yield, causing
+> +	 * broken spinlock implementations in userspace (ASAN) to hang for long
+> +	 * periods of time.
+> +	 */
+> +	if ((time_travel_mode == TT_MODE_INFCPU ||
+> +	     time_travel_mode == TT_MODE_EXTERNAL) &&
+> +	    syscall == __NR_sched_yield)
+> +		tt_extra_sched_jiffies += 1;
+> +
+>   	if (syscall >= 0 && syscall < __NR_syscalls) {
+>   		unsigned long ret = EXECUTE_SYSCALL(syscall, regs);
+>   
 
-Is this rule going to find the right versions of the dependencies?
-
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -558,7 +558,8 @@ USERINCLUDE    := \
->                 -I$(srctree)/include/uapi \
->                 -I$(objtree)/include/generated/uapi \
->                  -include $(srctree)/include/linux/compiler-version.h \
-> -                -include $(srctree)/include/linux/kconfig.h
-> +                -include $(srctree)/include/linux/kconfig.h \
-> +                -include $(objtree)/include/generated/global-rebuild.h
-
-Instead of adding a new file, why not just touch compiler-version.h?
-
-But whatever the case, sure, I can live with this. :)
-
--Kees
-
--- 
-Kees Cook
 
