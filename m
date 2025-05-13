@@ -4,63 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92494C3ABDC
-	for <linux-um@archiver.kernel.org>; Mon, 12 May 2025 17:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AC94C3ABCC
+	for <linux-um@archiver.kernel.org>; Tue, 13 May 2025 14:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6KIDdrTanUmKEwxmKjGlY7d/jG09aY8AhXQLqxXMqzQ=; b=idULMHftPs6D33AbB7R1JVJCfO
-	Goe9RHYiDGs0sjykAcDRU4/uQ82XL/F9EQDKHeEHAzNhsCVs6igl+J1yCX9R5Bfsz0kyCFCqZ7B/P
-	lpURUF+vs0fNyQirvwiRRXEmh9r75hz/XxdnEwG2ObsODYpv+ng9YBviHTG0ELad5U+mEI7Q/V2Rs
-	Ti1fNMs8KHRAQEbm6oBrbn9LpDwvjKARJvPR6rIenJ3W91a8+7dUugB9xg8k8GSU7mWMpOgZnwSZj
-	1nxkUzk3BTmaxb6kVb2aflqNACScaLL0lL1fTrG1ZQppm/ABs71DghMPJfzfE1W/QEjDmUdTm0Eap
-	KNFPCS4g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xYXWIGZUa9iD4M5Vxipvhs4dP+FyKofHObmUxNweb+o=; b=cwIiw/BKVICp/MY1vcBgn8bSOI
+	f7SiyuV6DJgbHhxIqTc1HS+JcxCaytFvvo6NOGJaLXKXLyN9XjqqTlV/7zSNftsRFlRaZMv8oK+Ip
+	DoPWhOoKUuDIKwnd3tOV61TicmgLgA47c+6Va27P5ZBT3lKTkoJiY5s2i5q8gS4mk4bTVUQ+sh8VO
+	ADH2sjCGb1Pl/4Rus2+4P0vDtUoib+FZ+1KgVuIT70lutAuU/Ot3G6aT0NcI//Z1XRddXQULGZyPm
+	hbD4P4qUgdpgt8rDWYTz7S39GXroGwQDT0Q6cFwY07Wyotabvard5x2wLZ3RQOuq7KFRrgDnZ1OhN
+	efrWvVIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uEWte-0000000ACaF-3bBS;
-	Mon, 12 May 2025 17:24:58 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1uEr1z-0000000CgB4-0Qsk;
+	Tue, 13 May 2025 14:54:55 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uCIYb-0000000CAw0-0K2e;
-	Tue, 06 May 2025 13:42:02 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1746538917;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6KIDdrTanUmKEwxmKjGlY7d/jG09aY8AhXQLqxXMqzQ=;
-	b=Q2sp1Y2+Xq68ZzKhzYZogyTqNgLrdCaqNxaBagnWo870Q1OnSlOsgKyJiav900B6qyHdm1
-	L6CeSo6gv9d56bZGRLT6noxxbqxOZK3rDK5wNppbXvLTWKw8LMJtjCUcmlue78s7S3WeCj
-	cGaZhrh/vHnUIKTf7/VPznBk4rnSb/V1DiHLfKM6i+fPMllG+tdC9OSYa+o/gKOOOFIAd4
-	wKZgHD7rrMblwdpyngCi6FxefrHrxQAy1i0o64ef+KBg1TFRbwBYipPTxKQQWDHug5YkxA
-	jUghLPlkOdAMplVZEriWKt0NWtKPEESJceuOBHnYGkEwGNoBz8Bx7dGduCJddw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1746538917;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6KIDdrTanUmKEwxmKjGlY7d/jG09aY8AhXQLqxXMqzQ=;
-	b=TpwMlv1G6t0w5OOsJhlXfdhYR45rTjxnfzhQF2m3v1mOUEPfqGgpW9ah4wNI+4YXMTf9UM
-	JFzC30iieDB1dnAA==
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc: maz@kernel.org, linux-kernel@vger.kernel.org, "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Abhinav Kumar <quic_abhinavk@quicinc.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Alexandre Ghiti <alex@ghiti.fr>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Alex Deucher <alexander.deucher@amd.com>, Alex Shi <alexs@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, amd-gfx@lists.freedesktop.org, Amit Kucheria <amitk@kernel.org>, Anatolij Gustschin <agust@denx.de>, Andi Shyti <andi.shyti@kernel.org>, Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>, Andreas Kemnade <andreas@kemnade.info>, Andrew Jeffery <andrew@codeconstruct.com.au>, Andrew Lunn <andrew@lunn.ch>, Andy Shevchenko <andy@kernel.org>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Antoine Tenart <atenart@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Anup Patel <anup@brainfault.org>, Arnd Bergmann <arnd@arndb.de>, asahi@lists.linux.dev, Bartosz Golaszewski <brgl@bgdev.pl>, Baruch Siach <baruch@tkos.co.il>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>, Bjorn Andersson <andersson@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>, Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, Corentin Chary <corentin.chary@gmail.com>, Daire McNamara <daire.mcnamara@microchip.com>, Daniel Golle <daniel@makrotopia.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Daniel Mack <daniel@zonque.org>, Daniel Palmer <daniel@thingy.jp>, Dave Hansen <dave.hansen@linux.intel.com>, David Airlie <airlied@gmail.com>, "David S. Miller" <davem@davemloft.net>, DENG Qingfang <dqfext@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Dongliang Mu <dzm91@hust.edu.cn>, Doug Berger <opendmb@gmail.com>, dri-devel@lists.freedesktop.org, Eddie James <eajames@linux.ibm.com>, Eric Dumazet <edumazet@google.com>, Fabio Estevam <festevam@gmail.com>, Florian Fainelli <florian.fainelli@broadcom.com>, Geoff Levand <geoff@infradead.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gregory Clement <gregory.clement@bootlin.com>, Guo Ren <guoren@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Heiko Stuebner <heiko@sntech.de>, Herve Codina <herve.codina@bootlin.com>, Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, "H. Peter Anvin" <hpa@zytor.com>, Huacai Chen <chenhuacai@kernel.org>, Changhuang Liang <changhuang.liang@starfivetech.com>, Chen-Yu Tsai <wens@csie.org>, "Chester A. Unal" <chester.a.unal@arinc9.com>, Christian =?utf-8?Q?K?= =?utf-8?Q?=C3=B6nig?= <christian.koenig@amd.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Chris Zankel <chris@zankel.net>, Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Imre Kaloz <kaloz@openwrt.org>, Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, James Morse <james.morse@arm.com>, Janne Grunau <j@jannau.net>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Jassi Brar <jassisinghbrar@gmail.com>, Jernej Skrabec <jernej.skrabec@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>, Jianjun Wang <jianjun.wang@mediatek.com>, Jiawen Wu <jiawenwu@trustnetic.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Jim Quinlan <jim2101024@gmail.com>, Jingoo Han <jingoohan1@gmail.com>, Joel Stanley <joel@jms.id.au>, Johannes Berg <johannes@sipsolutions.net>, John Crispin <john@phrozen.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Jonas Bonn <jonas@southpole.se>, Jonathan Cameron <jic23@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Jonathan Hunter <jonathanh@nvidia.com>, Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, Joyce Ooi <joyce.ooi@intel.com>, Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>, Keerthy
- <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>, Konrad Dybcio <konradybcio@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Linus Walleij <linusw@kernel.org>, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org, linux-i2c@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org, linux-omap@vger.kernel.org, linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-sound@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, loongarch@lists.linux.dev, Lorenzo Pieralisi <lpieralisi@kernel.org>, Ludovic Desroches <ludovic.desroches@microchip.com>, Lukasz Luba <lukasz.luba@arm.com>, "Luke D. Jones" <luke@ljones.dev>, Madhavan Srinivasan <maddy@linux.ibm.com>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>, Marijn Suijten <marijn.suijten@somainline.org>, Mark Brown <broonie@kernel.org>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Michael Buesch <m@bues.ch>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <michal.simek@amd.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Naveen N Rao <naveen@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, netdev@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, Nicolas Saenz Julienne <nsaenz@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Nikhil Agarwal <nikhil.agarwal@amd.com>, Nipun Gupta <nipun.gupta@amd.com>, Nishanth Menon <nm@ti.com>, Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Paolo Abeni <pabeni@redhat.com>, Paul Cercueil <paul@crapouillou.net>, Paul Walmsley <paul.walmsley@sifive.com>, Pengutronix Kernel Team <kernel@pengutronix.de>, Peter Rosin <peda@axentia.se>, Philipp Zabel <p.zabel@pengutronix.de>, Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>, platform-driver-x86@vger.kernel.org, Prasad Kumpatla <quic_pkumpatl@quicinc.com>, Qiang Zhao <qiang.zhao@nxp.com>, Qin Jian <qinjian@cqplus1.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Ray Jui <rjui@broadcom.com>, Rengarajan Sundararajan <Rengarajan.S@microchip.com>, Richard Cochran <richardcochran@gmail.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Rob Clark <robdclark@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Robert Richter <rric@kernel.org>, Rob Herring <robh@kernel.org>, Roger Quadros <rogerq@kernel.org>, Russell King <linux@armlinux.org.uk>, Ryan Chen <ryan_chen@aspeedtech.com>, Ryder Lee <ryder.lee@mediatek.com>, Samuel Holland <samuel@sholland.org>, Santosh Shilimkar <ssantosh@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Scott Branden <sbranden@broadcom.com>, Scott Wood <oss@buserror.net>, Sean Paul <sean@poorly.run>, Sean Wang <sean.wang@kernel.org>, Sean Wang <sean.wang@mediatek.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sergio Paracuellos <sergio.paracuellos@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Shawn Lin <shawn.lin@rock-chips.com>, Siddharth Vadapalli <s-vadapalli@ti.com>,
- Simona Vetter <simona@ffwll.ch>, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stephen Boyd <sboyd@kernel.org>, Sven Peter <sven@svenpeter.dev>, Takashi Iwai <tiwai@suse.com>, Talel Shenhar <talel@amazon.com>, Tero Kristo <kristo@kernel.org>, Thangaraj Samynathan <Thangaraj.S@microchip.com>, Thara Gopinath <thara.gopinath@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Toan Le <toan@os.amperecomputing.com>, Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>, UNGLinuxDriver@microchip.com, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, Vineet Gupta <vgupta@kernel.org>, Vladimir Oltean <olteanv@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, WANG Xuerui <kernel@xen0n.name>, Woojung Huh <woojung.huh@microchip.com>, x86@kernel.org, Yanteng Si <si.yanteng@linux.dev>, Yoshinori Sato <ysato@users.sourceforge.jp>, Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH v2 00/57] irqdomain: Cleanups and Documentation
-In-Reply-To: <20250319092951.37667-1-jirislaby@kernel.org>
-References: <20250319092951.37667-1-jirislaby@kernel.org>
-Date: Tue, 06 May 2025 15:41:57 +0200
-Message-ID: <874ixxonyy.ffs@tglx>
+	id 1uEr0Y-0000000CfrH-1ego
+	for linux-um@lists.infradead.org;
+	Tue, 13 May 2025 14:53:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 195BB4AD69
+	for <linux-um@lists.infradead.org>; Tue, 13 May 2025 14:53:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6E34C4CEF7
+	for <linux-um@lists.infradead.org>; Tue, 13 May 2025 14:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747148004;
+	bh=RhDtWE1dVV9lPXiQK9A9HDu8CZaHny/NUuaK7oa/KgU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Idosnr1FBh/PpuspF5gsgf+OXpLUJk7tk7G9iyI7eXjt8+5sI0Jj3i7yS3nrtjZD4
+	 OE1qCdYVmdc2Rdz5+/DKeuRDlgxg2RVSar2Mtr9O9qsWC+FqVXcUsofMBImGYpmGrM
+	 PJUKx4G5GTAXfFOCFXLIma+rTTxwHc6bpupNg5q9Mwgk2VYUxJQqvNW1j/1HBB6LSF
+	 fUUH/0YwbwVnwh9UzDf/qT6wb/uqU9CLHM5HcvWcQH1+VT9013b9kpFko+P51TY4td
+	 otQR8NOFk1f+Lz+UOOQJLcUjwsIvc25o4hOp7aPqlOxyuT0MrlOjXVuZ3CfZrn8ZlL
+	 phAoY/akZusPQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-54fcc593466so4520680e87.0
+        for <linux-um@lists.infradead.org>; Tue, 13 May 2025 07:53:24 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXIcgNOiEBHIm72XNUGYWQGs/0BtP7hy/nByTna9qW70iqP8a/VSRmgTtDkel1Zfpn/9CLjFHAY+A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzCFhQAx6w+p5V4wRNWmsDt591JdgbyykM06Nn5NRCPKH4MqROX
+	N15uX845NkcM7TajYERxKfatXq9fq5+eT6tZ7ZkRdn4GCtk94MF0euuu1FggILNhc9tcKXJbvKZ
+	19hNnJEkTKk8OMGNWlLu0mYdMABE=
+X-Google-Smtp-Source: AGHT+IHK50oaHFtMBbMleHyqUaAbKlFx84gNC0cIJBrr7mvss1OwFx5aKOvcnFFtEC9IKk6w4XcLUT3LfIl4bLObABQ=
+X-Received: by 2002:a05:6512:2619:b0:545:4cb:b25d with SMTP id
+ 2adb3069b0e04-54fc67b7bb6mr4265580e87.13.1747148003495; Tue, 13 May 2025
+ 07:53:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250502224512.it.706-kees@kernel.org> <CAK7LNAQCZMmAGfPTr1kgp5cNSdnLWMU5kC_duU0WzWnwZrqt2A@mail.gmail.com>
+ <202505031028.7022F10061@keescook> <CAK7LNAQehmFgB3kJtrkVhUKM1NEXGQrfJ3v3piToh7YV7-3ccw@mail.gmail.com>
+ <202505080953.789B3381@keescook> <CAK7LNAQpGXmWNhoE9wLoP01dn2o7KjhedoqHXm474CoCgwHp2Q@mail.gmail.com>
+ <202505081651.EAF0C6B@keescook>
+In-Reply-To: <202505081651.EAF0C6B@keescook>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 13 May 2025 23:52:46 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQa_ZX=ULUgu+_YNe=A+4kgaZakzdM2Y6QPSWWfnEA2JQ@mail.gmail.com>
+X-Gm-Features: AX0GCFuWQSZF1ok9-cTyrGeb3aw8P4Ea1DCgPaNu4qIZQbEPezGGKicgvHdcmqc
+Message-ID: <CAK7LNAQa_ZX=ULUgu+_YNe=A+4kgaZakzdM2Y6QPSWWfnEA2JQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Detect changed compiler dependencies for full rebuild
+To: Kees Cook <kees@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas.schier@linux.dev>, 
+	Petr Pavlu <petr.pavlu@suse.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Justin Stitt <justinstitt@google.com>, Marco Elver <elver@google.com>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	kasan-dev@googlegroups.com, linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250506_064201_399416_AE70C3CC 
-X-CRM114-Status: GOOD (  19.07  )
-X-Mailman-Approved-At: Mon, 12 May 2025 10:23:15 -0700
+X-CRM114-CacheID: sfid-20250513_075326_527580_28ACFC93 
+X-CRM114-Status: GOOD (  45.96  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,40 +92,189 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 19 2025 at 10:28, Jiri Slaby wrote:
-
-> Hi,
+On Fri, May 9, 2025 at 8:59=E2=80=AFAM Kees Cook <kees@kernel.org> wrote:
 >
-> tl;dr if patches are agreed upon, I ask subsys maintainers to take the
-> respective ones via their trees (as they are split per subsys), so that
-> the IRQ tree can take only the rest. That would minimize churn/conflicts
-> during merges.
+> On Fri, May 09, 2025 at 08:13:18AM +0900, Masahiro Yamada wrote:
+> > On Fri, May 9, 2025 at 1:56=E2=80=AFAM Kees Cook <kees@kernel.org> wrot=
+e:
+> > >
+> > > On Fri, May 09, 2025 at 01:44:09AM +0900, Masahiro Yamada wrote:
+> > > > On Sun, May 4, 2025 at 2:37=E2=80=AFAM Kees Cook <kees@kernel.org> =
+wrote:
+> > > > >
+> > > > > On Sat, May 03, 2025 at 06:39:28PM +0900, Masahiro Yamada wrote:
+> > > > > > On Sat, May 3, 2025 at 7:54=E2=80=AFAM Kees Cook <kees@kernel.o=
+rg> wrote:
+> > > > > > >
+> > > > > > >  v2:
+> > > > > > >   - switch from -include to -I with a -D gated include compil=
+er-version.h
+> > > > > > >  v1: https://lore.kernel.org/lkml/20250501193839.work.525-kee=
+s@kernel.org/
+> > > > > >
+> > > > > >
+> > > > > > What do you think of my patch as a prerequisite?
+> > > > > > https://lore.kernel.org/linux-kbuild/20250503084145.1994176-1-m=
+asahiroy@kernel.org/T/#u
+> > > > > > Perhaps, can you implement this series more simply?
+> > > > > >
+> > > > > > My idea is to touch a single include/generated/global-rebuild.h
+> > > > > > rather than multiple files such as gcc-plugins-deps.h, integer-=
+wrap.h, etc.
+> > > > > >
+> > > > > > When the file is touched, the entire kernel source tree will be=
+ rebuilt.
+> > > > > > This may rebuild more than needed (e.g. vdso) but I do not thin=
+k
+> > > > > > it is a big deal.
+> > > > >
+> > > > > This is roughly where I started when trying to implement this, bu=
+t I
+> > > > > didn't like the ergonomics of needing to scatter "touch" calls al=
+l over,
+> > > > > which was especially difficult for targets that shared a build ru=
+le but
+> > > > > may not all need to trigger a global rebuild. But what ultimately=
+ pushed
+> > > > > me away from it was when I needed to notice if a non-built source=
+ file
+> > > > > changed (the Clang .scl file), and I saw that I need to be depend=
+ency
+> > > > > driven rather than target driven. (Though perhaps there is a way =
+to
+> > > > > address this with your global-rebuild.h?)
+> > > > >
+> > > > > As far as doing a full rebuild, if it had been available last wee=
+k, I
+> > > > > probably would have used it, but now given the work that Nicolas,=
+ you,
+> > > > > and I have put into this, we have a viable way (I think) to make =
+this
+> > > > > more specific. It does end up being a waste of time/resources to =
+rebuild
+> > > > > stuff that doesn't need to be (efi-stub, vdso, boot code, etc), a=
+nd that
+> > > > > does add up when I'm iterating on something that keeps triggering=
+ a full
+> > > > > rebuild. We already have to do the argument filtering for targets=
+ that
+> > > > > don't want randstruct, etc, so why not capitalize on that and mak=
+e the
+> > > > > rebuild avoid those files too?
+> > > >
+> > > >
+> > > > efi-stub, vdso are very small.
+> > > >
+> > > > Unless this turns out to be painful, I prefer
+> > > > a simpler implementation.
+> > > >
+> > > > You will see how .scl file is handled.
+> > > >
+> > > > See the below code:
+> > > >
+> > > >
+> > > > diff --git a/Kbuild b/Kbuild
+> > > > index f327ca86990c..85747239314c 100644
+> > > > --- a/Kbuild
+> > > > +++ b/Kbuild
+> > > > @@ -67,10 +67,20 @@ targets +=3D $(atomic-checks)
+> > > >  $(atomic-checks): $(obj)/.checked-%: include/linux/atomic/%  FORCE
+> > > >         $(call if_changed,check_sha1)
+> > > >
+> > > > +rebuild-$(CONFIG_GCC_PLUGINS)          +=3D $(addprefix
+> > > > scripts/gcc-plugins/, $(GCC_PLUGIN))
+> > > > +rebuild-$(CONFIG_RANDSTRUCT)           +=3D include/generated/rand=
+struct_hash.h
+> > >
+> > > These are in $(objtree)
+> >
+> > Yes.
+> >
+> > > > +rebuild-$(CONFIG_UBSAN_INTEGER_WRAP)   +=3D scripts/integer-wrap-i=
+gnore.scl
+> > >
+> > > This is in $(srctree)
+> >
+> > Yes.
+> >
+> > > > +
+> > > > +quiet_cmd_touch =3D TOUCH   $@
+> > > > +      cmd_touch =3D touch $@
+> > > > +
+> > > > +include/generated/global-rebuild.h: $(rebuild-y)
+> > > > +       $(call cmd,touch)
+> > >
+> > > Is this rule going to find the right versions of the dependencies?
+> >
+> > I think so, but please test it.
+>
+> The patch was white-space damaged and wrapped, but I rebuilt it manually
+> and it mostly works. There still seems to be some ordering issues, as
+> some stuff gets rebuilt on a record build:
+>
+> # Clean the tree and pick an "everything" build
+> $ make O=3Dgcc-test clean allmodconfig -s
+>
+> # Make a target normally
+> $ make O=3Dgcc-test kernel/seccomp.o -s
+>
+> # Touch a gcc plugin that was in .config
+> $ touch scripts/gcc-plugins/stackleak_plugin.c
+>
+> # Build and a full rebuild is triggered (good)
+> $ make O=3Dgcc-test kernel/seccomp.o
+> make[1]: Entering directory '/srv/code/gcc-test'
+>   GEN     Makefile
+>   DESCEND objtool
+>   HOSTCXX scripts/gcc-plugins/stackleak_plugin.so
+>   INSTALL libsubcmd_headers
+>   TOUCH   include/generated/global-rebuild.h
+>   CC      kernel/bounds.s
+>   CC      arch/x86/kernel/asm-offsets.s
+>   CALL    ../scripts/checksyscalls.sh
+>   CC      kernel/seccomp.o
+> make[1]: Leaving directory '/srv/code/gcc-test'
+>
+> # Build again, but more stuff gets built
+> $ make O=3Dgcc-test kernel/seccomp.o
+> make[1]: Entering directory '/srv/code/gcc-test'
+>   GEN     Makefile
+>   DESCEND objtool
+>   CC      scripts/mod/empty.o
+>   CC      scripts/mod/devicetable-offsets.s
+>   INSTALL libsubcmd_headers
+>   MKELF   scripts/mod/elfconfig.h
+>   HOSTCC  scripts/mod/modpost.o
+>   HOSTCC  scripts/mod/sumversion.o
+>   HOSTCC  scripts/mod/symsearch.o
+>   HOSTCC  scripts/mod/file2alias.o
+>   HOSTLD  scripts/mod/modpost
+>   CALL    ../scripts/checksyscalls.sh
+> make[1]: Leaving directory '/srv/code/gcc-test'
+>
+> # Third time finally everything is stable
+> $ hmake O=3Dgcc-test kernel/seccomp.o
+> make[1]: Entering directory '/srv/code/gcc-test'
+>   GEN     Makefile
+>   DESCEND objtool
+>   CALL    ../scripts/checksyscalls.sh
+>   INSTALL libsubcmd_headers
+> make[1]: Leaving directory '/srv/code/gcc-test'
+>
+>
+> Note that scripts/mod/* gets rebuilt on the second rebuild.
 
-So. It's rc5 by now and I picked up everything which did not show up in
-next yet. As there are some patches in next, I delayed the removal of
-functions for the merge window so that we don't end up with merge
-dependencies.
+Hmm.
+OK, my code did not work.
 
-To reducde conflicts, I grabbed the irq branch from the PCI tree under
-the assumption that this branch is stable.
+I accept your patch set (although I am not a big fan
+of the added complexity...)
 
-The series sits now in
+Could you move the normalize_path macro
+to scripts/Kbuild?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/cleanups
 
-and will be in next soon. If there are duplicates showing up in next,
-I'm going to remove them from my branch, so the branch is not for basing
-development on.
-
-@Jiri, I fixed up all your subject prefixes as
-
-  'irqdomain: subsys: Switch to foo()'
-
-does not make any sense at all. These subsystems have their regular
-prefixes and these changes do not justify made up irqdomain special
-prefixes at all.
-
-Thanks,
-
-        tglx
+--=20
+Best Regards
+Masahiro Yamada
 
