@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EBADC3ABDD
-	for <linux-um@archiver.kernel.org>; Mon, 19 May 2025 21:35:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553B3C3ABDD
+	for <linux-um@archiver.kernel.org>; Mon, 19 May 2025 21:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LGlcQmXWjl5ZVmbr1fENYp9XhvjKno5bCdfwtnieJnI=; b=DvQ8vNK4i+qQYrdBmaszFEL/qf
-	ti5n0iGS0S/Yh9HJgLtXn4PDtVUw8m4G5QNJrUNkJY2nVgmhus2K4ASSkQSvqOF87Om7qBAwy1PKu
-	MBQoeEh6Vl87OwVwq6tj3OP9HwzuYno36BIrNxEvN8/ZVM1o3VZu/bAEnpdWxxN+R48OS3lNiUjO5
-	HbLsiooXniN2QCbJItTP5iWqhd+HdzzpMiESSnYYjbu8tPr0ajjFvjQdo0jF/SP0SHs0fFDmP6P+x
-	k0nUDFLVI+ywQ+jbcv+jaVK36WAbWZIHjXz32jvPZ9OWU16bVzKtj5M6BYuM3tQ6tZqb5Wmz/QeUu
-	oBG+q/7w==;
+	bh=hSwg/oqRmfoOq/61UJtYCUz1WDCMga4n8Mu1VId5O84=; b=rYBeSLJ1/PCeODx2ovSGNbgp1t
+	mxM0RGP3/HhPr52vGItOtjWz5jlwPtveta2kJEWtwDnk1lKLPQtQxQ9RfY5x+Tv40WctGmRfLfXVu
+	MTo7fNFNIUCQZFQy1ybYJT62HxXMk0VAJp6KJCuQV/DRFMkMkZeQvskrL+vfiy6vuJYPYQq5gAIES
+	66QhUwc2h1W8XD2QgD4mpmWgsGHnPiZkHXoLjIpJEUYGO4/fKCGsVta+MJHi98CjSwzWtZWU/yLzl
+	+pz3kAgiQoFZwF4BRQiECNIKq+gl5myj2Qq7CqKPstU1/YHYnHeb5bzVBCvrs41ooyC83O+orX5uZ
+	bb+EIPCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH88U-0000000AZrQ-3N1x;
-	Mon, 19 May 2025 21:35:02 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uH8Ab-0000000AaTy-3Hr2;
+	Mon, 19 May 2025 21:37:13 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH7x6-0000000AWPL-1mOp
+	id 1uH7xI-0000000AWTJ-2tzv
 	for linux-um@lists.infradead.org;
-	Mon, 19 May 2025 21:23:17 +0000
+	Mon, 19 May 2025 21:23:28 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 20F4749E25;
-	Mon, 19 May 2025 21:23:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11E5C4CEED;
-	Mon, 19 May 2025 21:23:14 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 2363F629ED;
+	Mon, 19 May 2025 21:23:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A0CAC4CEED;
+	Mon, 19 May 2025 21:23:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747689796;
-	bh=01V2kp9PR7OuzoxgYCqNxryI2MMU4E7MhSbRS54NI7A=;
+	s=k20201202; t=1747689807;
+	bh=D+yoGs0xp7bxGF9vq7xaHgl4YzJmjkkb4nOu5yJCX1I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T/sDpt9EARXbj9sgQ9sZu/80cXKnT95njuh+msu2/mXg18P7CUlDUUiGz5mPmU2rk
-	 EGzHR0AEMXpnD1eQmgabprd9I1OiS1Yp/FWrFIJdjbBdjxz1Jk8qwwjNNdfTyJFhSM
-	 vI7IUF2fIdqgl94dF0TI2xl0T2hlb0v6yipt+k54MeItauXXuT2AcBP75KUogH4dsy
-	 TDV+HK+QOwTf8mJqOPX9PEG2k0/1xjiKw7ZM4Q8w8iGqY87qre0lxg03TCdoS/Hz4X
-	 uxprMqZDJa8SwKMXvkHi69OjZ3kITxWfBDSm9oMqPdMv9PgZMaEd1umAUM8mHBb17J
-	 U90cWfMEir5sg==
+	b=hRQ994QeKlpqNQCnprYqGtgkWBqCx+xljnmB1G8w420lzLm8LmZg6SGMlqArl7hx8
+	 6WIgT/IETb29PnK1VADP8CdOZwMX+piAdj4XiNZm4nM3HDxdJB6Vo2Do9F2Kjtz3Ne
+	 erAVFfc6F0AQD4otUe/IwTsMnALUeJFucJ++u6Ip/rA7CGC74WjJJARPoVrSLSuqsu
+	 5EUjqr52m1X6swr1LSOOOZCRh5G2QCCrB0aeqLhCTLkqe5EZqhRIsXvMd1DOCh3rQC
+	 KttQMB9HLOTQJieUfoiS2sGSH9hnTUQ3t4jzr1Ap7V+5uRR5Heq85AUhtHgmW3YOUA
+	 k+7nqCJlyzT1w==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -55,20 +55,17 @@ Cc: Masahiro Yamada <masahiroy@kernel.org>,
 	anton.ivanov@cambridgegreys.com,
 	linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 4/7] um: let 'make clean' properly clean underlying SUBARCH as well
-Date: Mon, 19 May 2025 17:23:05 -0400
-Message-Id: <20250519212308.1986645-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 4/6] um: let 'make clean' properly clean underlying SUBARCH as well
+Date: Mon, 19 May 2025 17:23:18 -0400
+Message-Id: <20250519212320.1986749-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250519212308.1986645-1-sashal@kernel.org>
-References: <20250519212308.1986645-1-sashal@kernel.org>
+In-Reply-To: <20250519212320.1986749-1-sashal@kernel.org>
+References: <20250519212320.1986749-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.183
+X-stable-base: Linux 5.10.237
 Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250519_142316_485945_EC2FFA90 
-X-CRM114-Status: GOOD (  11.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,7 +121,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 3dbd0e3b660ea..1257ef03d1b7a 100644
+index 4211e23a2f68f..e2caca06c1553 100644
 --- a/arch/um/Makefile
 +++ b/arch/um/Makefile
 @@ -153,5 +153,6 @@ MRPROPER_FILES += $(HOST_DIR)/include/generated
