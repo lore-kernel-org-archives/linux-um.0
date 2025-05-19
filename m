@@ -4,86 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE00AC2D0CD
-	for <linux-um@archiver.kernel.org>; Mon, 19 May 2025 16:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5914EC54756
+	for <linux-um@archiver.kernel.org>; Mon, 19 May 2025 18:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=X+wPIx+M4NrI6qKRmf6NJzn0ejVxtlM9cMaiIEGvjr0=; b=CQ/fIcl1dU3LVkbHdyVtS0kbRV
-	OgIiQCWwRl62JSqc79g8Vvx4GLqiTXngjHkNAo/Cugq8w1O+E5E/PS2PTIcvgAEncsoD+SJx5Ba4s
-	yl6s6iRRVBhb0nJeHLCK5Qtebvx7ldnHZek5/avQjLclblgI4W2b62Sku5qZ+O7tY+Fw0BHWTIDHl
-	S2sUwXDlFPePgUS+7NufLEmrdZsMWlf2T8220wz/HbgPvxi2/yX0/gih37dq3OK8eHq1LrzDVEMvL
-	qZMqDrJ8Hq3sHZZaNFdh8CquKjVoO9oMuFS8c0HTiqG9C4ICu6mKdvtRzGnOBuqjvj94QdOe3HYxK
-	NuaFHLpQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=82Q3lnjfEFrzEMTrgCM5r+zlsMR9gpMlajn90gQ21MU=; b=FZmrDMZQ3kDxjmINBP4kPZ8Ijp
+	8G/fn40zsQrqrS9bktisck+GBfcUanEE9co3TeRWXrPODzXgc9cwa5wLvaX1Zf5wpX5eFCkXFlxkk
+	+T1FaXtf9ZkL3F2wxrzGNICQWWKYyJW5vxPEvsKapT4urPfwpX/kR2UvlS+/TytpOXRra11pZXct2
+	tNzaeDQBTW682lM9fMZQ8G2MiTKqvCV6R0e8L8jbMxXGdauPjG17B1at8jJnfNWfYdpXZN4ezm4Gs
+	cLpy/c/tNII9TjsuPd2dqnp/A+aAC2zdu53e18Xa1Lixf+FazUubw6vOc++JvQMEQIoxYBBmbO8eE
+	YqdSBf/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH3br-00000009r89-1Z1G;
-	Mon, 19 May 2025 16:45:03 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1uH4qN-0000000A4Zt-3E1i;
+	Mon, 19 May 2025 18:04:07 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uH2p3-00000009h3v-34dn;
-	Mon, 19 May 2025 15:54:39 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B1DD43A66;
-	Mon, 19 May 2025 15:54:23 +0000 (UTC)
-Message-ID: <dc4e60dc-9b78-473a-9c18-3a2f128a02d2@ghiti.fr>
-Date: Mon, 19 May 2025 17:54:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	id 1uH49q-00000009wrU-2WTC;
+	Mon, 19 May 2025 17:20:11 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 984855C5516;
+	Mon, 19 May 2025 17:17:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0486C4CEE4;
+	Mon, 19 May 2025 17:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747675208;
+	bh=/qDPGAJe6QWZQRFh5mkIaN3rUECBPrvhVDophOu0STQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nv6a6o/9GXqFce+WdqziKMZrgOnXd14Xk3g4S1nNlUHZltfdV2rEB9RDQCOmCeSgK
+	 ebQsjcpfmgR6sWVWBw5dta/I6m1xLYkae6rTJ4OSb859vEywgddyloj50eaFEjRTPe
+	 8FJ2qDU6rfYPGiDk1ORLqVzTGk/lQ8qlSrYclPnaRHuqKyuUafe4DFZ6lMgRdY6Wt1
+	 dRptEgZtQ8qGZDrQUwGD8JbkbioWwAY9aSpa8iIJWxNVsecoqluy1Xci9uIALX28U6
+	 ObnLi7IgFlid4DAXOMe7kw3cQbAB55J7ruXkv/fKErQRWuv0MXWPHfuo3pZS732DBZ
+	 yyZPReh2t/BVw==
+Date: Mon, 19 May 2025 20:19:48 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Pratyush Yadav <ptyadav@amazon.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Mark Brown <broonie@kernel.org>, Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, Praveen Kumar <pravkmr@amazon.de>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
 Subject: Re: [PATCH v2 10/13] arch, mm: set high_memory in free_area_init()
-To: Mike Rapoport <rppt@kernel.org>, Pratyush Yadav <ptyadav@amazon.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Guo Ren
- <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Madhavan Srinivasan <maddy@linux.ibm.com>, Mark Brown <broonie@kernel.org>,
- Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Stafford Horne <shorne@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
- Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
- Praveen Kumar <pravkmr@amazon.de>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
+Message-ID: <aCtoNLf1FbtqijGr@kernel.org>
 References: <20250313135003.836600-1-rppt@kernel.org>
- <20250313135003.836600-11-rppt@kernel.org> <mafs05xi0o9ri.fsf@amazon.de>
+ <20250313135003.836600-11-rppt@kernel.org>
+ <mafs05xi0o9ri.fsf@amazon.de>
  <aCdveN2w9ThjVhae@kernel.org>
-Content-Language: en-US
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <aCdveN2w9ThjVhae@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefvddujeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptehlvgigrghnughrvgcuifhhihhtihcuoegrlhgvgiesghhhihhtihdrfhhrqeenucggtffrrghtthgvrhhnpedthfelfeejgeehveegleejleelgfevhfekieffkeeujeetfedvvefhledvgeegieenucfkphepvddttddumeekiedumeeffeekvdemvghfledtmeejjeeiudemiegsgeeimegrsgguugemfhgvtgefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddttddumeekiedumeeffeekvdemvghfledtmeejjeeiudemiegsgeeimegrsgguugemfhgvtgefpdhhvghloheplgfkrfggieemvddttddumeekiedumeeffeekvdemvghfledtmeejjeeiudemiegsgeeimegrsgguugemfhgvtgefngdpmhgrihhlfhhrohhmpegrlhgvgiesghhhihhtihdrfhhrpdhnsggprhgtphhtthhopeeiuddprhgtphhtthhopehrphhptheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphhthigruggrvhesrghmrgiiohhnrdguvgdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpt
- hhtoheprghgohhruggvvghvsehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtoheprghnughrvggrshesghgrihhslhgvrhdrtghomhdprhgtphhtthhopehluhhtoheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhhnugesrghrnhgusgdruggv
-X-GND-Sasl: alex@ghiti.fr
+ <dc4e60dc-9b78-473a-9c18-3a2f128a02d2@ghiti.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc4e60dc-9b78-473a-9c18-3a2f128a02d2@ghiti.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250519_085437_894951_8ADD88C9 
-X-CRM114-Status: GOOD (  39.56  )
+X-CRM114-CacheID: sfid-20250519_102010_750718_9EBB6E1D 
+X-CRM114-Status: GOOD (  13.70  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,181 +115,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Mike,
+Hi Alexandre,
 
-On 5/16/25 19:01, Mike Rapoport wrote:
-> Hi Pratyush,
->
-> On Fri, May 16, 2025 at 05:28:17PM +0200, Pratyush Yadav wrote:
->> Hi Mike, Andrew,
->>
->> On Thu, Mar 13 2025, Mike Rapoport wrote:
->>
->>> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->>>
->>> high_memory defines upper bound on the directly mapped memory.
->>> This bound is defined by the beginning of ZONE_HIGHMEM when a system has
->>> high memory and by the end of memory otherwise.
->>>
->>> All this is known to generic memory management initialization code that
->>> can set high_memory while initializing core mm structures.
->>>
->>> Add a generic calculation of high_memory to free_area_init() and remove
->>> per-architecture calculation except for the architectures that set and
->>> use high_memory earlier than that.
->>>
->>> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>	# x86
->>> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
->>> ---
->>>   arch/alpha/mm/init.c         |  1 -
->>>   arch/arc/mm/init.c           |  2 --
->>>   arch/arm64/mm/init.c         |  2 --
->>>   arch/csky/mm/init.c          |  1 -
->>>   arch/hexagon/mm/init.c       |  6 ------
->>>   arch/loongarch/kernel/numa.c |  1 -
->>>   arch/loongarch/mm/init.c     |  2 --
->>>   arch/microblaze/mm/init.c    |  2 --
->>>   arch/mips/mm/init.c          |  2 --
->>>   arch/nios2/mm/init.c         |  6 ------
->>>   arch/openrisc/mm/init.c      |  2 --
->>>   arch/parisc/mm/init.c        |  1 -
->>>   arch/riscv/mm/init.c         |  1 -
->>>   arch/s390/mm/init.c          |  2 --
->>>   arch/sh/mm/init.c            |  7 -------
->>>   arch/sparc/mm/init_32.c      |  1 -
->>>   arch/sparc/mm/init_64.c      |  2 --
->>>   arch/um/kernel/um_arch.c     |  1 -
->>>   arch/x86/kernel/setup.c      |  2 --
->>>   arch/x86/mm/init_32.c        |  3 ---
->>>   arch/x86/mm/numa_32.c        |  3 ---
->>>   arch/xtensa/mm/init.c        |  2 --
->>>   mm/memory.c                  |  8 --------
->>>   mm/mm_init.c                 | 30 ++++++++++++++++++++++++++++++
->>>   mm/nommu.c                   |  2 --
->>>   25 files changed, 30 insertions(+), 62 deletions(-)
->> This patch causes a BUG() when built with CONFIG_DEBUG_VIRTUAL and
->> passing in the cma= commandline parameter:
->>
->>      ------------[ cut here ]------------
->>      kernel BUG at arch/x86/mm/physaddr.c:23!
->>      ception 0x06 IP 10:ffffffff812ebbf8 error 0 cr2 0xffff88903ffff000
->>      CPU: 0 UID: 0 PID: 0 Comm: swapper Not tainted 6.15.0-rc6+ #231 PREEMPT(undef)
->>      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
->>      RIP: 0010:__phys_addr+0x58/0x60
->>      Code: 01 48 89 c2 48 d3 ea 48 85 d2 75 05 e9 91 52 cf 00 0f 0b 48 3d ff ff ff 1f 77 0f 48 8b 05 20 54 55 01 48 01 d0 e9 78 52 cf 00 <0f> 0b 90 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
->>      RSP: 0000:ffffffff82803dd8 EFLAGS: 00010006 ORIG_RAX: 0000000000000000
->>      RAX: 000000007fffffff RBX: 00000000ffffffff RCX: 0000000000000000
->>      RDX: 000000007fffffff RSI: 0000000280000000 RDI: ffffffffffffffff
->>      RBP: ffffffff82803e68 R08: 0000000000000000 R09: 0000000000000000
->>      R10: ffffffff83153180 R11: ffffffff82803e48 R12: ffffffff83c9aed0
->>      R13: 0000000000000000 R14: 0000001040000000 R15: 0000000000000000
->>      FS:  0000000000000000(0000) GS:0000000000000000(0000) knlGS:0000000000000000
->>      CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>      CR2: ffff88903ffff000 CR3: 0000000002838000 CR4: 00000000000000b0
->>      Call Trace:
->>       <TASK>
->>       ? __cma_declare_contiguous_nid+0x6e/0x340
->>       ? cma_declare_contiguous_nid+0x33/0x70
->>       ? dma_contiguous_reserve_area+0x2f/0x70
->>       ? setup_arch+0x6f1/0x870
->>       ? start_kernel+0x52/0x4b0
->>       ? x86_64_start_reservations+0x29/0x30
->>       ? x86_64_start_kernel+0x7c/0x80
->>       ? common_startup_64+0x13e/0x141
->>
->> The reason is that __cma_declare_contiguous_nid() does:
->>
->>      	highmem_start = __pa(high_memory - 1) + 1;
->>
->> If dma_contiguous_reserve_area() (or any other CMA declaration) is
->> called before free_area_init(), high_memory is uninitialized. Without
->> CONFIG_DEBUG_VIRTUAL, it will likely work but use the wrong value for
->> highmem_start.
->>
->> Among the architectures this patch touches, the below call
->> dma_contiguous_reserve_area() _before_ free_area_init():
->>
->> - x86
->> - s390
->> - mips
->> - riscv
->> - xtensa
->> - loongarch
->> - csky
-> For most of those this patch didn't really change anything because they
-> initialized high_memory in mem_init() which is a part of free_area_init().
-> In those cases cma just did
->
-> 	highmem_start = __pa(-1) + 1;
->
-> and everyone was happy :)
->   
->> The below call it _after_ free_area_init():
->> - arm64
->>
->> And the below don't call it at all:
->> - sparc
->> - nios2
->> - openrisc
->> - hexagon
->> - sh
->> - um
->> - alpha
->>
->> One possible fix would be to move the calls to
->> dma_contiguous_reserve_area() after free_area_init(). On x86, it would
->> look like the diff below. The obvious downside is that moving the call
->> later increases the chances of allocation failure. I'm not sure how much
->> that actually matters, but at least on x86, that means crash kernel and
->> hugetlb reservations go before DMA reservation. Also, adding a patch
->> like that at rc7 is a bit risky.
-> I don't think there's a risk of allocation failure, but moving things
-> around in setup_arch() is always risky :)
->   
->> The other option would be to revert this. I tried a revert, but it isn't
->> trivial. It runs into merge conflicts in pretty much all of the arch
->> files. Maybe reverting patches 11, 12, and 13 as well would make it
->> easier but I didn't try that.
-> What I think we can do is to add this to mm/cma.c (not even compile tested)
->
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 15632939f20a..c04be488b099 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -608,7 +608,10 @@ static int __init __cma_declare_contiguous_nid(phys_addr_t *basep,
->   	 * complain. Find the boundary by adding one to the last valid
->   	 * address.
->   	 */
-> -	highmem_start = __pa(high_memory - 1) + 1;
-> +	if (IS_ENABLED(CONFIG_HIGHMEM))
-> +		highmem_start = __pa(high_memory - 1) + 1;
-> +	else
-> +		highmem_start = memblock_end_of_DRAM();
->   	pr_debug("%s(size %pa, base %pa, limit %pa alignment %pa)\n",
->   		__func__, &size, &base, &limit, &alignment);
+On Mon, May 19, 2025 at 05:54:23PM +0200, Alexandre Ghiti wrote:
+> Hi Mike,
+> 
+> I encountered the same error as Pratyush and the above diff fixes it: do you
+> plan on sending this fix for 6.15?
+> 
+> If so, you can add:
+> 
+> Tested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
+Thanks!
+Here's the patch:
+https://lore.kernel.org/linux-mm/20250519171805.1288393-1-rppt@kernel.org
 
-I encountered the same error as Pratyush and the above diff fixes it: do 
-you plan on sending this fix for 6.15?
+> Thanks,
+> Alex
 
-If so, you can add:
-
-Tested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-If not, let me know how you want to proceed :)
-
-Thanks,
-
-Alex
-
-
->   
-> so that highmem_start in __cma_declare_contiguous_nid() will be always
-> correct for !HIGHMEM configs and then restore setting of highmem_start in
-> mips::paging_init() as mips is the only architecture that actually set
-> high_memory before free_area_init() before this patch.
->
-> (for 32 bit configs of x86 there alrady a fixup d893aca973c3 ("x86/mm: restore
-> early initialization of high_memory for 32-bits"))
->
+-- 
+Sincerely yours,
+Mike.
 
