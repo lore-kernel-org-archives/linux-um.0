@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7FE9C61CE8
-	for <linux-um@archiver.kernel.org>; Mon,  2 Jun 2025 13:02:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D83C5B559
+	for <linux-um@archiver.kernel.org>; Mon,  2 Jun 2025 13:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XQ6zwnbSepHLMFBbDn9cQ1PE4Yss4Y/Yn9ow81dEnzE=; b=wSnVfWXMrCnZbN7aomOtHa7T/W
-	9P/UNCeJFUpUMCW88Todw/wSXd7BDBcO/Kv1kcDnKgpsQULIaOMUcNCUfaVL4hIvWQmt8oZH3vhDk
-	YhNN+0tUjszOoseN5a3jqcB1uC2b88DNmrx/oBwth+NseJwhpPXFbvP2zKR1km36iLGs7KA12DczW
-	lqq6x+p7R619yOakC5eUPuTo1hHUVRnPRT0EXGYN8I2v/u0GrBt22PGTPJTDPTRtn1zdoyPHBGLhD
-	SQLAhJzgK3TBXnedYnm65ao6rE5bgBHI3wi0k/tnmEkP2PPT75GJy3SOteco+2ArefH3XZzGgjw1r
-	THNBAjgA==;
+	bh=HAZpBKPUVrMOWHJoaxatCfc5gQvaqhdJSc6/dQvF/cY=; b=wc5nI8zSLlGpqv9cI19CY7yjQY
+	lXjJl8GcAeov5LpA9t9R+Iu/d6irRPWOf+fwAguwolL9z4MkRHDzmGPcwQoNBIAXAyZZ5wzU10i1X
+	NaJFv9ZbF6Mo0P4GPm3670ooM5bon6Je6Px5lMYhAhjL1pFTi9MR1ehZleU5xysPvR1nXD43mpf4u
+	9A9+ZLFm4hP3aKVxwL0Nbe9SuahRogZ5yUksE3OtfhwXi0daip2FQ2c2lJTE7tM08GedE3QUihJLI
+	j45KwtFhOjaNZ0JQE7sTNlrfoTVugn0QJggOwtOk3tVDoV7ctjzrH515yZnkXAVikg5hosVHhzfBT
+	B6zEOsjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM4oM-00000007PoK-2SuH;
-	Mon, 02 Jun 2025 13:02:42 +0000
+	id 1uM4oL-00000007PnD-2eTr;
+	Mon, 02 Jun 2025 13:02:41 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uM4nS-00000007PfZ-22j9
+	id 1uM4nO-00000007Pea-3tkS
 	for linux-um@lists.infradead.org;
-	Mon, 02 Jun 2025 13:01:47 +0000
+	Mon, 02 Jun 2025 13:01:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=XQ6zwnbSepHLMFBbDn9cQ1PE4Yss4Y/Yn9ow81dEnzE=;
-	t=1748869306; x=1750078906; b=P01JOetcKvY5OSdN5u8CB8g4OIJE3xXvnq8/LVC3PbyD9Ft
-	iGJzFDzNMPl8N/8HjiC6lixksw/I52c1pqscaB1LHEqiahb9eFOxOp3V+UEL8vqI/X+leQfA98j6K
-	bxKQefW6SWReDkYxyu3OW0KpjwtH1b7teIpnHv1Xmh0Il+/yTanV9ZSW3SAFXLZXkTj7GLbWgvu9p
-	ySp/8zxR/1QWUMt2yPBa9j5j4CSbkHXPyxUHLxwek30c2aVfR63XL27ivnzQfsbF69bfu2i1hKf8t
-	YNMTfENhYxXFfWH4qlghPjlFosotDCwCQRAk7c1/EpC5bZ8BFdjroGSpi62KYX0Q==;
+	Resent-Cc:Resent-Message-ID; bh=HAZpBKPUVrMOWHJoaxatCfc5gQvaqhdJSc6/dQvF/cY=;
+	t=1748869302; x=1750078902; b=ZcKdbUvBpHS9Hzy3/arQ4TaL5MWLQB7Uqy2FccVZSmZABhM
+	1kOvaea00WEHVODloNhRk8U55DdhOJ+M+Hmgk6ds4WYPeYNiwHsSGAEeliYmcCYTu7YgODq85iVEz
+	DzRTk7zxft30BftP/NoCBxKCWmijlLy5J/hCDjlksczMp4ElHNMosmwqHGY1dBgWRXUPdQi0c9m7o
+	ntpkDBWqfpAoBoDiBzhIR/LaRK8/kwoLA+rP+O/jmziXrUsTrwrHuSmpmo/xA9GZUn/N5oTSnwfxB
+	llNa8cTfQ4FwfgsF1lbXbk/QV2Iajcx2Vf/N++FUIwjIQAC/12UHh14XWVI8WkXQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uM4nO-00000005j9h-3JN1;
-	Mon, 02 Jun 2025 15:01:43 +0200
+	id 1uM4nK-00000005j9h-1zKI;
+	Mon, 02 Jun 2025 15:01:38 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v3 6/7] um: Add SECCOMP support detection and initialization
-Date: Mon,  2 Jun 2025 15:00:51 +0200
-Message-ID: <20250602130052.545733-7-benjamin@sipsolutions.net>
+Subject: [PATCH v3 3/7] um: Add helper functions to get/set state for SECCOMP
+Date: Mon,  2 Jun 2025 15:00:48 +0200
+Message-ID: <20250602130052.545733-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250602130052.545733-1-benjamin@sipsolutions.net>
 References: <20250602130052.545733-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250602_060146_678185_93722F77 
-X-CRM114-Status: GOOD (  26.07  )
+X-CRM114-CacheID: sfid-20250602_060143_144836_AB0C016A 
+X-CRM114-Status: GOOD (  23.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,261 +71,407 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This detects seccomp support, sets the global using_seccomp variable and
-initilizes the exec registers. The support is only enabled if the
-seccomp= kernel parameter is set to either "on" or "auto". With "auto" a
-fallback to ptrace mode will happen if initialization failed.
+When not using ptrace, we need to both save and restore registers
+through the mcontext as provided by the host kernel to our signal
+handlers.
+
+Add corresponding functions to store the state to an mcontext and
+helpers to access the mcontext of the subprocess through the stub data.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
 ---
 
-v3:
-- Fix FP size detection on some hosts. The MAP_SHARED | MAP_ANON mapping
-  would not always be shared after fork(), resulting in the detection to
-  fail.
-- Add runtime option to select seccomp mode
+RFCv2:
+- Proper FP register handling
 ---
- arch/um/os-Linux/registers.c |   4 +-
- arch/um/os-Linux/start_up.c  | 177 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 177 insertions(+), 4 deletions(-)
+ arch/x86/um/os-Linux/mcontext.c      | 218 ++++++++++++++++++++++++++-
+ arch/x86/um/ptrace.c                 |  76 +++++++---
+ arch/x86/um/shared/sysdep/mcontext.h |   9 ++
+ 3 files changed, 283 insertions(+), 20 deletions(-)
 
-diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
-index d7ca148807b2..bfba2cbc9478 100644
---- a/arch/um/os-Linux/registers.c
-+++ b/arch/um/os-Linux/registers.c
-@@ -14,8 +14,8 @@
- 
- /* This is set once at boot time and not changed thereafter */
- 
--static unsigned long exec_regs[MAX_REG_NR];
--static unsigned long *exec_fp_regs;
-+unsigned long exec_regs[MAX_REG_NR];
-+unsigned long *exec_fp_regs;
- 
- int init_pid_registers(int pid)
- {
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 93fc82c01aba..5d2e604ab02d 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -1,5 +1,6 @@
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
+index 37decaa74761..e661fdc44db9 100644
+--- a/arch/x86/um/os-Linux/mcontext.c
++++ b/arch/x86/um/os-Linux/mcontext.c
+@@ -1,7 +1,10 @@
  // SPDX-License-Identifier: GPL-2.0
- /*
-+ * Copyright (C) 2021 Benjamin Berg <benjamin@sipsolutions.net>
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
- 
-@@ -24,6 +25,13 @@
- #include <kern_util.h>
- #include <mem_user.h>
- #include <ptrace_user.h>
-+#include <stdbool.h>
-+#include <stub-data.h>
-+#include <sys/prctl.h>
-+#include <linux/seccomp.h>
-+#include <linux/filter.h>
-+#include <sysdep/mcontext.h>
-+#include <sysdep/stub.h>
- #include <registers.h>
- #include <skas.h>
- #include "internal.h"
-@@ -224,6 +232,136 @@ static void __init check_ptrace(void)
- 	check_sysemu();
+-#include <sys/ucontext.h>
+ #define __FRAME_OFFSETS
++#include <linux/errno.h>
++#include <linux/string.h>
++#include <sys/ucontext.h>
+ #include <asm/ptrace.h>
++#include <asm/sigcontext.h>
+ #include <sysdep/ptrace.h>
+ #include <sysdep/mcontext.h>
+ #include <arch.h>
+@@ -18,6 +21,10 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
+ 	COPY2(UESP, ESP); /* sic */
+ 	COPY(EBX); COPY(EDX); COPY(ECX); COPY(EAX);
+ 	COPY(EIP); COPY_SEG_CPL3(CS); COPY(EFL); COPY_SEG_CPL3(SS);
++#undef COPY2
++#undef COPY
++#undef COPY_SEG
++#undef COPY_SEG_CPL3
+ #else
+ #define COPY2(X,Y) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##Y]
+ #define COPY(X) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##X]
+@@ -29,6 +36,8 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
+ 	COPY2(EFLAGS, EFL);
+ 	COPY2(CS, CSGSFS);
+ 	regs->gp[SS / sizeof(unsigned long)] = mc->gregs[REG_CSGSFS] >> 48;
++#undef COPY2
++#undef COPY
+ #endif
  }
  
-+extern unsigned long host_fp_size;
-+extern unsigned long exec_regs[MAX_REG_NR];
-+extern unsigned long *exec_fp_regs;
+@@ -42,3 +51,210 @@ void mc_set_rip(void *_mc, void *target)
+ 	mc->gregs[REG_RIP] = (unsigned long)target;
+ #endif
+ }
 +
-+__initdata static struct stub_data *seccomp_test_stub_data;
-+
-+static void __init sigsys_handler(int sig, siginfo_t *info, void *p)
++/* Same thing, but the copy macros are turned around. */
++void get_mc_from_regs(struct uml_pt_regs *regs, mcontext_t *mc, int single_stepping)
 +{
-+	ucontext_t *uc = p;
++#ifdef __i386__
++#define COPY2(X,Y) mc->gregs[REG_##Y] = regs->gp[X]
++#define COPY(X) mc->gregs[REG_##X] = regs->gp[X]
++#define COPY_SEG(X) mc->gregs[REG_##X] = regs->gp[X] & 0xffff;
++#define COPY_SEG_CPL3(X) mc->gregs[REG_##X] = (regs->gp[X] & 0xffff) | 3;
++	COPY_SEG(GS); COPY_SEG(FS); COPY_SEG(ES); COPY_SEG(DS);
++	COPY(EDI); COPY(ESI); COPY(EBP);
++	COPY2(UESP, ESP); /* sic */
++	COPY(EBX); COPY(EDX); COPY(ECX); COPY(EAX);
++	COPY(EIP); COPY_SEG_CPL3(CS); COPY(EFL); COPY_SEG_CPL3(SS);
++#else
++#define COPY2(X,Y) mc->gregs[REG_##Y] = regs->gp[X/sizeof(unsigned long)]
++#define COPY(X) mc->gregs[REG_##X] = regs->gp[X/sizeof(unsigned long)]
++	COPY(R8); COPY(R9); COPY(R10); COPY(R11);
++	COPY(R12); COPY(R13); COPY(R14); COPY(R15);
++	COPY(RDI); COPY(RSI); COPY(RBP); COPY(RBX);
++	COPY(RDX); COPY(RAX); COPY(RCX); COPY(RSP);
++	COPY(RIP);
++	COPY2(EFLAGS, EFL);
++	mc->gregs[REG_CSGSFS] = mc->gregs[REG_CSGSFS] & 0xffffffffffffl;
++	mc->gregs[REG_CSGSFS] |= (regs->gp[SS / sizeof(unsigned long)] & 0xffff) << 48;
++#endif
 +
-+	/* Stow away the location of the mcontext in the stack */
-+	seccomp_test_stub_data->mctx_offset = (unsigned long)&uc->uc_mcontext -
-+					      (unsigned long)&seccomp_test_stub_data->sigstack[0];
-+	_exit(0);
++	if (single_stepping)
++		mc->gregs[REG_EFL] |= X86_EFLAGS_TF;
++	else
++		mc->gregs[REG_EFL] &= ~X86_EFLAGS_TF;
 +}
 +
-+static int __init seccomp_helper(void *data)
++#ifdef CONFIG_X86_32
++struct _xstate_64 {
++	struct _fpstate_64		fpstate;
++	struct _header			xstate_hdr;
++	struct _ymmh_state		ymmh;
++	/* New processor state extensions go here: */
++};
++
++/* Not quite the right structures as these contain more information */
++int um_i387_from_fxsr(struct _fpstate_32 *i387,
++		      const struct _fpstate_64 *fxsave);
++int um_fxsr_from_i387(struct _fpstate_64 *fxsave,
++		      const struct _fpstate_32 *from);
++#else
++#define _xstate_64 _xstate
++#endif
++
++static struct _fpstate *get_fpstate(struct stub_data *data,
++				    mcontext_t *mcontext,
++				    int *fp_size)
 +{
-+	static struct sock_filter filter[] = {
-+		BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-+			 offsetof(struct seccomp_data, nr)),
-+		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_clock_nanosleep, 1, 0),
-+		BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-+		BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_TRAP),
-+	};
-+	static struct sock_fprog prog = {
-+		.len = ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+	struct sigaction sa;
++	struct _fpstate *res;
 +
-+	seccomp_test_stub_data->mctx_offset = 1;
++	/* Assume floating point registers are on the same page */
++	res = (void *)(((unsigned long)mcontext->fpregs &
++			(UM_KERN_PAGE_SIZE - 1)) +
++		       (unsigned long)&data->sigstack[0]);
 +
-+	set_sigstack(seccomp_test_stub_data->sigstack,
-+			sizeof(seccomp_test_stub_data->sigstack));
++	if ((void *)res + sizeof(struct _fpstate) >
++	    (void *)data->sigstack + sizeof(data->sigstack))
++		return NULL;
 +
-+	sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
-+	sa.sa_sigaction = (void *) sigsys_handler;
-+	sa.sa_restorer = NULL;
-+	if (sigaction(SIGSYS, &sa, NULL) < 0)
-+		exit(1);
++	if (res->sw_reserved.magic1 != FP_XSTATE_MAGIC1) {
++		*fp_size = sizeof(struct _fpstate);
++	} else {
++		char *magic2_addr;
 +
-+	prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	if (syscall(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
-+			SECCOMP_FILTER_FLAG_TSYNC, &prog) != 0)
-+		exit(2);
++		magic2_addr = (void *)res;
++		magic2_addr += res->sw_reserved.extended_size;
++		magic2_addr -= FP_XSTATE_MAGIC2_SIZE;
 +
-+	sleep(0);
++		/* We still need to be within our stack */
++		if ((void *)magic2_addr >
++		    (void *)data->sigstack + sizeof(data->sigstack))
++			return NULL;
 +
-+	/* Never reached. */
-+	_exit(3);
-+}
++		/* If we do not read MAGIC2, then we did something wrong */
++		if (*(__u32 *)magic2_addr != FP_XSTATE_MAGIC2)
++			return NULL;
 +
-+static bool __init init_seccomp(void)
-+{
-+	int pid;
-+	int status;
-+	int n;
-+	unsigned long sp;
-+
-+	/*
-+	 * We check that we can install a seccomp filter and then exit(0)
-+	 * from a trapped syscall.
-+	 *
-+	 * Note that we cannot verify that no seccomp filter already exists
-+	 * for a syscall that results in the process/thread to be killed.
-+	 */
-+
-+	os_info("Checking that seccomp filters can be installed...");
-+
-+	seccomp_test_stub_data = mmap(0, sizeof(*seccomp_test_stub_data),
-+				      PROT_READ | PROT_WRITE,
-+				      MAP_SHARED | MAP_ANON, 0, 0);
-+
-+	/* Use the syscall data area as stack, we just need something */
-+	sp = (unsigned long)&seccomp_test_stub_data->syscall_data +
-+	     sizeof(seccomp_test_stub_data->syscall_data) -
-+	     sizeof(void *);
-+	pid = clone(seccomp_helper, (void *)sp, CLONE_VFORK | CLONE_VM, NULL);
-+
-+	if (pid < 0)
-+		fatal_perror("check_seccomp : clone failed");
-+
-+	CATCH_EINTR(n = waitpid(pid, &status, __WCLONE));
-+	if (n < 0)
-+		fatal_perror("check_seccomp : waitpid failed");
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
-+		struct uml_pt_regs *regs;
-+		unsigned long fp_size;
-+		int r;
-+
-+		/* Fill in the host_fp_size from the mcontext. */
-+		regs = calloc(1, sizeof(struct uml_pt_regs));
-+		get_stub_state(regs, seccomp_test_stub_data, &fp_size);
-+		host_fp_size = fp_size;
-+		free(regs);
-+
-+		/* Repeat with the correct size */
-+		regs = calloc(1, sizeof(struct uml_pt_regs) + host_fp_size);
-+		r = get_stub_state(regs, seccomp_test_stub_data, NULL);
-+
-+		/* Store as the default startup registers */
-+		exec_fp_regs = malloc(host_fp_size);
-+		memcpy(exec_regs, regs->gp, sizeof(exec_regs));
-+		memcpy(exec_fp_regs, regs->fp, host_fp_size);
-+
-+		munmap(seccomp_test_stub_data, sizeof(*seccomp_test_stub_data));
-+
-+		free(regs);
-+
-+		if (r) {
-+			os_info("failed to fetch registers: %d\n", r);
-+			return false;
-+		}
-+
-+		os_info("OK\n");
-+		return true;
++		/* Remove MAGIC2 from the size, we do not save/restore it */
++		*fp_size = res->sw_reserved.extended_size -
++			   FP_XSTATE_MAGIC2_SIZE;
 +	}
 +
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
-+		os_info("missing\n");
-+	else
-+		os_info("error\n");
-+
-+	munmap(seccomp_test_stub_data, sizeof(*seccomp_test_stub_data));
-+	return false;
++	return res;
 +}
 +
-+
- static void __init check_coredump_limit(void)
- {
- 	struct rlimit lim;
-@@ -278,6 +416,30 @@ void  __init get_host_cpu_features(
- 	}
- }
- 
-+static int seccomp_config __initdata;
-+
-+static int __init uml_seccomp_config(char *line, int *add)
++int get_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
++		   unsigned long *fp_size_out)
 +{
-+	*add = 0;
++	mcontext_t *mcontext;
++	struct _fpstate *fpstate_stub;
++	struct _xstate_64 *xstate_stub;
++	int fp_size, xstate_size;
 +
-+	if (strcmp(line, "off") == 0)
-+		seccomp_config = 0;
-+	else if (strcmp(line, "auto") == 0)
-+		seccomp_config = 1;
-+	else if (strcmp(line, "on") == 0)
-+		seccomp_config = 2;
-+	else
-+		fatal("Invalid seccomp option '%s', expected on/auto/off\n",
-+		      line);
++	/* mctx_offset is verified by wait_stub_done_seccomp */
++	mcontext = (void *)&data->sigstack[data->mctx_offset];
++
++	get_regs_from_mc(regs, mcontext);
++
++	fpstate_stub = get_fpstate(data, mcontext, &fp_size);
++	if (!fpstate_stub)
++		return -EINVAL;
++
++#ifdef CONFIG_X86_32
++	xstate_stub = (void *)&fpstate_stub->_fxsr_env;
++	xstate_size = fp_size - offsetof(struct _fpstate_32, _fxsr_env);
++#else
++	xstate_stub = (void *)fpstate_stub;
++	xstate_size = fp_size;
++#endif
++
++	if (fp_size_out)
++		*fp_size_out = xstate_size;
++
++	if (xstate_size > host_fp_size)
++		return -ENOSPC;
++
++	memcpy(&regs->fp, xstate_stub, xstate_size);
++
++	/* We do not need to read the x86_64 FS_BASE/GS_BASE registers as
++	 * we do not permit userspace to set them directly.
++	 */
++
++#ifdef CONFIG_X86_32
++	/* Read the i387 legacy FP registers */
++	if (um_fxsr_from_i387((void *)&regs->fp, fpstate_stub))
++		return -EINVAL;
++#endif
 +
 +	return 0;
 +}
 +
-+__uml_setup("seccomp=", uml_seccomp_config,
-+"seccomp=<on/auto/off>\n"
-+"    Whether to run userspace using SECCOMP.\n"
-+"    This is insecure and should only be used with a trusted userspace\n\n"
-+);
- 
- void __init os_early_checks(void)
- {
-@@ -286,13 +448,24 @@ void __init os_early_checks(void)
- 	/* Print out the core dump limits early */
- 	check_coredump_limit();
- 
--	check_ptrace();
--
- 	/* Need to check this early because mmapping happens before the
- 	 * kernel is running.
- 	 */
- 	check_tmpexec();
- 
-+	if (seccomp_config) {
-+		if (init_seccomp()) {
-+			using_seccomp = 1;
-+			return;
-+		}
++/* Copied because we cannot include regset.h here. */
++struct task_struct;
++struct user_regset;
++struct membuf {
++	void *p;
++	size_t left;
++};
 +
-+		if (seccomp_config == 2)
-+			fatal("SECCOMP userspace requested but not functional!");
++int fpregs_legacy_get(struct task_struct *target,
++		      const struct user_regset *regset,
++		      struct membuf to);
++
++int set_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
++		   int single_stepping)
++{
++	mcontext_t *mcontext;
++	struct _fpstate *fpstate_stub;
++	struct _xstate_64 *xstate_stub;
++	int fp_size, xstate_size;
++
++	/* mctx_offset is verified by wait_stub_done_seccomp */
++	mcontext = (void *)&data->sigstack[data->mctx_offset];
++
++	if ((unsigned long)mcontext < (unsigned long)data->sigstack ||
++	    (unsigned long)mcontext >
++			(unsigned long) data->sigstack +
++			sizeof(data->sigstack) - sizeof(*mcontext))
++		return -EINVAL;
++
++	get_mc_from_regs(regs, mcontext, single_stepping);
++
++	fpstate_stub = get_fpstate(data, mcontext, &fp_size);
++	if (!fpstate_stub)
++		return -EINVAL;
++
++#ifdef CONFIG_X86_32
++	xstate_stub = (void *)&fpstate_stub->_fxsr_env;
++	xstate_size = fp_size - offsetof(struct _fpstate_32, _fxsr_env);
++#else
++	xstate_stub = (void *)fpstate_stub;
++	xstate_size = fp_size;
++#endif
++
++	memcpy(fpstate_stub, &regs->fp, fp_size);
++
++#ifdef __i386__
++	/*
++	 * On x86, the GDT entries are updated by arch_set_tls.
++	 */
++
++	/* Store the i387 legacy FP registers which the host will use */
++	if (um_i387_from_fxsr(fpstate_stub, (void *)&regs->fp))
++		return -EINVAL;
++#else
++	/*
++	 * On x86_64, we need to sync the FS_BASE/GS_BASE registers using the
++	 * arch specific data.
++	 */
++	if (data->arch_data.fs_base != regs->gp[FS_BASE / sizeof(unsigned long)]) {
++		data->arch_data.fs_base = regs->gp[FS_BASE / sizeof(unsigned long)];
++		data->arch_data.sync |= STUB_SYNC_FS_BASE;
++	}
++	if (data->arch_data.gs_base != regs->gp[GS_BASE / sizeof(unsigned long)]) {
++		data->arch_data.gs_base = regs->gp[GS_BASE / sizeof(unsigned long)];
++		data->arch_data.sync |= STUB_SYNC_GS_BASE;
++	}
++#endif
++
++	return 0;
++}
+diff --git a/arch/x86/um/ptrace.c b/arch/x86/um/ptrace.c
+index 57c504fd5626..3275870330fe 100644
+--- a/arch/x86/um/ptrace.c
++++ b/arch/x86/um/ptrace.c
+@@ -25,7 +25,8 @@ static inline unsigned short twd_i387_to_fxsr(unsigned short twd)
+ 	return tmp;
+ }
+ 
+-static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
++static inline unsigned long
++twd_fxsr_to_i387(const struct user_fxsr_struct *fxsave)
+ {
+ 	struct _fpxreg *st = NULL;
+ 	unsigned long twd = (unsigned long) fxsave->twd;
+@@ -69,12 +70,16 @@ static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
+ 	return ret;
+ }
+ 
+-/* Get/set the old 32bit i387 registers (pre-FPX) */
+-static int fpregs_legacy_get(struct task_struct *target,
+-			     const struct user_regset *regset,
+-			     struct membuf to)
++/*
++ * Get/set the old 32bit i387 registers (pre-FPX)
++ *
++ * We provide simple wrappers for mcontext.c, they are only defined locally
++ * because mcontext.c is userspace facing and needs to a different definition
++ * of the structures.
++ */
++static int _um_i387_from_fxsr(struct membuf to,
++			      const struct user_fxsr_struct *fxsave)
+ {
+-	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
+ 	int i;
+ 
+ 	membuf_store(&to, (unsigned long)fxsave->cwd | 0xffff0000ul);
+@@ -91,23 +96,36 @@ static int fpregs_legacy_get(struct task_struct *target,
+ 	return 0;
+ }
+ 
+-static int fpregs_legacy_set(struct task_struct *target,
++int um_i387_from_fxsr(struct user_i387_struct *i387,
++		      const struct user_fxsr_struct *fxsave);
++
++int um_i387_from_fxsr(struct user_i387_struct *i387,
++		      const struct user_fxsr_struct *fxsave)
++{
++	struct membuf to = {
++		.p = i387,
++		.left = sizeof(*i387),
++	};
++
++	return _um_i387_from_fxsr(to, fxsave);
++}
++
++static int fpregs_legacy_get(struct task_struct *target,
+ 			     const struct user_regset *regset,
+-			     unsigned int pos, unsigned int count,
+-			     const void *kbuf, const void __user *ubuf)
++			     struct membuf to)
+ {
+ 	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
+-	const struct user_i387_struct *from;
+-	struct user_i387_struct buf;
+-	int i;
+ 
+-	if (ubuf) {
+-		if (copy_from_user(&buf, ubuf, sizeof(buf)))
+-			return -EFAULT;
+-		from = &buf;
+-	} else {
+-		from = kbuf;
+-	}
++	return _um_i387_from_fxsr(to, fxsave);
++}
++
++int um_fxsr_from_i387(struct user_fxsr_struct *fxsave,
++		      const struct user_i387_struct *from);
++
++int um_fxsr_from_i387(struct user_fxsr_struct *fxsave,
++		      const struct user_i387_struct *from)
++{
++	int i;
+ 
+ 	fxsave->cwd = (unsigned short)(from->cwd & 0xffff);
+ 	fxsave->swd = (unsigned short)(from->swd & 0xffff);
+@@ -125,6 +143,26 @@ static int fpregs_legacy_set(struct task_struct *target,
+ 
+ 	return 0;
+ }
++
++static int fpregs_legacy_set(struct task_struct *target,
++			     const struct user_regset *regset,
++			     unsigned int pos, unsigned int count,
++			     const void *kbuf, const void __user *ubuf)
++{
++	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
++	const struct user_i387_struct *from;
++	struct user_i387_struct buf;
++
++	if (ubuf) {
++		if (copy_from_user(&buf, ubuf, sizeof(buf)))
++			return -EFAULT;
++		from = &buf;
++	} else {
++		from = kbuf;
 +	}
 +
-+	using_seccomp = 0;
-+	check_ptrace();
++	return um_fxsr_from_i387(fxsave, &buf);
++}
+ #endif
+ 
+ static int genregs_get(struct task_struct *target,
+diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sysdep/mcontext.h
+index b724c54da316..6fe490cc5b98 100644
+--- a/arch/x86/um/shared/sysdep/mcontext.h
++++ b/arch/x86/um/shared/sysdep/mcontext.h
+@@ -6,7 +6,16 @@
+ #ifndef __SYS_SIGCONTEXT_X86_H
+ #define __SYS_SIGCONTEXT_X86_H
+ 
++#include <stub-data.h>
 +
- 	pid = start_ptraced_child();
- 	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
+ extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
++extern void get_mc_from_regs(struct uml_pt_regs *regs, mcontext_t *mc,
++			     int single_stepping);
++
++extern int get_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
++			  unsigned long *fp_size_out);
++extern int set_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
++			  int single_stepping);
+ 
+ #ifdef __i386__
+ 
 -- 
 2.49.0
 
