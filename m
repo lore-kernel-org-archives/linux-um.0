@@ -4,69 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B618C54FB3
-	for <linux-um@archiver.kernel.org>; Mon,  2 Jun 2025 04:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69631C5AD49
+	for <linux-um@archiver.kernel.org>; Mon,  2 Jun 2025 13:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iuH08HhCzFKCMOC8/O0swKDH+rpWOadfk7Rm4fI946Q=; b=Ivv4iBGZDjUI8xKskEf5gRo6Pd
-	WGOQfGtCUrAqAk4z7LNf6YXwevbPGMj1NpjXy73Is/BMkZ2v4Qwvk3bEWX8At/SqgkpK1RguCauKE
-	JSybRTVeFppacxj2JjNjhNVq4AijcAyfv0puuHEBo3sEYzDyVSQeZW+pyZqV3sa7Ru9p7CNM4QnqX
-	oogGqPsZIV6dHV3Pv/JBwwDISwnsP9sZT52rHeflgxPz9GWJUi/O8XLJZEUTZInQY1LbH8EDgb3bz
-	cCHQlcc50Si4SvqP+mJY3ITvzLOaDHbDVGhI96MwZTDlcaJKZtUXuaAaO02qq56YQFf1BbZBP/Lvz
-	6kvOflfQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=wgki+cMOC8pHzeodgCagi2iIVprgOhLci+G/dKq1d6c=; b=tNXz9jro7gBWEliVX+JlY5WiZV
+	fliMA4dxEY3+OJXY8ggqtK3+KpFQY3gs0WOWuPQB4b42zgQQedMDWlM7migdZt4cd6++iIZbj90C6
+	Nl7Afs3gYyLAv/l4j2R/sgZWN9UAVpyXclgM8DYj0RHGTDI9O2WZecBN9I/Mg1CWze38wXvi7E3/w
+	kK4jwYNeLSBq6jVeKL8iAgn77qpOTqiMBYhe+/bJ2eQWGXSrrGhy/eFVy8b4gjDX69/t/QdTOAfjF
+	0HvLaXH2ubTBJiHXBprsfDkE24G8gVr0FP8mDpeFPGqwbz8BrU0gArQoKPu0TO8PqbrYN4Q5ON0Dy
+	pvLsVJ0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLwYk-00000006fGl-1qbv;
-	Mon, 02 Jun 2025 04:14:02 +0000
-Received: from zeniv.linux.org.uk ([2a03:a000:7:0:5054:ff:fe1c:15ff])
+	id 1uM4oL-00000007PmU-09ZP;
+	Mon, 02 Jun 2025 13:02:41 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLwWK-00000006f1y-1M2J;
-	Mon, 02 Jun 2025 04:11:33 +0000
+	id 1uM4nM-00000007Pe0-3x0f
+	for linux-um@lists.infradead.org;
+	Mon, 02 Jun 2025 13:01:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=iuH08HhCzFKCMOC8/O0swKDH+rpWOadfk7Rm4fI946Q=; b=cDLc7AG1xVeGrDIh1peeN0IWEk
-	zSPl9poJhEGT0YoB/3XnvH6rSM6bY3xjL0IUqjUntiObN7RMhtlCPHuD3A62GgdK0UEACC5R8vd1k
-	nGJkZRQS6J7IpGD5Cac8ckt2eGuQw0ldn0T1SIMMph5HBpFztRTyZBhVmy8+xkbQoA7OwVtDKj3OZ
-	76BRcTLzVJZLqbCzOHiBTXoFLI5gsn+T2zZ4MU1RCovTNxA1K7wQ4w3A4hqY1qW3qspeqQLRXJ12A
-	qO/+nks1w4qOwDF7mdiodEdOvdFTMW5W0MgrK6eRVtCQ084Z11K100prR+Fy/v0Uyq+f2T84t8Tki
-	2y66Yf/A==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uLwW6-0000000BUl8-1UDJ;
-	Mon, 02 Jun 2025 04:11:18 +0000
-Date: Mon, 2 Jun 2025 05:11:18 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linmag7@gmail.com, Al Viro <viro@ftp.linux.org.uk>, arnd@arndb.de,
-	chris@zankel.net, dinguyen@kernel.org, glaubitz@physik.fu-berlin.de,
-	ink@unseen.parts, jcmvbkbc@gmail.com, kees@kernel.org,
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	mattst88@gmail.com, monstr@monstr.eu, richard.henderson@linaro.org,
-	sparclinux@vger.kernel.org, x86@kernel.org,
-	Sam James <sam@gentoo.org>
-Subject: Re: [PATCH v2 1/1] mm: pgtable: fix pte_swp_exclusive
-Message-ID: <20250602041118.GA2675383@ZenIV>
-References: <87cyfejafj.fsf@gentoo.org>
- <87v7rik020.fsf@gentoo.org>
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=wgki+cMOC8pHzeodgCagi2iIVprgOhLci+G/dKq1d6c=; t=1748869299; x=1750078899; 
+	b=Ey6aGxdHjA6hcS3viNPXccZu201okvPVBQP/+p/ZFhJrhKgywN0FOlhSSruK1cWcAro0kRhBVu8
+	lbKK8FGtfNPH2DvqcaXn+frrQ1s4KwV7/s8+Nw4JakysH5KsyDRLHgQ6tUFixw9Vo2rHxW+EacEJO
+	7fGgOUQKYRrL/Tn9JxDxPWkldkWQ8Puvm9yK6HGssmvIKnRvy3+P1Mxy8yMKwUo5aHpaziQr0bIXT
+	Xt0oAZyWLIBsUN974tYxUImTyy9MMA4ltHNyN1cSsAJ1ISpULEkt0QOzsyuWiUHOkK/c7NIOwBh2U
+	9QaEMt44u3bA+XiRXw38V3Sv+jVvUG5MzkMw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uM4nH-00000005j9h-2bua;
+	Mon, 02 Jun 2025 15:01:35 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH v3 0/7] SECCOMP based userspace for UML
+Date: Mon,  2 Jun 2025 15:00:45 +0200
+Message-ID: <20250602130052.545733-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v7rik020.fsf@gentoo.org>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250601_211132_354271_52D395DA 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20250602_060141_004397_CE806E28 
+X-CRM114-Status: GOOD (  10.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,63 +69,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Apr 05, 2025 at 06:09:11PM +0100, Sam James wrote:
-> Sam James <sam@gentoo.org> writes:
-> 
-> > Lovely cleanup and a great suggestion from Al.
-> >
-> > Reviewed-by: Sam James <sam@gentoo.org>
-> >
-> > I'd suggest adding a:
-> > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> 
-> Al, were you planning on taking this through your tree?
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-FWIW, I expected it to get sent to Linus as "please, run this
-sed script before -rc1" kind of thing, script being something
-like
+Hi all,
 
-sed -i -e 's/int pte_swp_exclusive/bool pte_swp_exclusive/' \
-	`git grep -l 'int pte_swp_exclusive'`
+we should be getting close to a usable SECCOMP patchset now. This
+revision mostly fixes an issue with FP size detection and makes SECCOMP
+mode a runtime rather than compile time option.
 
-with suggested commit message...  It's absolutely regular and
-that kind of tree-wide change is easier handled that way.
+Benjamin
 
-	Oh, well...  To restore the context: Magnus had spotted a fun
-bug on Alpha back in February - pte_swp_exclusive() there returned
-pte_val(pte) & _PAGE_SWP_EXCLUSIVE as int.  The problem is that
-_PAGE_SWP_EXCLUSIVE is 1UL<<39 there, with obvious results...
+v3:
+- Fix an issue where the FP size was not detected (memor was not shared)
+- Use runtime configuration instead of compile time configuration
 
-	I looked at the originally posted patch and suggested to
-make pte_swp_exclusive() return bool instead of int.  All users
-are in explicitly boolean contexts:
+v2:
+- Simple rebase dropping the merged patche
 
-include/linux/swapops.h:        if (pte_swp_exclusive(pte))
-mm/debug_vm_pgtable.c:  WARN_ON(pte_swp_exclusive(pte));
-mm/debug_vm_pgtable.c:  WARN_ON(!pte_swp_exclusive(pte));
-mm/debug_vm_pgtable.c:  WARN_ON(pte_swp_exclusive(pte));
-mm/internal.h:  if (pte_swp_exclusive(pte))
-mm/memory.c:            if (pte_swp_exclusive(orig_pte)) {
-mm/memory.c:            exclusive = pte_swp_exclusive(vmf->orig_pte);
-mm/swapfile.c:          if (pte_swp_exclusive(old_pte))
-mm/userfaultfd.c:               if (!pte_swp_exclusive(orig_src_pte)) {
+v1:
+- Remove explicit (and insufficient) kconfig.h includes
+- Change commit order to move configuration to the end
+- Fix futex wait race condition
+- Also handle child dying during stub startup
 
-	Magnus posted patch of that form (see
-https://lore.kernel.org/all/20250218175735.19882-2-linmag7@gmail.com/),
-got no serious objections and then it went nowhere.
+RFCv2:
+- Fix FP handling on i386
+- Improved MM list for userspace sigchild handling
+- Remove kconfig.h includes
+- Minor cleanups
 
-	Bug is real and fairly obvious, fix is entirely mechanical and
-affects one line in each asm/pgtable.h out there.  Linus, could you
-run that sed script just before -rc1?  Commit message from the patch refered
-above looks sane:
+Benjamin Berg (7):
+  um: Move faultinfo extraction into userspace routine
+  um: Add stub side of SECCOMP/futex based process handling
+  um: Add helper functions to get/set state for SECCOMP
+  um: Track userspace children dying in SECCOMP mode
+  um: Implement kernel side of SECCOMP based process handling
+  um: Add SECCOMP support detection and initialization
+  um: pass FD for memory operations when needed
 
-mm: pgtable: fix pte_swp_exclusive
+ arch/um/include/asm/irq.h                  |   5 +-
+ arch/um/include/asm/mmu.h                  |   3 +
+ arch/um/include/shared/common-offsets.h    |   4 +
+ arch/um/include/shared/irq_user.h          |   2 +
+ arch/um/include/shared/os.h                |   3 +-
+ arch/um/include/shared/skas/mm_id.h        |   9 +
+ arch/um/include/shared/skas/skas.h         |   1 +
+ arch/um/include/shared/skas/stub-data.h    |  20 +-
+ arch/um/kernel/irq.c                       |   6 +
+ arch/um/kernel/skas/mmu.c                  |  89 +++-
+ arch/um/kernel/skas/stub.c                 | 130 +++++-
+ arch/um/kernel/skas/stub_exe.c             | 159 ++++++-
+ arch/um/os-Linux/internal.h                |   5 +-
+ arch/um/os-Linux/process.c                 |  31 ++
+ arch/um/os-Linux/registers.c               |   4 +-
+ arch/um/os-Linux/signal.c                  |  19 +-
+ arch/um/os-Linux/skas/mem.c                | 103 ++++-
+ arch/um/os-Linux/skas/process.c            | 482 +++++++++++++++------
+ arch/um/os-Linux/start_up.c                | 181 +++++++-
+ arch/x86/um/os-Linux/mcontext.c            | 218 +++++++++-
+ arch/x86/um/ptrace.c                       |  76 +++-
+ arch/x86/um/shared/sysdep/kernel-offsets.h |   2 +
+ arch/x86/um/shared/sysdep/mcontext.h       |   9 +
+ arch/x86/um/shared/sysdep/stub-data.h      |  23 +
+ arch/x86/um/shared/sysdep/stub.h           |   2 +
+ arch/x86/um/shared/sysdep/stub_32.h        |  13 +
+ arch/x86/um/shared/sysdep/stub_64.h        |  17 +
+ arch/x86/um/tls_32.c                       |  23 +-
+ 28 files changed, 1434 insertions(+), 205 deletions(-)
+ create mode 100644 arch/x86/um/shared/sysdep/stub-data.h
 
-Make pte_swp_exclusive return bool instead of int. This will better reflect
-how pte_swp_exclusive is actually used in the code. This fixes swap/swapoff
-problems on Alpha due pte_swp_exclusive not returning correct values when
-_PAGE_SWP_EXCLUSIVE bit resides in upper 32-bits of PTE (like on alpha).
-
-Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
+-- 
+2.49.0
 
 
