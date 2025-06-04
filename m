@@ -4,96 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0AFDC5AE59
-	for <linux-um@archiver.kernel.org>; Tue,  3 Jun 2025 12:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE84C5B552
+	for <linux-um@archiver.kernel.org>; Wed,  4 Jun 2025 08:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r0f0rDdQI9JtcODUz8UbT4rs2Gv29SPYkIxKjn9q+Vk=; b=myZTmYXO8MoqF9+kkGcxUAYxxW
-	CYS+fJk1wgDVdH4f7kCcdtjCYrz3vQaTYp5HhCtxBPrRGgsjfXrr7hMgEll+TWFu4rGO30euwW7az
-	/+a1Ejwy2+P5FRm0XS9alqtpeDGoFSnDRjl3zgnD3jtlmJrmGRnhC6bAu5C8tD9r0jPHQbBX7T+eP
-	4d8RR92jCwZ3TJKR9/m3pdvB8Ftwh1deA7qdOxrF6CSJVMqeHa/6AM6xvcp2BDxnaKEJZeDsVz09G
-	LPK8z346lSbd0JmKyMp+65+bDp7MvfkuzaOZJVO8Dm+T84uampLHtNDCHMa4TxBopR2CV3YkjNjBV
-	ArU4/D4A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=YTvdxGZu5zEqWRNMyCUu7b2OSqg6UY2SnZPES5oc+E0=; b=3H5/7eINMnz6pV3RILZ8kJB9ai
+	E1Nr9t7YSis46IuIubQlK63iPmN1Z8HqZwzC+0tsVCJC0baDMkA9iQGqu1KfRKhg0a2z/MPJ3uq4j
+	DBcp7imF6ziGYQYBCXAzA5mnm3iDBA2eRjcK7Xs+avulRbpyb3WO2Wo6VaguTVc/drjKBzm6oQdKN
+	mpRfpvZfG+5vfRjXW2mdUPla6NrnoWrrywz4KoSCfUhrWSfy4r5QiSH64PduWELrbSPb/NX87iSPp
+	/Kgvk3Mm7IVlkGLb0vtfZiKb2lNDFabGP5Oo401VlVRxh7mLZIrBJ1P2Khi35lR+L6oDU7mRpToAA
+	yAGae31A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uMREW-0000000AyXc-1TRF;
-	Tue, 03 Jun 2025 12:59:12 +0000
-Received: from out-177.mta0.migadu.com ([2001:41d0:1004:224b::b1])
+	id 1uMjjy-0000000CvjE-3RAz;
+	Wed, 04 Jun 2025 08:44:54 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uMRET-0000000AyVQ-0IhG;
-	Tue, 03 Jun 2025 12:59:10 +0000
-Date: Tue, 3 Jun 2025 14:58:47 +0200
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Nicolas Schier <n.schier@avm.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chris Zankel <chris@zankel.net>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Jonas Bonn <jonas@southpole.se>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Naveen N Rao <naveen@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Rich Felker <dalias@libc.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 2/2] arch: use always-$(KBUILD_BUILTIN) for vmlinux.lds
-Message-ID: <20250603-sturdy-gaur-of-security-7effbb@l-nschier-aarch64>
-References: <20250602181256.529033-1-masahiroy@kernel.org>
- <20250602181256.529033-2-masahiroy@kernel.org>
+	id 1uMjK3-0000000CsAL-2aKt
+	for linux-um@lists.infradead.org;
+	Wed, 04 Jun 2025 08:18:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=YTvdxGZu5zEqWRNMyCUu7b2OSqg6UY2SnZPES5oc+E0=; t=1749025085; x=1750234685; 
+	b=rr0H8jy6OkuwuF4bIKRQjXVyhkH753t6X9jEa0tQ5U4PvazCSoiGRk/QmLz/NsoPO7QRXsjHeAl
+	9OgL+2XgajgId4fS26WrygDIHXVgNL/oTbR9lI2i4DnVM8NW8nSImqvx34l0pe99qWl4w1GoR6o2/
+	nn4BCk4DrCkC6TyhPzoWWZcvGEXn5IZLSLxCtCo8CWv/IAHWtgw8n5E2vE12krO9M/+MZzgClvh+U
+	7K40BsXleQh+GchmSRQ9iORNyfUIJ/RKE1idcUvnkoPR3k8+kaHazZkL28O0RgpQTFEjnZ49+J1In
+	M+kXbQc5WotDS+e3gSuAek/AgPObomxeSLlQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uMjJx-0000000Dsg4-175B;
+	Wed, 04 Jun 2025 10:18:01 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH] um: fix SECCOMP 32bit xstate register restore
+Date: Wed,  4 Jun 2025 10:17:05 +0200
+Message-ID: <20250604081705.934112-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20250602181256.529033-2-masahiroy@kernel.org>
-Organization: AVM GmbH
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250603_055909_243231_B0C1203F 
-X-CRM114-Status: UNSURE (   9.29  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250604_011807_675361_D6084856 
+X-CRM114-Status: GOOD (  13.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,36 +69,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 03, 2025 at 03:12:54AM +0900, Masahiro Yamada wrote:
-> The extra-y syntax is deprecated. Instead, use always-$(KBUILD_BUILTIN),
-> which behaves equivalently.
->=20
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->=20
->  arch/alpha/kernel/Makefile      | 2 +-
->  arch/arc/kernel/Makefile        | 2 +-
->  arch/arm/kernel/Makefile        | 2 +-
->  arch/arm64/kernel/Makefile      | 2 +-
->  arch/csky/kernel/Makefile       | 2 +-
->  arch/hexagon/kernel/Makefile    | 2 +-
->  arch/loongarch/kernel/Makefile  | 2 +-
->  arch/m68k/kernel/Makefile       | 2 +-
->  arch/microblaze/kernel/Makefile | 2 +-
->  arch/mips/kernel/Makefile       | 2 +-
->  arch/nios2/kernel/Makefile      | 2 +-
->  arch/openrisc/kernel/Makefile   | 2 +-
->  arch/parisc/kernel/Makefile     | 2 +-
->  arch/powerpc/kernel/Makefile    | 2 +-
->  arch/riscv/kernel/Makefile      | 2 +-
->  arch/s390/kernel/Makefile       | 2 +-
->  arch/sh/kernel/Makefile         | 2 +-
->  arch/sparc/kernel/Makefile      | 2 +-
->  arch/um/kernel/Makefile         | 2 +-
->  arch/x86/kernel/Makefile        | 2 +-
->  arch/xtensa/kernel/Makefile     | 2 +-
->  21 files changed, 21 insertions(+), 21 deletions(-)
->=20
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-Reviewed-by: Nicolas Schier <n.schier@avm.de>
+There was a typo that caused the extended FP state to be copied into the
+wrong location on 32 bit. On 32 bit we only store the xstate internally
+as that already contains everything. However, for compatibility, the
+mcontext on 32 bit first contains the legacy FP state and then the
+xstate.
+
+The code copied the xstate on top of the legacy FP state instead of
+using the correct offset. This offset was already calculated in the
+xstate_* variables, so simply switch to those to fix the problem.
+
+With this SECCOMP mode works on 32 bit, so lift the restriction.
+
+Fixes: b1e1bd2e6943 ("um: Add helper functions to get/set state for SECCOMP")
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+---
+ arch/um/os-Linux/start_up.c     | 4 ----
+ arch/x86/um/os-Linux/mcontext.c | 2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 49015be1aaaf..a827c2e01aa5 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -296,10 +296,6 @@ static bool __init init_seccomp(void)
+ 	int n;
+ 	unsigned long sp;
+ 
+-	/* doesn't work on 32-bit right now */
+-	if (!IS_ENABLED(CONFIG_64BIT))
+-		return false;
+-
+ 	/*
+ 	 * We check that we can install a seccomp filter and then exit(0)
+ 	 * from a trapped syscall.
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
+index e661fdc44db9..a21403df6663 100644
+--- a/arch/x86/um/os-Linux/mcontext.c
++++ b/arch/x86/um/os-Linux/mcontext.c
+@@ -231,7 +231,7 @@ int set_stub_state(struct uml_pt_regs *regs, struct stub_data *data,
+ 	xstate_size = fp_size;
+ #endif
+ 
+-	memcpy(fpstate_stub, &regs->fp, fp_size);
++	memcpy(xstate_stub, &regs->fp, xstate_size);
+ 
+ #ifdef __i386__
+ 	/*
+-- 
+2.49.0
+
 
