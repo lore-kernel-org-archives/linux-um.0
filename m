@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 166D4C5AD49
-	for <linux-um@archiver.kernel.org>; Sat,  7 Jun 2025 02:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FB09C61CE8
+	for <linux-um@archiver.kernel.org>; Sat,  7 Jun 2025 02:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yF8FpTtagcV7Kwh1mn8c83YxOz5Y2vKGfOZjELVv36A=; b=qOqL1vqs8B4Bt6gIs3JyIsG4BA
-	OcjykHmZ1neZxJdaZg1nKcKjk8K3EIveBfn+yE/WlH/WOQQeG/R6jFdHPVoEey+powxt0R5/vjHWV
-	N3uZtxzI6xsJkHk+hM2yan+z32opHhR1h8XHNN3ikTmNrUOCq76IWzgZSBzqs7JvKt/+Xo+i3IoPV
-	NdorpAsJw6qB7ZP7O8HSO0Jl82gNAWWjKsxfJyYIay3QTRX6HSgMeYVEtLPaWjff37Pth3iY3mteO
-	2ig2L83T8Ds5hRHgXPBIWfPghk4+Iu9keuKHyCu3CKohcRt1z+kQ57LCZ0UQ8LLZ72LtOmOtlJdAY
-	PrNBMCcA==;
+	bh=X/JKVoHG52bM7iYj5PS7gTiSERcG5UqrCOig8DJiksU=; b=ltUj9I/wDmPt+rQ7FwtR85JFtA
+	LrP1iKqw81DZlcIC+S5YwQDeWlfuRIPGlwqnQJJ2GLPO/VjsesB/g9FZ6WSQqaz5uWlWfDIPublKl
+	K8aZAEFyXJmVaEEuYc0jxsEnESw7M1PHTxb3xaG9kjLGZG1sqp6401WHndsuOc5dmteVwYoir2HMP
+	qZN1XQnTUdaOVOExR7lrcDA3fS+g6vu7y4xHEb7R3B/64iYTJjIidm39LU+vqgl9UMGAVRYcZcnR5
+	sozZygwmk5C5n+CxJGpvewLQlGeerkH+gE/OIvwNcnbcE2GsnjKdqbToq0TfU86d/I8YYAwbZilhi
+	kHnpZDLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNjhR-00000001GgM-3YRN;
-	Sat, 07 Jun 2025 02:54:25 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1uNjhY-00000001Giq-0e8D;
+	Sat, 07 Jun 2025 02:54:32 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNjhP-00000001Gf4-1DCZ
+	id 1uNjhV-00000001Ghf-3TFO
 	for linux-um@lists.infradead.org;
-	Sat, 07 Jun 2025 02:54:24 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3a5257748e1so1869967f8f.2
-        for <linux-um@lists.infradead.org>; Fri, 06 Jun 2025 19:54:23 -0700 (PDT)
+	Sat, 07 Jun 2025 02:54:31 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3a3758b122cso1715549f8f.1
+        for <linux-um@lists.infradead.org>; Fri, 06 Jun 2025 19:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1749264862; x=1749869662; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1749264868; x=1749869668; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yF8FpTtagcV7Kwh1mn8c83YxOz5Y2vKGfOZjELVv36A=;
-        b=FCg19z+Y1AnZEIdoRyPP6Oyn0p12xEy4OGl59FACGlijsuNybDXyHoFEzbincfjCGS
-         +GaWymM3LZTNCjqMgrZAFKPYPXw+tQZnvxh72GBuU3FUCAaE4fJj9D3Tey8UuqzYhLkZ
-         1GxNMw4HVn1hTDrvPqzNQGIlasoEA18pgQMmQZ4bhRut/F4a79roPNcDVPyxfiqbWo7R
-         qJ3O/8W5wpzRa8FtrVfS3JxZ5yXn/3qs9of7MXDMZpzYgfVWZ2VOFLWmvVuFB8BbGTl0
-         d/643Kcd3ewRWbZ4E4zgPOTiWKf8a2if0dGVMyqs98dgtC2rNLGDjwIjApMt/Ke0Hsex
-         A0fw==
+        bh=X/JKVoHG52bM7iYj5PS7gTiSERcG5UqrCOig8DJiksU=;
+        b=giSzxbLmYN3Fqa8TtLEPF4cjfKfR39S0HfExu+ojDin7VtjMcLlJLqGWOua2brnVBI
+         XnkKHtLr9NprOacZOFj2jRrxrFtiIu0vgEN26FOnXxovbg64hqenuhZxUA4e4EZxTON6
+         nqx2mdXWL5Y4vSm1VUec4rzJBO5htLwgj4N/N7kS1FDlFwGUFYpNPSDyQXzws3qLrgRA
+         HWJ2P6RQwxvt2OT910b9DdQ3HQoIrD0wuZSJER2cufTt5Y/16dzrG4FLqmnKd8TjVjcO
+         m8ZO/uPtNtTuH/B7wmLD94FJ8eTmL0TWbYVYlkmh8a8mHI9eSycWd9stKOMaF1j0DlJ1
+         AtWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749264862; x=1749869662;
+        d=1e100.net; s=20230601; t=1749264868; x=1749869668;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yF8FpTtagcV7Kwh1mn8c83YxOz5Y2vKGfOZjELVv36A=;
-        b=LMhCZFv/xhoadpJebvc1+40dghEz93qzpO0gr2Gj3vPQ/ke90hyJdEhgCWgxVI6C+x
-         485CU15A4UhTvUPqZ35kcLrptjfCU4OZXIUWUryrrAKDxDHnaufecOJZ/H0m2ge1A4db
-         8ZMMCsOG0/C6ZMpLerozhIyEUk0+4CUDh9y8CSO2Mn7wgHWwCTyj/sC58QT/CbKKiS1r
-         NqnXusZXymo1NLI8dobx1xLRJy4V+ga7GL8IMLm/EnkHMfEkKijdrWLx71iNkg11gLxe
-         Vu8b4cddpcJxpvM8Godfv5XOZDiKUBbroFfU9pDXJP2xe5qLYl339lOtGyU0sQxIbzQU
-         WkiA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQNQRB5LNu+WoRIr3FBoF97McoJNCAN0ApHt8Zo6Q1g0kMh54AOY1Lop7i8AK2OgFScvNdsB4osQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxye+5gOzxPaCpWxyffSfdqToGbUjyEiRgreWxYwMlDFQr6JKo0
-	zV4OKymlgvZFAnEH7d6HGlsmacBf8vrHJ28P54GAz9o8kQOY+9bClkIeiaVpoNQH/qg=
-X-Gm-Gg: ASbGncuNQXMp5moPuuhHXzyjVkQMjhwj9d4fuYYsn1VrVvppMh7sXhXVjWR1YJKVLRK
-	lM8OqM3BGzsnwKwHBJRNopRbG6lFj5BdoAsAUTr5PkA1liT5tKrqiEnamk1MbFGsLiEGeq3eN7u
-	plJ+jlyK0MmhfHIHq/lITDWyP85whcyY3JMn+x40BAWt3vYan9zzO/Hp3Iqfzb2pIR520mOS91I
-	2clqJmdpYc01RByEO/3dOVpoyNqULZpDY38sw88G/1AyJVZbaYOCAVSvcKuBv9s4tL2E05K9hRO
-	dOjJib8y5W2Lr1QJslVyKGFfb/2q+gVcyFsmUz6CgxtFPVH0d9WHItXuXcw=
-X-Google-Smtp-Source: AGHT+IEkD+heqmJq9m8IHeuM06OadoFmpx1jvpTqHM7h9oaBrwao22/Hk/I57LZwA/2jHABWh1ERAw==
-X-Received: by 2002:a05:6000:1a8e:b0:3a4:d0ed:257b with SMTP id ffacd0b85a97d-3a531786a6cmr4798069f8f.22.1749264861807;
-        Fri, 06 Jun 2025 19:54:21 -0700 (PDT)
+        bh=X/JKVoHG52bM7iYj5PS7gTiSERcG5UqrCOig8DJiksU=;
+        b=Nrm9hs9/piuOKUjrfxu1fQYI5DgEVlwcp9LScksTguWGlJroz69nY9kW69FDIQ3feU
+         M1Cu2RmPfXK2OaaclOrHdKPNRX0H7Qokh5HLPGLn14s0d/ptS+UvrA9TuXEJ9R3V+xu4
+         fWEeUlJMn2cz/QHMRw9snHMeIKHuotl55GtQK//JprfN9GJ89p75kc3nEECZZFHyfdOJ
+         jw3iodK1wMSrhbT4W+pKY38BkLH75d8pzrcO4o7vuJyX7GBye3JdGTtSXcgyqCXC2nnT
+         4pyLtOuE0Pm2VWrZRuduQHzZ4p85j409Af/EMlzZSfjMIlTyliqiXoIriKnbT3VwT2tK
+         7gfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoF4dUuE0ozKCSTAJfe7XbjQo29LH25QB24E6AvOAIhiQ368WCkN0sLf5RnxLrSY0/9Sxx+ruScg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwikQ1m/WLh7cqN1UyXFYQe0tCQ7W65G2LGBWKHFNTEhMc3QVmt
+	LT4NKMYdfxiyu1Y4WHmAutvG5hc1AxfJk3LQIwS7J5sew+qkgwGpynorIit96Dwo/ag=
+X-Gm-Gg: ASbGncuMAlJ6UPbBrjBKinDQluTq4uiBJiY0CZa4bXZ0GoASRrwyVprxurvGhjs277h
+	Oa9/PeXzjh5lCrglwD7Py3dF2oSYNKz1/g44JHhChjYlfTuqFn5cb9y1L76QxUjKL1tEdKImEqe
+	FzNTkV3Yug5fi35w6PFyKY9h+KQtdYNcJmPGwOdjZjtLLJOxrrBKco0ow0FZ7/HTiDKYpWF8d5e
+	xmTid8ZOt5ujSuMBoIh5s6FRIraEFuZO3WlhKqh56++xNpOPN8OxFExE6O1yAFjYC/Y/9zU5Caf
+	aMadKPW9QbuUAvXW1Oh1zuTXi7fyUxI2gKWU/mIYV3IFnNXy
+X-Google-Smtp-Source: AGHT+IH5d/vDAJyZSz6fuV0j5C8IVfGiu/PKk0FvmAPHACrM59+l4DsDYjrQIDTW1PtMdxhQU8+9aQ==
+X-Received: by 2002:adf:e705:0:b0:3a5:39bb:3d61 with SMTP id ffacd0b85a97d-3a539bb41abmr1337284f8f.27.1749264868362;
+        Fri, 06 Jun 2025 19:54:28 -0700 (PDT)
 Received: from [127.0.0.1] ([2804:5078:80f:b600:58f2:fc97:371f:2])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-530e6429475sm2005465e0c.45.2025.06.06.19.54.16
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-530e6429475sm2005465e0c.45.2025.06.06.19.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jun 2025 19:54:20 -0700 (PDT)
+        Fri, 06 Jun 2025 19:54:27 -0700 (PDT)
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Fri, 06 Jun 2025 23:53:46 -0300
-Subject: [PATCH 4/7] drivers: serial: kgdboc: Check CON_SUSPENDED instead
- of CON_ENABLED
+Date: Fri, 06 Jun 2025 23:53:47 -0300
+Subject: [PATCH 5/7] arch: um: kmsg_dump: Don't check for CON_ENABLED
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250606-printk-cleanup-part2-v1-4-f427c743dda0@suse.com>
+Message-Id: <20250606-printk-cleanup-part2-v1-5-f427c743dda0@suse.com>
 References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
 In-Reply-To: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
 To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
@@ -93,16 +92,16 @@ Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
  kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org, 
  Marcos Paulo de Souza <mpdesouza@suse.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1749264832; l=966;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1749264832; l=916;
  i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=YnwRdm6I1xYkzMWD2CGBnm+ACwq/qI6QghdxR3iROfM=;
- b=cqiZ/O0p08p72ACNj+Qgo78sWzdqazBUHR38ZvlGqr0UR3ruYfxho4i+1leIYi6KW5or2wglX
- aqm/XqqSk0/Dl9v/iYzwAQDXRcTlLt/HqbQYzkxp32RFtqmxiFoy6EG
+ bh=ZiQkH309SsPv8lN8ObW99ERD0AIPkQszerT12qHwgsk=;
+ b=jWqGiPKl/XV1kWO8hkwg925xr1q6tsYBxos9FuxBE92z/Pq14tW6oRTqYnah8nuO92j1JK2AA
+ efZNwgbsN74BdsXUFSv+HbPRvTzvr8dhPJfS5pW4gOs10Hl/GEHry89
 X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
  pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250606_195423_332346_0893AB18 
-X-CRM114-Status: GOOD (  10.38  )
+X-CRM114-CacheID: sfid-20250606_195429_865493_94EEABDA 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,22 +122,21 @@ console is not suspended instead.
 
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- drivers/tty/serial/kgdboc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/kmsg_dump.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index 85f6c5a76e0fff556f86f0d45ebc5aadf5b191e8..af6d2208b8ddb82d62f33292b006b2923583a0d2 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -577,7 +577,8 @@ static int __init kgdboc_earlycon_init(char *opt)
- 	console_list_lock();
- 	for_each_console(con) {
- 		if (con->write && con->read &&
--		    (con->flags & (CON_BOOT | CON_ENABLED)) &&
-+		    (con->flags & CON_BOOT) &&
-+		    ((con->flags & CON_SUSPENDED) == 0) &&
- 		    (!opt || !opt[0] || strcmp(con->name, opt) == 0))
+diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
+index 4190211752726593dd2847f66efd9d3a61cea982..f3025b2a813453f479d720618c630bee135d4e08 100644
+--- a/arch/um/kernel/kmsg_dump.c
++++ b/arch/um/kernel/kmsg_dump.c
+@@ -31,7 +31,7 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+ 		 * expected to output the crash information.
+ 		 */
+ 		if (strcmp(con->name, "ttynull") != 0 &&
+-		    (console_srcu_read_flags(con) & CON_ENABLED)) {
++		    (console_srcu_read_flags(con) & CON_SUSPENDED) == 0) {
  			break;
+ 		}
  	}
 
 -- 
