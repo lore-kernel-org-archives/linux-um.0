@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE5E5C61CE8
-	for <linux-um@archiver.kernel.org>; Sat,  7 Jun 2025 02:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA6C3C61CE8
+	for <linux-um@archiver.kernel.org>; Sat,  7 Jun 2025 02:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=d8AB0D5JOvGYjX2dpcO3lbaRK+7xpSkRk0OO2w6sGwk=; b=ng0cu925OwOxv6
-	aQZl0ATF8pys7J28K9qMevEhmqBzI0Cp60nEPnTULhO2u4qokGsEJ5plq16saO890bStjtjdMx4h/
-	NOZvK0NzR5kJRx6DKTP6jYkHXjJ94YkRwI78WfBvPllgftAkUKwQeUbRIPrf57X894NsjOlIuVE+J
-	mfgCV1zdWU3ko5FNz4ChkbyHDTwVRUV2Y6qsspeEMIAshqQXQtnk75/tyOVd126egcgSpmqA37VYA
-	KjDBV/aVx/Pm49KJXOQFNuIMkjKMxTr5DRIKikCU/H5/1Y2+/RssBP2dd2fgHO7/IHXBoUedAPKLB
-	XiWh5UpfFhqwEOA1/maQ==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=079G7lwbZSdbFJvvw8wIKqroIeNsEJYLRsyPP7yIsHs=; b=rb5HxeHAK+rDgEVMOfA4SrKU0c
+	jf+O7H1rTSncJJReP4+dGFc6SFqmpiDIT5TZrpmgnumSMbJIbuC8Dx+i+Vg98ZzFe2y23r4oJv+ZB
+	0RlYK2ysTF63yGlUnZTZVWFmvmZfLSw3s07U9tlekyyjV1aZoRBYaJv/6WLhJrX4LUluH8lULzvKY
+	TuFiJ6nOQ+lrGkIgzmTuYLo2hXMs/G1j1PXAovjSZi8X+nIBF60hfiUtgei7v9g7XZ5kJRc833RfS
+	beBTGDYqU/DS4+AopwPMN3X6uxj7HCPk4d96cOgYMU+ISyuIfSyMUzv07lUkcubAsNCmuuyNcrzrd
+	2lx4ghsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNjh4-00000001GYc-1i3C;
-	Sat, 07 Jun 2025 02:54:02 +0000
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+	id 1uNjh8-00000001GZf-2vUO;
+	Sat, 07 Jun 2025 02:54:06 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uNjh2-00000001GYG-0vTs
+	id 1uNjh6-00000001GYq-47j4
 	for linux-um@lists.infradead.org;
-	Sat, 07 Jun 2025 02:54:01 +0000
-Received: by mail-wr1-x441.google.com with SMTP id ffacd0b85a97d-3a5257748e1so1869890f8f.2
-        for <linux-um@lists.infradead.org>; Fri, 06 Jun 2025 19:53:59 -0700 (PDT)
+	Sat, 07 Jun 2025 02:54:06 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-450dd065828so19508605e9.2
+        for <linux-um@lists.infradead.org>; Fri, 06 Jun 2025 19:54:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1749264838; x=1749869638; darn=lists.infradead.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d8AB0D5JOvGYjX2dpcO3lbaRK+7xpSkRk0OO2w6sGwk=;
-        b=AIF3YRROBK33gY0Jj+UKtMfnDFJWWgRTaPgOUVeSLb1MwqGReBjUGVqdAXxJufhgFu
-         luy2lEljuRfJyJ/XplMgKDDKytCdthGPkH9xafayj9s3sc1pV1yPWr746dpz5ngA09AN
-         INRh+5IL4T203qsTRQko5ED4uS3/H8aa/Ot+PZ/VYbw6wExi/2p7X34pav2lHu6SOtXg
-         zNNqJPE9cS60pj1L9RRY6lPxCfCJV77g9ddaJFdn6EoIJJCybMmEruTiJuZJ4T+d///e
-         0DDPq3P5aoELFVwPxdtx+UEJ26OjaSG0pwxZ8t0454eTtJ1+WDGpz6egOoPQOAdITKBc
-         jMZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749264838; x=1749869638;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=suse.com; s=google; t=1749264843; x=1749869643; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=d8AB0D5JOvGYjX2dpcO3lbaRK+7xpSkRk0OO2w6sGwk=;
-        b=ZC2V62Korm40QtPmBHA3lUvZHUWK70byBmAPPRB5RITtyRJssVHGc0H0ov7aEy/wK9
-         zoE5KUZGaFSWYpNOpx6K9u0XZxRP44iaDsnPizlfsHHgj5+5aKKvoiTDwL9r+dWzhjak
-         vrjO577NXgpYtQaVSF0BuVvEBmNjldjb7mYELS6Ion4stSBiYEMnVo3/RuUN/JFetZCe
-         QB+1mEeMhjFoBM4KoRMS4Hzy0WjiAis2r45ypE+nWq911UWbH0K2JY1WmbqYo5MeV6jN
-         ohq3W0A1LuK2MqUgdMVmJIf3iNIzuERQTlByKa2via0nNbqfzhVraxexnJCW6u8zHQx5
-         5waQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVr07So276nnC57L1yxXve2d8L/k+4pXMYgXGcFxvBm7/vV/HwU46wQjdcqUneC9e06bWh1/kRV6Q==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwscN2fy3mQ8Ai6z7uWfBF9cOy7nu2tl9FddAOgNIz7zSOcUxYI
-	VRUu8ozE7S7ebI+DymuB6f5cPS9Q8sLkbppIkjWZ6D8kczcoDU0jmSgbsh6lJpcL8vs=
-X-Gm-Gg: ASbGncss6UgpGKsxs+ZTndCW+ZnnD5H1bfrnHAzysq4jJ49M57JUa5wsNOQ0EeF4Pjh
-	QVHscKlpFqdmm4Dd+ONleBUXIDMqXN7Wdfunv1UzRgy6sGufloGn76b7XV98e2T9HW46+4nxxp1
-	YB4/Arwa9AvGgDASZGOh1ThnLEnLiVeHH7+NriOiCJQjiGytVXcPlM9F4NjD4z9XvGAicTLVgoU
-	LRtD/eRQOoqBmbvDklig4OeI1mBEKAhnoUD7oO1AgXsNoMJbYTcm+16MGeEuxOzxpQXwVSpRuIN
-	fzOWJiYpUCTNJIzAG8Q2ZoL1fgVLuuhE7iczbuRj0YYT6MRbQgTS0LEAsDw=
-X-Google-Smtp-Source: AGHT+IHShYQtnCxYffZd53hg8+hhCGTXjO/OocFI6hhZSrjjpXUQTLeXH1KRlfClVKp1b+8IXy1o1A==
-X-Received: by 2002:a05:6000:144e:b0:3a4:f975:30f7 with SMTP id ffacd0b85a97d-3a5319b4e68mr4801932f8f.56.1749264837970;
-        Fri, 06 Jun 2025 19:53:57 -0700 (PDT)
+        bh=079G7lwbZSdbFJvvw8wIKqroIeNsEJYLRsyPP7yIsHs=;
+        b=DyvLro4yxteswQGKEcV6Y7mLIPaQ0j8IgsTT1fG40lqtIrN/DCW6oIdp1xp3XSCo6q
+         wEZpp5nZfODNoUTwThElq3Kg8uVy6jyohri9/jmYt4tdQP7HC7Lxl7d4UFlALR5sGWZs
+         MLmmHCvpJMnVMW0M7iqIjZgjFMVZGwpFjTt5/YYO1D9+LaYWdbhe+GUi0kB5LxwAiQLE
+         LEkeahl3VqQBcTR1gx5U8ZpUZ3gcn8uoKCfpej6IoF80k9W8Fun6Ct0Y15x8xIUeq0k0
+         SDzvq0MVylGEPlQdM3DRzsuwQLq0NqzxKHi4IC0tePAqA1iRszS6bmm+xK/x83+qr+xk
+         xHfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749264843; x=1749869643;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=079G7lwbZSdbFJvvw8wIKqroIeNsEJYLRsyPP7yIsHs=;
+        b=bKbka7ojJ/yigufu3jGIHr1aEAXHpr+5bboY7/mrCI8J7skKo7ltxTyJodiPhxr0mi
+         9gxmRYqkWqLstQI7UTjvmFPhJvy9HKT+OiqVdmLDmls15AtpRcRQHIWkIE5aUSOvMY2l
+         gG5ra8R61+BzV9sHrxJo5jDkdfRl45SF/Zp+YNEnNvNUYxbYiA1QJI4R+qf3wJhK2WUf
+         BmVZ9ztoOWvUBkvThzFrCGts031DCy3UGD9AUO29sx0LTBNH1opAVvLW81GQxaZzxgco
+         14mOz/5d1YyksIisvB3m5zTJjwHtaOW8kF5Q8lnXQ1lfPJz/QvBZQeBqjjQkaHeNZRHR
+         SsYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUx7DPyW2GqM/uWkT7lFg/psKyh23pZzazLywN4trrbUpUrYjxZhPsrYbnZjm6+9E5iAmgeD3OS0g==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwMAgCda3P/JC/UuJgXd6gJ1F1Mrpe0Dx/gBCIkllx9m4ygnpGp
+	tOGIIbfOpb68aUB+jmBaYo37iFX0EuQWW8kaEq7KyIG4pa3aqMCGitrI0MiwS0tOWUk=
+X-Gm-Gg: ASbGnctDeG8s4xqo1o8h4UfoiAdXww5EC9uiPqU21l4UVHyZUBHO67BzhC9NjkizdJI
+	NbxeaqIe5IPfDpcVgxHrcs4C+yYjLu2RO76R+LXZHyGx3VS76VI6NvYsKcSniV0SyQTrECzifaO
+	1JGmcBULk8iTUt+zjo5eMGG/cqVRm9xwDHDL+Ba4u/OT2mn/ZlBTYYjRhFBhXcn3pNC9dwjTGyR
+	XKUF/iamfs2AnFEWYLnuHDiIjhuWtyiCowxMJCNIA6beRszh+7jw3DI8nW66UQA/f062j9/LK3f
+	OPUKYWq7ZcFMBhsyG6dJc3Dfpwt2SQ+8tvRZTiJuK2qwEPgp/a0SX1iUGWk=
+X-Google-Smtp-Source: AGHT+IEFMaOycz8paZH8Dwc7eB8/xeQCEwaltIN87YJjZdoV9BEkV0ZK9L7/PCQxBolImcH3wDz9CQ==
+X-Received: by 2002:a05:600c:8b08:b0:440:9b1a:cd78 with SMTP id 5b1f17b1804b1-4520141635bmr68757385e9.10.1749264843376;
+        Fri, 06 Jun 2025 19:54:03 -0700 (PDT)
 Received: from [127.0.0.1] ([2804:5078:80f:b600:58f2:fc97:371f:2])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-530e6429475sm2005465e0c.45.2025.06.06.19.53.52
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-530e6429475sm2005465e0c.45.2025.06.06.19.53.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Jun 2025 19:53:57 -0700 (PDT)
+        Fri, 06 Jun 2025 19:54:02 -0700 (PDT)
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH 0/7] printk cleanup - part 2
-Date: Fri, 06 Jun 2025 23:53:42 -0300
-Message-Id: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+Date: Fri, 06 Jun 2025 23:53:43 -0300
+Subject: [PATCH 1/7] printk: Make console_{suspend,resume} handle
+ CON_SUSPENDED
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIALapQ2gC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDMwND3YKizLySbN3knNTEvNIC3YLEohIjXWOLNIsUU0MDCwNLSyWg1oK
- i1LTMCrCx0bG1tQDCWrwyZgAAAA==
-X-Change-ID: 20250601-printk-cleanup-part2-38f8d5108099
+Message-Id: <20250606-printk-cleanup-part2-v1-1-f427c743dda0@suse.com>
+References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+In-Reply-To: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
 To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
  John Ogness <john.ogness@linutronix.de>, 
  Sergey Senozhatsky <senozhatsky@chromium.org>, 
@@ -93,16 +93,16 @@ Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
  kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org, 
  Marcos Paulo de Souza <mpdesouza@suse.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1749264832; l=1540;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1749264832; l=1467;
  i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=DlBaewAA+ovTE7nzNZ0gfmioiWclhmgO3IlQrbrct5o=;
- b=uaTXBJLcvhgf5YKL4OJgFRYKVnwKvnF9HHj0A6a1DeNA/cKGB2zz4gtZcmbgnKD0ZnQ5jzr1u
- IL5jbxZWwPtDKhU0kF+79D2EX/S5HQyeZSKJDCeivyLlYkj/oRqQ8Gh
+ bh=8VuAOHFeqx5UMsNpvlh7ZAQit2VLidP6PcKmMQI0hl0=;
+ b=T3wYMARjrMBrnSS0B53XQkjL8a0KEFURCPDHgsLUslXubhtqe5kSsdH3AVNiC4itsQepzSKEL
+ bCiOgTyAtZ1BpRW6LdXAAFDz3h5mWwilxfoY0pptQZniRHvG6Kc9OCL
 X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
  pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250606_195400_274337_AAD7FABB 
-X-CRM114-Status: UNSURE (   7.93  )
+X-CRM114-CacheID: sfid-20250606_195405_026871_9D6FAF8B 
+X-CRM114-Status: UNSURE (   8.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -118,43 +118,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The first part can be found here[1]. The proposed changes do not
-change the functionality of printk, but were suggestions made by
-Petr Mladek. I already have more patches for a part 3 ,but I would like
-to see these ones merged first.
+Since commit 9e70a5e109a4 ("printk: Add per-console suspended state") the
+CON_SUSPENDED flag was introced, and this flag was being checked on
+console_is_usable function, which returns false if the console is suspended.
 
-I did the testing with VMs, checking suspend and resume cycles, and it worked
-as expected.
-
-Thanks for reviewing!
-
-[1]: https://lore.kernel.org/lkml/20250226-printk-renaming-v1-0-0b878577f2e6@suse.com/
+No functional changes.
 
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
-Marcos Paulo de Souza (7):
-      printk: Make console_{suspend,resume} handle CON_SUSPENDED
-      printk: Use consoles_suspended flag when suspending/resuming all consoles
-      drivers: tty: Check CON_SUSPENDED instead of CON_ENABLED
-      drivers: serial: kgdboc: Check CON_SUSPENDED instead of CON_ENABLED
-      arch: um: kmsg_dump: Don't check for CON_ENABLED
-      debug: kgd_io: Don't check for CON_ENABLED
-      printk: Don't check for CON_ENABLED on console_unblank
+ kernel/printk/printk.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- arch/um/kernel/kmsg_dump.c  |  2 +-
- drivers/tty/serial/kgdboc.c |  3 ++-
- drivers/tty/tty_io.c        |  2 +-
- kernel/debug/kdb/kdb_io.c   |  2 +-
- kernel/printk/internal.h    |  7 ++++++-
- kernel/printk/nbcon.c       |  8 ++++----
- kernel/printk/printk.c      | 32 +++++++++++++++-----------------
- 7 files changed, 30 insertions(+), 26 deletions(-)
----
-base-commit: e728cdbeed0667b6261fceeddc91ef1420463ac7
-change-id: 20250601-printk-cleanup-part2-38f8d5108099
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 1eea80d0648ed3583375cce3dfe60407894d659c..6d3cf488f4261a3dfd8809a5ab7164b218238c13 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3530,7 +3530,7 @@ void console_suspend(struct console *console)
+ {
+ 	__pr_flush(console, 1000, true);
+ 	console_list_lock();
+-	console_srcu_write_flags(console, console->flags & ~CON_ENABLED);
++	console_srcu_write_flags(console, console->flags | CON_SUSPENDED);
+ 	console_list_unlock();
+ 
+ 	/*
+@@ -3543,13 +3543,14 @@ void console_suspend(struct console *console)
+ }
+ EXPORT_SYMBOL(console_suspend);
+ 
++/* Unset CON_SUSPENDED flag so the console can start printing again. */
+ void console_resume(struct console *console)
+ {
+ 	struct console_flush_type ft;
+ 	bool is_nbcon;
+ 
+ 	console_list_lock();
+-	console_srcu_write_flags(console, console->flags | CON_ENABLED);
++	console_srcu_write_flags(console, console->flags & ~CON_SUSPENDED);
+ 	is_nbcon = console->flags & CON_NBCON;
+ 	console_list_unlock();
+ 
 
-Best regards,
 -- 
-Marcos Paulo de Souza <mpdesouza@suse.com>
+2.49.0
 
 
