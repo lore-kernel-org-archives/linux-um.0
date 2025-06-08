@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76B72C5B543
-	for <linux-um@archiver.kernel.org>; Sat,  7 Jun 2025 21:31:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE52C5AD49
+	for <linux-um@archiver.kernel.org>; Sun,  8 Jun 2025 18:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=SNzK7t/kTDrEu3ZAe2BVUdBYjisR+xcRUFsS6jLDuk0=; b=N87bzI8wIz9+g5dUC8eC4FoaHf
-	aRNCRwWj18ymtyVXOIwx5XG/ZZ54NZl3lAq7ZlJEfFltUyg97+TWx8WqhB8CL8scRUZjKJqIhM7vO
-	IcP9NSHeOiPuuOtIC+wY6Z46otErLYmlMJIZDdKi/8gkXjqcLQR3exD0mcTC8hoFAFZ9QRE3m6u0q
-	+x0wdkqfsRyvqbiKT8lp6ThZ0g5Q4ZlqRTKSJlknXmv8GBqW9CYWguI8/ySvwNQJY3oVUuQWt2t9b
-	tdugiB7m3UDN/5svyZacpeSoKxMwaBj5oM4MaHEasEAs7Q3+Zla9GHXa2NSaKNRa+Xd4YgTPVnhfD
-	F1sMEJng==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9bFddGz119OASHVVBIREKUQQhvueMQpXnAkmgLTGxHs=; b=hbSWGBd5O0zTpKQ7FP6tuyrl2D
+	xuHKCit9hizlgZZewzm16J84yN23k0ctQzpbjlE96UmZ9/+jd6ZDG7GQkMw3mA08pfCzRpOoaUmWa
+	hIgF5DEQouHTXarMftr1xl0ZSdBdQfz07VioSZvqK9x1iOXSwHJhszyM05CtfMTu+933KTLRlLTP6
+	Q0LcABhucB6WkBFgJkIiWdSGf52ZnilcNWm7nMjqWWzRvrO5Ct4yqGQQML7Goe8VH+MIvAgGCqJnv
+	dnY4uJAqFcYbnjtzhJFKWZ0nBIuZtaYI/JLIG7d/fybsP563fTw6I4MUF/nU4lui+W5Z3OKacGdDY
+	0YJk6+4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uO18K-000000028WF-1ROA;
-	Sat, 07 Jun 2025 21:31:20 +0000
-Received: from mout-p-101.mailbox.org ([2001:67c:2050:0:465::101])
+	id 1uOKut-00000002rYs-2iUK;
+	Sun, 08 Jun 2025 18:38:47 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uO17V-000000028Tx-2sen
+	id 1uOKuq-00000002rXF-3wV2
 	for linux-um@lists.infradead.org;
-	Sat, 07 Jun 2025 21:30:31 +0000
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4bFBDV2t9Vz9smv;
-	Sat,  7 Jun 2025 23:30:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=listout.xyz; s=MBO0001;
-	t=1749331818;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=SNzK7t/kTDrEu3ZAe2BVUdBYjisR+xcRUFsS6jLDuk0=;
-	b=1hrfMvYFFhtvWdGADpcQy0aN+Dw/WPd67jBGx6Orn3GyPbkKgoCKPwHYnovEs+b7+gzbqw
-	jcp4GrOGKYyLQ3Dz3+2Ut+CHbJLt5E05xcM78flowv5jh3tp3HZRhDoeeQqK4gMRT3oNxy
-	2iKL3BVQd3YUwhHhXF4HBQLW4qXS+g21ZhVlePf8eEyNvK0kiTUKVpiudpSsBCTcDZIfvh
-	afFvVX7ujKPgqKZagXc3it2TVqes7xZlid0RipJ6+otyYVLA64lZSU/VOWBwtQYutL5zta
-	arvBZ+sifzYWjxCTXmYde9GbpMBNzBX1/cAJks9Js3RO2tj9/m1NeNAXLyeDMw==
-From: Brahmajit Das <listout@listout.xyz>
-To: linux-hardening@vger.kernel.org
-Cc: kees@kernel.org,
-	justinstitt@google.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org
-Subject: [RFC PATCH] um: replace deprecated strncpy with strscpy
-Date: Sun,  8 Jun 2025 03:00:06 +0530
-Message-ID: <20250607213006.7858-1-listout@listout.xyz>
+	Sun, 08 Jun 2025 18:38:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=9bFddGz119OASHVVBIREKUQQhvueMQpXnAkmgLTGxHs=;
+	t=1749407922; x=1750617522; b=R6GRqaaCp5yBTNlqAPLWOikQ0gw8iPC3zVVXBMIfykN8Z+S
+	S2cB69qfZ9uZDy5aAble81gPveCNNF/xvpBHNQ/rdNG9mVrofluKsdWeUbEOEGFkI1bRc3ziNpBCe
+	oBei/rcpBw7oBamKUm8B7xfv/VdkhaUsKnbLFSwr1IY9cYthT6qGnEqYMYYNU9SyeXgEZLs8N+h3t
+	oJtj7IKfj7fuqDau0L1mH6hmGlFRlT88NL/q68c7hmJs1AJ+SqokzvbS5YeBHrpmFLVclllES7oPx
+	YJ+INQ+bRRtgAGzKHTsQWvBsjd9mb9viCFBOAp9aqR325furXQWELsIW+PDm8Bxg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uOKue-0000000CrnI-0xs9;
+	Sun, 08 Jun 2025 20:38:33 +0200
+Message-ID: <6b4428e5ec42c926fcc9b6d2fdb9202fc6e87fe8.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: fix execve stub execution on old host OSs
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Yonting Lin <linyongting@gmail.com>, development@efficientek.com
+Cc: linux-um@lists.infradead.org
+Date: Sun, 08 Jun 2025 20:38:30 +0200
+In-Reply-To: <20250607042248.87877-1-linyongting@gmail.com> (sfid-20250607_062301_404489_59405A7C)
+References: <20250112140736.1fcb25c3@crass-HP-ZBook-15-G2>
+	 <20250607042248.87877-1-linyongting@gmail.com>
+	 (sfid-20250607_062301_404489_59405A7C)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250607_143029_918464_6864CA6F 
-X-CRM114-Status: GOOD (  10.38  )
+X-CRM114-CacheID: sfid-20250608_113844_999773_53C2EF0D 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,45 +74,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Hi,
 
-This modification is mainly due to the concerns on
-https://github.com/KSPP/linux/issues/336, where it was mentioned that
-strncpy_from_user is confusingly named as it does not NUL-pad the
-destination, but it does NOT guarantee NUL-termination.
-With this approach/patch we can always ensure that the dst buffer is NUL
-terminated.
+On Sat, 2025-06-07 at 12:22 +0800, Yonting Lin wrote:
+> [SNIP]
+>=20
+> Sorry for my due enquiry, I don't want take a new thread with a patch.
+> It is just a short question.
+>=20
+> Currently(119b1e61a769aa98e68599f44721661a4d8c55f3), there are three piec=
+es
+> of code calling to syscall __NR_close_range:
+>=20
+> # grep __NR_close_range -r arch/um/* -n
+> arch/um/kernel/skas/stub_exe.c:73:		res =3D stub_syscall3(__NR_close_rang=
+e, 1, ~0U, 0);
+> arch/um/os-Linux/start_up.c:269:	if (stub_syscall3(__NR_close_range, 1, ~=
+0U, 0))
+> arch/um/os-Linux/skas/process.c:331:	syscall(__NR_close_range, 0, ~0U, CL=
+OSE_RANGE_CLOEXEC);
+>=20
+> But my host kernel is 5.4 and fails to compile these pieces of codes beca=
+use
+> there is no this syscall in my older kernel.
+>=20
+> I was wondering if you are working on this issue. If not, I will try to=
+=20
+> make a draft solution to review.
 
-My initial guess was to create a separate function, something like
-strscpy_from_user that would use strscpy_chunk_from_user which would
-inturn use strscpy instead of the strncpy (like in this patch). But I'm
-new quite unsure about adding new functions to kernel code. I'm open to
-other ideas and/or approach as well, since I'm quit sure there might be
-a better way to handle this.
+I was not yet aware of that problem. Most likely only the one in
+start_up.c is a problem for you. All the other ones probably pick up
+the correct definition from the Linux tree already.
 
-[1]: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+One can probably solve it by moving the code into another file. Or
+maybe by adding an entry for __NR_close_range into common-offests.h and
+using that.
 
-Signed-off-by: Brahmajit Das <listout@listout.xyz>
----
- arch/um/kernel/skas/uaccess.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 198269e384c4..c00ef385591c 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -170,7 +170,7 @@ static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
- 	char **to_ptr = arg, *to = *to_ptr;
- 	int n;
- 
--	strncpy(to, (void *) from, len);
-+	strscpy(to, (void *) from, len);
- 	n = strnlen(to, len);
- 	*to_ptr += n;
- 
--- 
-2.49.0
-
+Benjamin
 
