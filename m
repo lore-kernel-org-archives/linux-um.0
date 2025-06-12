@@ -4,102 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1490CC677C4
-	for <linux-um@archiver.kernel.org>; Wed, 11 Jun 2025 00:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B2AAC71141
+	for <linux-um@archiver.kernel.org>; Thu, 12 Jun 2025 13:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mtgyGRFsx3W1moknyTRh8eklG3kKIqbE5e8lYnyeAfo=; b=LmNt01gA+ztioUhqeu6/RqjYq2
-	EPlPTj6dxAlYFSuOlbyYvTJPmh0B78eFTkxIy/SPMKrTmSb6Jecpy4g/BBfVl7B5iXRWtpFz+3A2k
-	W2OInJcR2K71q4F2iNHzt9iyMf4PEjAKdxfJD0S94D1ii4OOA1CW5784J88Lh85Vcsr/tBsnBsH2C
-	IvfHnrhV1O5rh0XapqioflI5KUcTHrwLIanWfvkCy6pO8mk6ldye7a8gsleSR0aPISmNFN2IBeXB1
-	F6pcEpnZVWhlBlLxXIOVFdmSoS65/JpcTr37MjPetVpFZHyy9JM7RRqWPRnlKLqjSj1EAVxl6ZSNm
-	jHKAls2A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=VpdeBAczxDpMxHPi8ej3bXu0PaquJ+drDxjVDx3klZk=; b=I7+ITP4kiNSV1pQLimVOJCu+u9
+	6OfLyGSzhaSQ4qa5uSWr4nHAn+0rBnGLaF6jBsdck0352/PIVsdUypdqwcfpuevdpjmt+tsLQm81e
+	Sphk3kXqttdn0Iactrt7miaac/bWzdlSRnGjH5ymCQhcpgGz/9MAeAimhLcW0KIPzVaYre9QUdICo
+	XKR/E3TyBXSBzutJNh2v9x1ZvcdxinZ2K0MwvfR9AgRgVkLv5ntl/3FZaavel5PyDgcYbA37RL8QK
+	pQtWetcGVVWMis5dxt2F1gFE3b9f7CR2NqTNcXf99cMT2wP573ubE02jK5t22w7eXWL9xf8pXdXWu
+	WMZQ25iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uP9G4-00000008TWC-07JB;
-	Wed, 11 Jun 2025 00:24:00 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1uPhqO-0000000DO1V-17rH;
+	Thu, 12 Jun 2025 13:19:48 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uP8Et-00000008NUc-0Pqe
+	id 1uPgO2-0000000DBPa-34JV
 	for linux-um@lists.infradead.org;
-	Tue, 10 Jun 2025 23:18:44 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-2363e973db1so2788385ad.0
-        for <linux-um@lists.infradead.org>; Tue, 10 Jun 2025 16:18:42 -0700 (PDT)
+	Thu, 12 Jun 2025 11:46:28 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3a4fd1ba177so550386f8f.0
+        for <linux-um@lists.infradead.org>; Thu, 12 Jun 2025 04:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1749597518; x=1750202318; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mtgyGRFsx3W1moknyTRh8eklG3kKIqbE5e8lYnyeAfo=;
-        b=hYaB/V5+M7V8V+aA5mzcccv29/JUmA2BOEAhBQQ+GXT4Ef0n/0V/A9BdNJ0kEklkd6
-         hhcFJxh8g5lbQEXxwwJqZOextfWAVMKKy6q1XP7NH+Sym+u8qyC5RLfmA/000k4w856x
-         LWtoH1YnCfIvtVZOvwwl8S4BEsba4Cb0VqIe0=
+        d=suse.com; s=google; t=1749728785; x=1750333585; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VpdeBAczxDpMxHPi8ej3bXu0PaquJ+drDxjVDx3klZk=;
+        b=T30TVMZruy+AAxBNgZwPp1VVv85ngT7WJSQBrDrYuNqboWci24jXbIa9j9d8t/vNEP
+         40AqlFukSPD9sqnNpcWCv49opAI3Y7MyVITgW0lU92OmEv0r7r4Ao1qvk+5mTzfzaSiZ
+         tkupy58WzR4qiWcZM4AyAy7av0dCrHS+0l7Z34pQ0ldS2Pe5R1MRYW9/JjaUE299bdMW
+         62wKJaQFoQXiMTaK1s/UnBycEnSLz1F7Rm+tkAxWHf1m/C6rxx8UV+NLMVyr7tlx2bC4
+         gHHIzeIcDc/k2w1Oe4ESIDbn3KuyhG8Jn7YDO9YuFF9nkmmPcLVwvVrj656d2/kegOGd
+         axaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749597518; x=1750202318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mtgyGRFsx3W1moknyTRh8eklG3kKIqbE5e8lYnyeAfo=;
-        b=qV04ebVrLEdsr+LS+u2yKt6t24rt+V7vb1FdcL9uJO21HMYULY9OUbmo6snLn7eJI8
-         VRd2YU1MXxw//ugnWtM2uX/XcSSRCHiF0Rw5nNnfv0ohKHrez5UOopNrKU0jInGp5fLH
-         CaUOr6dEJFKcchZOFu+sGvMj6VpuJuBmy/pTjdmfpdZxXE3aTaS2kAnHTqwmHWX6z8Eo
-         A+H/K8PE3lkSp2Gb+YS/GTh0zopNrlsHCFnO6TCzOx+zelkLxm7LJynOQcwbChctUAx4
-         5R4eGYUkQ23DzCdYfiQo9UaweXu15Ih5HOs7Cl2To0dSGU+TgFbRzMiCbj1jIL22sMxq
-         9p1w==
-X-Forwarded-Encrypted: i=1; AJvYcCX+eAvzuawSdFfwEeJLx/8t7fcH70FjyLE9IKEGKm8DL8pN20XVG0ausbtCnBlyHFMQdUS4QHsFVg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxPJ+dM3C+U4MIQMpLhCavUWKiOTDB5FcLaaUg8tEn8xNbZjYtm
-	hleEotmVV84YSgK/ypi+DHZ61zpfVSRx+72Ff8maA8qfUcpsse40taOt8kcDVUSMqcuo22vyd2T
-	thhc=
-X-Gm-Gg: ASbGncsqt+pRtX0uzHIgWbf+KdaUoII9Ko/SXtt/VWJ80QAL+cCyPVe6HbGfTxFoX+f
-	SpWxWVX6mcrg62NPKHjhjbpLLFkGsMKvb0abUaTTdpu+73LmJCg41VSQObL8XuVyUYWiMeD2hVa
-	H+D6rG5pW8BycLzqFGSR2YxmY2pGX+BWXsUGRZsslTy6Pz/Kfiy43OQj4NqACGkc5URpS97i20e
-	wNlrdfB2pa20Nn3BspRC9KFD/CGL4NlkiOBNmtoD9K7wWYpaZuYD26omeQcV33sZt3UsL1bwf4V
-	lK243EXhQPnaC/lOKI7V6uQo+Nm8joRoeRG/P8qPwlygGwVGNA4FithcQikPoEN6wEvU/z2e7PO
-	psC7wTBaI0HoKbm1+HuM9jpWHB/8GFA==
-X-Google-Smtp-Source: AGHT+IE3v6LYFx1SoIADJFwcMBBGazlkR8HzeH38poEhgQ6gVhjY2BZg6qM9pBLSzRUUVTrSgvG+GQ==
-X-Received: by 2002:a17:903:288:b0:215:b1e3:c051 with SMTP id d9443c01a7336-236416d6006mr14425805ad.11.1749597518288;
-        Tue, 10 Jun 2025 16:18:38 -0700 (PDT)
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com. [209.85.215.173])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236030789c2sm76031265ad.29.2025.06.10.16.18.36
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Jun 2025 16:18:36 -0700 (PDT)
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b2fb8226e1cso340236a12.0
-        for <linux-um@lists.infradead.org>; Tue, 10 Jun 2025 16:18:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWoEjUP/BXz1NtKdieV/u/pR7yYC9Cx5yP8P4vjRSebiZuHNdK6U/aEAfmXC9jV+VhTE2jWGQVuxA==@lists.infradead.org
-X-Received: by 2002:a17:90b:3908:b0:311:ab20:1591 with SMTP id
- 98e67ed59e1d1-313af9711a2mr1450240a91.15.1749597515737; Tue, 10 Jun 2025
- 16:18:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
- <20250606-printk-cleanup-part2-v1-4-f427c743dda0@suse.com>
- <CAD=FV=XXQyZLYKoszj68ZGFDY=9-cmEUp406WeOeSBVZOHyUHw@mail.gmail.com> <f962e9bab3dc8bf5cae1c7e187a54fb96a543d51.camel@suse.com>
-In-Reply-To: <f962e9bab3dc8bf5cae1c7e187a54fb96a543d51.camel@suse.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Tue, 10 Jun 2025 16:18:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XFeokpbMUFjAc0OkwJ97vR8aB+4GbnFxRKymvpEY3gnA@mail.gmail.com>
-X-Gm-Features: AX0GCFt6n77pbmil8IDH9ETyvVBk9GLYcHe7RwT91u86Q2sJf5v-ZMY6TwpptAA
-Message-ID: <CAD=FV=XFeokpbMUFjAc0OkwJ97vR8aB+4GbnFxRKymvpEY3gnA@mail.gmail.com>
-Subject: Re: [PATCH 4/7] drivers: serial: kgdboc: Check CON_SUSPENDED instead
- of CON_ENABLED
+        d=1e100.net; s=20230601; t=1749728785; x=1750333585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VpdeBAczxDpMxHPi8ej3bXu0PaquJ+drDxjVDx3klZk=;
+        b=k2SGlUD1WhWiz3DCglL/H/5WHK9lOMARYVevBDAwHUZe4CCB8q5rtW+MX0hu4x9AqD
+         8CqxHc56e524PEfV/5A3yatrymuNVhxqmPfAru6rl+STBaVyb8OaMcBarRCsToG09uzj
+         pdh1NszZPiZmxwfc9r98z3biYg6y2+6z5UK7m5lOVlPOhiGA4NxJFWsL82cz8CiYf+my
+         KsHzkggeSttOdM0mmqo1SZgLvbhZ6QrPTosC4ai7p3LoAW5H/BzZ4bHwiyjAzCnpMo3A
+         eY4w97qDT+rWYUpXTiUd6aCsr0JlDpzY9Y8l062aGwhpu59iOBFZNTpEpgDyAbTmC+Ce
+         yrIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwZS9EqEJQwS/FiL4m+sWaHI1XVS1DCGnIzwWY1figPRQpiG+X7F6pT2WcdTdJss1zVKKeUb1b9w==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzsbzqualv72QWfh5SW0z1YKoS7UZdQehNBckpkn1e/Hfa/Itrd
+	rBS42KzrfKHMWdu2bt3hNBvwXm9ZZua/WvDIzhiCFJtW4Nfpy0cdEFhr9/uNLCNo2hw=
+X-Gm-Gg: ASbGnctFbiD49pjDnCl7pi7snHk1ilC18x5otnWMdToxESuBPL0BCBvMX7HSRT5L6lH
+	AKRMcImV/cOC8Y1bYsHS3Po+WxNKfYPvIBu9afko4d40UqBH/p/fB+svGNXnfTqm4EDBxSquk3L
+	/yMdRUqvDEJxqiADhiWb5VB321bI9EY7deRXVm9CbPZEbbgoBvkUO8tRSoFLur3+yjKeAgbJoxB
+	QvizmvjP5vJyNCQ3y2ozkWfojtRqas7NqJbA/QY2x9XlOsYg3pldO+bbpx2Ew/3h5as+alW18Il
+	W6jaN2jiP5PgeLgopJftcbArEZ3hqfU5hfqEYLqbbZYBabuQ/tM2uNTpcu5QOYZw
+X-Google-Smtp-Source: AGHT+IF/248Rvx3CVC08UaAQ4P3dTeJa+QHLA+I/CORpcgGm1jvrTGpa+IJI7ILEeBXIza4gfGGQkg==
+X-Received: by 2002:a05:6000:288e:b0:3a5:271e:c684 with SMTP id ffacd0b85a97d-3a560814897mr2780693f8f.24.1749728784595;
+        Thu, 12 Jun 2025 04:46:24 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-313c19dcd05sm1406413a91.14.2025.06.12.04.46.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 04:46:23 -0700 (PDT)
+Date: Thu, 12 Jun 2025 13:46:06 +0200
+From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <danielt@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
+Subject: Re: [PATCH 1/7] printk: Make console_{suspend,resume} handle
+ CON_SUSPENDED
+Message-ID: <aEq9_kOoLSQwuYBq@pathway.suse.cz>
+References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+ <20250606-printk-cleanup-part2-v1-1-f427c743dda0@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250606-printk-cleanup-part2-v1-1-f427c743dda0@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250610_161843_168296_3760CA2D 
-X-CRM114-Status: GOOD (  41.93  )
+X-CRM114-CacheID: sfid-20250612_044626_770675_87BC0926 
+X-CRM114-Status: GOOD (  13.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,106 +109,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Fri 2025-06-06 23:53:43, Marcos Paulo de Souza wrote:
+> Since commit 9e70a5e109a4 ("printk: Add per-console suspended state") the
+> CON_SUSPENDED flag was introced, and this flag was being checked on
+> console_is_usable function, which returns false if the console is suspended.
+> 
+> No functional changes.
 
-On Tue, Jun 10, 2025 at 1:03=E2=80=AFPM Marcos Paulo de Souza
-<mpdesouza@suse.com> wrote:
->
-> On Mon, 2025-06-09 at 13:13 -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Fri, Jun 6, 2025 at 7:54=E2=80=AFPM Marcos Paulo de Souza
-> > <mpdesouza@suse.com> wrote:
-> > >
-> > > All consoles found on for_each_console are registered, meaning that
-> > > all of
-> > > them are CON_ENABLED. The code tries to find an active console, so
-> > > check if the
-> > > console is not suspended instead.
-> > >
-> > > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> > > ---
-> > >  drivers/tty/serial/kgdboc.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/tty/serial/kgdboc.c
-> > > b/drivers/tty/serial/kgdboc.c
-> > > index
-> > > 85f6c5a76e0fff556f86f0d45ebc5aadf5b191e8..af6d2208b8ddb82d62f33292b
-> > > 006b2923583a0d2 100644
-> > > --- a/drivers/tty/serial/kgdboc.c
-> > > +++ b/drivers/tty/serial/kgdboc.c
-> > > @@ -577,7 +577,8 @@ static int __init kgdboc_earlycon_init(char
-> > > *opt)
-> > >         console_list_lock();
-> > >         for_each_console(con) {
-> > >                 if (con->write && con->read &&
-> > > -                   (con->flags & (CON_BOOT | CON_ENABLED)) &&
-> > > +                   (con->flags & CON_BOOT) &&
-> > > +                   ((con->flags & CON_SUSPENDED) =3D=3D 0) &&
-> >
-> > I haven't tried running the code, so I could easily be mistaken,
-> > but...
-> >
-> > ...the above doesn't seem like the correct conversion. The old
-> > expression was:
-> >
-> > (con->flags & (CON_BOOT | CON_ENABLED))
-> >
-> > That would evaluate to non-zero (true) if the console was _either_
-> > "boot" or "enabled".
-> >
-> > The new expression is is:
-> >
-> > (con->flags & CON_BOOT) && ((con->flags & CON_SUSPENDED) =3D=3D 0)
-> >
-> > That's only true if the console is _both_ "boot" and "not suspended".
->
-> My idea here was that the users of for_each_console would find the
-> first available console, and by available I would expect them to be
-> usable. In this case, is there any value for kgdboc to use a console
-> that is suspended? Would it work in this case?
->
-> I never really used kgdboc, but only checking if the console was
-> enabled (which it's always the case here) was something that needed to
-> be fixed.
->
-> Maybe I'm missing something here as well, so please let me know if I
-> should remove the new check.
+I double checked potential functional changes. In particular, I
+checked where the CON_ENABLED and CON_SUSPENDED flags were used.
 
-So it's been 5 years since I wrote the code, but reading that I was
-checking for:
+Both flags seems to have the same effect in most situations,
+for example, in console_is_usable() or console_unblank().
 
-  (con->flags & (CON_BOOT | CON_ENABLED))
+But there seems to be two exceptions: kdb_msg_write() and
+show_cons_active(). These two functions check only
+the CON_ENABLED flag. And they think that the console is
+usable when the flag is set.
 
-Makes me believe that this was the case when I wrote the code:
-1. Early boot consoles (earlycon) were not marked as CON_ENABLED but
-were instead marked as CON_BOOT.
-2. Once consoles became non-early they were moved to CON_ENABLED.
+The change in this patch would change the behavior of the two
+functions during suspend. It is later fixed by the 3rd and 4th
+patch. But it might cause regressions during bisections.
 
-...and the code was basically looking for any consoles with a matching
-name that were either boot consoles or normal/enabled consoles.
+It is probably not a big deal because the system is not much
+usable during the suspend anyway. But still, I would feel more
+comfortable if we prevented the "temporary" regression.
 
-Is that a plausible theory? It's also possible that I just was
-confused when I code things up and that I really meant to write:
+I see two possibilities:
 
-((con->flags & (CON_BOOT | CON_ENABLED)) =3D=3D (CON_BOOT | CON_ENABLED))
+   1. Merge the 3rd and 4th patch into this one. It would change
+      the semantic in a single patch.
 
-...AKA that I wanted consoles that were BOOT _and_ ENABLED.
+   2. First update kdb_msg_write() and show_cons_active()
+      to check both CON_ENABLE and CON_SUSPENDED flags.
 
-In any case, I booted up the current mainline and I put a printout here. I =
-saw:
+The 1st solution probably makes more sense because we are going
+to remove the CON_ENABLE flag in the end. And even the merged
+patch is small enough.
 
-[    0.000000] kgdboc: DOUG: console qcom_geni has flags 0x0000000f
-
-So that means that both BOOT and ENABLED were set. That makes me feel
-like it's plausible that I was confused and really meant BOOT _and_
-ENABLED. I didn't spend time trying to figure out how to build/boot an
-old kernel to check, though.
-
-In any case, given my test then I think your change should be fine.
-Given that it does change the boolean logic, it seems like that
-deserves a mention in the commit message.
-
--Doug
+Best Regards,
+Petr
 
