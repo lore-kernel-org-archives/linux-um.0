@@ -4,179 +4,182 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF44C7115D
-	for <linux-um@archiver.kernel.org>; Mon, 16 Jun 2025 21:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 678A9C7115F
+	for <linux-um@archiver.kernel.org>; Mon, 16 Jun 2025 21:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=XEG2SkBKEOX1HBmAk4ZLq2DCpXTIWzGk0B7pQ7f1axQ=; b=1RAeBEshcydvewnJF6lADxUC4N
-	WvaY7/mNISbOjoPCWXsPN8srCSUCYJ9V7dG3DQlUVFmPEeRPEmOT5ZoU8PT89RvGXDOMdnREBry1E
-	4Zd7Fdltyi0PzOeIRy8dLNZNjYCqRYcj1lAMvl3AMYz36WpGpYBakQ5o4Yx46ptS9Ly+c8/+fb6Ma
-	blLGWXASYZbzDX0RqWNDoqBp7R3Pig7sixdkHo4hhNvS+GQgsnz0jCUqCoXACtOeTjd0bHDMROGXR
-	ga7UzGxysA1c5ibhw6Xu0kyWqlOMLP/tZv/lJlhF9QHjQprhIzy3i555vPppBq808DRAl6IOLFFQ2
-	o4i+Yoaw==;
+	Content-Transfer-Encoding:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LW2VP8yfofGIRzehsz2ZWLW9EIqsqvISQKJ61JouG/I=; b=3VyFe+WJxxyzbDY6lbucnxHF0U
+	QTb3kCGcP/9W4nVM8gFje4CcGhkKsSuFft82cbrrWihEfBWKIHMxlv1iTtYCg/s/E9z0rJDpgCrb8
+	TqDvWNC7DXI8gPDbp0g9Bvp6M7AI2EXpSVM6pP8pdq40UU7EcuajZgCJmCIOyRuUbDiX6KFoKma6/
+	uMaajzQp3HTYuJ9YUXMYJPdh7C77qLy36i+u/i7/B/Aii7GBodu7y9DxsjY4r2SZ5yfc5Ty9cZZ4T
+	zZDpKuraS2rMf9ebvG3I2iNb01zxRjHFqj9tgBllm/S01LrkYMbJLgBDjbsm35R7wFOo1IQhq8cqC
+	TiSqrRcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRHCd-00000005Xuc-0pXw;
-	Mon, 16 Jun 2025 21:17:15 +0000
+	id 1uRHCe-00000005XvF-0e70;
+	Mon, 16 Jun 2025 21:17:16 +0000
 Received: from mx0b-00069f02.pphosted.com ([205.220.177.32])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRFb2-00000005M7P-3Dyj;
-	Mon, 16 Jun 2025 19:34:22 +0000
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55GHuTaV030535;
-	Mon, 16 Jun 2025 19:33:48 GMT
+	id 1uRFbA-00000005MDn-0xsZ;
+	Mon, 16 Jun 2025 19:34:30 +0000
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55GHuSI8017860;
+	Mon, 16 Jun 2025 19:34:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=corp-2025-04-25; bh=XEG2SkBKEOX1HBmA
-	k4ZLq2DCpXTIWzGk0B7pQ7f1axQ=; b=DGmsKDvZ/iMVxMZwzBXARl7IiD6xsmHx
-	esNps7pJOXSsuAKNOYGDali04IoIU7CUnlfaCv2J724oaKu0tuY9Ey0OWasE+fr+
-	o1Fb1GTC2NKWOsBBXBAzr8k5yuHYF58te6uRGIj0fiq2E+pzStm3sxiWKvNNtY5N
-	22Uvwp3dhm0WANRJ/xcOzMALUTMJJ39NXBDrz4ygsSffqqTAFIIl0egzdVszcPW2
-	bo+Uu6fPccSAUgZrJJM1WneCbN6lWnVz7G2XamyNBtJ/pre/d8ft73+cYH+3Xnut
-	a53CMGeccCb4oTlI6rL0v2tCNdPRZ6JHWDglhe8ZcWEWW6zKB28vpA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 479q8r2s5g-1
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=LW2VP8yfofGIRzehsz2ZWLW9EIqsqvISQKJ61JouG/I=; b=
+	eJiIgcxPFKx5G8KWyEh8Cmr886kDtfCuT32DyykyBQGsuNzdmUURHN/xsTtzYExY
+	3njJxgURjdtz/ifK0juFyUA93L+vfVKkxUIgzvFDyVGeoiZOSyAoBflFdJxCWOoF
+	oLIXXhVwVm0lfF8TbShOIMU5kxUZUrru+A7k+09jmMxRFqb2M7+WphXDWlWsSfZm
+	MEI6IiXz2bHT7vq3dfVeRo5GtuFBScToFn9xt3+O3gWDcFWUOrlAo3AZxmc8l8q/
+	T2lgDbk1Hg6Fk3+nXC/f0btCC5HPwvz0Fbrvbt1UDnBpjSV1tvIzX8Sp8lig13F8
+	Y6X8rHqkCZ170vE2cvBVnQ==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 479hvn32kq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Jun 2025 19:33:48 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55GJAKnT001648;
-	Mon, 16 Jun 2025 19:33:47 GMT
-Received: from bn8pr05cu002.outbound.protection.outlook.com (mail-eastus2azon11011054.outbound.protection.outlook.com [52.101.57.54])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 478yh8bqb0-1
+	Mon, 16 Jun 2025 19:34:00 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55GJN1IZ036378;
+	Mon, 16 Jun 2025 19:33:59 GMT
+Received: from bn8pr05cu002.outbound.protection.outlook.com (mail-eastus2azon11011029.outbound.protection.outlook.com [52.101.57.29])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 478yheuf4t-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Jun 2025 19:33:47 +0000
+	Mon, 16 Jun 2025 19:33:59 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ma0VjrbYLfajL6YRtaNQZZrwyCSi9QATL906f58ErzpPo9t22QGZJrV9UThb+dzygD4NquVF0duSOk13wsb1L2cd7E343xU9sLsoEryd07Zz9xd7Uq/OLLa0vZW0Wf9YD3ynZaS06MVYNvMqYG/6P2WN6JjTI3RJU2tAG0Dl6x0bXRhOH1kXd5Q7PcQuqMXycVoZGyy+f6h/vcCDUwRy9jZU5k26iv2Gjju7BRKCfOqPUlEtMzg7Bh2aqCXkTovcbsaU4yHcnQRCj5MV9RkwhrMpGR4JCI9TzyLaQA6+knar6YkoW5xLjfnYXjDBbPIPNynEma18F8/ovmfMHj9T1Q==
+ b=bvkuzszHzfNN0+mBpgY0AxpUphOZuv41O/lGxnXNkNHEoYW7qo5YVlnAJmPRrC31tgkbTfte5kGB0BtAcbdKHxirZANBgKsUYgyrQ6CEfyBFzzQJ2zwYMFNBSISzgmosZnb9zBqML1A800GC/AiMTjnua59iyxR28wLj5eTowG9yIzqqgxN68+KYM6ZUrlCHD9KCYNfhAXQ+aD+xkW+uQNM1iXn4FN3IaETtmL0GZeVnz52aYl1sM1+XT8aL8eJIlrdihxMInd/clA8ihItfi0OR/6qMaMDyDSQYgGSucRkvJbxPLs2oVTL7zOr0tqXr4x3cbD0cmBR4/OfKW4npcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XEG2SkBKEOX1HBmAk4ZLq2DCpXTIWzGk0B7pQ7f1axQ=;
- b=XKHr4MV2mHF5K0HisH3b1zO5gcCPal4BWbFkGNbZAGLKbbDzXUr0O678oIZBHAaCIfeOp2xei6h/VYWvPkW1itUhL6xXuJ4rXBNWGBXFo42qMdx6Q4yKELLiQEsKuQl+NPKs0Hd3g3YCMd7AjMppRbsFVBWLlYbeqzg/tmAOIZO4RZYyJHJtrPWHy02HPQ9tIbr2LKA5+bEgHlJRWqnSr+ib+JvYNcSSlomGGChnSW9SiqMdD/spNeP1Y4PPnMTALfzkXP6l/GcrWv4HRwf0OO/Vk4Yye5plMIRXkP0zlJQZPjE4Chc0NZ/8FJF69maBuZZ6rxIhGFu2YAtachx+YQ==
+ bh=LW2VP8yfofGIRzehsz2ZWLW9EIqsqvISQKJ61JouG/I=;
+ b=UCjqbnY+iLK+Tznm3c3eNsxaanKKbLvhKYY7LRvPo4+yqdk/RsLm+gD7A7yCJsKnAmgduFbVgMpBYFquEdgq25GK/gvVFDOL7w6UXWagwMmK/EqTHtD0iRnh/c+sG22ny4SaXJT2Tl9I5MYfDBsAxg2gYvJru7mwITdMyhZMdOUM2rhPXPrZBovZluh2MS0KjkEpsp9yK/0QJckHx/Tcgq0fhBvTAAt5PdNvB1xP2fk0Fa49ViHiHzdsNYaWcdw1KF9SZbhKfv6KuOW6ik2oFWLBkrUxFY1Im4bGX0DZ4vdbc49w/DTKjRJXFKd4/KxA4kHjIbLP+VWTwt2+bMHkLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XEG2SkBKEOX1HBmAk4ZLq2DCpXTIWzGk0B7pQ7f1axQ=;
- b=ddLFupNW1R2FHghft0yO2iAS+pXvwoUU/A5nRu0pAWa5Ro/kz56oN5QCnfWYy9MJRcnL9/Mx714FdeNFcbg+kK6mmGIUCB09gmylzte93/Y7TEyBJPgaduYy/bnVx1BDo+oIaCGf0rb4qbNVkBdaaugewL8l4SJuHM5zgF7Xgxg=
+ bh=LW2VP8yfofGIRzehsz2ZWLW9EIqsqvISQKJ61JouG/I=;
+ b=WLgkcKQFX76ox4GJIfCPdGg+2dySOsb/JP54UhLhZygEX/E2zPagrdQJL5npQxjALzjl2Hi4L+aWX/szaG2U//vk1gnw+qpzTu71Vl9OOVI8ymK0Jxgnh7+++4kHhvEBVxg6Ff0CB1h1ITgu6KwDP++R0xwe6UlzV1FslBetWkM=
 Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
- by PH0PR10MB5870.namprd10.prod.outlook.com (2603:10b6:510:143::7) with
+ by PH0PR10MB5563.namprd10.prod.outlook.com (2603:10b6:510:f2::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.19; Mon, 16 Jun
- 2025 19:33:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.29; Mon, 16 Jun
+ 2025 19:33:53 +0000
 Received: from DM4PR10MB8218.namprd10.prod.outlook.com
  ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
  ([fe80::2650:55cf:2816:5f2%6]) with mapi id 15.20.8835.026; Mon, 16 Jun 2025
- 19:33:40 +0000
+ 19:33:53 +0000
 From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: "Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Viacheslav Dubeyko <slava@dubeyko.com>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, Zhihao Cheng <chengzhihao1@huawei.com>, Hans de Goede <hdegoede@redhat.com>, Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, linux-aio@kvack.org, linux-unionfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: [PATCH 00/10] convert the majority of file systems to mmap_prepare
-Date: Mon, 16 Jun 2025 20:33:19 +0100
-Message-ID: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+Subject: [PATCH 04/10] fs/dax: make it possible to check dev dax support without a VMA
+Date: Mon, 16 Jun 2025 20:33:23 +0100
+Message-ID: <b09de1e8544384074165d92d048e80058d971286.1750099179.git.lorenzo.stoakes@oracle.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
+References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: DO2P289CA0012.QATP289.PROD.OUTLOOK.COM
- (2603:1096:790:6::16) To DM4PR10MB8218.namprd10.prod.outlook.com
+X-ClientProxiedBy: AS9PR05CA0263.eurprd05.prod.outlook.com
+ (2603:10a6:20b:493::35) To DM4PR10MB8218.namprd10.prod.outlook.com
  (2603:10b6:8:1cc::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|PH0PR10MB5870:EE_
-X-MS-Office365-Filtering-Correlation-Id: 05c93f15-6041-4a47-0306-08ddad0cb293
+X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|PH0PR10MB5563:EE_
+X-MS-Office365-Filtering-Correlation-Id: 64e62733-a901-425e-77c3-08ddad0cba86
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?g8p7urz/ZBpTpt6gbvYpDaVO2vIEsL6X/YDdz57ufpivaIoKF/TuXID8gPC/?=
- =?us-ascii?Q?n+qd7pr3NXLGY5G3uUz6VQzBATHzN7BhOwrRJMF2T2vka1uku83/2clxxrVy?=
- =?us-ascii?Q?bROovRnbk7XSRl22Fyv+Kr+L4vrWZvxiLd/9/vaN3Nh073GBmQ4/QyaVsFa9?=
- =?us-ascii?Q?MruW0vfdLIQT+8FyHgrTk0l4uu95LMCzmrlqU3+7ILY9VFVRLPBK8kXkAt52?=
- =?us-ascii?Q?Viz+cK9SRriXWvIJPrBMShfr13FwVRLt/DKoz5eyeAL4PGh6YkbaxC2u2aQV?=
- =?us-ascii?Q?U7qfEL7YE3p4pRXIXTywKYiF9WnFTDR0RnA/EayUH1heU8YI5uYZMQfz3NzB?=
- =?us-ascii?Q?GQ/7UZNnxqUAxOePJ7JsUcCGChSruKR7NnU5dOtz9rceYpPgDvyl3HM6yor5?=
- =?us-ascii?Q?RNdkqmRQYwPBcc5j+JksBGtFgBTVU5vzFuPZGr1GiMx4kaQm+/znH3MVfAgr?=
- =?us-ascii?Q?zUJ31mo3Y6xvW+YzS/XkvECTQIZDFC/g5FntZ6AUIkkhcJDYmtWWp/3UcYXE?=
- =?us-ascii?Q?FPK2JdGRZP0/ACd+LSxYp0wvt2ppsf/awvfrQJ5FI4TCxni5WwS6TvyfKOGC?=
- =?us-ascii?Q?LCVh2LUWuG//4vQ1z9qPZwr7a7Xpp3PnSDydBG29feYZHiM7W9ffTUetdzVM?=
- =?us-ascii?Q?WijDW92Z1I2vpjR4OO86dKONnOLR35U9vVH4DLNuuCL2tjBl+YAJ3siRswXO?=
- =?us-ascii?Q?NMlh/FMBbD44luUFyd/ONTBSVadltfZHu8yZTudfhTyfZQrdSFnISU68AGog?=
- =?us-ascii?Q?Ty9/tZ1xFEpbgUFgVgPmByHE/UU7MK7a4fCJ1mujQBMLMk+kBsS0kOl08JNy?=
- =?us-ascii?Q?g611PZZeqG7gpTfdvluK+CBWSlleek10f+RYYuiFUOq3aAGqyyZkue0vtcfU?=
- =?us-ascii?Q?M259pBsc+hZT19RRR+f4HNndS0bpQnm+AOTAXs2xyhwLpr8LqQ6fUzDyJi0Z?=
- =?us-ascii?Q?oG86FWQrvIzTasYWC4hJ8Ptl3vOmwTkjkCkM6oSIeZriiWb+uygsJEFGRUH6?=
- =?us-ascii?Q?xC9WuhbP8Q9FhCFW6Z+1MTrYx1Qo4VXA8W+PJmVkdvIGUfKEabvC79l1JVlz?=
- =?us-ascii?Q?5g3xe4rgJSlTIr5wpuxszosCW8q10c0FLq5LZulv8YKnAQorCe9FJxFaglHA?=
- =?us-ascii?Q?Jy3XmF31zEfiD9unrv+1K3V2JqU8fE1dbPbUkXLsNcFWbY6nRCcDbGmNvYxE?=
- =?us-ascii?Q?lRQW4oP5G7bUCG736yRrkTA1Zez0WJ8aQnNBoCvQqD5jrcuxM0H1G94PnUXd?=
- =?us-ascii?Q?z8CYNXEwGcqgX3J+cKm6y0HuZQPjDWMvtiNCWtGqAFCdwdZY5d2eqCDgtJLg?=
- =?us-ascii?Q?i0Nb5xD2CCSQ38RyxFpOHrLzq0PGe1zAGb3XM9igcnrTxEye0UFw+zzEZH7a?=
- =?us-ascii?Q?JYV4ugmuV7qZaDhqh8K55qWFaJi9Lg3s6oXP0CMTWMVxUKpPuCshrM3D7yXZ?=
- =?us-ascii?Q?emq2+O/FSoI=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Yql6hMCo4wYJ8IKUwX4yABlrxBbtuGvQuHVvF5zHUXSFId6GcspKuYP4Vv2O?=
+ =?us-ascii?Q?9u7m2rEdEEWMqaAffqUzPcPvYYfWmY1KnOjvjWhACOhDRthkIL6KU3Dvul3m?=
+ =?us-ascii?Q?wTKxFhvZKYEMAiFK0uHVGCYOu/ZA4x882uK147DSa+4bwzGupssZYkThsu9t?=
+ =?us-ascii?Q?4Kn2Ikpg/ZQcZgoez1rahGYTc33TiUa3vr3ljaEgbV84uc6e9/Nt0Z4QmN5l?=
+ =?us-ascii?Q?u09v+ND5N3gUz1hHXJYFo0RqJRRzpfUE/Permrun726c96hRL7dopC1jXF2n?=
+ =?us-ascii?Q?qeliiYbV/Y2tyYierV3bqSKd6Ys2Tq8b0B1bYXo2QjK3IqSVjI6LWc4hLqF/?=
+ =?us-ascii?Q?R+1miLC6FPog4cypVlre+hf83x42ZoTZS2d/HRwfbVBjf++wAT8r+CSiRv+s?=
+ =?us-ascii?Q?jJp0Mtwb5KDQdgZy3a9Z1lLFt9s+uH0SUazUeFxAxV0PveiZ8eo8obKG/5Fm?=
+ =?us-ascii?Q?xG7vudOklNsOgwtJoo58EQzALMVk99zOQ+Sw4yu5lXfIrtdR78ulZhIpiH+m?=
+ =?us-ascii?Q?nwjPRPHkZfjzYuSaQodm/M5IQ10UUi202Zm7To7j/Q9Pc4yIJmmVElFMbU7F?=
+ =?us-ascii?Q?tj4LjK0u/cvTAPZhRhtROCAyku/ba7LYXaYym3i1WifE7vAzDfBlmGTAxQYJ?=
+ =?us-ascii?Q?vo7uZdYqvGqSe/uMjohxs+cAi4D3JlOaD4dorG+qt8tbp4am7EOri4h3RdBY?=
+ =?us-ascii?Q?LT8JEVrZzYqQKsJos5Cp1lhM2gb1im/lHU9O0/dXSBEaylivsR38dd/wEq9i?=
+ =?us-ascii?Q?yRUMTCEVyYkAzoFiNNtokj1UOKeVKVOiXHXmuDCGVeNSnaW1JpSXZBTkxOKi?=
+ =?us-ascii?Q?8LBUbY2PhMcjPaps9LkvsgBF4uB2KlTdfJEYBoehoVa+Fikz60eJBb6WPXBN?=
+ =?us-ascii?Q?2FyDx4Uf6rU3/nhjp7ujSdXOLePjBfKsKNPmNnKFQonzAqFM/ck+sIdvX9nm?=
+ =?us-ascii?Q?PeZruZuGw2ElUcBTFqKBT5TMhbgdp3Tx6nhiKx9Zpo0jC/6elZO1y/Z7FRU1?=
+ =?us-ascii?Q?FuHO5OdS+ZDpufrxYIJvyaFNRI43am5a64Im3PLTN8EYMrfcg+QPYWdlcCQY?=
+ =?us-ascii?Q?aVVnEfeoYzu4asK37gSKp0T6qKO4zyWCc1fTsLxE9yWT8126fVZvCBKGuXtx?=
+ =?us-ascii?Q?1d+PQRjYysmdtD7lY1Kmv8ixf3lJrtYJuKUNWhCnTLN9NecRmavmBbtv4PNP?=
+ =?us-ascii?Q?EiJ7c3pSCp1+c+m51PhcgEOPYARlT/XhJFaUVl4C/R952KKP/qhI9HRM/Lli?=
+ =?us-ascii?Q?S/WdYtNF4n1ZJi6xJE77VN57el1ZfCOTmHtJeceHgAqw+DE242zSgDiuB4Zs?=
+ =?us-ascii?Q?zBj95Bm8KtXsftb4BRkBI2Ao24Hiq5D8vhuvQU9kUaPhZWwnDQnSE1V6aIGT?=
+ =?us-ascii?Q?B4FpEqBJ/yVclwfBDn8l2ON/IoJ4dE08JN/dy8PfNbVDZ4XdbOumkWL2hEtR?=
+ =?us-ascii?Q?yPrUTba3X5Y=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XmV+nIFap7kAWlW2CsduKHT7tMmAgGqqxesBMLPREU4fZcQPC9IEvtS9PctR?=
- =?us-ascii?Q?6L0Hh25XihZ+qcX3nAFejpIrda34C5XkoVW0sdYfK4GUN4oQiIgVVoYZL6AA?=
- =?us-ascii?Q?JHBfEcNacHurl4mdrAyXbrGi0U7PRW5FZNhniQjmCLvv/p7FJkc3QXqAZJyQ?=
- =?us-ascii?Q?UrWh7AQcgayVs+1UDMGAw5A7SYxc8uf4Vu0gRlZ5tB5BZJQOAINj14TUri12?=
- =?us-ascii?Q?rZr0JplF9WzCtKrT7tRrLiHwFRBnLLYpflJsnVyyd5o3WMbWaIZdJa+KcTmb?=
- =?us-ascii?Q?HPSS4K4BaK18+44SfWNJ7UEVczj2z+Ayvfs+8ZiO83Zap0W4lEYmFOmIZLNb?=
- =?us-ascii?Q?LUt/FINe7wMckBMeel/4NzvN5P++2cIZ4DKfc/8qDshbDLnL4o+dDF2UM6gg?=
- =?us-ascii?Q?qVWu0+4DFapRd2m7Fa1O8qJQAtEk5sXAvfgG5pSBWUkeQUe6sU/Ntr7s5J+1?=
- =?us-ascii?Q?tB1ch8IOu8Y25c/gBjzhxTEMeWxj2iXz1W1PVCNsIPhK1woUVykGf67jA6yX?=
- =?us-ascii?Q?GYTsp9DRVHsausXBc/R1a4l1ZbKlw2YtfbgqBZqc2y7WbWNpdUIPQ80kNTc9?=
- =?us-ascii?Q?qFY9ubbGLYZNOKKHLAsW0RPOaYz3qpQ73hiBIX4H3pHrE3AwMM1oT1epvPUh?=
- =?us-ascii?Q?+gkg/4Zyq16SblhZEhHX9Mn9576o7Th29g6i/DiNVR8pris990n/BFcYApZS?=
- =?us-ascii?Q?4j6O1MdiX8W1o+J7fTti1PlllODzOlMO1G7WqozkeGUsNJOgAyjtkJmForQn?=
- =?us-ascii?Q?Wnl0rwdNsBOjS8dElbADnROF8eHMVdfUraaAt70dbwvzNki+mqYFJe/GgAz6?=
- =?us-ascii?Q?UjQ6IAAk8l2HVvDlhgJbniUYrd49Rv1DlL+Si/hqzySTG9msJh/76la9oCkI?=
- =?us-ascii?Q?47u2rn9WkriwS5qoIoHhwUO2gQn108EysYyhRXo7Jn6ELTzmEs6cHxMKBkW5?=
- =?us-ascii?Q?qCmDMs1Iyps4Zm3yPnqBpRrxkzjdKJYu9ZKK+lwuucL/OmvYFeHCGgtlfMdZ?=
- =?us-ascii?Q?C3im8yWOQZKnVf08Oqis5CWpcB9JPMie8iusJWD+km8v+tf6sgBFH2j9UpNr?=
- =?us-ascii?Q?GtA6FAclwSJrKDksQo/5s+iNFWnD3TNfxERlc/e+lRYcGo12JsV+TJqDVQjr?=
- =?us-ascii?Q?KLlHG0knbValjWNJ6TValH+1XyTTh2vFFsf7vz9pUoJwj8kubrtvTo74za0K?=
- =?us-ascii?Q?bwfAZ+qDLV7SpNRVgt6vF62Se5sONCVWjPgpw8H1K2bb09sGnlk0c9Of6VF+?=
- =?us-ascii?Q?HvQc6DdxYJ+OKvW56tdbbEts2bn9SuGEoYNJvh7ERe7O3+bzm7AJdJXaHtIi?=
- =?us-ascii?Q?xImyHIpD90JtaYiJyDtKuz5AgUnIHKLQ54bbGSJV6MX0pvL2LT7YaCVLFmSH?=
- =?us-ascii?Q?ndqLPVnCPALCpVKfJkmuQGe6ZmeQKxwdj+7RGRMYcB7gWjJT9qqzs4Twc2YW?=
- =?us-ascii?Q?Nl76bvgUSi+CxAroqmtmIV5B87/IX8sk/993EBUoaUnr0N1gGU0XoNrJ4h6l?=
- =?us-ascii?Q?PMVRjCrCz2dXc0HHEyQ3iCBz3Z5OtVotQxZmZOjqsJBkdF951zeZwuihT2L4?=
- =?us-ascii?Q?vOkqOXSKJyhI4c4+FzJ+aXzx0SUYHPVUj69W9+kTmsqkGzORxW5EbODvGg8y?=
- =?us-ascii?Q?cw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hGQXiwQgFbQTe2vw/b1zCAgD73mZ9q2VUy7s4MuX+tvwBtZd9pkaFGsrJkAn?=
+ =?us-ascii?Q?ovDMx63XdP61U1PfC0BGUGB9hjA4HSnTr1NNZgXU2yi92MMN9IskQrQ4yipr?=
+ =?us-ascii?Q?6fDvuj4pECTuAyIfnA7UwfDzjdjHJOcjfnE6XGcrBYRcCMPJBsYx+nAJay0o?=
+ =?us-ascii?Q?z7ci8w62rwEIJR5OSi0r5TM3MyMbUsAIx7R7YSaE3Z9/rX7TR4yG0xM1B8j8?=
+ =?us-ascii?Q?d5MrToDJtCHAG5vUVYcL2tr3rYH6Kw8d/5AolipnvLv0yfnvGOTkGCa5bVWD?=
+ =?us-ascii?Q?tFIFHLqCRCyWfINoyrZY7K3ZziSiT9LPF+iZNZ6cZDf37rKamAqaNLwZgtsW?=
+ =?us-ascii?Q?R/hq12cOPxK8nG3exeq2asRwikkZ73hRFP5Wq9a1kLyi7plWuCiA7Yu6wmcU?=
+ =?us-ascii?Q?0R+iHwcGDWxeikRt/UugbsHqBqgCXbuhNEEN0mDP5zwPG2IcT0rGb3OmEWC/?=
+ =?us-ascii?Q?qsMTW4PJnSNptCJd91lfjCFa76gtddtY4HrMT52G4djq8men4an4rh5fyx9W?=
+ =?us-ascii?Q?OwT7KEu7FkELR3rsT3ZJ8JYYsmoth8SiwGw3ka4YBmC2OeEBpw02ZAOSh/0H?=
+ =?us-ascii?Q?K03gBLRhj+iNJzV9tFyoAUC0K4buP2qny0+YmU7Xu4hFY53+rhKQbtq2UgR1?=
+ =?us-ascii?Q?TPnwTjvfpd3FVetTj9xk3+dFBfrO7H354igAlROmAt86IXJ4ygklUC83EExZ?=
+ =?us-ascii?Q?JxXOi0QvNkeeshoupZrV2CQVTDH/xD8ekaZudLm/WFBxbKueOoklpMuQ8M5I?=
+ =?us-ascii?Q?UE8wDpAqk5SinT00LbMvVlj0jbkTcrOoKiP9FvVuTVvomO956GmFt4Xe9h9j?=
+ =?us-ascii?Q?ZD+Nm+ozF6deFmkBWPmcRzLlqi/cBc/2ioJ1TNvrrL7S7TKbthDeu217txkx?=
+ =?us-ascii?Q?3uJ2mA79Fb+YoohMkzf+6sDL8J2NX5fP67rZNuV0BHhZZEPebs1kgsa5jVGl?=
+ =?us-ascii?Q?3XjPfqmmr2BOu2g61Nkck3/rNNFKzAcmu8Ldta19vDI2giO0+tDZ8lV/MzfY?=
+ =?us-ascii?Q?d6mt3y6oqIdmcvdM43z9LF+yDArj0vUxXALKDET09UfxqiHoIA2lLxcUipyh?=
+ =?us-ascii?Q?9oCJYmLNfyTXlkBBKeGScLbNjtk4Dt9zQKdyICLpJicPLVnRwqVyZFya38YU?=
+ =?us-ascii?Q?pbzshytjnACOpR9wrH6WZL9pmCyJUrpw20Ud+DCbex9v4Us3yH4MoWIGAFO7?=
+ =?us-ascii?Q?63n8dAripeZ5CUKzja2v+BQxCHSddWrUaD5VT+Qnx3f6LD1dQGas3uVewndy?=
+ =?us-ascii?Q?sUo342sqNnj7IbLT46e1NJpPna0hQyWPuzR8SuFA7KLXtf65PELl4hnWGdpb?=
+ =?us-ascii?Q?ETZ8ksXB73NyRQM23yHsfVrpWw9e9RruBmKAWqFveTmet+Ee1wismWyBc/Gs?=
+ =?us-ascii?Q?peoEWfBuZ+LnT69mvrxIYfDEAtjQw8nkJj/dBXCTwMOTPxg+lZB44PGMfXyE?=
+ =?us-ascii?Q?PtPA7655Lc/tXvV+jid7spid2nWASP3p6R+pU6k5hKsFR1Hi4YuK3/eZTnii?=
+ =?us-ascii?Q?10kEr6bvGEVffUE2sQ2wRTSkLoDb4AGACnRf/0cvj+lq8dvigbkftHKQcrRB?=
+ =?us-ascii?Q?kolhLaEIMaLXtbbhhhUxdL+os38dUNd9B6J3kL8+BOZDqxYDVQL9F3S9mXCR?=
+ =?us-ascii?Q?vA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: igOjeGcYeq8Mj1+3TQ4oVdep8Qgj7iMBK4ABugBEdunQwWxyIJBb7RnxQ7BiiVZwgAxmZIX+nxu7E/LOA6I+u9MtAngJZFAdB1qick4hrFJJSqI/uTKroppys20BAOafr99zwmw53q5r/v1jHcaNDGrj9f2UWNQ5SNsoAaUwdZ24B513NIfqnd3cNH8U8RKq8eOcNnIKJsc/8gTho+woycgQK5/L0/Nch2pGrVbO7ATaPc42SIH7FO0QKUBs7Tffqq546IwZ01TxTngULR0/Ynmcc81x0RpyF2x641RaywnGVZMpbtxBS437n3YxVxlo3l+dud47zid8YDrZPKTzoWiyJS7Ii/dYitfaL00Df6hKd7nyugycdwN0ctWsVZXeBSqlIxN9OjPzLmr8CWQdk57bMRCumP/PR/AHvBOB2R79h7KpjOA/GqsFl376d1V/Pkto3jrq3eoJ0mSDMCQfgnYw+siMIHDMxdx9nRAR3cDL2sXplry+ks4lbDaPZXjW0QPqjVeSjMEVcT2+CJcCexIKW5eCHUhrgPCfVQ+1ahXru5AZb45juAwZVHEeIjnYMVlyTFs4XhlgwvMyZqwmSsKDS9rPiLVorpwQBab5lTo=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: pjOmgsOGHvsW4mWwScbxkAcBTaS+ncz5w8wxirnlxLfcpb9qBs4Dui4A+GYx76uaXFGAw3NPgxY9Up8jNWChLjr9HBN7e+vOnnrdF5tyjujdDkQWQnYWa7Nly6RuFFKKAYH5TRQwc9bVE2FfSO9EkxU43A4EapvZvqcXboA0BP5DOkYJ9DEvPaYivQ1a5PyTJo7N+vUA2OlKlFIJR59NoDOZkxdkwTIJGb+ELPx9aLRlQUptUok9WgoDrSliFkkqUNu5MPP6Olsj+xEciG+3vHsCYDgT2WKbglMVswDuLEitV+wbxd5vLHrahVo9dy9Sa/zjtwViD2CE0ImH/04ON0vEa8Gsv9Kxod/t0yg5W46bc6yzO488wXX9p2TNNq37V1RygHTMScu9uJH2kz9RZNpkGUgXL7SoIhUHZVvnwWReb4vOTLX+7AkFsph0X2BYDQk1kZf8ShFz/RHs+HYK0WMIzMBSUfvLJScHlPYxeUUc1hGyBfFmnVv8U6SZHxsrUOdnU4m1D0tY2Vt9ZcRsmOXDsZFrs+L4DqmcGsNQdRL1obskaSQMCN7HZS4IlMG74o+P0p+4ScXj/tI0tbRZtVF/lI+ApzPvvZY8a1LawKI=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05c93f15-6041-4a47-0306-08ddad0cb293
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64e62733-a901-425e-77c3-08ddad0cba86
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2025 19:33:40.5838
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2025 19:33:53.8439
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IcFUayvDOLdFoRGV4EPxG1hGzR7lf5Wi2lcY4CsKYA1M7dwrL3SY2GrcrFqLbZeusc6dN8wIrKLHbHOBbhM47BesEMEWrHbHqmWiDVyOxE4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5870
+X-MS-Exchange-CrossTenant-UserPrincipalName: fKLM/DJaZO32StAp525/syyOoY/t7EmGavfpqWRJVGsgHKIZdmc9GohbxZUTqjNV8axl2PofqS+q/JbSztnr5gWYR1zlxwfEyDEhqsn9sno=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5563
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-16_09,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2505160000 definitions=main-2506160134
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE2MDEzNCBTYWx0ZWRfXz+PLK57oRo+o 8h2KQ9crmpfhewUp0cl55WipWqm7kHCXMZA3NCzTnqbNJrfM81vGC47SAyXhWlBIGRqZkyLs6S4 UyD6kR8nLb//Qq1HeoqrgV6RIvPv2pL/uH7YKIxmuCXE+Z2wcqfc3GrnS35ynvK3DemkcBQCxYn
- wP58kG62B83cnoOujcgFee+CM/pqnJAifAYCb5Kwzdy82KBC2Z1Ik80qLuXjkJgG0tkU98iLWrT 7Nd5tIpoDX+qWD/StpIGqbGRiix3RHXVFVzIAuEE2GgY2ysGjwTnDuy3gmUvQsVSg7EaWnxg1Eh oemqrRrqBx0oBUNTuMwe8/Ea+Ibwv0c7WoW6JK8E+w7ZZWq3gqKTlF4nOeJ6ybfeZiOOynXamhh
- ILo4Sb5uf+LM1g0r/M7Me+VaqLYEhsz2oArkR+CkHHG0cJBb3fX0vT8W4gQl3/IbPkLpeLA4
-X-Proofpoint-GUID: 3ilgjWYWSV0xGA84Pa16uGLxmWsbRyK7
-X-Proofpoint-ORIG-GUID: 3ilgjWYWSV0xGA84Pa16uGLxmWsbRyK7
-X-Authority-Analysis: v=2.4 cv=dvLbC0g4 c=1 sm=1 tr=0 ts=6850719c b=1 cx=c_pps a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=CJ9Vzb_pIGcOg4OUlcsA:9 cc=ntf awl=host:13206
+X-Authority-Analysis: v=2.4 cv=XeSJzJ55 c=1 sm=1 tr=0 ts=685071a8 b=1 cx=c_pps a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
+ a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=1PUvNFCg9JWibKYo:21 a=xqWC_Br6kY4A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=vdSroFb1ziFuJU9_f_AA:9 cc=ntf awl=host:14714
+X-Proofpoint-ORIG-GUID: F9S0gRpxjkcBncgKwUOnZCfXIVFrVQG7
+X-Proofpoint-GUID: F9S0gRpxjkcBncgKwUOnZCfXIVFrVQG7
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE2MDEzNCBTYWx0ZWRfX45vKnbD+HwZW 7ouQSGL8wfhUetNTH52TVv/d0TpwA+85nDoDZOj5EaWXCtWKJdvCdABJ+WBphp2J2R8NOmBwsQG XL6j2h950bcfAmifJtRxob2XriS0VMQ5Fd6Blw5OmNepXDlwQHCVgsf1GvZ43fpPeOuuzf1Z6db
+ SCTggaV3fzg9bKIE8GEwYgVauzy6NvxJjQoCRdgYC0JKvwzc/W+PhdnBVZ5PY4WONJM3vzzJ+Sc 56waCLbWEe/tjZG8cYpdLH66ZK83jFH3+/Sqt3stAlMJnOSjDY6HY5i9pS5OeJHwG8QhV9v82Sq rb2/DT2GWF4QDXDnrNFs8Y/YJWfcHuZdX4Qf/4JQIrfg22NGrnpiXQ4JlJmE27XUwhlGaE4GODx
+ 5BqyQoa8udVlQdKLydvcYKAQVi6q7zsoHcUoCpkRGvJCPmfyc7iRXLBpPYZAQLKFoK5Ru7b9
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250616_123420_939669_007EEA59 
-X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-CacheID: sfid-20250616_123428_414567_0AD609C4 
+X-CRM114-Status: UNSURE (   9.60  )
 X-CRM114-Notice: Please train this message.
 X-Mailman-Approved-At: Mon, 16 Jun 2025 14:08:40 -0700
 X-BeenThere: linux-um@lists.infradead.org
@@ -193,144 +196,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-REVIEWER'S NOTES
-================
+This is a prerequisite for adapting those filesystems to use the
+.mmap_prepare() hook for mmap()'ing which invoke this check as this hook
+does not have access to a VMA pointer.
 
-I am basing this on the mm-new branch in Andrew's tree, so let me know if I
-should rebase anything here. Given the mm bits touched I did think perhaps
-we should take it through the mm tree, however it may be more sensible to
-take it through an fs tree - let me know!
+To effect this, change the signature of daxdev_mapping_supported() and
+update its callers (ext4 and xfs mmap()'ing hook code).
 
-Apologies for the noise/churn, but there are some prerequisite steps here
-that inform an ordering - "fs: consistently use file_has_valid_mmap_hooks()
-helper" being especially critical, and so I put the bulk of the work in the
-same series.
+Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+---
+ fs/ext4/file.c      |  2 +-
+ fs/xfs/xfs_file.c   |  3 ++-
+ include/linux/dax.h | 16 +++++++++-------
+ 3 files changed, 12 insertions(+), 9 deletions(-)
 
-Let me know if there's anything I can do to make life easier here.
-
-Thanks!
-
-===============
-
-In commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
-callback"), a new hook for mmap was introduced - f_op->mmap_prepare().
-
-This is preferred to the existing f_op->mmap() hook as it does require a
-VMA to be established yet, thus allowing the mmap logic to invoke this hook
-far, far earlier, prior to inserting a VMA into the virtual address space,
-or performing any other heavy handed operations.
-
-This allows for much simpler unwinding on error, and for there to be a
-single attempt at merging a VMA rather than having to possibly reattempt a
-merge based on potentially altered VMA state.
-
-Far more importantly, it prevents inappropriate manipulation of
-incompletely initialised VMA state, which is something that has been the
-cause of bugs and complexity in the past.
-
-The intent is to gradually deprecate f_op->mmap, and in that vein this
-series coverts the majority of file systems to using f_op->mmap_prepare.
-
-Prerequisite steps are taken - firstly ensuring all checks for mmap
-capabilities use the file_has_valid_mmap_hooks() helper rather than
-directly checking for f_op->mmap (which is now not a valid check) and
-secondly updating daxdev_mapping_supported() to not require a VMA parameter
-to allow ext4 and xfs to be converted.
-
-Commit bb666b7c2707 ("mm: add mmap_prepare() compatibility layer for nested
-file systems") handles the nasty edge-case of nested file systems like
-overlayfs, which introduces a compatibility shim to allow
-f_op->mmap_prepare() to be invoked from an f_op->mmap() callback.
-
-This allows for nested filesystems to continue to function correctly with
-all file systems regardless of which callback is used. Once we finally
-convert all file systems, this shim can be removed.
-
-As a result, ecryptfs, fuse, and overlayfs remain unaltered so they can
-nest all other file systems.
-
-We additionally do not update resctl - as this requires an update to
-remap_pfn_range() (or an alternative to it) which we defer to a later
-series, equally we do not update cramfs which needs a mixed mapping
-insertion with the same issue, nor do we update procfs, hugetlbfs, syfs or
-kernfs all of which require VMAs for internal state and hooks. We shall
-return to all of these later.
-
-Lorenzo Stoakes (10):
-  mm: rename call_mmap/mmap_prepare to vfs_mmap/mmap_prepare
-  mm/nommu: use file_has_valid_mmap_hooks() helper
-  fs: consistently use file_has_valid_mmap_hooks() helper
-  fs/dax: make it possible to check dev dax support without a VMA
-  fs/ext4: transition from deprecated .mmap hook to .mmap_prepare
-  fs/xfs: transition from deprecated .mmap hook to .mmap_prepare
-  mm/filemap: introduce generic_file_*_mmap_prepare() helpers
-  fs: convert simple use of generic_file_*_mmap() to .mmap_prepare()
-  fs: convert most other generic_file_*mmap() users to .mmap_prepare()
-  fs: replace mmap hook with .mmap_prepare for simple mappings
-
- block/fops.c                               |  9 +++---
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c |  2 +-
- fs/9p/vfs_file.c                           | 13 +++++----
- fs/adfs/file.c                             |  2 +-
- fs/affs/file.c                             |  2 +-
- fs/afs/file.c                              | 11 ++++----
- fs/aio.c                                   |  8 +++---
- fs/backing-file.c                          |  4 +--
- fs/bcachefs/fs.c                           |  8 +++---
- fs/bfs/file.c                              |  2 +-
- fs/binfmt_elf.c                            |  4 +--
- fs/binfmt_elf_fdpic.c                      |  2 +-
- fs/btrfs/file.c                            |  7 +++--
- fs/ceph/addr.c                             |  5 ++--
- fs/ceph/file.c                             |  2 +-
- fs/ceph/super.h                            |  2 +-
- fs/coda/file.c                             |  6 ++--
- fs/ecryptfs/file.c                         |  2 +-
- fs/erofs/data.c                            | 16 ++++++-----
- fs/exfat/file.c                            |  7 +++--
- fs/ext2/file.c                             | 12 ++++----
- fs/ext4/file.c                             | 13 +++++----
- fs/f2fs/file.c                             |  7 +++--
- fs/fat/file.c                              |  2 +-
- fs/hfs/inode.c                             |  2 +-
- fs/hfsplus/inode.c                         |  2 +-
- fs/hostfs/hostfs_kern.c                    |  2 +-
- fs/hpfs/file.c                             |  2 +-
- fs/jffs2/file.c                            |  2 +-
- fs/jfs/file.c                              |  2 +-
- fs/minix/file.c                            |  2 +-
- fs/nfs/file.c                              | 13 +++++----
- fs/nfs/internal.h                          |  2 +-
- fs/nfs/nfs4file.c                          |  2 +-
- fs/nilfs2/file.c                           |  8 +++---
- fs/ntfs3/file.c                            | 15 +++++-----
- fs/ocfs2/file.c                            |  4 +--
- fs/ocfs2/mmap.c                            |  5 ++--
- fs/ocfs2/mmap.h                            |  2 +-
- fs/omfs/file.c                             |  2 +-
- fs/orangefs/file.c                         | 10 ++++---
- fs/ramfs/file-mmu.c                        |  2 +-
- fs/ramfs/file-nommu.c                      | 12 ++++----
- fs/read_write.c                            |  2 +-
- fs/romfs/mmap-nommu.c                      |  6 ++--
- fs/smb/client/cifsfs.c                     | 12 ++++----
- fs/smb/client/cifsfs.h                     |  4 +--
- fs/smb/client/file.c                       | 14 ++++++----
- fs/ubifs/file.c                            |  8 +++---
- fs/ufs/file.c                              |  2 +-
- fs/vboxsf/file.c                           |  8 +++---
- fs/xfs/xfs_file.c                          | 15 +++++-----
- fs/zonefs/file.c                           | 10 ++++---
- include/linux/dax.h                        | 16 ++++++-----
- include/linux/fs.h                         | 11 ++++----
- ipc/shm.c                                  |  2 +-
- mm/filemap.c                               | 29 ++++++++++++++++++++
- mm/internal.h                              |  2 +-
- mm/nommu.c                                 |  2 +-
- mm/vma.c                                   |  2 +-
- tools/testing/vma/vma_internal.h           | 32 ++++++++++++++++++----
- 61 files changed, 245 insertions(+), 171 deletions(-)
-
---
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 21df81347147..08a814fcd956 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -821,7 +821,7 @@ static int ext4_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	 * We don't support synchronous mappings for non-DAX files and
+ 	 * for DAX files if underneath dax_device is not synchronous.
+ 	 */
+-	if (!daxdev_mapping_supported(vma, dax_dev))
++	if (!daxdev_mapping_supported(vma->vm_flags, vma->vm_file, dax_dev))
+ 		return -EOPNOTSUPP;
+ 
+ 	file_accessed(file);
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 48254a72071b..ab97ce1f9087 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -1924,7 +1924,8 @@ xfs_file_mmap(
+ 	 * We don't support synchronous mappings for non-DAX files and
+ 	 * for DAX files if underneath dax_device is not synchronous.
+ 	 */
+-	if (!daxdev_mapping_supported(vma, target->bt_daxdev))
++	if (!daxdev_mapping_supported(vma->vm_flags, vma->vm_file,
++				      target->bt_daxdev))
+ 		return -EOPNOTSUPP;
+ 
+ 	file_accessed(file);
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index dcc9fcdf14e4..d0092cefb963 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -65,12 +65,13 @@ size_t dax_recovery_write(struct dax_device *dax_dev, pgoff_t pgoff,
+ /*
+  * Check if given mapping is supported by the file / underlying device.
+  */
+-static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+-					     struct dax_device *dax_dev)
++static inline bool daxdev_mapping_supported(vm_flags_t vm_flags,
++					    struct file *file,
++					    struct dax_device *dax_dev)
+ {
+-	if (!(vma->vm_flags & VM_SYNC))
++	if (!(vm_flags & VM_SYNC))
+ 		return true;
+-	if (!IS_DAX(file_inode(vma->vm_file)))
++	if (!IS_DAX(file_inode(file)))
+ 		return false;
+ 	return dax_synchronous(dax_dev);
+ }
+@@ -110,10 +111,11 @@ static inline void set_dax_nomc(struct dax_device *dax_dev)
+ static inline void set_dax_synchronous(struct dax_device *dax_dev)
+ {
+ }
+-static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+-				struct dax_device *dax_dev)
++static inline bool daxdev_mapping_supported(vm_flags_t vm_flags,
++					    struct file *file,
++					    struct dax_device *dax_dev)
+ {
+-	return !(vma->vm_flags & VM_SYNC);
++	return !(vm_flags & VM_SYNC);
+ }
+ static inline size_t dax_recovery_write(struct dax_device *dax_dev,
+ 		pgoff_t pgoff, void *addr, size_t bytes, struct iov_iter *i)
+-- 
 2.49.0
+
 
