@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8808EC71136
-	for <linux-um@archiver.kernel.org>; Mon, 16 Jun 2025 15:27:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4821C71159
+	for <linux-um@archiver.kernel.org>; Mon, 16 Jun 2025 15:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E5U21iemE/c9Sz0YhEWkD1P9gtyQVcNDFZou5zB9HsA=; b=qoylJv0Hh2egk+aFtD1lEAfoe9
-	w4DNpC179XAPdsOiz3bjOwQRaxrl3y9spi8O3Iq34aIMqR+FyMjb8cgr38HhT2YMoTHx2QY0VqSut
-	gSJM+qHhwOUequSR5v3oMNhx/9xbkQWo2BFr2kUHBEl2hY9kEQXxaBDqRxh8MDp9PnYGWDG9DZdOD
-	9jIz1YJzm0GLCNdYNwyWmyHnZZTOjaMlI9TsAezI03eYlfnbg5rSqpZBLQnyRMnX1fyNt1fZ4wiHS
-	iHy05ha9RdIzyy7qsFa5M+jIF1RdAsXRNmyHtN+H4mQHG2TJKU968iC2jz5XtNbEV988iK//xxuIp
-	d5XYy5Rw==;
+	bh=NezTSsyMagu8zLGwg6DhObhL/nAKADWh56tKSWG5+zE=; b=PKncxn/lbGFJpPIYxgdhjcL4LP
+	NvHbItynKpAHS4FDGeLKKNKSGRmPZF2CYRJtKZZK7C0kTBzecrsjE4/bBaM75aGQWEYptI+B9L7Ev
+	aNS9HMoIy7AEmCmkm7YKNZovtEOqCPW20rXKMcgFMr4Qwc8+HGdAI9EILDTCaORZ5PoiMcrud6gSf
+	ouRjjCIWK0dNSTNtChLvA94o0QY/gqzTvpTGEsWK/jmlslNMac1A0ch6zkdK8ZeaytQZSaDg6W6f+
+	ktOYPYBSleuWYDIDObREGEyGkumVHvMGYDMTjQD3Mhv3es0tLjADKdzcXcYQYle3rdsFmiM6H3n8Z
+	oanCsvYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRBkS-00000004rU1-0BUl;
-	Mon, 16 Jun 2025 15:27:48 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1uRBkT-00000004rVv-1RY3;
+	Mon, 16 Jun 2025 15:27:49 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRAKr-00000004cXJ-01xs
+	id 1uRAQN-00000004dYE-3gyo
 	for linux-um@lists.infradead.org;
-	Mon, 16 Jun 2025 13:57:18 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-450ccda1a6eso40553935e9.2
-        for <linux-um@lists.infradead.org>; Mon, 16 Jun 2025 06:57:16 -0700 (PDT)
+	Mon, 16 Jun 2025 14:03:01 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-6095de12d62so1517093a12.1
+        for <linux-um@lists.infradead.org>; Mon, 16 Jun 2025 07:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1750082235; x=1750687035; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1750082578; x=1750687378; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E5U21iemE/c9Sz0YhEWkD1P9gtyQVcNDFZou5zB9HsA=;
-        b=XluYtkpVTj81M4J0pJ64Sv4nIXEjhEN7FfZB/dgWq+WuJALFOCZYvFRT1MoqnDtBF9
-         vAF+GmLcmcLjb/RJa4w86ya3Olaso+kmMzHhAdrE5gcew5I1bv9FBklP5Fekkj6OQLXL
-         6Zaoeabs7As7Z+pYbPSK7lu/IROg4v+w2mtG+KHEYsM/1yU9mP31NEX9zuFm3qkAF8Mr
-         iscEGl2HThoIav4hyKq43/ZfhDGi6++EdxyJFZJTfkqpHFtHPB5WUvoc8a1CtBgBWJ4q
-         OY45UWPikIJelwOvl8hRsM+QVxQA7sBj6Qvb+LM/XZ6+B7jqcioB8yMo5A94xOl2Yk4L
-         56gw==
+        bh=NezTSsyMagu8zLGwg6DhObhL/nAKADWh56tKSWG5+zE=;
+        b=bOffkqTjaEL/9sjk3UcyX3Ai88DBitQ1x6YgZE/XDu8/bqsuYKGZCO27hKcnjLl+kx
+         oeI6R7U/eI94YT2oB3h2Q+CpjVPVvvV902qIDtiWUiXJuL2r6XmuSOV0nbAjLLGZUOyX
+         3zUVS4a147+7x6rAwYF/hb9phM3QCNZPNZoEp+bqF8uYSkB4DYt5STssRR/9S0HReYKc
+         GIVydcZSOYbNmCkbFECKUsGqmd6gRzymLGF2h9l30jaXvW6pj7hHOd+WfD/Fu5AKxNxo
+         Wv/dsh6vbP/kj7YwQW5CVTjAVmjnI01mwfHh+wuZaX/xkxrplYPYBw7hSYBZ2tdmhWTm
+         ralw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750082235; x=1750687035;
+        d=1e100.net; s=20230601; t=1750082578; x=1750687378;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E5U21iemE/c9Sz0YhEWkD1P9gtyQVcNDFZou5zB9HsA=;
-        b=JUrJbe5mOBmzjxA8ghJakqfkGIioD8EFbQVRah33NUx7hK15oVKuO+w2N/FaIfE1nP
-         RDBE0nivGy0Spl3HhVcpNAe8TROwZPi3A+S6nG3+fkYKjRqOMGqlydaOkJd0PfdNw5Wp
-         7iV3ZxqzgbeDwU8TYV3c5KHGphjg0K7jwXqZPO2DJtdbXhWi07jS7pdcNM05NAHmWan7
-         7ide9KM+XirToOsOS+VHRo3t71EC3ubbwbzSL11A1CHEJSO+TyMW3JfFOQCoHYqsc0Sr
-         9NFSucbTnPl4w1H18taOdgyFE7Q25rdF67X0vUDeK6aJSKwpPPa5dxhIdAaX/4zkhJiG
-         22BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzKYpaBSMbSiWgAGhhPiYkRw5k9W1LdRaOUSiQAwVRBroF9vn/ITnqst1/5QfB5nRfckUZIsE5fA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwdVq4X61/HeYu4MvMCc2NDYc56IzzD3t0cgE0PTu8Y6w246m6g
-	vsfKUcYMI9tI686kYZlA3xYpidbeEq7YPGSt/gs/QvuDbN3L8ZZGFEtk4L4bOxjjewk=
-X-Gm-Gg: ASbGncv9xsxIdIOfmZ4lzL9xOHbnhw+Ro4x4QFkmoPVpEP4asdE/1c5YRI791Ngy9ei
-	1ZzvewWAmsyelZaWXKflosoAnnUuoYT1mXvB1wG9QCnhFJPZ/CQOizGFjMDuPtNhhKo470vOseD
-	yVX54L0GNq1wwNJer3V1tCtt2Bts0zBwWV4JV8N+J6lApZh3txN9DcFGWpIpdJu/s8j7YgpL7TI
-	ub1ZreDNjYmfrCA1WstizbMridEXbBSJyRe2AVizvIqPCmFrgq5dGOuPV/fOVS8sO2amx4Qwiw9
-	2FmqcnQcWD9LwdBI2Gh42GE+eru4t/jBryOvHOA6U6TdB2dRqEcOjvL+g2aGok57
-X-Google-Smtp-Source: AGHT+IG5cdNsogAjYlCwwv/Yr99wBxZ5kpKFYKtrzNVTxQPp1q35B4mAJcdg7PMSO6nM0Lz7izNcdg==
-X-Received: by 2002:a05:6000:1449:b0:3a4:ed62:c7e1 with SMTP id ffacd0b85a97d-3a572367734mr6709880f8f.12.1750082235292;
-        Mon, 16 Jun 2025 06:57:15 -0700 (PDT)
+        bh=NezTSsyMagu8zLGwg6DhObhL/nAKADWh56tKSWG5+zE=;
+        b=iifnphQhGXCe+sgCh8ImrHZ8NaDis95NmD6uW1IqyCRfv5Xc7hApQtYTfB6z5H3J4C
+         RwipvQ9rkdz/BKOQrF1QaPRMuMrC42WTrC170CT7WPO9vvd4LZBv2Y/f6KOQ55VC9S8N
+         5Uybu5en5buIG7b0xdNERrYa7Y00nMSiUa5JLLpjijNNy5AVro86/J38okYj4LP0Brzm
+         Ne94ecNshAmxAI70cKfV+Id9XodyNl3TI5FDEl5s8tFJcv9SAcKYlGq6HiHbTrYjqfp2
+         Ae1aEMCFsRE9n14xegSrMd+AQc0r8mKD55MOlhsnDlFx4mbAkKiB0jlu3UXrrm/ggVph
+         F16w==
+X-Forwarded-Encrypted: i=1; AJvYcCUYHSVnlV9Jr3UwUqeJfs1mdxxRUzXMOzUFNs/wLOvEZIOnAlttxvKtF+oOOPzRwO3d5V4S8QpbEg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzYJKfhaUH6DbmXzeflczPGIBodPZj2rXtZMqmijPveomGuAGYy
+	eCUXZe+kFHrUCfEZKeOBR/+vZqP1G0U9/47Wd3oywGcGX/TdyfsG4kdWCWhCTpyZNJE=
+X-Gm-Gg: ASbGncsGNgpkayBHSGOVZEf346RZuMbG8GeEKkFUCdPu+UzPQRM2ZLJDuTk5ZZNd9d8
+	hiQDk7uff4m6OFM1DYLlRn45OY2l6oF9KOuSu5JJWKCBvICA7VNkITO31xsMHO0keWkf9hLetZw
+	8Z43mNvhQRvPvMaSEcyXOswGSXwvZ3AJzOLGqL+79TEOekqIXGtuU2Ao5MSAzOFrv+uAT4D+pHS
+	YhTXwSHcGvwY/KsuWfa8lFpZ68fOK48BmX+pFUQPobOLAyL46JxRQCCX7ps82Eu3t1S7BWfRIgS
+	0dsazq49p4JOjvFgWhydaDlqqFq6Rg9IHsdYqdUj14YAXoXAmr6PvOTOCr0MtS4z
+X-Google-Smtp-Source: AGHT+IGQKt/OCARGss+vM72Zy1ByQz9dfh+HKXz/EINJ++KGru6AYFAdN86jIyZYD5v+8Ya81pTKAg==
+X-Received: by 2002:a17:907:3f97:b0:ade:3a1b:88b2 with SMTP id a640c23a62f3a-adf4fa9117fmr1057658266b.29.1750082577978;
+        Mon, 16 Jun 2025 07:02:57 -0700 (PDT)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365dea927asm61349195ad.155.2025.06.16.06.57.04
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec81b8e38sm674489766b.50.2025.06.16.07.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Jun 2025 06:57:14 -0700 (PDT)
-Date: Mon, 16 Jun 2025 15:56:59 +0200
+        Mon, 16 Jun 2025 07:02:57 -0700 (PDT)
+Date: Mon, 16 Jun 2025 16:02:55 +0200
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
@@ -83,17 +83,18 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
 	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
-Subject: Re: [PATCH 6/7] debug: kgd_io: Don't check for CON_ENABLED
-Message-ID: <aFAiq3IEic8DuATR@pathway.suse.cz>
+Subject: Re: [PATCH 7/7] printk: Don't check for CON_ENABLED on
+ console_unblank
+Message-ID: <aFAkD2i0ceH6qYQz@pathway.suse.cz>
 References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
- <20250606-printk-cleanup-part2-v1-6-f427c743dda0@suse.com>
+ <20250606-printk-cleanup-part2-v1-7-f427c743dda0@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250606-printk-cleanup-part2-v1-6-f427c743dda0@suse.com>
+In-Reply-To: <20250606-printk-cleanup-part2-v1-7-f427c743dda0@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250616_065717_045546_B4EB0C63 
-X-CRM114-Status: GOOD (  23.42  )
+X-CRM114-CacheID: sfid-20250616_070259_918018_F5C658A3 
+X-CRM114-Status: GOOD (  16.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,53 +109,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri 2025-06-06 23:53:48, Marcos Paulo de Souza wrote:
+On Fri 2025-06-06 23:53:49, Marcos Paulo de Souza wrote:
 > All consoles found on for_each_console_srcu are registered, meaning that all of
-> them are CON_ENABLED. The code tries to find an active console, so check if the
-> console is not suspended instead.
+> them are already CON_ENABLEDed.
 > 
 > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 > ---
->  kernel/debug/kdb/kdb_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/printk/printk.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 9b11b10b120cf07e451a7a4d92ce50f9a6c066b2..cdc1ee81d7332a9a00b967af719939f438f26cef 100644
-> --- a/kernel/debug/kdb/kdb_io.c
-> +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -589,7 +589,7 @@ static void kdb_msg_write(const char *msg, int msg_len)
->  	 */
->  	cookie = console_srcu_read_lock();
->  	for_each_console_srcu(c) {
-> -		if (!(console_srcu_read_flags(c) & CON_ENABLED))
-> +		if (console_srcu_read_flags(c) & CON_SUSPENDED)
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 658acf92aa3d2a3d1e294b7e17e5ee96d8169afe..8074a0f73691cfc5f637361048097ace1545c7c0 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3360,7 +3360,7 @@ void console_unblank(void)
+>  		if (flags & CON_SUSPENDED)
 >  			continue;
+>  
+> -		if ((flags & CON_ENABLED) && c->unblank) {
+> +		if (c->unblank) {
 
-I think that this is similar to the 5th patch. We should check
-here is_console_usable(con, console_srcu_read_flags(c), true)
-because it checks more conditions:
+It might actually make sense to check is_console_usable() here.
+The reason is similar as for the 5th and 6th patch, see
+https://lore.kernel.org/r/aFAdGas9yGB4zhqc@pathway.suse.cz
+https://lore.kernel.org/r/aFAiq3IEic8DuATR@pathway.suse.cz
 
-     + the global console_suspended flag. The consoles drivers should
-       not be used when it is set...
 
-     + whether NBCON console driver has con->write_atomic
-
-and we should also fix kdb_msg_write() to actually use
-con->write_atomic() when it is a NBCON console driver.
-There is hard-coded con->write() at the moment.
-
-But it might get more complicated. It would be nice to do it correctly
-and use con->write_atomit() only when nbcon_context_try_acquire()
-succeeds. We probably should use a context with NBCON_PRIO_EMERGENCY.
-
-And this should be fixed at the beginning of the patchset because
-it actually fixes the support of the new NBCON console drivers.
-
-Best Regards,
-Petr
-
->  		if (c == dbg_io_ops->cons)
+>  			found_unblank = true;
+>  			break;
+>  		}
+> @@ -3402,7 +3402,7 @@ void console_unblank(void)
+>  		if (flags & CON_SUSPENDED)
 >  			continue;
+>  
+> -		if ((flags & CON_ENABLED) && c->unblank)
+> +		if (c->unblank)
+>  			c->unblank();
+
+Same here.
+
+>  	}
+>  	console_srcu_read_unlock(cookie);
 > 
 > -- 
 > 2.49.0
