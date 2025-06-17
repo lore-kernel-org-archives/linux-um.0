@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5E15C7115D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E95A8C7EE24
 	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,20 +12,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MnSFdd8xjqrBRMNrjDtPx5JnmQica7Kdjxsp8Q9K/Q4=; b=VpnyDv6ymaAJggqQ1bvZo94M3e
-	1n9gMG4XvfhCJSXgy6LvCF/0kd+aR4SXqdZsYDXV48ynj48t2WC4jqblDkBjqKzXE1O7+vsHkumlN
-	B+1gJ+ayzR9sxTG0mb4+teCLAp89R2NIo7SEjHXuUt4M0+JnP6q3g+cpyGPpyG2oJrwOWTpfao2Um
-	V9brfDeKZvhPAPaJS4ufmSHhcd2mh6m/sUzoJgGNJoK3wJA7q8O6LrllIP9Dlj1R4WL/kEs2pG0HF
-	ki6H42o4WOsObEjwCOHwlGUAFfqvXPtuV0r3Xwaq4MZGewq9YifwntM87sE8TDIR3Smf/ogg1ZJyW
-	XqQ62B/w==;
+	bh=7hewv5VaHf/nCFVYzE18Jb3sDfwjWx9bJqENJtpan9o=; b=tGf2o8BGB10/F6UF2Bf3RvkFBd
+	P8hJiNCd18dVrhKbHGZ5W1l5AM7JH/eaDGV7M2HbaCYrJirZc+Kpi+Op4aduLKWNJ+Q/qFbi9vf+U
+	h9/IiUX5yvpIKkrtKUmZCvaMuuNBa3xt5C5Rey6P8Fym41VFSfolfVZdxW37DBRze/Nz81/WBORKt
+	HLH6BrVUUCJLw2mH0GTcjsumRNYNvjdeahUD9j9tUFtdM2y9XutNERMNbs6t6aX+coONKAIjzkpL3
+	hoJudT2nXUQHTDq2IzoepV7nz7E7Tu5Co+NCOfJWNyfqKPLSnVzKbvd3Sgmh4c1v/kp5gKxJFD18k
+	lRoUH4rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSLp9-0000000ECIR-1Nrs;
+	id 1uSLp9-0000000ECIi-2lk0;
 	Thu, 19 Jun 2025 20:25:27 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uROYF-00000006DYq-2nid;
-	Tue, 17 Jun 2025 05:08:03 +0000
-Date: Mon, 16 Jun 2025 22:08:03 -0700
+	id 1uROac-00000006E8g-3Ody;
+	Tue, 17 Jun 2025 05:10:30 +0000
+Date: Mon, 16 Jun 2025 22:10:30 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -112,15 +112,15 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 06/10] fs/xfs: transition from deprecated .mmap hook to
- .mmap_prepare
-Message-ID: <aFD4M48RMZB0Hj-f@infradead.org>
+Subject: Re: [PATCH 01/10] mm: rename call_mmap/mmap_prepare to
+ vfs_mmap/mmap_prepare
+Message-ID: <aFD4xtpot22xvTEq@infradead.org>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
+ <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,15 +136,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 08:33:25PM +0100, Lorenzo Stoakes wrote:
->  STATIC int
-> -xfs_file_mmap(
-> -	struct file		*file,
-> -	struct vm_area_struct	*vma)
-> +xfs_file_mmap_prepare(
-> +	struct vm_area_desc *desc)
+On Mon, Jun 16, 2025 at 08:33:20PM +0100, Lorenzo Stoakes wrote:
+> The call_mmap() function violates the existing convention in
+> include/linux/fs.h whereby invocations of virtual file system hooks is
+> performed by functions prefixed with vfs_xxx().
+> 
+> Correct this by renaming call_mmap() to vfs_mmap(). This also avoids
+> confusion as to the fact that f_op->mmap_prepare may be invoked here.
+> 
+> Also rename __call_mmap_prepare() function to vfs_mmap_prepare() and adjust
+> to accept a file parameter, this is useful later for nested file systems.
+> 
+> Finally, fix up the VMA userland tests and ensure the mmap_prepare -> mmap
+> shim is implemented there.
 
-Please stick to the existing alignment for the declarations.
+Can we please just kill these silly call_* helpers instead?
 
-Otherwise this looks good.
 
