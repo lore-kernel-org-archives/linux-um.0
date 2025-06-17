@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBEF9C77B7C
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32BC4C77B7F
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RgNDel3KBIdFRD20NWYscLXk0kRO4T4FPA8qn3r4sXM=; b=SL6+yjsUt5U/zoHyLF/iStkpSt
-	F4AYmbfdUl9IvOracprs9M/nY+WI9grBhVTX0OCkqPZuy9dx+UMSOmWWi1rL+k8F8suMTWU2LLwX9
-	acWw+jImaSfmgyjdo7GDXppARSL1lGz1SIbiZ7umpBH4Z407+T0aP+KmuXjcgUJ8a1DenlOHwfmnV
-	mptq+GAFXSVWEsipxpnkMemj8rELcj/um8qE2dtZRXYksH8A1KpooMF6FUR1QD8w0QX/0Py9sNrIq
-	5AZNvDLkS2MNp5iHC06df1L0jYq8oqMcUmrIDB6+lzizf8oA+yOcBWpZ8lSKCSGg9bZUM02cFEF3s
-	2Pjxb58A==;
+	bh=9Juk2Y8Z4vCgweVfRh7S+BpOVSpAcPiYmdkEL/A0ZQ8=; b=urHA3thww6B32e6U80l+r70uc7
+	3xCeSy5xjgi+aeJlX732p6f80mYV2DQCY4NSeRRTKjrUpFqceXaURe3Hgn2K712/27QDy5ccY71hY
+	fdOitRhib+wDFJtKMjBOJsgRkBQbN32QvlFhMgzQWUraTCE1bsd8ukltnsjpGvVnpeRKStGhXvPS3
+	ZQg8SvCHYJ2LOAypCPsSyhmJTZH/AXlFeqYEpXHjcNjHET+oUKY1jt6FgNSbGff9tL6ZItB3Ts1y3
+	e79LRQpBMtEwUD/yGbppXdYFCoOOeSlK7IaF7NuVEw8ZPpyVZqJWzr2tVScSjQvxuVl2dTnxpNJh1
+	bRkAxx/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSLpI-0000000ECXa-2IyF;
-	Thu, 19 Jun 2025 20:25:36 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1uSLpJ-0000000ECZs-3EGW;
+	Thu, 19 Jun 2025 20:25:37 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRbVR-00000008C3b-35Hh
+	id 1uRbY9-00000008Crk-2FXo
 	for linux-um@lists.infradead.org;
-	Tue, 17 Jun 2025 18:58:04 +0000
+	Tue, 17 Jun 2025 19:00:51 +0000
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7242F1F7A8;
-	Tue, 17 Jun 2025 18:57:59 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 507671F7B8;
+	Tue, 17 Jun 2025 19:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750186679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750186847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RgNDel3KBIdFRD20NWYscLXk0kRO4T4FPA8qn3r4sXM=;
-	b=ZVKFtgJxgU6rST6x9dHOvq53H+ZPhdDkqsTMNZ7d/0yKJ+jcnU1S6R0rBWo8a7kKqVmKDR
-	ENZeVprBsNGqAloTMjfmaopwBrFh1v3JFCTUXrAM3nsjylqULQ91szWdRb3GulZRtVMafj
-	G1fZdguD9n3huUX618MPIWVd8mTvJbs=
+	bh=9Juk2Y8Z4vCgweVfRh7S+BpOVSpAcPiYmdkEL/A0ZQ8=;
+	b=byCwB4RCvD+fdWiUPHXXzPv+6Y6J9hxjIABrcJvka3IHD4rlwNxlRCOh6nKvFSXUCtlmv9
+	oheOjdnZ8AO5O8ntsesgc4FHhDq0h5Wm/nQ/XLXl3/LgjoGtFxk6LSH9B6SOCmvzUQWsr5
+	+8isq/XPBuk9eRn399cgn8+LNDDeDzM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750186679;
+	s=susede2_ed25519; t=1750186847;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RgNDel3KBIdFRD20NWYscLXk0kRO4T4FPA8qn3r4sXM=;
-	b=5D1gAnpOzFQUDBJ63fx53UMHmj/Pinvy/HjB9v/V1oneL2XPt7iaxB1I7N+BFb4hFJ+WzO
-	uMSoKL7nLRlBoMDg==
+	bh=9Juk2Y8Z4vCgweVfRh7S+BpOVSpAcPiYmdkEL/A0ZQ8=;
+	b=5dU0FaFSntG9ZXnX+34/DLPOUKbmUYAfLK4fGoy5GhfiI3Qw/3k5bXxhuRtcOt1nYqXS8V
+	1TvsfVYTrLwt6BBg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ZVKFtgJx;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5D1gAnpO
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=byCwB4RC;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5dU0FaFS
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1750186679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1750186847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RgNDel3KBIdFRD20NWYscLXk0kRO4T4FPA8qn3r4sXM=;
-	b=ZVKFtgJxgU6rST6x9dHOvq53H+ZPhdDkqsTMNZ7d/0yKJ+jcnU1S6R0rBWo8a7kKqVmKDR
-	ENZeVprBsNGqAloTMjfmaopwBrFh1v3JFCTUXrAM3nsjylqULQ91szWdRb3GulZRtVMafj
-	G1fZdguD9n3huUX618MPIWVd8mTvJbs=
+	bh=9Juk2Y8Z4vCgweVfRh7S+BpOVSpAcPiYmdkEL/A0ZQ8=;
+	b=byCwB4RCvD+fdWiUPHXXzPv+6Y6J9hxjIABrcJvka3IHD4rlwNxlRCOh6nKvFSXUCtlmv9
+	oheOjdnZ8AO5O8ntsesgc4FHhDq0h5Wm/nQ/XLXl3/LgjoGtFxk6LSH9B6SOCmvzUQWsr5
+	+8isq/XPBuk9eRn399cgn8+LNDDeDzM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1750186679;
+	s=susede2_ed25519; t=1750186847;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RgNDel3KBIdFRD20NWYscLXk0kRO4T4FPA8qn3r4sXM=;
-	b=5D1gAnpOzFQUDBJ63fx53UMHmj/Pinvy/HjB9v/V1oneL2XPt7iaxB1I7N+BFb4hFJ+WzO
-	uMSoKL7nLRlBoMDg==
+	bh=9Juk2Y8Z4vCgweVfRh7S+BpOVSpAcPiYmdkEL/A0ZQ8=;
+	b=5dU0FaFSntG9ZXnX+34/DLPOUKbmUYAfLK4fGoy5GhfiI3Qw/3k5bXxhuRtcOt1nYqXS8V
+	1TvsfVYTrLwt6BBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AF47139E2;
-	Tue, 17 Jun 2025 18:57:58 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DFC0139E2;
+	Tue, 17 Jun 2025 19:00:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id niR8Jba6UWjwOAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 17 Jun 2025 18:57:58 +0000
-Message-ID: <be9523c7-d06e-4c5a-b040-94109420cfed@suse.cz>
-Date: Tue, 17 Jun 2025 20:57:58 +0200
+	id CFZsHl67UWjKOQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 17 Jun 2025 19:00:46 +0000
+Message-ID: <540449d2-e1fe-4736-bc40-b6922db0b1a4@suse.cz>
+Date: Tue, 17 Jun 2025 21:00:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10] mm: rename call_mmap/mmap_prepare to
- vfs_mmap/mmap_prepare
+Subject: Re: [PATCH 07/10] mm/filemap: introduce generic_file_*_mmap_prepare()
+ helpers
 Content-Language: en-US
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -159,7 +159,7 @@ Cc: "Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe
  linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
  linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
+ <30622c1f0b98c66840bc8c02668bda276a810b70.1750099179.git.lorenzo.stoakes@oracle.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -200,11 +200,11 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <8d389f4994fa736aa8f9172bef8533c10a9e9011.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <30622c1f0b98c66840bc8c02668bda276a810b70.1750099179.git.lorenzo.stoakes@oracle.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7242F1F7A8
+X-Rspamd-Queue-Id: 507671F7B8
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -212,33 +212,32 @@ X-Spamd-Result: default: False [-1.01 / 50.00];
  g,m:naohiro.aota@wdc.com,m:jth@kernel.org,m:dan.j.williams@intel.com,m:willy@infradead.org,m:jannh@google.com,m:linux-aio@kvack.org,m:linux-mm@kvack.org,m:codalist@coda.cs.cmu.edu,s:linux-mtd@lists.infradead.org,s:linux-um@lists.infradead.org,s:ntfs3@lists.linux.dev,s:nvdimm@lists.linux.dev,s:ocfs2-devel@lists.linux.dev,s:devel@lists.orangefs.org,s:samba-technical@lists.samba.org,s:jfs-discussion@lists.sourceforge.net,s:linux-karma-devel@lists.sourceforge.net];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLtt3oo4rjgrukgqu3o4a3j6w6)];
 	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[112];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[112];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLtt3oo4rjgrukgqu3o4a3j6w6)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:email,oracle.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:dkim,suse.cz:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_115802_069355_449595F6 
-X-CRM114-Status: GOOD (  16.37  )
+X-CRM114-CacheID: sfid-20250617_120049_869911_F0BA456A 
+X-CRM114-Status: GOOD (  15.74  )
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -255,198 +254,103 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/16/25 21:33, Lorenzo Stoakes wrote:
-> The call_mmap() function violates the existing convention in
-> include/linux/fs.h whereby invocations of virtual file system hooks is
-> performed by functions prefixed with vfs_xxx().
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
 > 
-> Correct this by renaming call_mmap() to vfs_mmap(). This also avoids
-> confusion as to the fact that f_op->mmap_prepare may be invoked here.
+> The generic mmap handlers are very simple, so we can very easily convert
+> these in advance of converting file systems which use them.
 > 
-> Also rename __call_mmap_prepare() function to vfs_mmap_prepare() and adjust
-> to accept a file parameter, this is useful later for nested file systems.
-> 
-> Finally, fix up the VMA userland tests and ensure the mmap_prepare -> mmap
-> shim is implemented there.
+> This patch does so.
 > 
 > Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
 > ---
->  drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c |  2 +-
->  fs/backing-file.c                          |  2 +-
->  fs/coda/file.c                             |  4 +--
->  include/linux/fs.h                         |  5 ++--
->  ipc/shm.c                                  |  2 +-
->  mm/internal.h                              |  2 +-
->  mm/vma.c                                   |  2 +-
->  tools/testing/vma/vma_internal.h           | 32 ++++++++++++++++++----
->  8 files changed, 35 insertions(+), 16 deletions(-)
+>  include/linux/fs.h |  6 ++++--
+>  mm/filemap.c       | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 33 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> index 05e440643aa2..f4f1c979d1b9 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-> @@ -105,7 +105,7 @@ static int i915_gem_dmabuf_mmap(struct dma_buf *dma_buf, struct vm_area_struct *
->  	if (!obj->base.filp)
->  		return -ENODEV;
->  
-> -	ret = call_mmap(obj->base.filp, vma);
-> +	ret = vfs_mmap(obj->base.filp, vma);
->  	if (ret)
->  		return ret;
->  
-> diff --git a/fs/backing-file.c b/fs/backing-file.c
-> index 763fbe9b72b2..04018679bf69 100644
-> --- a/fs/backing-file.c
-> +++ b/fs/backing-file.c
-> @@ -339,7 +339,7 @@ int backing_file_mmap(struct file *file, struct vm_area_struct *vma,
->  	vma_set_file(vma, file);
->  
->  	old_cred = override_creds(ctx->cred);
-> -	ret = call_mmap(vma->vm_file, vma);
-> +	ret = vfs_mmap(vma->vm_file, vma);
->  	revert_creds(old_cred);
->  
->  	if (ctx->accessed)
-> diff --git a/fs/coda/file.c b/fs/coda/file.c
-> index 148856a582a9..2e6ea9319b35 100644
-> --- a/fs/coda/file.c
-> +++ b/fs/coda/file.c
-> @@ -199,10 +199,10 @@ coda_file_mmap(struct file *coda_file, struct vm_area_struct *vma)
->  	spin_unlock(&cii->c_lock);
->  
->  	vma->vm_file = get_file(host_file);
-> -	ret = call_mmap(vma->vm_file, vma);
-> +	ret = vfs_mmap(vma->vm_file, vma);
->  
->  	if (ret) {
-> -		/* if call_mmap fails, our caller will put host_file so we
-> +		/* if vfs_mmap fails, our caller will put host_file so we
->  		 * should drop the reference to the coda_file that we got.
->  		 */
->  		fput(coda_file);
 > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 93ee0d2d6f1a..7120f80255b3 100644
+> index 7120f80255b3..65cffc445fcc 100644
 > --- a/include/linux/fs.h
 > +++ b/include/linux/fs.h
-> @@ -2278,7 +2278,7 @@ static inline bool file_has_valid_mmap_hooks(struct file *file)
+> @@ -3395,8 +3395,10 @@ extern void inode_add_lru(struct inode *inode);
+>  extern int sb_set_blocksize(struct super_block *, int);
+>  extern int sb_min_blocksize(struct super_block *, int);
 >  
->  int compat_vma_mmap_prepare(struct file *file, struct vm_area_struct *vma);
->  
-> -static inline int call_mmap(struct file *file, struct vm_area_struct *vma)
-> +static inline int vfs_mmap(struct file *file, struct vm_area_struct *vma)
->  {
->  	if (file->f_op->mmap_prepare)
->  		return compat_vma_mmap_prepare(file, vma);
-> @@ -2286,8 +2286,7 @@ static inline int call_mmap(struct file *file, struct vm_area_struct *vma)
->  	return file->f_op->mmap(file, vma);
+> -extern int generic_file_mmap(struct file *, struct vm_area_struct *);
+> -extern int generic_file_readonly_mmap(struct file *, struct vm_area_struct *);
+> +int generic_file_mmap(struct file *, struct vm_area_struct *);
+> +int generic_file_mmap_prepare(struct vm_area_desc *desc);
+> +int generic_file_readonly_mmap(struct file *, struct vm_area_struct *);
+> +int generic_file_readonly_mmap_prepare(struct vm_area_desc *desc);
+>  extern ssize_t generic_write_checks(struct kiocb *, struct iov_iter *);
+>  int generic_write_checks_count(struct kiocb *iocb, loff_t *count);
+>  extern int generic_write_check_limits(struct file *file, loff_t pos,
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 93fbc2ef232a..e75608cbf420 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3847,6 +3847,18 @@ int generic_file_mmap(struct file *file, struct vm_area_struct *vma)
+>  	return 0;
 >  }
 >  
-> -static inline int __call_mmap_prepare(struct file *file,
-> -		struct vm_area_desc *desc)
-> +static inline int vfs_mmap_prepare(struct file *file, struct vm_area_desc *desc)
->  {
->  	return file->f_op->mmap_prepare(desc);
->  }
-> diff --git a/ipc/shm.c b/ipc/shm.c
-> index 492fcc699985..a9310b6dbbc3 100644
-> --- a/ipc/shm.c
-> +++ b/ipc/shm.c
-> @@ -602,7 +602,7 @@ static int shm_mmap(struct file *file, struct vm_area_struct *vma)
->  	if (ret)
->  		return ret;
->  
-> -	ret = call_mmap(sfd->file, vma);
-> +	ret = vfs_mmap(sfd->file, vma);
->  	if (ret) {
->  		__shm_close(sfd);
->  		return ret;
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 3823fb356d3b..a55c88afff6d 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -165,7 +165,7 @@ static inline void *folio_raw_mapping(const struct folio *folio)
->   */
->  static inline int mmap_file(struct file *file, struct vm_area_struct *vma)
->  {
-> -	int err = call_mmap(file, vma);
-> +	int err = vfs_mmap(file, vma);
->  
->  	if (likely(!err))
->  		return 0;
-> diff --git a/mm/vma.c b/mm/vma.c
-> index 5d35adadf2b5..f548bede3bbe 100644
-> --- a/mm/vma.c
-> +++ b/mm/vma.c
-> @@ -2582,7 +2582,7 @@ static int call_mmap_prepare(struct mmap_state *map)
->  	};
->  
->  	/* Invoke the hook. */
-> -	err = __call_mmap_prepare(map->file, &desc);
-> +	err = vfs_mmap_prepare(map->file, &desc);
->  	if (err)
->  		return err;
->  
-> diff --git a/tools/testing/vma/vma_internal.h b/tools/testing/vma/vma_internal.h
-> index d7fea56e3bb3..51dd122b8d50 100644
-> --- a/tools/testing/vma/vma_internal.h
-> +++ b/tools/testing/vma/vma_internal.h
-> @@ -1458,6 +1458,27 @@ static inline void free_anon_vma_name(struct vm_area_struct *vma)
->  	(void)vma;
->  }
->  
-> +/* Declared in vma.h. */
-> +static inline void set_vma_from_desc(struct vm_area_struct *vma,
-> +		struct vm_area_desc *desc);
-> +
-> +static inline struct vm_area_desc *vma_to_desc(struct vm_area_struct *vma,
-> +		struct vm_area_desc *desc);
-> +
-> +static int compat_vma_mmap_prepare(struct file *file,
-> +		struct vm_area_struct *vma)
+> +int generic_file_mmap_prepare(struct vm_area_desc *desc)
 > +{
-> +	struct vm_area_desc desc;
-> +	int err;
+> +	struct file *file = desc->file;
+> +	struct address_space *mapping = file->f_mapping;
 > +
-> +	err = file->f_op->mmap_prepare(vma_to_desc(vma, &desc));
-> +	if (err)
-> +		return err;
-> +	set_vma_from_desc(vma, &desc);
-> +
+> +	if (!mapping->a_ops->read_folio)
+> +		return -ENOEXEC;
+> +	file_accessed(file);
+> +	desc->vm_ops = &generic_file_vm_ops;
 > +	return 0;
 > +}
 > +
->  /* Did the driver provide valid mmap hook configuration? */
->  static inline bool file_has_valid_mmap_hooks(struct file *file)
->  {
-> @@ -1467,22 +1488,21 @@ static inline bool file_has_valid_mmap_hooks(struct file *file)
->  	/* Hooks are mutually exclusive. */
->  	if (WARN_ON_ONCE(has_mmap && has_mmap_prepare))
->  		return false;
-> -	if (WARN_ON_ONCE(!has_mmap && !has_mmap_prepare))
-> +	if (!has_mmap && !has_mmap_prepare)
->  		return false;
->  
->  	return true;
+>  /*
+>   * This is for filesystems which do not implement ->writepage.
+>   */
+> @@ -3856,6 +3868,13 @@ int generic_file_readonly_mmap(struct file *file, struct vm_area_struct *vma)
+>  		return -EINVAL;
+>  	return generic_file_mmap(file, vma);
 >  }
->  
-> -static inline int call_mmap(struct file *file, struct vm_area_struct *vma)
-> +static inline int vfs_mmap(struct file *file, struct vm_area_struct *vma)
+> +
+> +int generic_file_readonly_mmap_prepare(struct vm_area_desc *desc)
+> +{
+> +	if (is_shared_maywrite(desc->vm_flags))
+> +		return -EINVAL;
+> +	return generic_file_mmap_prepare(desc);
+> +}
+>  #else
+>  vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
 >  {
-> -	if (WARN_ON_ONCE(file->f_op->mmap_prepare))
-> -		return -EINVAL;
-> +	if (file->f_op->mmap_prepare)
-> +		return compat_vma_mmap_prepare(file, vma);
->  
->  	return file->f_op->mmap(file, vma);
->  }
->  
-> -static inline int __call_mmap_prepare(struct file *file,
-> -		struct vm_area_desc *desc)
-> +static inline int vfs_mmap_prepare(struct file *file, struct vm_area_desc *desc)
+> @@ -3865,15 +3884,25 @@ int generic_file_mmap(struct file *file, struct vm_area_struct *vma)
 >  {
->  	return file->f_op->mmap_prepare(desc);
+>  	return -ENOSYS;
 >  }
+> +int generic_file_mmap_prepare(struct vm_area_desc *desc)
+> +{
+> +	return -ENOSYS;
+> +}
+>  int generic_file_readonly_mmap(struct file *file, struct vm_area_struct *vma)
+>  {
+>  	return -ENOSYS;
+>  }
+> +int generic_file_readonly_mmap_prepare(struct vm_area_desc *desc)
+> +{
+> +	return -ENOSYS;
+> +}
+>  #endif /* CONFIG_MMU */
+>  
+>  EXPORT_SYMBOL(filemap_page_mkwrite);
+>  EXPORT_SYMBOL(generic_file_mmap);
+> +EXPORT_SYMBOL(generic_file_mmap_prepare);
+>  EXPORT_SYMBOL(generic_file_readonly_mmap);
+> +EXPORT_SYMBOL(generic_file_readonly_mmap_prepare);
+>  
+>  static struct folio *do_read_cache_folio(struct address_space *mapping,
+>  		pgoff_t index, filler_t filler, struct file *file, gfp_t gfp)
 
 
