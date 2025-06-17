@@ -4,56 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 082FEC77B7F
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F4EEC7EE32
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XaXveEeH10NyqmsZskThZ30oS/IooNFOsjao3u+MPWU=; b=hBoL7PQYt7ObqJIZLMBhh+b92p
-	2J/d8FLOpdxI1lhL9tsGODCOoiIIe/jB8Vb/FSrPxYAwQ7K+5mb1143asYSId0/ZbCUyopq7AheXc
-	X9XaIvIlt4aO5gF3foY8IcaoB3lSjn5I4nMT4tq3q9yMcGXv0E3EqsGBirD+QoM3u9ALPjLPO6Bla
-	sTFrMr/dE+rX8h9yYk6mJkuUEeKwGoKvH/jdwPCdi9kFC1JKBWoGNNmPPk+nuWGPO8wFtR40iufhY
-	O460zO6RglNDKXbOkdezVYiNOBML7Mv8kW7uD/Um8k7BQpE8QB/PwdblwP7Oi5C5rWecJu/0hHMy6
-	4jyfWm5g==;
+	bh=HumSZqJEc3NqTuF1gCNLL1DjTVit469VH90oXWtD97g=; b=xWYwBhxJDzK309VHpF0A3bWjz0
+	kJhTGR9ro0kPN0wxh9BIM/gs1LAJKiZ85IsKKy37wwncS95Lo8X3CivDCQITITjW4zdkIxnGyWq63
+	D4IR+/YKznhUblNnWsVQJqW5mtUynk+tB7LCSpQis8DodjQbY6pcpEAfy9lgMZZkhTG1f2AZ6yLgm
+	yLFhcXUkx+UaCrFKZ+BTx3dlGtUVHs1h72o/C6F/nyOYUK8tZ2XcF1VHEeVjuy/X1XXVahM2RTfpi
+	HfKxOPErQ/5TAoe2FeCbcmI2szRfKP8tH/3VHCoG2/8c80PytEa+iuvY43yTejrIXWRi70RAR1wSC
+	u+XQPuSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSLpE-0000000ECQY-1sAX;
-	Thu, 19 Jun 2025 20:25:32 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1uSLpC-0000000ECNc-3nUn;
+	Thu, 19 Jun 2025 20:25:30 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUjU-000000074AJ-2z2K;
-	Tue, 17 Jun 2025 11:44:06 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 77600A5000E;
-	Tue, 17 Jun 2025 11:44:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBABEC4CEE3;
-	Tue, 17 Jun 2025 11:43:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750160643;
-	bh=L4F/xAE2aK6xDa/QOHjQNfrbZ+ldwQ/xxyXW1QOlMqY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pglRVmSgsr6zVPCbLUxJit1HENECqtF+VKUELSm7DDvJTAXtRKCT9IonBR+vy/Pv+
-	 0KOSaKv4o78/UPxS/8WAJnS8XTOzb25DdQPvidNigl04+KbSBnUNdwYpWyPtjwUao2
-	 KVjU1eod47I9hfmAqu1HXs5NNkpj9ZmoKBDj9iEbYW+Iu4/Wq9ZnQvd/24RiYcCxU6
-	 ehoC5iKuDLDPBM85gO0tJ3zg29crJnqV/BFPF36D01IwNlhquecGAcdQBOYi0SfMgr
-	 iTlE7wC7JprLm5uHeq/OcqpnX3tE4351ouMdsYgL/8w6omsW5EvX+9RqdO82rtRfny
-	 Z7wz58Ln84EiQ==
-Date: Tue, 17 Jun 2025 13:43:36 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
+	id 1uRTKM-00000006t3o-09fD
+	for linux-um@lists.infradead.org;
+	Tue, 17 Jun 2025 10:14:04 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8FA321F454;
+	Tue, 17 Jun 2025 10:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750155240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HumSZqJEc3NqTuF1gCNLL1DjTVit469VH90oXWtD97g=;
+	b=GCA4vRTtep8lSNqForgDoEbiH2FHffylKbTQW8ADGX0ygw7y0YzgmvKyJudwz1c+pn/vrP
+	oiM1utFqq3DKasuCS+rvGIM3fht87NThulP97W1MoOrovEYbQlceN3dPfOwqPwPdTl/wzO
+	Jc9QPnSqRm9TOoCgWTtotAyb95FVifI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750155240;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HumSZqJEc3NqTuF1gCNLL1DjTVit469VH90oXWtD97g=;
+	b=vofk+nlPab1BttxugZRXW6jQtLNByPTK8FyDt52WanP8wxnuDGkGdmSvEDafeB/gXZrhW8
+	SgAfoWxD1JFY7mAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750155240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HumSZqJEc3NqTuF1gCNLL1DjTVit469VH90oXWtD97g=;
+	b=GCA4vRTtep8lSNqForgDoEbiH2FHffylKbTQW8ADGX0ygw7y0YzgmvKyJudwz1c+pn/vrP
+	oiM1utFqq3DKasuCS+rvGIM3fht87NThulP97W1MoOrovEYbQlceN3dPfOwqPwPdTl/wzO
+	Jc9QPnSqRm9TOoCgWTtotAyb95FVifI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750155240;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HumSZqJEc3NqTuF1gCNLL1DjTVit469VH90oXWtD97g=;
+	b=vofk+nlPab1BttxugZRXW6jQtLNByPTK8FyDt52WanP8wxnuDGkGdmSvEDafeB/gXZrhW8
+	SgAfoWxD1JFY7mAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 78C6613A69;
+	Tue, 17 Jun 2025 10:14:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 52RxHeg/UWhYGQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Jun 2025 10:14:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 33D4AA29F0; Tue, 17 Jun 2025 12:14:00 +0200 (CEST)
+Date: Tue, 17 Jun 2025 12:14:00 +0200
+From: Jan Kara <jack@suse.cz>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
 	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
 	Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, 
 	Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
@@ -80,31 +118,57 @@ Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	Zhihao Cheng <chengzhihao1@huawei.com>, Hans de Goede <hdegoede@redhat.com>, 
 	Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
 	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
-	Dan Williams <dan.j.williams@intel.com>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, 
-	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, linux-aio@kvack.org, 
-	linux-unionfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, 
-	ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-afs@lists.infradead.org, linux-aio@kvack.org, linux-unionfs@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
 	linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
 	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, 
 	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 04/10] fs/dax: make it possible to check dev dax support
- without a VMA
-Message-ID: <20250617-sehgewohnheiten-getagt-47e1ee917d4f@brauner>
+Subject: Re: [PATCH 08/10] fs: convert simple use of generic_file_*_mmap() to
+ .mmap_prepare()
+Message-ID: <3m4hxh7ybqgwr2fzymzsp4wiz254hdeelkdaajw3gxbdw7fezt@53eblikg32e3>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <b09de1e8544384074165d92d048e80058d971286.1750099179.git.lorenzo.stoakes@oracle.com>
- <aFB-Do9FE6H9SsGY@casper.infradead.org>
+ <c7dc90e44a9e75e750939ea369290d6e441a18e6.1750099179.git.lorenzo.stoakes@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aFB-Do9FE6H9SsGY@casper.infradead.org>
+In-Reply-To: <c7dc90e44a9e75e750939ea369290d6e441a18e6.1750099179.git.lorenzo.stoakes@oracle.com>
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	FORGED_RECIPIENTS(2.00)[m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:rodrigo.vivi@intel.com,m:airlied@gmail.com,m:simona@ffwll.ch,m:ericvh@kernel.org,m:lucho@ionkov.net,m:asmadeus@codewreck.org,m:linux_oss@crudebyte.com,m:marc.dionne@auristor.com,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:bcrl@kvack.org,m:amir73il@gmail.com,m:aivazian.tigran@gmail.com,m:kees@kernel.org,m:clm@fb.com,m:idryomov@gmail.com,m:jaharkes@cs.cmu.edu,m:coda@cs.cmu.edu,m:xiang@kernel.org,m:chao@kernel.org,m:zbestahu@gmail.com,m:dhavale@google.com,m:lihongbo22@huawei.com,m:linkinjeon@kernel.org,m:adilger.kernel@dilger.ca,m:jaegeuk@kernel.org,m:slava@dubeyko.com,m:frank.li@vivo.com,m:anton.ivanov@cambridgegreys.com,m:mikulas@artax.karlin.mff.cuni.cz,m:dwmw2@infradead.org,m:shaggy@kernel.org,m:trondmy@kernel.org,m:anna@kernel.org,m:konishi.ryusuke@gmail.com,m:mark@fasheh.com,m:jlbec@evilplan.org,m:me@bobcopeland.com,m:ronniesahlberg@gmail.com,m:chengzhihao1@huawei.com,m:cem@kernel.org,m:dlemoal@kernel.or
+ g,m:naohiro.aota@wdc.com,m:jth@kernel.org,m:dan.j.williams@intel.com,m:willy@infradead.org,m:jannh@google.com,m:linux-aio@kvack.org,m:linux-mm@kvack.org,m:codalist@coda.cs.cmu.edu,s:linux-mtd@lists.infradead.org,s:linux-um@lists.infradead.org,s:ntfs3@lists.linux.dev,s:nvdimm@lists.linux.dev,s:ocfs2-devel@lists.linux.dev,s:devel@lists.orangefs.org,s:samba-technical@lists.samba.org,s:jfs-discussion@lists.sourceforge.net,s:linux-f2fs-devel@lists.sourceforge.net,s:linux-karma-devel@lists.sourceforge.net];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
+	R_RATELIMIT(0.00)[to_ip_from(RLb58ib84xst5oy51ju4zaburj)];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[113];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_044404_869877_78CBC829 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20250617_031402_373094_2921418A 
+X-CRM114-Status: GOOD (  21.25  )
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -120,27 +184,262 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 09:26:54PM +0100, Matthew Wilcox wrote:
-> On Mon, Jun 16, 2025 at 08:33:23PM +0100, Lorenzo Stoakes wrote:
-> >  fs/ext4/file.c      |  2 +-
-> >  fs/xfs/xfs_file.c   |  3 ++-
+On Mon 16-06-25 20:33:27, Lorenzo Stoakes wrote:
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
 > 
-> Both of these already have the inode from the file ...
+> We have provided generic .mmap_prepare() equivalents, so update all file
+> systems that specify these directly in their file_operations structures.
 > 
-> > +static inline bool daxdev_mapping_supported(vm_flags_t vm_flags,
-> > +					    struct file *file,
-> > +					    struct dax_device *dax_dev)
-> >  {
-> > -	if (!(vma->vm_flags & VM_SYNC))
-> > +	if (!(vm_flags & VM_SYNC))
-> >  		return true;
-> > -	if (!IS_DAX(file_inode(vma->vm_file)))
-> > +	if (!IS_DAX(file_inode(file)))
-> >  		return false;
-> >  	return dax_synchronous(dax_dev);
+> This updates 9p, adfs, affs, bfs, fat, hfs, hfsplus, hostfs, hpfs, jffs2,
+> jfs, minix, omfs, ramfs and ufs file systems directly.
 > 
-> ... and the only thing this function uses from the file is the inode.
-> So maybe pass in the inode rather than the file?
+> It updates generic_ro_fops which impacts qnx4, cramfs, befs, squashfs,
+> frebxfs, qnx6, efs, romfs, erofs and isofs file systems.
+> 
+> There are remaining file systems which use generic hooks in a less direct
+> way which we address in a subsequent commit.
+> 
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
-Agreed. I've converted this to take const struct inode *.
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/9p/vfs_file.c        | 2 +-
+>  fs/adfs/file.c          | 2 +-
+>  fs/affs/file.c          | 2 +-
+>  fs/bfs/file.c           | 2 +-
+>  fs/fat/file.c           | 2 +-
+>  fs/hfs/inode.c          | 2 +-
+>  fs/hfsplus/inode.c      | 2 +-
+>  fs/hostfs/hostfs_kern.c | 2 +-
+>  fs/hpfs/file.c          | 2 +-
+>  fs/jffs2/file.c         | 2 +-
+>  fs/jfs/file.c           | 2 +-
+>  fs/minix/file.c         | 2 +-
+>  fs/omfs/file.c          | 2 +-
+>  fs/ramfs/file-mmu.c     | 2 +-
+>  fs/read_write.c         | 2 +-
+>  fs/ufs/file.c           | 2 +-
+>  16 files changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+> index 348cc90bf9c5..2ff3e0ac7266 100644
+> --- a/fs/9p/vfs_file.c
+> +++ b/fs/9p/vfs_file.c
+> @@ -516,7 +516,7 @@ const struct file_operations v9fs_file_operations = {
+>  	.open = v9fs_file_open,
+>  	.release = v9fs_dir_release,
+>  	.lock = v9fs_file_lock,
+> -	.mmap = generic_file_readonly_mmap,
+> +	.mmap_prepare = generic_file_readonly_mmap_prepare,
+>  	.splice_read = v9fs_file_splice_read,
+>  	.splice_write = iter_file_splice_write,
+>  	.fsync = v9fs_file_fsync,
+> diff --git a/fs/adfs/file.c b/fs/adfs/file.c
+> index ee80718aaeec..cd13165fd904 100644
+> --- a/fs/adfs/file.c
+> +++ b/fs/adfs/file.c
+> @@ -25,7 +25,7 @@
+>  const struct file_operations adfs_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.fsync		= generic_file_fsync,
+>  	.write_iter	= generic_file_write_iter,
+>  	.splice_read	= filemap_splice_read,
+> diff --git a/fs/affs/file.c b/fs/affs/file.c
+> index 7a71018e3f67..fbac204b7055 100644
+> --- a/fs/affs/file.c
+> +++ b/fs/affs/file.c
+> @@ -999,7 +999,7 @@ const struct file_operations affs_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.open		= affs_file_open,
+>  	.release	= affs_file_release,
+>  	.fsync		= affs_file_fsync,
+> diff --git a/fs/bfs/file.c b/fs/bfs/file.c
+> index fa66a09e496a..6685c3411fe7 100644
+> --- a/fs/bfs/file.c
+> +++ b/fs/bfs/file.c
+> @@ -27,7 +27,7 @@ const struct file_operations bfs_file_operations = {
+>  	.llseek 	= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.splice_read	= filemap_splice_read,
+>  };
+>  
+> diff --git a/fs/fat/file.c b/fs/fat/file.c
+> index e887e9ab7472..4fc49a614fb8 100644
+> --- a/fs/fat/file.c
+> +++ b/fs/fat/file.c
+> @@ -204,7 +204,7 @@ const struct file_operations fat_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.release	= fat_file_release,
+>  	.unlocked_ioctl	= fat_generic_ioctl,
+>  	.compat_ioctl	= compat_ptr_ioctl,
+> diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+> index a81ce7a740b9..d419586d668d 100644
+> --- a/fs/hfs/inode.c
+> +++ b/fs/hfs/inode.c
+> @@ -690,7 +690,7 @@ static const struct file_operations hfs_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.splice_read	= filemap_splice_read,
+>  	.fsync		= hfs_file_fsync,
+>  	.open		= hfs_file_open,
+> diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+> index f331e9574217..0af7e302730c 100644
+> --- a/fs/hfsplus/inode.c
+> +++ b/fs/hfsplus/inode.c
+> @@ -366,7 +366,7 @@ static const struct file_operations hfsplus_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.splice_read	= filemap_splice_read,
+>  	.fsync		= hfsplus_file_fsync,
+>  	.open		= hfsplus_file_open,
+> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> index 702c41317589..bc22b6cc72af 100644
+> --- a/fs/hostfs/hostfs_kern.c
+> +++ b/fs/hostfs/hostfs_kern.c
+> @@ -382,7 +382,7 @@ static const struct file_operations hostfs_file_fops = {
+>  	.splice_write	= iter_file_splice_write,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.open		= hostfs_open,
+>  	.release	= hostfs_file_release,
+>  	.fsync		= hostfs_fsync,
+> diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
+> index 449a3fc1b8d9..a1a44e3edb19 100644
+> --- a/fs/hpfs/file.c
+> +++ b/fs/hpfs/file.c
+> @@ -255,7 +255,7 @@ const struct file_operations hpfs_file_ops =
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.release	= hpfs_file_release,
+>  	.fsync		= hpfs_file_fsync,
+>  	.splice_read	= filemap_splice_read,
+> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+> index 13c18ccc13b0..1e05f7fe5dd4 100644
+> --- a/fs/jffs2/file.c
+> +++ b/fs/jffs2/file.c
+> @@ -54,7 +54,7 @@ const struct file_operations jffs2_file_operations =
+>   	.read_iter =	generic_file_read_iter,
+>   	.write_iter =	generic_file_write_iter,
+>  	.unlocked_ioctl=jffs2_ioctl,
+> -	.mmap =		generic_file_readonly_mmap,
+> +	.mmap_prepare =	generic_file_readonly_mmap_prepare,
+>  	.fsync =	jffs2_fsync,
+>  	.splice_read =	filemap_splice_read,
+>  	.splice_write = iter_file_splice_write,
+> diff --git a/fs/jfs/file.c b/fs/jfs/file.c
+> index 01b6912e60f8..5e47951db630 100644
+> --- a/fs/jfs/file.c
+> +++ b/fs/jfs/file.c
+> @@ -143,7 +143,7 @@ const struct file_operations jfs_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.splice_read	= filemap_splice_read,
+>  	.splice_write	= iter_file_splice_write,
+>  	.fsync		= jfs_fsync,
+> diff --git a/fs/minix/file.c b/fs/minix/file.c
+> index 906d192ab7f3..dca7ac71f049 100644
+> --- a/fs/minix/file.c
+> +++ b/fs/minix/file.c
+> @@ -17,7 +17,7 @@ const struct file_operations minix_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.fsync		= generic_file_fsync,
+>  	.splice_read	= filemap_splice_read,
+>  };
+> diff --git a/fs/omfs/file.c b/fs/omfs/file.c
+> index 98358d405b6a..319c04e63964 100644
+> --- a/fs/omfs/file.c
+> +++ b/fs/omfs/file.c
+> @@ -332,7 +332,7 @@ const struct file_operations omfs_file_operations = {
+>  	.llseek = generic_file_llseek,
+>  	.read_iter = generic_file_read_iter,
+>  	.write_iter = generic_file_write_iter,
+> -	.mmap = generic_file_mmap,
+> +	.mmap_prepare = generic_file_mmap_prepare,
+>  	.fsync = generic_file_fsync,
+>  	.splice_read = filemap_splice_read,
+>  };
+> diff --git a/fs/ramfs/file-mmu.c b/fs/ramfs/file-mmu.c
+> index b45c7edc3225..b11f5b20b78b 100644
+> --- a/fs/ramfs/file-mmu.c
+> +++ b/fs/ramfs/file-mmu.c
+> @@ -41,7 +41,7 @@ static unsigned long ramfs_mmu_get_unmapped_area(struct file *file,
+>  const struct file_operations ramfs_file_operations = {
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.fsync		= noop_fsync,
+>  	.splice_read	= filemap_splice_read,
+>  	.splice_write	= iter_file_splice_write,
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 0ef70e128c4a..80fdab99f9e4 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -28,7 +28,7 @@
+>  const struct file_operations generic_ro_fops = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+> -	.mmap		= generic_file_readonly_mmap,
+> +	.mmap_prepare	= generic_file_readonly_mmap_prepare,
+>  	.splice_read	= filemap_splice_read,
+>  };
+>  
+> diff --git a/fs/ufs/file.c b/fs/ufs/file.c
+> index 487ad1fc2de6..c2a391c17df7 100644
+> --- a/fs/ufs/file.c
+> +++ b/fs/ufs/file.c
+> @@ -38,7 +38,7 @@ const struct file_operations ufs_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= generic_file_read_iter,
+>  	.write_iter	= generic_file_write_iter,
+> -	.mmap		= generic_file_mmap,
+> +	.mmap_prepare	= generic_file_mmap_prepare,
+>  	.open           = generic_file_open,
+>  	.fsync		= generic_file_fsync,
+>  	.splice_read	= filemap_splice_read,
+> -- 
+> 2.49.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
