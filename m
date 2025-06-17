@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94B78C7EE2A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93012C7EE24
 	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 21:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,48 +12,86 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=m/RRUe7oOlBQaMrRU0yW5gAkiYkQQmiPrVoU6uzcycQ=; b=QTbY8LdMK4w+Y1WHwtwqZLDnOb
-	PSP1Crz1xuZQVspBS1095X+md7A8X6AjlzTDO96e6FuidyIsVUQ2MWAzKZna58Rg3gBNXPQvjeSEY
-	vAE0+Nfr11uP1LKxfiecN0Q27XOfOnzTbw4qG/Bp9hGnkCsuuRJbUZ6R0tzhKe/5zwtb4K4lmolc7
-	xjEw3jac0FL2KZCuW3Kp9hziB16Y78mkrU+lrM71zZyQcBevV3qyY8fJV+tuh7Gwzp8eIchnO8MHi
-	vQ9MAF/69RjnWxjew3AYkA+AUgSt6l4tKeA4qq+XoM0UC949lVu1nMZdJc4Ixq9daFykZY/iQdJEW
-	311j1Hqw==;
+	bh=yRL1pzyzWfZkEwjIrh5EPK0DyvqO4jGpH7nTdQIDJOU=; b=NsnPo6sjJHLQxiszCL/kcF6Eed
+	cEbEQVLDPmCrTa8wZ6XPmVQx0vuK4SBFYkxMYnBlLbW/tD4nK6crq2LB3Mut538V1vK8MW2j4l4ni
+	jCylZjrRvMnYeyR/V7BVT+u+Gnza0lcN+WMynGidSv2KIAWyMTSq26yVFgwAvdy8IEJXwUElBzZiZ
+	yodMhZKa0XarMfsOtmMXqAvS9/JoTYGofD9ZDGdB6puWvTkWyHRsJ0eLAVAzVhO7bmj/cIZlJ1SUq
+	EYfEG16lvR2TeJs7/L52hlGjaoNfEW63mv9Jx/3NoaOanGsie8lkFVu86bpVuEmxVN2mgxkteDKHi
+	YcNnhbKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSMrh-0000000EItF-1IW3;
-	Thu, 19 Jun 2025 21:32:09 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1uSMrg-0000000EIst-0hhd;
+	Thu, 19 Jun 2025 21:32:08 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUwh-000000076I1-3H9Q;
-	Tue, 17 Jun 2025 11:57:45 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 81BE95C3AD7;
-	Tue, 17 Jun 2025 11:55:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EC2DC4CEE3;
-	Tue, 17 Jun 2025 11:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750161462;
-	bh=T+hj+yayJhfzqGA9kWHW1UQw8dsCOqK3Vx6p1g+lWhs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ANNRMLSMbFJxF0/0JcpxGnRgNC2cM3iQk05j0kIN5dUOf6a+6FhzXEhCV9tljSO6h
-	 v2e3uV6HAxpTWa31kRKsnVAXQkLyFD1xYm1QZjMvIFL3ouF6AXeudY39YUcGZrolsh
-	 RyM2TZ/EQMyqQ6Y6s4GUWKP0gK9gINzD7L4jwsfBCJ1suak/ya3jB5me4TnYO/YFrF
-	 BrbHmvsabgMYM9Mbit9yWCy+NDOo9GjZfXkkWr9NdZCIoi7MIoTDvDFU7neHyJvL+Q
-	 sCBOLJVwQyL5L44PlP9UgERzG7VA2X0BjHsxmPcW0plFtm6qxZnaOBFYXof6KFwTQp
-	 Bv2/tmMRJtG5w==
-Date: Tue, 17 Jun 2025 13:57:17 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, 
+	id 1uRTYC-00000006v7E-1WOm
+	for linux-um@lists.infradead.org;
+	Tue, 17 Jun 2025 10:28:22 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BECB9211C4;
+	Tue, 17 Jun 2025 10:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750156098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yRL1pzyzWfZkEwjIrh5EPK0DyvqO4jGpH7nTdQIDJOU=;
+	b=WmjG5bytiy7I3a/BBLvW+VsIqotD5+JByi3+kYC+pJMvBTbqXyJesHTAiZz3I9gAH/sqUN
+	odZ44BsgYcizKb8oLgEt7TVYvcI+tsVcCM6mtUrfDsIhCmfjtb9owBPB4UGS70/DLklX3/
+	Jo0XXlko/aZ2t3BgHpHVI8npx+gZ584=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750156098;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yRL1pzyzWfZkEwjIrh5EPK0DyvqO4jGpH7nTdQIDJOU=;
+	b=pnny5t+1R3s5+oz10RPJdQZOZNrWl6PZC680u7CImBF6HezK9+Kt7F3opuQwryTFcHQpGE
+	YCJF0/Vphg/IO3AA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1750156097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yRL1pzyzWfZkEwjIrh5EPK0DyvqO4jGpH7nTdQIDJOU=;
+	b=V8XAlhZjNOq8a7kiGH50OFfxbQped1myZsJ2VgF89KEp1B7ttzza88fJJmn8NOg1DW9f4B
+	dsvPKunu7OasSmWwBpOOEngmUB1By6xbruLi8CNwnB8xMEMKKX3pNnCpg41JdP5EXk1cj4
+	+u3B2fWZyjPE8HDYsGAxwXD53Fd47Mk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1750156097;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yRL1pzyzWfZkEwjIrh5EPK0DyvqO4jGpH7nTdQIDJOU=;
+	b=ZOSe9hUD5u6zOvVCb2BXorJhOv5ONladUC3MF82cZkGy3ZY15cD1s7zoZ2vwuLM5JGKDm5
+	jOxbp0QBEPV9MGAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A12C913AE1;
+	Tue, 17 Jun 2025 10:28:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MhydJkFDUWjGHQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Jun 2025 10:28:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4465FA29F0; Tue, 17 Jun 2025 12:28:17 +0200 (CEST)
+Date: Tue, 17 Jun 2025 12:28:17 +0200
+From: Jan Kara <jack@suse.cz>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
 	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
 	Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, 
 	Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
@@ -95,17 +133,43 @@ Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
 Subject: Re: [PATCH 10/10] fs: replace mmap hook with .mmap_prepare for
  simple mappings
-Message-ID: <20250617-karibus-abgrenzen-e534b9acd4c7@brauner>
+Message-ID: <6nktgdc7ygt6hncfnl33d2jlwvlydspiiklwf6oxiqxxcjhzs2@j6f36ktyv774>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
  <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
- <6nktgdc7ygt6hncfnl33d2jlwvlydspiiklwf6oxiqxxcjhzs2@j6f36ktyv774>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6nktgdc7ygt6hncfnl33d2jlwvlydspiiklwf6oxiqxxcjhzs2@j6f36ktyv774>
+In-Reply-To: <f528ac4f35b9378931bd800920fee53fc0c5c74d.1750099179.git.lorenzo.stoakes@oracle.com>
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	FORGED_RECIPIENTS(2.00)[m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:rodrigo.vivi@intel.com,m:airlied@gmail.com,m:simona@ffwll.ch,m:ericvh@kernel.org,m:lucho@ionkov.net,m:asmadeus@codewreck.org,m:linux_oss@crudebyte.com,m:marc.dionne@auristor.com,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:bcrl@kvack.org,m:amir73il@gmail.com,m:aivazian.tigran@gmail.com,m:kees@kernel.org,m:clm@fb.com,m:idryomov@gmail.com,m:jaharkes@cs.cmu.edu,m:coda@cs.cmu.edu,m:xiang@kernel.org,m:chao@kernel.org,m:zbestahu@gmail.com,m:dhavale@google.com,m:lihongbo22@huawei.com,m:linkinjeon@kernel.org,m:adilger.kernel@dilger.ca,m:jaegeuk@kernel.org,m:slava@dubeyko.com,m:frank.li@vivo.com,m:anton.ivanov@cambridgegreys.com,m:mikulas@artax.karlin.mff.cuni.cz,m:dwmw2@infradead.org,m:shaggy@kernel.org,m:trondmy@kernel.org,m:anna@kernel.org,m:konishi.ryusuke@gmail.com,m:mark@fasheh.com,m:jlbec@evilplan.org,m:me@bobcopeland.com,m:ronniesahlberg@gmail.com,m:chengzhihao1@huawei.com,m:cem@kernel.org,m:dlemoal@kernel.or
+ g,m:naohiro.aota@wdc.com,m:jth@kernel.org,m:dan.j.williams@intel.com,m:willy@infradead.org,m:jannh@google.com,m:linux-aio@kvack.org,m:linux-mm@kvack.org,m:codalist@coda.cs.cmu.edu,s:linux-mtd@lists.infradead.org,s:linux-um@lists.infradead.org,s:ntfs3@lists.linux.dev,s:nvdimm@lists.linux.dev,s:ocfs2-devel@lists.linux.dev,s:devel@lists.orangefs.org,s:samba-technical@lists.samba.org,s:jfs-discussion@lists.sourceforge.net,s:linux-f2fs-devel@lists.sourceforge.net,s:linux-karma-devel@lists.sourceforge.net];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,oracle.com:email,suse.cz:email,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,oracle.com,kernel.dk,linux.intel.com,intel.com,ursulin.net,gmail.com,ffwll.ch,kernel.org,ionkov.net,codewreck.org,crudebyte.com,suse.com,redhat.com,auristor.com,zeniv.linux.org.uk,suse.cz,kvack.org,szeredi.hu,linux.dev,fb.com,toxicpanda.com,cs.cmu.edu,tyhicks.com,linux.alibaba.com,google.com,huawei.com,samsung.com,sony.com,mit.edu,dilger.ca,mail.parknet.co.jp,dubeyko.com,physik.fu-berlin.de,vivo.com,nod.at,cambridgegreys.com,sipsolutions.net,artax.karlin.mff.cuni.cz,infradead.org,paragon-software.com,fasheh.com,evilplan.org,bobcopeland.com,omnibond.com,samba.org,manguebit.org,microsoft.com,talpey.com,wdc.com,suse.de,vger.kernel.org,lists.freedesktop.org,lists.linux.dev,lists.infradead.org,coda.cs.cmu.edu,lists.ozlabs.org,lists.sourceforge.net,lists.orangefs.org,lists.samba.org];
+	RCPT_COUNT_GT_50(0.00)[113];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLb58ib84xst5oy51ju4zaburj)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_045743_902911_ED6F7960 
-X-CRM114-Status: GOOD (  22.85  )
+X-CRM114-CacheID: sfid-20250617_032820_712532_04C565DD 
+X-CRM114-Status: GOOD (  24.57  )
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -121,62 +185,89 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 17, 2025 at 12:28:17PM +0200, Jan Kara wrote:
-> On Mon 16-06-25 20:33:29, Lorenzo Stoakes wrote:
-> > Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
-> > callback"), the f_op->mmap() hook has been deprecated in favour of
-> > f_op->mmap_prepare().
-> > 
-> > This callback is invoked in the mmap() logic far earlier, so error handling
-> > can be performed more safely without complicated and bug-prone state
-> > unwinding required should an error arise.
-> > 
-> > This hook also avoids passing a pointer to a not-yet-correctly-established
-> > VMA avoiding any issues with referencing this data structure.
-> > 
-> > It rather provides a pointer to the new struct vm_area_desc descriptor type
-> > which contains all required state and allows easy setting of required
-> > parameters without any consideration needing to be paid to locking or
-> > reference counts.
-> > 
-> > Note that nested filesystems like overlayfs are compatible with an
-> > .mmap_prepare() callback since commit bb666b7c2707 ("mm: add mmap_prepare()
-> > compatibility layer for nested file systems").
-> > 
-> > In this patch we apply this change to file systems with relatively simple
-> > mmap() hook logic - exfat, ceph, f2fs, bcachefs, zonefs, btrfs, ocfs2,
-> > orangefs, nilfs2, romfs, ramfs and aio.
-> > 
-> > Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+On Mon 16-06-25 20:33:29, Lorenzo Stoakes wrote:
+> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> callback"), the f_op->mmap() hook has been deprecated in favour of
+> f_op->mmap_prepare().
 > 
-> Two small nits below. Otherwise feel free to add:
+> This callback is invoked in the mmap() logic far earlier, so error handling
+> can be performed more safely without complicated and bug-prone state
+> unwinding required should an error arise.
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> This hook also avoids passing a pointer to a not-yet-correctly-established
+> VMA avoiding any issues with referencing this data structure.
 > 
-> > diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> > index 60a621b00c65..37522137c380 100644
-> > --- a/fs/ceph/addr.c
-> > +++ b/fs/ceph/addr.c
-> > @@ -2330,13 +2330,14 @@ static const struct vm_operations_struct ceph_vmops = {
-> >  	.page_mkwrite	= ceph_page_mkwrite,
-> >  };
-> >  
-> > -int ceph_mmap(struct file *file, struct vm_area_struct *vma)
-> > +int ceph_mmap_prepare(struct vm_area_desc *desc)
-> >  {
-> > +	struct file *file = desc->file;
-> >  	struct address_space *mapping = file->f_mapping;
+> It rather provides a pointer to the new struct vm_area_desc descriptor type
+> which contains all required state and allows easy setting of required
+> parameters without any consideration needing to be paid to locking or
+> reference counts.
 > 
-> Pointless local variable here...
+> Note that nested filesystems like overlayfs are compatible with an
+> .mmap_prepare() callback since commit bb666b7c2707 ("mm: add mmap_prepare()
+> compatibility layer for nested file systems").
+> 
+> In this patch we apply this change to file systems with relatively simple
+> mmap() hook logic - exfat, ceph, f2fs, bcachefs, zonefs, btrfs, ocfs2,
+> orangefs, nilfs2, romfs, ramfs and aio.
+> 
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
-Agreed, fixed in-tree.
+Two small nits below. Otherwise feel free to add:
 
-> > -static int exfat_file_mmap(struct file *file, struct vm_area_struct *vma)
-> > +static int exfat_file_mmap_prepare(struct vm_area_desc *desc)
-> >  {
-> > +	struct file *file = desc->file;
-> 
-> Missing empty line here.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Fixed in-tree.
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index 60a621b00c65..37522137c380 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -2330,13 +2330,14 @@ static const struct vm_operations_struct ceph_vmops = {
+>  	.page_mkwrite	= ceph_page_mkwrite,
+>  };
+>  
+> -int ceph_mmap(struct file *file, struct vm_area_struct *vma)
+> +int ceph_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+>  	struct address_space *mapping = file->f_mapping;
+
+Pointless local variable here...
+
+>  
+>  	if (!mapping->a_ops->read_folio)
+>  		return -ENOEXEC;
+> -	vma->vm_ops = &ceph_vmops;
+> +	desc->vm_ops = &ceph_vmops;
+>  	return 0;
+>  }
+>  
+...
+> diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+> index 841a5b18e3df..d63213c8a823 100644
+> --- a/fs/exfat/file.c
+> +++ b/fs/exfat/file.c
+> @@ -683,13 +683,14 @@ static const struct vm_operations_struct exfat_file_vm_ops = {
+>  	.page_mkwrite	= exfat_page_mkwrite,
+>  };
+>  
+> -static int exfat_file_mmap(struct file *file, struct vm_area_struct *vma)
+> +static int exfat_file_mmap_prepare(struct vm_area_desc *desc)
+>  {
+> +	struct file *file = desc->file;
+
+Missing empty line here.
+
+>  	if (unlikely(exfat_forced_shutdown(file_inode(file)->i_sb)))
+>  		return -EIO;
+>  
+>  	file_accessed(file);
+> -	vma->vm_ops = &exfat_file_vm_ops;
+> +	desc->vm_ops = &exfat_file_vm_ops;
+>  	return 0;
+>  }
+>  
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
