@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 454C7C7EE2A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF957C7EE2E
 	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 20:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,23 +12,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WPsxJQ/JXacvbaipg//fOLi1s4GO46A+9y4pCE6t2y4=; b=c8X/NF9eqqJ7pRjD0xiUHSRG0z
-	Hh2xq06DRq5EbUJctoBaVb6gL6ScEkK75B4lwqdic1YxiSSlUrQw3TKcFz6Zlfl+BQ4qgldCRssC2
-	ckh7oAIiTx4GvGYbszpro0L4QCWsL7DRei5jjcv0iU03sFE1c/OJBzTu6BH8XLiCY4tF/THCk11nr
-	87r3Sw5/GEw0//EFps49HRej1XsNTqR67US7NEctKHEzeYtf3ZLebfIRLxiyc0X0S/XdPHNw16C5Z
-	8cQAzEsRKGkfq7xQ4yTOoTCMRij8+xY+uPhF9evlC09dCD81IiTgjiFc61TZY+Of7v4qFW6tQ/krh
-	WEwZGTdA==;
+	bh=WZqvZdf+IZijbqhRUtEFRIRbPppvWHBM72Lcj7YrYLo=; b=R6Cijqo8hJ8BuMA/32YA3YeIP5
+	YgVHJlJsKuPUkGqM7nS7KO7Pck7/Gl0u2J43nrHlt38F3z0GRUyGEmMIvPKBYIT3OR+a2Yp3GvHS0
+	cvy3rUBPYiJ46Xrd8xPx9xEBRVkeXpo4etZtj7TrAZoPe7SJws+W1bX1rT20AwQF89DHEPNzXAc+O
+	WYIfGKyYdLijAj7+73orwn3xmzsx7Q43Y3kBWf5o8d7Dt9jlSduJmgZlS26hGgE/z+OUel5fxJqpH
+	dfwjmONSFtw/X7Zbt/H+MNo76g18lo/GaFrOJ12GYzKlAGeIxe1qqHqTvm2MtHMdwg69wenugzj8d
+	Hxh4vbZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSLp9-0000000ECJQ-4BGn;
+	id 1uSLpA-0000000ECKL-31Ay;
 	Thu, 19 Jun 2025 20:25:28 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRObY-00000006ERs-1HY9;
-	Tue, 17 Jun 2025 05:11:28 +0000
-Date: Mon, 16 Jun 2025 22:11:28 -0700
+	id 1uROtD-00000006GHz-1YxH;
+	Tue, 17 Jun 2025 05:29:43 +0000
+Date: Mon, 16 Jun 2025 22:29:43 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	Jani Nikula <jani.nikula@linux.intel.com>,
@@ -114,13 +115,15 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
 Subject: Re: [PATCH 03/10] fs: consistently use file_has_valid_mmap_hooks()
  helper
-Message-ID: <aFD5AP7B80np-Szz@infradead.org>
+Message-ID: <aFD9R2Ax3wIuNe2a@infradead.org>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
  <b68145b609532e62bab603dd9686faa6562046ec.1750099179.git.lorenzo.stoakes@oracle.com>
+ <aFD5AP7B80np-Szz@infradead.org>
+ <b91c387e-5226-4c5e-94c3-04e80409ed62@lucifer.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b68145b609532e62bab603dd9686faa6562046ec.1750099179.git.lorenzo.stoakes@oracle.com>
+In-Reply-To: <b91c387e-5226-4c5e-94c3-04e80409ed62@lucifer.local>
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,24 +139,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 08:33:22PM +0100, Lorenzo Stoakes wrote:
-> Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
-> callback"), the f_op->mmap() hook has been deprecated in favour of
-> f_op->mmap_prepare().
+On Tue, Jun 17, 2025 at 06:25:34AM +0100, Lorenzo Stoakes wrote:
+> > > Most notably, this updates the elf logic to allow for the ability to
+> > > execute binaries on filesystems which have the .mmap_prepare hook, but
+> > > additionally we update nested filesystems.
+> >
+> > Can you please give the function a better name before spreading it?
+> > file operations aren't hooks by any classic definition.
+> >
 > 
-> Additionally, commit bb666b7c2707 ("mm: add mmap_prepare() compatibility
-> layer for nested file systems") permits the use of the .mmap_prepare() hook
-> even in nested filesystems like overlayfs.
-> 
-> There are a number of places where we check only for f_op->mmap - this is
-> incorrect now mmap_prepare exists, so update all of these to use the
-> general helper file_has_valid_mmap_hooks().
-> 
-> Most notably, this updates the elf logic to allow for the ability to
-> execute binaries on filesystems which have the .mmap_prepare hook, but
-> additionally we update nested filesystems.
+> can_mmap_file()?
 
-Can you please give the function a better name before spreading it?
-file operations aren't hooks by any classic definition.
-
+Sounds reasonable.
 
