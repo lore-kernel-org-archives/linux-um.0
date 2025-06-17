@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90851C7115B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CA91C77B7A
 	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 21:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dJhc/xLFMoBcJaq1EUp+bwPxRKCz82LTkTE0hRnLfZw=; b=ZtRLFCG37XCzpiZWfV/woUV4nC
-	A7zMsp7cKT9WFMA3mIpcKHc1COqGMAn/vgxOheGM+CvW5Az2Yd1loMmbTmzn4Yhl5lxcszkl/ICYW
-	zZSKIBB0ymGSIffMHiwg0hM59936+1dciOlbrHTvAGzNu6UB/5SAxxpXZBbtJ2ZqhHq6YVroiA1rD
-	D7TH85dUM5aqkI227dyxe1S2BjxGb/Q5z2XVmyPDOnWCp2Gbxcu3cTJSc0v2Ysun3xYzABY6t6YZ+
-	ZBfL0Z1IYqmQIFgxPlz/l7ZCv4eXEd6Y1LCzaWeyFOWrMS7Nvf3kxv359pGFGduESKG7x5seO+R0a
-	dLJUzArg==;
+	bh=lIpP5iOY84H59tRkmuJOo9CYvchrtq9t6gV5oxKPio4=; b=3EqG7VHJ2nHckqgfyvUnm71o3k
+	CcyXm0Z7wHYPaBQChsn15KD+XVSYuYbwSbcFQoPJ/3A2HD16TCUVr5SbJbik17pnyaGUlwQDO9OLA
+	8hlUae/I2AOy+wKssyHF7u/23SPEU9Uq/nQ6iBYUkAM7HRWZ9y+G8VeTGHoZqiORpO+5HaZNc878T
+	bywuRQ/Sp2yLDYSmcPfC+chdgz1JZNItWUeVbVXHzsgxvdF80K8stHqp5bGQ1Qvk3z/YJj4JXLFVP
+	mMJcvHvxmYZVnK5ERNS6N2AOWY2C8vzHcG0OtOnkMOXWIMv04/SP9IiTWg53V+hm9dznIfyefyi/L
+	+X8iTMNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSMrg-0000000EIsx-1jUx;
+	id 1uSMrg-0000000EIt3-31Z4;
 	Thu, 19 Jun 2025 21:32:08 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRUlQ-000000074gj-03ju;
-	Tue, 17 Jun 2025 11:46:05 +0000
+	id 1uRUnn-0000000750I-309I;
+	Tue, 17 Jun 2025 11:48:33 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 27AE1448BF;
-	Tue, 17 Jun 2025 11:46:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E2A2C4CEE3;
-	Tue, 17 Jun 2025 11:45:40 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id E682744DD6;
+	Tue, 17 Jun 2025 11:48:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40C6FC4CEE3;
+	Tue, 17 Jun 2025 11:48:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750160763;
-	bh=StMBYKo3IYdJvpDPP28DVy7nnfZ5iZVxiZzaq3OT7Gk=;
+	s=k20201202; t=1750160910;
+	bh=Vnr3kmvDQPz8s5uZNmSkWKP9XPj/+f6PNSLS1Tx/MzQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LKZAHZAC9vUoLxqJ9kPw7y11d1vccxwHwO+yliNT9fTET47uPMg0jRAi/9kqollS2
-	 3j8hdqKrliDMUGiMhPw2i9dqvvInebMc6yA2lG7rgUpPGh/yxB0XWm17UXOqauVCc6
-	 Sagcwo9PDm6boEPAX0mIsK8saf5hKwJj0gSqfvOJcC35Ur+DJm/pIWbzY5aT2H/9YC
-	 9jut3Jn0eTCrVe+VIPmIgpnff0NScXFO+hEPUf2CI9uzx8gHglPFlh4VWh+b/JQt0q
-	 u82czCjtFdfG73DgONm2+NtA0s6Hq8jxAqKfQtbaaS8tUES6NzxY9nC8fYbzwdQBIB
-	 OrD8iaWSk5iyQ==
-Date: Tue, 17 Jun 2025 13:45:37 +0200
+	b=i76Wd947DS4XwAcDpAS8fpuf+Ela4lfUx5B4Zl+sE1WJ8kzwgrCbFciE3rigUUS/6
+	 wkwvrTbKDnBSYG4C5HYytRyvy7B3ZkCeJ/5F35ij31zEXxn65NXesNNhKSYHlLq/2D
+	 R33NY8eYZWteN9O+9G//EUF0UQxUiz+Y2C7gC+ejd2PqldQ355joR8oksRp/9Bu+B9
+	 HCJ+eqE2ygFdOjJuUuFVDO+rKmgk2g66UaZmVaAWhJlsobI+L+ldnr5kvasHnLLQtL
+	 3ZDhNpWvRvvYFALgNe61XXKpKO8zT2d+3DmY+NeMp1GFEAHy45cWCYw7RMgE+f8kCe
+	 WOUfPvP6PlRuw==
+Date: Tue, 17 Jun 2025 13:48:04 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
+To: Jan Kara <jack@suse.cz>
 Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, 
-	Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Benjamin LaHaise <bcrl@kvack.org>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Amir Goldstein <amir73il@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	"Tigran A . Aivazian" <aivazian.tigran@gmail.com>, Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, 
+	Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
 	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, 
 	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
 	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
@@ -93,19 +93,21 @@ Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
 	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
 	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 06/10] fs/xfs: transition from deprecated .mmap hook to
- .mmap_prepare
-Message-ID: <20250617-herdplatte-ringkampf-8e8b439e81f2@brauner>
+Subject: Re: [PATCH 03/10] fs: consistently use file_has_valid_mmap_hooks()
+ helper
+Message-ID: <20250617-mitstreiter-bewahren-455b96bd1d50@brauner>
 References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <cba8b29ba5f225df8f63f50182d5f6e0fcf94456.1750099179.git.lorenzo.stoakes@oracle.com>
- <aFD4M48RMZB0Hj-f@infradead.org>
+ <b68145b609532e62bab603dd9686faa6562046ec.1750099179.git.lorenzo.stoakes@oracle.com>
+ <aFD5AP7B80np-Szz@infradead.org>
+ <b91c387e-5226-4c5e-94c3-04e80409ed62@lucifer.local>
+ <kzp4cei5qq6gbtzzng7hmqj5avzblopfzzrks4e2gahcdvr7ro@cwziankavxw4>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aFD4M48RMZB0Hj-f@infradead.org>
+In-Reply-To: <kzp4cei5qq6gbtzzng7hmqj5avzblopfzzrks4e2gahcdvr7ro@cwziankavxw4>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_044604_097991_85A85A44 
-X-CRM114-Status: GOOD (  12.30  )
+X-CRM114-CacheID: sfid-20250617_044831_794127_6018DD56 
+X-CRM114-Status: GOOD (  22.94  )
 X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -121,18 +123,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 16, 2025 at 10:08:03PM -0700, Christoph Hellwig wrote:
-> On Mon, Jun 16, 2025 at 08:33:25PM +0100, Lorenzo Stoakes wrote:
-> >  STATIC int
-> > -xfs_file_mmap(
-> > -	struct file		*file,
-> > -	struct vm_area_struct	*vma)
-> > +xfs_file_mmap_prepare(
-> > +	struct vm_area_desc *desc)
+On Tue, Jun 17, 2025 at 12:08:13PM +0200, Jan Kara wrote:
+> On Tue 17-06-25 06:25:34, Lorenzo Stoakes wrote:
+> > On Mon, Jun 16, 2025 at 10:11:28PM -0700, Christoph Hellwig wrote:
+> > > On Mon, Jun 16, 2025 at 08:33:22PM +0100, Lorenzo Stoakes wrote:
+> > > > Since commit c84bf6dd2b83 ("mm: introduce new .mmap_prepare() file
+> > > > callback"), the f_op->mmap() hook has been deprecated in favour of
+> > > > f_op->mmap_prepare().
+> > > >
+> > > > Additionally, commit bb666b7c2707 ("mm: add mmap_prepare() compatibility
+> > > > layer for nested file systems") permits the use of the .mmap_prepare() hook
+> > > > even in nested filesystems like overlayfs.
+> > > >
+> > > > There are a number of places where we check only for f_op->mmap - this is
+> > > > incorrect now mmap_prepare exists, so update all of these to use the
+> > > > general helper file_has_valid_mmap_hooks().
+> > > >
+> > > > Most notably, this updates the elf logic to allow for the ability to
+> > > > execute binaries on filesystems which have the .mmap_prepare hook, but
+> > > > additionally we update nested filesystems.
+> > >
+> > > Can you please give the function a better name before spreading it?
+> > > file operations aren't hooks by any classic definition.
+> > >
+> > 
+> > can_mmap_file()?
 > 
-> Please stick to the existing alignment for the declarations.
-> 
-> Otherwise this looks good.
+> I like this name more as well :). With this patch looks good to me. Again a
 
 Fixed in-tree.
 
