@@ -4,89 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD686C7115C
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 01:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1322C7115C
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 11:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4CZO2OAKV3OtJLgmf9ZQYFE78DDsp7kzC/L9szpctPA=; b=Ez/Ny26qEgwmxUNkzO3Gzny5oC
-	RJ1k7tjqWIs6Kw2qnpPn3xMmCe9J27E301tF0p73kHbfhiRLIRkAYKdeIAv+mcveqQcsFxBrToXlE
-	mM89lIUIaJ6KYF30wIoKQSb5kCWGJyEL2+BDbyEq7LZGhTLY5BE8eZcCN970UNha2VqUUZm8FdxJ2
-	qgHMpLC/hoN1+OUDb0Wzby12uG1YHmZivkINSAPgs/5xNp0bmq+HLFiwAQL5T2CzZtwBg41aK+DBx
-	yHzKk66BhU/EzD4TDajTJkL1SrNqMhlc0Dm19ihPmCkTGgwq323En7FkNtDIjtLlwiQaAeqYxlkU0
-	tCIfWf8w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=o1tFXS+TJ1ZGCzP8M87H8urSF5Lqav+Fm/SKH+l0rSM=; b=sp1OYeGgBjjuIO0Sh6Ypy8QO+l
+	vJovCPbpHxkHypH0to78Ufg5DMaRyLMMCoIqNsp2/GbS8YUsr0Z/sDRM+bVY2u56Zr3x86VzYXcVq
+	0h21pYrPUYayTZaY0BUExTVebsGE+4vqk73KjZ/3synqTpLzf5/bzVPezwgs7XS/Sdy2FnIASU1Bf
+	XsMNspQ+q2kkozRRaxtCn98oP//QadsBvturuTXzMbndVU4NM5PnBvnFgEKAjo0lFIxhA4rxlXbke
+	JTS8tlEIXruwRFM6bbu43AQ8AeK8YxxtPi+unOLjEsHdeTbPE5m3ONGIz+HY2o8e9QLuqWpJPFfk2
+	bXbaoHlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uS3iD-0000000Bgte-2KW6;
-	Thu, 19 Jun 2025 01:05:05 +0000
-Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
+	id 1uSDW8-0000000CtVT-3Z6K;
+	Thu, 19 Jun 2025 11:33:16 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uS3iB-0000000Bgr8-3uzU
+	id 1uSCcv-0000000ClVH-0sDW
 	for linux-um@lists.infradead.org;
-	Thu, 19 Jun 2025 01:05:04 +0000
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-235e1d4cba0so2569875ad.2
-        for <linux-um@lists.infradead.org>; Wed, 18 Jun 2025 18:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750295103; x=1750899903; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4CZO2OAKV3OtJLgmf9ZQYFE78DDsp7kzC/L9szpctPA=;
-        b=WLEAZhCxccrpwL3pktu9bWv4fJGOOGJTbiZTXo0pNLCdWyKBjMQVR1UHWOon8M0RuQ
-         wODpQtE0Vca0o8U31f4oZO9QNbfLIWmZUwshwp7McFM4gasMaXQYAwhWzYG/A7WyE5FQ
-         +youFBEUSCBXlqHFPlNKOntjF1wVzASr62vaQoq0vA5UPIu09gKoHH6dG64sCgWvrm4L
-         1BXeR9UmoxXN0KFnn+BB9r24XCvsVU9FSN6wdQiCJ0pDYRIMV+j676VrbkHZC3SyZpXg
-         AkECUEsNLW0tTYEurF+bZvNIoIl9Q7XDJxt9WZORrD3KgUX5sDZFuKk+5MGqr/MB3KTl
-         IQSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750295103; x=1750899903;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4CZO2OAKV3OtJLgmf9ZQYFE78DDsp7kzC/L9szpctPA=;
-        b=O+hZKiVp2LZrxKh4pj9xGviCZq+XmK2ncZ6ZCkL7cZayRs69Q0/AO2lPb43Yag+WUu
-         NHkL9/FG55kiXL4KQSTvVsdbvVrm5/uBKQJImI6fTmrAQyyAf1+nZlWR1YiGOS1sSWS6
-         MCq8tnhH/RmfWDvt3ucEHptIbjbjGOhWpPApGP9Tn7myLhdrUsKN4OFkIPCc4rNaepWO
-         5NfjFckOZ2Vzxrcf8W0cZvov14Klm8zmJIfGJJCQSJ9X3KwSxHHF21G05MAnDLzglflX
-         PKRjx9BVSVChQhT5RXd6z2ZCyUeUNlwrAqLprv6ofqANcB3djBprVd5OTMfAi6zlIUxn
-         /qnw==
-X-Gm-Message-State: AOJu0YzsI7IEuZu5up/uSCQLeBXJUBkyV7UmTDDnfKLwFzbAmtg3E0yH
-	kXQMfaOvmGZ0H+ePZbEAl31NCYw10jI935ai7XxVorUQO8wZYbKwtSi4
-X-Gm-Gg: ASbGnctOcn5THI8JrY3m6OxUDUfvbwQwUqFGABMhqW7zuUZSidpd8s+dtt5tKPJJIGs
-	UuYiuhGNp4TrUDNbUyYP35NblXscN6ZoOYzGOfXbWPIk8JRIKZ4zi84hycazwOOxMr1Bxu2RT0B
-	LA43j4kaaiot6FaVs4fWYUVcw8gt4LH8Kph6csG/oGUvWcGUO38+Q6ffisHkVFOg2hhmb5+0MnJ
-	8OpKJKCXQJyy9Rs3+jlw5uO5zQby9i+fMcaCUZF5vQ5lRX8wJ5lRwbRezZJfa8OzJiw1B0uFwCG
-	/zCUXZVc/52SvhkdV39CNWQaw3xoNgAs+JA4mYIXGcHCUcaTw7vodftNOtewUzdBP+6H0adlo1N
-	f9+pN6nbIK27GU7xkqF6v2IIkVTSbYEis
-X-Google-Smtp-Source: AGHT+IF/lWU7GJLzDXdk1F2IZNf7VWmrNUNbM5q/vElUar5FDwrpd2kD0dJvfnbrgPtrERVIQruzoA==
-X-Received: by 2002:a17:903:94d:b0:234:909b:3dba with SMTP id d9443c01a7336-2366b005fb0mr274698465ad.20.1750295103301;
-        Wed, 18 Jun 2025 18:05:03 -0700 (PDT)
-Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365dea905fsm108088795ad.166.2025.06.18.18.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 18:05:02 -0700 (PDT)
-Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id CEC31ED6543; Thu, 19 Jun 2025 10:05:00 +0900 (JST)
-From: Hajime Tazaki <thehajime@gmail.com>
-To: linux-um@lists.infradead.org
-Cc: thehajime@gmail.com,
-	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v9 13/13] um: nommu: plug nommu code into build system
-Date: Thu, 19 Jun 2025 10:04:17 +0900
-Message-ID: <03d0cd2581d0e143a5644df5d42fc00a550fc72a.1750294482.git.thehajime@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1750294482.git.thehajime@gmail.com>
+	Thu, 19 Jun 2025 10:36:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=o1tFXS+TJ1ZGCzP8M87H8urSF5Lqav+Fm/SKH+l0rSM=;
+	t=1750329371; x=1751538971; b=baWK5ldzhjYbrIbhMgq0NYwpSmUkytuBuJNHYPBH/TXy542
+	vQeWdRrwH2R0EKgEl3O2NNhbHYltmQjoZaowayDYcLqhpbLwpDkYCRIMWP1+yQ/d1Gmf8pR2LUWnw
+	Qbbq8SuOLsU+QaYrCQHBpuuRejhMQBydv6evH1fINgpmtLtL7Z9+mjX8YOW91JPmmBYLALySq0nvh
+	RvfXn4smZoVar+tSIPac9a934ZOJ63tBVixgS+liWeywxsErOtuHfaV7omKTs7034dfDuZxlk9TZs
+	8jrWAPc/CfMpeMDhuOLAPEaw1kTpi5ZQQElGPRU7M5lnQrDZyud0zrXq1A6hikzQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uSCcq-00000000weQ-1JoW;
+	Thu, 19 Jun 2025 12:36:08 +0200
+Message-ID: <55ff3fa8f19c61745933e7814029cef526271eb4.camel@sipsolutions.net>
+Subject: Re: [PATCH v9 06/13] x86/um: nommu: process/thread handling
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
+Cc: ricarkol@google.com, Liam.Howlett@oracle.com,
+ linux-kernel@vger.kernel.org
+Date: Thu, 19 Jun 2025 12:36:04 +0200
+In-Reply-To: <031503649a24799bff082cf917c36550f4820181.1750294482.git.thehajime@gmail.com> (sfid-20250619_030508_526938_21F4E6DC)
 References: <cover.1750294482.git.thehajime@gmail.com>
+	 <031503649a24799bff082cf917c36550f4820181.1750294482.git.thehajime@gmail.com>
+	 (sfid-20250619_030508_526938_21F4E6DC)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250618_180503_972911_B421B689 
-X-CRM114-Status: GOOD (  13.30  )
+X-CRM114-CacheID: sfid-20250619_033613_272102_1CA3F109 
+X-CRM114-Status: GOOD (  20.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,117 +75,163 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add nommu kernel for um build.  defconfig is also provided.
+Hi,
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Ricardo Koller <ricarkol@google.com>
----
- arch/um/Kconfig                        | 14 ++++++-
- arch/um/configs/x86_64_nommu_defconfig | 54 ++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+), 2 deletions(-)
- create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+On Thu, 2025-06-19 at 10:04 +0900, Hajime Tazaki wrote:
+> Since ptrace facility isn't used under !MMU of UML, there is different
+> code path to invoke processes/threads; there are no external process
+> used, and need to properly configure some of registers (fs segment
+> register for TLS, etc) on every context switch, etc.
+>=20
+> Signals aren't delivered in non-ptrace syscall entry/leave so, we also
+> need to handle pending signal by ourselves.
+>=20
+> ptrace related syscalls are not tested yet so, marked
+> arch_has_single_step() unsupported in !MMU environment.
+>=20
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+> Signed-off-by: Ricardo Koller <ricarkol@google.com>
+> ---
+> =C2=A0arch/um/include/asm/ptrace-generic.h |=C2=A0 2 +-
+> =C2=A0arch/x86/um/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 +-
+> =C2=A0arch/x86/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+> =C2=A0arch/x86/um/nommu/entry_64.S=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 | 22 ++++++++++++++
+> =C2=A0arch/x86/um/nommu/syscalls_64.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 44 =
+++++++++++++++++++++++++++++
+> =C2=A05 files changed, 70 insertions(+), 3 deletions(-)
+> =C2=A0create mode 100644 arch/x86/um/nommu/syscalls_64.c
+>=20
+> diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/p=
+trace-generic.h
+> index 4ff844bcb1cd..a9778c9a59a3 100644
+> --- a/arch/um/include/asm/ptrace-generic.h
+> +++ b/arch/um/include/asm/ptrace-generic.h
+> @@ -14,7 +14,7 @@ struct pt_regs {
+> =C2=A0	struct uml_pt_regs regs;
+> =C2=A0};
+> =C2=A0
+> -#define arch_has_single_step()	(1)
+> +#define arch_has_single_step()	(IS_ENABLED(CONFIG_MMU))
+> =C2=A0
+> =C2=A0#define EMPTY_REGS { .regs =3D EMPTY_UML_PT_REGS }
+> =C2=A0
+> diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+> index 227af2a987e2..53c9ebb3c41c 100644
+> --- a/arch/x86/um/Makefile
+> +++ b/arch/x86/um/Makefile
+> @@ -27,7 +27,8 @@ subarch-y +=3D ../kernel/sys_ia32.o
+> =C2=A0
+> =C2=A0else
+> =C2=A0
+> -obj-y +=3D syscalls_64.o vdso/
+> +obj-y +=3D vdso/
+> +obj-$(CONFIG_MMU) +=3D syscalls_64.o
+> =C2=A0
+> =C2=A0subarch-y =3D ../lib/csum-partial_64.o ../lib/memcpy_64.o \
+> =C2=A0	../lib/memmove_64.o ../lib/memset_64.o
+> diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
+> index ebe47d4836f4..4018d9e0aba0 100644
+> --- a/arch/x86/um/nommu/Makefile
+> +++ b/arch/x86/um/nommu/Makefile
+> @@ -5,4 +5,4 @@ else
+> =C2=A0	BITS :=3D 64
+> =C2=A0endif
+> =C2=A0
+> -obj-y =3D do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
+> +obj-y =3D do_syscall_$(BITS).o entry_$(BITS).o syscalls_$(BITS).o os-Lin=
+ux/
+> diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
+> index e9bfc7b93c84..950447dfa66b 100644
+> --- a/arch/x86/um/nommu/entry_64.S
+> +++ b/arch/x86/um/nommu/entry_64.S
+> @@ -89,3 +89,25 @@ ENTRY(__kernel_vsyscall)
+> =C2=A0	jmp	*%rcx
+> =C2=A0
+> =C2=A0END(__kernel_vsyscall)
+> +
+> +// void userspace(struct uml_pt_regs *regs)
+> +ENTRY(userspace)
+> +
+> +	/* align the stack for x86_64 ABI */
+> +	and=C2=A0=C2=A0=C2=A0=C2=A0 $-0x10, %rsp
+> +	/* Handle any immediate reschedules or signals */
+> +	call	interrupt_end
+> +
+> +	movq	current_ptregs, %rsp
+> +
+> +	POP_REGS
+> +
+> +	addq	$8, %rsp	/* skip orig_ax */
+> +	popq	%r11		/* pt_regs->ip */
+> +	addq	$8, %rsp	/* skip cs */
+> +	addq	$8, %rsp	/* skip flags */
+> +	popq	%rsp
+> +
+> +	jmp	*%r11
+> +
+> +END(userspace)
+> diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls=
+_64.c
+> new file mode 100644
+> index 000000000000..c78c442aed1d
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/syscalls_64.c
+> @@ -0,0 +1,44 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+> + * Copyright 2003 PathScale, Inc.
+> + *
+> + * Licensed under the GPL
+> + */
+> +
+> +#include <linux/sched.h>
+> +#include <linux/sched/mm.h>
+> +#include <linux/syscalls.h>
+> +#include <linux/uaccess.h>
+> +#include <asm/prctl.h> /* XXX This should get the constants from libc */
+> +#include <registers.h>
+> +#include <os.h>
+> +#include "syscalls.h"
+> +
+> +void arch_switch_to(struct task_struct *to)
+> +{
+> +	/*
+> +	 * In !CONFIG_MMU, it doesn't ptrace thus,
+> +	 * The FS_BASE/GS_BASE registers are saved here.
+> +	 */
+> +	current_top_of_stack =3D task_top_of_stack(to);
+> +	current_ptregs =3D (long)task_pt_regs(to);
+> +
+> +	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =3D=3D 0)=
+ ||
+> +	=C2=A0=C2=A0=C2=A0 (to->mm =3D=3D NULL))
+> +		return;
+> +
+> +	/* this changes the FS on every context switch */
+> +	arch_prctl(to, ARCH_SET_FS,
+> +		=C2=A0=C2=A0 (void __user *) to->thread.regs.regs.gp[FS_BASE / sizeof(=
+unsigned long)]);
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index f08e8a7fac93..81a79c7a5a6f 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -31,14 +31,17 @@ config UML
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TTY # Needed for line.c
--	select HAVE_ARCH_VMAP_STACK
-+	select HAVE_ARCH_VMAP_STACK if MMU
- 	select HAVE_RUST
- 	select ARCH_HAS_UBSAN
- 	select HAVE_ARCH_TRACEHOOK
- 	select THREAD_INFO_IN_TASK
-+	select UACCESS_MEMCPY if !MMU
-+	select GENERIC_STRNLEN_USER if !MMU
-+	select GENERIC_STRNCPY_FROM_USER if !MMU
- 
- config MMU
--	bool
-+	bool "MMU-based Paged Memory Management Support" if 64BIT
- 	default y
- 
- config UML_DMA_EMULATION
-@@ -185,8 +188,15 @@ config MAGIC_SYSRQ
- 	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
- 	  unless you really know what this hack does.
- 
-+config ARCH_FORCE_MAX_ORDER
-+	int "Order of maximal physically contiguous allocations" if EXPERT
-+	default "10" if MMU
-+	default "16" if !MMU
-+
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
-+	default 3 if !MMU
-+	range 3 10 if !MMU
- 	default 2 if 64BIT
- 	range 2 10 if 64BIT
- 	default 1 if !64BIT
-diff --git a/arch/um/configs/x86_64_nommu_defconfig b/arch/um/configs/x86_64_nommu_defconfig
-new file mode 100644
-index 000000000000..02cb87091c9f
---- /dev/null
-+++ b/arch/um/configs/x86_64_nommu_defconfig
-@@ -0,0 +1,54 @@
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BSD_PROCESS_ACCT=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_CGROUPS=y
-+CONFIG_BLK_CGROUP=y
-+CONFIG_CGROUP_SCHED=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_CPUACCT=y
-+# CONFIG_PID_NS is not set
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+# CONFIG_MMU is not set
-+CONFIG_HOSTFS=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_SSL=y
-+CONFIG_NULL_CHAN=y
-+CONFIG_PORT_CHAN=y
-+CONFIG_PTY_CHAN=y
-+CONFIG_TTY_CHAN=y
-+CONFIG_CON_CHAN="pts"
-+CONFIG_SSL_CHAN="pts"
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_IOSCHED_BFQ=m
-+CONFIG_BINFMT_MISC=m
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_BLK_DEV_UBD=y
-+CONFIG_BLK_DEV_LOOP=m
-+CONFIG_BLK_DEV_NBD=m
-+CONFIG_DUMMY=m
-+CONFIG_TUN=m
-+CONFIG_PPP=m
-+CONFIG_SLIP=m
-+CONFIG_LEGACY_PTY_COUNT=32
-+CONFIG_UML_RANDOM=y
-+CONFIG_EXT4_FS=y
-+CONFIG_QUOTA=y
-+CONFIG_AUTOFS_FS=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_NLS=y
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-+CONFIG_FRAME_WARN=1024
-+CONFIG_IPV6=y
--- 
-2.43.0
+Hmm,  the comment mentions FS_BASE/GS_BASE, but here you only handle
+FS_BASE? Is that intentional?
+
+Benjamin
+
+
+> +}
+> +
+> +SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+> +		unsigned long, prot, unsigned long, flags,
+> +		unsigned long, fd, unsigned long, off)
+> +{
+> +	if (off & ~PAGE_MASK)
+> +		return -EINVAL;
+> +
+> +	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
+> +}
 
 
