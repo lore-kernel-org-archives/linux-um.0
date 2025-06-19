@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B3C1C7115A
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 01:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25A64C71157
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 01:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sL9evNGVpzgjwGis6FRx6Ny95Jmdu1Zd+5bgNtHIJLs=; b=MUQKprZPEiHvVOxe6gl9uAkOIB
-	jQVOnDKbJ9W3P9tDRGrLBjneAcjgPqeqPtIarHi5zf+tM8LpU4aw7sKWZ63L64yZIVrJTCwRPtjMB
-	NQXi+5gzEs1oQYE3A82iwuGz7QaUSHgr1bSZGojxCFuvxvkBFqQhKgaZJ8Ec3XEqHRCBI2m8+7ahA
-	3zv3Rl+B3v2UsofC3W6bITBBie2I429PF9YgxyWriLnf7vJTwOuvGoX4fp+IBQKTeryGwuCUDLZwv
-	B/K4sWE8h3HcHYualFLhGJCJZ854+mItG94PCpAxpLsiC0Y7Au7mx/6m1vVHFEgmP4kLXLdUElFiU
-	u+EtH5xg==;
+	bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=; b=mFZQit5rjlrotETmYMU/1JE+d0
+	4Sek1kNlplieh4jNtTObCyK3gM3uscxYnVuNWmGImSvaDDSZZeMQr0NKXnpVaHEtGbuko397VoPqg
+	FM2mdlX9VYeIdkJHO7VFinc3IWo9ZrseYKf4w3vArswk1upZ2/UFEVbsjlbQmmORDdaUNRU4UDjAO
+	Ew0H8+sx15jDWkLlmmwxN+4mC8UUdsgxozrhX4H3clkrOwpZ4lmSH8Sx0udP9btMLTwOjx4/djiUw
+	180eNgmM9IR9gv11IZX32ZCtWMQzv1adl74XXNjGnM8CnEHaTypfxEL1zkkQF4lMVH+1Prozc57jm
+	aR4LZEig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uS3i6-0000000Bgm8-1Iw5;
-	Thu, 19 Jun 2025 01:04:58 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1uS3i8-0000000BgoK-3hyz;
+	Thu, 19 Jun 2025 01:05:00 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uS3i4-0000000BgkQ-0485
+	id 1uS3i6-0000000BgmD-1kNb
 	for linux-um@lists.infradead.org;
-	Thu, 19 Jun 2025 01:04:57 +0000
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-2360ff7ac1bso1921225ad.3
-        for <linux-um@lists.infradead.org>; Wed, 18 Jun 2025 18:04:55 -0700 (PDT)
+	Thu, 19 Jun 2025 01:04:59 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-747abb3cd0bso144260b3a.1
+        for <linux-um@lists.infradead.org>; Wed, 18 Jun 2025 18:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750295095; x=1750899895; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1750295098; x=1750899898; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sL9evNGVpzgjwGis6FRx6Ny95Jmdu1Zd+5bgNtHIJLs=;
-        b=OcSTUwBxB2UFdYSLjA33cLQBth9dVkXxTH44YOTyTQDS3i7ttpx768Rppwmj7Cths1
-         21JKf5zPzkP0b/lZdCf4EnOReRCFaWMwkd1tQ9omkvAtIy045pGHSmuphRsEzt8ar6kt
-         nirGdAvPdARofMeS1/cUGvz8nsMV2VLw2O3u0EmhrBahppIcDcS+2/zCE+YwLVzeMjtC
-         JZkxYX+c29Cuoz0IZaklEF9fYEq/kaLnjCLXAQH1gq8AwO/seUUYGbWMpqRODkiaYlxe
-         wTP9OQUUSxkPUyy1svX8AhIWnVS5fiyrY2rOAd5/uFoeGMGRxKGqoCq6X4Rjt3q7x7t6
-         Aizw==
+        bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=;
+        b=A92awqHuTV+/lgbi62sqyN+ZtPvHJdto9YP87h5pEynLuoSYKdfybNLgxHtayL5SMc
+         dS1ahn7qkwIQd8DTt46JZtj8ce5oUSfMOJYA1Tg0TQ/FmA1AWTL693OaHATNOZ2wsE9G
+         CyrzU/Yazl+lKQmEg2A6mK3DdaysIFmYCkPk7qp2U0OYvrvyOMhwVQJx5PGrwtciFgID
+         ZEdN5/QYTcVMwnZc21ang49If/TRknSKHtgpL3KqzLXXgiEqkyqtZTfLJo33Tgp8PZrF
+         G3ygmP5it/oZUQ1tq9XHy1TzqB/4fBxAP6fwBdkEf3wc4icUS7DJ/PvFS2HnJyFo6EK9
+         nYJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750295095; x=1750899895;
+        d=1e100.net; s=20230601; t=1750295098; x=1750899898;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sL9evNGVpzgjwGis6FRx6Ny95Jmdu1Zd+5bgNtHIJLs=;
-        b=V2GBwfzuY+BMnurB7PyL68Cb08K0kMfmQ63g4tGC6g8WgGv3URvF0+lcbmSb4ich4B
-         UufR6cw8ElwNKxZfKNyOSxaaNBDCToUGMk7KCO1su0z8suacrw3E7XcUPuF4LdC7/c3c
-         Y8qQZ9w1Fc7yoStjBvIzfUXzqPbYHvP4Nchl0v+5yvAFtoiEHLNVOANiiH5dkIbtZG/R
-         SmTO5nxGiB5g+Vw4H8fwh22pgWlMQIRoPZQLI1LpUhb2sv1uhlL7AplnAluTPseEY0RJ
-         6kS25o255cIY2+U5c0FXpBmR1P4xV58TWSsxOCPhXQ+apGKoEX6fZ+L/nouiE788bU0T
-         0moQ==
-X-Gm-Message-State: AOJu0YwtSOvLY7GH7P5Shsk5LHt+R+UnFroiBoLg/muvEaeB89ZXd/8A
-	W2XsySVF4+sJoZ98IfaIXfaBNg6wKks/1P29Qj5v3pEMHfw6yAP4jNL6
-X-Gm-Gg: ASbGncvZREmreWhzU+7mT6qm4LloliQLavA/c2Pc/EKrQcPYQtca52N2XNf2F/lYraY
-	xqPXB7ZctnFUCK8KaXRZUusHpOtsKDX6z4RfRQ/a0RkSISau1G49unzq10CkdU+6iQiBb8oskbT
-	BjOxTYS6YCz4kApABPUVhe5fkst711zDYCzrPCCth2aI6rQWYMWjQ2k3WCyI4MgPBG23HlVcxCT
-	F1Wj9egMXeN0vVtLlhR5zmqa+PE4irTNd5sRr1IjMPLpy2FZd4wY9F/ea0poSGiDDNdjn+UlN7l
-	c/GqprYfgOsl/8GJqCHc7/UJ+wUMHBIOpKeoPXnfPTRt79nGZVcs+YHWNKZlPUeocFUpFeL2T+i
-	74rbsTHwlhtEecZH77grFfmCsdkNfMjB4
-X-Google-Smtp-Source: AGHT+IFO1wmuMVt89YrBHlfn8kGYjqnEwLyl+KVA4zvbu8jubm0FHxst9cUWZDZj06afHE//hnBCAw==
-X-Received: by 2002:a17:902:dacf:b0:235:e76c:4353 with SMTP id d9443c01a7336-2366b16e8edmr259851315ad.51.1750295095410;
-        Wed, 18 Jun 2025 18:04:55 -0700 (PDT)
+        bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=;
+        b=FEXR/xd+EFCxznsTqe976iUz45kOJuDmumABKfFvewt3B6an8QqrW4LQsacKLjFF0g
+         +DO59dJjRXGsM1rRHCQx6+ClyJ0H53fhxQ3zq7TGLNwqVMV57cY/P0gSALhhvIN+qktI
+         qq/JvBdMihIc/B1MJ/en9qFR3AfB5NN6o3yv3BXsKpAklWY/LRB9MetWXIIV6W8eJHJT
+         3Z89KIs/J3yKNtHZCyZgPMux7ZbKRW2cE43BTI4Io7EFTf6XkXJuXOD9u6eCFKGsnu4C
+         zREOTUVeOfWTivqOyrcffOXmObID7V9QYu17f4F5+ku/DiW/Qp0wA8OnVUdb8oBb2W0r
+         yKfA==
+X-Gm-Message-State: AOJu0YybFcnGWXjH/yLcexbzYr5oS7hRUilNPK0pEiPP09KM2m76xr26
+	x1nd5/iu3U2nJqY98VByWlsF3Ie6ysKF6WQsklGJBcLwhRyvMZp3eddX
+X-Gm-Gg: ASbGnctnjHrAuSP3HKD7uYoJYRMprrt2hxz7p1A2yTQIH9X1GjRRLeDBc7XDuUewoox
+	gDYXK9TbIlPoQJEeReN6KdjkvcKri0qIOTyPbY+nAxhGm0PPFjSJkfzNsSx1Xtn8kE5fb9eQKXk
+	Hz61os6GCT8Xhja42vwgcg5uFkuH1XNjmVEvIsec5lwSAlA95bCwOCGhwmcDWixgc/fVK83qAdw
+	shW15wEM9d08m6OY5onp4zp73GyX1Vs05y6cDeii7emmrGN2XNve6f8VcmFoOUBELdEMoU2fTCN
+	9CYn9PlGnF9hziA5oSYOiiTME07v9v5NvYMgntVewVXvMLCkU39LnMdZRSNqLT+rzVGlMBHcebh
+	PxLz+bySN144OQdDixuj8b1Um88cv7shs22+KVzMBZEY=
+X-Google-Smtp-Source: AGHT+IEV6Y3cJLP4JaMcdJhSY/ETlnIE+14RVCjfX1yXRvBEOpmZSlGpLo0DZSp8M2QLOOjfCnAESw==
+X-Received: by 2002:a05:6a20:72a5:b0:215:d1dd:df4c with SMTP id adf61e73a8af0-220111ad18emr2803824637.6.1750295097772;
+        Wed, 18 Jun 2025 18:04:57 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2369843f99dsm36389375ad.185.2025.06.18.18.04.54
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-748900d233asm11870453b3a.159.2025.06.18.18.04.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 18:04:54 -0700 (PDT)
+        Wed, 18 Jun 2025 18:04:57 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 7F349ED653C; Thu, 19 Jun 2025 10:04:53 +0900 (JST)
+	id D9ED2ED653E; Thu, 19 Jun 2025 10:04:55 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v9 10/13] um: nommu: a work around for MMU dependency to PCI driver
-Date: Thu, 19 Jun 2025 10:04:14 +0900
-Message-ID: <dce1cc8330469cca3f3e451885b7d230be57b143.1750294482.git.thehajime@gmail.com>
+Subject: [PATCH v9 11/13] um: change machine name for uname output
+Date: Thu, 19 Jun 2025 10:04:15 +0900
+Message-ID: <b580c35c6a52f009d863a1fe29bd7b089283b994.1750294482.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1750294482.git.thehajime@gmail.com>
 References: <cover.1750294482.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250618_180456_052950_DA50C2BD 
-X-CRM114-Status: GOOD (  13.28  )
+X-CRM114-CacheID: sfid-20250618_180458_456935_2FBE33FF 
+X-CRM114-Status: GOOD (  10.59  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,50 +101,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The commit 8fe743b5eba0 ("PCI: Add CONFIG_MMU dependency") restricts the
-PCI base driver to depend on MMU.  While nommu UML _can_ implement PCI
-drivers over PCI devices (e.g., virtio-pci), the current nommu UML
-doesn't implement it.
-
-But without PCI drivers kunit complains as config for kunit
-(arch_uml.config) defines the dependency to PCI drivers.
-
-This commit fixes the issue of this compile failures when building PCI
-drivers with nommu UML.  In particular, the fix is to undefine the
-constant PCI_IOBASE to be able to bypass pci_unmap_iospace() call.
-
-When we will support PCI drivers for nommu UML, we will refactor this
-code.
+This commit tries to display MMU/!MMU mode from the output of uname(2)
+so that users can distinguish which mode of UML is running right now.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
- arch/um/include/asm/dma.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/um/Makefile        | 6 ++++++
+ arch/um/os-Linux/util.c | 3 ++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/include/asm/dma.h b/arch/um/include/asm/dma.h
-index fdc53642c718..643d74555671 100644
---- a/arch/um/include/asm/dma.h
-+++ b/arch/um/include/asm/dma.h
-@@ -4,6 +4,19 @@
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 5371c9a1b11e..9bc8fc149514 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -153,6 +153,12 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) $(CC_FLAGS_
+ CLEAN_FILES += linux x.i gmon.out
+ MRPROPER_FILES += $(HOST_DIR)/include/generated
  
- #include <asm/io.h>
- 
-+/**
-+ * now the PCI core driver depends on CONFIG_MMU in linus tree, nommu
-+ * UML cannot build with PCI but without PCI kunit doesn't build due
-+ * to the dependency to the CONFIG_VIRTIO_UML.
-+ *
-+ * This is a workaround to silence build failures on kunit, which is
-+ * valid until nommu UML supports PCI drivers (e.g., virtio-pci) in a
-+ * future.
-+ */
-+#ifndef CONFIG_MMU
-+#undef PCI_IOBASE
-+#endif
++ifeq ($(CONFIG_MMU),y)
++UTS_MACHINE := "um"
++else
++UTS_MACHINE := "um\(nommu\)"
++endif
 +
- extern unsigned long uml_physmem;
+ archclean:
+ 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+ 		-o -name '*.gcov' \) -type f -print | xargs rm -f
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 4193e04d7e4a..20421e9f0f77 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -65,7 +65,8 @@ void setup_machinename(char *machine_out)
+ 	}
+ # endif
+ #endif
+-	strcpy(machine_out, host.machine);
++	strcat(machine_out, "/");
++	strcat(machine_out, host.machine);
+ }
  
- #define MAX_DMA_ADDRESS (uml_physmem)
+ void setup_hostinfo(char *buf, int len)
 -- 
 2.43.0
 
