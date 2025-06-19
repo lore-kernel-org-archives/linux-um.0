@@ -4,65 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA29CC7115A
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 15:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D52EAC7115A
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 15:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3RjQ8vjMHty4FIlfcvQC7sTXic9WNUusceBrZsCmd2A=; b=Mcx9k638A18zgSQET1UrPY/dFd
-	pIy9cXLZtmfOH0qnug/e1+0Pa9Xye+Js88x97kIyMdvJTsSuVKO75x616b+5ILbIXj6tA3qoyHn+G
-	KVzPWAenxh7Y4ms9/lvY0fabbbnFaPwFMsh9DjW1ippTpbWR/A2+2yLJ8XSlE12G1SDvxxsDrbaOr
-	Dn/MMR53CQw+yuHCHd07QOLO/VJt4L9pSjyUW6VVqDki2PtKsRgdsZE5X1DtxOH0IxFnONi5zoNsd
-	AFHb1xdluzmQEveIBB5mcgs5ShzFDZEGc+Xq0JmUxGw+3YPRlp04uiTXouN/YtELCzsVpJsUv4gxq
-	qyOS+GAw==;
+	bh=M+rlOSMwP5n/p31SLvploDk0T2daobV+1VIdpmncEK0=; b=f+pT4OGmeqfJ5Dj9ZhNvK/z6jO
+	GMiRllX+encPFNc+bRhwYpRSkPRCKqUvAxBGyZbL8uFiMikizbHgmQreREv/jiEfE7bMQdFfWgwQp
+	ff8LHqPw1UTsCCElwsI7xDoT8ShJ5EmNuXmc/aSBEmYl3fWtT24BMWnrbpZcmrKfc0QIzUluJs7fk
+	mvt1BfMVcCzqUifbkstT8rqQZftRJqbLSRlSs37W9flNrWtuzqpsCjX8WzRacnSkwvkmXhmD8GY9W
+	7HjZak6j93VZnoTqo9AV7FgNSECiyvH7M3PQD36U0kc3gqCA9t4N+caAwtcDnA/VF0T0Hm4EKBOwg
+	BAx+7SEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSHUk-0000000DWXK-3cj7;
-	Thu, 19 Jun 2025 15:48:06 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uSHVF-0000000DXCS-2s6y;
+	Thu, 19 Jun 2025 15:48:37 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSEXc-0000000D4vF-3L5R
+	id 1uSEnz-0000000D6av-2M8c
 	for linux-um@lists.infradead.org;
-	Thu, 19 Jun 2025 12:38:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=3RjQ8vjMHty4FIlfcvQC7sTXic9WNUusceBrZsCmd2A=;
-	t=1750336732; x=1751546332; b=ZQpTzh9EAtDOKFFX+DjWCoZSQPXYQs8G5gJBidipH9espHb
-	UVeCbzYSzIbkKXp0EcO9pGpgFJNKvgN6qWBg8PFILp+1NlOCBdJzCsALrRL40OdUCbcquUk0xMkUR
-	cFPd9AMXUvFEpveHcdu9X+QDOSD5PCMPAQn7zsOTgVhOhM7F2gK21jA19Ihj+h4ck/34xPFV+p4/r
-	JAG+sMqnFSSxJ7lCXUlB2lX5Zh8wkf7zw8YvbYsplm+glNWfZg9uvCgoQndslwtPWVgp+0bLcSgS3
-	jB2nFz6Y2HdIOBwHyGFoGB77ylNBlgjDHEA5uASUWeYl6pGVDs2kWLTVHvoCZNSQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uSEXY-000000014Eu-2Jtm;
-	Thu, 19 Jun 2025 14:38:48 +0200
-Message-ID: <2231a777eef3cdb339fe98af4618f958ed658df6.camel@sipsolutions.net>
-Subject: Re: [PATCH v9 07/13] um: nommu: configure fs register on host
- syscall invocation
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-um@lists.infradead.org, ricarkol@google.com,
- Liam.Howlett@oracle.com, 	linux-kernel@vger.kernel.org
-Date: Thu, 19 Jun 2025 14:38:47 +0200
-In-Reply-To: <m28qln6huv.wl-thehajime@gmail.com> (sfid-20250619_142254_743735_97A005BF)
-References: <cover.1750294482.git.thehajime@gmail.com>
-		<2863dab9b3f9d6536b73623398a3f39e4ae70957.1750294482.git.thehajime@gmail.com>
-		<412c514334ac14a992cab3e7b86170b96d60be1c.camel@sipsolutions.net>
-	 <m28qln6huv.wl-thehajime@gmail.com> (sfid-20250619_142254_743735_97A005BF)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+	Thu, 19 Jun 2025 12:55:48 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-236470b2dceso8116905ad.0
+        for <linux-um@lists.infradead.org>; Thu, 19 Jun 2025 05:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750337747; x=1750942547; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M+rlOSMwP5n/p31SLvploDk0T2daobV+1VIdpmncEK0=;
+        b=Iq4tlMhhVkk0dNFrnEpmJXCYuHFvyuew7iA/XGIzYMM7T9zo3XbN1y5HS94RpahIp3
+         Pdq/6EXZ2QY9Lv53lBDBVIatGw9pkx1jcNZ0Cs+7wr2TMKrS1iu4XuYOYdYBsValXRrn
+         LxKCjBsSauEZ0jfLfP+awrtFfNSfSvajP7hOS9YLoHct4Wb8OP4Sl9Ty0naHp4flcpTU
+         b175lK79edCTL23js4WtiRf5i/8PDI9Bs9x9o2cFWn8PzcXMs7cjcbe/Fmn7/Q+t4792
+         UqfuBUBTEjGMx3403yJxu6LrqlMl6UEbG68aoSNSLztEvZHvxtW6uFB1JGxXe2AUecaE
+         cnkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750337747; x=1750942547;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M+rlOSMwP5n/p31SLvploDk0T2daobV+1VIdpmncEK0=;
+        b=loWVuLyWXJMfEMdGgf4YL6p+Qi56FngCb2SMxfAj3++p53Yen3y6YNqu7WGSj1d3yB
+         TQnJxwNeYGKUg5KY2SqvEYLFardDqcelNrbpgDDVcpjWCJs1YhbYXW8AxhqKTx54vieH
+         ocNB92Z39IypQ+HCsG53zmRAsVWxJvzYjgJGO/SXokGfE/+LxZOJOSWWYlxH4QNIEGzj
+         gUqpOYoNFLoq9AVtvhy37QBQkXCbLxPeMPiGasB92MqiBRivN1taKrLOLo0EQNBh4cOD
+         9f73grHYun7YjKw3RLXnVVDDq2IDf+pq0WP7AI8HZi4hQ0jYKaoR35VhPbOrcpAC+xQN
+         9qUA==
+X-Gm-Message-State: AOJu0Ywbl9pWvbXUSCmLZO+Zhso2fL21mYE2BKUWM59XNlM74hGcp7xF
+	cWLaTwAGVVGmuSwQBNkO5xf9mmfo5vdDNV9SU/sKxxHXT2C5pb9uMnx1xsM/+7ph
+X-Gm-Gg: ASbGncs+yssq82k744MRVinDtGVKhHFbb+t39gkXPOja2Lglaj5aVwsM/204iG1w41l
+	60RFbhuX7+Xm6IWTn3XOur1jI6uygfJ7Op594YmuwFoXbejtMbresf389dNO79VZ92Y2Iblj+GE
+	N7gtMA/CmPaN7Z+Bu8T+bKMY9jxGGmysbcTdfUjXTfD9+dJAJQ1OkZne8eVB6YX0MgX2QULgwxa
+	YgyNu8OWFDZmeDDCQhtQQZKy7IOtALaaFA19H5papTAFxmAqvMZEZumbXHjPW2zQeqKlpX3ici1
+	bUGpc/g5bJ05skEegqm4DFE/RuiqcrWb71FhBQj6VRZv7u3DNSHIauYUowYidQcCSmzFFudcpBC
+	NhsuAOyJnQ/b0qF8w7UWCgcNyuPpTbjyq2Tp2c6POlrnzx6Ed
+X-Google-Smtp-Source: AGHT+IH1EMoai3zHMb4zRC/VNByRbk72Z5RtT7pHk3Ocj6JqFBNF5Na0YBNCNAzeKpEwwxPk9Drpcg==
+X-Received: by 2002:a17:902:d2c6:b0:234:aa98:7d3e with SMTP id d9443c01a7336-2366b3ad2famr342090745ad.29.1750337746613;
+        Thu, 19 Jun 2025 05:55:46 -0700 (PDT)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2365de782b2sm119684905ad.111.2025.06.19.05.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Jun 2025 05:55:45 -0700 (PDT)
+Date: Thu, 19 Jun 2025 21:55:42 +0900
+Message-ID: <m27c176gc1.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: benjamin@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com
+Subject: Re: [PATCH v7 10/13] x86/um: nommu: signal handling
+In-Reply-To: <a81b27bdf40fba54b28325bdb28f697c48a005d6.camel@sipsolutions.net>
+References: <cover.1737348399.git.thehajime@gmail.com>
+	<7714247990d673226ce0f42ca838d8ec338cf882.1737348400.git.thehajime@gmail.com>
+	<a81b27bdf40fba54b28325bdb28f697c48a005d6.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-2022-JP
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_053852_832941_01AAF155 
-X-CRM114-Status: GOOD (  24.89  )
+X-CRM114-CacheID: sfid-20250619_055547_600198_43D5AB7B 
+X-CRM114-Status: GOOD (  13.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,63 +99,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-06-19 at 21:22 +0900, Hajime Tazaki wrote:
->=20
-> On Thu, 19 Jun 2025 19:40:49 +0900,
-> Benjamin Berg wrote:
-> >=20
-> > On Thu, 2025-06-19 at 10:04 +0900, Hajime Tazaki wrote:
-> > > As userspace on UML/!MMU also need to configure %fs register when
-> > > it is
-> > > running to correctly access thread structure, host syscalls
-> > > implemented
-> > > in os-Linux drivers may be puzzled when they are called.=C2=A0 Thus i=
-t
-> > > has to
-> > > configure %fs register via arch_prctl(SET_FS) on every host
-> > > syscalls.
-> >=20
-> > Really, I still think that we should "just" get rid of libc
-> > entirely
-> > inside UML. That would avoid so many weird/potential issues =E2=80=A6
->=20
-> I'm not sure if I understand your point.
->=20
-> Q1) what do you mean by 'get rid of libc entirely' here ?
-> =C2=A0=C2=A0=C2=A0 do you mean the following code block adds the dependen=
-cy ?
-> + int os_arch_prctl(int pid, int option, unsigned long *arg2)
-> + {
-> +=C2=A0	return syscall(SYS_arch_prctl, option, arg2);
-> + }
->=20
-> I guess this can be replaced with inline assembly instead of using
-> libc's one.=C2=A0 but this is the code under os-Linux, which I thought
-> we're
-> allowed to use the host code ?
->=20
-> Q2) "That would avoid so many weird/potential issues =E2=80=A6"
-> I'm new to this;=C2=A0 I'm wondering what kind of issues did you see ?
 
-Oh, I am just being annoyed by libc in general in UM. It isn't specific
-to this patchset.
+Thanks,
+# this is a thread of my older series, v7 (current one is v9), tho
+your comment is still valid so, thanks !
 
-An example is that we need to keep malloc() working for libc. Which I
-would think is kind of weird. Or we had issues because libc turned on
-rseq and that was inherited into userspace, causing random crashes and
-such.
+On Thu, 19 Jun 2025 20:43:06 +0900,
+Benjamin Berg wrote:
+> 
+> Hi,
+> 
+> I am not sure that fxsaveq/fxrstorq is guaranteed to be sufficient. I
+> don't think that catches some of the newer AVX registers for example.
 
-> > Doesn't change the fact that FS/GS needs to be restored when doing
-> > thread switches and such. Though one might be able to do it
-> > entirely
-> > within arch_switch_to then.
->=20
-> I believe this is already done in arch_switch_to.=C2=A0 This particular
-> patch does the control to the host context.
+I've added fxsaveq/fxrstorq parts with your suggestion,
+test-signal-restore.c.  I think I may not know all of userspace
+situations with register usage so, my current approach is to address
+each issue when we faced real issue with a concrete test case.
 
-OK, need to look at that again a bit. I haven't really wrapped my mind
-around how everything fits together, so I probably got some stuff
-wrong.
+> At the same time, dealing with all that properly could be rather
+> annoying. I don't really have a solution for that, normal UM does not
+> need to deal with many of those details …
 
-Benjamin
+thanks for the input.
+I'm also/always trying to study a lot from existing code base.
+
+-- Hajime
+
 
