@@ -4,64 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D080FC7115B
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 11:35:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B35A6C7115B
+	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 15:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JIXQl7kPA2kTbpEaXSHIxKDvEWNaKOXoyKqW/5vzYPA=; b=idbx9ZMDg12e5MRjq3kq9Wj/e4
-	Y/5s4apA4oYq0hNMCmCWjruhDyQfSuNfpwl9s9QQ6OdwUDj7+7k7kqWFtCxfjllIcK/ILATYbKzOo
-	toS+SKH4B/QkDcMQNAEEwN01SAI/ZE7YrjvizKg/gleKysbZECfoYH/eOapU8VagYfjH3PsReBeig
-	RaZTcuySf+cHxZ0jQFZGPmbohdI3rvW9IyjMODXLGfvitdEY3+GCNMDRTeYMfACbnb0kInHLW11Mh
-	xkcIuqW2oiLhTFcVnTQjnBa9MGWxEtyEFx0z5b/MVckBfcWivV+90bQF41JZSHDp9/qJf0HgSCIkI
-	LlfPaRuQ==;
+	bh=xPiEC10vt+C3d4JrfwHhX5jQ1R9dywxnsGyCGhLFouo=; b=O3c18Z+jkiFr9AZktlSABQURob
+	e6iBewK87WZtN1LMOS4YtIH/hb26+kpP0E+erZKJz7HphVYO3lYfmujEvvj7VehlO8/jGPphTVS2l
+	B79GIrPlItyhwRX6TzKzWHLEHhSvS2wX/7f2BhQEZ+yQ59ZDu5FblhYthYesNIvT3BYQQKCLldtK1
+	LWabrtbU/nn4u3ycGMCdIxGGxvR8MW/DQtn3nwNQpr0nQu8G2BVX8fi0DePzdQAdhiXkK/beNFscE
+	PYhqTcBqHZ9SoBBZXY9M882wBtXDWACGHdkcV73VihPhtM1LJyVvuEDqn98PdjraxI6CsRHr0cqxt
+	Vo3+DQOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSDYK-0000000CuBs-1rwO;
-	Thu, 19 Jun 2025 11:35:32 +0000
+	id 1uSHSZ-0000000DTA1-00Z6;
+	Thu, 19 Jun 2025 15:45:51 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSChU-0000000Clz3-1g4F
+	id 1uSDfl-0000000Cvdx-0rTB
 	for linux-um@lists.infradead.org;
-	Thu, 19 Jun 2025 10:40:57 +0000
+	Thu, 19 Jun 2025 11:43:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=JIXQl7kPA2kTbpEaXSHIxKDvEWNaKOXoyKqW/5vzYPA=;
-	t=1750329656; x=1751539256; b=kEnHDy+8r0GWIcea7sN5N90p6WSSwJNZoKVjjB1F5ywbtLK
-	dd5r5MQAhOErybEbS2FzR8jfoTrF/yAPZWsE29LtMr2GwTy05OOe/2uu5Mh//01LTdh/p7wPYUhv9
-	bdf5C+i1Cog6Udo1VQChA1hrETKkMSiXleSISPjcjxA5FwCcWM/ggFcjmBdb1JgAsTDY2viqkH8kA
-	9SWHGcBhU+oqPIah1jL0YQ70XHvl1tuU5lx20uErJlCIKrmvj3eYACDkOUK8LE4SrzQjWt6va7ReD
-	nR3ywUFrPSRcAvnsOBQlFDdDGkGvz3VKdF+b6HEw0K55Ue264f78+fIEauXW49eg==;
+	Resent-Cc:Resent-Message-ID; bh=xPiEC10vt+C3d4JrfwHhX5jQ1R9dywxnsGyCGhLFouo=;
+	t=1750333392; x=1751542992; b=mBDZzgfExZ25vuZw0zSMyTmZiM311Yd5pMu2Pxoq9uejWjp
+	g/TWBuYPFEELN6JELWEgOlbSCVcDZFaMNS/qNsNbryJ0Y/wQwItbEVHZ/2VLdBRO5O5pm0STpwR5o
+	SxPxDWbq/Mi6rPIIWick4rf6WkTxY7PXOnCqvmElje15CJaj73g53t+lYHWY/m6o+0EghljusGyJD
+	G41fBDEZTUuq2JAVS30gk1jTw4Dg/39v/9jSQ5xU5rVgyLNXkT5KuTd9sh8alaN1DYAuF1lDoTmjU
+	6q+7XRHzSA2hPZ4MHqtCOMHD2MJ0H/VVD10ORS1MV/qbTObRGMQH89HsIbtDL1Ww==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uSChR-00000000wrN-0OCc;
-	Thu, 19 Jun 2025 12:40:53 +0200
-Message-ID: <412c514334ac14a992cab3e7b86170b96d60be1c.camel@sipsolutions.net>
-Subject: Re: [PATCH v9 07/13] um: nommu: configure fs register on host
- syscall invocation
+	id 1uSDfg-000000010Rp-3WFP;
+	Thu, 19 Jun 2025 13:43:09 +0200
+Message-ID: <a81b27bdf40fba54b28325bdb28f697c48a005d6.camel@sipsolutions.net>
+Subject: Re: [PATCH v7 10/13] x86/um: nommu: signal handling
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
-Cc: ricarkol@google.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org
-Date: Thu, 19 Jun 2025 12:40:49 +0200
-In-Reply-To: <2863dab9b3f9d6536b73623398a3f39e4ae70957.1750294482.git.thehajime@gmail.com> (sfid-20250619_030511_737629_D1683245)
-References: <cover.1750294482.git.thehajime@gmail.com>
-	 <2863dab9b3f9d6536b73623398a3f39e4ae70957.1750294482.git.thehajime@gmail.com>
-	 (sfid-20250619_030511_737629_D1683245)
+Cc: ricarkol@google.com, Liam.Howlett@oracle.com
+Date: Thu, 19 Jun 2025 13:43:06 +0200
+In-Reply-To: <7714247990d673226ce0f42ca838d8ec338cf882.1737348400.git.thehajime@gmail.com>
+References: <cover.1737348399.git.thehajime@gmail.com>
+	 <7714247990d673226ce0f42ca838d8ec338cf882.1737348400.git.thehajime@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250619_034056_616976_D17E20CC 
-X-CRM114-Status: GOOD (  27.02  )
+X-CRM114-CacheID: sfid-20250619_044313_629238_9DEB878B 
+X-CRM114-Status: GOOD (  37.88  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,301 +73,437 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-06-19 at 10:04 +0900, Hajime Tazaki wrote:
-> As userspace on UML/!MMU also need to configure %fs register when it is
-> running to correctly access thread structure, host syscalls implemented
-> in os-Linux drivers may be puzzled when they are called.=C2=A0 Thus it ha=
-s to
-> configure %fs register via arch_prctl(SET_FS) on every host syscalls.
+Hi,
 
-Really, I still think that we should "just" get rid of libc entirely
-inside UML. That would avoid so many weird/potential issues =E2=80=A6
+I am not sure that fxsaveq/fxrstorq is guaranteed to be sufficient. I
+don't think that catches some of the newer AVX registers for example.
 
-Doesn't change the fact that FS/GS needs to be restored when doing
-thread switches and such. Though one might be able to do it entirely
-within arch_switch_to then.
+At the same time, dealing with all that properly could be rather
+annoying. I don't really have a solution for that, normal UM does not
+need to deal with many of those details =E2=80=A6
 
-Benjamin
+Benjamin=20
 
-
+On Mon, 2025-01-20 at 15:00 +0900, Hajime Tazaki wrote:
+> This commit updates the behavior of signal handling under !MMU
+> environment. It adds the alignment code for signal frame as the frame
+> is used in userspace as-is.
+>=20
+> floating point register is carefully handling upon entry/leave of
+> syscall routine so that signal handlers can read/write the contents of
+> the register.
+>=20
+> It also adds the follow up routine for SIGSEGV as a signal delivery runs
+> in the same stack frame while we have to avoid endless SIGSEGV.
 >=20
 > Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-> Signed-off-by: Ricardo Koller <ricarkol@google.com>
 > ---
-> =C2=A0arch/um/include/shared/os.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
-=C2=A0 6 +++
-> =C2=A0arch/um/os-Linux/process.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 6 +++
-> =C2=A0arch/um/os-Linux/start_up.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 2=
-1 +++++++++
-> =C2=A0arch/x86/um/nommu/do_syscall_64.c | 37 ++++++++++++++++
-> =C2=A0arch/x86/um/nommu/syscalls_64.c=C2=A0=C2=A0 | 71 ++++++++++++++++++=
-+++++++++++++
-> =C2=A05 files changed, 141 insertions(+)
+> =C2=A0arch/um/include/shared/kern_util.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
+4 +
+> =C2=A0arch/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
+> =C2=A0arch/um/nommu/os-Linux/signal.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ |=C2=A0 13 ++
+> =C2=A0arch/um/nommu/trap.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 188 +++++++++++=
++++++++++++++++
+> =C2=A0arch/um/os-Linux/signal.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 25 +++-
+> =C2=A0arch/x86/um/nommu/do_syscall_64.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
+=C2=A0 6 +
+> =C2=A0arch/x86/um/nommu/os-Linux/mcontext.c |=C2=A0 11 ++
+> =C2=A0arch/x86/um/shared/sysdep/mcontext.h=C2=A0 |=C2=A0=C2=A0 1 +
+> =C2=A0arch/x86/um/shared/sysdep/ptrace.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
+2 +-
+> =C2=A09 files changed, 243 insertions(+), 9 deletions(-)
+> =C2=A0create mode 100644 arch/um/nommu/trap.c
 >=20
-> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-> index 1251f08e26d0..7c6a8bc0447c 100644
-> --- a/arch/um/include/shared/os.h
-> +++ b/arch/um/include/shared/os.h
-> @@ -189,6 +189,7 @@ extern void check_host_supports_tls(int *supports_tls=
-, int *tls_min);
-> =C2=A0extern void get_host_cpu_features(
-> =C2=A0	void (*flags_helper_func)(char *line),
-> =C2=A0	void (*cache_helper_func)(char *line));
-> +extern int host_has_fsgsbase;
-> =C2=A0
-> =C2=A0/* mem.c */
-> =C2=A0extern int create_mem_file(unsigned long long len);
-> @@ -213,6 +214,11 @@ extern int os_protect_memory(void *addr, unsigned lo=
-ng len,
-> =C2=A0extern int os_unmap_memory(void *addr, int len);
-> =C2=A0extern int os_drop_memory(void *addr, int length);
-> =C2=A0extern int can_drop_memory(void);
-> +extern int os_arch_prctl(int pid, int option, unsigned long *arg);
-> +#ifndef CONFIG_MMU
-> +extern long long host_fs;
-> +#endif
-> +
-> =C2=A0
-> =C2=A0void os_set_pdeathsig(void);
-> =C2=A0
-> diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-> index 8a1ab59a089f..3a6d34ccd12b 100644
-> --- a/arch/um/os-Linux/process.c
-> +++ b/arch/um/os-Linux/process.c
-> @@ -16,6 +16,7 @@
-> =C2=A0#include <sys/prctl.h>
-> =C2=A0#include <sys/wait.h>
-> =C2=A0#include <asm/unistd.h>
-> +#include <sys/syscall.h>=C2=A0=C2=A0 /* For SYS_xxx definitions */
-> =C2=A0#include <linux/threads.h>
-> =C2=A0#include <init.h>
-> =C2=A0#include <longjmp.h>
-> @@ -178,6 +179,11 @@ int __init can_drop_memory(void)
-> =C2=A0	return ok;
+> diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/=
+kern_util.h
+> index 1dd3d02c4e39..3569ca1603a8 100644
+> --- a/arch/um/include/shared/kern_util.h
+> +++ b/arch/um/include/shared/kern_util.h
+> @@ -71,8 +71,12 @@ void kasan_map_memory(void *start, size_t len);
+> =C2=A0static inline void arch_sigsys_handler(int sig, struct siginfo *si,=
+ void *mc)
+> =C2=A0{
 > =C2=A0}
-> =C2=A0
-> +int os_arch_prctl(int pid, int option, unsigned long *arg2)
+> +static inline void arch_sigsegv_handler(int sig, struct siginfo *unused_=
+si, void *mc)
 > +{
-> +	return syscall(SYS_arch_prctl, option, arg2);
+> +}
+> =C2=A0#else
+> =C2=A0extern void arch_sigsys_handler(int sig, struct siginfo *si, void *=
+mc);
+> +extern void arch_sigsegv_handler(int sig, struct siginfo *si, void *mc);
+> =C2=A0#endif
+> =C2=A0
+> =C2=A0#endif
+> diff --git a/arch/um/nommu/Makefile b/arch/um/nommu/Makefile
+> index baab7c2f57c2..096221590cfd 100644
+> --- a/arch/um/nommu/Makefile
+> +++ b/arch/um/nommu/Makefile
+> @@ -1,3 +1,3 @@
+> =C2=A0# SPDX-License-Identifier: GPL-2.0
+> =C2=A0
+> -obj-y :=3D os-Linux/
+> +obj-y :=3D trap.o os-Linux/
+> diff --git a/arch/um/nommu/os-Linux/signal.c b/arch/um/nommu/os-Linux/sig=
+nal.c
+> index 1674962e509d..b9e3070f2c36 100644
+> --- a/arch/um/nommu/os-Linux/signal.c
+> +++ b/arch/um/nommu/os-Linux/signal.c
+> @@ -5,6 +5,7 @@
+> =C2=A0#include <os.h>
+> =C2=A0#include <sysdep/mcontext.h>
+> =C2=A0#include <sys/ucontext.h>
+> +#include <as-layout.h>
+> =C2=A0
+> =C2=A0void arch_sigsys_handler(int sig, struct siginfo *si, void *ptr)
+> =C2=A0{
+> @@ -13,3 +14,15 @@ void arch_sigsys_handler(int sig, struct siginfo *si, =
+void *ptr)
+> =C2=A0	/* hook syscall via SIGSYS */
+> =C2=A0	set_mc_sigsys_hook(mc);
+> =C2=A0}
+> +
+> +void arch_sigsegv_handler(int sig, struct siginfo *si, void *ptr)
+> +{
+> +	mcontext_t *mc =3D (mcontext_t *) ptr;
+> +
+> +	/* !MMU specific part; detection of userspace */
+> +	if (mc->gregs[REG_RIP] > uml_reserved &&
+> +	=C2=A0=C2=A0=C2=A0 mc->gregs[REG_RIP] < high_physmem) {
+> +		/* !MMU: force handle signals after rt_sigreturn() */
+> +		set_mc_userspace_relay_signal(mc);
+> +	}
+> +}
+> diff --git a/arch/um/nommu/trap.c b/arch/um/nommu/trap.c
+> new file mode 100644
+> index 000000000000..cda71ecb1115
+> --- /dev/null
+> +++ b/arch/um/nommu/trap.c
+> @@ -0,0 +1,188 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/mm.h>
+> +#include <linux/sched/signal.h>
+> +#include <linux/hardirq.h>
+> +#include <linux/module.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/sched/debug.h>
+> +#include <asm/current.h>
+> +#include <asm/tlbflush.h>
+> +#include <arch.h>
+> +#include <as-layout.h>
+> +#include <kern_util.h>
+> +#include <os.h>
+> +#include <skas.h>
+> +
+> +/*
+> + * Note this is constrained to return 0, -EFAULT, -EACCES, -ENOMEM by
+> + * segv().
+> + */
+> +int handle_page_fault(unsigned long address, unsigned long ip,
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int is_write, int is_user, int *code_ou=
+t)
+> +{
+> +	/* !MMU has no pagefault */
+> +	return -EFAULT;
 > +}
 > +
-> =C2=A0void init_new_thread_signals(void)
-> =C2=A0{
-> =C2=A0	set_handler(SIGSEGV);
-> diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-> index 4e1f05360c49..55dd92bd2a0b 100644
-> --- a/arch/um/os-Linux/start_up.c
-> +++ b/arch/um/os-Linux/start_up.c
-> @@ -20,6 +20,8 @@
-> =C2=A0#include <sys/resource.h>
-> =C2=A0#include <asm/ldt.h>
-> =C2=A0#include <asm/unistd.h>
-> +#include <sys/auxv.h>
-> +#include <asm/hwcap2.h>
-> =C2=A0#include <init.h>
-> =C2=A0#include <os.h>
-> =C2=A0#include <kern_util.h>
-> @@ -36,6 +38,8 @@
-> =C2=A0#include <skas.h>
-> =C2=A0#include "internal.h"
-> =C2=A0
-> +int host_has_fsgsbase;
-> +
-> =C2=A0static void ptrace_child(void)
-> =C2=A0{
-> =C2=A0	int ret;
-> @@ -459,6 +463,20 @@ __uml_setup("seccomp=3D", uml_seccomp_config,
-> =C2=A0"=C2=A0=C2=A0=C2=A0 This is insecure and should only be used with a=
- trusted userspace\n\n"
-> =C2=A0);
-> =C2=A0
-> +static void __init check_fsgsbase(void)
+> +static void show_segv_info(struct uml_pt_regs *regs)
 > +{
-> +	unsigned long auxv =3D getauxval(AT_HWCAP2);
+> +	struct task_struct *tsk =3D current;
+> +	struct faultinfo *fi =3D UPT_FAULTINFO(regs);
 > +
-> +	os_info("Checking FSGSBASE instructions...");
-> +	if (auxv & HWCAP2_FSGSBASE) {
-> +		host_has_fsgsbase =3D 1;
-> +		os_info("OK\n");
+> +	if (!unhandled_signal(tsk, SIGSEGV))
+> +		return;
+> +
+> +	pr_warn_ratelimited("%s%s[%d]: segfault at %lx ip %p sp %p error %x",
+> +			=C2=A0=C2=A0=C2=A0 task_pid_nr(tsk) > 1 ? KERN_INFO : KERN_EMERG,
+> +			=C2=A0=C2=A0=C2=A0 tsk->comm, task_pid_nr(tsk), FAULT_ADDRESS(*fi),
+> +			=C2=A0=C2=A0=C2=A0 (void *)UPT_IP(regs), (void *)UPT_SP(regs),
+> +			=C2=A0=C2=A0=C2=A0 fi->error_code);
+> +}
+> +
+> +static void bad_segv(struct faultinfo fi, unsigned long ip)
+> +{
+> +	current->thread.arch.faultinfo =3D fi;
+> +	force_sig_fault(SIGSEGV, SEGV_ACCERR, (void __user *) FAULT_ADDRESS(fi)=
+);
+> +}
+> +
+> +void fatal_sigsegv(void)
+> +{
+> +	force_fatal_sig(SIGSEGV);
+> +	do_signal(&current->thread.regs);
+> +	/*
+> +	 * This is to tell gcc that we're not returning - do_signal
+> +	 * can, in general, return, but in this case, it's not, since
+> +	 * we just got a fatal SIGSEGV queued.
+> +	 */
+> +	os_dump_core();
+> +}
+> +
+> +/**
+> + * segv_handler() - the SIGSEGV handler
+> + * @sig:	the signal number
+> + * @unused_si:	the signal info struct; unused in this handler
+> + * @regs:	the ptrace register information
+> + *
+> + * The handler first extracts the faultinfo from the UML ptrace regs str=
+uct.
+> + * If the userfault did not happen in an UML userspace process, bad_segv=
+ is called.
+> + * Otherwise the signal did happen in a cloned userspace process, handle=
+ it.
+> + */
+> +void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs=
+ *regs)
+> +{
+> +	struct faultinfo *fi =3D UPT_FAULTINFO(regs);
+> +
+> +	/* !MMU specific part; detection of userspace */
+> +	/* mark is_user=3D1 when the IP is from userspace code. */
+> +	if (UPT_IP(regs) > uml_reserved && UPT_IP(regs) < high_physmem)
+> +		regs->is_user =3D 1;
+> +
+> +	if (UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)) {
+> +		show_segv_info(regs);
+> +		bad_segv(*fi, UPT_IP(regs));
+> +		return;
+> +	}
+> +	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
+> +}
+> +
+> +/*
+> + * We give a *copy* of the faultinfo in the regs to segv.
+> + * This must be done, since nesting SEGVs could overwrite
+> + * the info in the regs. A pointer to the info then would
+> + * give us bad data!
+> + */
+> +unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+> +		=C2=A0=C2=A0 struct uml_pt_regs *regs)
+> +{
+> +	int si_code;
+> +	int err;
+> +	int is_write =3D FAULT_WRITE(fi);
+> +	unsigned long address =3D FAULT_ADDRESS(fi);
+> +
+> +	if (!is_user && regs)
+> +		current->thread.segv_regs =3D container_of(regs, struct pt_regs, regs)=
+;
+> +
+> +	if (current->mm =3D=3D NULL) {
+> +		show_regs(container_of(regs, struct pt_regs, regs));
+> +		panic("Segfault with no mm");
+> +	} else if (!is_user && address > PAGE_SIZE && address < TASK_SIZE) {
+> +		show_regs(container_of(regs, struct pt_regs, regs));
+> +		panic("Kernel tried to access user memory at addr 0x%lx, ip 0x%lx",
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 address, ip);
+> +	}
+> +
+> +	if (SEGV_IS_FIXABLE(&fi))
+> +		err =3D handle_page_fault(address, ip, is_write, is_user,
+> +					&si_code);
+> +	else {
+> +		err =3D -EFAULT;
+> +		/*
+> +		 * A thread accessed NULL, we get a fault, but CR2 is invalid.
+> +		 * This code is used in __do_copy_from_user() of TT mode.
+> +		 * XXX tt mode is gone, so maybe this isn't needed any more
+> +		 */
+> +		address =3D 0;
+> +	}
+> +
+> +	if (!err)
+> +		goto out;
+> +	else if (!is_user && arch_fixup(ip, regs))
+> +		goto out;
+> +
+> +	if (!is_user) {
+> +		show_regs(container_of(regs, struct pt_regs, regs));
+> +		panic("Kernel mode fault at addr 0x%lx, ip 0x%lx",
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 address, ip);
+> +	}
+> +
+> +	show_segv_info(regs);
+> +
+> +	if (err =3D=3D -EACCES) {
+> +		current->thread.arch.faultinfo =3D fi;
+> +		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address);
 > +	} else {
-> +		host_has_fsgsbase =3D 0;
-> +		os_info("disabled\n");
+> +		WARN_ON_ONCE(err !=3D -EFAULT);
+> +		current->thread.arch.faultinfo =3D fi;
+> +		force_sig_fault(SIGSEGV, si_code, (void __user *) address);
 > +	}
-> +}
 > +
-> =C2=A0void __init os_early_checks(void)
-> =C2=A0{
-> =C2=A0	int pid;
-> @@ -484,6 +502,9 @@ void __init os_early_checks(void)
-> =C2=A0	using_seccomp =3D 0;
-> =C2=A0	check_ptrace();
-> =C2=A0
-> +	/* probe fsgsbase instruction */
-> +	check_fsgsbase();
-> +
-> =C2=A0	pid =3D start_ptraced_child();
-> =C2=A0	if (init_pid_registers(pid))
-> =C2=A0		fatal("Failed to initialize default registers");
-> diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_sys=
-call_64.c
-> index 5d0fa83e7fdc..796beb0089fc 100644
-> --- a/arch/x86/um/nommu/do_syscall_64.c
-> +++ b/arch/x86/um/nommu/do_syscall_64.c
-> @@ -2,10 +2,38 @@
-> =C2=A0
-> =C2=A0#include <linux/kernel.h>
-> =C2=A0#include <linux/ptrace.h>
-> +#include <asm/fsgsbase.h>
-> +#include <asm/prctl.h>
-> =C2=A0#include <kern_util.h>
-> =C2=A0#include <sysdep/syscalls.h>
-> =C2=A0#include <os.h>
-> =C2=A0
-> +static int os_x86_arch_prctl(int pid, int option, unsigned long *arg2)
-> +{
-> +	if (!host_has_fsgsbase)
-> +		return os_arch_prctl(pid, option, arg2);
-> +
-> +	switch (option) {
-> +	case ARCH_SET_FS:
-> +		wrfsbase(*arg2);
-> +		break;
-> +	case ARCH_SET_GS:
-> +		wrgsbase(*arg2);
-> +		break;
-> +	case ARCH_GET_FS:
-> +		*arg2 =3D rdfsbase();
-> +		break;
-> +	case ARCH_GET_GS:
-> +		*arg2 =3D rdgsbase();
-> +		break;
-> +	default:
-> +		pr_warn("%s: unsupported option: 0x%x", __func__, option);
-> +		break;
-> +	}
+> +out:
+> +	if (regs)
+> +		current->thread.segv_regs =3D NULL;
 > +
 > +	return 0;
 > +}
 > +
-> =C2=A0__visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0{
-> =C2=A0	int syscall;
-> @@ -17,6 +45,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0		 syscall, (unsigned long)current,
-> =C2=A0		 (unsigned long)sys_call_table[syscall]);
+> +void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
+> +{
+> +	int code, err;
+> +
+> +	if (!UPT_IS_USER(regs)) {
+> +		if (sig =3D=3D SIGBUS)
+> +			pr_err("Bus error - the host /dev/shm or /tmp mount likely just ran o=
+ut of space\n");
+> +		panic("Kernel mode signal %d", sig);
+> +	}
+> +
+> +	arch_examine_signal(sig, regs);
+> +
+> +	/* Is the signal layout for the signal known?
+> +	 * Signal data must be scrubbed to prevent information leaks.
+> +	 */
+> +	code =3D si->si_code;
+> +	err =3D si->si_errno;
+> +	if ((err =3D=3D 0) && (siginfo_layout(sig, code) =3D=3D SIL_FAULT)) {
+> +		struct faultinfo *fi =3D UPT_FAULTINFO(regs);
+> +
+> +		current->thread.arch.faultinfo =3D *fi;
+> +		force_sig_fault(sig, code, (void __user *)FAULT_ADDRESS(*fi));
+> +	} else {
+> +		pr_err("Attempted to relay unknown signal %d (si_code =3D %d) with err=
+no %d\n",
+> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sig, code, err);
+> +		force_sig(sig);
+> +	}
+> +}
+> +
+> +void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+> +{
+> +	do_IRQ(WINCH_IRQ, regs);
+> +}
+> diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+> index 97efdabe1e45..3997d827bf4c 100644
+> --- a/arch/um/os-Linux/signal.c
+> +++ b/arch/um/os-Linux/signal.c
+> @@ -37,12 +37,6 @@ static void sig_handler_common(int sig, struct siginfo=
+ *si, mcontext_t *mc)
+> =C2=A0	int save_errno =3D errno;
 > =C2=A0
-> +	/* set fs register to the original host one */
-> +	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
+> =C2=A0	r.is_user =3D 0;
+> -	if (sig =3D=3D SIGSEGV) {
+> -		/* For segfaults, we want the data from the sigcontext. */
+> -		get_regs_from_mc(&r, mc);
+> -		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+> -	}
+> -
+> =C2=A0	/* enable signals if sig isn't IRQ signal */
+> =C2=A0	if ((sig !=3D SIGIO) && (sig !=3D SIGWINCH))
+> =C2=A0		unblock_signals_trace();
+> @@ -177,8 +171,25 @@ static void sigsys_handler(int sig, struct siginfo *=
+unused_si, mcontext_t *mc)
+> =C2=A0	arch_sigsys_handler(sig, unused_si, mc);
+> =C2=A0}
+> =C2=A0
+> +static void sigsegv_handler(int sig, struct siginfo *unused_si, mcontext=
+_t *mc)
+> +{
+> +	struct uml_pt_regs r;
+> +	int save_errno =3D errno;
+> +
+> +	r.is_user =3D 0;
+> +
+> +	/* For segfaults, we want the data from the sigcontext. */
+> +	get_regs_from_mc(&r, mc);
+> +	GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+> +
+> +	segv_handler(sig, unused_si, &r);
+> +	arch_sigsegv_handler(sig, unused_si, mc);
+> +
+> +	errno =3D save_errno;
+> +}
+> +
+> =C2=A0static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontex=
+t_t *mc) =3D {
+> -	[SIGSEGV] =3D sig_handler,
+> +	[SIGSEGV] =3D sigsegv_handler,
+> =C2=A0	[SIGBUS] =3D sig_handler,
+> =C2=A0	[SIGILL] =3D sig_handler,
+> =C2=A0	[SIGFPE] =3D sig_handler,
+> diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_sys=
+call_64.c
+> index 796beb0089fc..48b3d29e2db1 100644
+> --- a/arch/x86/um/nommu/do_syscall_64.c
+> +++ b/arch/x86/um/nommu/do_syscall_64.c
+> @@ -48,6 +48,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
+> =C2=A0	/* set fs register to the original host one */
+> =C2=A0	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
+> =C2=A0
+> +	/* save fp registers */
+> +	asm volatile("fxsaveq %0" : "=3Dm"(*(struct _xstate *)regs->regs.fp));
 > +
 > =C2=A0	if (likely(syscall < NR_syscalls)) {
 > =C2=A0		PT_REGS_SET_SYSCALL_RETURN(regs,
 > =C2=A0				EXECUTE_SYSCALL(syscall, regs));
-> @@ -34,4 +65,10 @@ __visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0	/* force do_signal() --> is_syscall() */
+> @@ -66,6 +69,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
 > =C2=A0	set_thread_flag(TIF_SIGPENDING);
 > =C2=A0	interrupt_end();
-> +
-> +	/* restore back fs register to userspace configured one */
-> +	os_x86_arch_prctl(0, ARCH_SET_FS,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void *)(current->thread.regs.regs.gp[F=
-S_BASE
-> +						=C2=A0=C2=A0=C2=A0=C2=A0 / sizeof(unsigned long)]));
-> +
-> =C2=A0}
-> diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls=
-_64.c
-> index c78c442aed1d..5bb6d55b4bb5 100644
-> --- a/arch/x86/um/nommu/syscalls_64.c
-> +++ b/arch/x86/um/nommu/syscalls_64.c
-> @@ -13,8 +13,70 @@
-> =C2=A0#include <asm/prctl.h> /* XXX This should get the constants from li=
-bc */
-> =C2=A0#include <registers.h>
-> =C2=A0#include <os.h>
-> +#include <asm/thread_info.h>
-> +#include <asm/mman.h>
-> =C2=A0#include "syscalls.h"
 > =C2=A0
-> +/*
-> + * The guest libc can change FS, which confuses the host libc.
-> + * In fact, changing FS directly is not supported (check
-> + * man arch_prctl). So, whenever we make a host syscall,
-> + * we should be changing FS to the original FS (not the
-> + * one set by the guest libc). This original FS is stored
-> + * in host_fs.
-> + */
-> +long long host_fs =3D -1;
+> +	/* restore fp registers */
+> +	asm volatile("fxrstorq %0" : : "m"((current->thread.regs.regs.fp)));
 > +
-> +long arch_prctl(struct task_struct *task, int option,
-> +		unsigned long __user *arg2)
+> =C2=A0	/* restore back fs register to userspace configured one */
+> =C2=A0	os_x86_arch_prctl(0, ARCH_SET_FS,
+> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void *)(current->thread.regs.regs=
+.gp[FS_BASE
+> diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nommu/os=
+-Linux/mcontext.c
+> index c4ef877d5ea0..955e7d9f4765 100644
+> --- a/arch/x86/um/nommu/os-Linux/mcontext.c
+> +++ b/arch/x86/um/nommu/os-Linux/mcontext.c
+> @@ -6,6 +6,17 @@
+> =C2=A0#include <sysdep/mcontext.h>
+> =C2=A0#include <sysdep/syscalls.h>
+> =C2=A0
+> +static void __userspace_relay_signal(void)
 > +{
-> +	long ret =3D -EINVAL;
-> +	unsigned long *ptr =3D arg2, tmp;
-> +
-> +	switch (option) {
-> +	case ARCH_SET_FS:
-> +		if (host_fs =3D=3D -1)
-> +			os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
-> +		ret =3D 0;
-> +		break;
-> +	case ARCH_SET_GS:
-> +		ret =3D 0;
-> +		break;
-> +	case ARCH_GET_FS:
-> +	case ARCH_GET_GS:
-> +		ptr =3D &tmp;
-> +		break;
-> +	}
-> +
-> +	ret =3D os_arch_prctl(0, option, ptr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	switch (option) {
-> +	case ARCH_SET_FS:
-> +		current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =3D
-> +			(unsigned long) arg2;
-> +		break;
-> +	case ARCH_SET_GS:
-> +		current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)] =3D
-> +			(unsigned long) arg2;
-> +		break;
-> +	case ARCH_GET_FS:
-> +		ret =3D put_user(current->thread.regs.regs.gp[FS_BASE / sizeof(unsigne=
-d long)], arg2);
-> +		break;
-> +	case ARCH_GET_GS:
-> +		ret =3D put_user(current->thread.regs.regs.gp[GS_BASE / sizeof(unsigne=
-d long)], arg2);
-> +		break;
-> +	}
-> +
-> +	return ret;
+> +	/* XXX: dummy syscall */
+> +	__asm__ volatile("call *%0" : : "r"(__kernel_vsyscall), "a"(39) :);
 > +}
 > +
-> +SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
+> +void set_mc_userspace_relay_signal(mcontext_t *mc)
 > +{
-> +	return arch_prctl(current, option, (unsigned long __user *) arg2);
+> +	mc->gregs[REG_RIP] =3D (unsigned long) __userspace_relay_signal;
 > +}
 > +
-> =C2=A0void arch_switch_to(struct task_struct *to)
+> =C2=A0void set_mc_sigsys_hook(mcontext_t *mc)
 > =C2=A0{
-> =C2=A0	/*
-> @@ -42,3 +104,12 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned l=
-ong, len,
+> =C2=A0	mc->gregs[REG_RCX] =3D mc->gregs[REG_RIP];
+> diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sy=
+sdep/mcontext.h
+> index 15e9ff287021..0efe5ddf95af 100644
+> --- a/arch/x86/um/shared/sysdep/mcontext.h
+> +++ b/arch/x86/um/shared/sysdep/mcontext.h
+> @@ -9,6 +9,7 @@
+> =C2=A0extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
+> =C2=A0#ifndef CONFIG_MMU
+> =C2=A0extern void set_mc_sigsys_hook(mcontext_t *mc);
+> +extern void set_mc_userspace_relay_signal(mcontext_t *mc);
+> =C2=A0#endif
 > =C2=A0
-> =C2=A0	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHI=
-FT);
-> =C2=A0}
-> +
-> +static int __init um_nommu_setup_hostfs(void)
-> +{
-> +	/* initialize the host_fs value at boottime */
-> +	os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
-> +
-> +	return 0;
-> +}
-> +arch_initcall(um_nommu_setup_hostfs);
+> =C2=A0#ifdef __i386__
+> diff --git a/arch/x86/um/shared/sysdep/ptrace.h b/arch/x86/um/shared/sysd=
+ep/ptrace.h
+> index 8f7476ff6e95..7d553d9f05be 100644
+> --- a/arch/x86/um/shared/sysdep/ptrace.h
+> +++ b/arch/x86/um/shared/sysdep/ptrace.h
+> @@ -65,7 +65,7 @@ struct uml_pt_regs {
+> =C2=A0	int is_user;
+> =C2=A0
+> =C2=A0	/* Dynamically sized FP registers (holds an XSTATE) */
+> -	unsigned long fp[];
+> +	unsigned long fp[] __attribute__((aligned(16)));
+> =C2=A0};
+> =C2=A0
+> =C2=A0#define EMPTY_UML_PT_REGS { }
 
 
