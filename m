@@ -4,185 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8874DC7EE2D
-	for <linux-um@archiver.kernel.org>; Thu, 19 Jun 2025 21:32:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23749C7115B
+	for <linux-um@archiver.kernel.org>; Fri, 20 Jun 2025 08:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
-	Content-Type:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Cc:To:From:
+	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kFDBLgmviF03k4EAGDeEWTa82BAKv5Wv8eqmL5b5KQE=; b=AYzCpbfpxwzqU78AieTxcAWTcN
-	b5or94cGQB3ZigX1YvpEUek8VkFVkDh2xUQWwKW/Zkpdg6bKJbGjk5DRS/CEDohGemATD1APZhvRw
-	ANvC73C8bYDxIaho3EQ3yHwNGIb7/mzsgcQKAmT51bMNVNNutMxvUFyMC8MPwtQBUZ9cKGCt6TC6B
-	wj3Q/cbCljBvQ1Yjzt8kB/1hTViOifm+qyScxwBoD/veYCtH6eqUKg00Zi24L+kmIg1ZvL3xsB9G4
-	+G4cjqKWqo/8Og4kqjVVWEI3QdvLpOiJKXSHtCbulJUh1VAeDzWSiOcmjTOWxbsSGGj7OzA2Ss87W
-	yBoNdHNg==;
+	bh=7jx/91bHphTZFNH/U6DqHakgzRWsMhRo3MBcddPZayU=; b=Jgpir2Oe/LADGvCW44eC0HzlH8
+	gXgkrwL+OGg50JY7z1MSUmkTBg1SkVuN/GQlDRZXHfAqNFnyt7cLLaOcErjGqjEleS4G3p83uuA5s
+	XQj0JcKrlLt7+hee7zjZMaSu1W9NSiBk7Sr3BWQeM+/JBf58KSMUSFkoHwIkzVibBVbhnHQj4Kg5J
+	/4b5/Aj4rvn0wGDLVcqGffwdhxbP5aqWBjGjlX4GLckIr6WnpJjIQ7c5LlsPm6OOpkOvbkcOhA6H1
+	XgH41dXAMzg2XNX2MSRzJyvUK6oOq2/S/Wq2hxnU18j80MaL0VPr5gWneUCBWUL7Q1fzuHd2474Pk
+	Iacdv3SA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSMri-0000000EIuv-1EnO;
-	Thu, 19 Jun 2025 21:32:10 +0000
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32])
+	id 1uSWji-0000000EzyQ-1zRW;
+	Fri, 20 Jun 2025 08:04:34 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uRWey-00000007Pm4-0yia;
-	Tue, 17 Jun 2025 13:47:33 +0000
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55H8tYIP026713;
-	Tue, 17 Jun 2025 13:46:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=kFDBLgmviF03k4EAGD
-	eEWTa82BAKv5Wv8eqmL5b5KQE=; b=Ao8CHT1WSzNpw+sC1tpleYQ8KbuZ/URTmX
-	MHCA1oeiD+zmwaT/MjyyXAOjQ2W51pFpci99potCcwEp7Zv5H7gUdWqAhw6aPl5C
-	8tcXENpJ4Jv9J75ZQa75Mvm2Mji5pHWIe6AUBp86L/Jb9HaDFmdim5OLMg9AqAEu
-	XydZTVfGsfkx2MiMarSJafb4YLNH7ayS9eqh5M8V9UBNMXNp5V5PJ5ziRaWF5Qge
-	oS7tq39vWB1AedKcqhloPMr68qa0tu6ZS68TQJ2jxVoOwtG2/b4a5uGHNxBUXknE
-	QKdPAWFOiDzXWC/CsLpHFT/Xsp6gADleAv6Twz9aUJ1SZgP+8+Rw==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47914en9n5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Jun 2025 13:46:55 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55HD9c5I025973;
-	Tue, 17 Jun 2025 13:46:55 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11on2075.outbound.protection.outlook.com [40.107.223.75])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 478yhfh0ht-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 17 Jun 2025 13:46:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=m1iYW18VM9RtMgYuw+KjcSUL7oaoFzdb7XTxILLYI14x+Pc+sZ3ebaoS4WJ5gEmbKIohqxGSegBcls+JF9EDJLPDC9G6FLtvBRC+jLeIKstdq6GA6k4qAaT2YDZcp7kB/50k4XBnnct3INqLVWMW53CS5z3qFBzcpWdQWfCWTXFxIr/KUu+QA91j/fmxAf5kv/UmX2/19YXeQ+rRFnyUnS08Iu2PJG5imEF9pvlh7nzdtIrPEZzRdTZ0SgUK1gQCYdKngbkttlwCdpY3KCzudLsmEv5BjKZIH4LaApowdDLvD+6qn4OiOVkVLHWhFYRVihaFVF6EP8pS+VIuz/bxFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kFDBLgmviF03k4EAGDeEWTa82BAKv5Wv8eqmL5b5KQE=;
- b=c2okbzpmgRpsL8MloNwnoO2I0e9gVzkA48+KeHvd8iJV8r7xoOtuyzzdstWJ5m6xbYbKZZlm9CIEDPIqkI74Ye6m+K1NxY/TqrM940crP4OnQGIhOVoRMh7qdZWXIRtrRPDiRzz26v83QNdqe5GVmvFYFa8WkF7DwJ6C3wGe2+RfXhrAE84fMJVzowSR+bSnQh9BDBdQuGlvwbc6EsH78/R5IvYYiDoMfKlB12oJYq5ZszUhRrYbqmNiXfaTkbsbbm81/hYUc/dhJKNnu6I5DMpMMWr4tklxMzZyz5vYh5DeE3uMOcoqcicF8TUT/zp2BREmKLSTnxQNzwtgdHm9Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kFDBLgmviF03k4EAGDeEWTa82BAKv5Wv8eqmL5b5KQE=;
- b=G8tmWYJaSvLtJRQ22lknqb5+ycBkTumRSi2egVJVy3moFJ0qv4zZ9LacL6TuL44UU6YNteWp/pmmNwL9KD+eMWFZO0mHZWgCEkGIBwKZnMfHVmzz/Ndfh67smqUo8LAncMdGteKqFbyie+RIr4nKG8sVqLZfN3v5k02Eyl28Mhg=
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com (2603:10b6:8:1cc::16)
- by DS0PR10MB6125.namprd10.prod.outlook.com (2603:10b6:8:c7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.29; Tue, 17 Jun
- 2025 13:46:48 +0000
-Received: from DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2]) by DM4PR10MB8218.namprd10.prod.outlook.com
- ([fe80::2650:55cf:2816:5f2%6]) with mapi id 15.20.8835.026; Tue, 17 Jun 2025
- 13:46:48 +0000
-Date: Tue, 17 Jun 2025 14:46:46 +0100
-From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, Jens Axboe <axboe@kernel.dk>, Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Benjamin LaHaise <bcrl@kvack.org>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, "Tigran A . Aivazian" <aivazian.tigran@gmail.com>, Kees Cook <kees@kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Viacheslav Dubeyko <slava@dubeyko.com>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, Zhihao Cheng <chengzhihao1@huawei.com>, Hans de Goede <hdegoede@redhat.com>, Carlos Maiolino <cem@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, linux-aio@kvack.org, linux-unionfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-xfs@vger.kernel.org, nvdimm@lists.linux.dev
-Subject: Re: [PATCH 00/10] convert the majority of file systems to
- mmap_prepare
-Message-ID: <45c1da59-357d-4084-b4e6-98285f88f99d@lucifer.local>
-References: <cover.1750099179.git.lorenzo.stoakes@oracle.com>
- <20250616204149.GK1880847@ZenIV>
- <92cd3a83e5c244a3e4a5afd5af61cfb3f8962338.camel@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92cd3a83e5c244a3e4a5afd5af61cfb3f8962338.camel@kernel.org>
-X-ClientProxiedBy: LO4P265CA0115.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2c3::19) To DM4PR10MB8218.namprd10.prod.outlook.com
- (2603:10b6:8:1cc::16)
+	id 1uSWb4-0000000EzDb-3s65
+	for linux-um@lists.infradead.org;
+	Fri, 20 Jun 2025 07:55:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Date:MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Cc:To:From:Subject:Message-ID:Sender:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=7jx/91bHphTZFNH/U6DqHakgzRWsMhRo3MBcddPZayU=;
+	t=1750406138; x=1751615738; b=C/kq87AaVrgPm47xHzSE5fRc27/wUS9kLpPs12iKwiLhwWY
+	svlLFw9Peb5yiSCfoQqnP7vFq5oAj4A9idJwycFQ+k0KM1GweFTZPq+Zq+4QC3oyszYJ1HZM1kq80
+	2THZVVkNh8AsfhkX/OL2KYjRumKTKl+eK22epZKaU99DkRPuySPaOZ/9D+J6MMWXWUhmSYbcog9jm
+	+1lw8W8eXOsoUPMCHU6L6oQJekf78TXTPI5yHQ9EUjfX2iezoW8eIDNGJU2DUaL6NxeOdDVkgiLdj
+	rpE+TPT5F6Rpd4AO71IpHtUBOrNaLvr1XrtRQ8hpFwwo9cI/jx4Uxu17F/xmeYLg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uSWau-00000002Yjk-2ZjM;
+	Fri, 20 Jun 2025 09:55:29 +0200
+Message-ID: <d1d08a207844b98d0beba96f48beaf73e30c3bd2.camel@sipsolutions.net>
+Subject: Re: [PATCH v9 04/13] x86/um: nommu: syscall handling
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
+Cc: ricarkol@google.com, Liam.Howlett@oracle.com,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <bc5a2a14d41add7a2a44b12a21d9ccfa68a6baa5.1750294482.git.thehajime@gmail.com> (sfid-20250619_030454_005867_6CC4C80D)
+References: <cover.1750294482.git.thehajime@gmail.com>
+	 <bc5a2a14d41add7a2a44b12a21d9ccfa68a6baa5.1750294482.git.thehajime@gmail.com>
+	 (sfid-20250619_030454_005867_6CC4C80D)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR10MB8218:EE_|DS0PR10MB6125:EE_
-X-MS-Office365-Filtering-Correlation-Id: e3ca3715-97b0-4d5c-f2a4-08ddada56840
-X-LD-Processed: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|7053199007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?x5GC80u0pByI8wnXI52yeQTMz7Suqn5Ijd7ghoOAKX/LojPUrLni7jAv0dp5?=
- =?us-ascii?Q?KDfbf88mcc9exzPHFJgiAXKZTmcPCGYUXuQXYAdilbKfJofuKbWQ0Kk3a09u?=
- =?us-ascii?Q?uRoviPMUTBFz9NITuDQhWXmFwl7dx22L/I80cTlvKpR10BSVNmM/c2/LDSi2?=
- =?us-ascii?Q?Fn+oFPPWk8pQXWaE0nTHE1fEFVTv7CQV0pvvHvy3EJUepWhiZZK6WIlzWGH7?=
- =?us-ascii?Q?xMjgM2DBqpxUKBhF5hnRaV7/RWD/cZBHHA7kqYVw6bIPg2n1iNVvHNKzULFa?=
- =?us-ascii?Q?XV2VtSJSQ+clsV6iKCCA31SY1+2KFCCRNp1OEDF/VnjqSemOZhMJfChlHgIa?=
- =?us-ascii?Q?AsxKRTEV9Jz2r5tuSU+d5J74vwfYMtP9bi6dx+kCCep2bQ/ngLP1TPp9oYDN?=
- =?us-ascii?Q?XRtmIOsnu5T2gkUKe/HOwTQ3XVa6SB159nzFCrrfY/r9JoMOH8JTsP1i57M3?=
- =?us-ascii?Q?pL5hSCFgpe3i1iOfGbCpGu5WsiAoVZeIt0A8RLhysY4cDpDCVKZ0XF8r4NRf?=
- =?us-ascii?Q?ApI2fGI4cosuQ7dFs2IVOfZgKk500WpCumrdCpSecGuiSD+7pu7pJUTUlmZ9?=
- =?us-ascii?Q?pSK+OlpmjAEEQZXWRCZOV18Q6hNHDc/tMglPaqJCh3gJy09oPCdHr6RwUOTp?=
- =?us-ascii?Q?eH7AB44EOfP4kLn9fUbqmXjj3Xd+Jg2c46pRTmLKrvwRxWr4uwxLZuUGYG5S?=
- =?us-ascii?Q?PnDlnnTmBCti6Fmn/5qMc99H7Ka4vDoIQvtZr0pRImYqCS14RpQH3VybNPdf?=
- =?us-ascii?Q?Y5pAMNn54IDYqepFLj2/F1/I/+DgFqaSUWiqxBegMgDbO6yVcQRxvVD3+iQS?=
- =?us-ascii?Q?uj/Z+j+4UdAM1Zpl9QTST4gac8IIkkGOV0t4jfiYVz/uXzoMC5igZhttXc4I?=
- =?us-ascii?Q?ceL0Z8ANXDuEJ4FijgS5dv/0HkaO2QK48C4aP0cQjLvsLVe5NTKmf/4TFcFP?=
- =?us-ascii?Q?698zKWR1FQonYcZqHdH9V9PIePOQDu158OgA/2GnnpvsdtRrG6L/2iGY8r4A?=
- =?us-ascii?Q?VkLYZVsZg6cWd48ECmCkPxnJXCaJvb2UOa/MVgyzDBFp9s5tpIVXQlshPZ+q?=
- =?us-ascii?Q?1evYBWQi35fzUb9wAsznjrXyKj5Vs1nlPCAT3WUJaqT2bb+/EeL+HIf6sXID?=
- =?us-ascii?Q?SQmsQsIWzHV0XpcSzX6gDYBVvXiZKg7rq982PvrmsORXt1GV0vG4HSQU5Aj6?=
- =?us-ascii?Q?0WVk8ze/ZmtJ6fQj1w0NS0nZCFTSneHCxChDVtgFX4MPED81GglQ9m+mK+qi?=
- =?us-ascii?Q?DZdoWL05EHuEOoQeSTfg5PH+x8g8yK3grxBkgX72KEtxty6CeeoUN4vPiKqf?=
- =?us-ascii?Q?TrrsfWLwRU6Zo333dBnUWuETrweTCxvLLAyN4YJjxR9kAayGrqszcYr3rGV4?=
- =?us-ascii?Q?wuhnr2uJZJBoom+/Iaa1nnHQu7oSH1ZFwo1Zp5MbRXPj5zBHljJN8xE71+sH?=
- =?us-ascii?Q?HipJMQ8MObI=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB8218.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tChXKkvgbqB4KqhkZs9XL1A0X+3B6d7YIjMUayfzCYd2mhMeauUgrK8rWl6T?=
- =?us-ascii?Q?KNCAQVQIzsZipEK3dgiTkuZ8yzjhfAMYSftGR4wrJ6IXyCXhvhLklJrnbfB8?=
- =?us-ascii?Q?BcWLca1rEX9uao7V5L1sfm0U9E0bXgBoMTwUUNTmyOkruns3zCcpQeEi/Zw9?=
- =?us-ascii?Q?xFJjAOcqXA9tIhL2ZZVZ1i/ulDu1AURXzVMG7uSJcGnc4wKQbixvQgsegMmM?=
- =?us-ascii?Q?3ih85lHiMwTEJbUaHCrlqQMsruN4Gt12kMwSJLks0G/Unetz3GMVRscG22au?=
- =?us-ascii?Q?wsGPwcOyuqH2DhSbHN4LbcyZ0IiYAK4Df+6z6t0g3uBrNVV5P23YWROY6TuK?=
- =?us-ascii?Q?bTfO6H8MR5ljbNETgT4Tjh1/VcUlkKAbk7i3A+dvaz1NAyWitMXTiaK0qM+P?=
- =?us-ascii?Q?bxizuocav0DouNRFHK+Uuzgl4wg1Re+NH1WYMcJLS3/tJmn0Ty6opzoRB/oo?=
- =?us-ascii?Q?UL1MfmM8afZMlo7phPQNm4BMc2KJO1nFhmvzEGfr3J1hIF9FSHyVf/zL4A4x?=
- =?us-ascii?Q?cbfQFhi4K6iB1WfOslZv7UAoWko56qeKwtiC7afwoKoITL+GLchkElzIFnBH?=
- =?us-ascii?Q?fQK8Dy/I/BAe3lpGahN1WwY7HEMo9rj/sn1IA4vX34myp2M9F18MhfWOa32q?=
- =?us-ascii?Q?8U5bzXjzHXIts5Lf7MSZA3PkE1yZFGWsqBDzerHuaPHaiShvG4F66a/yY+/I?=
- =?us-ascii?Q?gh9PGGrlA3r+c5be7x0KoGo+T/yBCtdXx7JxCKFu9zbZJY+YkMhdNdhJFNcC?=
- =?us-ascii?Q?SpJ1s4OmkKF8IukZZfSHSuVQgi9HFrSVOnKb8i67yJ4d0TvE6aCtL9wOEtz+?=
- =?us-ascii?Q?M+0JSZsJZYvQCiQr6szqfDttTv9PS8hkcupO3xiqXNjisG241J5tzfn29pSz?=
- =?us-ascii?Q?+IByRGiCXibDCjSRPd3tr8V3j6NsyXcrFNanhMQczOySzHenhBx5/aZFVbb8?=
- =?us-ascii?Q?2OU952gO4r6MafaUOwi76xH2WfTGM4AQcOCpsgIUNHws3rsOsDGVSsxIteex?=
- =?us-ascii?Q?j8DPg1sLRkuuxEkOaZocemvtzkIHvDiU33qEGpPxQbbCPAZdhr+rSGzmPsok?=
- =?us-ascii?Q?erPKPiCUShFPnMfL+NZoZ8+W+syAtqy9Earwzy+dHXA+z7iI2QDAmolYd+/h?=
- =?us-ascii?Q?IhTD9bhbCzPygyeErVuXDZtdpqp0vNtdmCKlNTadrP6wC8puRd44P0kl2mYN?=
- =?us-ascii?Q?59U1K27ripMTE3j8ya/m1U2KPRw0e8nJDXqjogpz+5Zrk/HJtlGSFog0uytx?=
- =?us-ascii?Q?KcPPctQsHzalCKYJlWCjbMtFXg8pqSKZRZ1oJ89tvozrVa7MwZ4qckweN5Df?=
- =?us-ascii?Q?p4i9GYC2ezuYN6KIcUq36hTmLbiJ3n8RxqrvsbcZGNESBxqc1yO940roDRI1?=
- =?us-ascii?Q?VXKEj3YXmpWb1bv/NDW+786hC/HUYdIe2kZqpCRiEQjbI5vU3D+vd7plBlgC?=
- =?us-ascii?Q?wlKqPteoZ1SNPLNd5vpWc0mGb/ONMU5yLGHT404kj53QL+fiU8C4+xTe9tD1?=
- =?us-ascii?Q?zS8NoRKZq6S9c4kBm3L5kCxicmxaw2a80zMqEU825PApnENkq245q4d2G8cm?=
- =?us-ascii?Q?ozjg0CULBC5WRvivqMxNF/CfocViV1fmBeJ/MMNDR/216YIc5qsLzcyvRs5v?=
- =?us-ascii?Q?wA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: jb04EmQuxcFU9ZOlnKOAliCdGP8+OycmRzHc2NIm/62rWg2VhDor3BRHf8EWoT+jYf885HvAyr2rw9thcqwS/K6YWWuMVLJRvUflnB6m8QqEPVdLWNfo7uLGXoPLyNFLl3rXOkuHOn4bJQaXspbfLn4ZC+6DH60ZblOfVLkG00+nMa+IZESe1aGiamh3nhw+tAshrsN/234fewRmBRYU7EDGWDE83+pw4xstZJhtG5IQEq4sKtBNwTVYGWZfUK1fiDqr2Af+S8Vx9Lzwqt1BOJ6Xn+buqbuZ9cQ+3s+m/qYCRex07Acg1B7Lsz/jeYlYrxH6aLKRorm+s9JHVl2SaHOXOgD+YxodhueeSMA8o0hsbe41NjFhKHQHD6qBe36HoPhrYbNAuN65exWScjgjgLWN0U3NUlmYnVHZ2RtZe27fJyrsF3fspIIxisfBbBDAMUeSWLkfFnsw60lU7CypThinjpWzUj3xdxDMoa1ePUpPrMsp7UQnqRZ3zF8lI6mWGDBSoXzYvW8icH2bqfNbyumvhwsB26urQeVSUW9V8YONTyd1n8jJ5dPZMG6T4Bnn4V/AphQ7Y/kbYRWJTQAZb5w4XDSTVRiEGPcumwXlLko=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3ca3715-97b0-4d5c-f2a4-08ddada56840
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB8218.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2025 13:46:48.7627
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FEWkCYY3jw5aTe6Cq+srSjf00VpQSKff+u/AOY1XMXwfSCUgaab0iQrDVOGdohiop1Qu7sy1YbR4O1S0SMa/WBkTTL67m3dg/2PxLS71WVU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6125
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-17_06,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
- adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=913 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2505160000
- definitions=main-2506170107
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE3MDEwNyBTYWx0ZWRfXzUPae8iLXvIL LvWR0iKXeoNvzWUUkq1F8JShPX5UFTkZENleyViBhM9F9Am4ODGHXrxBlLnua3XgW2M4XhACoh1 xEXs+Ni0GJ3gBXTDV7KjifT7Ne7anxb9aS/gEHWOxryTYd3wHeD6ITwl/CcaTq4cgRkm0Prx5Op
- XBhUpwBw1VOOchjfwZbPMUrxPUxNWm6fB2qB+8iJop5fRaI/6vTYAAsCL8vl+9UcWtpj+1Lxwtb Z1Owt906MA+YdswbowledkKLn2ezOXHlsi9BB4CkVPrZPplv7Vb6zDso/4qjmFY5AJXaQW6eJRF 9mvl4evDLOQczVvRZR0kRFbpMD/ujY2WEi0Dpa3QDu/Z5ukebgZAW6w7XJwD7Q7fXJDYrIvWXrj
- RS1a5p5WeIaPGSdPVxPOH/J/1PySQRgv7Qa/SAGdxyuhJHySJiMB9yS9oPVhQWvTqC0JyJ2G
-X-Authority-Analysis: v=2.4 cv=U4CSDfru c=1 sm=1 tr=0 ts=685171cf b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19
- a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=6IFa9wvqVegA:10 a=GoEa3M9JfhUA:10 a=VwQbUJbxAAAA:8 a=V9ySHPybjZri8SzVnVcA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:13207
-X-Proofpoint-GUID: 1AMI2ogDHojYKzc2RQzgvHHvQXOFzvWZ
-X-Proofpoint-ORIG-GUID: 1AMI2ogDHojYKzc2RQzgvHHvQXOFzvWZ
+Date: Thu, 19 Jun 2025 12:31:53 +0200
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250617_064732_382929_E296E202 
-X-CRM114-Status: GOOD (  10.13  )
-X-Mailman-Approved-At: Thu, 19 Jun 2025 13:21:43 -0700
+X-CRM114-CacheID: sfid-20250620_005539_175458_75FC7387 
+X-CRM114-Status: GOOD (  24.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -197,35 +75,268 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 17, 2025 at 09:45:32AM -0400, Jeff Layton wrote:
-> On Mon, 2025-06-16 at 21:41 +0100, Al Viro wrote:
-> > On Mon, Jun 16, 2025 at 08:33:19PM +0100, Lorenzo Stoakes wrote:
-> > > REVIEWER'S NOTES
-> > > ================
-> > >
-> > > I am basing this on the mm-new branch in Andrew's tree, so let me know if I
-> > > should rebase anything here. Given the mm bits touched I did think perhaps
-> > > we should take it through the mm tree, however it may be more sensible to
-> > > take it through an fs tree - let me know!
-> > >
-> > > Apologies for the noise/churn, but there are some prerequisite steps here
-> > > that inform an ordering - "fs: consistently use file_has_valid_mmap_hooks()
-> > > helper" being especially critical, and so I put the bulk of the work in the
-> > > same series.
-> > >
-> > > Let me know if there's anything I can do to make life easier here.
-> >
-> > Documentation/filesystems/porting.rst?
->
-> Also, an entry for ->mmap_prepare in Documentation/filesystems/vfs.rst
-> would be good.
->
-> I went there first to understand what the requirements of mmap_prepare
-> are, but there is nothing.
+Hi,
 
-Ack, on it.
+On Thu, 2025-06-19 at 10:04 +0900, Hajime Tazaki wrote:
+> This commit introduces an entry point of syscall interface for !MMU
+> mode. It uses an entry function, __kernel_vsyscall, a kernel-wide global
+> symbol accessible from any locations.
+>=20
+> Although it isn't in the scope of this commit, it can be also exposed
+> via vdso image which is directly accessible from userspace. A standard
+> library (i.e., libc) can utilize this entry point to implement syscall
+> wrapper; we can also use this by hooking syscall for unmodified userspace
+> applications/libraries, which will be implemented in the subsequent
+> commit.
+>=20
+> This only supports 64-bit mode of x86 architecture.
+>=20
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+> Signed-off-by: Ricardo Koller <ricarkol@google.com>
+> ---
+> =C2=A0arch/x86/um/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 4 ++
+> =C2=A0arch/x86/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 8 +++
+> =C2=A0arch/x86/um/nommu/do_syscall_64.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 37 ++++++++++
+> =C2=A0arch/x86/um/nommu/entry_64.S=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 91 +++++++++++++++++++++++++
+> =C2=A0arch/x86/um/nommu/syscalls.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 16 +++++
+> =C2=A0arch/x86/um/shared/sysdep/syscalls_64.h |=C2=A0 6 ++
+> =C2=A06 files changed, 162 insertions(+)
+> =C2=A0create mode 100644 arch/x86/um/nommu/Makefile
+> =C2=A0create mode 100644 arch/x86/um/nommu/do_syscall_64.c
+> =C2=A0create mode 100644 arch/x86/um/nommu/entry_64.S
+> =C2=A0create mode 100644 arch/x86/um/nommu/syscalls.h
+>=20
+> diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+> index b42c31cd2390..227af2a987e2 100644
+> --- a/arch/x86/um/Makefile
+> +++ b/arch/x86/um/Makefile
+> @@ -32,6 +32,10 @@ obj-y +=3D syscalls_64.o vdso/
+> =C2=A0subarch-y =3D ../lib/csum-partial_64.o ../lib/memcpy_64.o \
+> =C2=A0	../lib/memmove_64.o ../lib/memset_64.o
+> =C2=A0
+> +ifneq ($(CONFIG_MMU),y)
+> +obj-y +=3D nommu/
+> +endif
+> +
+> =C2=A0endif
+> =C2=A0
+> =C2=A0subarch-$(CONFIG_MODULES) +=3D ../kernel/module.o
+> diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
+> new file mode 100644
+> index 000000000000..d72c63afffa5
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +ifeq ($(CONFIG_X86_32),y)
+> +	BITS :=3D 32
+> +else
+> +	BITS :=3D 64
+> +endif
+> +
+> +obj-y =3D do_syscall_$(BITS).o entry_$(BITS).o
+> diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_sys=
+call_64.c
+> new file mode 100644
+> index 000000000000..5d0fa83e7fdc
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/do_syscall_64.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/ptrace.h>
+> +#include <kern_util.h>
+> +#include <sysdep/syscalls.h>
+> +#include <os.h>
+> +
+> +__visible void do_syscall_64(struct pt_regs *regs)
+> +{
+> +	int syscall;
+> +
+> +	syscall =3D PT_SYSCALL_NR(regs->regs.gp);
+> +	UPT_SYSCALL_NR(&regs->regs) =3D syscall;
+> +
+> +	pr_debug("syscall(%d) (current=3D%lx) (fn=3D%lx)\n",
+> +		 syscall, (unsigned long)current,
+> +		 (unsigned long)sys_call_table[syscall]);
 
-> --
-> Jeff Layton <jlayton@kernel.org>
->
+You probably want to drop the pr_debug from the syscall path.
+
+> +	if (likely(syscall < NR_syscalls)) {
+> +		PT_REGS_SET_SYSCALL_RETURN(regs,
+> +				EXECUTE_SYSCALL(syscall, regs));
+> +	}
+> +
+> +	pr_debug("syscall(%d) --> %lx\n", syscall,
+> +		regs->regs.gp[HOST_AX]);
+> +
+> +	PT_REGS_SYSCALL_RET(regs) =3D regs->regs.gp[HOST_AX];
+> +
+> +	/* execve succeeded */
+> +	if (syscall =3D=3D __NR_execve && regs->regs.gp[HOST_AX] =3D=3D 0)
+> +		userspace(&current->thread.regs.regs);
+
+That said, this is what I am stumbling over. Why do you need to jump
+into userspace() here? It seems odd to me to need a special case in the
+syscall path itself.
+Aren't there other possibilities to hook/override the kernel task
+state?
+
+> +
+> +	/* force do_signal() --> is_syscall() */
+> +	set_thread_flag(TIF_SIGPENDING);
+> +	interrupt_end();
+
+Same here. The MMU UML code seems to also do this, but restricted to
+ptrace'd processes? Maybe I am just missing something obvious =E2=80=A6
+
+Benjamin
+
+> +}
+> diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
+> new file mode 100644
+> index 000000000000..e9bfc7b93c84
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/entry_64.S
+> @@ -0,0 +1,91 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#include <asm/errno.h>
+> +
+> +#include <linux/linkage.h>
+> +#include <asm/percpu.h>
+> +#include <asm/desc.h>
+> +
+> +#include "../entry/calling.h"
+> +
+> +#ifdef CONFIG_SMP
+> +#error need to stash these variables somewhere else
+> +#endif
+> +
+> +#define UM_GLOBAL_VAR(x) .data; .align 8; .globl x; x:; .long 0
+> +
+> +UM_GLOBAL_VAR(current_top_of_stack)
+> +UM_GLOBAL_VAR(current_ptregs)
+> +
+> +.code64
+> +.section .entry.text, "ax"
+> +
+> +.align 8
+> +#undef ENTRY
+> +#define ENTRY(x) .text; .globl x; .type x,%function; x:
+> +#undef END
+> +#define END(x)=C2=A0=C2=A0 .size x, . - x
+> +
+> +/*
+> + * %rcx has the return address (we set it before entering __kernel_vsysc=
+all).
+> + *
+> + * Registers on entry:
+> + * rax=C2=A0 system call number
+> + * rcx=C2=A0 return address
+> + * rdi=C2=A0 arg0
+> + * rsi=C2=A0 arg1
+> + * rdx=C2=A0 arg2
+> + * r10=C2=A0 arg3
+> + * r8=C2=A0=C2=A0 arg4
+> + * r9=C2=A0=C2=A0 arg5
+> + *
+> + * (note: we are allowed to mess with r11: r11 is callee-clobbered
+> + * register in C ABI)
+> + */
+> +ENTRY(__kernel_vsyscall)
+> +
+> +	movq	%rsp, %r11
+> +
+> +	/* Point rsp to the top of the ptregs array, so we can
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 just fill i=
+t with a bunch of push'es. */
+> +	movq	current_ptregs, %rsp
+> +
+> +	/* 8 bytes * 20 registers (plus 8 for the push) */
+> +	addq	$168, %rsp
+> +
+> +	/* Construct struct pt_regs on stack */
+> +	pushq	$0		/* pt_regs->ss (index 20) */
+> +	pushq=C2=A0=C2=A0 %r11		/* pt_regs->sp */
+> +	pushfq			/* pt_regs->flags */
+> +	pushq	$0		/* pt_regs->cs */
+> +	pushq	%rcx		/* pt_regs->ip */
+> +	pushq	%rax		/* pt_regs->orig_ax */
+> +
+> +	PUSH_AND_CLEAR_REGS rax=3D$-ENOSYS
+> +
+> +	mov %rsp, %rdi
+> +
+> +	/*
+> +	 * Switch to current top of stack, so "current->" points
+> +	 * to the right task.
+> +	 */
+> +	movq	current_top_of_stack, %rsp
+> +
+> +	call	do_syscall_64
+> +
+> +	movq	current_ptregs, %rsp
+> +
+> +	POP_REGS
+> +
+> +	addq	$8, %rsp	/* skip orig_ax */
+> +	popq	%rcx		/* pt_regs->ip */
+> +	addq	$8, %rsp	/* skip cs */
+> +	addq	$8, %rsp	/* skip flags */
+> +	popq	%rsp
+> +
+> +	/*
+> +	* not return w/ ret but w/ jmp as the stack is already popped before
+> +	* entering __kernel_vsyscall
+> +	*/
+> +	jmp	*%rcx
+> +
+> +END(__kernel_vsyscall)
+> diff --git a/arch/x86/um/nommu/syscalls.h b/arch/x86/um/nommu/syscalls.h
+> new file mode 100644
+> index 000000000000..a2433756b1fc
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/syscalls.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __UM_NOMMU_SYSCALLS_H
+> +#define __UM_NOMMU_SYSCALLS_H
+> +
+> +
+> +#define task_top_of_stack(task) \
+> +({									\
+> +	unsigned long __ptr =3D (unsigned long)task->stack;	\
+> +	__ptr +=3D THREAD_SIZE;			\
+> +	__ptr;					\
+> +})
+> +
+> +extern long current_top_of_stack;
+> +extern long current_ptregs;
+> +
+> +#endif
+> diff --git a/arch/x86/um/shared/sysdep/syscalls_64.h b/arch/x86/um/shared=
+/sysdep/syscalls_64.h
+> index b6b997225841..ffd80ee3b9dc 100644
+> --- a/arch/x86/um/shared/sysdep/syscalls_64.h
+> +++ b/arch/x86/um/shared/sysdep/syscalls_64.h
+> @@ -25,4 +25,10 @@ extern syscall_handler_t *sys_call_table[];
+> =C2=A0extern syscall_handler_t sys_modify_ldt;
+> =C2=A0extern syscall_handler_t sys_arch_prctl;
+> =C2=A0
+> +#ifndef CONFIG_MMU
+> +extern void do_syscall_64(struct pt_regs *regs);
+> +extern long __kernel_vsyscall(int64_t a0, int64_t a1, int64_t a2, int64_=
+t a3,
+> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int64_t a4, int64_t a5, int64_t a6);
+> +#endif
+> +
+> =C2=A0#endif
+
 
