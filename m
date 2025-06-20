@@ -4,63 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23749C7115B
-	for <linux-um@archiver.kernel.org>; Fri, 20 Jun 2025 08:04:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA51C71155
+	for <linux-um@archiver.kernel.org>; Fri, 20 Jun 2025 14:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Cc:To:From:
-	Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7jx/91bHphTZFNH/U6DqHakgzRWsMhRo3MBcddPZayU=; b=Jgpir2Oe/LADGvCW44eC0HzlH8
-	gXgkrwL+OGg50JY7z1MSUmkTBg1SkVuN/GQlDRZXHfAqNFnyt7cLLaOcErjGqjEleS4G3p83uuA5s
-	XQj0JcKrlLt7+hee7zjZMaSu1W9NSiBk7Sr3BWQeM+/JBf58KSMUSFkoHwIkzVibBVbhnHQj4Kg5J
-	/4b5/Aj4rvn0wGDLVcqGffwdhxbP5aqWBjGjlX4GLckIr6WnpJjIQ7c5LlsPm6OOpkOvbkcOhA6H1
-	XgH41dXAMzg2XNX2MSRzJyvUK6oOq2/S/Wq2hxnU18j80MaL0VPr5gWneUCBWUL7Q1fzuHd2474Pk
-	Iacdv3SA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Zf9eZNGS/J7cqsYhd+Ez8QubB3SKjLSoDlWDiWnAjOA=; b=F53zK1gnKH9TH+IXlEtZRinCm2
+	Q48XV9iFZqgs50o/eDOHlYf9b//MEDTacw/YW+VweaiTqNXhoIjihUp1sK9+bW0UlhlJAY0LfXsFt
+	SXPEvC8eNaiBCYOrq0Co6BxQ8pfFp5kAgXPch39dETuAaSRNC0xLmz3hX3WGpWhmiCPwE4AEgA2m9
+	lWaFZ7HdYYp7+FmnrTgRN/A5Ru8tH1++b4fAysRDjagxymB0H0ih3H+AkYfuiyO//JmmLe1C848W9
+	4BY1u/TVqn8zCdADi1kouWfCWCkaAysRrdanqrfOiLFTTX1D4hU30NsvDDba9/WKZkA9Xh99cWgOg
+	a+EsrHdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSWji-0000000EzyQ-1zRW;
-	Fri, 20 Jun 2025 08:04:34 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uSd0P-0000000FtYG-1HMG;
+	Fri, 20 Jun 2025 14:46:13 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSWb4-0000000EzDb-3s65
+	id 1uScxT-0000000FsrE-2Evm
 	for linux-um@lists.infradead.org;
-	Fri, 20 Jun 2025 07:55:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Date:MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Cc:To:From:Subject:Message-ID:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=7jx/91bHphTZFNH/U6DqHakgzRWsMhRo3MBcddPZayU=;
-	t=1750406138; x=1751615738; b=C/kq87AaVrgPm47xHzSE5fRc27/wUS9kLpPs12iKwiLhwWY
-	svlLFw9Peb5yiSCfoQqnP7vFq5oAj4A9idJwycFQ+k0KM1GweFTZPq+Zq+4QC3oyszYJ1HZM1kq80
-	2THZVVkNh8AsfhkX/OL2KYjRumKTKl+eK22epZKaU99DkRPuySPaOZ/9D+J6MMWXWUhmSYbcog9jm
-	+1lw8W8eXOsoUPMCHU6L6oQJekf78TXTPI5yHQ9EUjfX2iezoW8eIDNGJU2DUaL6NxeOdDVkgiLdj
-	rpE+TPT5F6Rpd4AO71IpHtUBOrNaLvr1XrtRQ8hpFwwo9cI/jx4Uxu17F/xmeYLg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uSWau-00000002Yjk-2ZjM;
-	Fri, 20 Jun 2025 09:55:29 +0200
-Message-ID: <d1d08a207844b98d0beba96f48beaf73e30c3bd2.camel@sipsolutions.net>
-Subject: Re: [PATCH v9 04/13] x86/um: nommu: syscall handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
-Cc: ricarkol@google.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org
-In-Reply-To: <bc5a2a14d41add7a2a44b12a21d9ccfa68a6baa5.1750294482.git.thehajime@gmail.com> (sfid-20250619_030454_005867_6CC4C80D)
-References: <cover.1750294482.git.thehajime@gmail.com>
-	 <bc5a2a14d41add7a2a44b12a21d9ccfa68a6baa5.1750294482.git.thehajime@gmail.com>
-	 (sfid-20250619_030454_005867_6CC4C80D)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	Fri, 20 Jun 2025 14:43:12 +0000
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1750430588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zf9eZNGS/J7cqsYhd+Ez8QubB3SKjLSoDlWDiWnAjOA=;
+	b=hb5o0dc5GvKPdYV2/5l5iL+pdghzJ2cRGQIbp7KrHSBtdO/MvYQA9hh0euy5xWrNs0MPpg
+	RJU0iL6518QlFrA1pAP7KYd/L+m8HX1RZQSqEWaVhhxDWnphvEtVas/jU/v33PqkNo4p/w
+	40jWxyWIXW6IBniJKMlSY3cetMBiJcGrOnGX2Xs2vHEHEUTXEVlDpZytucx+jIxnwveFTq
+	BZJA1eQMDblJv1+5SDfDNEMJchkbmNGr27nSwY6VaSoVmE9guI6vTlXJWRplUxCfPC/7ww
+	RlS3OC5noZq6jer3COwBLhR0eLTaieuys/mBmz0Ws3fNPoPKuu/Is+R12ktaFQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1750430588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Zf9eZNGS/J7cqsYhd+Ez8QubB3SKjLSoDlWDiWnAjOA=;
+	b=GK+xBRhvIL3VuhN/qjyFnX59zi7Ek/5vSo7O6W52qAcr05hqeOrgmxcBFIwe5uMC0oARw/
+	vIV++n1IzWc76PCQ==
+To: Petr Mladek <pmladek@suse.com>, Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Sergey Senozhatsky
+ <senozhatsky@chromium.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Jason
+ Wessel <jason.wessel@windriver.com>, Daniel Thompson <danielt@kernel.org>,
+ Douglas Anderson <dianders@chromium.org>, Richard Weinberger
+ <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes
+ Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+ linux-um@lists.infradead.org
+Subject: Re: [PATCH 2/7] printk: Use consoles_suspended flag when
+ suspending/resuming all consoles
+In-Reply-To: <aExBo-8cVOy6GegR@pathway.suse.cz>
+References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+ <20250606-printk-cleanup-part2-v1-2-f427c743dda0@suse.com>
+ <aExBo-8cVOy6GegR@pathway.suse.cz>
+Date: Fri, 20 Jun 2025 16:49:07 +0206
+Message-ID: <84y0tmiidg.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Date: Thu, 19 Jun 2025 12:31:53 +0200
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250620_005539_175458_75FC7387 
-X-CRM114-Status: GOOD (  24.78  )
+X-CRM114-CacheID: sfid-20250620_074311_714606_351C734F 
+X-CRM114-Status: GOOD (  35.44  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,268 +87,181 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On 2025-06-13, Petr Mladek <pmladek@suse.com> wrote:
+>> diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+>> index fd12efcc4aeda8883773d9807bc215f6e5cdf71a..72de12396e6f1bc5234acfdf=
+6dcc393acf88d216 100644
+>> --- a/kernel/printk/nbcon.c
+>> +++ b/kernel/printk/nbcon.c
+>> @@ -1147,7 +1147,7 @@ static bool nbcon_kthread_should_wakeup(struct con=
+sole *con, struct nbcon_contex
+>>  	cookie =3D console_srcu_read_lock();
+>>=20=20
+>>  	flags =3D console_srcu_read_flags(con);
+>> -	if (console_is_usable(con, flags, false)) {
+>> +	if (console_is_usable(con, flags, false, consoles_suspended)) {
+>
+> The new global console_suspended value has the be synchronized the
+> same way as the current CON_SUSPENDED per-console flag.
+> It means that the value must be:
+>
+>   + updated only under console_list_lock together with
+>     synchronize_rcu().
+>
+>   + read using READ_ONCE() under console_srcu_read_lock()
 
-On Thu, 2025-06-19 at 10:04 +0900, Hajime Tazaki wrote:
-> This commit introduces an entry point of syscall interface for !MMU
-> mode. It uses an entry function, __kernel_vsyscall, a kernel-wide global
-> symbol accessible from any locations.
->=20
-> Although it isn't in the scope of this commit, it can be also exposed
-> via vdso image which is directly accessible from userspace. A standard
-> library (i.e., libc) can utilize this entry point to implement syscall
-> wrapper; we can also use this by hooking syscall for unmodified userspace
-> applications/libraries, which will be implemented in the subsequent
-> commit.
->=20
-> This only supports 64-bit mode of x86 architecture.
->=20
-> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-> Signed-off-by: Ricardo Koller <ricarkol@google.com>
-> ---
-> =C2=A0arch/x86/um/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
-=A0 4 ++
-> =C2=A0arch/x86/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 8 +++
-> =C2=A0arch/x86/um/nommu/do_syscall_64.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 37 ++++++++++
-> =C2=A0arch/x86/um/nommu/entry_64.S=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 91 +++++++++++++++++++++++++
-> =C2=A0arch/x86/um/nommu/syscalls.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 16 +++++
-> =C2=A0arch/x86/um/shared/sysdep/syscalls_64.h |=C2=A0 6 ++
-> =C2=A06 files changed, 162 insertions(+)
-> =C2=A0create mode 100644 arch/x86/um/nommu/Makefile
-> =C2=A0create mode 100644 arch/x86/um/nommu/do_syscall_64.c
-> =C2=A0create mode 100644 arch/x86/um/nommu/entry_64.S
-> =C2=A0create mode 100644 arch/x86/um/nommu/syscalls.h
->=20
-> diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-> index b42c31cd2390..227af2a987e2 100644
-> --- a/arch/x86/um/Makefile
-> +++ b/arch/x86/um/Makefile
-> @@ -32,6 +32,10 @@ obj-y +=3D syscalls_64.o vdso/
-> =C2=A0subarch-y =3D ../lib/csum-partial_64.o ../lib/memcpy_64.o \
-> =C2=A0	../lib/memmove_64.o ../lib/memset_64.o
-> =C2=A0
-> +ifneq ($(CONFIG_MMU),y)
-> +obj-y +=3D nommu/
-> +endif
-> +
-> =C2=A0endif
-> =C2=A0
-> =C2=A0subarch-$(CONFIG_MODULES) +=3D ../kernel/module.o
-> diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
-> new file mode 100644
-> index 000000000000..d72c63afffa5
-> --- /dev/null
-> +++ b/arch/x86/um/nommu/Makefile
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +ifeq ($(CONFIG_X86_32),y)
-> +	BITS :=3D 32
-> +else
-> +	BITS :=3D 64
-> +endif
-> +
-> +obj-y =3D do_syscall_$(BITS).o entry_$(BITS).o
-> diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_sys=
-call_64.c
-> new file mode 100644
-> index 000000000000..5d0fa83e7fdc
-> --- /dev/null
-> +++ b/arch/x86/um/nommu/do_syscall_64.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/ptrace.h>
-> +#include <kern_util.h>
-> +#include <sysdep/syscalls.h>
-> +#include <os.h>
-> +
-> +__visible void do_syscall_64(struct pt_regs *regs)
-> +{
-> +	int syscall;
-> +
-> +	syscall =3D PT_SYSCALL_NR(regs->regs.gp);
-> +	UPT_SYSCALL_NR(&regs->regs) =3D syscall;
-> +
-> +	pr_debug("syscall(%d) (current=3D%lx) (fn=3D%lx)\n",
-> +		 syscall, (unsigned long)current,
-> +		 (unsigned long)sys_call_table[syscall]);
+Yes.
 
-You probably want to drop the pr_debug from the syscall path.
+> I am going to propose more solutions because no one is obviously
+> the best one.
 
-> +	if (likely(syscall < NR_syscalls)) {
-> +		PT_REGS_SET_SYSCALL_RETURN(regs,
-> +				EXECUTE_SYSCALL(syscall, regs));
-> +	}
-> +
-> +	pr_debug("syscall(%d) --> %lx\n", syscall,
-> +		regs->regs.gp[HOST_AX]);
-> +
-> +	PT_REGS_SYSCALL_RET(regs) =3D regs->regs.gp[HOST_AX];
-> +
-> +	/* execve succeeded */
-> +	if (syscall =3D=3D __NR_execve && regs->regs.gp[HOST_AX] =3D=3D 0)
-> +		userspace(&current->thread.regs.regs);
+[...]
 
-That said, this is what I am stumbling over. Why do you need to jump
-into userspace() here? It seems odd to me to need a special case in the
-syscall path itself.
-Aren't there other possibilities to hook/override the kernel task
-state?
+> Variant C:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Remove even @flags parameter from console_is_usable() and read both
+> values there directly.
+>
+> Many callers read @flags only because they call console_is_usable().
+> The change would simplify the code.
+>
+> But there are few exceptions:
+>
+>   1. __nbcon_atomic_flush_pending(), console_flush_all(),
+>      and legacy_kthread_should_wakeup() pass @flags to
+>      console_is_usable() and also check CON_NBCON flag.
+>
+>      But CON_NBCON flag is special. It is statically initialized
+>      and never set/cleared at runtime. It can be checked without
+>      READ_ONCE(). Well, we still might want to be sure that
+>      the struct console can't disappear.
+>
+>      IMHO, this can be solved by a helper function:
+>
+> 	/**
+> 	 * console_srcu_is_nbcon - Locklessly check whether the console is nbcon
+> 	 * @con:	struct console pointer of console to check
+> 	 *
+> 	 * Requires console_srcu_read_lock to be held, which implies that @con m=
+ight
+> 	 * be a registered console. The purpose of holding console_srcu_read_loc=
+k is
+> 	 * to guarantee that no exit/cleanup routines will run if the console
+> 	 * is currently undergoing unregistration.
+> 	 *
+> 	 * If the caller is holding the console_list_lock or it is _certain_ that
+> 	 * @con is not and will not become registered, the caller may read
+> 	 * @con->flags directly instead.
+> 	 *
+> 	 * Context: Any context.
+> 	 * Return: True when CON_NBCON flag is set.
+> 	 */
+> 	static inline bool console_is_nbcon(const struct console *con)
+> 	{
+> 		WARN_ON_ONCE(!console_srcu_read_lock_is_held());
+>
+> 		/*
+> 		 * The CON_NBCON flag is statically initialized and is never
+> 		 * set or cleared at runtime.
+> 		return data_race(con->flags & CON_NBCON);
+> 	}
 
-> +
-> +	/* force do_signal() --> is_syscall() */
-> +	set_thread_flag(TIF_SIGPENDING);
-> +	interrupt_end();
+Agreed.
 
-Same here. The MMU UML code seems to also do this, but restricted to
-ptrace'd processes? Maybe I am just missing something obvious =E2=80=A6
+>    2. Another exception is __pr_flush() where console_is_usable() is
+>       called twice with @use_atomic set "true" and "false".
+>
+>       We would want to read "con->flags" only once here. A solution
+>       would be to add a parameter to check both con->write_atomic
+>       and con->write_thread in a single call.
 
-Benjamin
+Or it could become a bitmask of printing types to check:
 
-> +}
-> diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
-> new file mode 100644
-> index 000000000000..e9bfc7b93c84
-> --- /dev/null
-> +++ b/arch/x86/um/nommu/entry_64.S
-> @@ -0,0 +1,91 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <asm/errno.h>
-> +
-> +#include <linux/linkage.h>
-> +#include <asm/percpu.h>
-> +#include <asm/desc.h>
-> +
-> +#include "../entry/calling.h"
-> +
-> +#ifdef CONFIG_SMP
-> +#error need to stash these variables somewhere else
-> +#endif
-> +
-> +#define UM_GLOBAL_VAR(x) .data; .align 8; .globl x; x:; .long 0
-> +
-> +UM_GLOBAL_VAR(current_top_of_stack)
-> +UM_GLOBAL_VAR(current_ptregs)
-> +
-> +.code64
-> +.section .entry.text, "ax"
-> +
-> +.align 8
-> +#undef ENTRY
-> +#define ENTRY(x) .text; .globl x; .type x,%function; x:
-> +#undef END
-> +#define END(x)=C2=A0=C2=A0 .size x, . - x
-> +
-> +/*
-> + * %rcx has the return address (we set it before entering __kernel_vsysc=
-all).
-> + *
-> + * Registers on entry:
-> + * rax=C2=A0 system call number
-> + * rcx=C2=A0 return address
-> + * rdi=C2=A0 arg0
-> + * rsi=C2=A0 arg1
-> + * rdx=C2=A0 arg2
-> + * r10=C2=A0 arg3
-> + * r8=C2=A0=C2=A0 arg4
-> + * r9=C2=A0=C2=A0 arg5
-> + *
-> + * (note: we are allowed to mess with r11: r11 is callee-clobbered
-> + * register in C ABI)
-> + */
-> +ENTRY(__kernel_vsyscall)
-> +
-> +	movq	%rsp, %r11
-> +
-> +	/* Point rsp to the top of the ptregs array, so we can
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 just fill i=
-t with a bunch of push'es. */
-> +	movq	current_ptregs, %rsp
-> +
-> +	/* 8 bytes * 20 registers (plus 8 for the push) */
-> +	addq	$168, %rsp
-> +
-> +	/* Construct struct pt_regs on stack */
-> +	pushq	$0		/* pt_regs->ss (index 20) */
-> +	pushq=C2=A0=C2=A0 %r11		/* pt_regs->sp */
-> +	pushfq			/* pt_regs->flags */
-> +	pushq	$0		/* pt_regs->cs */
-> +	pushq	%rcx		/* pt_regs->ip */
-> +	pushq	%rax		/* pt_regs->orig_ax */
-> +
-> +	PUSH_AND_CLEAR_REGS rax=3D$-ENOSYS
-> +
-> +	mov %rsp, %rdi
-> +
-> +	/*
-> +	 * Switch to current top of stack, so "current->" points
-> +	 * to the right task.
-> +	 */
-> +	movq	current_top_of_stack, %rsp
-> +
-> +	call	do_syscall_64
-> +
-> +	movq	current_ptregs, %rsp
-> +
-> +	POP_REGS
-> +
-> +	addq	$8, %rsp	/* skip orig_ax */
-> +	popq	%rcx		/* pt_regs->ip */
-> +	addq	$8, %rsp	/* skip cs */
-> +	addq	$8, %rsp	/* skip flags */
-> +	popq	%rsp
-> +
-> +	/*
-> +	* not return w/ ret but w/ jmp as the stack is already popped before
-> +	* entering __kernel_vsyscall
-> +	*/
-> +	jmp	*%rcx
-> +
-> +END(__kernel_vsyscall)
-> diff --git a/arch/x86/um/nommu/syscalls.h b/arch/x86/um/nommu/syscalls.h
-> new file mode 100644
-> index 000000000000..a2433756b1fc
-> --- /dev/null
-> +++ b/arch/x86/um/nommu/syscalls.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __UM_NOMMU_SYSCALLS_H
-> +#define __UM_NOMMU_SYSCALLS_H
-> +
-> +
-> +#define task_top_of_stack(task) \
-> +({									\
-> +	unsigned long __ptr =3D (unsigned long)task->stack;	\
-> +	__ptr +=3D THREAD_SIZE;			\
-> +	__ptr;					\
-> +})
-> +
-> +extern long current_top_of_stack;
-> +extern long current_ptregs;
-> +
-> +#endif
-> diff --git a/arch/x86/um/shared/sysdep/syscalls_64.h b/arch/x86/um/shared=
-/sysdep/syscalls_64.h
-> index b6b997225841..ffd80ee3b9dc 100644
-> --- a/arch/x86/um/shared/sysdep/syscalls_64.h
-> +++ b/arch/x86/um/shared/sysdep/syscalls_64.h
-> @@ -25,4 +25,10 @@ extern syscall_handler_t *sys_call_table[];
-> =C2=A0extern syscall_handler_t sys_modify_ldt;
-> =C2=A0extern syscall_handler_t sys_arch_prctl;
-> =C2=A0
-> +#ifndef CONFIG_MMU
-> +extern void do_syscall_64(struct pt_regs *regs);
-> +extern long __kernel_vsyscall(int64_t a0, int64_t a1, int64_t a2, int64_=
-t a3,
-> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int64_t a4, int64_t a5, int64_t a6);
-> +#endif
-> +
-> =C2=A0#endif
+#define ATOMIC_PRINTING 0x1
+#define NONATOMIC_PRINTING 0x2
 
+and then __pr_flush() looks like:
+
+if (!console_is_usable(c, flags, ATOMIC_PRINTING|NONATOMIC_PRINTING)
+
+>       But it might actually be enough to check is with the "false"
+>       value because "con->write_thread()" is mandatory for nbcon
+>       consoles. And legacy consoles do not distinguish atomic mode.
+
+A bit tricky, but you are right.
+
+>
+>
+> Variant D:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> We need to distinguish the global and per-console "suspended" flag
+> because they might be nested. But we could use a separate flag
+> for the global setting.
+>
+> I mean that:
+>
+>     + console_suspend() would set CON_SUSPENDED flag
+>     + console_suspend_all() would set CON_SUSPENDED_ALL flag
+>
+> They both will be in con->flags.
+>
+> Pros:
+>
+>     + It is easy to implement.
+>
+> Cons:
+>
+>     + It feels a bit ugly.
+>
+>
+> My opinion:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> I personally prefer the variant C because:
+>
+>   + Removes one parameter from console_is_usable().
+>
+>   + The lockless synchronization of both global and per-console
+>     flags is hidden in console_is_usable().
+>
+>   + The global console_suspended flag will be stored in global
+>     variable (in compare with variant D).
+>
+> What do you think, please?
+>
+> Best Regards,
+> Petr
+>
+>
+> PS: The commit message and the cover letter should better explain
+>     the background of this change.
+>
+>     It would be great if the cover letter described the bigger
+>     picture, especially the history of the console_suspended,
+>     CON_SUSPENDED, and CON_ENABLED flags. It might use info
+>     from
+>     https://lore.kernel.org/lkml/ZyoNZfLT6tlVAWjO@pathway.suse.cz/
+>     and maybe even this link.
+>
+>     Also this commit message should mention that it partly reverts
+>     the commit 9e70a5e109a4a233678 ("printk: Add per-console
+>     suspended state"). But it is not simple revert because
+>     we need to preserve the synchronization using
+>     the console_list_lock for writing and SRCU for reading.
+
+--=20
+John Ogness
+Linutronix GmbH | Bahnhofstra=C3=9Fe 3 | D-88690 Uhldingen-M=C3=BChlhofen
+Phone: +49 7556 25 999 20; Fax.: +49 7556 25 999 99
+
+Hinweise zum Datenschutz finden Sie hier (Information on data privacy
+can be found here): https://linutronix.de/legal/data-protection.php
+
+Linutronix GmbH | Firmensitz (Registered Office): Uhldingen-M=C3=BChlhofen |
+Registergericht (Registration Court): Amtsgericht Freiburg i.Br., HRB700
+806 | Gesch=C3=A4ftsf=C3=BChrer (Managing Directors): Harry Demas, Heinz Eg=
+ger,
+Thomas Gleixner, Yin Sorrell, Jeffrey Schneiderman
 
