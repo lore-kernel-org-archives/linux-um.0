@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299DBC77B7F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B6BDC7115A
 	for <linux-um@archiver.kernel.org>; Sun, 22 Jun 2025 21:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,81 +12,81 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=; b=fR4peRA9SKG3zg6zgqXI147PYd
-	N8YslN45t982TxF8r98fslS9TcvhbBDw73Qlw0rm1e/S/Eh8aXd/oSYekHQ6i5Eeev35uTON5Xrpb
-	nH1HB085HyAqmQlzH+KpPhLbTtHgGcXr09T/4GakCLoYvhooQ5ZH60Hw7K8P3kY189Q87MiH1jptZ
-	57gndiSdkf3kZ4Ef9YxkGJKHCMmWuGxgYlpYMVTmt/gzaLUWg+rBEpFpx8a06PI99lHq1BZrt0bbu
-	LY1SU/zImx6ufmUmpxLET4Fjsu39HlV1i2y1IbfnlQesZXNBTp4sUMnH0V9d3ovO8108u6mSFm59v
-	VHTWCQcw==;
+	bh=qurq9zWrKcrFnW9xOg2bS+Q7Bbhohl82OFJAmRnuxPk=; b=AX1/CSt9sMeaOEuPxV61+KcAkz
+	cd+IMHTZAduB7/F0C6F8zV8ZUA6D6auAzoNmHhYOZmGgO/xh9eS1JFPYQk+J2PMFJwBQU2EOLRzv7
+	2pac8IDuXzSw1K7NGVg/L9y5eku0JXe6r0SJes1+aBUfN0La0WLkTB0Q/0Scgd7Yoc/9tym+Wei3g
+	h4yfz1FlBvxKuquKFniraafbLYbKgcZ5xN7qMwo79mEf6XJbx/d8mmDEc4/uT2h9P7dTZT4QT1utu
+	7k0F0HGvJ4yGtLhzQlkRt95xW3mJYiu1CgCeZZ8HhEvhFZikg4BSbabQDDPJZFsFmgy4eqkcxa8HI
+	G6XOQldg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTSKH-00000001F5c-2fPZ;
-	Sun, 22 Jun 2025 21:34:09 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1uTSKF-00000001F4C-3Cmf;
+	Sun, 22 Jun 2025 21:34:07 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTSJk-00000001EuM-4BAj
+	id 1uTSJb-00000001ErI-3lpQ
 	for linux-um@lists.infradead.org;
-	Sun, 22 Jun 2025 21:33:38 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-7425bd5a83aso2937199b3a.0
-        for <linux-um@lists.infradead.org>; Sun, 22 Jun 2025 14:33:36 -0700 (PDT)
+	Sun, 22 Jun 2025 21:33:29 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-3137c2021a0so2589773a91.3
+        for <linux-um@lists.infradead.org>; Sun, 22 Jun 2025 14:33:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750628016; x=1751232816; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1750628007; x=1751232807; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
-        b=EnNNRIN8tiHQZzRWEsc8PFOh8Yrbm7XeJwS1iZ9ZZPfu2+kRjEyt7aO3zvpUsYdNuZ
-         AzCACZugfhn1n1i6RfVa/tO3ddt35YFEgvONsCgIRFyyc4HHNt29DAnOem5D07LPUaS8
-         paIJFucCuG7WFmLRxN3VEcIi2/mqB50MBlOSm/I0qJQJupTJ6aZZfYEfYwm7XdVLemIu
-         vIE+SdVDrD4gD/oDqKp/gUOGN688kEDEfsb5RscYnichL4kUJFJB95mBWdMdI0Bmvqz8
-         MGTT+DBpg9QAzkL+/xthf1MDkJ/bP0MAcrTY3gFg8ukghu7AZ7I776zjcvs3/AUEexEz
-         JDhQ==
+        bh=qurq9zWrKcrFnW9xOg2bS+Q7Bbhohl82OFJAmRnuxPk=;
+        b=POPA6WNZVNCw+Doh2xoR3ByJUsESyMccyAMPb4DnHI+72Ew0DsWcXDmGBKs1pzm/qn
+         RU0Dadd7GFNA4jie5sr5UaYtCQ1JnYPneNAL181NuwQTm0NEA9bgCrSYJbpQnKMO6cKD
+         rIlaNfQJ53ZAYBdmCNx2NMJtZ2n6phW/VQEdGawIqjtx5sFlNSX74BLdDTcnKP8pyYJy
+         OnbC4vWrR28V/EjH3ofaRwYum9Q65sdvvF7vcDaJMeTXgN8r87Ti66p713+ykv8G74yE
+         vy84ixiGOI9Vg8GcTrOQi6vS15A/M8OFMd5KuSCHz+iXbrC/iq81gRwg49HY6PY32ODB
+         ndpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750628016; x=1751232816;
+        d=1e100.net; s=20230601; t=1750628007; x=1751232807;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
-        b=boOWpO+Efu/x4gwcnb8czH+4CPCMaUdXgMXY4lyLdLTBTxVA2rTLJzjA+Ng0j5Zy6r
-         W/5JJ0zO7lCH0S5u5wONGpXBtPYYnbaUNB4DxrJtIjnGSja8bSBwB+jmRfTvOXDlUuUS
-         FHQ2zTzSe6zwNFTTouaN3Ds9nk72noJmdyfq7uyaUtPqzPwJRTe5SXzSqnKP8a1d6mTD
-         2kUucV5YrrGIAPWtRyRnSsqMmuC4s9fl4IaqDTrVohfsFRP0kvIhOqglfZU9l5FDSdqd
-         lIHuDCEWDfPontygQtcbNBc277i9ue81xFXEyoUnt9aBgz+333jRaKK59DfJtH2g0CUN
-         kauQ==
-X-Gm-Message-State: AOJu0YwxoqYYp3TqNDBagSX0o1hMThsAwNU2zLgGmNkkaHQqNfiP9858
-	L320p/MFhKo52KnQgvZVnb/QNbyejdzhMHmOvwtJEjshhcROTXXnm3bG
-X-Gm-Gg: ASbGncvbJC7TXGfFClu+aZy/G+4uCKhlmBG4JTBorzphL46NouPDfCFS2b9mZDG3TY2
-	Z5m6aIVTYfuJz94oz2OKjFjkhDmqEDbctZDIHhs5alpw92YsRxkoLZh3Bnn3D/JDKEl/KFm9QkP
-	rFybNXLVAgvgH5W3PcTzxSh87ZOVKnPDCA/YfzXvIr3YXJEsnKZLl4mHRUdBjV2d+tAxjsTCDKr
-	js/598oyW8+8OhU7YASWHp/qK2lhRm54OmWAxxpyCAUGtggEWFDV1DR08NZ3OZH7SxW1Rxe7FDQ
-	i1wk2Gi0DxmfGEO9VAJD6nboemDBoXGQEmFdVYSkGVgO+BpPvlywN2R1VYQqUQZkjU2cwSWpUMz
-	gEn6U8sKl8Umb+EW+d3wILZNY6g6Won9w
-X-Google-Smtp-Source: AGHT+IHrrJwTveE1DrjrmwA8iNFWeSED2zb/Yvu8dxfkj2CbC/FxRJjNGr3E1Hy0RND7HchK71ZUmA==
-X-Received: by 2002:a05:6a20:431d:b0:215:e818:9fe3 with SMTP id adf61e73a8af0-22026eb0730mr15937527637.27.1750628016251;
-        Sun, 22 Jun 2025 14:33:36 -0700 (PDT)
+        bh=qurq9zWrKcrFnW9xOg2bS+Q7Bbhohl82OFJAmRnuxPk=;
+        b=TbrcKRqz0NVpwvL1b0zPdVegMhiRqVj+FF8nm8UJBgMnvTwDQ5eBgd7pYv6hwcYeUl
+         yA9MFco4GX9sUmTTH75PwIa4FVg9AgzcVcNwtNlHOw+o1S9uk6tkr0ylkxAdlbM7jWbM
+         TDBr88Mx7Q8bWnWBqzCbeEieooaU6YrypMhCIkmyDC+sp2p/Tgwa/ozGfWTu6cKFotkv
+         KWvkrQGug/tiVmirUYfun24pOfKeql73dS3IsEKZI+x9NPcTSxJQhRDZGooOhTGi7Sfl
+         bMXgFcHV+WIOwvkLL3w6EbJim1YYvdn2sqHAmj/yra5NGM1JRpgptC3dSbKZcWtqEYkh
+         E/Dg==
+X-Gm-Message-State: AOJu0Yw7NrJD6QxMctIc/fyYKPnWi4XuGRdZqcpgPPFqXDGHegR6e0Lc
+	o0Vuwa2zY6nhug+Xt+fjSrRiovi1loUaUWAylHESjZeoYpdkWXY6moyR
+X-Gm-Gg: ASbGncvP8aErbzsgoEX8r/JjDCjVNesL79o6z2kYqO9gGkVGPza6OMs1OdqwwWIQ6n7
+	+1vrmNRXEvyoBLReRsQjFFUZu6DSgovCAH/3rSJ5qwQPiUTO9OywOpapt1SZCteImM+7bfoIUpv
+	9ZjKzYvhQEVJQsUyHaWCewYbKRB2cAWG4uealrYI81zy3XukqW0WoKKwSE8nV8MIv/6sLF6h0zM
+	UpbNjBCzVCKRG9unaDHkTVgJmcmeubU1LgeZPbtCX7ZKDWM04Xcnnb/Bxqsbo1ExYhy+KBqbl9o
+	Dgqo7DFip1Etc4CmsDp7JmgrFu14BBZFbf6V41NtRQ1SKv0Zs8KQH0vQDhpypbXIMyV3YIA4l/T
+	8JdAIua8JGk3TqSPo+uqnsVeEYfkuA4gQIDkh1rHXXTg=
+X-Google-Smtp-Source: AGHT+IEfcaO7nL1r0VRRYA5nD7uwrl/g9hgdqGLugVfFAlzFAOu6uJN+cwNKGC609OdzFHp9MVQ6dA==
+X-Received: by 2002:a17:90b:3908:b0:311:f99e:7f4e with SMTP id 98e67ed59e1d1-3159d8c5ef7mr15865845a91.16.1750628006954;
+        Sun, 22 Jun 2025 14:33:26 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b31f1241f20sm6274763a12.45.2025.06.22.14.33.34
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a318733sm8909505a91.38.2025.06.22.14.33.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Jun 2025 14:33:35 -0700 (PDT)
+        Sun, 22 Jun 2025 14:33:24 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id DEBEDEF1EB4; Mon, 23 Jun 2025 06:33:32 +0900 (JST)
+	id 51E20EF1EA8; Mon, 23 Jun 2025 06:33:18 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v10 08/13] x86/um/vdso: nommu: vdso memory update
-Date: Mon, 23 Jun 2025 06:33:06 +0900
-Message-ID: <0b7d3061a6053731b9499d6a1e373314ef9f12d0.1750594487.git.thehajime@gmail.com>
+Subject: [PATCH v10 02/13] um: decouple MMU specific code from the common part
+Date: Mon, 23 Jun 2025 06:33:00 +0900
+Message-ID: <8f04c03682594850e0f2f5bcff98d298c318d006.1750594487.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1750594487.git.thehajime@gmail.com>
 References: <cover.1750594487.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250622_143337_046203_D8B46BFE 
-X-CRM114-Status: GOOD (  13.91  )
+X-CRM114-CacheID: sfid-20250622_143327_945435_90E0B51C 
+X-CRM114-Status: GOOD (  23.05  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,70 +101,607 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On !MMU mode, the address of vdso is accessible from userspace.  This
-commit implements the entry point by pointing a block of page address.
-
-This commit also add memory permission configuration of vdso page to be
-executable.
+This splits the memory, process related code with common and MMU
+specific parts in order to avoid ifdefs in .c file and duplication
+between MMU and !MMU.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/x86/um/vdso/vma.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ arch/um/kernel/Makefile         |   5 +-
+ arch/um/kernel/mem-pgtable.c    |  55 +++++++++++++
+ arch/um/kernel/mem.c            |  35 ---------
+ arch/um/kernel/process.c        |  25 ++++++
+ arch/um/kernel/skas/process.c   |  27 -------
+ arch/um/os-Linux/Makefile       |   3 +-
+ arch/um/os-Linux/internal.h     |   5 ++
+ arch/um/os-Linux/process.c      | 134 ++++++++++++++++++++++++++++++++
+ arch/um/os-Linux/skas/process.c | 132 -------------------------------
+ 9 files changed, 224 insertions(+), 197 deletions(-)
+ create mode 100644 arch/um/kernel/mem-pgtable.c
 
-diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
-index dc8dfb2abd80..1c8c39f87681 100644
---- a/arch/x86/um/vdso/vma.c
-+++ b/arch/x86/um/vdso/vma.c
-@@ -9,6 +9,7 @@
- #include <asm/page.h>
- #include <asm/elf.h>
- #include <linux/init.h>
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 4669db2aa9be..b7922f937213 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -16,9 +16,10 @@ extra-y := vmlinux.lds
+ 
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o kmsg_dump.o capflags.o skas/
++	signal.o sysrq.o time.o \
++	um_arch.o umid.o kmsg_dump.o capflags.o
+ obj-y += load_file.o
++obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o trap.o skas/
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
+new file mode 100644
+index 000000000000..549da1d3bff0
+--- /dev/null
++++ b/arch/um/kernel/mem-pgtable.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ */
++
++#include <linux/stddef.h>
++#include <linux/module.h>
++#include <linux/memblock.h>
++#include <linux/swap.h>
++#include <linux/slab.h>
++#include <asm/page.h>
++#include <asm/pgalloc.h>
++#include <as-layout.h>
++#include <init.h>
++#include <kern.h>
++#include <kern_util.h>
++#include <mem_user.h>
 +#include <os.h>
- 
- static unsigned int __read_mostly vdso_enabled = 1;
- unsigned long um_vdso_addr;
-@@ -21,14 +22,24 @@ static int __init init_vdso(void)
++#include <um_malloc.h>
++
++
++/* Allocate and free page tables. */
++
++pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
++
++	if (pgd) {
++		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
++		memcpy(pgd + USER_PTRS_PER_PGD,
++		       swapper_pg_dir + USER_PTRS_PER_PGD,
++		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
++	}
++	return pgd;
++}
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++};
++DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 76bec7de81b5..106a2f85ab5c 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -6,7 +6,6 @@
+ #include <linux/stddef.h>
+ #include <linux/module.h>
+ #include <linux/memblock.h>
+-#include <linux/mm.h>
+ #include <linux/swap.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+@@ -207,45 +206,11 @@ void free_initmem(void)
  {
- 	BUG_ON(vdso_end - vdso_start > PAGE_SIZE);
+ }
  
--	um_vdso_addr = task_size - PAGE_SIZE;
+-/* Allocate and free page tables. */
 -
- 	um_vdso = alloc_page(GFP_KERNEL);
- 	if (!um_vdso)
- 		goto oom;
- 
- 	copy_page(page_address(um_vdso), vdso_start);
- 
-+#ifdef CONFIG_MMU
-+	um_vdso_addr = task_size - PAGE_SIZE;
-+#else
-+	/* this is fine with NOMMU as everything is accessible */
-+	um_vdso_addr = (unsigned long)page_address(um_vdso);
-+	os_protect_memory((void *)um_vdso_addr, vdso_end - vdso_start, 1, 0, 1);
-+#endif
-+
-+	pr_info("vdso_start=%lx um_vdso_addr=%lx pg_um_vdso=%lx",
-+	       (unsigned long)vdso_start, um_vdso_addr,
-+	       (unsigned long)page_address(um_vdso));
-+
- 	return 0;
- 
- oom:
-@@ -39,6 +50,7 @@ static int __init init_vdso(void)
- }
- subsys_initcall(init_vdso);
- 
-+#ifdef CONFIG_MMU
- int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+-pgd_t *pgd_alloc(struct mm_struct *mm)
+-{
+-	pgd_t *pgd = __pgd_alloc(mm, 0);
+-
+-	if (pgd)
+-		memcpy(pgd + USER_PTRS_PER_PGD,
+-		       swapper_pg_dir + USER_PTRS_PER_PGD,
+-		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
+-
+-	return pgd;
+-}
+-
+ void *uml_kmalloc(int size, int flags)
  {
- 	struct vm_area_struct *vma;
-@@ -63,3 +75,4 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 
- 	return IS_ERR(vma) ? PTR_ERR(vma) : 0;
+ 	return kmalloc(size, flags);
  }
-+#endif
+ 
+-static const pgprot_t protection_map[16] = {
+-	[VM_NONE]					= PAGE_NONE,
+-	[VM_READ]					= PAGE_READONLY,
+-	[VM_WRITE]					= PAGE_COPY,
+-	[VM_WRITE | VM_READ]				= PAGE_COPY,
+-	[VM_EXEC]					= PAGE_READONLY,
+-	[VM_EXEC | VM_READ]				= PAGE_READONLY,
+-	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
+-	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
+-	[VM_SHARED]					= PAGE_NONE,
+-	[VM_SHARED | VM_READ]				= PAGE_READONLY,
+-	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+-	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
+-};
+-DECLARE_VM_GET_PAGE_PROT
+-
+ void mark_rodata_ro(void)
+ {
+ 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 0cd6fad3d908..08959745c30d 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/tick.h>
+ #include <linux/threads.h>
+ #include <linux/resume_user_mode.h>
++#include <linux/start_kernel.h>
+ #include <asm/current.h>
+ #include <asm/mmu_context.h>
+ #include <asm/switch_to.h>
+@@ -46,6 +47,8 @@
+ struct task_struct *cpu_tasks[NR_CPUS];
+ EXPORT_SYMBOL(cpu_tasks);
+ 
++static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
++
+ void free_stack(unsigned long stack, int order)
+ {
+ 	free_pages(stack, order);
+@@ -295,3 +298,25 @@ unsigned long __get_wchan(struct task_struct *p)
+ 
+ 	return 0;
+ }
++
++
++static int __init start_kernel_proc(void *unused)
++{
++	block_signals_trace();
++
++	start_kernel();
++	return 0;
++}
++
++int __init start_uml(void)
++{
++	stack_protections((unsigned long) &cpu0_irqstack);
++	set_sigstack(cpu0_irqstack, THREAD_SIZE);
++
++	init_new_thread_signals();
++
++	init_task.thread.request.thread.proc = start_kernel_proc;
++	init_task.thread.request.thread.arg = NULL;
++	return start_idle_thread(task_stack_page(&init_task),
++				 &init_task.thread.switch_buf);
++}
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index 05dcdc057af9..5247121d3419 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -16,33 +16,6 @@
+ #include <skas.h>
+ #include <kern_util.h>
+ 
+-extern void start_kernel(void);
+-
+-static int __init start_kernel_proc(void *unused)
+-{
+-	block_signals_trace();
+-
+-	start_kernel();
+-	return 0;
+-}
+-
+-extern int userspace_pid[];
+-
+-static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
+-
+-int __init start_uml(void)
+-{
+-	stack_protections((unsigned long) &cpu0_irqstack);
+-	set_sigstack(cpu0_irqstack, THREAD_SIZE);
+-
+-	init_new_thread_signals();
+-
+-	init_task.thread.request.thread.proc = start_kernel_proc;
+-	init_task.thread.request.thread.arg = NULL;
+-	return start_idle_thread(task_stack_page(&init_task),
+-				 &init_task.thread.switch_buf);
+-}
+-
+ unsigned long current_stub_stack(void)
+ {
+ 	if (current->mm == NULL)
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index fae836713487..c048fc838068 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -8,7 +8,8 @@ KCOV_INSTRUMENT                := n
+ 
+ obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+-	umid.o user_syms.o util.o skas/
++	umid.o user_syms.o util.o
++obj-$(CONFIG_MMU) += skas/
+ 
+ CFLAGS_signal.o += -Wframe-larger-than=4096
+ 
+diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
+index 5d8d3b0817a9..89cfab0d5e47 100644
+--- a/arch/um/os-Linux/internal.h
++++ b/arch/um/os-Linux/internal.h
+@@ -5,6 +5,11 @@
+ #include <mm_id.h>
+ #include <stub-data.h>
+ 
++/*
++ * process.c
++ */
++extern int userspace_pid[];
++
+ /*
+  * elf_aux.c
+  */
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 00b49e90d05f..4eb7e137ef4b 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -6,6 +6,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <signal.h>
+@@ -15,10 +16,17 @@
+ #include <sys/prctl.h>
+ #include <sys/wait.h>
+ #include <asm/unistd.h>
++#include <linux/threads.h>
+ #include <init.h>
+ #include <longjmp.h>
+ #include <os.h>
+ #include <skas/skas.h>
++#include <as-layout.h>
++#include <kern_util.h>
++
++int using_seccomp;
++int userspace_pid[NR_CPUS];
++int unscheduled_userspace_iterations;
+ 
+ void os_alarm_process(int pid)
+ {
+@@ -189,3 +197,129 @@ void os_set_pdeathsig(void)
+ {
+ 	prctl(PR_SET_PDEATHSIG, SIGKILL);
+ }
++
++int is_skas_winch(int pid, int fd, void *data)
++{
++	return pid == getpgrp();
++}
++
++void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
++{
++	(*buf)[0].JB_IP = (unsigned long) handler;
++	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
++		sizeof(void *);
++}
++
++#define INIT_JMP_NEW_THREAD 0
++#define INIT_JMP_CALLBACK 1
++#define INIT_JMP_HALT 2
++#define INIT_JMP_REBOOT 3
++
++void switch_threads(jmp_buf *me, jmp_buf *you)
++{
++	unscheduled_userspace_iterations = 0;
++
++	if (UML_SETJMP(me) == 0)
++		UML_LONGJMP(you, 1);
++}
++
++static jmp_buf initial_jmpbuf;
++
++/* XXX Make these percpu */
++static void (*cb_proc)(void *arg);
++static void *cb_arg;
++static jmp_buf *cb_back;
++
++int start_idle_thread(void *stack, jmp_buf *switch_buf)
++{
++	int n;
++
++	set_handler(SIGWINCH);
++
++	/*
++	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
++	 * and restore signals, with the possible side-effect of
++	 * trying to handle any signals which came when they were
++	 * blocked, which can't be done on this stack.
++	 * Signals must be blocked when jumping back here and restored
++	 * after returning to the jumper.
++	 */
++	n = setjmp(initial_jmpbuf);
++	switch (n) {
++	case INIT_JMP_NEW_THREAD:
++		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
++		(*switch_buf)[0].JB_SP = (unsigned long) stack +
++			UM_THREAD_SIZE - sizeof(void *);
++		break;
++	case INIT_JMP_CALLBACK:
++		(*cb_proc)(cb_arg);
++		longjmp(*cb_back, 1);
++		break;
++	case INIT_JMP_HALT:
++		kmalloc_ok = 0;
++		return 0;
++	case INIT_JMP_REBOOT:
++		kmalloc_ok = 0;
++		return 1;
++	default:
++		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
++		       __func__, n);
++		fatal_sigsegv();
++	}
++	longjmp(*switch_buf, 1);
++
++	/* unreachable */
++	printk(UM_KERN_ERR "impossible long jump!");
++	fatal_sigsegv();
++	return 0;
++}
++
++void initial_thread_cb_skas(void (*proc)(void *), void *arg)
++{
++	jmp_buf here;
++
++	cb_proc = proc;
++	cb_arg = arg;
++	cb_back = &here;
++
++	block_signals_trace();
++	if (UML_SETJMP(&here) == 0)
++		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
++	unblock_signals_trace();
++
++	cb_proc = NULL;
++	cb_arg = NULL;
++	cb_back = NULL;
++}
++
++void halt_skas(void)
++{
++	block_signals_trace();
++	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
++}
++
++static bool noreboot;
++
++static int __init noreboot_cmd_param(char *str, int *add)
++{
++	*add = 0;
++	noreboot = true;
++	return 0;
++}
++
++__uml_setup("noreboot", noreboot_cmd_param,
++"noreboot\n"
++"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
++"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
++"    crashes in CI\n");
++
++void reboot_skas(void)
++{
++	block_signals_trace();
++	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
++}
++
++void __switch_mm(struct mm_id *mm_idp)
++{
++	userspace_pid[0] = mm_idp->pid;
++}
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index e42ffac23e3c..808d8c205b65 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -18,7 +18,6 @@
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+ #include <asm/unistd.h>
+-#include <as-layout.h>
+ #include <init.h>
+ #include <kern_util.h>
+ #include <mem.h>
+@@ -29,16 +28,10 @@
+ #include <sysdep/stub.h>
+ #include <sysdep/mcontext.h>
+ #include <linux/futex.h>
+-#include <linux/threads.h>
+ #include <timetravel.h>
+ #include <asm-generic/rwonce.h>
+ #include "../internal.h"
+ 
+-int is_skas_winch(int pid, int fd, void *data)
+-{
+-	return pid == getpgrp();
+-}
+-
+ static const char *ptrace_reg_name(int idx)
+ {
+ #define R(n) case HOST_##n: return #n
+@@ -433,9 +426,6 @@ static int __init init_stub_exe_fd(void)
+ }
+ __initcall(init_stub_exe_fd);
+ 
+-int using_seccomp;
+-int userspace_pid[NR_CPUS];
+-
+ /**
+  * start_userspace() - prepare a new userspace process
+  * @mm_id: The corresponding struct mm_id
+@@ -548,7 +538,6 @@ int start_userspace(struct mm_id *mm_id)
+ 	return err;
+ }
+ 
+-int unscheduled_userspace_iterations;
+ extern unsigned long tt_extra_sched_jiffies;
+ 
+ void userspace(struct uml_pt_regs *regs)
+@@ -786,124 +775,3 @@ void userspace(struct uml_pt_regs *regs)
+ 		}
+ 	}
+ }
+-
+-void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
+-{
+-	(*buf)[0].JB_IP = (unsigned long) handler;
+-	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
+-		sizeof(void *);
+-}
+-
+-#define INIT_JMP_NEW_THREAD 0
+-#define INIT_JMP_CALLBACK 1
+-#define INIT_JMP_HALT 2
+-#define INIT_JMP_REBOOT 3
+-
+-void switch_threads(jmp_buf *me, jmp_buf *you)
+-{
+-	unscheduled_userspace_iterations = 0;
+-
+-	if (UML_SETJMP(me) == 0)
+-		UML_LONGJMP(you, 1);
+-}
+-
+-static jmp_buf initial_jmpbuf;
+-
+-/* XXX Make these percpu */
+-static void (*cb_proc)(void *arg);
+-static void *cb_arg;
+-static jmp_buf *cb_back;
+-
+-int start_idle_thread(void *stack, jmp_buf *switch_buf)
+-{
+-	int n;
+-
+-	set_handler(SIGWINCH);
+-
+-	/*
+-	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
+-	 * and restore signals, with the possible side-effect of
+-	 * trying to handle any signals which came when they were
+-	 * blocked, which can't be done on this stack.
+-	 * Signals must be blocked when jumping back here and restored
+-	 * after returning to the jumper.
+-	 */
+-	n = setjmp(initial_jmpbuf);
+-	switch (n) {
+-	case INIT_JMP_NEW_THREAD:
+-		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
+-		(*switch_buf)[0].JB_SP = (unsigned long) stack +
+-			UM_THREAD_SIZE - sizeof(void *);
+-		break;
+-	case INIT_JMP_CALLBACK:
+-		(*cb_proc)(cb_arg);
+-		longjmp(*cb_back, 1);
+-		break;
+-	case INIT_JMP_HALT:
+-		kmalloc_ok = 0;
+-		return 0;
+-	case INIT_JMP_REBOOT:
+-		kmalloc_ok = 0;
+-		return 1;
+-	default:
+-		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
+-		       __func__, n);
+-		fatal_sigsegv();
+-	}
+-	longjmp(*switch_buf, 1);
+-
+-	/* unreachable */
+-	printk(UM_KERN_ERR "impossible long jump!");
+-	fatal_sigsegv();
+-	return 0;
+-}
+-
+-void initial_thread_cb_skas(void (*proc)(void *), void *arg)
+-{
+-	jmp_buf here;
+-
+-	cb_proc = proc;
+-	cb_arg = arg;
+-	cb_back = &here;
+-
+-	block_signals_trace();
+-	if (UML_SETJMP(&here) == 0)
+-		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
+-	unblock_signals_trace();
+-
+-	cb_proc = NULL;
+-	cb_arg = NULL;
+-	cb_back = NULL;
+-}
+-
+-void halt_skas(void)
+-{
+-	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
+-}
+-
+-static bool noreboot;
+-
+-static int __init noreboot_cmd_param(char *str, int *add)
+-{
+-	*add = 0;
+-	noreboot = true;
+-	return 0;
+-}
+-
+-__uml_setup("noreboot", noreboot_cmd_param,
+-"noreboot\n"
+-"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
+-"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
+-"    crashes in CI\n");
+-
+-void reboot_skas(void)
+-{
+-	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
+-}
+-
+-void __switch_mm(struct mm_id *mm_idp)
+-{
+-	userspace_pid[0] = mm_idp->pid;
+-}
 -- 
 2.43.0
 
