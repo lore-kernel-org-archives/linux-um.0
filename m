@@ -4,86 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 392E0C7EE3A
-	for <linux-um@archiver.kernel.org>; Sun, 22 Jun 2025 21:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04A7FC83000
+	for <linux-um@archiver.kernel.org>; Sun, 22 Jun 2025 21:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=kWA3StPiWkAfs4FcE2soHgzcqqw9xVR9Ej4dw8gKLE4=; b=cRNGL2eT++TCUcQN0a6shKs2ZJ
-	tkQiumocu1kEtrXOhTeqCFuPnc1gsE0eBLB1mm2C7ch1j/0llc753I5ErzH0FGDjIWX17gzZwh1WD
-	4GpMBRW59CS17lsbfuSWsvF4FqHZRxCOg0kwHBoSdvcxBTYMbtrL1Mer3ZSkdyexESOHJZl/oJ6s+
-	Iv2t2OAgZNBSl1mNHsJXqshWEcz3ve21doJp/KgjGC+4/x7Du5skAEzLWuyJSYSHPUSNc8Fn9/mWr
-	lYuqczlAFb88dVjTAhLZADwnlGI1Slv+DcUcMgyDIcenGia0iNhAIAVhXB7p1pOBbstbI1Rf6TIWp
-	TFhTwTZQ==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=; b=Y+mkUbr5eWQnMAxGEqTpzQ41HB
+	sL/joK3OOILEHlrgF24vVk5tRacCossgml2Swxv9I9GLRoYVEsaQ+FHlgbt8/cvbdOaLu1qpFTiuL
+	fk/eXVEQYMo+/pcrH825WEZ+dyJ8Fn7Wxg4fetjZ1zZtCni+igeNp2u18IDMAxZg6xwHFKbIdII2P
+	smgKmH9bDVrU3cdW68hRp+fN3hkcQJNiy/8+9S72l4usSBSgguGXfWZgi9kdyFWyptUZjKxVr/anA
+	PTYbiZB2CEZWQabekgGwkeA0hdWKXpXhgI8ghHgqr42g4d/mKZOtIFrIzGbchqQVy0JB1s3pvjchB
+	eTp2wcTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTSKF-00000001F3i-0b32;
-	Sun, 22 Jun 2025 21:34:07 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1uTSKI-00000001F7O-2uOb;
+	Sun, 22 Jun 2025 21:34:12 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uTSJX-00000001Eqc-2t1L
+	id 1uTSJq-00000001ExS-2D2C
 	for linux-um@lists.infradead.org;
-	Sun, 22 Jun 2025 21:33:24 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-31393526d0dso2305893a91.0
-        for <linux-um@lists.infradead.org>; Sun, 22 Jun 2025 14:33:23 -0700 (PDT)
+	Sun, 22 Jun 2025 21:33:43 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-2352400344aso35335205ad.2
+        for <linux-um@lists.infradead.org>; Sun, 22 Jun 2025 14:33:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750628002; x=1751232802; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kWA3StPiWkAfs4FcE2soHgzcqqw9xVR9Ej4dw8gKLE4=;
-        b=Wl1EsgHbgadCq79zeqCK26975wqEpKukY8NA7oKhO2iqgDp20vLOcGtIXUdFQW81j7
-         0MMNlUJB2KylQi+Qw1h6Vsp+mkfvMqtAzt4NpMCkwTbAzD+YCpKQKJNzylecQ+ak8+Ps
-         jLjQb14vyZVvHDmOKNqLNEt/yNfkvuiQ2hmz1ViWxbT2KHmZtsAJGgvru9KmIig6apYV
-         aPAVeyoUeioujFJqRTkMDV29SABFzDMUxG8ngua9tVfgCG3ckaJ3owCPx60Ajo+yhlCB
-         D8CXr9+LN0UVPyYtu9RGDLxW+7/tScNODThPRsUkHjdgr3mCmm0Sh+Ohcj+c0G3GWQB7
-         NwAw==
+        d=gmail.com; s=20230601; t=1750628022; x=1751232822; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=;
+        b=Ebc0Nv6GU3UuLVOLYErRDXU0M/XltMxQAnQM2UUg7SDI3TbXnE8KLOzozYX99j1aKc
+         NNEqzsYRp3Ey+iBp+Cwajce/Jf32D7CpY7UnIlkhEmrJYo0gBT9V/olxd2qeJqpJ6QOP
+         xZsomaJ7rs3pKg6AhQq67nEmurvX/UW1bR7RVTvnB/cEI/63D1Nu/B7GwnoxuDGaMHqj
+         82/3nALaSJ0zkAZ0FV2VLCENd2SH3LB2LJlHyZB6xFic0FhZ80erjjWkRAw9OfZxM7ZR
+         CBIby7sGZNqfZKYJT1t/m5BanJl045Lk1zt0CSWiqTDHO0srkZFs9p6YzxyOX43pg8sA
+         lMDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750628002; x=1751232802;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kWA3StPiWkAfs4FcE2soHgzcqqw9xVR9Ej4dw8gKLE4=;
-        b=FBQA1M916TT+gBpHohpiC6f3s87f9hAkXH5K2in84s2GZSlXAc+PKbjtYqcA+ajTUZ
-         /dbDnLTcN7UMOJXAp4RZscjysNSZKpWlGgYyp5VbZVCtarnSQfsJYEy98UtvIzhzQzel
-         tY6WMGEdeSBRNLV474kAcvDlG3OLjc0hPQD57qVckdhWQqegXaRq2axkk9q46S+Cp5sI
-         YOjSkiyLWQNC7KeW7nQThLxcC1BGiTYs+hmLVs/gOTJ8PhL8ZpCxxHPKyBr63dF425jT
-         a5EGWMulIWwJqFti2paj9r2ds77S9qt6jkzZAXLSp/GAi5nV1Lo5oSCBGd/d6oStX3I9
-         wtLw==
-X-Gm-Message-State: AOJu0YyIburUkl2uPw8LnlA5UHm3oOWf7xjn5LYjD0D/4eIyTut9Xk6t
-	q++/adKi6rEfyIJ5sjDsUoIdKvTWL++H5AQy05TlJbj+nfmEdXXEQmmO
-X-Gm-Gg: ASbGncsFwHnTKihkdanlGc3Q07vVVQIIy40zTIOhEaQeB4mbwyfhAiGtD73UrZ1Wl55
-	MI8RJicYHxRN9LwONzXoBp+2iKLfuKxx+yjqgWcfDTlkkNsF7E0MPXm8riLV4nDCBdFLLO9Rs14
-	YxC6k/YxZEgXbPoYOohJTLOpTc3bd3h/+Og69mpqEzTE7f4hmEZan2wbIvBNBm9r64UGj+aqucy
-	hN2Q2JlRxtg2s+fl+xMvk4Okw1RoQzDHT/YKYaPLeT+Fz7TuqdBVhiDIMUAst1tEqYlHhiPsibK
-	G2D3mEJBzey/3Qs0YphF7enFhMDbQa157rd0VGgDFf2dmhZqp2WJnzozxdLvlZw5/w4Lxyj42wj
-	J0XgI+EiMjhYlhHJaWJvPjCGpJeoF0QyG
-X-Google-Smtp-Source: AGHT+IFpzxz28YJ7KUHpAeQcZWN/pVFUI5GcIqdDZHFqQtYD02f9HFVJDuPRXmKToeMZcqJl9FFJng==
-X-Received: by 2002:a17:90b:5148:b0:313:b78:dc14 with SMTP id 98e67ed59e1d1-3159d57b142mr17909263a91.0.1750628002435;
-        Sun, 22 Jun 2025 14:33:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750628022; x=1751232822;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SfaLR+xtvYbSj0Yj5pLhRxT8PrYzixVb/sw/K5Eb4uM=;
+        b=LS3nLG74biu/9yV2Vn0CKypfBGjdW1E9HvNPoc9FvVkQwE3TSrIclExpaCf2LXOLbR
+         4Gs91U0659Aa2pwGP2EedAJYJK92QJ/wvdpJoRBy7vDHAEmrQRKf5Zx9rTl9jM4kr2mZ
+         2qV9hrWYPgfMEP4re7MwjuxLwHIH1b4mdu1cAP3dSFhF1r0+EFyRujDziqTIjeFYNb7l
+         7+OXnWbM1GkFtZ5mO9E5b7SZkTEX2Usjtzr89DL4qRun2f7QuTp6h3KjqT/0qseRdZC+
+         BpZoZNoW10QKrvIGw0T+wOvqCG2JCP1BGb0fNfujNl+xDaI/0+EeOEgZcWayLOaUS4k/
+         OvTQ==
+X-Gm-Message-State: AOJu0YzXbDCuRBgiwrrVa0tLShUrROHg5qkQhbQdL7DFTLX9kPZCI/SG
+	dybJRIypHfs56TNVIYcMDzB457Oc+fNPOzOTE5coGMk8GA3pqhrPDsUG
+X-Gm-Gg: ASbGncsVXfmaL5z6kwzqnqYr5Timm8RfNvJojvGfEfoU1AT7yYuRMc6k20XlZx24SxT
+	UMa/8Vi94LW8QailaZyPywpWuFLSg/VPPDO2R3s1Iqk13IB03XThTs5V2onAdn6qn49h0oHj+GA
+	IkcMl7IEqLaSgDlvAtmGLdPJBGMz5mP78Fah8yCOnJ4xyZBXOoCmsfI7S+FroXG7FJjNCOnG+wX
+	PfFOJHskhIX81mYXjmhS2cmajiF5wCCI8vtuxLPO+t9KJlARoWs3LkY8S4b8smjcGkQQQ3kHBlT
+	3fzG4vGja1T2V3QYYMpgISDiEvEBhZOITBJ3FOtZg54nl4th11mxbkNumbZuI31jd4XIH4spOCM
+	zgRL54QEw8Ccpg5Cmmbp0mP77MSfbUtMi
+X-Google-Smtp-Source: AGHT+IE2X/a6jjB1EnFZZyhowFHSJjm1zCMXjlA1XnMsjL3oMDjBlwH6AM3zKhRsmJ9nHB3vT4YZVg==
+X-Received: by 2002:a17:902:e889:b0:235:f51f:c9e4 with SMTP id d9443c01a7336-237d980b75bmr163794955ad.12.1750628021956;
+        Sun, 22 Jun 2025 14:33:41 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a331babsm8982152a91.46.2025.06.22.14.33.21
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d83cf981sm68073275ad.59.2025.06.22.14.33.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Jun 2025 14:33:21 -0700 (PDT)
+        Sun, 22 Jun 2025 14:33:41 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 9657AEF1EA4; Mon, 23 Jun 2025 06:33:14 +0900 (JST)
+	id 5EFA2EF1EBA; Mon, 23 Jun 2025 06:33:38 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v10 00/13] nommu UML
-Date: Mon, 23 Jun 2025 06:32:58 +0900
-Message-ID: <cover.1750594487.git.thehajime@gmail.com>
+Subject: [PATCH v10 11/13] um: change machine name for uname output
+Date: Mon, 23 Jun 2025 06:33:09 +0900
+Message-ID: <a0ad90a5ce95e8d34c6c5855cff701bdd51dea5a.1750594487.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1750594487.git.thehajime@gmail.com>
+References: <cover.1750594487.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250622_143323_748588_0BF4854C 
-X-CRM114-Status: GOOD (  20.55  )
+X-CRM114-CacheID: sfid-20250622_143342_563677_5C72B346 
+X-CRM114-Status: UNSURE (   9.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,170 +102,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This patchset is another spin of nommu mode addition to UML.  It would
-be nice to hear about your opinions on that.
+This commit tries to display MMU/!MMU mode from the output of uname(2)
+so that users can distinguish which mode of UML is running right now.
 
-There are still several limitations/issues which we already found;
-here is the list of those issues.
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+---
+ arch/um/Makefile        | 6 ++++++
+ arch/um/os-Linux/util.c | 3 ++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-- memory mapped by loadable modules are not distinguished from
-  userspace memory.
-
--- Hajime
-
-v10:
-- fix wrong comment on gs register handling ([09/13])
-- remove unnecessary code of early syscall implementation ([04/13])
-
-v9:
-- rebase with the latest uml/next branch
-- add performance numbers of new SECCOMP mode, and update results ([12/13])
-- add a workaround for upstream change on MMU depedency to PCI drivers ([10/13])
-- https://lore.kernel.org/all/cover.1750294482.git.thehajime@gmail.com/
-
-v8:
-- rebase with the latest uml/next branch
-- clean up segv_handler to align with the latest uml ([9/12])
-- https://lore.kernel.org/all/cover.1745980082.git.thehajime@gmail.com/
-
-v7:
-- properly handle FP register upon signal delivery [10/13]
-- update benchmark result with new FP register handling [12/13]
-- fix arch_has_single_step() for !MMU case [07/13]
-- revert stack alignment as it is in uml/fixes tree [10/13]
-- https://lore.kernel.org/all/cover.1737348399.git.thehajime@gmail.com/
-
-v6:
-- rebase to the latest uml/next tree
-- more clean up on mmu/nommu for signal handling [10/13]
-- rename functions of mcontext routines [06,10/13]
-- added Acked-by tag for binfmt_elf_fdpic [02/13]
-- https://lore.kernel.org/linux-um/cover.1736853925.git.thehajime@gmail.com/
-
-v5:
-- clean up stack manipulation code [05,06,07,10/13]
-- https://lore.kernel.org/linux-um/cover.1733998168.git.thehajime@gmail.com/
-
-v4:
-- add arch/um/nommu, arch/x86/um/nommu to contain !MMU specific codes
-- remove zpoline patch
-- drop binfmt_elf_fdpic patch
-- reduce ifndef CONFIG_MMU if possible
-- split to elf header cleanup patch [01/13]
-- fix kernel test robot warnings [06/13]
-- fix coding styles [07/13]
-- move task_top_of_stack definition [05/13]
-- https://lore.kernel.org/linux-um/cover.1733652929.git.thehajime@gmail.com/
-
-v3:
-- https://lore.kernel.org/linux-um/cover.1733199769.git.thehajime@gmail.com/
-- add seccomp-based syscall hook in addition to zpoline [06/13]
-- remove RFC, add a line to MAINTAINERS file
-- fix kernel test robot warnings [02/13,08/13,10/13]
-- add base-commit tag to cover letter
-- pull the latest uml/next
-- clean up SIGSEGV handling [10/13]
-- detect fsgsbase availability with elf aux vector [08/13]
-- simplify vdso code with macros [09/13]
-
-RFC v2:
-- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
-- base branch is now uml/linux.git instead of torvalds/linux.git.
-- reorganize the patch series to clean up
-- fixed various coding styles issues
-- clean up exec code path [07/13]
-- fixed the crash/SIGSEGV case on userspace programs [10/13]
-- add seccomp filter to limit syscall caller address [06/13]
-- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
-- removes unrelated changes
-- removes unneeded ifndef CONFIG_MMU
-- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
-- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
-  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
-
-RFC:
-- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
-
-Hajime Tazaki (13):
-  x86/um: nommu: elf loader for fdpic
-  um: decouple MMU specific code from the common part
-  um: nommu: memory handling
-  x86/um: nommu: syscall handling
-  um: nommu: seccomp syscalls hook
-  x86/um: nommu: process/thread handling
-  um: nommu: configure fs register on host syscall invocation
-  x86/um/vdso: nommu: vdso memory update
-  x86/um: nommu: signal handling
-  um: nommu: a work around for MMU dependency to PCI driver
-  um: change machine name for uname output
-  um: nommu: add documentation of nommu UML
-  um: nommu: plug nommu code into build system
-
- Documentation/virt/uml/nommu-uml.rst    | 180 ++++++++++++++++++++++
- MAINTAINERS                             |   1 +
- arch/um/Kconfig                         |  14 +-
- arch/um/Makefile                        |  10 ++
- arch/um/configs/x86_64_nommu_defconfig  |  54 +++++++
- arch/um/include/asm/dma.h               |  13 ++
- arch/um/include/asm/futex.h             |   4 +
- arch/um/include/asm/mmu.h               |   8 +
- arch/um/include/asm/mmu_context.h       |   2 +
- arch/um/include/asm/ptrace-generic.h    |   8 +-
- arch/um/include/asm/uaccess.h           |   7 +-
- arch/um/include/shared/kern_util.h      |   6 +
- arch/um/include/shared/os.h             |  16 ++
- arch/um/kernel/Makefile                 |   5 +-
- arch/um/kernel/mem-pgtable.c            |  55 +++++++
- arch/um/kernel/mem.c                    |  38 +----
- arch/um/kernel/process.c                |  25 +++
- arch/um/kernel/skas/process.c           |  27 ----
- arch/um/kernel/um_arch.c                |   3 +
- arch/um/nommu/Makefile                  |   3 +
- arch/um/nommu/os-Linux/Makefile         |   7 +
- arch/um/nommu/os-Linux/signal.c         |  29 ++++
- arch/um/nommu/trap.c                    | 194 ++++++++++++++++++++++++
- arch/um/os-Linux/Makefile               |   8 +-
- arch/um/os-Linux/internal.h             |   5 +
- arch/um/os-Linux/mem.c                  |   4 +
- arch/um/os-Linux/process.c              | 144 +++++++++++++++++-
- arch/um/os-Linux/seccomp.c              |  87 +++++++++++
- arch/um/os-Linux/signal.c               |   8 +
- arch/um/os-Linux/skas/process.c         | 132 ----------------
- arch/um/os-Linux/start_up.c             |  25 ++-
- arch/um/os-Linux/util.c                 |   3 +-
- arch/x86/um/Makefile                    |   7 +-
- arch/x86/um/asm/elf.h                   |   8 +-
- arch/x86/um/nommu/Makefile              |   8 +
- arch/x86/um/nommu/do_syscall_64.c       |  68 +++++++++
- arch/x86/um/nommu/entry_64.S            | 113 ++++++++++++++
- arch/x86/um/nommu/os-Linux/Makefile     |   6 +
- arch/x86/um/nommu/os-Linux/mcontext.c   |  24 +++
- arch/x86/um/nommu/syscalls.h            |  16 ++
- arch/x86/um/nommu/syscalls_64.c         | 115 ++++++++++++++
- arch/x86/um/shared/sysdep/mcontext.h    |   5 +
- arch/x86/um/shared/sysdep/ptrace.h      |   2 +-
- arch/x86/um/shared/sysdep/syscalls_64.h |   6 +
- arch/x86/um/vdso/vma.c                  |  17 ++-
- fs/Kconfig.binfmt                       |   2 +-
- 46 files changed, 1306 insertions(+), 216 deletions(-)
- create mode 100644 Documentation/virt/uml/nommu-uml.rst
- create mode 100644 arch/um/configs/x86_64_nommu_defconfig
- create mode 100644 arch/um/kernel/mem-pgtable.c
- create mode 100644 arch/um/nommu/Makefile
- create mode 100644 arch/um/nommu/os-Linux/Makefile
- create mode 100644 arch/um/nommu/os-Linux/signal.c
- create mode 100644 arch/um/nommu/trap.c
- create mode 100644 arch/um/os-Linux/seccomp.c
- create mode 100644 arch/x86/um/nommu/Makefile
- create mode 100644 arch/x86/um/nommu/do_syscall_64.c
- create mode 100644 arch/x86/um/nommu/entry_64.S
- create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
- create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
- create mode 100644 arch/x86/um/nommu/syscalls.h
- create mode 100644 arch/x86/um/nommu/syscalls_64.c
-
-
-base-commit: cfc4ca8986bb1f6182da6cd7bb57f228590b4643
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 5371c9a1b11e..9bc8fc149514 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -153,6 +153,12 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) $(CC_FLAGS_
+ CLEAN_FILES += linux x.i gmon.out
+ MRPROPER_FILES += $(HOST_DIR)/include/generated
+ 
++ifeq ($(CONFIG_MMU),y)
++UTS_MACHINE := "um"
++else
++UTS_MACHINE := "um\(nommu\)"
++endif
++
+ archclean:
+ 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+ 		-o -name '*.gcov' \) -type f -print | xargs rm -f
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 4193e04d7e4a..20421e9f0f77 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -65,7 +65,8 @@ void setup_machinename(char *machine_out)
+ 	}
+ # endif
+ #endif
+-	strcpy(machine_out, host.machine);
++	strcat(machine_out, "/");
++	strcat(machine_out, host.machine);
+ }
+ 
+ void setup_hostinfo(char *buf, int len)
 -- 
 2.43.0
 
