@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D8CC71157
-	for <linux-um@archiver.kernel.org>; Sat, 21 Jun 2025 12:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299DBC77B7F
+	for <linux-um@archiver.kernel.org>; Sun, 22 Jun 2025 21:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=X53vOJjIymMVYj3rg5nCjdf5UDKh2QhE/Cj2wkuLezE=; b=MTL+2pVZNuK6yekqZ4nP3swufe
-	hpmMBy04JhG3e802P0vK50LNtkIATxPkAnAqqHKlsoD2onUneJj9DTaiTtdlOPlh82ShJYPLAUUFO
-	t9x2p4fldsEOwJmDafTLvwuUQnN7uXd2SGWLUfGfPUOtjRypPA0ZmjK0Z0VwGCGxp00npZbMOC5LW
-	RTSggrTaKuiI2spcZonCDuJ5w2rxyDte6tuOtMgSeD5+KwBMomS+0+qM6oL0+G4GqhBw/GOY2fLOb
-	FOc1vLaBJl10SJK3Iq7TrNHUehxqRM40fcpwjrftVlwKenTJy93ZJs7l2wqZ5/TWti3p5qOkTNF9e
-	qW0WweVg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=; b=fR4peRA9SKG3zg6zgqXI147PYd
+	N8YslN45t982TxF8r98fslS9TcvhbBDw73Qlw0rm1e/S/Eh8aXd/oSYekHQ6i5Eeev35uTON5Xrpb
+	nH1HB085HyAqmQlzH+KpPhLbTtHgGcXr09T/4GakCLoYvhooQ5ZH60Hw7K8P3kY189Q87MiH1jptZ
+	57gndiSdkf3kZ4Ef9YxkGJKHCMmWuGxgYlpYMVTmt/gzaLUWg+rBEpFpx8a06PI99lHq1BZrt0bbu
+	LY1SU/zImx6ufmUmpxLET4Fjsu39HlV1i2y1IbfnlQesZXNBTp4sUMnH0V9d3ovO8108u6mSFm59v
+	VHTWCQcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSxWJ-0000000HRHt-483G;
-	Sat, 21 Jun 2025 12:40:31 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1uTSKH-00000001F5c-2fPZ;
+	Sun, 22 Jun 2025 21:34:09 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uSxWH-0000000HRHZ-3YIs
+	id 1uTSJk-00000001EuM-4BAj
 	for linux-um@lists.infradead.org;
-	Sat, 21 Jun 2025 12:40:31 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-234d366e5f2so36267405ad.1
-        for <linux-um@lists.infradead.org>; Sat, 21 Jun 2025 05:40:29 -0700 (PDT)
+	Sun, 22 Jun 2025 21:33:38 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-7425bd5a83aso2937199b3a.0
+        for <linux-um@lists.infradead.org>; Sun, 22 Jun 2025 14:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750509629; x=1751114429; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X53vOJjIymMVYj3rg5nCjdf5UDKh2QhE/Cj2wkuLezE=;
-        b=dRhUXS7MUA/AHo8U/s5vh1o5poa8GthrYc4Lw/sdR5SnJNORI6nMouCsyVH8vzqBe3
-         GH2fGx0OCvyfa/6JKPJIcwSg89yzcsVCXj5a3DMismJRtThLCmJ9ZGqZAIBroaD/2yiB
-         w2Z7rP4rxJBK063XknEVRaN8NLP9fADF9hM7MZyPGIfb5BBmOrcRqo5ilxnzoJ7J+gML
-         +o6UWw+I21YQQoXmNXYUmp/9gaHCWpj2oKwiGdQIq/pMEnt8lz6vjf4lmoXV0dGGJV6C
-         9GCVbIb/zEu2ZtleC5hu5itoLnCaS1kKKZqxBQkzj8+LwzcYEmCpXbFpkPiGHb3mXBOh
-         rJQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750509629; x=1751114429;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1750628016; x=1751232816; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X53vOJjIymMVYj3rg5nCjdf5UDKh2QhE/Cj2wkuLezE=;
-        b=kwIHHxfD6CBT4zGqisktwFjjJyP40GaVGRep0Gfj1kh+YvqYM73SqTZZcrwsqY3QMx
-         DZdqVjE9CFYnsaY7oS11RQkubChwtghsJfFE865MS09XGfbuYSomHGGYdgBOGQpgXBQT
-         VKNb13nCXuUpAZcwdv8CqqgMX3PBB1I7I6ZagpATATRpxPsRFA+n8ntO+BJNXInCrJcJ
-         YTFQASWQsqiJ6GDIvW4WqNXIoC+i6CjpbOpo2f/vhB1HqzmwPjHy8vrgzVEzi+3orU7X
-         Mg8nvC5RkRnUTBd0nO74Dhq8bjzbuGeO0reGCzx/WWCXrJqEnhAiPVVq/3H3oqEP+Lji
-         CZhg==
-X-Gm-Message-State: AOJu0YxZzZhShAQJUnhRBZvzFYN8zl+TpCfn5ked+LKpDaw8TJCM0VJI
-	cXezg3q56dxcBt3r0tN1a8wXlUUlMUCKovKiIAV1V8tRF1obCiJimAqP
-X-Gm-Gg: ASbGncvaeeTF72uhSkVBarnEa/rMayZcrXMKZrBNXA2rfC8k5EzlL308rVRWQ7ogXsu
-	KR3HvAc4A8ZRD4k0BTDxv7L+WZYld5gp30QID9LUQ/O8e0MRWrj0BZDvC91Qvrtb95TRJ7s8/QX
-	eBKu4omMbZ7XzpN7ZW7ucz0VXVGxHrBXLG0I4tImhwMsxI/5c3r+93CRLX38IM1wcCt+wIl/pBD
-	LTuHLJ54UkWKzRKoi8lTPJrK0174fiVQgbchAhe3ErQ0LsXtyXzGceURKi70z6l8BqTxZkYUx+P
-	SST9i/U05XU1haF87NCDwcx4BL05gLRpk0eTkOvmlBcgM0JgCBq3AX/32CoyKUSiUm50XeyEjGG
-	YqtRmucMz1Blw1JcQH6pAscDv/LMvr7uBWkb6PQ9lADMxAg81
-X-Google-Smtp-Source: AGHT+IG6rnMFp0fPbWQL97P6anz8S84CbsAQpI5tkYA8t300ZsC8H2blMYMaqz/RjZW3WG8e7tkf/g==
-X-Received: by 2002:a17:902:d58d:b0:235:ef56:7800 with SMTP id d9443c01a7336-237d9917c20mr84978105ad.30.1750509628618;
-        Sat, 21 Jun 2025 05:40:28 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3159df71ea8sm4210760a91.7.2025.06.21.05.40.26
+        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
+        b=EnNNRIN8tiHQZzRWEsc8PFOh8Yrbm7XeJwS1iZ9ZZPfu2+kRjEyt7aO3zvpUsYdNuZ
+         AzCACZugfhn1n1i6RfVa/tO3ddt35YFEgvONsCgIRFyyc4HHNt29DAnOem5D07LPUaS8
+         paIJFucCuG7WFmLRxN3VEcIi2/mqB50MBlOSm/I0qJQJupTJ6aZZfYEfYwm7XdVLemIu
+         vIE+SdVDrD4gD/oDqKp/gUOGN688kEDEfsb5RscYnichL4kUJFJB95mBWdMdI0Bmvqz8
+         MGTT+DBpg9QAzkL+/xthf1MDkJ/bP0MAcrTY3gFg8ukghu7AZ7I776zjcvs3/AUEexEz
+         JDhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750628016; x=1751232816;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
+        b=boOWpO+Efu/x4gwcnb8czH+4CPCMaUdXgMXY4lyLdLTBTxVA2rTLJzjA+Ng0j5Zy6r
+         W/5JJ0zO7lCH0S5u5wONGpXBtPYYnbaUNB4DxrJtIjnGSja8bSBwB+jmRfTvOXDlUuUS
+         FHQ2zTzSe6zwNFTTouaN3Ds9nk72noJmdyfq7uyaUtPqzPwJRTe5SXzSqnKP8a1d6mTD
+         2kUucV5YrrGIAPWtRyRnSsqMmuC4s9fl4IaqDTrVohfsFRP0kvIhOqglfZU9l5FDSdqd
+         lIHuDCEWDfPontygQtcbNBc277i9ue81xFXEyoUnt9aBgz+333jRaKK59DfJtH2g0CUN
+         kauQ==
+X-Gm-Message-State: AOJu0YwxoqYYp3TqNDBagSX0o1hMThsAwNU2zLgGmNkkaHQqNfiP9858
+	L320p/MFhKo52KnQgvZVnb/QNbyejdzhMHmOvwtJEjshhcROTXXnm3bG
+X-Gm-Gg: ASbGncvbJC7TXGfFClu+aZy/G+4uCKhlmBG4JTBorzphL46NouPDfCFS2b9mZDG3TY2
+	Z5m6aIVTYfuJz94oz2OKjFjkhDmqEDbctZDIHhs5alpw92YsRxkoLZh3Bnn3D/JDKEl/KFm9QkP
+	rFybNXLVAgvgH5W3PcTzxSh87ZOVKnPDCA/YfzXvIr3YXJEsnKZLl4mHRUdBjV2d+tAxjsTCDKr
+	js/598oyW8+8OhU7YASWHp/qK2lhRm54OmWAxxpyCAUGtggEWFDV1DR08NZ3OZH7SxW1Rxe7FDQ
+	i1wk2Gi0DxmfGEO9VAJD6nboemDBoXGQEmFdVYSkGVgO+BpPvlywN2R1VYQqUQZkjU2cwSWpUMz
+	gEn6U8sKl8Umb+EW+d3wILZNY6g6Won9w
+X-Google-Smtp-Source: AGHT+IHrrJwTveE1DrjrmwA8iNFWeSED2zb/Yvu8dxfkj2CbC/FxRJjNGr3E1Hy0RND7HchK71ZUmA==
+X-Received: by 2002:a05:6a20:431d:b0:215:e818:9fe3 with SMTP id adf61e73a8af0-22026eb0730mr15937527637.27.1750628016251;
+        Sun, 22 Jun 2025 14:33:36 -0700 (PDT)
+Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b31f1241f20sm6274763a12.45.2025.06.22.14.33.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Jun 2025 05:40:27 -0700 (PDT)
-Date: Sat, 21 Jun 2025 21:40:24 +0900
-Message-ID: <m24iw95kuf.wl-thehajime@gmail.com>
+        Sun, 22 Jun 2025 14:33:35 -0700 (PDT)
+Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
+	id DEBEDEF1EB4; Mon, 23 Jun 2025 06:33:32 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
-To: benjamin@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
+To: linux-um@lists.infradead.org
+Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 04/13] x86/um: nommu: syscall handling
-In-Reply-To: <d1d08a207844b98d0beba96f48beaf73e30c3bd2.camel@sipsolutions.net>
-References: <cover.1750294482.git.thehajime@gmail.com>
-	<bc5a2a14d41add7a2a44b12a21d9ccfa68a6baa5.1750294482.git.thehajime@gmail.com>
-	<d1d08a207844b98d0beba96f48beaf73e30c3bd2.camel@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-2022-JP
+Subject: [PATCH v10 08/13] x86/um/vdso: nommu: vdso memory update
+Date: Mon, 23 Jun 2025 06:33:06 +0900
+Message-ID: <0b7d3061a6053731b9499d6a1e373314ef9f12d0.1750594487.git.thehajime@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1750594487.git.thehajime@gmail.com>
+References: <cover.1750594487.git.thehajime@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250621_054029_903024_BB1B2FDF 
-X-CRM114-Status: GOOD (  20.22  )
+X-CRM114-CacheID: sfid-20250622_143337_046203_D8B46BFE 
+X-CRM114-Status: GOOD (  13.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,78 +101,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On !MMU mode, the address of vdso is accessible from userspace.  This
+commit implements the entry point by pointing a block of page address.
 
-On Thu, 19 Jun 2025 19:31:53 +0900,
-Benjamin Berg wrote:
+This commit also add memory permission configuration of vdso page to be
+executable.
 
-> > diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_syscall_64.c
-> > new file mode 100644
-> > index 000000000000..5d0fa83e7fdc
-> > --- /dev/null
-> > +++ b/arch/x86/um/nommu/do_syscall_64.c
-> > @@ -0,0 +1,37 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/ptrace.h>
-> > +#include <kern_util.h>
-> > +#include <sysdep/syscalls.h>
-> > +#include <os.h>
-> > +
-> > +__visible void do_syscall_64(struct pt_regs *regs)
-> > +{
-> > +	int syscall;
-> > +
-> > +	syscall = PT_SYSCALL_NR(regs->regs.gp);
-> > +	UPT_SYSCALL_NR(&regs->regs) = syscall;
-> > +
-> > +	pr_debug("syscall(%d) (current=%lx) (fn=%lx)\n",
-> > +		 syscall, (unsigned long)current,
-> > +		 (unsigned long)sys_call_table[syscall]);
-> 
-> You probably want to drop the pr_debug from the syscall path.
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
+---
+ arch/x86/um/vdso/vma.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-okay, I'll update those parts.
+diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
+index dc8dfb2abd80..1c8c39f87681 100644
+--- a/arch/x86/um/vdso/vma.c
++++ b/arch/x86/um/vdso/vma.c
+@@ -9,6 +9,7 @@
+ #include <asm/page.h>
+ #include <asm/elf.h>
+ #include <linux/init.h>
++#include <os.h>
+ 
+ static unsigned int __read_mostly vdso_enabled = 1;
+ unsigned long um_vdso_addr;
+@@ -21,14 +22,24 @@ static int __init init_vdso(void)
+ {
+ 	BUG_ON(vdso_end - vdso_start > PAGE_SIZE);
+ 
+-	um_vdso_addr = task_size - PAGE_SIZE;
+-
+ 	um_vdso = alloc_page(GFP_KERNEL);
+ 	if (!um_vdso)
+ 		goto oom;
+ 
+ 	copy_page(page_address(um_vdso), vdso_start);
+ 
++#ifdef CONFIG_MMU
++	um_vdso_addr = task_size - PAGE_SIZE;
++#else
++	/* this is fine with NOMMU as everything is accessible */
++	um_vdso_addr = (unsigned long)page_address(um_vdso);
++	os_protect_memory((void *)um_vdso_addr, vdso_end - vdso_start, 1, 0, 1);
++#endif
++
++	pr_info("vdso_start=%lx um_vdso_addr=%lx pg_um_vdso=%lx",
++	       (unsigned long)vdso_start, um_vdso_addr,
++	       (unsigned long)page_address(um_vdso));
++
+ 	return 0;
+ 
+ oom:
+@@ -39,6 +50,7 @@ static int __init init_vdso(void)
+ }
+ subsys_initcall(init_vdso);
+ 
++#ifdef CONFIG_MMU
+ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ {
+ 	struct vm_area_struct *vma;
+@@ -63,3 +75,4 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 
+ 	return IS_ERR(vma) ? PTR_ERR(vma) : 0;
+ }
++#endif
+-- 
+2.43.0
 
-> > +	if (likely(syscall < NR_syscalls)) {
-> > +		PT_REGS_SET_SYSCALL_RETURN(regs,
-> > +				EXECUTE_SYSCALL(syscall, regs));
-> > +	}
-> > +
-> > +	pr_debug("syscall(%d) --> %lx\n", syscall,
-> > +		regs->regs.gp[HOST_AX]);
-> > +
-> > +	PT_REGS_SYSCALL_RET(regs) = regs->regs.gp[HOST_AX];
-> > +
-> > +	/* execve succeeded */
-> > +	if (syscall == __NR_execve && regs->regs.gp[HOST_AX] == 0)
-> > +		userspace(&current->thread.regs.regs);
-> 
-> That said, this is what I am stumbling over. Why do you need to jump
-> into userspace() here? It seems odd to me to need a special case in the
-> syscall path itself.
-> Aren't there other possibilities to hook/override the kernel task
-> state?
-
-thanks, I found that this is a leftover of our early implementation
-which doesn't have a proper schedule upon an exit from syscall.  we
-can remove this part and I'll fix them after more investigation.
-
-> > +	/* force do_signal() --> is_syscall() */
-> > +	set_thread_flag(TIF_SIGPENDING);
-> > +	interrupt_end();
-> 
-> Same here. The MMU UML code seems to also do this, but restricted to
-> ptrace'd processes? Maybe I am just missing something obvious …
-
-nommu doesn't have separate process/context to indicate a schedule to
-the context here (syscall).  without that part we do not have a chance
-to schedule tasks and signals to userspace.
-
-But the force on SIGPENDING flag is not actually needed so, I'll
-remove that part.
-
-thanks for pointing out.
-
--- Hajime
 
