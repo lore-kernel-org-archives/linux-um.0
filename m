@@ -4,62 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D136C77B7F
-	for <linux-um@archiver.kernel.org>; Tue, 24 Jun 2025 23:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D4ACC7EE32
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jun 2025 10:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=V8gmztvWykFpmhkeFbGIlEUdI1CttO0IpihuArM71Qk=; b=3ZBAaVj7OYHFYWz8TDIfw12f6P
-	saWJ+8aXfU/YmMmNvdpBksPQ0y5ipu+Cv6RZq9bgrtAqYq1H/+iM0Gi+Mzz+3WzkQ4FduHXhjLG7h
-	RO6+qUyDruRN4H+dEZmrZptEsBq2gsCxoVGyxTJnqTDOAKqgoXvCpHS7PlRSkeXSQ955ZV5N9Z/Lr
-	vVFsIKkHk7Q2qvjGK380JHI0ZVmra9MvdGpXNeV1vFzaWCSJmlvFzD3R1io558lDTqLuD6JBy5REW
-	e+YLPy2VuqBZvYjqy7gHijZ0r+6luzv2iPVgOZD+yuqmlQNs5tbhH2KvTN2jlWTGDu4y5pyVItBIX
-	egoUpyWw==;
+	bh=gzuTLj0h0BP8Faa4F4QGiLAR1aawV6atkUr8dq493UA=; b=V8X3daDh2Yc3VFrLRgRtnYcEtC
+	DNwa6u2lKY8l0A+WvQ9BNYbqru7c8oFYJOfTb0RjtlC0zP9aCSjRbThMeargRgVOSbL8ZrjR60ssD
+	CK+UQYgBy3TjfYLOktuhEWl9xSvrwFtmKmpXu7UlWv+NzI0ICxrZTsVVKk7m/jP7sFKtFsGTOFbgQ
+	nohP93NLzIlq+EkDm5q5Y6N3bfqg5UzM0TGrKC6EqOaK6ShNRe9rMFY9NFbHjSCZz88ySlMlGcrmh
+	QFZVf1VMmxLsYXIh0d9FBFgXucjVs49SGa8XO/0JI58bmeQcS9W4uyqzU1RH+T/F+/ILmJ30Y64gs
+	I6KiiaOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUCvy-000000075Pe-2WJx;
-	Tue, 24 Jun 2025 23:20:10 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uUNlD-00000008NRx-3YgA;
+	Wed, 25 Jun 2025 10:53:47 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUCvw-000000075Oc-2bXi
+	id 1uULoX-000000081if-0HMp
 	for linux-um@lists.infradead.org;
-	Tue, 24 Jun 2025 23:20:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=V8gmztvWykFpmhkeFbGIlEUdI1CttO0IpihuArM71Qk=;
-	t=1750807206; x=1752016806; b=G/Ny7+BE4wJ36oUDKcrz6zUTEAGgJaXNglmdswdRSs51IC5
-	OZuJxhp/bH/iGgN2fqmw1qXFhvnE7ho8XHaYnar4zXmo4YUgRpoZkeY33Tp9PNZuhoFCh57XMe1mQ
-	3C93OF4ibmIFa5KUOG+WSxGrexfVsh47lTcEl8CITHDLhT72qqUuw9sgzSMGBD7HP6kfoBZD01ETL
-	NjTdo9fWTTfr5rq4mPG95Oa1T/5Fp2x/hoFejKP8evod2+1VKdNC1vkmtSys4tzDzA6TvtK7tw6cp
-	30IgDZ6LmNcWplOPp5VcvG5HuZ45N0DFtFG1LoSFLBw2Hi2HbWHm/j6kv6RHahxA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uUCvs-00000009Aa0-0S6V;
-	Wed, 25 Jun 2025 01:20:04 +0200
-Message-ID: <3b407ed711c5d7e1819da7513c3e320699473b2d.camel@sipsolutions.net>
-Subject: Re: [PATCH v10 09/13] x86/um: nommu: signal handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
-Cc: ricarkol@google.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org
-Date: Wed, 25 Jun 2025 01:20:03 +0200
-In-Reply-To: <548dcef198b79a4f8eb166481e39abe6e13ed2e3.1750594487.git.thehajime@gmail.com>
-References: <cover.1750594487.git.thehajime@gmail.com>
-	 <548dcef198b79a4f8eb166481e39abe6e13ed2e3.1750594487.git.thehajime@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Wed, 25 Jun 2025 08:49:06 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3a6d77b43c9so3649606f8f.3
+        for <linux-um@lists.infradead.org>; Wed, 25 Jun 2025 01:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1750841343; x=1751446143; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gzuTLj0h0BP8Faa4F4QGiLAR1aawV6atkUr8dq493UA=;
+        b=W8wMoICMD3GwWOQPje8R+DLCXJz2WfhGD152A4236/g1IAKBfWhpdmEADy1JyJ7yWV
+         rD7/Ook5WzpGTWqIiMR217q6ZtT5eEv4BsKZqvhUSJEf9y9hhcQH/cuCxQ9jshoTu1K1
+         WAdeVN3Astu9xuuh5e0mjtD5KKxqwOugMwq7Z6e22Cy/a1d53bxnEYNg/xODBaW9jIWR
+         QTlSV3z/MZmAWvCvFImTy+GA2E2JpbwzNvTEgpUL4Lrc3z1urMHIk+fIU/Ehuc0eFeAv
+         MQFjj9Gy+lODycDrV7WcV38XLrAW0UsrNr9oSPapERROOwZcHtzhksCMihtzg22sjlCZ
+         7poQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750841343; x=1751446143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gzuTLj0h0BP8Faa4F4QGiLAR1aawV6atkUr8dq493UA=;
+        b=FB5+pnOAivp0uGGkCItxBz/Joig1d1dX5ocH7UlK4ZvmXiazHy7lvSWhTN1xX6faty
+         p1iQuaSOjAyBANZdUuHJV4s4tEsxC+8cvCkeyGnI/+GHLiL9fUD0HZwJ99LeyOjWmBxw
+         hGH3G0kQGxdaEvofRSsAaHlcz867h0BD0MC473OunCaHjsuLWLEtlKhs0V+cF9rPhLDR
+         JAaRbAypwrY1zIbPh33eFvurFjkdWztpzDIy4trm9p8kUYnnYH6ZXBcvo1kEfbCDjZBc
+         w+e0FPsQYEb7a2SubVIlMmgLeDW5k/SOQrBtw/t8mpEzOn1+5X4X1FyM69vQvSrlBBuA
+         9noA==
+X-Forwarded-Encrypted: i=1; AJvYcCVA2gAAoA0js6wl9GxbO7rHlhxB/mLqJhRsChdmRm+Cz+H/OK2Y4PtInyR5veXKFb+fR24kUZHbxA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YysFLmoyp0hsCsA/p4X/DjRpcu0F6za2Vz6fEJBwq556ADvGyvn
+	pQAOMhNaKVItwyY0zX5fpgIdY43rvw2L3DoUi1ZRERi7QMa1onmbmSmp2yVpWLZA+vI=
+X-Gm-Gg: ASbGncsvmMLx9Ci5FaKXGQ8mPp0BsYBNvjTcxVBsFdHw+zmFtnIJfj0bTmMu8r/Rw6f
+	sUFgZ3gYOGTxlqm+8v9pBSdnrGZjPJHFC/uYt0DicodOGaPWt2UKxA7uV7V1Dxy4GShFH/AJhCV
+	k+32+ftggofTg86I0fGq1FmO+MmS4mtjP36H6ATpD1tE9TIaaBHQtkBisOktOXTXbUhYqTwN8M8
+	smzpblBEC9ToOgoCeaern0NmcbwY5pm7Wz4WfLOCKB5NU2qn/MYDtf0rNTwMTT/LTBiwUbJAcKb
+	T0vC/xL1wadrD0IUFOhijXixWcI9LHkYdtZ5E8GxeF3d8KszPXm2x3Tbep9IEbGr
+X-Google-Smtp-Source: AGHT+IF1swuTytOZ/mOzx/aDJsTp0hYVrC347nQzODYODKZFAGNs/udBAXxCCv2VIRKBSD921Bw3yg==
+X-Received: by 2002:a05:6000:4803:b0:3a6:d191:a835 with SMTP id ffacd0b85a97d-3a6ed646453mr1182080f8f.41.1750841342692;
+        Wed, 25 Jun 2025 01:49:02 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-237d83ea243sm132652565ad.72.2025.06.25.01.48.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Jun 2025 01:49:02 -0700 (PDT)
+Date: Wed, 25 Jun 2025 10:48:45 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Marcos Paulo de Souza <mpdesouza@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
+Subject: Re: [PATCH 2/7] printk: Use consoles_suspended flag when
+ suspending/resuming all consoles
+Message-ID: <aFu37RyHZ4wYF-ZV@pathway.suse.cz>
+References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+ <20250606-printk-cleanup-part2-v1-2-f427c743dda0@suse.com>
+ <aExBo-8cVOy6GegR@pathway.suse.cz>
+ <84y0tmiidg.fsf@jogness.linutronix.de>
+ <aFpkQHwNCslbKSP6@pathway.suse.cz>
+ <84wm919z9i.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84wm919z9i.fsf@jogness.linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250624_162008_683931_62910F87 
-X-CRM114-Status: GOOD (  25.59  )
+X-CRM114-CacheID: sfid-20250625_014905_106776_94CB81AC 
+X-CRM114-Status: GOOD (  23.98  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,131 +113,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Tue 2025-06-24 13:10:25, John Ogness wrote:
+> On 2025-06-24, Petr Mladek <pmladek@suse.com> wrote:
+> >> > Variant C:
+> >> > ==========
+> >> >
+> >> > Remove even @flags parameter from console_is_usable() and read both
+> >> > values there directly.
+> >> >
+> >> > Many callers read @flags only because they call console_is_usable().
+> >> > The change would simplify the code.
+> >> >
+> >> > But there are few exceptions:
+> >> >
+> >> >    2. Another exception is __pr_flush() where console_is_usable() is
+> >> >       called twice with @use_atomic set "true" and "false".
+> >> >
+> >> >       We would want to read "con->flags" only once here. A solution
+> >> >       would be to add a parameter to check both con->write_atomic
+> >> >       and con->write_thread in a single call.
+> >> 
+> >> Or it could become a bitmask of printing types to check:
+> >> 
+> >> #define ATOMIC_PRINTING 0x1
+> >> #define NONATOMIC_PRINTING 0x2
+> >> 
+> >> and then __pr_flush() looks like:
+> >> 
+> >> if (!console_is_usable(c, flags, ATOMIC_PRINTING|NONATOMIC_PRINTING)
+> >
+> > I like this. It will help even in all other cases when one mode is needed.
+> > I mean that, for example:
+> >
+> >    console_is_usable(c, flags, ATOMIC_PRINTING)
+> >
+> > is more self-explaining than
+> >
+> >    console_is_usable(c, flags, true)
+> 
+> After I wrote that suggestion, I decided that the naming is not
+> good. There is always confusion about what "atomic printing" means. For
+> that reason the parameter was changed to "use_atomic". Basically we are
+> specifying which callback to use and not the purpose. It is a bit tricky
+> because legacy consoles do not have an atomic callback, i.e. the
+> parameter only has meaning for nbcon consoles.
+> 
+> Perhaps these macros would be more suitable:
+> 
+> #define NBCON_USE_ATOMIC 0x1
+> #define NBCON_USE_THREAD 0x2
 
-On Mon, 2025-06-23 at 06:33 +0900, Hajime Tazaki wrote:
-> This commit updates the behavior of signal handling under !MMU
-> environment. It adds the alignment code for signal frame as the frame
-> is used in userspace as-is.
->=20
-> floating point register is carefully handling upon entry/leave of
-> syscall routine so that signal handlers can read/write the contents of
-> the register.
->=20
-> It also adds the follow up routine for SIGSEGV as a signal delivery runs
-> in the same stack frame while we have to avoid endless SIGSEGV.
->=20
-> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-> ---
-> =C2=A0arch/um/include/shared/kern_util.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
-4 +
-> =C2=A0arch/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
-> =C2=A0arch/um/nommu/os-Linux/signal.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- |=C2=A0 13 ++
-> =C2=A0arch/um/nommu/trap.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 194 +++++++++++=
-+++++++++++++++
-> =C2=A0arch/x86/um/nommu/do_syscall_64.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
-=C2=A0 6 +
-> =C2=A0arch/x86/um/nommu/os-Linux/mcontext.c |=C2=A0 11 ++
-> =C2=A0arch/x86/um/shared/sysdep/mcontext.h=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0arch/x86/um/shared/sysdep/ptrace.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 =
-2 +-
-> =C2=A08 files changed, 231 insertions(+), 2 deletions(-)
-> =C2=A0create mode 100644 arch/um/nommu/trap.c
->=20
-> [SNIP]
-> diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nommu/os=
--Linux/mcontext.c
-> index c4ef877d5ea0..955e7d9f4765 100644
-> --- a/arch/x86/um/nommu/os-Linux/mcontext.c
-> +++ b/arch/x86/um/nommu/os-Linux/mcontext.c
-> @@ -6,6 +6,17 @@
-> =C2=A0#include <sysdep/mcontext.h>
-> =C2=A0#include <sysdep/syscalls.h>
-> =C2=A0
-> +static void __userspace_relay_signal(void)
-> +{
-> + /* XXX: dummy syscall */
-> + __asm__ volatile("call *%0" : : "r"(__kernel_vsyscall), "a"(39) :);
-> +}
+I personally prefer this variant.
 
-39 is NR__getpid, I assume?
+> or
+> 
+> #define NBCON_USE_WRITE_ATOMIC 0x1
+> #define NBCON_USE_WRITE_THREAD 0x2
 
-The "call *%0" looks like it is code for retpolin, I think this would
-currently just segfault.
+This one sounds more precise but it very long.
 
-> +
-> +void set_mc_userspace_relay_signal(mcontext_t *mc)
-> +{
-> + mc->gregs[REG_RIP] =3D (unsigned long) __userspace_relay_signal;
-> +}
-> +
+> or
+> 
+> #define NBCON_ATOMIC_CB 0x1
+> #define NBCON_THREAD_CB 0x2
+> 
+> or
+> 
+> #define NBCON_ATOMIC_FUNC 0x1
+> #define NBCON_THREAD_FUNC 0x2
+> 
+> Hopefully that gives Petr enough ideas that he can come up with good
+> naming. ;-)
 
-And this is really confusing me. The way I am reading it, the code
-tries to do:
-   1. Rewrite RIP to jump to __userspace_relay_signal
-   2. Trigger a getpid syscall (to do "nothing"?)
-   3. Let do_syscall_64 fire the signal from interrupt_end
+I thought about better names yesterday but I somehow did not have
+inspiration ;-) Thanks for coming with the variants.
 
-However, then that really confuses me, because:
- * If I am reading it correctly, then this approach will destroy the
-   contents of various registers (RIP, RAX and likely more)
- * This would result in an incorrect mcontext in the userspace signal
-   handler (which could be relevant if userspace is inspecting it)
- * However, worst, rt_sigreturn will eventually jump back
-   into__userspace_relay_signal, which has nothing to return to.
- * Also, relay_signal doesn't use this? What happens for a SIGFPE, how
-   is userspace interrupted immediately in that case?
-
-
-Honestly, I really think we should take a step back and swap the
-current syscall entry/exit code. That would likely also simplify
-floating point register handling, which I think is currently
-insufficient do deal with the odd special cases caused by different
-x86_64 hardware extensions.
-
-Basically, I think nommu mode should use the same general approach as
-the current SECCOMP mode. Which is to use rt_sigreturn to jump into
-userspace and let the host kernel deal with the ugly details of how to
-do that.
-
-I believe that this requires a second "userspace" sigaltstack in
-addition to the current "IRQ" sigaltstack. Then switching in between
-the two (note that the "userspace" one is also used for IRQs if those
-happen while userspace is executing).
-
-So, in principle I would think something like:
- * to jump into userspace, you would:
-    - block all signals
-    - set "userspace" sigaltstack
-    - setup mcontext for rt_sigreturn
-    - setup RSP for rt_sigreturn
-    - call rt_sigreturn syscall
- * all signal handlers can (except pure IRQs):
-    - check on which stack they are
-      -> easy to detect whether we are in kernel mode
-    - for IRQs one can probably handle them directly (and return)
-    - in user mode:
-       + store mcontext location and information needed for rt_sigreturn
-       + jump back into kernel task stack
- * kernel task handler to continue would:
-    - set sigaltstack to IRQ stack
-    - fetch register from mcontext
-    - unblock all signals
-    - handle syscall/signal in whatever way needed
-
-Now that I wrote about it, I am thinking that it might be possible to
-just use the kernel task stack for the signal stack. One would probably
-need to increase the kernel stack size a bit, but it would also mean
-that no special code is needed for "rt_sigreturn" handling. The rest
-would remain the same.
-
-Thoughts?
-
-Benjamin
-
-> [SNIP]
-
+Best Regards,
+Petr
 
