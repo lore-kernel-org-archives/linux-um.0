@@ -4,65 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 808C6C7115C
-	for <linux-um@archiver.kernel.org>; Wed, 25 Jun 2025 16:32:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1125FC7EE31
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jun 2025 17:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mu+JBFMxFcmkWvemWRejcBfCpbK0S9r03CkeNyEZeTc=; b=ygqLc6zDV686yyggbdrXRq40rx
-	1+2FNVZUB+4JgkBF6CPL4Wfb2YcbHJrcLB/qqSrozgiR/91tX+iS8EEjqZAUITliqBPp9uRZBdTc9
-	ouubo/c0//GXcQPRRxCDYrms20mYu8s/a3MdUF3OYhLTmDMezPfEHWmHgz/hF9QJLkmSjH9DFT9QF
-	5aiX2/iim3/Uyi4MptpFK7imBSmDk6Mv6vafCcrRM9BDx+HHi2igxIxPOg0f0wwwTCIkbAWEMu8vb
-	efVCLnAoDQBlyBBIADERw0Ci+DcLTWy2FKVQyrNC0sRiNTbw3zrve/CEURo6r3cd0CcOdcBRJ6daa
-	ZOHdsL1Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=aeUHbst5u6uAyR1ycfeU07wkwThxzbqj2XsMrc/HWnM=; b=K70Sx+c8WjqXDq+ELPo+Mc4o/n
+	0Ig5XGswcemnWgnams25ncC5g9RGl+dUbHSQBbtCvCQeDNTH/i3BzAV9NEbNlRkJxr+Yn13tX2/aL
+	w8gADCFaISLRuKh/iXL9Kg2E97w2XoWt4kY5HKFjzyUpm/UK/15SXJbXE0G9wNRg/gGQ/iW8o+kCT
+	XsWe6d/A2epnOKw3CFYNT9jHT1+ykSIL83ni9V5MU7dEB+Lgzr5kKYFfSq4+j1+DoDedhJME25GJr
+	emygIXKpLJ5GJg1VNfx23BuK5Oe6VJv9VcU639NWhPpQUItjh6hQ9MOG8hfpPZKbhHxA+SeYxpsPS
+	d4gHlagQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUT3E-00000009JfG-17ig;
-	Wed, 25 Jun 2025 16:32:44 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uUU34-00000009T4R-35ZG;
+	Wed, 25 Jun 2025 17:36:38 +0000
+Received: from mail-lf1-x135.google.com ([2a00:1450:4864:20::135])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUPHm-00000008dDX-1Frk
-	for linux-um@lists.infradead.org;
-	Wed, 25 Jun 2025 12:31:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=mu+JBFMxFcmkWvemWRejcBfCpbK0S9r03CkeNyEZeTc=;
-	t=1750854689; x=1752064289; b=YFdEqIEfUFVrRyS6gnWtJoLjPywmMi1AH0sBS7RYki7sAv3
-	Uqtu0kapvr9DouIqDsOoswlD/+AW0EdXkFVel/Asr6k0JFkkh0FtpH+g4smRUEBW6B395BkQefwXJ
-	6hNhCGO/IGgeg4aVuCtlCYMKLyiE8DKdW+Ouyu9imKmw8zvOClrlG2qgZW0TepbrgHoatF4TMqxRw
-	yktiMwKH5XzCQPYEtFjEYbN2uPGni6gjkCBAvKgtzC6ZMXD1yXVi1V51LkjMZQIFP7QNbp65ryDvQ
-	aVdsHhBlg/5IAOo4fYNeO+CO1ZxU8hdiSijzYyiVC3GQ6gZH4cAJ+wGV1/T05Njg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uUPHh-00000009yMk-3tw7;
-	Wed, 25 Jun 2025 14:31:26 +0200
-Message-ID: <0e5eeb22a56e92ff377fcfb0cc0e768d71ed4ae9.camel@sipsolutions.net>
-Subject: Re: [PATCH RFC] um: time: fix userspace detection during tick
- accounting
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>, 
- Richard Weinberger	 <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg	
- <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Thomas Meyer
-	 <thomas@m3y3r.de>, Anton Ivanov <aivanov@brocade.com>
-Date: Wed, 25 Jun 2025 14:31:24 +0200
-In-Reply-To: <20250617-uml-tick-timer-v1-1-01aab312f56b@linutronix.de>
-References: <20250617-uml-tick-timer-v1-1-01aab312f56b@linutronix.de>
+	id 1uUPVh-00000008fQQ-44GK;
+	Wed, 25 Jun 2025 12:45:55 +0000
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-553dceb342aso5263170e87.1;
+        Wed, 25 Jun 2025 05:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750855552; x=1751460352; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aeUHbst5u6uAyR1ycfeU07wkwThxzbqj2XsMrc/HWnM=;
+        b=iHMMLKKkZbyMNf0uO943QLtDqhfni6OdXDGA+2UtJHbaDvwVgFL5ois+rQPhQY3B2c
+         xSLfnteipooZgx0Kdsr+oOetIe/BU+CeCvA0BqWBJZQFeeLbUs/tca8qrANWioQXODVH
+         jL5alhoMAycX9ryzdZKQzs+5Pz+6mVQS/yQXDh+cEfyyYoz5mRjThPr8krp3hneVO/M2
+         sjdICbMkVN6NMp1aU5UQLmekUINe24mYYLDzMzrVT9x44HVCD+qyD99xNC4/oNj6w/QF
+         bedoL889dNFIEUnm3H5OgV0mNZvZU7t+Qf7BfAR8MB/RkEv3saXJDrGnQmTr2S9nNf3L
+         Ttng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750855552; x=1751460352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aeUHbst5u6uAyR1ycfeU07wkwThxzbqj2XsMrc/HWnM=;
+        b=unIZxBTe3pEQ0t8DyI3JBgia4MjZ/gJzbCRcqMhBU4ovfHDh3QujRE1V/R5OPpUFXO
+         aw/ktkHWSDqBxi67TjAbdecQswKS7hfHpS5pX6HJoGQ1+WHC5NpQ9kSjPFaHMYphMGMs
+         32EMuZga6GjNpMWCS+ti6YRrzgoTAaw34fSASmVLvodLZesuvNBAJF5y6wpt1l13ePzO
+         qruIHjDbYY5ZHU8ALstgV9sYtOcZ2n4nRM+wKZEvedusgeqQlBHqLRWhlfN0MgedN8OI
+         EKFBRMp772aBFWsNg4w1krVNZ//LARjmLdIfd/vxHF8RBQ33JacZ6eJ21mMX+rqPZYO0
+         Y5zA==
+X-Forwarded-Encrypted: i=1; AJvYcCWozvNBE+QmWJIuTXrLUsyq2/2xbSegscEbYfEvZmhAUDtu71G69ClzsWDJit9XXrgfzLBT2rnwpw0=@lists.infradead.org, AJvYcCWrvqh9W5RWiOWLHZBZAMKErItYkQ/yn0qxyPK619l4kr9lCT5vtALK26DkuBsnUFa0VXWmG+C/GIQYDFfWVfFI@lists.infradead.org
+X-Gm-Message-State: AOJu0YxmfjWeQWaSVXtX/igegDTF2R1BdZjiGp95rDJxxGbMqspcMW/S
+	XkHPTarHb/sNaP81P4g8v5mcTYprMFdQNNOLR8Oaagp0ADgkG31QXyQ08e8FQJtXXd91Alq+OWi
+	F3cSAUoiUVbvkYwIzj6obYhQwr6rfBXA=
+X-Gm-Gg: ASbGncu4gRKU1dc6zoywqC9Jbf9QhYETL5BAmTkfjLOsBRysbrTfNWjxAO+MFrkFEyF
+	FOPtf238/YMV35G6r8BHFx/IgJgLF3fDNluTVR47tWemvdwEBhiVKn5waQ0/TxjdCSNPL5S/ZqY
+	m03sbUAMBZ56BnKMUlkwtC54pMtmkULfdZ9TwmNrtr6Q==
+X-Google-Smtp-Source: AGHT+IGd+VQCTiJwy9G1ykD/0Nzx0GAzsfPqUCVqghBLVmwOBzPwEbsyyeyH2J2LllM1nMa0CK079KR9Ekpv1ITEkm8=
+X-Received: by 2002:a05:6512:1591:b0:553:abe6:e3e7 with SMTP id
+ 2adb3069b0e04-554fdf5cefbmr869898e87.47.1750855551832; Wed, 25 Jun 2025
+ 05:45:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20250625095224.118679-1-snovitoll@gmail.com> <20250625095224.118679-10-snovitoll@gmail.com>
+ <4d568111-9615-4fba-884a-f2ae629776fe@csgroup.eu>
+In-Reply-To: <4d568111-9615-4fba-884a-f2ae629776fe@csgroup.eu>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Date: Wed, 25 Jun 2025 17:45:34 +0500
+X-Gm-Features: Ac12FXyn774raFC9M0P_m_Yp5o7tYNYYaJPlJbUzpj4u5O7z5JIOhc_ux4m2QSg
+Message-ID: <CACzwLxgVj3YD5faPj=09Z9e4WSEe-sD7Sqn4jhaT7eiePaUUMw@mail.gmail.com>
+Subject: Re: [PATCH 9/9] kasan/powerpc: call kasan_init_generic in kasan_init
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, 
+	dvyukov@google.com, vincenzo.frascino@arm.com, catalin.marinas@arm.com, 
+	will@kernel.org, chenhuacai@kernel.org, kernel@xen0n.name, 
+	maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, hca@linux.ibm.com, 
+	gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, 
+	svens@linux.ibm.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, dave.hansen@linux.intel.com, luto@kernel.org, 
+	peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	x86@kernel.org, hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com, 
+	akpm@linux-foundation.org, guoweikang.kernel@gmail.com, geert@linux-m68k.org, 
+	rppt@kernel.org, tiwei.btw@antgroup.com, richard.weiyang@gmail.com, 
+	benjamin.berg@intel.com, kevin.brodsky@arm.com, kasan-dev@googlegroups.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250625_053130_335403_0826164E 
-X-CRM114-Status: GOOD (  24.95  )
+X-CRM114-CacheID: sfid-20250625_054554_008975_9EB1A494 
+X-CRM114-Status: UNSURE (   8.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,93 +108,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Wed, Jun 25, 2025 at 3:33=E2=80=AFPM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 25/06/2025 =C3=A0 11:52, Sabyrzhan Tasbolatov a =C3=A9crit :
+> > Call kasan_init_generic() which enables the static flag
+> > to mark generic KASAN initialized, otherwise it's an inline stub.
+> > Also prints the banner from the single place.
+>
+> What about:
+>
+> arch/powerpc/mm/kasan/init_32.c:void __init kasan_init(void)
+> arch/powerpc/mm/kasan/init_book3e_64.c:void __init kasan_init(void)
 
-On Tue, 2025-06-17 at 15:52 +0200, Thomas Wei=C3=9Fschuh wrote:
-> The cpu usage timekeeping triggered by the tick credits passed time to
-> either the kernel or the currently running userspace process.
-> On UML, tick interrupts firing while userspace is running are not marked
-> correctly so this bookkeeping is broken and always credits the idle task.
->=20
-> The rootcause is the following callchain always passing user_tick=3Dfalse
-> to account_process_tick():
->=20
-> um_timer()
-> =C2=A0 -> handle_irq_event()
-> =C2=A0=C2=A0=C2=A0 -> tick_handle_periodic()
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> tick_periodic()
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> update_process_times(user_t=
-ick=3Duser_mode(get_irq_regs()))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> account_process=
-_tick(task, user_tick=3Dfalse)
->=20
-> As a result CPUCLOCK_VIRT does not advance,
-> breaking for example signal(SIGVTALRM).
->=20
-> The issue can be reproduced easily with the selftest
-> tools/testing/selftests/timers/posix_timers.c,
-> which hangs in the ITIMER_VIRTUAL/SIGVTALRM testcase.
->=20
-> Fix up the IRQ regs by correctly setting is_user in the IRQ registers.
+Thanks, I've missed them. Will add in v2.
+I've also found out that I've missed:
+arch/arm/mm/kasan_init.c
+arch/riscv/mm/kasan_init.c
 
-So, in principle, this looks like the right thing.
-
-What I am not sure about is accounting if the userspace task is
-currently executing a syscall inside the kernel thread. The current
-code will incorrectly interrupt the userspace process in that case and
-you are now adding CPU time accounting on top of the same logic that is
-already not quite right.
-
-Said differently, need to think about it a bit more. I suspect we might
-need to set/clear a flag in the userspace function for this.
-
-Benjamin
-
->=20
-> Fixes: 2eb5f31bc4ea ("um: Switch clocksource to hrtimers")
-> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
-> ---
-> I'm not familiar with UML, so this is probably not the right fix.
-> Feel free to treat it as a bugreport instead.
-> ---
-> =C2=A0arch/um/kernel/time.c | 7 ++++++-
-> =C2=A01 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-> index ae0fa2173778f43273fd0550f77fc99bbb1c3e3a..a6c17302403aeb3170a110411=
-7c4e713e3afdfe0 100644
-> --- a/arch/um/kernel/time.c
-> +++ b/arch/um/kernel/time.c
-> @@ -856,6 +856,7 @@ static struct clock_event_device timer_clockevent =3D=
- {
-> =C2=A0
-> =C2=A0static irqreturn_t um_timer(int irq, void *dev)
-> =C2=A0{
-> +	struct pt_regs *regs;
-> =C2=A0	/*
-> =C2=A0	 * Interrupt the (possibly) running userspace process, technically=
- this
-> =C2=A0	 * should only happen if userspace is currently executing.
-> @@ -864,9 +865,13 @@ static irqreturn_t um_timer(int irq, void *dev)
-> =C2=A0	 */
-> =C2=A0	if (time_travel_mode !=3D TT_MODE_INFCPU &&
-> =C2=A0	=C2=A0=C2=A0=C2=A0 time_travel_mode !=3D TT_MODE_EXTERNAL &&
-> -	=C2=A0=C2=A0=C2=A0 get_current()->mm)
-> +	=C2=A0=C2=A0=C2=A0 get_current()->mm) {
-> =C2=A0		os_alarm_process(get_current()->mm->context.id.pid);
-> =C2=A0
-> +		regs =3D get_irq_regs();
-> +		regs->regs.is_user =3D true;
-> +	}
-> +
-> =C2=A0	(*timer_clockevent.event_handler)(&timer_clockevent);
-> =C2=A0
-> =C2=A0	return IRQ_HANDLED;
->=20
-> ---
-> base-commit: 9afe652958c3ee88f24df1e4a97f298afce89407
-> change-id: 20250617-uml-tick-timer-82ea89495cc6
->=20
-> Best regards,
-
+>
+> Christophe
+>
 
