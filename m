@@ -4,93 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3DDC77B7F
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 03:48:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01DDCC7EE33
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 09:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=; b=KflqIYvSVOszDWE+6FiFCXuBA2
-	ei1XbGW+poJM0LjYlpuxsBhJETigawjYYBpW9aNy5olg8hCCr6lyG0wdPyIgi0Jkx+lp8ngZWVhcd
-	LceT34Z7zCkyIXxDF90Y9La+0gSFNir5IBHCTjWgkKMsp5gPpr09mRds1JHrJXvVu4tN5QIJ9VXIz
-	gV6Xodc3QG/mbfr5elKA6laA8flrqDXyJTSNONt7PLdzBGbhhhHFrJ25Rsu8A4ndwTdaEwyIhfBGr
-	xWpXK2OuGDQejNrhorEhLpPWMRJSZRRivp8AAyOEYojE2wNlx8cdMAi4JN5HhRHmdRpcRV5JhUas0
-	HmSbK5RQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=iuFmqpRengejqXGMt8z0krXQLsPU94kcoziX8PACH+I=; b=XVgNLfo3ZzwMpL+g7OOOGLPTeX
+	CrKaI+SY/B+KqENmvNAL0Tg2ED/lkol23eJi+wix2ft3JRWEU5V8mCM/Zhx2Dy+yAJofbKDhK7UpN
+	uK/rpfatTG5KyLOoGsyL/t5PCbNkzZzjAIUMLRg5SdQOLKeRiDNR2P1MvKmgRShueXvckUqfcvYRw
+	LPdg9E3p/RI7f8v/AX5XPIAaDHt7YX4865QbrrMaacrko+xlcAMqcqaIClDzUZ4StkxeG9mcflEsg
+	4BvhN1KoQQbgPCYI8krY+1rItmrLsJ9Jgww6IrcOiFIsFayxmjkjKhy8tghYgQvltkYj5WfFwV9qU
+	acbZ7l3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUdbE-0000000AXzl-3y7S;
-	Thu, 26 Jun 2025 03:48:32 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1uUjGB-0000000BCRW-1xyj;
+	Thu, 26 Jun 2025 09:51:11 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUdbB-0000000AXzO-3gRO
-	for linux-um@lists.infradead.org;
-	Thu, 26 Jun 2025 03:48:31 +0000
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-60c51860bf5so774665a12.1
-        for <linux-um@lists.infradead.org>; Wed, 25 Jun 2025 20:48:29 -0700 (PDT)
+	id 1uUix2-0000000B90C-47a1;
+	Thu, 26 Jun 2025 09:31:26 +0000
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-553644b8f56so739418e87.1;
+        Thu, 26 Jun 2025 02:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1750909708; x=1751514508; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=;
-        b=TNcRxNdKDBkAC+F8T3QxLOpxLdMmvFo3d/ju4ITdqAHSmJy8ksGcJy0/4h2A4ws8Mf
-         jv5ISxb60PsRpFNo94wsDm4KfnpHJzkIzDo+gweqYzW1DpjC0EkuenDod0Akjf3TVUBH
-         5DKEYpTZa1viSXIjdR8/51lcXYL8+Smmg7Hxc=
+        d=gmail.com; s=20230601; t=1750930283; x=1751535083; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iuFmqpRengejqXGMt8z0krXQLsPU94kcoziX8PACH+I=;
+        b=EqfQEEeRj4r4bAulrFQFJ8jL/OBLJWgaPxF9ukgjkkmr3hAXhMghw1oRxgVLCglxTQ
+         +BlOtn/w4lFBBQDwHfn0xRYK1iL1InBf5AtQfRCh5Qm1nT7AB4UNP/CPeOrcxj8eok9m
+         T3FnL1aMIOuET8CE+nov3915oxAeAJ0M0JGhUiYZIDBHGdvXHUlSUZ+2oREyu9Ey8pDz
+         4WiwvwgLaAgZDBPGQjj/aR63il25J0zPeuywqDnGZyUlps5Wo2csEgjvCIkabHQ/6AFD
+         4xXOfF3092KGcAh1sjyR1NOl1YQJbVp5Fqppo/3LT0luYECChcMBjGqzpBZrYZOXubyc
+         1/EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750909708; x=1751514508;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=;
-        b=WUSQlFXif0v/JHyvNGFyBFRCo5ISTY2CPvYOn1zf2SOme1u0JWd2FODmU0g2wK4fZN
-         u+P/fQuUtdAUk0dAFn9OKVtcDlOhlLfcMNLdU1Mms3TIiJAJv1YajRDpXw1dlYYv4Ezc
-         3E/SRqj3kKtt8SrOtJdSzkXGdIw3gbmpfthefEbciXKOnw2s6fmniLtP50WTPFt5LRIM
-         0hbEw96aQlQttk+dYLoHuCpnGxX+Vy8SbPJC+u82IbP/WK6fySEJzNvss39Ibp1x2ras
-         J2HZNtx/mSZUS9BUOT8GWyD5K8Vj1mUE/R4wincTHvr5Nhm15hXjshnHu5O0Yi+I6ohJ
-         DLmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVneSZChc+f2mEB4tDSP7rTiTU6nOnj4pEK5naYnLUO34fQaDEuikSjiL9LwF7hsuRgSvgQ6ZO5mA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx0N0Ad6j5Kl/CxAH+0Od+HEhr1AZf1fMnnedYuHVx4HN1t+YJ8
-	DU0NaUn8c1ILGX66WZUGxLniBUudyPFVMQCRmF8ysmTZOe3Sjbarg+q0Ejtqw++PyxlqOBICLmd
-	S3IB6xO0=
-X-Gm-Gg: ASbGncsobd2z5d+KaawEMiGYn6lcNNK8sjogAM9nuUxSC+53mSSmRPdOdUuZDzfX+aX
-	P5Fj85IdRAKRIIxLLTPdbcdSOyWGez92AyBezHtxm46WvdUxQNbkIC+80KKdw/EO/yMoVYjQF3g
-	Ax/+2+uUqJt7A8fKJ6dXST/Lll2Kdo+K77dJfKgLuLkG8J11FU4Fcu/tvzKXkfZXJ4dq2Vssgkm
-	WBc0TrnHqwtWICmIgoy0vOUMRXQbk5j0Cgn0Tdb2sQ8fk+zF2IpwEFI7FTW5Ht0zbCvMStHE6iP
-	MovJDR1S+WK4DUmzeSz/gDv9CLHeUoWXPLS5C4kAhInxVMaKdqQeuLewQsfvaKUuMtxcKRPqgz2
-	ev73xSAdZqj7g4uKiuHVdjIeSXNCs2tGrRNZxT9laJLP60sc=
-X-Google-Smtp-Source: AGHT+IGkCiMUiyNv8DVA5wCu79PogK2eONV17OLm6Sd/gwVBgrS+XwUgkvFkRCqCc6iRa2rOKTkfew==
-X-Received: by 2002:a05:6402:40c3:b0:607:f558:2894 with SMTP id 4fb4d7f45d1cf-60c661268fcmr2033058a12.3.1750909708142;
-        Wed, 25 Jun 2025 20:48:28 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c2f196ab3sm3260961a12.3.2025.06.25.20.48.25
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Jun 2025 20:48:27 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-60c5b8ee2d9so1070629a12.2
-        for <linux-um@lists.infradead.org>; Wed, 25 Jun 2025 20:48:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWQkypoATogJxQ4f6LbtdW6bccrsPdFQnWwiA5pIe9LBh4Gzh1e/iCJEJROkH0opiFOHYiEZ1hyIQ==@lists.infradead.org
-X-Received: by 2002:a05:6402:27cb:b0:60c:461e:7199 with SMTP id
- 4fb4d7f45d1cf-60c66149e7amr1836785a12.9.1750909705477; Wed, 25 Jun 2025
- 20:48:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1750930283; x=1751535083;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iuFmqpRengejqXGMt8z0krXQLsPU94kcoziX8PACH+I=;
+        b=FnbVz29GKpk9AZK6dnP6dHTOCjrYRHg/phjbqtaGLbEALSSROxYJaEksGzWNiuU+ki
+         IEaX3k/3LiqBMch79/pxibpuQO+XhYQ9IuOAKovosoeaIa/JQXfO7ov5gQBrG2+Xdhme
+         hqv/YB3Mb8Xh3PxLWEDrGkf7qr9gysIiMbFzAQ3uROV0DwkpZGLPDjsFXyMZtgv21VcO
+         Swp/HjhnqxVUhKdZu+JcASCrwnDz9cWRGVXN/qyko8+wRqkfxVosMYZlE+icFT1YOphF
+         SoMFHJgqsvQsnWL6gkWqMoGyzs+hPplYdOqL5mvOturorC+Ib7VpWM9IBY4lAWOp/Thl
+         4aNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2AQFBFDz0zLwfAvDvk0qv3QtYkJ8XCZT9HxSWrKSJNMJhGHq4xsKh/Jtbn00cLtAyTUcP+uk0qMg=@lists.infradead.org, AJvYcCXnuVorKr0u9gg/7ZPqzQCcVMrUlXqF3+yzWbv8+XYWINXx65vFRKA6LYFqZsMS9cz4Xn0q3ca2uy4yfEYbyzop@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz3je+mu4SshZ482VChINX4vKVl8FORpVWm6uPnVAKscMpsQ6H4
+	gAmoylmVKEF8wy+f9b2g2w12dJcymi+rCHkaLi9YyMs9dXEK2beMN1sJKVQoh00qKYLoZs3yiY4
+	p+nBzz8DztVyU/vlRNwe7q6Z6xsSWcjk=
+X-Gm-Gg: ASbGncuHoNvAqCy9yVTszDRKWmrr0VnPX3QFUEz040NNbuKLogB3QuCdwvsKuMQgCyN
+	sQJQ13yiB2+VTgrJJIqtCnJjhdO14XbQ0lxZ95WcPfzBGIiRsTi3S5uQWv8NYHPCYmfG+0+c9B8
+	8DSccHFs/FsuChoR2UA3rB6dN5HStGst6NT7WAS7Lv72v5fSQpLsWY
+X-Google-Smtp-Source: AGHT+IHKD9vv7E6n80MsMeNjpJwBWGKsDmTjk3A0J3+cAywyuJ59mQfEiaL2YVTpTIc2tcdraTY+Dh5qWDg83RmXaIY=
+X-Received: by 2002:a05:6512:1150:b0:553:36b7:7b14 with SMTP id
+ 2adb3069b0e04-554fdf96ec2mr2102615e87.37.1750930282937; Thu, 26 Jun 2025
+ 02:31:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250625121529.42911-3-johannes@sipsolutions.net>
- <CAHk-=wjTCAzaw4AXXpxcYc7v7ZjAeyaOOJw7FWXO+gV7v7Cp0g@mail.gmail.com> <0d630dec-41fe-4968-8d6a-7faae8a554a1@antgroup.com>
-In-Reply-To: <0d630dec-41fe-4968-8d6a-7faae8a554a1@antgroup.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 25 Jun 2025 20:48:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh=_ZmpYtCx11wqsGGdrZRHsPorTzpzh2-QccT8PGKW1w@mail.gmail.com>
-X-Gm-Features: Ac12FXycbCEItBxGZBZHR-kJgJKAj9PUK2Osl5wq-e9vxN7XlQjqQ2Ty7F-dNLs
-Message-ID: <CAHk-=wh=_ZmpYtCx11wqsGGdrZRHsPorTzpzh2-QccT8PGKW1w@mail.gmail.com>
-Subject: Re: [GIT PULL] uml-for-6.16-rc4
-To: Tiwei Bie <tiwei.btw@antgroup.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org, 
-	linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+References: <20250625095224.118679-1-snovitoll@gmail.com> <20250625095224.118679-2-snovitoll@gmail.com>
+ <db30beb6-a331-46b7-92a3-1ee7782e317a@csgroup.eu>
+In-Reply-To: <db30beb6-a331-46b7-92a3-1ee7782e317a@csgroup.eu>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Date: Thu, 26 Jun 2025 14:31:05 +0500
+X-Gm-Features: Ac12FXyxTyp0b2hD3uhdVzbeUTYpXnyKRANJYa2mQoNch15i1MQX1xBLZECmC3k
+Message-ID: <CACzwLxj3KWdy-mBu-te1OFf2FZ8eTp5CieYswF5NVY4qPWD93Q@mail.gmail.com>
+Subject: Re: [PATCH 1/9] kasan: unify static kasan_flag_enabled across modes
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, 
+	dvyukov@google.com, vincenzo.frascino@arm.com, catalin.marinas@arm.com, 
+	will@kernel.org, chenhuacai@kernel.org, kernel@xen0n.name, 
+	maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, hca@linux.ibm.com, 
+	gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, 
+	svens@linux.ibm.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, dave.hansen@linux.intel.com, luto@kernel.org, 
+	peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	x86@kernel.org, hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com, 
+	akpm@linux-foundation.org, guoweikang.kernel@gmail.com, geert@linux-m68k.org, 
+	rppt@kernel.org, tiwei.btw@antgroup.com, richard.weiyang@gmail.com, 
+	benjamin.berg@intel.com, kevin.brodsky@arm.com, kasan-dev@googlegroups.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250625_204829_943350_0F1BC035 
-X-CRM114-Status: GOOD (  12.11  )
+X-CRM114-CacheID: sfid-20250626_023125_019627_7C6630D8 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,26 +107,89 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 25 Jun 2025 at 19:44, Tiwei Bie <tiwei.btw@antgroup.com> wrote:
+On Wed, Jun 25, 2025 at 3:35=E2=80=AFPM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> The behavior of gcc and clang differs. Clang's behavior appears to be
-> related to the volatile qualifier in arch_spinlock_t:
+>
+>
+> Le 25/06/2025 =C3=A0 11:52, Sabyrzhan Tasbolatov a =C3=A9crit :
+> > Historically the fast-path static key `kasan_flag_enabled` existed
+> > only for `CONFIG_KASAN_HW_TAGS`. Generic and SW_TAGS either relied on
+> > `kasan_arch_is_ready()` or evaluated KASAN checks unconditionally.
+> > As a result every architecture had to toggle a private flag
+> > in its `kasan_init()`.
+> >
+> > This patch turns the flag into a single global runtime predicate that
+> > is built for every `CONFIG_KASAN` mode and adds a helper that flips
+> > the key once KASAN is ready.
+>
+> Shouldn't kasan_init_generic() also perform the following line to reduce
+> even more code duplication between architectures ?
+>
+>         init_task.kasan_depth =3D 0;
 
-Ahh. That kind of makes sense.
+I've tried to introduce a new function kasan_mark_ready() to gather
+all arch duplicated code in one place:
 
-At the same time, I think clang is being stupid here. Yes, it makes
-sense to treat volatile specially in this way - just not for an
-initializer.
+In mm/kasan/common.c:
 
-I realize that initializers can be made to be their own data
-structures in modern C (ie taking the address of an initializer and
-using the initializer itself as an argument to a function call, for
-example), but when an initializer is used to set the value of a
-variable, the only real thing there is that variable.
+void __init kasan_mark_ready(void)
+{
+        /* Enable error reporting */
+        init_task.kasan_depth =3D 0;
+        /* Mark KASAN as ready */
+        static_branch_enable(&kasan_flag_enabled);
+}
 
-Oh well. The patch certainly looks fine and I obviously already merged
-the pull request. It does make me go "I wonder how many other places
-clang just generates stupid code due to this".
+So we could've called it
+in mm/kasan/generic.c:
+void __init kasan_init_generic(void)
+{
+        kasan_mark_ready();
+        pr_info("KernelAddressSanitizer initialized (generic)\n");
+}
 
-            Linus
+in mm/kasan/sw_tags.c:
+void __init kasan_init_sw_tags(void)
+{
+...
+        kasan_mark_ready();
+        pr_info("KernelAddressSanitizer initialized ..");
+}
+
+in mm/kasan/hw_tags.c:
+void __init kasan_init_hw_tags(void)
+{
+...
+        kasan_mark_ready();
+        pr_info("KernelAddressSanitizer initialized ..");
+}
+
+But it works only for CONFIG_KASAN_GENERIC mode,
+when arch code calls kasan_init(), for example, arm64:
+
+void __init kasan_init(void)
+{
+        kasan_init_shadow();
+        kasan_init_generic();
+}
+
+And for HW_TAGS, SW_TAGS it won't work.
+Fails during compiling:
+mm/kasan/common.c:45:12: error: no member named 'kasan_depth' in
+'struct task_struct'
+   45 |         init_task.kasan_depth =3D 0;
+
+because kasan_init_sw_tags(), kasan_init_hw_tags() are called
+once on CPU boot. For arm64, where these KASAN modes are supported,
+both functions are called in smp_prepare_boot_cpu().
+
+So I guess, every arch kasan_init() has to set in kasan_init()
+       init_task.kasan_depth =3D 0;
+to enable error messages before switching KASAN readiness
+via enabling kasan_flag_enabled key.
+
+>
+> Christophe
+>
 
