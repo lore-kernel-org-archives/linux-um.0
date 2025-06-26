@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D4DDC7EE31
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 16:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6008DC7EE31
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 16:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Nxtugr6OI+iAiBoQ5DVdScoZ4wigsSWWp7UsuEUnh5g=; b=XwRBv0vscg8ETxnl5plVvrG57A
-	BLPD3DxNfWG/fg7AGgFw/kQ7dm59Uwkg+N1qm7Z+IFFufPMkngJbTdNJ43dvBhNSEiX8XdS/jKB4Q
-	gffRmA9DTFfrJLHpU7HHUVmb3xsJjKvrGb3wYZ4YKgG34LytTFxEuLMVlgSC9LuxzNpiO1IpnLa/Y
-	3SwP8kofooCHiJ8L85g4Q93L4QZrZl9/bmA4UQytZOqDG3ppWUrKwJqlhUj/kvEEXjUntCbAhoHfl
-	bK9FLwk7uKAoECDG78eufeCLiNpUSO0WoT3kA9ADTDLzNCRSWjl1lRMOc3VEyBrQD3odtO+5UJlYr
-	A7YP8UfA==;
+	bh=dIODlzXqnC6bR1NnIlD5Ra9HGYOoS6BNr32H/5XQfhE=; b=OISXiaTepvX77PoD0AGAplZ5K7
+	Nc8NHB6o8nxCDrVfghNJeobzznkrAqkrpMxkWxTosJYhdN8xNYAfP7QZINmvYua863quen2Awfju6
+	8ZhjOK25JzYGCloXS57SrkOI8IlgJcZAOJcne8xa3w5nEVeZqvUmAACQmscQxPlDt9oup1o6AZzeH
+	nVBy1Wup9ngtaDzN9A+9RrIOCB8V2QCpnb0N9D/biFq0HNieAT+mAdre1QNbsccirSFvVDGgQFhcp
+	RJJoMM+TNGAxWJk63Jwik6GPirl8E5nfoNeAQCX3NMIJtFk8xbqemlhqHK3DbIaSpmLZz7f7fcNIR
+	Nb+4wMLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUpKk-0000000CFMU-0NQV;
-	Thu, 26 Jun 2025 16:20:18 +0000
-Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
+	id 1uUpKv-0000000CFT4-0coS;
+	Thu, 26 Jun 2025 16:20:29 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUoaW-0000000C82E-0Yfx;
-	Thu, 26 Jun 2025 15:32:33 +0000
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-553cf020383so1233114e87.2;
-        Thu, 26 Jun 2025 08:32:31 -0700 (PDT)
+	id 1uUoac-0000000C87O-3BrB;
+	Thu, 26 Jun 2025 15:32:40 +0000
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-553b16a0e38so1245549e87.1;
+        Thu, 26 Jun 2025 08:32:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750951950; x=1751556750; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1750951957; x=1751556757; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nxtugr6OI+iAiBoQ5DVdScoZ4wigsSWWp7UsuEUnh5g=;
-        b=mwVX0x7i3jlVJf+/ZC0EYuM6eTy2so09gHW3rSflGlpN+OnWrRzl6y5HQSGDZgZ223
-         PDdwe2khT/DvM4IcaDGPIJjuMExfot0g45MTE4aNZR49Xv1IJr8z5/heTJIm9eZyfbnW
-         jwv4LpKB27ZrXgAUVd6uPlU7oYrkJoXiDmo/cIRMxYy+P8zFV0K57uoMNBV/tgXkKt80
-         daNsV/3cftH6LieV6fv9ecJ2PQI9ekrbuG71fPGZScsjNJLXti+Uae2/VQtca+Sh/q+1
-         uBTYSCLRUSGnP2E6FvQgXtrrE7ucCULv4hX7R4kd5bb/lxDDnwiZnRH5C/JUDext6AJH
-         wSXQ==
+        bh=dIODlzXqnC6bR1NnIlD5Ra9HGYOoS6BNr32H/5XQfhE=;
+        b=mohvYyh4ZU39gAdzH9QNjl+ABxliAt/KGXLB+4g0IggURYFDeh7FvKfaUtSUC9Ve0u
+         4Zp7ZqWKDz16/FM2byWJSGyz0jRgZ0B7sGti6CvoqGsdqAylYW8wF84HR5tTdGgf3B4M
+         uIyxQl5754rM9i9AbehDPj95dGk7t32ww1Xzqz1zvuveM4HW4SFLLEBkSe40nuCBZ+Oj
+         Z+8Xm3OVHsz1neabFM1q1f2c1A/naybS7akXFVg2SAbPV941PCITGPfgC9YwCqGVX2mK
+         jScUI9Y4lyJ9QQ5XTh4q7CSUUjwJizJHx8fTNdZa2v0dJp2SDa4MGPLGsQM6o5bETBXe
+         DAsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750951950; x=1751556750;
+        d=1e100.net; s=20230601; t=1750951957; x=1751556757;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nxtugr6OI+iAiBoQ5DVdScoZ4wigsSWWp7UsuEUnh5g=;
-        b=Y9YDGHX6/ZkyO6MyfGqiL8T1Q+UqtEOPiMy/6EpweU98AQ7jEh90wuqf9PrfzQ+bHn
-         39UvJP9IKf/SaUhP5O+des79ilRBZVaoYNcCiI5vXKlZ2LPfxSibvl2DNfNao6DyS0Cl
-         DjDbhBwpzlQITYUxNpavfcAtmmX3JeNsZCb3iS/aFiXBFMIVQWvY2pbr/3sgOFl9C3Gk
-         ggAZqnAwXsNo8a8iWFS8D4yx1Q9nQSYgu1f7oLkZZp+ZPCXzkBhfDlKrozurOuKd3nBw
-         RTwWhNLSmWWxVqafouC3NhoDGW1n6oPDu8qEeW2wxdvOMtKB+IWnQvjHOXsYXa95IIZi
-         c3DA==
-X-Forwarded-Encrypted: i=1; AJvYcCV43EeWGPYXXFxjhsqDjP9D3QdrSMT8HFfi00XfVkOm79oqXGj6fx51CHuTHJ6rluO2tOhqtV6LWLY=@lists.infradead.org, AJvYcCVZW7QZm2RP713yDnXu0dGIB2Fn3Q0j37NbkuLkC676yseQs6PrVdHiWQdQ7C4799mMzk4E4eRhK1QdaK8=@lists.infradead.org, AJvYcCWmceqMiAVjsPagL7Px7GXdQImFq1LBYtq0ttXtms0XZa5VVzAQG9pzKvudMd35pq/Eksr8rgG6lF9UNoabjXlt@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx519jJZkjBl5Z3qIIBPwy7EWtIZOehO/70Yirg133G++r8b6en
-	4/Mc2OOpWANQ+urWm4rwPnmjm4s9AfgfzT125cS2UXPGecG8a2KADglf
-X-Gm-Gg: ASbGncvdwlkz67vlmVllrD6HmnHKlJdRUnJ+nOTSUogoSD0J6Z/eWFm9vbvJI7Hl/MC
-	Ats6fh7CnEBqCcHBdodouhibgeTFyzRRpg1kdPGx90bm+bXNMTNzvGCBUaQGRLYM0fYOs/yREmk
-	V+gfmL9EXubKpj+IGMhKJR5asuNCx+QFSB9YhynbFIwInxtGCq6iC8BvVNjW2x8ytiEY4fAa/4b
-	F/1j9bO7drYLFq2gZ4po3PNfmBbH4s2BPy7KB6YNPcCcimwWwEWOVKwNGO0AUgf61mu9/EbY9nr
-	YaTm7LgwwMx9Xpm+Aq9Q9S2T1znUtZJ13aMY83nlwtoDTH7kBOGmz5yJeRULzELVmcNrjt4c9ph
-	Wmf2ZmppEqFWpkHdIivQJiGsKXShSzA==
-X-Google-Smtp-Source: AGHT+IGGt6yu06Z/Fb2uJjOxPY5fFcWkWfnfjRjUezmHyuS+t/QogNEJZXQVSUvZn1n0IiNOe7m/dw==
-X-Received: by 2002:a05:6512:1193:b0:553:ccef:e31f with SMTP id 2adb3069b0e04-5550b4749c2mr141485e87.13.1750951949806;
-        Thu, 26 Jun 2025 08:32:29 -0700 (PDT)
+        bh=dIODlzXqnC6bR1NnIlD5Ra9HGYOoS6BNr32H/5XQfhE=;
+        b=oDXlBb3lW3OD/8ChTLpAMk7OWIlQ1aXEhar7O/J55d1ed+JG3K97l8Ne3ufNHrs5zE
+         VDOaVDzZ03H+++JJf1FIPgnZEaNvxcD9xjD+CTKOZ67IjNGsgBWSnz/zKCgqAg0GzGDH
+         QM+9lDBgWFb7/hUekv0Fk29VTlnT4Iq1kUFKaztKN4pKm+5VPitjRk1J1qHMSfcTeOFO
+         cwyuLWNlYTeX7R/cpZYe9yH7IHnrya3x63ora8J85cO7rlpF1yQ/GmDkATnKkcNq3SUZ
+         AuAXCpF4dlPcujmnUn3gnxb3TlZ7J29mNlvm+mjiMl5U1Q6zrChKYjB7TRw2D0Y66u0B
+         2BFg==
+X-Forwarded-Encrypted: i=1; AJvYcCUstmGvSjESt/K9uYrx7gCioDokyA1wPGSrUm29f+Dabm0teL3By8sHfk+6jLc98SyB7iE9GykDlQR7wN+g/ZuR@lists.infradead.org, AJvYcCVrLUoPS+SMHIp2/jc624MqORGQJ+O51zaXWBXvP/KTgDCQnfWboVlycbAdE2qW4ZqwFDjq3gdFyII=@lists.infradead.org, AJvYcCX2ftl9uUHzFismlJXFiWjq77fLkAgLEsbryKux+moPP1gctOg1w2Vk7oYeraibMcUIXSgaAu8PEXiRj6Q=@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzi/2hs8UObWsdCCxT4zyYYoTvZNQsG/9OgQNb+kr3cb6teacPG
+	5EkwX3hfThLfda3S67B6YG+r8blB4UbWWeSFRE/JjxncMaRHxzV/qucJ
+X-Gm-Gg: ASbGncs1cmHE+I9QNB/2iNCQpZVxds4tC+RcVx2oWtUxT5djWoancob8ipL01F6yPjz
+	g6iMMBz60uyHGHHZ572fXpNpYZwGzS/CVmT9gLAqBRdbaQs4YAJJTae+qCJeC6tEWiK8f1ogfX3
+	H5whZnFLNGWXl2nKkj7UlrG4Smsl9BdpyO+7x6bAUzqpeIuI8ChDCSmVt2auku+5VyTKu9ClQsV
+	ab/ACJFlTcmFxT2GTur658kt4qT7DBJGvqUmhLangSur5XM8cFV5IWyEKJTCagv+FLoDsaXrapN
+	6p4Xv4FRU4v0bCt7uhXhQIUG6JiC/hCEjD8RTGr37PqDBBuVCebYnl8osb+xsAC6NVtTjtfJ7v5
+	0m9UlM0WuWq6qHi2O3uqVObmZKCRqjg==
+X-Google-Smtp-Source: AGHT+IGOOgR6U3IUglZM4Cl6ycrypcWsOKlsDtFSbRY/qbGVasvQKBWsuTTYRYjSxtgLuzO8PX+T5Q==
+X-Received: by 2002:a05:6512:b8a:b0:553:a490:fee0 with SMTP id 2adb3069b0e04-554fdcf457bmr2652845e87.10.1750951956874;
+        Thu, 26 Jun 2025 08:32:36 -0700 (PDT)
 Received: from localhost.localdomain (2.135.54.165.dynamic.telecom.kz. [2.135.54.165])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5550b2ce1fasm42792e87.174.2025.06.26.08.32.23
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5550b2ce1fasm42792e87.174.2025.06.26.08.32.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Jun 2025 08:32:29 -0700 (PDT)
+        Thu, 26 Jun 2025 08:32:36 -0700 (PDT)
 From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 To: ryabinin.a.a@gmail.com,
 	glider@google.com,
@@ -129,17 +129,17 @@ Cc: arnd@arndb.de,
 	linux-mm@kvack.org,
 	llvm@lists.linux.dev,
 	snovitoll@gmail.com
-Subject: [PATCH v2 04/11] kasan/xtensa: call kasan_init_generic in kasan_init
-Date: Thu, 26 Jun 2025 20:31:40 +0500
-Message-Id: <20250626153147.145312-5-snovitoll@gmail.com>
+Subject: [PATCH v2 05/11] kasan/loongarch: call kasan_init_generic in kasan_init
+Date: Thu, 26 Jun 2025 20:31:41 +0500
+Message-Id: <20250626153147.145312-6-snovitoll@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250626153147.145312-1-snovitoll@gmail.com>
 References: <20250626153147.145312-1-snovitoll@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250626_083232_189925_5D6A61EE 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20250626_083238_795149_F37DDF1D 
+X-CRM114-Status: GOOD (  12.52  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,26 +157,81 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 Call kasan_init_generic() which enables the static flag
 to mark generic KASAN initialized, otherwise it's an inline stub.
 
-Note that arch/xtensa still uses "current" instead of "init_task" pointer
-in `current->kasan_depth = 0;` to enable error messages. I haven't changed
-this because I can't test the change.
+Replace `kasan_arch_is_ready` with `kasan_enabled`.
+Delete the flag `kasan_early_stage` in favor of the global static key
+enabled via kasan_enabled().
+
+printk banner is printed earlier right where `kasan_early_stage`
+was flipped, just to keep the same flow.
+
+Note that `init_task.kasan_depth = 0;` is called after
+`kasan_init_generic()`, which is different than in other arch
+`kasan_init()`. I've left this unchanged as I can't test it.
+Defer to loongarch maintainers.
 
 Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218315
 Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
- arch/xtensa/mm/kasan_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/loongarch/include/asm/kasan.h | 7 -------
+ arch/loongarch/mm/kasan_init.c     | 7 ++-----
+ 2 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/arch/xtensa/mm/kasan_init.c b/arch/xtensa/mm/kasan_init.c
-index f39c4d83173..0524b9ed5e6 100644
---- a/arch/xtensa/mm/kasan_init.c
-+++ b/arch/xtensa/mm/kasan_init.c
-@@ -94,5 +94,5 @@ void __init kasan_init(void)
+diff --git a/arch/loongarch/include/asm/kasan.h b/arch/loongarch/include/asm/kasan.h
+index 7f52bd31b9d..b0b74871257 100644
+--- a/arch/loongarch/include/asm/kasan.h
++++ b/arch/loongarch/include/asm/kasan.h
+@@ -66,7 +66,6 @@
+ #define XKPRANGE_WC_SHADOW_OFFSET	(KASAN_SHADOW_START + XKPRANGE_WC_KASAN_OFFSET)
+ #define XKVRANGE_VC_SHADOW_OFFSET	(KASAN_SHADOW_START + XKVRANGE_VC_KASAN_OFFSET)
  
- 	/* At this point kasan is fully initialized. Enable error messages. */
- 	current->kasan_depth = 0;
--	pr_info("KernelAddressSanitizer initialized\n");
+-extern bool kasan_early_stage;
+ extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
+ 
+ #define kasan_mem_to_shadow kasan_mem_to_shadow
+@@ -75,12 +74,6 @@ void *kasan_mem_to_shadow(const void *addr);
+ #define kasan_shadow_to_mem kasan_shadow_to_mem
+ const void *kasan_shadow_to_mem(const void *shadow_addr);
+ 
+-#define kasan_arch_is_ready kasan_arch_is_ready
+-static __always_inline bool kasan_arch_is_ready(void)
+-{
+-	return !kasan_early_stage;
+-}
+-
+ #define addr_has_metadata addr_has_metadata
+ static __always_inline bool addr_has_metadata(const void *addr)
+ {
+diff --git a/arch/loongarch/mm/kasan_init.c b/arch/loongarch/mm/kasan_init.c
+index d2681272d8f..cf8315f9119 100644
+--- a/arch/loongarch/mm/kasan_init.c
++++ b/arch/loongarch/mm/kasan_init.c
+@@ -40,11 +40,9 @@ static pgd_t kasan_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+ #define __pte_none(early, pte) (early ? pte_none(pte) : \
+ ((pte_val(pte) & _PFN_MASK) == (unsigned long)__pa(kasan_early_shadow_page)))
+ 
+-bool kasan_early_stage = true;
+-
+ void *kasan_mem_to_shadow(const void *addr)
+ {
+-	if (!kasan_arch_is_ready()) {
++	if (!kasan_enabled()) {
+ 		return (void *)(kasan_early_shadow_page);
+ 	} else {
+ 		unsigned long maddr = (unsigned long)addr;
+@@ -298,7 +296,7 @@ void __init kasan_init(void)
+ 	kasan_populate_early_shadow(kasan_mem_to_shadow((void *)VMALLOC_START),
+ 					kasan_mem_to_shadow((void *)KFENCE_AREA_END));
+ 
+-	kasan_early_stage = false;
 +	kasan_init_generic();
+ 
+ 	/* Populate the linear mapping */
+ 	for_each_mem_range(i, &pa_start, &pa_end) {
+@@ -329,5 +327,4 @@ void __init kasan_init(void)
+ 
+ 	/* At this point kasan is fully initialized. Enable error messages */
+ 	init_task.kasan_depth = 0;
+-	pr_info("KernelAddressSanitizer initialized.\n");
  }
 -- 
 2.34.1
