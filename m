@@ -4,57 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23DE9C7EE2A
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 03:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3DDC77B7F
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 03:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7UPnXPOsKjZ5D5zwf0F2OFekl8t3GTKb3x0lbpqe5PQ=; b=PZEbOsAAf5odyuXjqI/3oppZ9r
-	CnxoAorqxVx6Oc4a3Qibw6YWqJNjCqqGZOJwXTXQzKSw+SIGyQigiEGXUOPOaxj1JBOyLahDPLw0Y
-	8vHVtgXWQ0tEHi4fknQXb0fEKxcin7r7cb+kjXp2FBbLIslDWggatcxxm6onw0v9fLcQlihVPtFqZ
-	zgJt1uy9mFeiGBtZlyhOaBMFUcp2F9Nv5TWZnaCfHKu0dS7fDffXV+9ygfVXy+bzU0c0k+OkkAR/V
-	+f3RwUwI3XNa2wRwkVbHiWjS9XXLMKSH45nLUMbMbklnWEwQcT78Oazg/cl5jLpVhuqdReD4kpVji
-	xfBZ5SoQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=; b=KflqIYvSVOszDWE+6FiFCXuBA2
+	ei1XbGW+poJM0LjYlpuxsBhJETigawjYYBpW9aNy5olg8hCCr6lyG0wdPyIgi0Jkx+lp8ngZWVhcd
+	LceT34Z7zCkyIXxDF90Y9La+0gSFNir5IBHCTjWgkKMsp5gPpr09mRds1JHrJXvVu4tN5QIJ9VXIz
+	gV6Xodc3QG/mbfr5elKA6laA8flrqDXyJTSNONt7PLdzBGbhhhHFrJ25Rsu8A4ndwTdaEwyIhfBGr
+	xWpXK2OuGDQejNrhorEhLpPWMRJSZRRivp8AAyOEYojE2wNlx8cdMAi4JN5HhRHmdRpcRV5JhUas0
+	HmSbK5RQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUctE-0000000AVBo-1lwC;
-	Thu, 26 Jun 2025 03:03:04 +0000
-Received: from out0-209.mail.aliyun.com ([140.205.0.209])
+	id 1uUdbE-0000000AXzl-3y7S;
+	Thu, 26 Jun 2025 03:48:32 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUcbk-0000000AToV-1BpP
+	id 1uUdbB-0000000AXzO-3gRO
 	for linux-um@lists.infradead.org;
-	Thu, 26 Jun 2025 02:45:02 +0000
+	Thu, 26 Jun 2025 03:48:31 +0000
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-60c51860bf5so774665a12.1
+        for <linux-um@lists.infradead.org>; Wed, 25 Jun 2025 20:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1750905892; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=7UPnXPOsKjZ5D5zwf0F2OFekl8t3GTKb3x0lbpqe5PQ=;
-	b=lzYKmA8Rro3RCfMZRQx13tYum1AFYvM/poAfpt8pzJh+HyQpVrhu7vNs3/wiu0KrhIEMDl4TLm+TYLSyAITK60zH+H5HFABxv1QZR5CerTz2rFmc79Ci3pUUmYZu5uIqEmTIplzU2vHZn/spFHzPRBf3y0A0GUCIEdCyqpGIBEg=
-Received: from 30.174.116.235(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.dWuvC4m_1750905882 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Thu, 26 Jun 2025 10:44:49 +0800
-Message-ID: <0d630dec-41fe-4968-8d6a-7faae8a554a1@antgroup.com>
-Date: Thu, 26 Jun 2025 10:44:39 +0800
+        d=linux-foundation.org; s=google; t=1750909708; x=1751514508; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=;
+        b=TNcRxNdKDBkAC+F8T3QxLOpxLdMmvFo3d/ju4ITdqAHSmJy8ksGcJy0/4h2A4ws8Mf
+         jv5ISxb60PsRpFNo94wsDm4KfnpHJzkIzDo+gweqYzW1DpjC0EkuenDod0Akjf3TVUBH
+         5DKEYpTZa1viSXIjdR8/51lcXYL8+Smmg7Hxc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750909708; x=1751514508;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w4XTaD2tNZVnetmUxeEcKN2FJhAWBnQgKVB9ItQiBPg=;
+        b=WUSQlFXif0v/JHyvNGFyBFRCo5ISTY2CPvYOn1zf2SOme1u0JWd2FODmU0g2wK4fZN
+         u+P/fQuUtdAUk0dAFn9OKVtcDlOhlLfcMNLdU1Mms3TIiJAJv1YajRDpXw1dlYYv4Ezc
+         3E/SRqj3kKtt8SrOtJdSzkXGdIw3gbmpfthefEbciXKOnw2s6fmniLtP50WTPFt5LRIM
+         0hbEw96aQlQttk+dYLoHuCpnGxX+Vy8SbPJC+u82IbP/WK6fySEJzNvss39Ibp1x2ras
+         J2HZNtx/mSZUS9BUOT8GWyD5K8Vj1mUE/R4wincTHvr5Nhm15hXjshnHu5O0Yi+I6ohJ
+         DLmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVneSZChc+f2mEB4tDSP7rTiTU6nOnj4pEK5naYnLUO34fQaDEuikSjiL9LwF7hsuRgSvgQ6ZO5mA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx0N0Ad6j5Kl/CxAH+0Od+HEhr1AZf1fMnnedYuHVx4HN1t+YJ8
+	DU0NaUn8c1ILGX66WZUGxLniBUudyPFVMQCRmF8ysmTZOe3Sjbarg+q0Ejtqw++PyxlqOBICLmd
+	S3IB6xO0=
+X-Gm-Gg: ASbGncsobd2z5d+KaawEMiGYn6lcNNK8sjogAM9nuUxSC+53mSSmRPdOdUuZDzfX+aX
+	P5Fj85IdRAKRIIxLLTPdbcdSOyWGez92AyBezHtxm46WvdUxQNbkIC+80KKdw/EO/yMoVYjQF3g
+	Ax/+2+uUqJt7A8fKJ6dXST/Lll2Kdo+K77dJfKgLuLkG8J11FU4Fcu/tvzKXkfZXJ4dq2Vssgkm
+	WBc0TrnHqwtWICmIgoy0vOUMRXQbk5j0Cgn0Tdb2sQ8fk+zF2IpwEFI7FTW5Ht0zbCvMStHE6iP
+	MovJDR1S+WK4DUmzeSz/gDv9CLHeUoWXPLS5C4kAhInxVMaKdqQeuLewQsfvaKUuMtxcKRPqgz2
+	ev73xSAdZqj7g4uKiuHVdjIeSXNCs2tGrRNZxT9laJLP60sc=
+X-Google-Smtp-Source: AGHT+IGkCiMUiyNv8DVA5wCu79PogK2eONV17OLm6Sd/gwVBgrS+XwUgkvFkRCqCc6iRa2rOKTkfew==
+X-Received: by 2002:a05:6402:40c3:b0:607:f558:2894 with SMTP id 4fb4d7f45d1cf-60c661268fcmr2033058a12.3.1750909708142;
+        Wed, 25 Jun 2025 20:48:28 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-60c2f196ab3sm3260961a12.3.2025.06.25.20.48.25
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Jun 2025 20:48:27 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-60c5b8ee2d9so1070629a12.2
+        for <linux-um@lists.infradead.org>; Wed, 25 Jun 2025 20:48:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWQkypoATogJxQ4f6LbtdW6bccrsPdFQnWwiA5pIe9LBh4Gzh1e/iCJEJROkH0opiFOHYiEZ1hyIQ==@lists.infradead.org
+X-Received: by 2002:a05:6402:27cb:b0:60c:461e:7199 with SMTP id
+ 4fb4d7f45d1cf-60c66149e7amr1836785a12.9.1750909705477; Wed, 25 Jun 2025
+ 20:48:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] uml-for-6.16-rc4
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>
 References: <20250625121529.42911-3-johannes@sipsolutions.net>
- <CAHk-=wjTCAzaw4AXXpxcYc7v7ZjAeyaOOJw7FWXO+gV7v7Cp0g@mail.gmail.com>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <CAHk-=wjTCAzaw4AXXpxcYc7v7ZjAeyaOOJw7FWXO+gV7v7Cp0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <CAHk-=wjTCAzaw4AXXpxcYc7v7ZjAeyaOOJw7FWXO+gV7v7Cp0g@mail.gmail.com> <0d630dec-41fe-4968-8d6a-7faae8a554a1@antgroup.com>
+In-Reply-To: <0d630dec-41fe-4968-8d6a-7faae8a554a1@antgroup.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 25 Jun 2025 20:48:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh=_ZmpYtCx11wqsGGdrZRHsPorTzpzh2-QccT8PGKW1w@mail.gmail.com>
+X-Gm-Features: Ac12FXycbCEItBxGZBZHR-kJgJKAj9PUK2Osl5wq-e9vxN7XlQjqQ2Ty7F-dNLs
+Message-ID: <CAHk-=wh=_ZmpYtCx11wqsGGdrZRHsPorTzpzh2-QccT8PGKW1w@mail.gmail.com>
+Subject: Re: [GIT PULL] uml-for-6.16-rc4
+To: Tiwei Bie <tiwei.btw@antgroup.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250625_194500_854275_3EBACBB2 
-X-CRM114-Status: GOOD (  12.84  )
+X-CRM114-CacheID: sfid-20250625_204829_943350_0F1BC035 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,183 +105,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025/6/26 02:17, Linus Torvalds wrote:
-> On Wed, 25 Jun 2025 at 05:15, Johannes Berg <johannes@sipsolutions.net> wrote:
->>
->>  - reduce stack use with clang 19
-> 
-> Interesting. The patch looks fine, I'm wondering if people made a
-> clang bug report about this behavior with structure assignments?
-> 
-> Even if most other projects likely don't have issues with stack size,
-> it looks very non-optimal from a performance standpoint too to create
-> a pointless temporary copy on the stack.
-> 
-> I assume - but didn't check - that gcc didn't do the same stupid thing
-> for that code?
+On Wed, 25 Jun 2025 at 19:44, Tiwei Bie <tiwei.btw@antgroup.com> wrote:
+>
+> The behavior of gcc and clang differs. Clang's behavior appears to be
+> related to the volatile qualifier in arch_spinlock_t:
 
-The behavior of gcc and clang differs. Clang's behavior appears to be
-related to the volatile qualifier in arch_spinlock_t:
+Ahh. That kind of makes sense.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/spinlock_types_up.h?id=b555cb66583e99158cfef8e91c025252cefae55b#n18
+At the same time, I think clang is being stupid here. Yes, it makes
+sense to treat volatile specially in this way - just not for an
+initializer.
 
-It can be reproduced with this code snippet:
+I realize that initializers can be made to be their own data
+structures in modern C (ie taking the address of an initializer and
+using the initializer itself as an argument to a function call, for
+example), but when an initializer is used to set the value of a
+variable, the only real thing there is that variable.
 
-```c
-struct foo {
-	char a;
-	volatile char b;
-	char c[512];
-};
+Oh well. The patch certainly looks fine and I obviously already merged
+the pull request. It does make me go "I wonder how many other places
+clang just generates stupid code due to this".
 
-char bar(void);
-void baz(struct foo *p);
-
-void baz(struct foo *p)
-{
-	*p = (struct foo) { .a = bar() };
-}
-```
-
-$ clang-19 --version
-Ubuntu clang version 19.1.7 (++20250114103320+cd708029e0b2-1~exp1~20250114103432.75)
-Target: x86_64-pc-linux-gnu
-Thread model: posix
-InstalledDir: /usr/lib/llvm-19/bin
-$ clang-19 -O2 -c test.c
-$ objdump -dr ./test.o
-
-./test.o:     file format elf64-x86-64
-
-
-Disassembly of section .text:
-
-0000000000000000 <baz>:
-   0:	41 56                	push   %r14
-   2:	53                   	push   %rbx
-   3:	48 81 ec 18 02 00 00 	sub    $0x218,%rsp
-   a:	48 89 fb             	mov    %rdi,%rbx
-   d:	4c 8d 74 24 10       	lea    0x10(%rsp),%r14
-  12:	ba 01 02 00 00       	mov    $0x201,%edx
-  17:	4c 89 f7             	mov    %r14,%rdi
-  1a:	31 f6                	xor    %esi,%esi
-  1c:	e8 00 00 00 00       	call   21 <baz+0x21>
-			1d: R_X86_64_PLT32	memset-0x4
-  21:	e8 00 00 00 00       	call   26 <baz+0x26>
-			22: R_X86_64_PLT32	bar-0x4
-  26:	88 44 24 0f          	mov    %al,0xf(%rsp)
-  2a:	0f b6 44 24 0f       	movzbl 0xf(%rsp),%eax
-  2f:	88 03                	mov    %al,(%rbx)
-  31:	48 ff c3             	inc    %rbx
-  34:	ba 01 02 00 00       	mov    $0x201,%edx
-  39:	48 89 df             	mov    %rbx,%rdi
-  3c:	4c 89 f6             	mov    %r14,%rsi
-  3f:	e8 00 00 00 00       	call   44 <baz+0x44>
-			40: R_X86_64_PLT32	memcpy-0x4
-  44:	48 81 c4 18 02 00 00 	add    $0x218,%rsp
-  4b:	5b                   	pop    %rbx
-  4c:	41 5e                	pop    %r14
-  4e:	c3                   	ret    
-
-
-$ clang --version
-Ubuntu clang version 14.0.0-1ubuntu1.1
-Target: x86_64-pc-linux-gnu
-Thread model: posix
-InstalledDir: /usr/bin
-$ clang -O2 -c test.c
-$ objdump -dr ./test.o
-
-./test.o:     file format elf64-x86-64
-
-
-Disassembly of section .text:
-
-0000000000000000 <baz>:
-   0:	41 56                	push   %r14
-   2:	53                   	push   %rbx
-   3:	48 81 ec 18 02 00 00 	sub    $0x218,%rsp
-   a:	48 89 fb             	mov    %rdi,%rbx
-   d:	4c 8d 74 24 10       	lea    0x10(%rsp),%r14
-  12:	ba 01 02 00 00       	mov    $0x201,%edx
-  17:	4c 89 f7             	mov    %r14,%rdi
-  1a:	31 f6                	xor    %esi,%esi
-  1c:	e8 00 00 00 00       	call   21 <baz+0x21>
-			1d: R_X86_64_PLT32	memset-0x4
-  21:	e8 00 00 00 00       	call   26 <baz+0x26>
-			22: R_X86_64_PLT32	bar-0x4
-  26:	88 44 24 0f          	mov    %al,0xf(%rsp)
-  2a:	8a 44 24 0f          	mov    0xf(%rsp),%al
-  2e:	88 03                	mov    %al,(%rbx)
-  30:	48 83 c3 01          	add    $0x1,%rbx
-  34:	ba 01 02 00 00       	mov    $0x201,%edx
-  39:	48 89 df             	mov    %rbx,%rdi
-  3c:	4c 89 f6             	mov    %r14,%rsi
-  3f:	e8 00 00 00 00       	call   44 <baz+0x44>
-			40: R_X86_64_PLT32	memcpy-0x4
-  44:	48 81 c4 18 02 00 00 	add    $0x218,%rsp
-  4b:	5b                   	pop    %rbx
-  4c:	41 5e                	pop    %r14
-  4e:	c3                   	ret    
-
-
-$ gcc --version
-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
-Copyright (C) 2021 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-$ gcc -O2 -c test.c
-$ objdump -dr ./test.o
-
-./test.o:     file format elf64-x86-64
-
-
-Disassembly of section .text:
-
-0000000000000000 <baz>:
-   0:	f3 0f 1e fa          	endbr64 
-   4:	53                   	push   %rbx
-   5:	48 89 fb             	mov    %rdi,%rbx
-   8:	e8 00 00 00 00       	call   d <baz+0xd>
-			9: R_X86_64_PLT32	bar-0x4
-   d:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
-  11:	48 89 d9             	mov    %rbx,%rcx
-  14:	48 c7 03 00 00 00 00 	movq   $0x0,(%rbx)
-  1b:	48 83 e7 f8          	and    $0xfffffffffffffff8,%rdi
-  1f:	41 89 c0             	mov    %eax,%r8d
-  22:	31 c0                	xor    %eax,%eax
-  24:	48 c7 83 fa 01 00 00 	movq   $0x0,0x1fa(%rbx)
-  2b:	00 00 00 00 
-  2f:	48 29 f9             	sub    %rdi,%rcx
-  32:	81 c1 02 02 00 00    	add    $0x202,%ecx
-  38:	c1 e9 03             	shr    $0x3,%ecx
-  3b:	f3 48 ab             	rep stos %rax,%es:(%rdi)
-  3e:	44 88 03             	mov    %r8b,(%rbx)
-  41:	5b                   	pop    %rbx
-  42:	c3                   	ret    
-
-
-After 's/volatile char b;/char b;/', clang-19 produces:
-
-./test.o:     file format elf64-x86-64
-
-
-Disassembly of section .text:
-
-0000000000000000 <baz>:
-   0:	53                   	push   %rbx
-   1:	48 89 fb             	mov    %rdi,%rbx
-   4:	e8 00 00 00 00       	call   9 <baz+0x9>
-			5: R_X86_64_PLT32	bar-0x4
-   9:	88 03                	mov    %al,(%rbx)
-   b:	48 ff c3             	inc    %rbx
-   e:	ba 01 02 00 00       	mov    $0x201,%edx
-  13:	48 89 df             	mov    %rbx,%rdi
-  16:	31 f6                	xor    %esi,%esi
-  18:	5b                   	pop    %rbx
-  19:	e9 00 00 00 00       	jmp    1e <baz+0x1e>
-			1a: R_X86_64_PLT32	memset-0x4
-
-Regards,
-Tiwei
+            Linus
 
