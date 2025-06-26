@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE4EC7EE39
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08C52C7EE33
 	for <linux-um@archiver.kernel.org>; Thu, 26 Jun 2025 21:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=68E0kFqcENmprIL6SwAqbHz/pjvxICU7Zu0O2hi4uwo=; b=i37ueR+hKCrzWCYEKsKmJYpsOQ
-	hSTIvukdZUzlyEBYyliCahcOkvsYA+d1NA+WI86UOFoA9cUqtxWcjCbXJHLU5WiQm3d0TKYwVX+OR
-	035e0BJ86GZZ/vx1QRKZtOwA/2tibOX7FK/Ini2SkFtEr2T1YOToO1qXsk05aTSD3yFrK9+PvP59d
-	gCDbYTwDJ5nMQ13HEf3/ewHkm0VH/7cgfnagXg+q50f6JkEXxgMgUNJpC0dn1ndATINCKtzPknaWz
-	vXGR7rV9Ai+pYbOc7sRh7tn0KTZovv0PAPJ/T4ooU3snFvOKJiVgA67/7RQQAVBevyNOI32amK334
-	ilXPWktg==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Mn0PKfnMP9kUyLtnZlsPABU82XfKW2Qhy6/v7YEtYp8=; b=f577MI8OJshVOKGW1tpS0CQRVv
+	jIjIZZhBooe+oGdQP7WQY3QF2Sde8MxMxnw4I/sDNjONH+z/YH46bzqHzcv9gd19n/IbaC7KLp42R
+	t0WTZYjHKwBLd1JCDOLp9j7rk/dwIim3XUqjTzVMRzeauhAUfZ/f3TDvnaUE6L3mHQMDlbTAL/u0M
+	CHqIn3v48rjCPIAjoRv5ZHWc79SMFAkOamo/0ovmGho6Akaqglm1lE80VGdX1BLC9GEf6pkOrTtNL
+	Tnf9FBe1+KbW8s2gBwWqyoIZtmp3CiFUpGA/zA7fq3YVQM+5lOv1bZ99pf8qyAZVFYU6XDvtYGbEp
+	N8huA+yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUuBL-0000000CqJ5-1Ern;
+	id 1uUuBL-0000000CqJc-2eH1;
 	Thu, 26 Jun 2025 21:30:55 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uUske-0000000Cfgi-2ibD
+	id 1uUskf-0000000Cfgq-066D
 	for linux-um@lists.infradead.org;
-	Thu, 26 Jun 2025 19:59:17 +0000
+	Thu, 26 Jun 2025 19:59:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=68E0kFqcENmprIL6SwAqbHz/pjvxICU7Zu0O2hi4uwo=; t=1750967956; x=1752177556; 
-	b=sbG76sKDOl6uscNWzvuhVlCnJalLyTtqgkW2NwQDGme2OHT6zTwoIpZqHClQbiRUL2A2ypVq94m
-	10xPpPzVNOOZ/wAwALAG/oO9PqG+4UtKxnL2oZWtYI1kAFsLpJ7fGoQiWQHJBLchHksi2b9v2isOu
-	+yJiU2Dk0oMhC7qhD14tHR2KNZabI97dfCYOzf9RhG6Vuq6g7SGpK2HDDAHprRHEZxMl+XO1eWDx3
-	OI62z9p5qo0Ujec05CyGRPOGrylq8xaFO4J/tYV8UuS1XcKfZBuPKAOmUhxcyFm5QICgIUVFYHzVP
-	+3olDmgaLeG01OqRaRRnCBxwdYXsPNaowoVg==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Mn0PKfnMP9kUyLtnZlsPABU82XfKW2Qhy6/v7YEtYp8=;
+	t=1750967956; x=1752177556; b=j5v3nesuGke6H7/HHh76RwLo1YcIHb0RelfN2/uCrEvF7Rs
+	HtU/z8+OdUMUVUQDk0ODDKvaPP+OlFTPu1jRszqx3Ih5C+cCbu/OC8GzvuxU5Z0t99mbnKIwGpbzG
+	Bnjuyp3czX3vkZE2vS4QTdSARDltIWWNsFvSNsGSjSLksNfe4sMBWKkgeHjeuX/7T8fi4mLg8hJ/4
+	pNOveU1of1lhkVvhaVHyOd4pHbnDbAUFmnbDSilCnBEWzNDAAW7sHU8BCluziWoqy4uyjtoPhBN8N
+	e4hLw0Pgiyg36+btL7ghPp4Oc2tEMuRvSsHwZb2pTU4LXkb8iDGi4HsekpJCecRA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uUska-0000000C0lZ-23ed;
-	Thu, 26 Jun 2025 21:59:13 +0200
+	id 1uUskc-0000000C0lZ-1ToV;
+	Thu, 26 Jun 2025 21:59:14 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: kunit-dev@googlegroups.com,
 	linux-um@lists.infradead.org,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [RFC 0/2] Experimental kunit test for signal context handling
-Date: Thu, 26 Jun 2025 21:57:12 +0200
-Message-ID: <20250626195714.2123694-1-benjamin@sipsolutions.net>
+Subject: [RFC 1/2] tools/nolibc: add sigaction()
+Date: Thu, 26 Jun 2025 21:57:13 +0200
+Message-ID: <20250626195714.2123694-2-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.50.0
+In-Reply-To: <20250626195714.2123694-1-benjamin@sipsolutions.net>
+References: <20250626195714.2123694-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250626_125916_687528_FFFCA643 
-X-CRM114-Status: GOOD (  11.53  )
+X-CRM114-CacheID: sfid-20250626_125917_060361_857F4A18 
+X-CRM114-Status: UNSURE (   9.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,41 +75,78 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-Hi,
+In preparation to add tests that use it.
 
-so I saw the UAPI testing framework patches and wondered whether I could
-hack up a kunit test for userspace signal mcontext handling. I already
-had some code, but never knew where to include it. Having it as a kunit
-test in this way seems nice as it makes running the test really simple.
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+---
+ tools/include/nolibc/nolibc.h |  3 +++
+ tools/include/nolibc/signal.h | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-This is a very rough attempt with an extra patch to add sigaction
-support as that is needed by the test.
-
-Note that this type of test could possibly be shared with the x86
-architecture (though UM does not support all features). And, a 64 bit
-build might even want to include a second 32 bit binary. So, I suppose
-one would ideally want the test to be in arch/x86/tests, with some way
-to pick up it up in arch/x86/um/tests.
-
-Does this seem sensible in general?
-
-Benjamin
-
-Benjamin Berg (2):
-  tools/nolibc: add sigaction()
-  um: add a mcontext FP register handling test
-
- arch/x86/um/Makefile                     |   2 +
- arch/x86/um/tests/Makefile               |  12 +++
- arch/x86/um/tests/registers.c            |  22 +++++
- arch/x86/um/tests/test-fp-save-restore.c | 118 +++++++++++++++++++++++
- tools/include/nolibc/nolibc.h            |   3 +
- tools/include/nolibc/signal.h            |  34 +++++++
- 6 files changed, 191 insertions(+)
- create mode 100644 arch/x86/um/tests/Makefile
- create mode 100644 arch/x86/um/tests/registers.c
- create mode 100644 arch/x86/um/tests/test-fp-save-restore.c
-
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index c199ade200c2..29e37a755aba 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -92,6 +92,9 @@
+ #ifndef _NOLIBC_H
+ #define _NOLIBC_H
+ 
++/* So that we do not get compatibility types/defines */
++#define __KERNEL__
++
+ #include "std.h"
+ #include "arch.h"
+ #include "types.h"
+diff --git a/tools/include/nolibc/signal.h b/tools/include/nolibc/signal.h
+index ac13e53ac31d..fa52119e577f 100644
+--- a/tools/include/nolibc/signal.h
++++ b/tools/include/nolibc/signal.h
+@@ -14,6 +14,7 @@
+ #include "arch.h"
+ #include "types.h"
+ #include "sys.h"
++#include <linux/signal.h>
+ 
+ /* This one is not marked static as it's needed by libgcc for divide by zero */
+ int raise(int signal);
+@@ -23,4 +24,37 @@ int raise(int signal)
+ 	return sys_kill(sys_getpid(), signal);
+ }
+ 
++/*
++ * sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
++ */
++
++#ifdef SA_RESTORER
++__attribute__((naked))
++static void my_sa_restorer(void)
++{
++	my_syscall0(__NR_rt_sigreturn);
++}
++#endif
++
++static __attribute__((unused))
++int sys_sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
++{
++	struct sigaction real_act = *act;
++#ifdef SA_RESTORER
++	if (!(real_act.sa_flags & SA_RESTORER)) {
++		real_act.sa_flags |= SA_RESTORER;
++		real_act.sa_restorer = my_sa_restorer;
++	}
++#endif
++
++	return my_syscall4(__NR_rt_sigaction, signum, &real_act, oldact,
++			   sizeof(act->sa_mask));
++}
++
++static __attribute__((unused))
++int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
++{
++	return __sysret(sys_sigaction(signum, act, oldact));
++}
++
+ #endif /* _NOLIBC_SIGNAL_H */
 -- 
 2.50.0
 
