@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7447CC7EE2A
-	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 04:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14000C7EE2A
+	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 05:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=e4SsKNyHocVmPE3uEf3i+nlYrFGTvwC/1u2v7ilqmHM=; b=1QXzEoJoxoxpn3b7ZKa6pSRkK4
-	4d8QWfoLOxJSXZ57+QTvyhum7sOrzejXXlBILFXm1A4Fk52s7owY8AfuoAA09IEM312hK96ynkBSG
-	B4MWtgxS9rs43gfRgozPUcWUYF8x/nSU8T6Staa4MW3+Fy97uH4DFrBlDf3v2RPiTuwCGjH8Pogus
-	Tf0aBNWKhHD6/V1F1Prw7FFjQc9pTHSJvHhaCshXBM8EuYeNolS/OKo6AAdN+yVGHoe/l0lMoCshv
-	eUHzSDU3YOy63Nw/Ef3nIsPE+5MRl/bpYFDjeDH/HKOQFH+wupMzFfNAprnbkmugtxoIqwkLwHLZU
-	SMyrihKw==;
+	bh=QLmyL3lNy2QBtuenWSQCFpmIgg5YkMY9f6KTQYjjHMo=; b=lz3XhlHZErWKAup6mOnSSKYCk0
+	QtlopCaN4E4L710dan1h/M6E/8qbnNUTWJClqLfeDW+Sa+Tth6VShufnBVOLD2b1BdoqkmQKG3RZP
+	IqQkRmWfWOAdGNqgcQFb2nHQll2rMbSzGF7752Y+Uk9/gQ9AiQlksyS8B/slSxK/dICpQ0vOcrYkK
+	GwCpjd/aedI+sgzWPSoGX2snQMwSoBEnbobE9YxVtFsBSfcWLmB/p/F7h4nScRtfAJX0A01k/3nOk
+	ln41L75EwOMBBx/zVt+KN4jtsBUelgQcpxv11hay/0l2qDBNhDI++Zv4VZgHCrYeCi8109dEhP8BJ
+	vEhWqYCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uV17z-0000000DaJI-36B9;
-	Fri, 27 Jun 2025 04:55:55 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1uV1JL-0000000DbVy-2SX8;
+	Fri, 27 Jun 2025 05:07:39 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uV11D-0000000DZKk-2v26
+	id 1uV1DB-0000000Dawt-1ydI
 	for linux-um@lists.infradead.org;
-	Fri, 27 Jun 2025 04:48:57 +0000
-Date: Fri, 27 Jun 2025 06:48:53 +0200
+	Fri, 27 Jun 2025 05:01:18 +0000
+Date: Fri, 27 Jun 2025 07:01:13 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1750999734;
+	s=2020; t=1751000473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e4SsKNyHocVmPE3uEf3i+nlYrFGTvwC/1u2v7ilqmHM=;
-	b=S+3dv3/w0u0xiSdS4n9zFFU8DDC4MqKtFGFMlL6v2LUYjpAOPHhbarEjzdex9ta99asNZl
-	Nc6W9d2kRsJ1Hs9OWdDNPElQo9KuBnhxOKNIYpY/1x61l3rRvqgzOQ0RgoCFpypQOWdRqy
-	M1bVNwnSdnat41eesb9poMHNzidHIrJRBDxlHbWhpY8rvCaReAjHv7M+4LuToWhjQiIm4o
-	ctpbIUpTRaNNeePFNc7npISp85N1mH5pD+uC/m354I0h2fH6xV8bEJRnOE+TjvHY4D79CQ
-	Rkhvxtt0R1u4owCxJdlL1Opsz6xyqu29dSLITejmzJAARGlPvRZMZOajmGlIag==
+	bh=QLmyL3lNy2QBtuenWSQCFpmIgg5YkMY9f6KTQYjjHMo=;
+	b=sY/qDFaGhPcTTRd5sQQRbrYMTzHwVHisKylYABz+VX0iGcqdCmypuDchD3uafTsYiEfxqy
+	NJbvjmIaUXNzNEMQmuYM95hG3YQUbqRQIVyhEnEG6JG+UlvSjG+VHD77RBsxcWL2k0nSqv
+	J5A6XfDO25RY85R68GLQYLJIWEha3vroMQMyEtvMOaCwGY0Xgt1Pqh/8BP2de+k2LqedY+
+	i3z4aAXlsJiMi2JoO/owHtyel+WsFeaAm3KU9fwFNMDoUltWv3ofpi6pIQ3b5sXBvPdzmi
+	C2enEF50OQKyEdNGd/A1wcKl8zd5x8AyInBCcxTxhdEldIuYQ/nDbmN7rnXaSA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1750999734;
+	s=2020e; t=1751000473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e4SsKNyHocVmPE3uEf3i+nlYrFGTvwC/1u2v7ilqmHM=;
-	b=XJNEc1I4eJk9j523+kL+RUa+PHPocjDcDsOpxJ+VnUUs2pXGgbNMlzs6CPs5IG8Av1+fa/
-	g0kJ28AEIjrohWDw==
+	bh=QLmyL3lNy2QBtuenWSQCFpmIgg5YkMY9f6KTQYjjHMo=;
+	b=pnxmTt3jAIxlItvERpjsFcFLOeAeri4qfdic464HwQl8vJzxDduI/UIbpqCo/C6CCjFAM7
+	73uBjJcvCCQbmABg==
 From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 To: Benjamin Berg <benjamin@sipsolutions.net>
 Cc: kunit-dev@googlegroups.com, linux-um@lists.infradead.org, 
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [RFC 1/2] tools/nolibc: add sigaction()
-Message-ID: <20250627063347-cc3c0ad0-7b3b-4bcd-963f-729db103760f@linutronix.de>
+Subject: Re: [RFC 2/2] um: add a mcontext FP register handling test
+Message-ID: <20250627064919-a0f8a958-1b09-4b58-99d3-b0c91d513b21@linutronix.de>
 References: <20250626195714.2123694-1-benjamin@sipsolutions.net>
- <20250626195714.2123694-2-benjamin@sipsolutions.net>
+ <20250626195714.2123694-3-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250626195714.2123694-2-benjamin@sipsolutions.net>
+In-Reply-To: <20250626195714.2123694-3-benjamin@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250626_214855_874537_DF2ADF72 
-X-CRM114-Status: GOOD (  21.70  )
+X-CRM114-CacheID: sfid-20250626_220117_657839_BEA85154 
+X-CRM114-Status: GOOD (  22.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,111 +76,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 26, 2025 at 09:57:13PM +0200, Benjamin Berg wrote:
+On Thu, Jun 26, 2025 at 09:57:14PM +0200, Benjamin Berg wrote:
 > From: Benjamin Berg <benjamin.berg@intel.com>
 > 
-> In preparation to add tests that use it.
-
-I tried to implement signal support in nolibc before but ran into some issues.
-Unfortunately I don't remember the details.
-But I guess you know more about signals than me, so let's try it again.
-In any case this should add some tests to
-tools/testing/selftests/nolibc/nolibc-test.c.
-
-If you test it with qemu-user please be aware that there were issues around
-SA_RESTORER up until recently [0] [1].
-
-[1] https://lore.kernel.org/qemu-devel/20250202-riscv-sa-restorer-v1-1-6f4bf814a1dd@t-8ch.de/
-[0] https://lore.kernel.org/qemu-devel/mvmed060xc9.fsf@suse.de/
-
+> This tests checks whether floating point registers are properly saved
+> into the signal context and restored again. The test works by having a
+> known value at the top of the FP register stack and in the first xmm
+> register. Then SIGUSR1 is triggered and both of these registers are
+> modified by changing the values in the mcontext.
 > 
 > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 > ---
->  tools/include/nolibc/nolibc.h |  3 +++
->  tools/include/nolibc/signal.h | 34 ++++++++++++++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
+>  arch/x86/um/Makefile                     |   2 +
+>  arch/x86/um/tests/Makefile               |  12 +++
+>  arch/x86/um/tests/registers.c            |  22 +++++
+>  arch/x86/um/tests/test-fp-save-restore.c | 118 +++++++++++++++++++++++
+>  4 files changed, 154 insertions(+)
+>  create mode 100644 arch/x86/um/tests/Makefile
+>  create mode 100644 arch/x86/um/tests/registers.c
+>  create mode 100644 arch/x86/um/tests/test-fp-save-restore.c
 > 
-> diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-> index c199ade200c2..29e37a755aba 100644
-> --- a/tools/include/nolibc/nolibc.h
-> +++ b/tools/include/nolibc/nolibc.h
-> @@ -92,6 +92,9 @@
->  #ifndef _NOLIBC_H
->  #define _NOLIBC_H
+> diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+> index b42c31cd2390..410f5526f1f4 100644
+> --- a/arch/x86/um/Makefile
+> +++ b/arch/x86/um/Makefile
+> @@ -15,6 +15,8 @@ obj-y = bugs_$(BITS).o delay.o fault.o \
+>  	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+>  	mem_$(BITS).o subarch.o os-Linux/
 >  
-> +/* So that we do not get compatibility types/defines */
-> +#define __KERNEL__
+> +obj-y += tests/
+> +
+>  ifeq ($(CONFIG_X86_32),y)
+>  
+>  obj-y += syscalls_32.o
+> diff --git a/arch/x86/um/tests/Makefile b/arch/x86/um/tests/Makefile
+> new file mode 100644
+> index 000000000000..c3a868b078f3
+> --- /dev/null
+> +++ b/arch/x86/um/tests/Makefile
+> @@ -0,0 +1,12 @@
+> +include $(srctree)/init/Makefile.nolibc
+> +
+> +ccflags-y := -I$(obj)
 
-Could you explain this more?
+As mentiond before, I'd like to find out why you need this.
 
-The user may have included kernel UAPI headers already before including nolibc,
-so it doesn't really work.
+> +um-tests-y += registers.o
+> +
+> +userprogs += test-fp-save-restore
+> +test-fp-save-restore-userccflags := -static $(NOLIBC_USERCFLAGS) -msse
+> +
+> +obj-$(CONFIG_KUNIT_UAPI) += um-tests.o
+
+Create a dedicated Kconfig option for this.
+Not everybody who has enabled the framework wants to include these testcases.
+Also the tests can stay in a module even if CONFIG_KUNIT_UAPI=y.
 
 > +
->  #include "std.h"
->  #include "arch.h"
->  #include "types.h"
-> diff --git a/tools/include/nolibc/signal.h b/tools/include/nolibc/signal.h
-> index ac13e53ac31d..fa52119e577f 100644
-> --- a/tools/include/nolibc/signal.h
-> +++ b/tools/include/nolibc/signal.h
-> @@ -14,6 +14,7 @@
->  #include "arch.h"
->  #include "types.h"
->  #include "sys.h"
-> +#include <linux/signal.h>
->  
->  /* This one is not marked static as it's needed by libgcc for divide by zero */
->  int raise(int signal);
-> @@ -23,4 +24,37 @@ int raise(int signal)
->  	return sys_kill(sys_getpid(), signal);
->  }
->  
+> +$(obj)/registers.o: $(obj)/test-fp-save-restore
+> diff --git a/arch/x86/um/tests/registers.c b/arch/x86/um/tests/registers.c
+> new file mode 100644
+> index 000000000000..2c4e55da043c
+> --- /dev/null
+> +++ b/arch/x86/um/tests/registers.c
+> @@ -0,0 +1,22 @@
+> +#include <kunit/test.h>
+
+> +#include <kunit/test-bug.h>
+
+Unnecessary.
+
+> +#include <kunit/uapi.h>
+> +
+> +static void test_mcontext(struct kunit *test)
+> +{
+> +	KUNIT_UAPI_EMBED_BLOB(test_fp_save_restore, "test-fp-save-restore");
+
+Any reason to have different names between the userprog and the testcase?
+Keeping them consistent will make it easier for the user.
+
+> +
+> +	kunit_uapi_run_kselftest(test, &test_fp_save_restore);
+> +}
+> +
+> +static struct kunit_case register_test_cases[] = {
+> +	KUNIT_CASE(test_mcontext),
+> +	{}
+> +};
+> +
+> +static struct kunit_suite register_test_suite = {
+> +	.name = "um_registers",
+> +	.test_cases = register_test_cases,
+> +};
+> +
+> +kunit_test_suites(&register_test_suite);
+> diff --git a/arch/x86/um/tests/test-fp-save-restore.c b/arch/x86/um/tests/test-fp-save-restore.c
+> new file mode 100644
+> index 000000000000..28a32ca374fe
+> --- /dev/null
+> +++ b/arch/x86/um/tests/test-fp-save-restore.c
+> @@ -0,0 +1,118 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
+> + * Test FP register handling in userspace mcontext.
+> + *
+> + * Copyright (C) 2025 Intel Corporation
 > + */
 > +
-> +#ifdef SA_RESTORER
-> +__attribute__((naked))
+> +#include <math.h>
+> +#include <signal.h>
 
-__attribute__((naked)) is not supported everywhere.
+> +#include <types.h>
 
-> +static void my_sa_restorer(void)
+types.h is specific to nolibc. Can probably just be dropped.
 
-This should use a name with less potential to conflict with user code.
-Like __nolibc_sa_restorer().
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <sys.h>
 
-> +{
-> +	my_syscall0(__NR_rt_sigreturn);
-> +}
-> +#endif
+sys.h is specific to nolibc. Use a standard header instead.
+
+> +#include <asm/sigcontext.h>
+> +#include <asm/ucontext.h>
 > +
-> +static __attribute__((unused))
-> +int sys_sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
-> +{
-> +	struct sigaction real_act = *act;
-> +#ifdef SA_RESTORER
-> +	if (!(real_act.sa_flags & SA_RESTORER)) {
-> +		real_act.sa_flags |= SA_RESTORER;
-> +		real_act.sa_restorer = my_sa_restorer;
-> +	}
-> +#endif
-> +
-> +	return my_syscall4(__NR_rt_sigaction, signum, &real_act, oldact,
-> +			   sizeof(act->sa_mask));
+> +#include "../../../tools/testing/selftests/kselftest.h"
 
-No need for the linebreak.
+I can't say anything about the actual tests.
 
-> +}
-> +
-> +static __attribute__((unused))
-> +int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
-> +{
-> +	return __sysret(sys_sigaction(signum, act, oldact));
-> +}
-> +
->  #endif /* _NOLIBC_SIGNAL_H */
-> -- 
-> 2.50.0
-> 
+<snip>
 
