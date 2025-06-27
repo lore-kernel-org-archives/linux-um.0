@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07EE7C77B7F
-	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 08:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08092C7EE31
+	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 08:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r2F8l/JQvMi6MHAIpC0wbKLAkkHxDe6ObHh4C45f6cI=; b=D/Uz9DBLLQyPVS9tYhdEDybI6P
-	F5wCKKuJdkWL0E4COftvk14BdFiVDerpB3seyEpDJoJn7Ev17wtn8+2xojZsTfC0dxLw4tWVnugOX
-	pm6IRf1mjLBOQgCauHKlVF3cKpvEcMILW1xZsiS7raKQ+Z/M907p2jZKyYNE4Au8Ne3/k+GYy6xTh
-	bPs29BITcKj3ySOsZ2tAAvOpA8KngfEhu+gQGzTNEX4bc/Lgznyi8zsLOlj+a/P14rObtu1YE+FpI
-	3Sy31NnPDMuKG/guEozJAz1Y8dt/FXX+i7yIUeP23P9VjGPIOOulQ6Q6Fur2/nJzQqpfLQSQXmIyh
-	EXuAxryg==;
+	bh=i7N/fRingZ0nASgb9h3OMYxTeVtNaki5J/VzCocS1PI=; b=c14qIrWUd+YPXsH9Hq+jwpxR1F
+	cCHPOFQrR+qTvHwtZgjulTpu4AWJ2lty5M7vZOQppnaFCtb9Zt1Wvfc7Fq/C7CD1fhlLIqsUvRz6Z
+	zOLP+ilj0j3Lmsr8o1F5QayKkGis1yBjzJAUoGtVcfHi3Y9H4l0WDdTfgMfG40liF5GgsibjGhphh
+	IALrk6l3O1biWmSNP437w4lnl7dZaaI0FwsqO7mr5vtEvxOPGMkKNDcE2Rs1TSagdXsqTWlkTYTKz
+	1ru1qZStdjXajw7oODDWbXlQrfJ32yylBNM7bg4vDycF/koctkItTSQROIl1YFhrWfEEuI4PCLx+6
+	sW1Pfzkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uV4mF-0000000E053-1N4v;
-	Fri, 27 Jun 2025 08:49:43 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uV4mO-0000000E07X-2qd5;
+	Fri, 27 Jun 2025 08:49:52 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uV4lI-0000000E01s-476N
+	id 1uV4mL-0000000E06Q-3weN
 	for linux-um@lists.infradead.org;
-	Fri, 27 Jun 2025 08:48:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=r2F8l/JQvMi6MHAIpC0wbKLAkkHxDe6ObHh4C45f6cI=;
-	t=1751014124; x=1752223724; b=IhoEAHjUiwizSMuMhWHNZjr0A2BU7kiTvNQzzQbb7lM39we
-	N3DzofttVMpzVssRkywXBVROXDu1Dcwv3erkhFYBRLjLcKVLqlmeED0JVQL5RyaU8N+n267P0ab4L
-	WtWnLe8t1N555m+GzupRWB4ypfDcd0gTerrtYKT+a5kZ/eoYB9t66h95pdH+lbHtyu7maRVDHqfny
-	inIP1VRHk9DKQ+08P+b/IVbQFTZ9uD13iw4KWGR1EYp76jRSPV92mTCj4TyqlK4ltwH6zCbgbRcKu
-	3o3PNvhHxxfX//ZSSShObjsAp4ddvGby9aw53Hui+cEcTUSC5AU5P90YZztSGk6w==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uV4l7-0000000DOpt-1u5W;
-	Fri, 27 Jun 2025 10:48:34 +0200
-Message-ID: <89cbc0bdb9b4894ca073dac56406b02eeee3ece5.camel@sipsolutions.net>
-Subject: Re: [RFC 0/2] Experimental kunit test for signal context handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
-Cc: kunit-dev@googlegroups.com, linux-um@lists.infradead.org
-Date: Fri, 27 Jun 2025 10:48:30 +0200
-In-Reply-To: <20250627103520-c7f8d4cd-9c85-4e87-b7de-b6d9fb1310e3@linutronix.de>
-References: <20250626195714.2123694-1-benjamin@sipsolutions.net>
-	 <20250627062337-a67a262d-5957-42cf-8bc0-69388f4ae078@linutronix.de>
-	 <4e5a205eee41abf84c3d3340275833c20b7d7050.camel@sipsolutions.net>
-	 <20250627103520-c7f8d4cd-9c85-4e87-b7de-b6d9fb1310e3@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Fri, 27 Jun 2025 08:49:51 +0000
+Date: Fri, 27 Jun 2025 10:49:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1751014188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i7N/fRingZ0nASgb9h3OMYxTeVtNaki5J/VzCocS1PI=;
+	b=NGXN/xbm2bgHmL3wkRzDn+imuZsQlZtVyxnNlr0WK8Q/7WGHOCX31dp7jplzYqn1WZuhcW
+	vUrXgtR4xwvBXNwOPP24vtGSnBBy3QwblBcguGCKbl5gZizLbktpP+SjcDzf4WEtgKnn86
+	jYBIS2iT/w3IkHmf/I0abKzMszwAreiMTQIVE+th7yoDW6dTwpJEYGcgFINOHg1u+ZSvgs
+	oDY0t0WEhkK8lpGdbnp4wGPBSfABNcBBt+5DjZG/+iD0ajr5Emqk0WkLncyPZ8PvNpD+ni
+	0ujH/O5ZyWdTSeP/HPhDSMEIG+6+gr9SIKV9zCvHBArJ+rM/iSIXq6NyJgkFMQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1751014188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i7N/fRingZ0nASgb9h3OMYxTeVtNaki5J/VzCocS1PI=;
+	b=DAlzIDfnOVEXQ5IrxilGNN+9PrzqbKnb95yvYKHXhneFlYqFEc8775sJf9IJmBp5MQPMIq
+	ydptbHXp58yJ+ECA==
+From: Nam Cao <namcao@linutronix.de>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] um: virt-pci: Switch to
+ msi_create_parent_irq_domain()
+Message-ID: <20250627084943.nCYOI4Vp@linutronix.de>
+References: <cover.1750947651.git.namcao@linutronix.de>
+ <b911c2f15c031354850eee277a773832890c3c17.1750947651.git.namcao@linutronix.de>
+ <45f44f0298259abf1862b965805307b7c01a279d.camel@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45f44f0298259abf1862b965805307b7c01a279d.camel@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250627_014845_023170_8A809082 
-X-CRM114-Status: GOOD (  34.83  )
+X-CRM114-CacheID: sfid-20250627_014950_118782_4101FD2E 
+X-CRM114-Status: GOOD (  11.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,79 +80,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Fri, Jun 27, 2025 at 10:24:38AM +0200, Johannes Berg wrote:
+> On Thu, 2025-06-26 at 16:47 +0200, Nam Cao wrote:
+> > Move away from the legacy MSI domain setup, switch to use
+> > msi_create_parent_irq_domain().
+> 
+> I applied this on 6.16-rc1 (plus a handful of local patches), and got a
+> lockdep warning and kernel crash with this change:
 
-On Fri, 2025-06-27 at 10:43 +0200, Thomas Wei=C3=9Fschuh wrote:
-> On Fri, Jun 27, 2025 at 09:29:12AM +0200, Benjamin Berg wrote:
-> > On Fri, 2025-06-27 at 06:33 +0200, Thomas Wei=C3=9Fschuh wrote:
-> > > On Thu, Jun 26, 2025 at 09:57:12PM +0200, Benjamin Berg wrote:
-> > > > so I saw the UAPI testing framework patches and wondered whether I =
-could
-> > > > hack up a kunit test for userspace signal mcontext handling. I alre=
-ady
-> > > > had some code, but never knew where to include it. Having it as a k=
-unit
-> > > > test in this way seems nice as it makes running the test really sim=
-ple.
-> > >=20
-> > > Nice to hear that you find it useful.
-> > >=20
-> > > > This is a very rough attempt with an extra patch to add sigaction
-> > > > support as that is needed by the test.
-> > > >=20
-> > > > Note that this type of test could possibly be shared with the x86
-> > > > architecture (though UM does not support all features).
-> > >=20
-> > > Can the expected feature detection be performed at runtime?
-> > > If so I would write the test as x86 kselftest in tools/testing/kselft=
-ests/x86/
-> > > and then also hook it up for kunit on UML and x86.
-> > > This gives you the advantages of all worlds.
-> > >=20
-> > > For an example see [0]. That is still based on an old version of the =
-framework,
-> > > so can't be used as-is. But you should get the idea.
-> >=20
-> > That looks nice, and you do support both x86 and um there!
-> >=20
-> > Many of those checks should be simple as syscalls will return an error
-> > (modify_ldt should return -ENOSYS for example). For more arcane things
-> > one could e.g. add "(um)" into AT_PLATFORM or just disable the kunit
-> > test for the um architecture.
->=20
-> Sounds good.
->=20
-> > This is a nice development, I absolutely expect to find some bugs in um
-> > this way.
->=20
-> I do so, too :-)
->=20
-> https://lore.kernel.org/lkml/20250617-uml-tick-timer-v1-1-01aab312f56b@li=
-nutronix.de/
+Thanks for testing! The later kernel crash should be fixed with:
 
-Ah, yes, that one :-)
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index e51a9357934da..557d93aea00a1 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -407,7 +407,6 @@ static const struct irq_domain_ops um_pci_inner_domain_ops = {
+ 
+ #define UM_PCI_MSI_FLAGS_REQUIRED (MSI_FLAG_USE_DEF_DOM_OPS		| \
+ 				   MSI_FLAG_USE_DEF_CHIP_OPS		| \
+-				   MSI_FLAG_PCI_MSI_MASK_PARENT		| \
+ 				   MSI_FLAG_NO_AFFINITY)
+ #define UM_PCI_MSI_FLAGS_SUPPORTED (MSI_GENERIC_FLAGS_MASK		| \
+ 				    MSI_FLAG_PCI_MSIX)
 
-> To be honest if there are going to be a bunch of issues on UML,
-> I'd prefer to drop the UML bits from my submissions.
-> I'm not familiar with UML and can't really fix the fallout.
-> Then you can wire up the tests with a few lines and handle the fallout at
-> your convenience.
->=20
-> Or we gate the testcases behind BROKEN/EXPORT on UML in the beginning.
->=20
-> Does this sound reasonable?
 
-Not sure how to gate them, but I do like the idea of being able to
-enable them using only minor modifications or even a Kconfig option to
-see what happens on UM.
+I have no immediate idea about the lockdep warn, I don't see how the
+MSI_FLAG_PCI_MSI_MASK_PARENT flag can be related to that. Probably there's
+another problem, let me stare at it..
 
-Benjamin
-
->=20
-> <snip>
->=20
->=20
-> Thomas
->=20
-
+Nam
 
