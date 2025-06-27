@@ -4,64 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E385C77B7F
-	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 15:20:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A61BC7EE2A
+	for <linux-um@archiver.kernel.org>; Fri, 27 Jun 2025 15:44:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cJONLCQOpF6Xvzl9B4WOfWoBD70JG1idjgUJls73ICM=; b=P9V3ccXU/VHC76lFQLceaRUaM9
-	J6EbQPvIgRzAFpIhEmRH+/wsTBDT4f/NG4EAOyFfCb+MFqfk0c5FVZc2pat9/64oHKKI3FoodEB2u
-	JzU/eFHddtqz7wOGyh0pFsHNLCEDN71dGCP3Vr3tsVLKsahcGiuT7v+zonf4DBQuaaaCjiGlrk/gz
-	DiJmRz3Bw5M5YZicCbOuok8+9jRWu3H5h1GCMpHSdCS0zlJgO6537uoZ39xAo+/eGscYIhO5Ta2Ws
-	1EdHgnzPQ7hJGLGky5V5mnfc7Khad8MBcKrBT87HbzW0B4AoKSOqyoVIXFhQuszPjrd2P3a5eQQhq
-	zxRSfInw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=MUttCkDzXycQcM+ZeLMMRCpzl+xVLbejcM6RPqzvGE4=; b=a6Xi3DWuSoFCNS8CqSKGKyYMRA
+	VBbMOFuj5BSkhkPMI5ycEri5l9Xl6vOjjUseS7TM6UI9y3PUfw+hcFsJIcjLW6T3C+VkF69i99KcW
+	eQ1503JmVtD+SqNw0HaHdt01TfTq/ZluOaRHHKKzySEHv7qGx2+ncdZE6suGxRFvOWd31e8MWkXHt
+	D+SJO+jJ58L1JYgquUzVDhmo8ohDSUmPTdNajWtXZ49Cov3gLH3YNUj0S4yRDCUU8/sGozSqpbZ1n
+	w5CEvH34DFijajENdpj72CvJ6wDKAMFjmqWHB19j+FTbWnS3ZoHjchUm88Z8MM0G0jHPDaKUObFGD
+	D84Ze+4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVAsa-0000000F3qb-354I;
-	Fri, 27 Jun 2025 15:20:40 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uVBG1-0000000F9HV-3v7D;
+	Fri, 27 Jun 2025 15:44:53 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVAaf-0000000F03T-1yGS
+	id 1uVAts-0000000F454-2KsW
 	for linux-um@lists.infradead.org;
-	Fri, 27 Jun 2025 15:02:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cJONLCQOpF6Xvzl9B4WOfWoBD70JG1idjgUJls73ICM=;
-	t=1751036529; x=1752246129; b=E5QtRuBTPDMWsrWyYVlM5sJjGpfjs2anELQbpeN9wYtNFip
-	NV/4PQzxGAZcdxW9bDsuLyzs4VD37YcIFu4Go+9WiCqLMpg/n3X9MGUaF/ZHXH8xpBDQXFio5zAIU
-	N0Cs9vL87P7kgoyvPz2n2R3Q2J0EwM9rdFj7fbKpn18Mn6iZzFw92IrNd4Grn21z8kCOzD1+7Q3+t
-	rTo3mthSn52lLFizVmAIVnGTaScIbBjS6r+C6HDqiFsEkRRibKtXK+eqTpCcUVaG0HKWit5qiqpHS
-	qURs5gtG49SVt30MXVNhZCkdX2RHA5NIoeaE61BLWTAR1+4+ZCe4o4eVRAfpd2mg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uVAac-0000000Du7J-0uX8;
-	Fri, 27 Jun 2025 17:02:06 +0200
-Message-ID: <734965ac85b2c4cf481cc98ac53052fd5064d30e.camel@sipsolutions.net>
-Subject: Re: [PATCH v10 09/13] x86/um: nommu: signal handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-um@lists.infradead.org, ricarkol@google.com,
- Liam.Howlett@oracle.com, 	linux-kernel@vger.kernel.org
-Date: Fri, 27 Jun 2025 17:02:05 +0200
-In-Reply-To: <m2sejl47ke.wl-thehajime@gmail.com> (sfid-20250627_155052_193903_B610E51D)
-References: <cover.1750594487.git.thehajime@gmail.com>
-		<548dcef198b79a4f8eb166481e39abe6e13ed2e3.1750594487.git.thehajime@gmail.com>
-		<3b407ed711c5d7e1819da7513c3e320699473b2d.camel@sipsolutions.net>
-	 <m2sejl47ke.wl-thehajime@gmail.com> (sfid-20250627_155052_193903_B610E51D)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Fri, 27 Jun 2025 15:22:01 +0000
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1751037717;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MUttCkDzXycQcM+ZeLMMRCpzl+xVLbejcM6RPqzvGE4=;
+	b=JT3cpXl9ZArMeSYMOke6l07StbVHeRVQhA3tuV4Bg8Km1Ss+9agaha2LHgTaHmJjZVcvq7
+	zynPyvMlDmw05ilZOHCf9dtf3xr4HkJFzcI3RP2G6TvW5b33SvcGZaD0XFEaLAJ7j9QwSi
+	2N3YMNO+gWVPMvtA3+fNEQE4ef9KkQzRypHmv3Xn7znpcpGRsJx3ZdH+2bH7ae0TnqPXIx
+	nAVZSvaG21nSwzg3g1co3xgx9KE+P6pyfW4TK2ElfoQ7u1QvXN9ikTw9xipl5TcmmOs50c
+	S50r8NzZ5AsS+gw1Z5JoKzuB5Txn1TtDL1zvBi4pmPZBR6hVMcN5VqhTIfrwfA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1751037717;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MUttCkDzXycQcM+ZeLMMRCpzl+xVLbejcM6RPqzvGE4=;
+	b=NnpV9FW+8h+UsSWIHT3D8wYe/35aNjAaYlU8izb9l8Z9vawRjWekkV+9RESqAKOqchAuwo
+	FNUosS2NQlN+NhCw==
+Date: Fri, 27 Jun 2025 17:21:51 +0200
+Subject: [PATCH] kunit: Enable PCI on UML without triggering WARN()
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250627-kunit-uml-pci-v1-1-a622fa445e58@linutronix.de>
+X-B4-Tracking: v=1; b=H4sIAA63XmgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDMyMz3ezSvMwS3dLcHN2C5EzdRKMkMwtzU1NjcxMzJaCegqLUtMwKsHn
+ RsbW1AO3c72lfAAAA
+X-Change-ID: 20250626-kunit-uml-pci-a2b687553746
+To: Brendan Higgins <brendan.higgins@linux.dev>, 
+ David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, 
+ Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1751037715; l=2743;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=CAGA/LC8gIjY84M23uMjgwqj01wT2Jq0hkpX/eaSid8=;
+ b=Eh34OpL8RnMKtiUJyh8hWfe8gsxH8Ew5FtrA9CHeYf9PtRmtzRqr6baH8A/VTN1VurhCKzWY2
+ pw8lIbXWbaFDQBo9s2+vND8RtSWFm8ymLkMXrP5yYcB5uWzM6EZRe00
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250627_080209_830977_78041A28 
-X-CRM114-Status: GOOD (  62.73  )
+X-CRM114-CacheID: sfid-20250627_082200_735194_27A1FBFD 
+X-CRM114-Status: GOOD (  11.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,255 +89,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Various KUnit tests require PCI infrastructure to work.
+All normal platforms enable PCI by default, but UML does not.
+Enabling PCI from .kunitconfig files is problematic as it would not be
+portable. So in commit 6fc3a8636a7b ("kunit: tool: Enable virtio/PCI by default on UML")
+PCI was enabled by way of CONFIG_UML_PCI_OVER_VIRTIO=y.
+However CONFIG_UML_PCI_OVER_VIRTIO requires additional configuration of
+CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID or will otherwise trigger a WARN() in
+virtio_pcidev_init(). However there is no one correct value for
+UML_PCI_OVER_VIRTIO_DEVICE_ID which could be used by default.
 
-On Fri, 2025-06-27 at 22:50 +0900, Hajime Tazaki wrote:
-> thanks for the comment on the complicated part of the kernel (signal).
+This warning is confusing when debugging test failures.
 
-This stuff isn't simple.
+On the other hand, the functionality of CONFIG_UML_PCI_OVER_VIRTIO is not
+used at all, given that it is completely non-functional as indicated by
+the WARN() in question. Instead it is only used as a way to enable
+CONFIG_UML_PCI which itself is not directly configurable.
 
-Actually, I am starting to think that the current MMU UML kernel also
-needs a redesign with regard to signal handling and stack use in that
-case. My current impression is that the design right now only permits
-voluntarily scheduling. More specifically, scheduling in response to an
-interrupt is impossible.
+Instead of going through CONFIG_UML_PCI_OVER_VIRTIO, introduce a custom
+configuration option which enables CONFIG_UML_PCI without triggering
+warnings or building dead code.
 
-I suppose that works fine, but it also does not seem quite right.
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+ lib/kunit/Kconfig                           | 7 +++++++
+ tools/testing/kunit/configs/arch_uml.config | 5 ++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-> On Wed, 25 Jun 2025 08:20:03 +0900,
-> Benjamin Berg wrote:
-> >=20
-> > Hi,
-> >=20
-> > On Mon, 2025-06-23 at 06:33 +0900, Hajime Tazaki wrote:
-> > > This commit updates the behavior of signal handling under !MMU
-> > > environment. It adds the alignment code for signal frame as the frame
-> > > is used in userspace as-is.
-> > >=20
-> > > floating point register is carefully handling upon entry/leave of
-> > > syscall routine so that signal handlers can read/write the contents o=
-f
-> > > the register.
-> > >=20
-> > > It also adds the follow up routine for SIGSEGV as a signal delivery r=
-uns
-> > > in the same stack frame while we have to avoid endless SIGSEGV.
-> > >=20
-> > > Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-> > > ---
-> > > =C2=A0arch/um/include/shared/kern_util.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0 4 +
-> > > =C2=A0arch/um/nommu/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
-> > > =C2=A0arch/um/nommu/os-Linux/signal.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 13 ++
-> > > =C2=A0arch/um/nommu/trap.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 194 ++++++++=
-++++++++++++++++++
-> > > =C2=A0arch/x86/um/nommu/do_syscall_64.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
-=A0=C2=A0 6 +
-> > > =C2=A0arch/x86/um/nommu/os-Linux/mcontext.c |=C2=A0 11 ++
-> > > =C2=A0arch/x86/um/shared/sysdep/mcontext.h=C2=A0 |=C2=A0=C2=A0 1 +
-> > > =C2=A0arch/x86/um/shared/sysdep/ptrace.h=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0 2 +-
-> > > =C2=A08 files changed, 231 insertions(+), 2 deletions(-)
-> > > =C2=A0create mode 100644 arch/um/nommu/trap.c
-> > >=20
-> > > [SNIP]
-> > > diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nomm=
-u/os-Linux/mcontext.c
-> > > index c4ef877d5ea0..955e7d9f4765 100644
-> > > --- a/arch/x86/um/nommu/os-Linux/mcontext.c
-> > > +++ b/arch/x86/um/nommu/os-Linux/mcontext.c
-> > > @@ -6,6 +6,17 @@
-> > > =C2=A0#include <sysdep/mcontext.h>
-> > > =C2=A0#include <sysdep/syscalls.h>
-> > > =C2=A0
-> > > +static void __userspace_relay_signal(void)
-> > > +{
-> > > + /* XXX: dummy syscall */
-> > > + __asm__ volatile("call *%0" : : "r"(__kernel_vsyscall), "a"(39) :);
-> > > +}
-> >=20
-> > 39 is NR__getpid, I assume?
-> >=20
-> > The "call *%0" looks like it is code for retpolin, I think this would
-> > currently just segfault.
->=20
-> # if you mean retpolin as zpoline,
->=20
-> zploine uses `call *%rax` so, this is not about zpoline.
+diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+index a97897edd9642f3e5df7fdd9dee26ee5cf00d6a4..c8ca155521b2455a221ddbec3f6fc55662c83475 100644
+--- a/lib/kunit/Kconfig
++++ b/lib/kunit/Kconfig
+@@ -93,4 +93,11 @@ config KUNIT_AUTORUN_ENABLED
+ 	  In most cases this should be left as Y. Only if additional opt-in
+ 	  behavior is needed should this be set to N.
+ 
++config KUNIT_UML_PCI
++	bool "KUnit UML PCI Support"
++	depends on UML
++	select UML_PCI
++	help
++	  Enables the PCI subsystem on UML for use by KUnit tests.
++
+ endif # KUNIT
+diff --git a/tools/testing/kunit/configs/arch_uml.config b/tools/testing/kunit/configs/arch_uml.config
+index 54ad8972681a2cc724e6122b19407188910b9025..28edf816aa70e6f408d9486efff8898df79ee090 100644
+--- a/tools/testing/kunit/configs/arch_uml.config
++++ b/tools/testing/kunit/configs/arch_uml.config
+@@ -1,8 +1,7 @@
+ # Config options which are added to UML builds by default
+ 
+-# Enable virtio/pci, as a lot of tests require it.
+-CONFIG_VIRTIO_UML=y
+-CONFIG_UML_PCI_OVER_VIRTIO=y
++# Enable pci, as a lot of tests require it.
++CONFIG_KUNIT_UML_PCI=y
+ 
+ # Enable FORTIFY_SOURCE for wider checking.
+ CONFIG_FORTIFY_SOURCE=y
 
-Ah, yes, of course.
+---
+base-commit: 19272b37aa4f83ca52bdf9c16d5d81bdd1354494
+change-id: 20250626-kunit-uml-pci-a2b687553746
 
-> > > +void set_mc_userspace_relay_signal(mcontext_t *mc)
-> > > +{
-> > > + mc->gregs[REG_RIP] =3D (unsigned long) __userspace_relay_signal;
-> > > +}
-> > > +
->=20
-> This is a bit scary code which I tried to handle when SIGSEGV is
-> raised by host for a userspace program running on UML (nommu).
->=20
-> # and I should remember my XXX tag is important to fix....
->=20
-> let me try to explain what happens and what I tried to solve.
->=20
-> The SEGV signal from userspace program is delivered to userspace but
-> if we don't fix the code raising the signal, after (um) rt_sigreturn,
-> it will restart from $rip and raise SIGSEGV again.
->=20
-> # so, yes, we've already relied on host and um's rt_sigreturn to
-> =C2=A0 restore various things.
->=20
-> when a uml userspace crashes with SIGSEGV,
->=20
-> - host kernel raises SIGSEGV (at original $rip)
-> - caught by uml process (hard_handler)
-> - raise a signal to uml userspace process (segv_handler)
-> - handler ends (hard_handler)
-> - (host) run restorer (rt_sigreturn, registered by (libc)sigaction,
-> =C2=A0 not (host) rt_sigaction)
-> - return back to the original $rip
-> - (back to top)
->=20
-> this is the case where endless loop is happened.
-> um's sa_handler isn't called as rt_sigreturn (um) isn't called.
-> and the my original attempt (__userspace_relay_signal) is what I tried.
->=20
-> I agree that it is lazy to call a dummy syscall (indeed, getpid).
-> I'm trying to introduce another routine to jump into userspace and
-> call (um) rt_sigreturn after (host) rt_sigreturn.
->=20
-> > And this is really confusing me. The way I am reading it, the code
-> > tries to do:
-> > =C2=A0=C2=A0 1. Rewrite RIP to jump to __userspace_relay_signal
-> > =C2=A0=C2=A0 2. Trigger a getpid syscall (to do "nothing"?)
-> > =C2=A0=C2=A0 3. Let do_syscall_64 fire the signal from interrupt_end
->=20
-> correct.
->=20
-> > However, then that really confuses me, because:
-> > =C2=A0* If I am reading it correctly, then this approach will destroy t=
-he
-> > =C2=A0=C2=A0 contents of various registers (RIP, RAX and likely more)
-> > =C2=A0* This would result in an incorrect mcontext in the userspace sig=
-nal
-> > =C2=A0=C2=A0 handler (which could be relevant if userspace is inspectin=
-g it)
-> > =C2=A0* However, worst, rt_sigreturn will eventually jump back
-> > =C2=A0=C2=A0 into__userspace_relay_signal, which has nothing to return =
-to.
-> > =C2=A0* Also, relay_signal doesn't use this? What happens for a SIGFPE,=
- how
-> > =C2=A0=C2=A0 is userspace interrupted immediately in that case?
->=20
-> relay_signal shares the same goal of this, indeed.
-> but the issue with `mc->gregs[REG_RIP]` (endless signals) still exists
-> I guess.
-
-Well, endless signals only exist as long as you exit to the same
-location. My suggestion was to read the user state from the mcontext
-(as SECCOMP mode does it) and executing the signal right away, i.e.:
- * Fetch the current registers from the mcontext
- * Push the signal context onto the userspace stack
- * Modify the host mcontext to set registers for the signal handler
- * Jump back to userspace by doing a "return"
-
-Said differently, I really prefer deferring as much logic as possible
-to the host. This is both safer and easier to understand. Plus, it also
-has the advantage of making it simpler to port UML to other
-architectures.
-
-> > Honestly, I really think we should take a step back and swap the
-> > current syscall entry/exit code. That would likely also simplify
-> > floating point register handling, which I think is currently
-> > insufficient do deal with the odd special cases caused by different
-> > x86_64 hardware extensions.
-> >=20
-> > Basically, I think nommu mode should use the same general approach as
-> > the current SECCOMP mode. Which is to use rt_sigreturn to jump into
-> > userspace and let the host kernel deal with the ugly details of how to
-> > do that.
->=20
-> I looked at how MMU mode (ptrace/seccomp) does handle this case.
->=20
-> In nommu mode, we don't have external process to catch signals so, the
-> nommu mode uses hard_handler() to catch SEGV/FPE of userspace
-> programs.=C2=A0 While mmu mode calls segv_handler not in a context of
-> signal handler.
->=20
-> # correct me if I'm wrong.
->=20
-> thus, mmu mode doesn't have this situation.
-
-Yes, it does not have this specific issue. But see the top of the mail
-for other issues that are somewhat related.
-
-> I'm attempting various ways; calling um's rt_sigreturn instead of
-> host's one, which doesn't work as host restore procedures (unblocking
-> masked signals, restoring register states, etc) aren't called.
->=20
-> I'll update here if I found a good direction, but would be great if
-> you see how it should be handled.
-
-Can we please discuss possible solutions? We can figure out the details
-once it is clear how the interaction with the host should work.
-
-I still think that the idea of using the kernel task stack as the
-signal stack is really elegant. Actually, doing that in normal UML may
-be how we can fix the issues mentioned at the top of my mail. And for
-nommu, we can also use the host mcontext to jump back into userspace
-using a simple "return".
-
-Conceptually it seems so simple.
-
-Benjamin
-
-
->=20
-> -- Hajime
->=20
-> > I believe that this requires a second "userspace" sigaltstack in
-> > addition to the current "IRQ" sigaltstack. Then switching in between
-> > the two (note that the "userspace" one is also used for IRQs if those
-> > happen while userspace is executing).
-> >=20
-> > So, in principle I would think something like:
-> > =C2=A0* to jump into userspace, you would:
-> > =C2=A0=C2=A0=C2=A0 - block all signals
-> > =C2=A0=C2=A0=C2=A0 - set "userspace" sigaltstack
-> > =C2=A0=C2=A0=C2=A0 - setup mcontext for rt_sigreturn
-> > =C2=A0=C2=A0=C2=A0 - setup RSP for rt_sigreturn
-> > =C2=A0=C2=A0=C2=A0 - call rt_sigreturn syscall
-> > =C2=A0* all signal handlers can (except pure IRQs):
-> > =C2=A0=C2=A0=C2=A0 - check on which stack they are
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> easy to detect whether we are in kern=
-el mode
-> > =C2=A0=C2=A0=C2=A0 - for IRQs one can probably handle them directly (an=
-d return)
-> > =C2=A0=C2=A0=C2=A0 - in user mode:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + store mcontext location and info=
-rmation needed for rt_sigreturn
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + jump back into kernel task stack
-> > =C2=A0* kernel task handler to continue would:
-> > =C2=A0=C2=A0=C2=A0 - set sigaltstack to IRQ stack
-> > =C2=A0=C2=A0=C2=A0 - fetch register from mcontext
-> > =C2=A0=C2=A0=C2=A0 - unblock all signals
-> > =C2=A0=C2=A0=C2=A0 - handle syscall/signal in whatever way needed
-> >=20
-> > Now that I wrote about it, I am thinking that it might be possible to
-> > just use the kernel task stack for the signal stack. One would probably
-> > need to increase the kernel stack size a bit, but it would also mean
-> > that no special code is needed for "rt_sigreturn" handling. The rest
-> > would remain the same.
-> >=20
-> > Thoughts?
-> >=20
-> > Benjamin
-> >=20
-> > > [SNIP]
-> >=20
->=20
+Best regards,
+-- 
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
 
