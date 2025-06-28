@@ -4,99 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB6F8C83026
-	for <linux-um@archiver.kernel.org>; Sat, 28 Jun 2025 13:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 851F9C7EE39
+	for <linux-um@archiver.kernel.org>; Sat, 28 Jun 2025 16:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=L9hXJHuBvyYPVmVbLpoMFR4H07JOmA06RF+Wl4Z/7RE=; b=b9C2Ql09URJ4doHEgqdyxeLtwy
-	mviCyF0rjsyrjlZVGFRbNQ+8TooJr/27zxA1F67peQwDwOOMCLTAFTN7un7AtdWZccilh9jfVTZGf
-	dhd0yf9tQUftLEmL4nIaqhm5ywwhYxdVj3GTMLg2lzeqA3tN8ENgGvYKbrv9W32W9GQNiGxeMaTxk
-	v5DdJ7HNptDcG27bROuWDWE5+1f1/Pg6IPvy+RzOsYeboKd9LkzsBQCuQ1mkhmWsDQAuu4oCnx37L
-	9GaLu8y3SHVKAaHEwCYxxSAsTfAC2icRcmJ+t+mm33Ntk341k4JGLbsZbn6CD3CY1APnKVX3F5kqd
-	4G4eWTxA==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=+vv4yR9oqXyWfqRP4L1SN63wwPwk9iH4aPID46OwQoY=; b=1K7h7HdUZzBlfrOZ0UTqKF59cg
+	C+hrvBUed7kvTg9Oa2fAscD27cFn5rRfjrJdEuIJ7rhIm110AR44JxQ/4bkX//iwXYEYEbreXF/8y
+	JNTf3qp5hXzLx9x2eU86kjJ8zXOuCZ228h1W/frx4XmtS3nXL/7ZWGT7n+jT3G1WLqs9vthgtZMFs
+	5IQ5av/aAgkAeB9btFvdLa3pq/eGz+ll0a2SKxaj9u00Zj2L7u1tJSIyr+IM8WftxK1XeW0+o1TBE
+	+uDwuevmEGaHIcFEVsBHE4JSKNf1F5ARIQTjjZZRXFChhisW7b9fXnPxpjxeSXTWgcyG91r8AKGO9
+	D/d0zrFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVVYr-0000000GpO7-1Ilg;
-	Sat, 28 Jun 2025 13:25:41 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1uVYii-0000000H2Y4-0v62;
+	Sat, 28 Jun 2025 16:48:04 +0000
+Received: from out0-201.mail.aliyun.com ([140.205.0.201])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVVYn-0000000GpMw-2k0P;
-	Sat, 28 Jun 2025 13:25:39 +0000
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-553dceb342fso2713710e87.0;
-        Sat, 28 Jun 2025 06:25:36 -0700 (PDT)
+	id 1uVYie-0000000H2Xe-3q6V
+	for linux-um@lists.infradead.org;
+	Sat, 28 Jun 2025 16:48:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751117135; x=1751721935; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L9hXJHuBvyYPVmVbLpoMFR4H07JOmA06RF+Wl4Z/7RE=;
-        b=UNg0+YjOIuTKaSQTk8dwMPEEIdhSkfxjQC+I/+gQrfvMrfCn1Q4Xc9zDPCMkhRZ3Bj
-         gK+gEAVFbLcK+gmsWtTvVvRzCm4EHyP0frbKoRK8jhGbFLKyNyrqsKAXHfL52bvmPvBC
-         fl39Z6iivpZutEFj012lG9QsmN5F7KXq15SAdP+gkJFxqtLK0Q48JDE+/TB5roe5PZYK
-         faqrJj5HU8i+MEnCsP7xd1CE9sW5SzNhhk5njG6uWcBhDDyR88iyEZMkE5oTbGFOxbbk
-         uIfMcVQWIjQZ32+u5hH99NqqGgvTd60eJYgoB7RcUPcsbYsPe2+qrLJkARMMDqwWY/Tj
-         ikSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751117135; x=1751721935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L9hXJHuBvyYPVmVbLpoMFR4H07JOmA06RF+Wl4Z/7RE=;
-        b=PMSWe5Fa2ZraP2+AnE1k28mU91OLMLAVSJsrFHR0s5bwtg8vQOF0FHfFrkhZhM7hyT
-         cD5IdyVy0ths6M7tAVHsMUyMqRrs4JU2gE7KGY7h1KeD7N5bB7/+vKq4yn/xM+MmzMJe
-         LwIPVsUkXwK2lGTM5eU+WEjFjNWqP3NuWhzM4xqgKvwYe+TNdJF9X+GozKdEhjZG8fhA
-         5Nu0iAr07/ikLPb2Sa/4Ywz+iCwEDu5hRHh8qUsbsAOFxSnKzfFadahOMdoRtp9tuVe9
-         3LMNcSuyeQw+WCG2I/all9Nq7bigBhWifg2lTYFE0FuJphpv6WB7BZQWlMXTVfqB46Xp
-         Kr3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVPdGzIAtkAnzDKDaQTh5YschpTCmfCEWnl8mqiq5GPGlSvcGJPto+pA/3gsw6vDVIUXRIS9rcDSQo=@lists.infradead.org, AJvYcCW/1h9zk805UmtP5Bunr998BQyDViDCGa2A9URkSynlHP0HHddTSQPWGf8+BalKDuaFI0vhzEbAbi8S3etf0nlB@lists.infradead.org, AJvYcCWQhHhYk7izP3C0zZvMw/tRU1A+T2frR8Zk3JZXrBTOaldHtludG5C13yGWgBjaUl26q9/VA3jneJ0CTJM=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyHxfgeHdMUYWKYDcAleuAlS+cN3RpCOjRuzMgvdel//au4LWhI
-	f/gPGFvUCEWTxndvsEElNceALrW2pPLRXzMDEsFAIVI1RIVM4GFNTgIhNeB38r8yFhaJa+gB95M
-	VfTdAhVilh7dA0GXHr+nwMG78UZ1xou2kzDm63rUVKw==
-X-Gm-Gg: ASbGncuK7YJxlObgHSGlfBDHcLTd0Wok4U7O7XKz2fUxBSfbgxoOp5Bu5lIpcPRnGz4
-	CwBIwtnX+lBjas/RMWcRgYuiFDE0aL9B39d7f/W8G/JcYmifXSufPE+nTgHkZNz4mUK3G03CBjj
-	x2LC+wl3NWrEfE5JEVm4xPOT7KKklwmICa8T6G3cma+IvRM3Y=
-X-Google-Smtp-Source: AGHT+IGcgqdYgD7HxbDyPqcYV3Heu4fL1zBBGlE2pOeLSvkf48pz8fpRePfbVo/DnCDwvNyc5box4+f/veOvw14SJEw=
-X-Received: by 2002:a05:6512:401e:b0:553:d1b0:1f1f with SMTP id
- 2adb3069b0e04-5550b817bf9mr2031982e87.21.1751117135042; Sat, 28 Jun 2025
- 06:25:35 -0700 (PDT)
+	d=antgroup.com; s=default;
+	t=1751129272; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=+vv4yR9oqXyWfqRP4L1SN63wwPwk9iH4aPID46OwQoY=;
+	b=nUoKfrGllOlK43JoG7lvNxAQvCLcrt+WZLP5cqNBhLBFFYcDwOE/XQWCb3+6IRV/QGxFxGlYe5BMqmnqHJ5RhCFRbSfFj1trG/jFJkHja2nDdmVjLeTY/5wKMsJ79Xcbu6p+A3v0G76gO7CXZzZG97qL9uusIqJT86eFSvmqHd0=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.dYsn1bO_1751129264 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sun, 29 Jun 2025 00:47:49 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: <linux-um@lists.infradead.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>,
+  "kernel test robot" <lkp@intel.com>
+Subject: [PATCH] um: Turn HAS_IOPORT_MAP off
+Date: Sun, 29 Jun 2025 00:47:40 +0800
+Message-Id: <20250628164740.353989-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20250626153147.145312-1-snovitoll@gmail.com> <CA+fCnZfAtKWx=+to=XQBREhou=Snb0Yms4D8GNGaxE+BQUYm4A@mail.gmail.com>
-In-Reply-To: <CA+fCnZfAtKWx=+to=XQBREhou=Snb0Yms4D8GNGaxE+BQUYm4A@mail.gmail.com>
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Date: Sat, 28 Jun 2025 18:25:17 +0500
-X-Gm-Features: Ac12FXz_1yZEfUGAygYOxkSS_g1GpWf3Y2t1PdPyYRlgb0h3dTvUyL8mVDVK8Qk
-Message-ID: <CACzwLxgsVkn98VDPpmm7pKcbvu87UBwPgYJmLfKixu4-x+yjSA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] kasan: unify kasan_arch_is_ready with kasan_enabled
-To: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com, 
-	vincenzo.frascino@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, 
-	will@kernel.org, chenhuacai@kernel.org, kernel@xen0n.name, 
-	maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, 
-	christophe.leroy@csgroup.eu, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, alex@ghiti.fr, hca@linux.ibm.com, gor@linux.ibm.com, 
-	agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
-	richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
-	dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, 
-	hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com, 
-	akpm@linux-foundation.org, nathan@kernel.org, nick.desaulniers+lkml@gmail.com, 
-	morbo@google.com, justinstitt@google.com, arnd@arndb.de, rppt@kernel.org, 
-	geert@linux-m68k.org, mcgrof@kernel.org, guoweikang.kernel@gmail.com, 
-	tiwei.btw@antgroup.com, kevin.brodsky@arm.com, benjamin.berg@intel.com, 
-	kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250628_062537_695953_FCA557CE 
-X-CRM114-Status: GOOD (  27.61  )
+X-CRM114-CacheID: sfid-20250628_094801_644352_0D2E17E9 
+X-CRM114-Status: UNSURE (   5.42  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,76 +66,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jun 28, 2025 at 3:57=E2=80=AFPM Andrey Konovalov <andreyknvl@gmail.=
-com> wrote:
->
-> On Thu, Jun 26, 2025 at 5:32=E2=80=AFPM Sabyrzhan Tasbolatov
-> <snovitoll@gmail.com> wrote:
-> >
-> > This patch series unifies the kasan_arch_is_ready() and kasan_enabled()
-> > interfaces by extending the existing kasan_enabled() infrastructure to
-> > work consistently across all KASAN modes (Generic, SW_TAGS, HW_TAGS).
-> >
-> > Currently, kasan_enabled() only works for HW_TAGS mode using a static k=
-ey,
-> > while other modes either return IS_ENABLED(CONFIG_KASAN) (compile-time
-> > constant) or rely on architecture-specific kasan_arch_is_ready()
-> > implementations with custom static keys and global variables.
-> >
-> > This leads to:
-> > - Code duplication across architectures
-> > - Inconsistent runtime behavior between KASAN modes
-> > - Architecture-specific readiness tracking
-> >
-> > After this series:
-> > - All KASAN modes use the same kasan_flag_enabled static key
-> > - Consistent runtime enable/disable behavior across modes
-> > - Simplified architecture code with unified kasan_init_generic() calls
-> > - Elimination of arch specific kasan_arch_is_ready() implementations
-> > - Unified vmalloc integration using kasan_enabled() checks
-> >
-> > This addresses the bugzilla issue [1] about making
-> > kasan_flag_enabled and kasan_enabled() work for Generic mode,
-> > and extends it to provide true unification across all modes.
-> >
-> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D217049
->
-> Hi Sabyrzhan,
->
-> Thank you for working on this!
->
-> One aspect that is missing from the patches is moving the
-> kasan_arch_is_ready() calls into the include/linux/kasan.h (this is
-> not explicitly mentioned in the issue, but this is what the "adding
-> __wrappers" part is about).
->
-> Another thing that needs careful consideration is whether it's
-> possible to combine kasan_arch_is_ready() and kasan_enabled() into the
-> same check logically at all. There's one issue mentioned in [1]:
+Since we don't have port I/O support, we should turn HAS_IOPORT_MAP
+off as well. It will fix clang warnings like below:
 
-Hello,
-I've removed kasan_arch_is_ready() at all in this series:
-[PATCH v2 11/11] kasan: replace kasan_arch_is_ready with kasan_enabled
+./include/asm-generic/io.h:1175:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+ 1175 |         return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
+      |                                                   ~~~~~~~~~~ ^
 
-Is it not what's expected by unification?
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202506271049.MtzHqdSd-lkp@intel.com/
+Fixes: b8c9c3b822fe ("um: stop using PCI port I/O")
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+Strictly speaking, the -Wnull-pointer-arithmetic warnings reported
+by lkp has been fixed by commit b8c9c3b822fe ("um: stop using PCI
+port I/O"). But it introduced new -Wnull-pointer-arithmetic warnings,
+and this patch fixes the newly introduced warnings.
 
->
-> > In kasan_cache_create() we unconditionally allocate a metadata buffer,
-> > but the kasan_init_slab_obj() call to initialise it is guarded by
-> > kasan_enabled(). But later parts of the code only check the presence of
-> > the buffer before using it, so bad things happen if kasan_enabled()
-> > later turns on (I was getting some error about invalid lock state).
->
-> And there might be other callbacks that should be executed even before
-> kasan_init_...() completes. But then for the HW_TAGS mode, if
-> kasan_enabled() is off, then we don't want to execute any callbacks.
->
-> So maybe we do actually need a separate static key for
-> kasan_arch_is_ready(). But even if so, it still makes sense to move
-> kasan_arch_is_ready() into the __wrappers for the affected callbacks.
->
-> Thanks!
->
-> [1] https://lore.kernel.org/linux-mm/CA+fCnZf7JqTH46C7oG2Wk9NnLU7hgiVDEK0=
-EA8RAtyr-KgkHdg@mail.gmail.com/
+ arch/um/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index f08e8a7fac93..76aa954520b1 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -54,6 +54,9 @@ config UML_IOMEM_EMULATION
+ 	select INDIRECT_IOMEM
+ 	select GENERIC_PCI_IOMAP
+ 
++config NO_IOPORT_MAP
++	def_bool y
++
+ config ISA
+ 	bool
+ 
+-- 
+2.34.1
+
 
