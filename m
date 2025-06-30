@@ -4,100 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8395DC7EE30
-	for <linux-um@archiver.kernel.org>; Sun, 29 Jun 2025 20:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1DB8C7EE39
+	for <linux-um@archiver.kernel.org>; Mon, 30 Jun 2025 00:32:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qpjVZvBcIo5G28UGMNZaBkJZF6ITVDpFyOxvjBVjrQo=; b=XbvpAsZqW7yOYfUwnivmKevCGI
-	cLpQh9kIaBivXJGbAs77YyDu/mbFREEIlvFPxOGT3xsJBryhPb7f0my07J7wntjAKYomdA4+kyfBQ
-	DOynarClqjytI2bRz0EvKh8AgxUK3Qt5Q8ZEILJ42hAD6M+UiigEfuFFjW5W43ENx7XcpdiVD1vFw
-	TRx/sm7iYpo5OIWLIUAHzlBBR+qu7ywJQh1H7YmSw2jlWmJgpaxUIM0rCm14cOmEuLVuc/eeXXR3k
-	lIoHvuFWqQcsGeLxi8F36BSfoBjlS8cb3ohxVxuh2Ne2/ibSsUTG3hDqxBx9P/iKak6Df9xkhl1nF
-	geJEk64Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=rz7q/mLSazaciDJjcVPSYcL8l+KzHY3rbvo2kLwMng8=; b=vOeg71s8Iju/L6J1TfRjoFpb5m
+	c0XpU3ZrcZfFGIMAE3bOVkHYuqQqvzWX20f3TLHPxDk/TwNkszkIPpT/VhNGySLTydoi/YA4UtKuo
+	Tm5oW/93FdfdF2ijp1rEHz0ZQD2EaFBvyssUThcN4BT60RvE3ZvNUUooGs9Ks7fb+BhlJ70BwqSpR
+	VM3I6xq4Et3E4StRSY3bPQMhDhjtAF94/nYtP0KTbjcUwq1EueoZ/8XWJAowtRgSk3wmlEIv6spxx
+	0Z9qBurFmuIr7n2er+TXua7AshUdPlDOqHhfeco1OAWrleoPvr1uHzmNcrhiIwkGLVoivpKO1dxGG
+	79LS4oxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVyHS-00000000g8Z-1KSX;
-	Sun, 29 Jun 2025 20:05:38 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1uW2RN-00000000tre-13tn;
+	Mon, 30 Jun 2025 00:32:09 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uVyHP-00000000g7g-34UC;
-	Sun, 29 Jun 2025 20:05:37 +0000
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3a52874d593so1198318f8f.0;
-        Sun, 29 Jun 2025 13:05:35 -0700 (PDT)
+	id 1uW2RK-00000000trJ-0PE3
+	for linux-um@lists.infradead.org;
+	Mon, 30 Jun 2025 00:32:07 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3a6d1369d4eso2051608f8f.2
+        for <linux-um@lists.infradead.org>; Sun, 29 Jun 2025 17:32:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751227534; x=1751832334; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qpjVZvBcIo5G28UGMNZaBkJZF6ITVDpFyOxvjBVjrQo=;
-        b=cketaLXD+PUDlX6nzdQ5w6JODWtOyuj8Msa0s2TRDgrmr0EZdnwfti8Fp1hmjhywEX
-         aeC1JT2l3pG2yD1R98uEPxhD0dZLQhfSxuVkJAUBFzbZbh0eTiDddtaoONvDrHR8Viup
-         6tK1JXnuW8Dg7RCoiZV0KzCvwRvSMvPNoy6L5g7F/TyTCBDlIDh6I90ZItH9UXZCxj1w
-         z8zZ/ntlKnxH4C5KCuLdQw7QgY3KeOF97tqrTCDGR6vbclV+KDoSO7RvmT2LS7IW8qLP
-         cgJMoXtg1tFcR+HgJ58DUC1aOAmQYQeloSYtcSVVVSCsPU0OSaq+8aZY1UlSgGCPPtBy
-         Ctgg==
+        d=suse.com; s=google; t=1751243524; x=1751848324; darn=lists.infradead.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rz7q/mLSazaciDJjcVPSYcL8l+KzHY3rbvo2kLwMng8=;
+        b=N+1fNtPheMDHZhVWGouwEizlgMbavIaNAmeKxiR8srLiNJOdot87zlsMW8msyGBs3S
+         2QkbY664/FTlc3+XeEO1YQBobLYOw76wfOBzNLPHzMwUNkQRNqUuzJEeoYRx0PB746Ml
+         iQr84Lj+e4xtoHoZItB/NmhknHsy0siSbc/VOci2t8RJLLofRVVJcaM76zXkI8WN8CVE
+         doTxfIOS+I01CAjmqrE7DNn1QDK8MkU98Nz3rkMPj+WvCBjTI4ygFKQrAYNfXYLLjco/
+         O/75I66LHcjoy+iDt+CG6vftoS4PTwcEOmts6Pcjtl98G0mFaNchnkqN/BFNSyYyQrcA
+         54iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751227534; x=1751832334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qpjVZvBcIo5G28UGMNZaBkJZF6ITVDpFyOxvjBVjrQo=;
-        b=XKV5sitysmR4zR1N+SfYCfmlCNa6gyCTydjmnhv9tUlxWvJayU69b+2nyK36x+qzGX
-         JL65fWXXH5QdRGoAkDT0TL+kmb4bf00Ok+py4wmr0M6rgj69v7KtwWLlbKM4rC85A8we
-         2jsWu99LrrH/sEQwLaFSFfj1RJQmzaLir7Hw2ta2Z+z6cLO1Ar5GzkP1HY9eWUldZc7g
-         ymNGuLP9iEb8H8/d1JhhPR/giyfAFBFJkTs6Q0FchkGCQIWY9q1TrRaw8HF1nIz/o1Nk
-         b96WZAUZ3/qSvgemh3m/rZTWoWcFubYLmZfjmau9zi+gsLxyos+PC8FHitx/CAxRBNbW
-         Lezw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAlEh9jL7jpLZ+nLJ0rbQVRm33z4zcmLlEUhUtUglrKnf//ywkpt4pZQkgG8Syo313cSNDB+pGh4kLbRz8nIFy@lists.infradead.org, AJvYcCUL1L8Vqy/c9tuQWpaER/wwP7e+ZnVsiVxsduHX9NNmvXr4Q9ogE60ODkFufkV6yQuEXQOeu7Ib+3Wt09w=@lists.infradead.org, AJvYcCVSBzEeUbLjyUje72kPDIud/MLkLzyvaIMJPkgvSDlllZH4FZDDOMU79H4jjpVLch2kFhcP0GfyRaI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzvzlgkdN7v8TB86eZ0K+CiqqNXwfYiQTEcQSNxOevx96fRH/VU
-	2tYvARNwmpVrEV4o7Clhz7DVu/nHiJFFXTLtI7GOjtW2SHYO6pzq+O6TjUTRMdpUs1thyZasa+C
-	m3A+M9Tod7QoWnon5mt2zosKjfzy77wY=
-X-Gm-Gg: ASbGncumJzGHOyHRZTZSngfIrc8tqUzxdVZKuqxvzUJnTN5m655e1m1GETLaPEStL7h
-	b9y/orzUDsNYWLpXT8DZjumkHpMCQDTIssSkyDg6snHZ1A4d6JbE0ZSH5DAsW5trVEnme1k5cIb
-	7LxM/BAQua3/NLSvX44cpt8YyV2+lLeWT/3VRV0b4Yk/uahh5GTfdd3gs=
-X-Google-Smtp-Source: AGHT+IG9Jnr7utU7Trd4lqTg8GWi9uRNVbru2WXxMPFleBJfH4kInx+LP9kDmy2SL/eaM5dKaQqnO/o2Ok4MjECqA8k=
-X-Received: by 2002:a5d:59c7:0:b0:3a4:fc3f:ed28 with SMTP id
- ffacd0b85a97d-3a8fee64fafmr10710844f8f.29.1751227533501; Sun, 29 Jun 2025
- 13:05:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20250626153147.145312-1-snovitoll@gmail.com> <CA+fCnZfAtKWx=+to=XQBREhou=Snb0Yms4D8GNGaxE+BQUYm4A@mail.gmail.com>
- <CACzwLxgsVkn98VDPpmm7pKcbvu87UBwPgYJmLfKixu4-x+yjSA@mail.gmail.com>
-In-Reply-To: <CACzwLxgsVkn98VDPpmm7pKcbvu87UBwPgYJmLfKixu4-x+yjSA@mail.gmail.com>
-From: Andrey Konovalov <andreyknvl@gmail.com>
-Date: Sun, 29 Jun 2025 22:05:22 +0200
-X-Gm-Features: Ac12FXwSsH6fvJE1vEp59zDWu481tFenq-ukDXNa3gyvAGzFlMqgNHF8VfcuM6Y
-Message-ID: <CA+fCnZcGyTECP15VMSPh+duLmxNe=ApHfOnbAY3NqtFHZvceZw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] kasan: unify kasan_arch_is_ready with kasan_enabled
-To: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc: ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com, 
-	vincenzo.frascino@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, 
-	will@kernel.org, chenhuacai@kernel.org, kernel@xen0n.name, 
-	maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com, 
-	christophe.leroy@csgroup.eu, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, alex@ghiti.fr, hca@linux.ibm.com, gor@linux.ibm.com, 
-	agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
-	richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
-	dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org, 
-	hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com, 
-	akpm@linux-foundation.org, nathan@kernel.org, nick.desaulniers+lkml@gmail.com, 
-	morbo@google.com, justinstitt@google.com, arnd@arndb.de, rppt@kernel.org, 
-	geert@linux-m68k.org, mcgrof@kernel.org, guoweikang.kernel@gmail.com, 
-	tiwei.btw@antgroup.com, kevin.brodsky@arm.com, benjamin.berg@intel.com, 
-	kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org, 
-	llvm@lists.linux.dev
+        d=1e100.net; s=20230601; t=1751243524; x=1751848324;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rz7q/mLSazaciDJjcVPSYcL8l+KzHY3rbvo2kLwMng8=;
+        b=YbTFNIlovXCyhlvOYXEgP9QbrszW+sgob5rHBtTu3SnHdVPuMsKmV7yHZkch3NHxIR
+         nDnLuoVesyc3qI8gdCKFGZMQFS7fKv834QKeKpjbpAo6kPPttYAD5I1QXPe5CHkTiRL2
+         /i47Q72cjeakkwEire7UKDHXdtqde6J9j0PJyStjklaM9VCqWBVswLWfdkyfo4AUGPSa
+         txZAPPn9d2DdBHaKWB7Ot2oZnnuNde2LrosxJDdx+XpmsDkUaxDSQeLy6i8phqLaLKK8
+         e4wgWSvPzSbC0kp/hs8O2jJ0mhHp/fJVa+n290MKrhRS0eKhxzmfYiv3vfT5kcE8OCrr
+         UjPg==
+X-Forwarded-Encrypted: i=1; AJvYcCXpJftDLuVkC/q3xKh4nvR/iu2nYzb5aOQaYAE6477k/iHbm+xUerb/OZpIfwrh9Q6Gd172IuOefQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yyr85Osn0GLaWkDxEjcUiYUDv4/3Q+h31pHpc49oMDr7QzV8MG4
+	8vTXkBZdod0z48I7ucHplnMQHaxt0w103dTOH/aujxTZUpYjavgmukxm/lw3t+1sqFk=
+X-Gm-Gg: ASbGncu/M8AXbI+Zdk34bRPPUAzsV9AMqSkXDrwERYcAW0Sxok88YXOa72B3akzGu6Q
+	dVZDdnPn+IEmWlPUuvNuBVRyLgK57DBqKVijWb8yFc4HaEVhZHGCXKKqPyGFOpRRND6VTJxZqK7
+	KIYT+tFmlMNk3ewWCpCjGzYUyqEO+HUNCvPmS33E9K3vQvDSwQudF3I+lJDMTX+MIOPHG6EeHel
+	2+MAiao/AvWF3vzkRUW5uQ2bebcxZXzM5te+r1y5Lp76rq1FTrIeF2XrbiQlk9kkcUrXh09vunE
+	jSgZ4mWCaJ05aOiGQd2CrCzMiAVcvOsm28lHMtMq1mDXrYECKOKFXyR9GMrF+u5Opv1kkDHRlt9
+	qquxLXqx2uP4FAmFWnlCc48pLB1jq9ui9JYs=
+X-Google-Smtp-Source: AGHT+IHV8BL/WZwTciQ5tTsBYvp9HevklHMpopzWboeYBsH4XCwqK0uP1k7gV+5QrCOrwBU+rea1EA==
+X-Received: by 2002:adf:c793:0:b0:3a5:2182:bd11 with SMTP id ffacd0b85a97d-3a8fe4bc774mr6503870f8f.20.1751243523771;
+        Sun, 29 Jun 2025 17:32:03 -0700 (PDT)
+Received: from ?IPv6:2804:5078:805:6b00:58f2:fc97:371f:2? ([2804:5078:805:6b00:58f2:fc97:371f:2])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a7fc139713sm51320431cf.22.2025.06.29.17.31.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Jun 2025 17:32:03 -0700 (PDT)
+Message-ID: <d8c2b6d6c992ae222413fd19c1b93360297903e8.camel@suse.com>
+Subject: Re: [PATCH 6/7] debug: kgd_io: Don't check for CON_ENABLED
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, John Ogness	
+ <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, Jason Wessel	 <jason.wessel@windriver.com>, Daniel
+ Thompson <danielt@kernel.org>, Douglas Anderson <dianders@chromium.org>,
+ Richard Weinberger <richard@nod.at>, Anton Ivanov	
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, 	linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, 	kgdb-bugreport@lists.sourceforge.net,
+ linux-um@lists.infradead.org
+Date: Sun, 29 Jun 2025 21:31:57 -0300
+In-Reply-To: <aFAiq3IEic8DuATR@pathway.suse.cz>
+References: <20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com>
+	 <20250606-printk-cleanup-part2-v1-6-f427c743dda0@suse.com>
+	 <aFAiq3IEic8DuATR@pathway.suse.cz>
+Autocrypt: addr=mpdesouza@suse.com; prefer-encrypt=mutual;
+ keydata=mDMEZ/0YqhYJKwYBBAHaRw8BAQdA4JZz0FED+JD5eKlhkNyjDrp6lAGmgR3LPTduPYGPT
+ Km0Kk1hcmNvcyBQYXVsbyBkZSBTb3V6YSA8bXBkZXNvdXphQHN1c2UuY29tPoiTBBMWCgA7FiEE2g
+ gC66iLbhUsCBoBemssEuRpLLUFAmf9GKoCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgk
+ QemssEuRpLLWGxwD/S1I0bjp462FlKb81DikrOfWbeJ0FOJP44eRzmn20HmEBALBZIMrfIH2dJ5eM
+ GO8seNG8sYiP6JfRjl7Hyqca6YsE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 (by Flathub.org) 
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250629_130535_779065_D91DB2B8 
-X-CRM114-Status: GOOD (  26.80  )
+X-CRM114-CacheID: sfid-20250629_173206_162224_62FC6FA7 
+X-CRM114-Status: GOOD (  30.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,91 +115,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jun 28, 2025 at 3:25=E2=80=AFPM Sabyrzhan Tasbolatov
-<snovitoll@gmail.com> wrote:
->
-> On Sat, Jun 28, 2025 at 3:57=E2=80=AFPM Andrey Konovalov <andreyknvl@gmai=
-l.com> wrote:
-> >
-> > On Thu, Jun 26, 2025 at 5:32=E2=80=AFPM Sabyrzhan Tasbolatov
-> > <snovitoll@gmail.com> wrote:
-> > >
-> > > This patch series unifies the kasan_arch_is_ready() and kasan_enabled=
-()
-> > > interfaces by extending the existing kasan_enabled() infrastructure t=
-o
-> > > work consistently across all KASAN modes (Generic, SW_TAGS, HW_TAGS).
-> > >
-> > > Currently, kasan_enabled() only works for HW_TAGS mode using a static=
- key,
-> > > while other modes either return IS_ENABLED(CONFIG_KASAN) (compile-tim=
-e
-> > > constant) or rely on architecture-specific kasan_arch_is_ready()
-> > > implementations with custom static keys and global variables.
-> > >
-> > > This leads to:
-> > > - Code duplication across architectures
-> > > - Inconsistent runtime behavior between KASAN modes
-> > > - Architecture-specific readiness tracking
-> > >
-> > > After this series:
-> > > - All KASAN modes use the same kasan_flag_enabled static key
-> > > - Consistent runtime enable/disable behavior across modes
-> > > - Simplified architecture code with unified kasan_init_generic() call=
-s
-> > > - Elimination of arch specific kasan_arch_is_ready() implementations
-> > > - Unified vmalloc integration using kasan_enabled() checks
-> > >
-> > > This addresses the bugzilla issue [1] about making
-> > > kasan_flag_enabled and kasan_enabled() work for Generic mode,
-> > > and extends it to provide true unification across all modes.
-> > >
-> > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D217049
-> >
-> > Hi Sabyrzhan,
-> >
-> > Thank you for working on this!
-> >
-> > One aspect that is missing from the patches is moving the
-> > kasan_arch_is_ready() calls into the include/linux/kasan.h (this is
-> > not explicitly mentioned in the issue, but this is what the "adding
-> > __wrappers" part is about).
-> >
-> > Another thing that needs careful consideration is whether it's
-> > possible to combine kasan_arch_is_ready() and kasan_enabled() into the
-> > same check logically at all. There's one issue mentioned in [1]:
->
-> Hello,
-> I've removed kasan_arch_is_ready() at all in this series:
-> [PATCH v2 11/11] kasan: replace kasan_arch_is_ready with kasan_enabled
->
-> Is it not what's expected by unification?
+On Mon, 2025-06-16 at 15:56 +0200, Petr Mladek wrote:
+> On Fri 2025-06-06 23:53:48, Marcos Paulo de Souza wrote:
+> > All consoles found on for_each_console_srcu are registered, meaning
+> > that all of
+> > them are CON_ENABLED. The code tries to find an active console, so
+> > check if the
+> > console is not suspended instead.
+> >=20
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > ---
+> > =C2=A0kernel/debug/kdb/kdb_io.c | 2 +-
+> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+> > index
+> > 9b11b10b120cf07e451a7a4d92ce50f9a6c066b2..cdc1ee81d7332a9a00b967af7
+> > 19939f438f26cef 100644
+> > --- a/kernel/debug/kdb/kdb_io.c
+> > +++ b/kernel/debug/kdb/kdb_io.c
+> > @@ -589,7 +589,7 @@ static void kdb_msg_write(const char *msg, int
+> > msg_len)
+> > =C2=A0	 */
+> > =C2=A0	cookie =3D console_srcu_read_lock();
+> > =C2=A0	for_each_console_srcu(c) {
+> > -		if (!(console_srcu_read_flags(c) & CON_ENABLED))
+> > +		if (console_srcu_read_flags(c) & CON_SUSPENDED)
+> > =C2=A0			continue;
+>=20
+> I think that this is similar to the 5th patch. We should check
+> here is_console_usable(con, console_srcu_read_flags(c), true)
+> because it checks more conditions:
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 + the global console_suspended flag. The console=
+s drivers should
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 not be used when it is set...
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 + whether NBCON console driver has con->write_at=
+omic
+>=20
 
-I guess the issue description diverged a bit from what needs to be
-done, sorry about that.
+Makes sense, I'll work on it first then.
 
-The core 2 things I wanted to address with the unification are:
+> and we should also fix kdb_msg_write() to actually use
+> con->write_atomic() when it is a NBCON console driver.
+> There is hard-coded con->write() at the moment.
+>=20
+> But it might get more complicated. It would be nice to do it
+> correctly
+> and use con->write_atomit() only when nbcon_context_try_acquire()
+> succeeds. We probably should use a context with NBCON_PRIO_EMERGENCY.
+>=20
 
-1. Avoid spraying kasan_arch_is_ready() throughout the KASAN
-implementation and move these checks into include/linux/kasan.h (and
-add __wrappers when required).
+I'll check how that can be done by looking at Docs.
 
-2. Avoid architectures redefining the same kasan_enabled global
-variable/static key.
+> And this should be fixed at the beginning of the patchset because
+> it actually fixes the support of the new NBCON console drivers.
 
-Initially, I thought that s/kasan_arch_is_ready/kasan_enabled + simply
-moving the calls into affected include/linux/kasan.h functions would
-be enough. But then, based on [1], turns out it's not that simple.
+I'll try to send patches for this case first, and then come back with
+this series once this one is fixed, so I can start converting the other
+places like you suggested later.
 
-So now, I think we likely still need two separate checks/flags:
-kasan_enabled() that controls whether KASAN is enabled at all and
-kasan_arch_is_ready() that gets turned on by kasan_init() when shadow
-is initialized (should we rename it to kasan_shadow_initialized()?).
-But then we can still move kasan_arch_is_ready() into
-include/linux/kasan.h and use the proper combination of checks for
-each affected function before calling __wrappers. And we can still
-remove the duplicated flags/keys code from the arch code.
+Thanks a lot for the suggestion!
 
-[1] https://lore.kernel.org/linux-mm/CA+fCnZf7JqTH46C7oG2Wk9NnLU7hgiVDEK0EA=
-8RAtyr-KgkHdg@mail.gmail.com/
+>=20
+> Best Regards,
+> Petr
+>=20
+> > =C2=A0		if (c =3D=3D dbg_io_ops->cons)
+> > =C2=A0			continue;
+> >=20
+> > --=20
+> > 2.49.0
 
