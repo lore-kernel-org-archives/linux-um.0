@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F00EC83000
-	for <linux-um@archiver.kernel.org>; Mon, 30 Jun 2025 06:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F245C7EE39
+	for <linux-um@archiver.kernel.org>; Mon, 30 Jun 2025 07:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9k4TDCp1s1sw9Eu4SIhTH14EyDKmYapBGy/5BhYSTlk=; b=dR1LYU049wGzvQNGWbAdgT7OMy
-	Ss4j7AxL0jY/WxlN/v3Fdquyfc8W9Y1XPAdHGeJvMQ4hzsvSChRns6qFiQPyAub8WRphcUxxwkRmq
-	T1FIsWH3tsMJj9ZNXds8g6XCVZrc89q0whLt6XuDChDePjb7oqiFUQD3GbsqZE+yWNsHYkqSf4Ouq
-	85RJyboMIqQdG2aH423w0Sn1EeJ9XyjBb+23DhdyIbCFdzmJwB5ORPpoUs9UO1haozpESyNlbsyAA
-	FcRi3TlUx36T4nznW8klruCp96e0uL3Ce3/KnEuX0WspnU/ohdmz0xYMS546JzcSgc8xCYcgM3QbY
-	mtha0org==;
+	bh=Cv5jFCV6649v8T92JDjCzLnbRUBb+ZSyb2iskcXEgiI=; b=l2biG+GhymJGbhUjyw9fgQUF7V
+	ZpxuhK2aKPMNX+9pgFMUx8HcLt7d/x4ZkQjjEFnatVco3DJYQEMBVQHJ/WR0Tk5Klcd85/MQ+KmUR
+	8/UAL2vzpV/YffeUZqh4fbejE4A6OATqtwSrfheDxJXbrm21uuvAPgF3SDmjtdr0eZSt6OGdEdYbn
+	AtrETABtzTIWstFRARXUrf7JXt5NBi0S9c2SlCNWDAXIdVDdSJPFYZMRyVrf2FrVfr3BlKLrR6n3n
+	ZXPG8P0kb3GBCj6/lcSWjwQYI7kq6+C0GXXj3RIeFR80EkWyjBct/44DM+tziIr/OQxtmgUF94i1P
+	OfdaF2Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uW8R9-00000001O5Z-1vCe;
-	Mon, 30 Jun 2025 06:56:19 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uW8aj-00000001P4N-3Lkb;
+	Mon, 30 Jun 2025 07:06:13 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uW8R6-00000001O5D-3CV0
+	id 1uW8Xd-00000001OpO-2Rm8
 	for linux-um@lists.infradead.org;
-	Mon, 30 Jun 2025 06:56:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=9k4TDCp1s1sw9Eu4SIhTH14EyDKmYapBGy/5BhYSTlk=;
-	t=1751266574; x=1752476174; b=LCg30eWBaKvcNKLszA297+b7cRlYfTBbq/VbvvfSLPO7pHM
-	9TGbfC78J55sjhzxd2kW8ZDnzS1JLIFF57j5qM4eJrDuma4Ak3UJ66n6IZVPezEVRK48F+GY7Its+
-	q5X+PjJM2X4B/5LbzQ/lZI7ucOmq43ScPPl7AeEUQJxLuRNzA+PZTEPNHmZ/z2Xu3BH7iq7/BrIWu
-	fmToxrxiziI11jgO6bTPc7DuiJ3uz/ge9CUdIiI1DLw6YBpubEW5EU8feSzqZkh8TvMwXZ6gVlotp
-	j7+8RhJhs31yiE70Er1bysdfmA6Y212y7H5rix+oOW5UcGeeQ0M/zmsvfy9q9zxA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1uW8Qm-00000000avX-2lH3;
-	Mon, 30 Jun 2025 08:55:58 +0200
-Message-ID: <e64a4c40b0234fc265a74cb60633117dc6911518.camel@sipsolutions.net>
+	Mon, 30 Jun 2025 07:03:02 +0000
+Date: Mon, 30 Jun 2025 09:02:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1751266980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cv5jFCV6649v8T92JDjCzLnbRUBb+ZSyb2iskcXEgiI=;
+	b=3+2dPfQ7tbpVGAI70PTpFpOcOtCR0ab0jP8TunCiqfKZKQm8ZSC58eqc/DLg3gVaZMFHzd
+	nYJumLVbddzsAScfyENayXXLaVk21dmRf7RqYaTPWHVGAYrgpbK3Npf6OSESTxFwfBrlwu
+	mgPPnf4Xf+syf0RmBS/wlh7eRAuqW9mKqjffuznPUFwpAqIbaMs8cQ1bgdztFKKNFPl1oT
+	qsNQD1t6TI14jLkNRO1ZKNyH0K+h1v93HEbmDp4k28ef9qDXn7dfcSsmRXXGM8r2UrIDPs
+	X2dwULQvs71mVE79ogv4fIYhij9leR3e/Rahc5gDexT1sgT4IA5hgj4MlqVcdA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1751266980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cv5jFCV6649v8T92JDjCzLnbRUBb+ZSyb2iskcXEgiI=;
+	b=PdPHjBFFCrcV0zbXN1MAY/71Yvygnof3oUdoz5iVHFpZVxgwj4QiBnOe5CJRxLJpis6qtL
+	RWScS2G5qsNHZ5CA==
+From: Nam Cao <namcao@linutronix.de>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] um: virt-pci: Switch to
  msi_create_parent_irq_domain()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Nam Cao <namcao@linutronix.de>, Marc Zyngier <maz@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Richard Weinberger <richard@nod.at>, Anton
- Ivanov	 <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Date: Mon, 30 Jun 2025 08:55:54 +0200
-In-Reply-To: <5f0bd8e877e7bfdfb1a7e99d6b126caf6a7eea48.1751266049.git.namcao@linutronix.de> (sfid-20250630_085140_752354_0F18E422)
+Message-ID: <20250630070249.oVVkmFZg@linutronix.de>
 References: <cover.1751266049.git.namcao@linutronix.de>
-	 <5f0bd8e877e7bfdfb1a7e99d6b126caf6a7eea48.1751266049.git.namcao@linutronix.de>
-	 (sfid-20250630_085140_752354_0F18E422)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+ <5f0bd8e877e7bfdfb1a7e99d6b126caf6a7eea48.1751266049.git.namcao@linutronix.de>
+ <e64a4c40b0234fc265a74cb60633117dc6911518.camel@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e64a4c40b0234fc265a74cb60633117dc6911518.camel@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250629_235616_824025_FFCDAC02 
-X-CRM114-Status: UNSURE (   5.83  )
+X-CRM114-CacheID: sfid-20250630_000301_764055_CCAE4D37 
+X-CRM114-Status: UNSURE (   9.10  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,16 +81,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2025-06-30 at 08:51 +0200, Nam Cao wrote:
-> Move away from the legacy MSI domain setup, switch to use
-> msi_create_parent_irq_domain().
->=20
+On Mon, Jun 30, 2025 at 08:55:54AM +0200, Johannes Berg wrote:
+> On Mon, 2025-06-30 at 08:51 +0200, Nam Cao wrote:
+> > Move away from the legacy MSI domain setup, switch to use
+> > msi_create_parent_irq_domain().
+> > 
+> 
+> Do you want this to go through the UML tree, or is it a dependency
+> somewhere else? In the latter case, I suppose you can add
 
-Do you want this to go through the UML tree, or is it a dependency
-somewhere else? In the latter case, I suppose you can add
+Please take it into the UML tree.
 
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-Tested-by: Johannes Berg <johannes@sipsolutions.net>
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
+> Tested-by: Johannes Berg <johannes@sipsolutions.net>
 
-johannes
+Thanks!
+Nam
 
