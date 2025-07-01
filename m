@@ -4,66 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04318C83038
-	for <linux-um@archiver.kernel.org>; Tue,  1 Jul 2025 13:42:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8512C8303A
+	for <linux-um@archiver.kernel.org>; Tue,  1 Jul 2025 13:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CwLYhwgxOP5iVMOJ89NSnug/Ktag9wZPPAlbRKt/yvQ=; b=LAvwlxrk3wy+GF+7VNVQoIoB+4
-	BSTSDcUM9zaCtGRPmCMgzm/MTrAKfHq97dAXhwxp+lkxaLSksZjsRVjpkOg1rXOIhqj1noVuiKkEN
-	Arg0uSvRNecrBLiAF5pAMkGGN59bNiPiqCzUMLPAoFR1NV4zos7iHKWvjZQGkc19sM1/MFFwYxvVt
-	n9FKYCdNdFYOXfqfbazjo3jlM8BQ6VioItQvAvq0nyhxvx5DJpxnKOVGDXAZfdd9vvWQPaxSb4TAd
-	N2wDnl0gP4b12d+hHvQCFocLuavm0WOKWR0unkfSPj1I/g6zpiaYWcwwGbjgE0Vd0atB34m1N7dAa
-	A7dm7hzw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7esW/yK2Ns6SLZnOUSKrafMmAGOUpfV8Cs3qACaymS4=; b=scVCrMP3YCAbgAQ7p8YSudXDhv
+	U6Ptkykqoarvj/JTK1FVa/1/0dcj36NL1lEXB5AEKjtFfPhbsZiUlNLx1+EYiABBxnrGdOoTRsEfy
+	e6oQOcUv8YWZkP+O2IcPTcpqO4PD1EOES6Mp6wVz5Xx01HFLo0gsokRewGu5E7RCxDUpohU6hU0KE
+	jEuVPTJnixWHFyCnhGj8bCGxI3jN/y8Wj/W9ta1IxIz0qWy2yOAV7mvbWW+nvb21Kr7wAfS7Nz9L/
+	yDTKmkM8XWYm8s+6eabuxR/3mQQZp4N9aRnT68Rt4ubDJGmPZF3pDBJkpEmbOVAM9boMPhnVDkdsV
+	dR0BwH6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWbFU-00000005YYs-1QTW;
-	Tue, 01 Jul 2025 13:42:12 +0000
-Received: from s3.sipsolutions.net ([168.119.38.16] helo=sipsolutions.net)
+	id 1uWbKE-00000005ZCc-2aT0;
+	Tue, 01 Jul 2025 13:47:06 +0000
+Received: from out0-220.mail.aliyun.com ([140.205.0.220])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWZiC-00000004zQT-28Mx
+	id 1uWa0X-00000005Cq8-2S61
 	for linux-um@lists.infradead.org;
-	Tue, 01 Jul 2025 12:03:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=CwLYhwgxOP5iVMOJ89NSnug/Ktag9wZPPAlbRKt/yvQ=;
-	t=1751371422; x=1752581022; b=M9K3UExWgfeiGD2Y4h2qR6t+ijO6rKXWYhLwuOf4qzkNp6s
-	9LAb1XvHQE74yNYcRU8gL0TkakxfzWhy3v9T7d5wA9Tv0XIdoTb3qkPKWsJsiMWeVmwj6Hg9XL0ek
-	51j6qOSQ5oFxywdq2U8OlSOKhwKTgqRSF1to3/p0Im126iVT3QMklA4ZynjtOoCqNyGAeiCN1/Y4Z
-	RAP2eFK4GdorTCivPfywmmNleHRvjY3ROl+25zjiRwyIZNtO+3VKeP++E8eSp6jIcqwbyXhNl18Dk
-	0BRh+FCSdoLhUM8olEitmMGwA1nabVYX5GpJGAv99b07/NRzH0TCdufrEP/pOqlg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uWZi6-00000002kX6-0pVs;
-	Tue, 01 Jul 2025 14:03:38 +0200
-Message-ID: <a9133d9a69843948078f590a102bad9302f3f554.camel@sipsolutions.net>
-Subject: Re: [PATCH v10 09/13] x86/um: nommu: signal handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-um@lists.infradead.org, ricarkol@google.com,
- Liam.Howlett@oracle.com, 	linux-kernel@vger.kernel.org
-Date: Tue, 01 Jul 2025 14:03:36 +0200
-In-Reply-To: <m2plem3urj.wl-thehajime@gmail.com> (sfid-20250630_030407_541368_3EBD3064)
-References: <cover.1750594487.git.thehajime@gmail.com>
-		<548dcef198b79a4f8eb166481e39abe6e13ed2e3.1750594487.git.thehajime@gmail.com>
-		<3b407ed711c5d7e1819da7513c3e320699473b2d.camel@sipsolutions.net>
-		<m2sejl47ke.wl-thehajime@gmail.com>
-		<734965ac85b2c4cf481cc98ac53052fd5064d30e.camel@sipsolutions.net>
-	 <m2plem3urj.wl-thehajime@gmail.com> (sfid-20250630_030407_541368_3EBD3064)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Tue, 01 Jul 2025 12:22:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1751372555; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=7esW/yK2Ns6SLZnOUSKrafMmAGOUpfV8Cs3qACaymS4=;
+	b=QZE/N4yjBnh8fsXtf2MGXTPcKpMxpNI028XyOkCTIoroFWnxcAwi2t2RJ1hEqZ2w02tXOj6K0vjtIJ81h6xysdXWfXBcvC3Yoc/7VaPGZys+asYGNrmsfiSUT82Pt8heB4VIc/VjCjT1U9BjxRvRyMERb/JTp7KWueB80plrPj4=
+Received: from 30.230.89.205(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.daiTUCq_1751372548 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Jul 2025 20:22:33 +0800
+Message-ID: <c71581d8-350f-4523-862f-5be84358ad8f@antgroup.com>
+Date: Tue, 01 Jul 2025 20:22:26 +0800
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] um: Turn HAS_IOPORT_MAP off
+To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ kernel test robot <lkp@intel.com>
+References: <20250628164740.353989-1-tiwei.btw@antgroup.com>
+ <CAMuHMdUa1D3mLtNfOhE9RB7uWyf765-9kiQzG5ku05zz2f+zjw@mail.gmail.com>
+ <e7d95c03-5098-401e-b885-1569822cdd0e@app.fastmail.com>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <e7d95c03-5098-401e-b885-1569822cdd0e@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250701_050344_702645_E69FF371 
-X-CRM114-Status: GOOD (  75.54  )
+X-CRM114-CacheID: sfid-20250701_052242_128076_2F320465 
+X-CRM114-Status: GOOD (  14.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,297 +70,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Hajim,
+On 2025/7/1 16:43, Arnd Bergmann wrote:
+> On Tue, Jul 1, 2025, at 10:26, Geert Uytterhoeven wrote:
+>> CC arnd
 
-On Mon, 2025-06-30 at 10:04 +0900, Hajime Tazaki wrote:
->=20
-> Hello Benjamin,
->=20
-> On Sat, 28 Jun 2025 00:02:05 +0900,
-> Benjamin Berg wrote:
-> >=20
-> > Hi,
-> >=20
-> > On Fri, 2025-06-27 at 22:50 +0900, Hajime Tazaki wrote:
-> > > thanks for the comment on the complicated part of the kernel (signal)=
-.
-> >=20
-> > This stuff isn't simple.
-> >=20
-> > Actually, I am starting to think that the current MMU UML kernel also
-> > needs a redesign with regard to signal handling and stack use in that
-> > case. My current impression is that the design right now only permits
-> > voluntarily scheduling. More specifically, scheduling in response to an
-> > interrupt is impossible.
-> >=20
-> > I suppose that works fine, but it also does not seem quite right.
->=20
-> thanks for the info.=C2=A0 it's very useful to understand what's going on=
-.
->=20
-> (snip)
->=20
-> > > > > +void set_mc_userspace_relay_signal(mcontext_t *mc)
-> > > > > +{
-> > > > > + mc->gregs[REG_RIP] =3D (unsigned long) __userspace_relay_signal=
-;
-> > > > > +}
-> > > > > +
-> > >=20
-> > > This is a bit scary code which I tried to handle when SIGSEGV is
-> > > raised by host for a userspace program running on UML (nommu).
-> > >=20
-> > > # and I should remember my XXX tag is important to fix....
-> > >=20
-> > > let me try to explain what happens and what I tried to solve.
-> > >=20
-> > > The SEGV signal from userspace program is delivered to userspace but
-> > > if we don't fix the code raising the signal, after (um) rt_sigreturn,
-> > > it will restart from $rip and raise SIGSEGV again.
-> > >=20
-> > > # so, yes, we've already relied on host and um's rt_sigreturn to
-> > > =C2=A0 restore various things.
-> > >=20
-> > > when a uml userspace crashes with SIGSEGV,
-> > >=20
-> > > - host kernel raises SIGSEGV (at original $rip)
-> > > - caught by uml process (hard_handler)
-> > > - raise a signal to uml userspace process (segv_handler)
-> > > - handler ends (hard_handler)
-> > > - (host) run restorer (rt_sigreturn, registered by (libc)sigaction,
-> > > =C2=A0 not (host) rt_sigaction)
-> > > - return back to the original $rip
-> > > - (back to top)
-> > >=20
-> > > this is the case where endless loop is happened.
-> > > um's sa_handler isn't called as rt_sigreturn (um) isn't called.
-> > > and the my original attempt (__userspace_relay_signal) is what I trie=
-d.
-> > >=20
-> > > I agree that it is lazy to call a dummy syscall (indeed, getpid).
-> > > I'm trying to introduce another routine to jump into userspace and
-> > > call (um) rt_sigreturn after (host) rt_sigreturn.
-> > >=20
-> > > > And this is really confusing me. The way I am reading it, the code
-> > > > tries to do:
-> > > > =C2=A0=C2=A0 1. Rewrite RIP to jump to __userspace_relay_signal
-> > > > =C2=A0=C2=A0 2. Trigger a getpid syscall (to do "nothing"?)
-> > > > =C2=A0=C2=A0 3. Let do_syscall_64 fire the signal from interrupt_en=
-d
-> > >=20
-> > > correct.
-> > >=20
-> > > > However, then that really confuses me, because:
-> > > > =C2=A0* If I am reading it correctly, then this approach will destr=
-oy the
-> > > > =C2=A0=C2=A0 contents of various registers (RIP, RAX and likely mor=
-e)
-> > > > =C2=A0* This would result in an incorrect mcontext in the userspace=
- signal
-> > > > =C2=A0=C2=A0 handler (which could be relevant if userspace is inspe=
-cting it)
-> > > > =C2=A0* However, worst, rt_sigreturn will eventually jump back
-> > > > =C2=A0=C2=A0 into__userspace_relay_signal, which has nothing to ret=
-urn to.
-> > > > =C2=A0* Also, relay_signal doesn't use this? What happens for a SIG=
-FPE, how
-> > > > =C2=A0=C2=A0 is userspace interrupted immediately in that case?
-> > >=20
-> > > relay_signal shares the same goal of this, indeed.
-> > > but the issue with `mc->gregs[REG_RIP]` (endless signals) still exist=
-s
-> > > I guess.
-> >=20
-> > Well, endless signals only exist as long as you exit to the same
-> > location. My suggestion was to read the user state from the mcontext
-> > (as SECCOMP mode does it) and executing the signal right away, i.e.:
->=20
-> thanks too;=C2=A0 below is my understanding.
->=20
-> > =C2=A0* Fetch the current registers from the mcontext
->=20
-> I guess this is already done in sig_handler_common().
+Thanks for CCing Arnd. I missed that.
 
-Well, not really?
+>>
+>> On Sat, 28 Jun 2025 at 18:48, Tiwei Bie <tiwei.btw@antgroup.com> wrote:
+>>> Since we don't have port I/O support, we should turn HAS_IOPORT_MAP
+>>> off as well. It will fix clang warnings like below:
+>>>
+>>> ./include/asm-generic/io.h:1175:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>>  1175 |         return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
+>>>       |                                                   ~~~~~~~~~~ ^
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Closes: https://lore.kernel.org/oe-kbuild-all/202506271049.MtzHqdSd-lkp@intel.com/
+>>> Fixes: b8c9c3b822fe ("um: stop using PCI port I/O")
+>>> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+>>> ---
+> 
+> I think this one would be a more generic solution,
 
-It does seem to fetch the general purpose registers. But the code
-pretty much assumes we will return to the same location and only stores
-them on the stack for the signal handler itself. Also, remember that it
-might be userspace or kernel space in your case. The kernel task
-registers are in "switch_buf" while the userspace registers are in
-"regs" of "struct task_struct" (effectively "struct uml_pt_regs").
++1
 
-> > =C2=A0* Push the signal context onto the userspace stack
->=20
-> (guess) this is already done on handle_signal() =3D> setup_signal_stack_s=
-i().
->=20
-> > =C2=A0* Modify the host mcontext to set registers for the signal handle=
-r
->=20
-> this is something which I'm not well understanding.
-> - do you mean the host handler when you say "for the signal handler" ?
-> =C2=A0 or the userspace handler ?
+> does that work for you?
 
-Both in a way ;-)
+Yeah, that works for me. :)
 
-I mean modify the registers in the host mcontext so that the UML
-userspace will continue executing inside its signal handler.
+> 
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -381,7 +381,7 @@ config HAS_IOPORT
+>  config HAS_IOPORT_MAP
+>         bool
+>         depends on HAS_IOMEM && !NO_IOPORT_MAP
+> -       default y
+> +       default HAS_IOPORT
+>  
+>  source "kernel/dma/Kconfig"
+>  
+> It seems silly to turn off HAS_IOPORT_MAP on platforms that don't
+> have HAS_IOPORT to start with.
 
-> - if former (the host one), maybe mcontext is already there so, it
-> =C2=A0 might not be the one you mentioned.
-> - if the latter, how the original handler (the host one,
-> =C2=A0 hard_handler()) works ? even if we can call userspace handler
-> =C2=A0 instead of the host one, we need to call the host handler (and
-> =C2=A0 restorer).=C2=A0 do we call both ?
-> - and by "to set registers", what register do you mean ? for the
-> =C2=A0 registers inspected by userspace signal handler ?=C2=A0 but if you=
- set a
-> =C2=A0 register, for instance RIP, as the fault location to the host
-> =C2=A0 register, it will return to RIP after handler and restart the faul=
-t
-> =C2=A0 again ?
+I'm not entirely clear on the meaning of HAS_IOPORT though. It looks
+HAS_IOPORT was introduced to support disabling compilation of the I/O
+accessor functions inb()/outb() and friends [1]. And looking at the
+code, xtensa supports IOPORT_MAP [2][3], but doesn't select HAS_IOPORT
+(which is also stated in the commit log in [1]).
 
-I am confused, why would the fault handler be restarted? If you modify
-RIP, then the host kernel will not return to the faulting location. You
-were using that already to jump into __userspace_relay_signal. All I am
-arguing that instead of jumping to __userspace_relay_signal you can
-prepare everything and directly jump into the users signal handler.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcbfe8121a45152a3cfbe1c28c96a3b611b7347d
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/xtensa/include/asm/io.h?h=v6.16-rc4#n25
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/xtensa/Kconfig?h=v6.16-rc4#n81
 
-> > =C2=A0* Jump back to userspace by doing a "return"
->=20
-> this is still also unclear to me.
->=20
-> it would be very helpful if you point the location of the code (at
-> uml/next tree) on how SECCOMP mode does.=C2=A0 I'm also looking at but
-> really hard to map what you described and the code (sorry).
-
-"stub_signal_interrupt" simply returns, which means it jumps into the
-restorer "stub_signal_restorer" which does the rt_sigreturn syscall.
-This means the host kernel restores the userspace state from the
-mcontext. As the mcontext resides in shared memory, the UML kernel can
-update it to specify where the process should continue running (thread
-switching, signals, syscall return value, =E2=80=A6).
-
-Benjamin
-
-> all of above runs within hard_handler() in nommu mode on SIGSEGV.
-> my best guess is this is different from what ptrace/seccomp do.
->=20
-> > Said differently, I really prefer deferring as much logic as possible
-> > to the host. This is both safer and easier to understand. Plus, it also
-> > has the advantage of making it simpler to port UML to other
-> > architectures.
->=20
-> okay.
->=20
-> >=20
-> > > > Honestly, I really think we should take a step back and swap the
-> > > > current syscall entry/exit code. That would likely also simplify
-> > > > floating point register handling, which I think is currently
-> > > > insufficient do deal with the odd special cases caused by different
-> > > > x86_64 hardware extensions.
-> > > >=20
-> > > > Basically, I think nommu mode should use the same general approach =
-as
-> > > > the current SECCOMP mode. Which is to use rt_sigreturn to jump into
-> > > > userspace and let the host kernel deal with the ugly details of how=
- to
-> > > > do that.
-> > >=20
-> > > I looked at how MMU mode (ptrace/seccomp) does handle this case.
-> > >=20
-> > > In nommu mode, we don't have external process to catch signals so, th=
-e
-> > > nommu mode uses hard_handler() to catch SEGV/FPE of userspace
-> > > programs.=C2=A0 While mmu mode calls segv_handler not in a context of
-> > > signal handler.
-> > >=20
-> > > # correct me if I'm wrong.
-> > >=20
-> > > thus, mmu mode doesn't have this situation.
-> >=20
-> > Yes, it does not have this specific issue. But see the top of the mail
-> > for other issues that are somewhat related.
-> >=20
-> > > I'm attempting various ways; calling um's rt_sigreturn instead of
-> > > host's one, which doesn't work as host restore procedures (unblocking
-> > > masked signals, restoring register states, etc) aren't called.
-> > >=20
-> > > I'll update here if I found a good direction, but would be great if
-> > > you see how it should be handled.
-> >=20
-> > Can we please discuss possible solutions? We can figure out the details
-> > once it is clear how the interaction with the host should work.
->=20
-> I was wishing to update to you that I'm working on it.=C2=A0 So, your
-> comments are always helpful to me.=C2=A0 Thanks.
->=20
-> -- Hajime
->=20
-> > I still think that the idea of using the kernel task stack as the
-> > signal stack is really elegant. Actually, doing that in normal UML may
-> > be how we can fix the issues mentioned at the top of my mail. And for
-> > nommu, we can also use the host mcontext to jump back into userspace
-> > using a simple "return".
-> >=20
-> > Conceptually it seems so simple.
-> >=20
-> > Benjamin
-> >=20
-> >=20
-> > >=20
-> > > -- Hajime
-> > >=20
-> > > > I believe that this requires a second "userspace" sigaltstack in
-> > > > addition to the current "IRQ" sigaltstack. Then switching in betwee=
-n
-> > > > the two (note that the "userspace" one is also used for IRQs if tho=
-se
-> > > > happen while userspace is executing).
-> > > >=20
-> > > > So, in principle I would think something like:
-> > > > =C2=A0* to jump into userspace, you would:
-> > > > =C2=A0=C2=A0=C2=A0 - block all signals
-> > > > =C2=A0=C2=A0=C2=A0 - set "userspace" sigaltstack
-> > > > =C2=A0=C2=A0=C2=A0 - setup mcontext for rt_sigreturn
-> > > > =C2=A0=C2=A0=C2=A0 - setup RSP for rt_sigreturn
-> > > > =C2=A0=C2=A0=C2=A0 - call rt_sigreturn syscall
-> > > > =C2=A0* all signal handlers can (except pure IRQs):
-> > > > =C2=A0=C2=A0=C2=A0 - check on which stack they are
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> easy to detect whether we are in =
-kernel mode
-> > > > =C2=A0=C2=A0=C2=A0 - for IRQs one can probably handle them directly=
- (and return)
-> > > > =C2=A0=C2=A0=C2=A0 - in user mode:
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + store mcontext location and =
-information needed for rt_sigreturn
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + jump back into kernel task s=
-tack
-> > > > =C2=A0* kernel task handler to continue would:
-> > > > =C2=A0=C2=A0=C2=A0 - set sigaltstack to IRQ stack
-> > > > =C2=A0=C2=A0=C2=A0 - fetch register from mcontext
-> > > > =C2=A0=C2=A0=C2=A0 - unblock all signals
-> > > > =C2=A0=C2=A0=C2=A0 - handle syscall/signal in whatever way needed
-> > > >=20
-> > > > Now that I wrote about it, I am thinking that it might be possible =
-to
-> > > > just use the kernel task stack for the signal stack. One would prob=
-ably
-> > > > need to increase the kernel stack size a bit, but it would also mea=
-n
-> > > > that no special code is needed for "rt_sigreturn" handling. The res=
-t
-> > > > would remain the same.
-> > > >=20
-> > > > Thoughts?
-> > > >=20
-> > > > Benjamin
-> > > >=20
-> > > > > [SNIP]
-> > > >=20
-> > >=20
-> >=20
->=20
-
+Regards,
+Tiwei
 
