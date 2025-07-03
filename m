@@ -4,62 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6809C77B7C
-	for <linux-um@archiver.kernel.org>; Wed,  2 Jul 2025 15:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B76FC83F07
+	for <linux-um@archiver.kernel.org>; Thu,  3 Jul 2025 14:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ilep2gaQ0OFsHrvPdaYZiXUCrraldT2TlF6XoPbWUiE=; b=saM9xBO5+5Ln6h9l0mu6/zmJT4
-	4vOy0fbPXoVSEDR1QCQxKUs+7GrAALEuBPjA/fofKHwO+FMtcqkWFiDJjEVR9oAuBD/f0QRouvHxd
-	yN6bX9qX9Ja1SF2N7wlPDsQ4T4Dx5/QB2qJkMBjrj8++10IbwXAuMIi1vgFaSXkp8LnDkB1yrazM0
-	9Tw5ZI6FJNQQ715jXPAkZQxnzcnPe1Lo7sIC7E+7no1XzoZygM6pyoB/lXgsC+1V7Bkm7Di5Z9TAX
-	UzucoFiggWw5xIP1FJZcEVFb17a+ZFK+smXR7WpElUxPJVnliToTyw0+19/zffKdSOTgMgRqe3tG9
-	uaOzdChg==;
+	bh=+Z0MqZuZk9ZorWcjtJWd2TxVCHlbiuTD5yZSdlZfeII=; b=BDlmizb1kWIaZb5vfrZ7JABA19
+	9VWanxFyr0YFXIAqPs0SjyisjWRvwzosGQXSChUTJmlSQ6Ez0hQqtu3URnoMT7YsnhnXbvSca5xZG
+	Vi3aTFIqx0QuXYfK3pUVKFdHKZCUO9AQOQ/uCxBy6OVZIACwNXY4y/RV2aZHK/njpu+NJ0pR0pAqT
+	VXC1rBj2kLXkgJv5fsmHVigVsHuDZDiRyBpsDuwXdUrum0HDPH/qh94R8hvDTHQRgWztYASXInGGv
+	ciSLuNrGFF0JMaggfKWEgKr6VeG6gfF3IAfHnOO6bhdC/UBn6fFmvmjz4mhPCI1Z2L/i8V7hjuxNa
+	WcCG+DMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWzrn-00000008sLB-1lTi;
-	Wed, 02 Jul 2025 15:59:23 +0000
-Received: from out187-1.us.a.mail.aliyun.com ([47.90.187.1])
+	id 1uXKqD-0000000BeIw-1XH8;
+	Thu, 03 Jul 2025 14:23:09 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uWyyf-00000008iv0-3ANh
+	id 1uXJDd-0000000BMEx-0FTJ
 	for linux-um@lists.infradead.org;
-	Wed, 02 Jul 2025 15:02:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1751468539; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=ilep2gaQ0OFsHrvPdaYZiXUCrraldT2TlF6XoPbWUiE=;
-	b=KorhMlKQJa3B9tMdWB2lREBoJ4Av94DN1f0P36wiYO1Q+qWLBZ/PCfX6SGh+Zpid2Zy/gzhpKiVHKkdHPKi1mADQW0HkIrY6hFo/A0+RCXIi3gDkY0Zk6LLp/LPlm+jKpD4WyAqbgHQtKgOy+0W8iblOgnDWxahkRudAKbB+5Vg=
-Received: from 30.174.123.102(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.dcKZk9f_1751468528 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Jul 2025 23:02:15 +0800
-Message-ID: <fc4e51e0-4ffc-42f0-a400-3d889ca749eb@antgroup.com>
-Date: Wed, 02 Jul 2025 23:02:08 +0800
+	Thu, 03 Jul 2025 12:39:14 +0000
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1751546351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+Z0MqZuZk9ZorWcjtJWd2TxVCHlbiuTD5yZSdlZfeII=;
+	b=vzXpOSXZEV/ki4Fz56c1LN7R+SoJv7a0tWyetgyw+Vv2V+U76gNI8tlqrmISKPXQy2SY6D
+	0aqIr6/cHHuvlHMtZnazdEKO51Qb7fktkaM8LmoP47mIV/n8oERHZG4r7fNG9M1yvbgPsm
+	pgYQmojQGYmXDyHS4cfaLe0WeLAH2JSdJHdKq1vUJHD7EHAGXVDsqMMuf0+2VpUmHHV7wg
+	zE5IJjDCpmOvhkxkrrGUN7IBkErGnLEbnCOpVkstow06QoCV80pFViZkqdU2eV4I0PuNAr
+	jbuvUxzD0pMvKIfYqx1aVt31nmEGX36gXVOXfDG5764NtgD+A6Nwf5l1tFc1hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1751546351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+Z0MqZuZk9ZorWcjtJWd2TxVCHlbiuTD5yZSdlZfeII=;
+	b=FzUfzSgGPqvzHpwS71OnYN2WaJ+oJocoZiFsGmmcKJzDy6QxguVcuw8gMFoxVG2PvZI6Na
+	mYXsXWIucs0CCKDg==
+Date: Thu, 03 Jul 2025 14:38:55 +0200
+Subject: [PATCH 2/2] um/ptrace: Implement HAVE_SYSCALL_TRACEPOINTS
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: Turn HAS_IOPORT_MAP off
-To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
- kernel test robot <lkp@intel.com>
-References: <20250628164740.353989-1-tiwei.btw@antgroup.com>
- <CAMuHMdUa1D3mLtNfOhE9RB7uWyf765-9kiQzG5ku05zz2f+zjw@mail.gmail.com>
- <e7d95c03-5098-401e-b885-1569822cdd0e@app.fastmail.com>
- <c71581d8-350f-4523-862f-5be84358ad8f@antgroup.com>
- <1724be1e-174c-4837-8768-83a90004f7fe@app.fastmail.com>
- <dcb0d307-a0cf-480e-888f-1020d1441d1d@antgroup.com>
- <49982e79-957d-401b-882c-849d2892bf4c@app.fastmail.com>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <49982e79-957d-401b-882c-849d2892bf4c@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250703-uml-have_syscall_tracepoints-v1-2-23c1d3808578@linutronix.de>
+References: <20250703-uml-have_syscall_tracepoints-v1-0-23c1d3808578@linutronix.de>
+In-Reply-To: <20250703-uml-have_syscall_tracepoints-v1-0-23c1d3808578@linutronix.de>
+To: Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, Nam Cao <namcao@linutronix.de>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1751546346; l=2501;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=sS5BJFq5yl1Cpp9kuGgfCMujzkfDmeSN9fqRocDqWZY=;
+ b=sGqrzfKZ+sO/4nzPW8zOoYWd7/SFalzFdwiFKLOhLCnOKZyiaLC0lwAQxnyzYWV3KIvuw15HZ
+ AZJ7dueIW2tBUs+uy/X0/KmVvlNUmUJC+ibbivqmdK9MkypSeTSxHxf
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250702_080226_417302_56ED5928 
-X-CRM114-Status: GOOD (  13.74  )
+X-CRM114-CacheID: sfid-20250703_053913_235570_638FAA51 
+X-CRM114-Status: UNSURE (   7.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,52 +91,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025/7/2 21:39, Arnd Bergmann wrote:
-> On Wed, Jul 2, 2025, at 15:02, Tiwei Bie wrote:
->> On 2025/7/2 19:09, Arnd Bergmann wrote:
->>> On Tue, Jul 1, 2025, at 14:22, Tiwei Bie wrote:
->>> xtensa selects NO_IOPORT_MAP, which means that HAS_IOPORT_MAP
->>> gets disabled here:
->>>
->>> arch/xtensa/Kconfig:config NO_IOPORT_MAP
->>> arch/xtensa/Kconfig-    def_bool n
->>
->> The value of NO_IOPORT_MAP on xtensa is inverted compared to that
->> on most other platforms that explicitly defines NO_IOPORT_MAP.
-> 
-> Ah of course, sorry for misunderstanding. Apparently this only
-> existed because it was selected by a long gone platform:
-> 
-> -config XTENSA_PLATFORM_S6105
-> -       bool "S6105"
-> -       select HAVE_IDE
-> -       select SERIAL_CONSOLE
-> -       select NO_IOPORT_MAP
+Implement syscall tracepoints through the generic tracing infrastructure.
 
-Cool, that makes sense!
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Reviewed-by: Nam Cao <namcao@linutronix.de>
+---
+ arch/um/Kconfig                   | 1 +
+ arch/um/include/asm/thread_info.h | 2 ++
+ arch/um/kernel/ptrace.c           | 9 +++++++++
+ 3 files changed, 12 insertions(+)
 
-> 
-> Before commits
-> 
-> d38efc1f150f ("xtensa: adopt generic io routines")
-> d046f77ec4a4 ("xtensa: set NO_IOPORT to 'n' by default")
-> 
-> it was always-on, and I think the idea at the time was to
-> make it behave more like the generic PCI code, while it
-> was originally copied from sparc, which does things quite
-> differently.
-> 
-> It is rather clear that the I/O port implementation on
-> xtensa never actually worked, and some of the comments
-> on its PCI code suggest that it was never really used
-> either.
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index f08e8a7fac93d9f98384de02710542fd75d23553..c2d2d2d99bbe3f5a5dc4afaa69e02a520e326c2d 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -35,6 +35,7 @@ config UML
+ 	select HAVE_RUST
+ 	select ARCH_HAS_UBSAN
+ 	select HAVE_ARCH_TRACEHOOK
++	select HAVE_SYSCALL_TRACEPOINTS
+ 	select THREAD_INFO_IN_TASK
+ 
+ config MMU
+diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
+index f9ad06fcc991a2b10e2aa6059880b993e3d60a2d..b8c021f97bd17515e4f9082206addfce05b9321e 100644
+--- a/arch/um/include/asm/thread_info.h
++++ b/arch/um/include/asm/thread_info.h
+@@ -43,6 +43,8 @@ struct thread_info {
+ #define TIF_NOTIFY_RESUME	8
+ #define TIF_SECCOMP		9	/* secure computing */
+ #define TIF_SINGLESTEP		10	/* single stepping userspace */
++#define TIF_SYSCALL_TRACEPOINT	11	/* syscall tracepoint instrumentation */
++
+ 
+ #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index 2124624b7817439b8e1c962e8e6eb0e267db6f53..fdbb37b5c3996188d92cf307d31eeaeca1f0acce 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -9,6 +9,9 @@
+ #include <linux/uaccess.h>
+ #include <asm/ptrace-abi.h>
+ 
++#define CREATE_TRACE_POINTS
++#include <trace/events/syscalls.h>
++
+ void user_enable_single_step(struct task_struct *child)
+ {
+ 	set_tsk_thread_flag(child, TIF_SINGLESTEP);
+@@ -126,6 +129,9 @@ int syscall_trace_enter(struct pt_regs *regs)
+ 			    UPT_SYSCALL_ARG3(&regs->regs),
+ 			    UPT_SYSCALL_ARG4(&regs->regs));
+ 
++	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
++		trace_sys_enter(regs, UPT_SYSCALL_NR(&regs->regs));
++
+ 	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+ 		return 0;
+ 
+@@ -142,6 +148,9 @@ void syscall_trace_leave(struct pt_regs *regs)
+ 	if (test_thread_flag(TIF_SINGLESTEP))
+ 		send_sigtrap(&regs->regs, 0);
+ 
++	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
++		trace_sys_exit(regs, PT_REGS_SYSCALL_RET(regs));
++
+ 	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+ 		return;
+ 
 
-Thanks for the details. I'm not really familiar with xtensa;
-my understanding comes merely from reading the code. Please
-feel free to proceed with your patch. I also think it is a
-more generic solution. :)
-
-Regards,
-Tiwei
+-- 
+2.50.0
 
 
