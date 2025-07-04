@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C0CC83F03
-	for <linux-um@archiver.kernel.org>; Fri,  4 Jul 2025 11:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54093C83F03
+	for <linux-um@archiver.kernel.org>; Fri,  4 Jul 2025 12:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=p5XdvK5gQteG+3d+D+Dd/ElOWPl/rbmH6W2URxWTVc8=; b=mIfng+3jcmkz8v6sLWrLtQCFbd
-	PCNfQKJV8gum8svQyhn9KK/LCaTZqtmBtgB3n50F4HpPMKzBYg0CH6/Eu+bnpU3WpcmYqCZlcheIQ
-	byn670TNx44nOqOavbI3LZE3TkJTU0ZXHfoQ5xLHA3At3gUxk3kAdbnHbzfOzM9hGeH9zYWfk+pct
-	/2ktr3f1ciFpppx3wH5QxQ2Zuo5ZnO5e3GHCgIaQSoHxmEopkon7z924l9kv6wEFC92XH9E/JhheF
-	GT5vNj4WOjSFFMqaXYRTuJGa6pmxHEn/6N/24UrZzfqvMPeims5fkjx5Y30IvPB8NmOodJqi21PhQ
-	nAy0wsVA==;
+	bh=8pqk9sQ1hk+evyB3Xq8g8PnevbuWCcnCHVK2r5AtxWU=; b=z227Iw9QizOmBgLobQy7Y7tqNW
+	ZVrPGS1veE5FyFWtEXhmwHjoQzrzh5C+sD8HFTWKXdbACTCtic9NbOSNTCkmlV2DcktJub3Z3xtHs
+	zZgHFllZckihizOV6DLrju8boKFJCClttUP6rwnk5VoRlGZTWlWuLlB8L/qk6Kkqe7spPhoqy5h0b
+	cQt/YMhjk+ZJowAKZO1MkQIajreWw7wvSKK/b71Ji/DZttXKDwoiTH3hgW7+8zUPcukUHqClpxDI8
+	an4MwNvssnmJnGeE7Do3eAlNFgdjMuUvJ4v/yTNWjGcrechEl9wBV3HTbfF6hoJENMZ1A43Lcjhf9
+	8NNrwMVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uXf4X-0000000EKbn-2fVr;
-	Fri, 04 Jul 2025 11:59:17 +0000
+	id 1uXf5V-0000000EKzX-49if;
+	Fri, 04 Jul 2025 12:00:17 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uXf4U-0000000EKUv-3Ob2
+	id 1uXf5T-0000000EKz3-2quC
 	for linux-um@lists.infradead.org;
-	Fri, 04 Jul 2025 11:59:16 +0000
+	Fri, 04 Jul 2025 12:00:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=p5XdvK5gQteG+3d+D+Dd/ElOWPl/rbmH6W2URxWTVc8=;
-	t=1751630354; x=1752839954; b=PX/icLiQtzYYxjq3UL6aGxb9E1RRp2UhNuMuQTNufVT2AFo
-	8N6jWx6dBWn4STQjd5RJpupaabX5Vts3yZsiyboDtttBpIwCjEiQ/NSW138revIdmGoyzOfC2Uuc3
-	115fKIqCkg1OqfoSA8Nxg91F4Z3R7cUwahldPEt5UJT8qSwr88lO2btvgPq168tODZz/PBNh+rTl0
-	OeRVYtk8XIA9CNknErfZC/4BkrJAi/tBHN7PBlsEC2u72YyaUHrjyJyYXZNN2g5yiSLr7120XIXUu
-	S2tXFHNVv/u9QUnfQy6qxIDlU7ug9yopTko3lltNh7jBdsAiZFC1LoPWkLsPM4kA==;
+	Resent-Cc:Resent-Message-ID; bh=8pqk9sQ1hk+evyB3Xq8g8PnevbuWCcnCHVK2r5AtxWU=;
+	t=1751630415; x=1752840015; b=QrK/wW9MBBVh6/MxaB4/p1CX3QHlwFgGUWxiZ6WvBbP1fv8
+	FeX3X1PsIcMTJ0Dcb+lGz4WcvG3aOIxz7oUYGUxtkgSDlLMpb2It1j/okOtfJO6oZ2dRDv4LzfZSD
+	Rt+m3NoBE/jIAzsevdNdUTiF7EXOnWHEAeBnvGOmoU0lwHb1kuylvHMZXpxPKaHC6XgURMpadjsW/
+	WdDbFI+DTvpssKlBmVBlr09jRZ1JiWuPGLP5MHpDHkwpBFGhABU8DR//GWtekqm5Ht9DJEycegTob
+	aUBex0xfVPZnx8+yBwv3aP9lkSdPl2nA0G0OvjUUElSYuKBzDb4Y7wmwBjCF6gxQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1uXf4E-00000006oKn-1wUV;
-	Fri, 04 Jul 2025 13:58:58 +0200
-Message-ID: <98d145e6dd8e216a3f7e146ad4e401724c3d669b.camel@sipsolutions.net>
-Subject: Re: [PATCH 21/23] um: ptrace: Use USER_REGSET_NOTE_TYPE() to
- specify regset note names
+	id 1uXf5Q-00000006oSv-2AZi;
+	Fri, 04 Jul 2025 14:00:12 +0200
+Message-ID: <a8ba7df9d797a6aacb0500457ba6c5490d998591.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/1] um: virt-pci: Switch to
+ msi_create_parent_irq_domain()
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov	
- <anton.ivanov@cambridgegreys.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>,  "H. Peter Anvin"	 <hpa@zytor.com>, Oleg
- Nesterov <oleg@redhat.com>, Kees Cook <kees@kernel.org>,  Akihiko Odaki
- <akihiko.odaki@daynix.com>, linux-um@lists.infradead.org, x86@kernel.org
-Date: Fri, 04 Jul 2025 13:58:57 +0200
-In-Reply-To: <20250701135616.29630-22-Dave.Martin@arm.com>
-References: <20250701135616.29630-1-Dave.Martin@arm.com>
-	 <20250701135616.29630-22-Dave.Martin@arm.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Nam Cao <namcao@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Fri, 04 Jul 2025 14:00:11 +0200
+In-Reply-To: <87plehtei3.ffs@tglx>
+References: <cover.1751266049.git.namcao@linutronix.de>
+	 <5f0bd8e877e7bfdfb1a7e99d6b126caf6a7eea48.1751266049.git.namcao@linutronix.de>
+	 <e64a4c40b0234fc265a74cb60633117dc6911518.camel@sipsolutions.net>
+	 <20250630070249.oVVkmFZg@linutronix.de> <87plehtei3.ffs@tglx>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250704_045914_847380_1015AA9F 
-X-CRM114-Status: UNSURE (   8.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250704_050015_716837_BE49E023 
+X-CRM114-Status: GOOD (  12.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,17 +78,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2025-07-01 at 14:56 +0100, Dave Martin wrote:
-> Instead of having the core code guess the note name for each regset,
-> use USER_REGSET_NOTE_TYPE() to pick the correct name from elf.h.
+On Thu, 2025-07-03 at 18:39 +0200, Thomas Gleixner wrote:
+> Johannes,
 >=20
+> On Mon, Jun 30 2025 at 09:02, Nam Cao wrote:
+> > On Mon, Jun 30, 2025 at 08:55:54AM +0200, Johannes Berg wrote:
+> > > On Mon, 2025-06-30 at 08:51 +0200, Nam Cao wrote:
+> > > > Move away from the legacy MSI domain setup, switch to use
+> > > > msi_create_parent_irq_domain().
+> > > >=20
+> > >=20
+> > > Do you want this to go through the UML tree, or is it a dependency
+> > > somewhere else? In the latter case, I suppose you can add
+> >=20
+> > Please take it into the UML tree.
+> >=20
+> > > Acked-by: Johannes Berg <johannes@sipsolutions.net>
+> > > Tested-by: Johannes Berg <johannes@sipsolutions.net>
+>=20
+> are you picking this up or want me to queue it?
 
-Seems to work according to the test in the cover letter. Since it's part
-of a larger series and this patch doesn't build by itself, I'll assume
-you want to take them all together through some other tree, so:
+I've picked it up for uml-next now:
 
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-Tested-by: Johannes Berg <johannes@sipsolutions.net>
+https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git/commit/?h=3Dn=
+ext&id=3D1528fd400c62b84b9c0e368a62b83fbd9d6fb92b
 
 johannes
 
