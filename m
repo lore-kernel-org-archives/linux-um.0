@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D5C6C83F17
-	for <linux-um@archiver.kernel.org>; Sun, 13 Jul 2025 17:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E5CDC83F1D
+	for <linux-um@archiver.kernel.org>; Sun, 13 Jul 2025 17:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ghp4aqIfWYjIth+RE2bWuQf8QfvJiCJcNtaoJe6JOCE=; b=eLPrOJtWH9GjyAAYQf63KKg9mR
-	m49S1BDfIYumtamkDPuHAZ3OU8haUDQPNnv/by5rugOGdD810YHrVFVwSq8Bnuf7GI6nt8cuvOYib
-	4UJd+qYgNs1XDizNWwAR8GJqF1JWAikyBbS0e4SnT0X93VICGL3/TEQSYiCUwYbqRAVTkI1VGasXQ
-	OL5h+NcaLYmW7FokhevKuSG6QY4dJxSdRXUo9Zm+IN4P81o02B+Kptbix4yZVYAkUVgI96ikhSPP6
-	HkSSafKxxjQhJ6bmzfABgGNGZNc3EeJe/MkvjdyxcKioCFJyGxOQuomgCuaBlckVc6M0i1okU8aN9
-	jhgYrOrQ==;
+	bh=uLSAZKc65C9rkSXpEwQXimN17KS5t738kD/ThmzTdvw=; b=xwQQyP4t1jL/OsrTileWecXoIz
+	agSDwd2gGxY7TBSR33+xoqUt58pDUDmMLyOq1rfv6hNaiyEb0f5uSFLNeA5/4KO7hvRHGRoeIVI+Z
+	5yG9JzMe2FoBWvotYsRcN4MoPddAwH8T/5tNp3YUG3WE9PHlFbIsAE+HoH4dEAA2y1+B+jKYyq3Y2
+	m0lnofpMVcyeJV70RX5jFpTKQaQmkQzUaT+JDnQjQBLcuDCSxGHO1RVUEW1W21HB9EvaxaTxIMJnk
+	3ykrKNP1HSJYeuyzqN9mUf/M0YN8jr+OJK7iEFh5m5JedCoDFhH/PBXian5xaCrTFqowOiwP8/1bk
+	VLyS430Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ub0Ui-00000000RSf-46Eb;
-	Sun, 13 Jul 2025 17:28:08 +0000
-Received: from out-179.mta1.migadu.com ([2001:41d0:203:375::b3])
+	id 1ub0Ux-00000000RV5-1Azu;
+	Sun, 13 Jul 2025 17:28:23 +0000
+Received: from out-186.mta1.migadu.com ([2001:41d0:203:375::ba])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ub0Uf-00000000RKv-3vJi
+	id 1ub0Uu-00000000RKu-3VlB
 	for linux-um@lists.infradead.org;
-	Sun, 13 Jul 2025 17:28:07 +0000
+	Sun, 13 Jul 2025 17:28:22 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752427561;
+	t=1752427559;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ghp4aqIfWYjIth+RE2bWuQf8QfvJiCJcNtaoJe6JOCE=;
-	b=AVNEm8SUqmH/63AIwX9Qf9CcVYhxGcTB4VE1p/hjwvtzfhlZ+q/1tUNvEUFSWf2/kBrAEc
-	QFUS2rj/r80czyA8iB5T9XySWl04/0nmFs0CR6Y8HIFhy448QFTaTmc6Vpr8VURk+uFzL/
-	OMU5ttKK3exzQqZ7EZAxIR1hq+q6c2Y=
+	bh=uLSAZKc65C9rkSXpEwQXimN17KS5t738kD/ThmzTdvw=;
+	b=AScwEQ4GPiyltyokJcSDieDTuOlICPzicJhcpl5OtHP2icIdrXtRH0st66B/7zyQ6DUmmt
+	XbQZeQBtnT5k/HIsLLx/5jkH3HfHLXEJmMGEiWwQ6egbEBehUIiS0VYuu+C7yA0rz4syzy
+	FreHuKi8rDBP2Bk7AWNK9yTl6mS7AqM=
 From: Tiwei Bie <tiwei.bie@linux.dev>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -45,17 +45,17 @@ To: richard@nod.at,
 Cc: linux-um@lists.infradead.org,
 	tiwei.btw@antgroup.com,
 	tiwei.bie@linux.dev
-Subject: [RFC PATCH 2/4] um: Remove unused cpu_data and current_cpu_data macros
-Date: Mon, 14 Jul 2025 01:25:34 +0800
-Message-Id: <20250713172536.404809-3-tiwei.bie@linux.dev>
+Subject: [RFC PATCH 1/4] um: Stop tracking virtual CPUs via mm_cpumask()
+Date: Mon, 14 Jul 2025 01:25:33 +0800
+Message-Id: <20250713172536.404809-2-tiwei.bie@linux.dev>
 In-Reply-To: <20250713172536.404809-1-tiwei.bie@linux.dev>
 References: <20250713172536.404809-1-tiwei.bie@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250713_102806_113112_ADD86849 
-X-CRM114-Status: UNSURE (   6.18  )
+X-CRM114-CacheID: sfid-20250713_102821_031302_3A924FCE 
+X-CRM114-Status: UNSURE (   6.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,26 +73,41 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-These two macros have no users. Remove them.
+In UML, each user address space is represented as a separate stub
+process on the host. Therefore, user address spaces do not require
+TLB management on UML virtual CPUs, and it's unnecessary to track
+which virtual CPUs they have executed on.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/asm/processor-generic.h | 2 --
- 1 file changed, 2 deletions(-)
+ arch/um/include/asm/mmu_context.h | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index 8a789c17acd8..236fdfd7cdbe 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -81,8 +81,6 @@ struct cpuinfo_um {
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 0bbb24868557..c727e56ba116 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -13,20 +13,9 @@
+ #include <asm/mm_hooks.h>
+ #include <asm/mmu.h>
  
- extern struct cpuinfo_um boot_cpu_data;
+-#define activate_mm activate_mm
+-static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+-{
+-}
+-
+ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
+ 			     struct task_struct *tsk)
+ {
+-	unsigned cpu = smp_processor_id();
+-
+-	if (prev != next) {
+-		cpumask_clear_cpu(cpu, mm_cpumask(prev));
+-		cpumask_set_cpu(cpu, mm_cpumask(next));
+-	}
+ }
  
--#define cpu_data(cpu)    boot_cpu_data
--#define current_cpu_data boot_cpu_data
- #define cache_line_size()	(boot_cpu_data.cache_alignment)
- 
- #define KSTK_REG(tsk, reg) get_thread_reg(reg, &tsk->thread.switch_buf)
+ #define init_new_context init_new_context
 -- 
 2.34.1
 
