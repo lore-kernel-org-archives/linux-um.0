@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D486FC83F1B
-	for <linux-um@archiver.kernel.org>; Mon, 14 Jul 2025 13:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5448C83F1B
+	for <linux-um@archiver.kernel.org>; Mon, 14 Jul 2025 15:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0NB5HKprrBxEQ7g7qQWLKC/mbEK06AxO+aY53eG0FO4=; b=qinOMMn29XsxGUGmEBdetuSyey
-	rwjcN6l7ktdZSk1EJUZEG+mH3tx6X7/hRC0ZRPDcO2haCAZ0u3WzEeHxbY8pybcr0WU77Ky3MKl2P
-	b7lhSYCyRpqJgmkEl6c04YP4CGqXdBKcefDWPz511J5qURjHMrUNpQZAHl7Q0kg6i0fm8jMKHXLSp
-	9eV6orjNAUlawN/EJ7JyiFNL7rhcbihPWDN8ttCjn4E9Dr9/YWCd+7drqrQynUDiCH4UlQblvH8O7
-	/ZZ2zSIYQxEeIeb69WQB6mJ/x0TAXKgNna4UIMpOigG60+FKZTpFenHnPXgaNC3CPmi9/xDrY+T2p
-	gJPU6mxQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8oGUrFCoRz3ZH9i7QyGyappT44kiuQj7RXF/RhcYg+E=; b=uwGDwDJVFvngwqbISjib6K5xcJ
+	OzLcz4DhuIaZjU1VXbaYOUinZtHTDiKaSoTkwTMd45ZJe+9kpauRu8bVtHSQwOumCdVP8yK2sfaNM
+	kvULqh0XHW6tpYM/IVqwYYzCYjtSxsnZ1R9yc6jxIuFis95xMXEVojiNoXiZ3M3VjpHNUQzdO7dZF
+	Jfqed//kEQ7vOFIXiAUfrOgt7r9bH9gMzSANmOFC69Lc5tP7eCSimxNtsf0revlM/hmic7dtFf4Sv
+	e5i7l4TgG0LVDe+n0usZncLgIgk09KXrG5XMFWJTTBQONJj85Znqu5yb/X3/Fy4wNIZcyuH3LnEnS
+	6qLcdI+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubJ1h-00000002FPN-31YI;
-	Mon, 14 Jul 2025 13:15:25 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1ubLJ9-00000002iuB-4326;
+	Mon, 14 Jul 2025 15:41:35 +0000
+Received: from out-177.mta1.migadu.com ([2001:41d0:203:375::b1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubIRC-00000002Bbt-4Buw
+	id 1ubKbX-00000002X80-0XcQ
 	for linux-um@lists.infradead.org;
-	Mon, 14 Jul 2025 12:37:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=0NB5HKprrBxEQ7g7qQWLKC/mbEK06AxO+aY53eG0FO4=;
-	t=1752496661; x=1753706261; b=ThbpdVBXhIp6buh86GnJitW3CSL48++smmHiE/DXhiWcODE
-	DEWt2YGGCEd2S5TGH1W2yQK+VYIYdY2BNaTW3piJCMei0Ra+7bYQMzGQIa5JB6u0C+Qrr9u/erkoA
-	6Pwib+Kc8aNJ8LF0bkKOtYv+hwDa/dojFKIMOPdko4H0H7UovTEPGNBYnMqyw9nDXhdePfTxDbjuO
-	4RRiVfi3ryy6oTSALc44sKMAO67MVMZ/NoLlNvIt4j/E6TITguFRuGLHJ/xvr+axFve1/8y3nA7bO
-	2FMma5qC0Q2HV92zGPXGtwVz2X8IxTLqVeNZALoZKybM//HMGT98FId513q+X6vQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1ubIR4-000000044Nd-2ENy;
-	Mon, 14 Jul 2025 14:37:34 +0200
-Message-ID: <844b77adc65be7fa5cc0e7b1a89a76137bd686a3.camel@sipsolutions.net>
+	Mon, 14 Jul 2025 14:56:33 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752504987;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8oGUrFCoRz3ZH9i7QyGyappT44kiuQj7RXF/RhcYg+E=;
+	b=Apf4BvtmJZC8wJQuaFOtlIF+xLmo64If69W1jUnbatj+tvxlFcSYEMiVRGieZZn7ICykfo
+	YfQtXMX2cVw4xXUVYJ20F5zqdor9VI3G4r/N0FApOmDQvw4jFnrPL//8/CZeoslLzNJ2v0
+	59/AIPs5b/tRgP47sDwnwMINsmFhi7g=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: benjamin@sipsolutions.net
+Cc: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	linux-um@lists.infradead.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
 Subject: Re: [RFC PATCH 0/4] um: Add SMP support
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Tiwei Bie <tiwei.bie@linux.dev>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, tiwei.btw@antgroup.com
-Date: Mon, 14 Jul 2025 14:37:33 +0200
-In-Reply-To: <20250713172536.404809-1-tiwei.bie@linux.dev>
-References: <20250713172536.404809-1-tiwei.bie@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+Date: Mon, 14 Jul 2025 22:56:01 +0800
+Message-Id: <20250714145601.3504868-1-tiwei.bie@linux.dev>
+In-Reply-To: <844b77adc65be7fa5cc0e7b1a89a76137bd686a3.camel@sipsolutions.net>
+References: <844b77adc65be7fa5cc0e7b1a89a76137bd686a3.camel@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250714_053743_185815_DF4A12B3 
-X-CRM114-Status: GOOD (  19.09  )
+X-CRM114-CacheID: sfid-20250714_075631_748232_27FFB1C5 
+X-CRM114-Status: GOOD (  25.98  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,95 +72,128 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-SGkgVGl3ZWksCgp0aGlzIGlzIHByZXR0eSBjb29sLCBJIHJlYWxseSBkaWQgbm90IGV4cGVjdCBw
-YXRjaGVzIGZvciBTTVAgOi0pCgpJIGhhdmUgbm90IGRpdmVkIGluIGEgbG90LiBGcm9tIGEgY3Vy
-c29yeSBnbGFuY2UsIEkgZXhwZWN0IHRoYXQgdGhlcmUKYXJlIGN1cnJlbnRseSBzdGlsbCBpc3N1
-ZXMgaWYgYSBwcm9jZXNzIGlzIGFjdHVhbGx5IG11bHRpLXRocmVhZGVkLiBCdXQKZXZlbiB0aGlz
-IHN0YXRlIGlzIHJlYWxseSBuZWF0IGFscmVhZHkuCgpBcyBmb3IgcHJvcGVyIG11bHRpLXRocmVh
-ZGluZyBzdXBwb3J0LCBJIHdvdWxkIGxpa2UgdG8gbWFrZSBzdXJlIHlvdQphcmUgYXdhcmUgb2Yg
-dGhlIGZsdXNoX3RsYl8qIGZ1bmN0aW9ucyBpbiB0bGJmbHVzaC5oLiBUaGVzZSB3aWxsIG5lZWQK
-dG8gYmUgdXBkYXRlZCBzbyB0aGF0IHRoZXNlIGZsdXNoZXMgaGFwcGVuIHN5bmNocm9ub3VzbHkg
-YXMgYW5vdGhlcgp0aHJlYWQgbWlnaHQgb3RoZXJ3aXNlIGFjY2VzcyBkYXRhIGZvciB0b28gbG9u
-Zy4KClRoZXJlIGFyZSBwcm9iYWJseSBhIGZldyB0aGluZ3MgdG8gZmlndXJlIG91dCBpbiB0aGF0
-IHJlZ2FyZCBhYm91dAp3aGVyZS93aGVuIHRvIGZsdXNoIHRoZSBUTEIgZW50cmllcyBpbiBhIG11
-bHRpLXRocmVhZGVkIHVzZXJzcGFjZS4KQWZ0ZXIgYWxsLCB0aGVyZSBjYW4gYmUgdXAgdG8gdGhl
-IG51bWJlciBvZiBDUFVzIHdvcmtlciB0aHJlYWRzIGFuZCBvbmUKcHJvYmFibHkgb25seSB3YW50
-cyBvbmUgb2YgdGhlbSB0byBzeW5jIHRoZSBUTEJzIGF0IGFueSBwb2ludCBpbiB0bWllLgoKQW55
-d2F5LCBuaWNlIHdvcmshCkJlbmphbWluCgpPbiBNb24sIDIwMjUtMDctMTQgYXQgMDE6MjUgKzA4
-MDAsIFRpd2VpIEJpZSB3cm90ZToKPiBGcm9tOiBUaXdlaSBCaWUgPHRpd2VpLmJ0d0BhbnRncm91
-cC5jb20+Cj4gCj4gVGhpcyBpcyBhIGZvbGxvdy11cCB0byB0aGUgZGlzY3Vzc2lvbiBpbiB0aGlz
-IHRocmVhZDoKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC11bS8yMDI1MDcxMTA2NTAy
-MS4yNTM1MzYyLTQtdGl3ZWkuYmllQGxpbnV4LmRldi8KPiAKPiBDdXJyZW50bHksIHRoaXMgaXMg
-c3RpbGwgYSBQb0MgYW5kIHJlcXVpcmVzIGZ1cnRoZXIgaW1wcm92ZW1lbnRzLgo+IAo+IEkgcGVy
-Zm9ybWVkIGEga2VybmVsIGJ1aWxkIHRlc3QgaW5zaWRlIFVNTCB3aXRoIDggdmlydHVhbCBDUFVz
-Cj4gZW5hYmxlZDoKPiAKPiAkIHRhciB4ZiBsaW51eC02LjE1LnRhci5nego+ICQgY2QgbGludXgt
-Ni4xNQo+ICQgbWFrZSBBUkNIPXVtIGRlZmNvbmZpZyA+IC9kZXYvbnVsbAo+ICQgdGltZSBtYWtl
-IEFSQ0g9dW0gLWoxNiA+IC9kZXYvbnVsbAo+IAo+IHJlYWzCoMKgwqAgNm0yLjUyOXMKPiB1c2Vy
-wqDCoMKgIDQzbTM3LjY2NXMKPiBzeXPCoMKgwqDCoCAwbTM0LjU4NXMKPiAkIC4vbGludXggLS12
-ZXJzaW9uCj4gNi4xNS4wCj4gJCBjYXQgL3Byb2MvY3B1aW5mbyB8IGdyZXAgLWMgJ15wcm9jZXNz
-b3InCj4gOAo+IAo+IEhlcmUgYXJlIHNvbWUgc3RlcHMgdG8gdHJ5IG91dCBTTVAgc3VwcG9ydCBp
-biBVTUw6Cj4gCj4gMS4gQnVpbGQgVU1MIHdpdGggQ09ORklHX1NNUD15IGFuZCwgZm9yIGV4YW1w
-bGUsIENPTkZJR19OUl9DUFVTPTguCj4gCj4gMi4gTGF1bmNoIGEgVU1MIGluc3RhbmNlIHdpdGgs
-IGZvciBleGFtcGxlLCA4IHZpcnR1YWwgQ1BVcy4KPiAKPiDCoCQgLi9saW51eCBtZW09MTZHIG5j
-cHVzPTggbm9oej1uIHNlY2NvbXA9b24gaW5pdD0vYmluL3NoIFwKPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB1YmQwPSR5b3VyX3Jvb3Rmc19pbWFnZQo+IAo+IFRoaXMgcGF0Y2hzZXQgZGVwZW5kcyBv
-biB0aGUgZm9sbG93aW5nIHBhdGNoc2V0Ogo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4
-LXVtLzIwMjUwNzExMDY1MDIxLjI1MzUzNjItMS10aXdlaS5iaWVAbGludXguZGV2Lwo+IAo+IFRp
-d2VpIEJpZSAoNCk6Cj4gwqAgdW06IFN0b3AgdHJhY2tpbmcgdmlydHVhbCBDUFVzIHZpYSBtbV9j
-cHVtYXNrKCkKPiDCoCB1bTogUmVtb3ZlIHVudXNlZCBjcHVfZGF0YSBhbmQgY3VycmVudF9jcHVf
-ZGF0YSBtYWNyb3MKPiDCoCB1bTogdmRzbzogSW1wbGVtZW50IF9fdmRzb19nZXRjcHUoKSB2aWEg
-c3lzY2FsbAo+IMKgIHVtOiBBZGQgU01QIHN1cHBvcnQKPiAKPiDCoGFyY2gvdW0vS2NvbmZpZ8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMjggKyst
-Cj4gwqBhcmNoL3VtL2luY2x1ZGUvYXNtL0tidWlsZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHzCoMKgIDMgKwo+IMKgYXJjaC91bS9pbmNsdWRlL2FzbS9jdXJyZW50LmjCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB8wqDCoCA1ICstCj4gwqBhcmNoL3VtL2luY2x1ZGUvYXNtL2hhcmRpcnEuaMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHzCoCAyNCArKy0KPiDCoGFyY2gvdW0vaW5jbHVkZS9hc20vaXJxZmxh
-Z3MuaMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCA0ICstCj4gwqBhcmNoL3VtL2luY2x1ZGUvYXNt
-L21tdS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCA3ICsKPiDCoGFyY2gvdW0v
-aW5jbHVkZS9hc20vbW11X2NvbnRleHQuaMKgwqDCoMKgwqDCoCB8wqAgMTEgLS0KPiDCoGFyY2gv
-dW0vaW5jbHVkZS9hc20vcGd0YWJsZS5owqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMiArCj4g
-wqBhcmNoL3VtL2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci1nZW5lcmljLmggfMKgwqAgOCArLQo+IMKg
-YXJjaC91bS9pbmNsdWRlL2FzbS9zbXAuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
-IDMxICsrKy0KPiDCoGFyY2gvdW0vaW5jbHVkZS9hc20vc3BpbmxvY2suaMKgwqDCoMKgwqDCoMKg
-wqDCoCB8wqDCoCA4ICsKPiDCoGFyY2gvdW0vaW5jbHVkZS9saW51eC9zbXAtaW50ZXJuYWwuaMKg
-wqDCoCB8wqDCoCA4ICsKPiDCoGFyY2gvdW0vaW5jbHVkZS9saW51eC90aW1lLWludGVybmFsLmjC
-oMKgIHzCoMKgIDMgKwo+IMKgYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9rZXJuX3V0aWwuaMKgwqDC
-oMKgwqAgfMKgwqAgMiArCj4gwqBhcmNoL3VtL2luY2x1ZGUvc2hhcmVkL2xvbmdqbXAuaMKgwqDC
-oMKgwqDCoMKgIHzCoMKgIDMgKy0KPiDCoGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMTIgKy0KPiDCoGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQv
-c21wLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAxNCArKwo+IMKgYXJjaC91bS9rZXJuZWwv
-TWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAxICsKPiDCoGFy
-Y2gvdW0va2VybmVsL2lycS5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-fMKgIDMxICsrKy0KPiDCoGFyY2gvdW0va2VybmVsL2tzeW1zLmPCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHzCoMKgIDIgKy0KPiDCoGFyY2gvdW0va2VybmVsL21lbS5jwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMiArCj4gwqBhcmNoL3VtL2tl
-cm5lbC9wcm9jZXNzLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDE5ICstCj4g
-wqBhcmNoL3VtL2tlcm5lbC9za2FzL21tdS5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8
-wqAgMTYgKy0KPiDCoGFyY2gvdW0va2VybmVsL3NtcC5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfCAyMjMKPiArKysrKysrKysrKysrKysrKysrKysrKysKPiDCoGFyY2gv
-dW0va2VybmVsL3RpbWUuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAg
-NDggKysrLS0KPiDCoGFyY2gvdW0va2VybmVsL3RsYi5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfMKgwqAgNSArLQo+IMKgYXJjaC91bS9rZXJuZWwvdHJhcC5jwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDIgKy0KPiDCoGFyY2gvdW0va2Vy
-bmVsL3VtX2FyY2guY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgNjAgKysrKysr
-LQo+IMKgYXJjaC91bS9vcy1MaW51eC9NYWtlZmlsZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfMKgwqAgNCArLQo+IMKgYXJjaC91bS9vcy1MaW51eC9maWxlLmPCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCB8wqAgNzIgKysrKysrLS0KPiDCoGFyY2gvdW0vb3MtTGludXgvbWFp
-bi5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgNSArLQo+IMKgYXJjaC91
-bS9vcy1MaW51eC9wcm9jZXNzLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMTUgKysK
-PiDCoGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHzCoCAxNiArLQo+IMKgYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuY8KgwqDCoMKgwqDC
-oMKgwqAgfMKgwqAgMSArCj4gwqBhcmNoL3VtL29zLUxpbnV4L3NtcC5jwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgNDQgKysrKysKPiDCoGFyY2gvdW0vb3MtTGludXgvc3Rh
-cnRfdXAuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCAzICsKPiDCoGFyY2gvdW0vb3Mt
-TGludXgvdGltZS5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDI5ICstLQo+
-IMKgYXJjaC91bS9vcy1MaW51eC91c2VyX3N5bXMuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKg
-wqAgNSArCj4gwqBhcmNoL3g4Ni91bS92ZHNvL3VtX3Zkc28uY8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHzCoCAxOCArLQo+IMKgMzkgZmlsZXMgY2hhbmdlZCwgNjk1IGluc2VydGlvbnMoKyks
-IDk5IGRlbGV0aW9ucygtKQo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vaW5jbHVkZS9h
-c20vc3BpbmxvY2suaAo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vaW5jbHVkZS9saW51
-eC9zbXAtaW50ZXJuYWwuaAo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vaW5jbHVkZS9z
-aGFyZWQvc21wLmgKPiDCoGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3VtL2tlcm5lbC9zbXAuYwo+
-IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vb3MtTGludXgvc21wLmMKPiAKCg==
+Hi Benjamin,
 
+On Mon, 14 Jul 2025 14:37:33 +0200, Benjamin Berg wrote:
+> Hi Tiwei,
+> 
+> this is pretty cool, I really did not expect patches for SMP :-)
+
+I'm really happy you like it. :)
+
+> 
+> I have not dived in a lot. From a cursory glance, I expect that there
+> are currently still issues if a process is actually multi-threaded. But
+> even this state is really neat already.
+> 
+> As for proper multi-threading support, I would like to make sure you
+> are aware of the flush_tlb_* functions in tlbflush.h. These will need
+> to be updated so that these flushes happen synchronously as another
+> thread might otherwise access data for too long.
+> 
+> There are probably a few things to figure out in that regard about
+> where/when to flush the TLB entries in a multi-threaded userspace.
+> After all, there can be up to the number of CPUs worker threads and one
+> probably only wants one of them to sync the TLBs at any point in tmie.
+
+That makes sense! Thanks for the heads-up! I'll take a closer look.
+
+> 
+> Anyway, nice work!
+
+Thanks! :)
+Tiwei
+
+> Benjamin
+> 
+> On Mon, 2025-07-14 at 01:25 +0800, Tiwei Bie wrote:
+> > From: Tiwei Bie <tiwei.btw@antgroup.com>
+> > 
+> > This is a follow-up to the discussion in this thread:
+> > https://lore.kernel.org/linux-um/20250711065021.2535362-4-tiwei.bie@linux.dev/
+> > 
+> > Currently, this is still a PoC and requires further improvements.
+> > 
+> > I performed a kernel build test inside UML with 8 virtual CPUs
+> > enabled:
+> > 
+> > $ tar xf linux-6.15.tar.gz
+> > $ cd linux-6.15
+> > $ make ARCH=um defconfig > /dev/null
+> > $ time make ARCH=um -j16 > /dev/null
+> > 
+> > real    6m2.529s
+> > user    43m37.665s
+> > sys     0m34.585s
+> > $ ./linux --version
+> > 6.15.0
+> > $ cat /proc/cpuinfo | grep -c '^processor'
+> > 8
+> > 
+> > Here are some steps to try out SMP support in UML:
+> > 
+> > 1. Build UML with CONFIG_SMP=y and, for example, CONFIG_NR_CPUS=8.
+> > 
+> > 2. Launch a UML instance with, for example, 8 virtual CPUs.
+> > 
+> >  $ ./linux mem=16G ncpus=8 nohz=n seccomp=on init=/bin/sh \
+> >            ubd0=$your_rootfs_image
+> > 
+> > This patchset depends on the following patchset:
+> > https://lore.kernel.org/linux-um/20250711065021.2535362-1-tiwei.bie@linux.dev/
+> > 
+> > Tiwei Bie (4):
+> >   um: Stop tracking virtual CPUs via mm_cpumask()
+> >   um: Remove unused cpu_data and current_cpu_data macros
+> >   um: vdso: Implement __vdso_getcpu() via syscall
+> >   um: Add SMP support
+> > 
+> >  arch/um/Kconfig                         |  28 ++-
+> >  arch/um/include/asm/Kbuild              |   3 +
+> >  arch/um/include/asm/current.h           |   5 +-
+> >  arch/um/include/asm/hardirq.h           |  24 ++-
+> >  arch/um/include/asm/irqflags.h          |   4 +-
+> >  arch/um/include/asm/mmu.h               |   7 +
+> >  arch/um/include/asm/mmu_context.h       |  11 --
+> >  arch/um/include/asm/pgtable.h           |   2 +
+> >  arch/um/include/asm/processor-generic.h |   8 +-
+> >  arch/um/include/asm/smp.h               |  31 +++-
+> >  arch/um/include/asm/spinlock.h          |   8 +
+> >  arch/um/include/linux/smp-internal.h    |   8 +
+> >  arch/um/include/linux/time-internal.h   |   3 +
+> >  arch/um/include/shared/kern_util.h      |   2 +
+> >  arch/um/include/shared/longjmp.h        |   3 +-
+> >  arch/um/include/shared/os.h             |  12 +-
+> >  arch/um/include/shared/smp.h            |  14 ++
+> >  arch/um/kernel/Makefile                 |   1 +
+> >  arch/um/kernel/irq.c                    |  31 +++-
+> >  arch/um/kernel/ksyms.c                  |   2 +-
+> >  arch/um/kernel/mem.c                    |   2 +
+> >  arch/um/kernel/process.c                |  19 +-
+> >  arch/um/kernel/skas/mmu.c               |  16 +-
+> >  arch/um/kernel/smp.c                    | 223
+> > ++++++++++++++++++++++++
+> >  arch/um/kernel/time.c                   |  48 +++--
+> >  arch/um/kernel/tlb.c                    |   5 +-
+> >  arch/um/kernel/trap.c                   |   2 +-
+> >  arch/um/kernel/um_arch.c                |  60 ++++++-
+> >  arch/um/os-Linux/Makefile               |   4 +-
+> >  arch/um/os-Linux/file.c                 |  72 ++++++--
+> >  arch/um/os-Linux/main.c                 |   5 +-
+> >  arch/um/os-Linux/process.c              |  15 ++
+> >  arch/um/os-Linux/signal.c               |  16 +-
+> >  arch/um/os-Linux/skas/process.c         |   1 +
+> >  arch/um/os-Linux/smp.c                  |  44 +++++
+> >  arch/um/os-Linux/start_up.c             |   3 +
+> >  arch/um/os-Linux/time.c                 |  29 +--
+> >  arch/um/os-Linux/user_syms.c            |   5 +
+> >  arch/x86/um/vdso/um_vdso.c              |  18 +-
+> >  39 files changed, 695 insertions(+), 99 deletions(-)
+> >  create mode 100644 arch/um/include/asm/spinlock.h
+> >  create mode 100644 arch/um/include/linux/smp-internal.h
+> >  create mode 100644 arch/um/include/shared/smp.h
+> >  create mode 100644 arch/um/kernel/smp.c
+> >  create mode 100644 arch/um/os-Linux/smp.c
+> > 
+> 
 
