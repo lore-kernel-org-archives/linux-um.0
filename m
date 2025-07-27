@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA77C87FCE
-	for <linux-um@archiver.kernel.org>; Sun, 27 Jul 2025 06:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B83AEC87FCC
+	for <linux-um@archiver.kernel.org>; Sun, 27 Jul 2025 06:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=k2eWfUgE7DI4WO8Ad/uJsAoLJfjFu0Y91QrXPjDO64c=; b=TSVw/WyynOJLNs+VYQMFYSCK0r
-	aJm/cH900qk1odIo/P4E4xmN2cN/MHOgkkXVZm0/GCpyapNnKrhhOvb6tBFend/fSuftFjbUDw06E
-	I0Rb3EYazAGxlRN8fH4c5yRh2TSlqvv8MLEC/P7NsW8muuJvsZswPkdShHu4tiSBY38Un3I427Crn
-	HAmRYndYxvH86HxsZ+VEmXDeUIXd/Z9e+i5KMXSX18/5d2QXIUOjnjojCqp82CLggKA7tSnYWuBgF
-	fOpj98Gbee2jg/MmGV+y+SKOGX4ydalpD/aqnhkOhdoPk5pp/7cPOLHbyckkSJhX+E9GB1WRwGhPk
-	wWyDiZ0g==;
+	bh=HzWwg9ZbXSlmytRYMunN72zPUt5bTULnlx+bcn9REqY=; b=Btb+iisyvZwnohwAbl5qcy499h
+	4N7J65yDc7FvU+83hu5C8NiUoaWU5kAR6omK7JVeAd+LZKBZ9NkhBJS4jrShci/fKnV2ADYfHm12R
+	e/p83QWTdl75CurMAntbGgs8qLNw+CQh2r3fJwEofbZOyzcJyMHKG7/LMsTADNOvQGWWTZhlMtvPe
+	14SORKSiuSOaKQTySxcp2A0KGMoBzGiuFd5n8NbOzQt1yiD10zy7UgmXAyeo9+XOvKyxDVVSCwNtA
+	f1dJgInjvL+7vYyUTSGVyalckPc/PRea+mmFErXmUuGimYDDnyRBqCacV3c9Ki5qoBQR2GbS9Xa5P
+	BqM5k3aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ufutz-0000000CNzK-43zA;
-	Sun, 27 Jul 2025 06:30:31 +0000
-Received: from out-172.mta0.migadu.com ([2001:41d0:1004:224b::ac])
+	id 1ufuu1-0000000CO05-28hJ;
+	Sun, 27 Jul 2025 06:30:33 +0000
+Received: from out-185.mta0.migadu.com ([91.218.175.185])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ufutx-0000000CNwr-0gCw
+	id 1ufutz-0000000CNyM-0J0U
 	for linux-um@lists.infradead.org;
-	Sun, 27 Jul 2025 06:30:30 +0000
+	Sun, 27 Jul 2025 06:30:32 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753597826;
+	t=1753597829;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k2eWfUgE7DI4WO8Ad/uJsAoLJfjFu0Y91QrXPjDO64c=;
-	b=mXn2HtAgbgz3PT/MsTfb1yBbYs26pEjs53wLpMQVS0Ors94kXPQ0Ln0DxX9CmPUjnrLKv0
-	LfrqC7uvmmZV/6MyAFUqtcKpE70KPRw/UfMoC0f6EtLm7V3bwcGYq1sJu/sdI3ODEDSE51
-	MpaG+r3MSHQNq/x54huwrAKlFGQ3JH8=
+	bh=HzWwg9ZbXSlmytRYMunN72zPUt5bTULnlx+bcn9REqY=;
+	b=D2HzWRTL2nHhNMKNll1++v8FDqshtqYwjcHoRAtUEgMwsD6LzfhUGk6zHjTzEbU4z23Yi2
+	UK6/6NGh0aE8Me30pqchZuAm/redgW/8Qb9fz+pmsKUngB8DHS4y7TR4JO9lsKNfK+Bjjl
+	8KYcHw1/dLs3/wHwjxCPYJNFNJ8bkEs=
 From: Tiwei Bie <tiwei.bie@linux.dev>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -45,17 +45,17 @@ To: richard@nod.at,
 Cc: linux-um@lists.infradead.org,
 	tiwei.btw@antgroup.com,
 	tiwei.bie@linux.dev
-Subject: [PATCH 7/9] um: Define timers on a per-CPU basis
-Date: Sun, 27 Jul 2025 14:29:35 +0800
-Message-Id: <20250727062937.1369050-8-tiwei.bie@linux.dev>
+Subject: [PATCH 8/9] um: Support directing IO signals to calling thread
+Date: Sun, 27 Jul 2025 14:29:36 +0800
+Message-Id: <20250727062937.1369050-9-tiwei.bie@linux.dev>
 In-Reply-To: <20250727062937.1369050-1-tiwei.bie@linux.dev>
 References: <20250727062937.1369050-1-tiwei.bie@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250726_233029_491940_ADA1919B 
-X-CRM114-Status: GOOD (  22.41  )
+X-CRM114-CacheID: sfid-20250726_233031_265540_965F66A8 
+X-CRM114-Status: GOOD (  12.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,338 +72,84 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Define timers on a per-CPU basis to enable each CPU to have its
-own timer. This is a preparation for adding SMP support.
+Extend os_set_fd_async() to allow the calling thread to direct
+I/O availability signals to itself. After this change, existing
+users will explicitly direct these signals to the CPU0 thread,
+which was achieved by ignoring SIGIO in helper threads. This is
+a preparation for adding SMP support.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/linux/time-internal.h |  3 ++
- arch/um/include/shared/os.h           |  6 +--
- arch/um/kernel/irq.c                  |  2 +-
- arch/um/kernel/time.c                 | 54 +++++++++++++++++++--------
- arch/um/os-Linux/main.c               |  2 +-
- arch/um/os-Linux/time.c               | 28 +++++++++-----
- 6 files changed, 66 insertions(+), 29 deletions(-)
+ arch/um/include/shared/os.h |  2 +-
+ arch/um/kernel/irq.c        |  4 ++--
+ arch/um/os-Linux/file.c     | 10 +++++++---
+ 3 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/include/linux/time-internal.h b/arch/um/include/linux/time-internal.h
-index 138908b999d7..c274eb5ad55e 100644
---- a/arch/um/include/linux/time-internal.h
-+++ b/arch/um/include/linux/time-internal.h
-@@ -90,4 +90,7 @@ extern unsigned long tt_extra_sched_jiffies;
-  * which is intentional since we really shouldn't link it in that case.
-  */
- void time_travel_ndelay(unsigned long nsec);
-+
-+int um_setup_timer(void);
-+
- #endif /* __TIMER_INTERNAL_H__ */
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 324d4eed3385..0ca6e4548671 100644
+index 0ca6e4548671..ca377421181d 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -269,9 +269,9 @@ extern void os_warn(const char *fmt, ...)
- /* time.c */
- extern void os_idle_sleep(void);
- extern int os_timer_create(void);
--extern int os_timer_set_interval(unsigned long long nsecs);
--extern int os_timer_one_shot(unsigned long long nsecs);
--extern void os_timer_disable(void);
-+extern int os_timer_set_interval(int cpu, unsigned long long nsecs);
-+extern int os_timer_one_shot(int cpu, unsigned long long nsecs);
-+extern void os_timer_disable(int cpu);
- extern long long os_persistent_clock_emulation(void);
- extern long long os_nsecs(void);
- 
+@@ -155,7 +155,7 @@ extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
+ extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
+ extern int os_file_modtime(const char *file, long long *modtime);
+ extern int os_pipe(int *fd, int stream, int close_on_exec);
+-extern int os_set_fd_async(int fd);
++extern int os_set_fd_async(int fd, int self);
+ extern int os_clear_fd_async(int fd);
+ extern int os_set_fd_block(int fd, int blocking);
+ extern int os_accept_connection(int fd);
 diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 0dfaf96bb7da..5ed8014e43e4 100644
+index 5ed8014e43e4..193b6374d890 100644
 --- a/arch/um/kernel/irq.c
 +++ b/arch/um/kernel/irq.c
-@@ -683,7 +683,7 @@ void __init init_IRQ(void)
- {
- 	int i;
- 
--	irq_set_chip_and_handler(TIMER_IRQ, &alarm_irq_type, handle_edge_irq);
-+	irq_set_chip_and_handler(TIMER_IRQ, &alarm_irq_type, handle_percpu_irq);
- 
- 	for (i = 1; i < UM_LAST_SIGNAL_IRQ; i++)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index ae0fa2173778..79c40fe5c80a 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -625,9 +625,10 @@ void time_travel_sleep(void)
- 	 * controller application.
- 	 */
- 	unsigned long long next = S64_MAX;
-+	int cpu = raw_smp_processor_id();
- 
- 	if (time_travel_mode == TT_MODE_BASIC)
--		os_timer_disable();
-+		os_timer_disable(cpu);
- 
- 	time_travel_update_time(next, true);
- 
-@@ -638,9 +639,9 @@ void time_travel_sleep(void)
- 			 * This is somewhat wrong - we should get the first
- 			 * one sooner like the os_timer_one_shot() below...
- 			 */
--			os_timer_set_interval(time_travel_timer_interval);
-+			os_timer_set_interval(cpu, time_travel_timer_interval);
- 		} else {
--			os_timer_one_shot(time_travel_timer_event.time - next);
-+			os_timer_one_shot(cpu, time_travel_timer_event.time - next);
- 		}
- 	}
- }
-@@ -758,6 +759,8 @@ extern u64 time_travel_ext_req(u32 op, u64 time);
- #define time_travel_del_event(e) do { } while (0)
- #endif
- 
-+static struct clock_event_device timer_clockevent[NR_CPUS];
-+
- void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
+@@ -302,7 +302,7 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
+ 	int err, events = os_event_mask(type);
  	unsigned long flags;
-@@ -780,12 +783,14 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
  
- static int itimer_shutdown(struct clock_event_device *evt)
- {
-+	int cpu = evt - &timer_clockevent[0];
-+
- 	if (time_travel_mode != TT_MODE_OFF)
- 		time_travel_del_event(&time_travel_timer_event);
+-	err = os_set_fd_async(fd);
++	err = os_set_fd_async(fd, 0);
+ 	if (err < 0)
+ 		goto out;
  
- 	if (time_travel_mode != TT_MODE_INFCPU &&
- 	    time_travel_mode != TT_MODE_EXTERNAL)
--		os_timer_disable();
-+		os_timer_disable(cpu);
+@@ -607,7 +607,7 @@ void um_irqs_resume(void)
+ 	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	list_for_each_entry(entry, &active_fds, list) {
+ 		if (entry->suspended) {
+-			int err = os_set_fd_async(entry->fd);
++			int err = os_set_fd_async(entry->fd, 0);
  
- 	return 0;
- }
-@@ -793,6 +798,7 @@ static int itimer_shutdown(struct clock_event_device *evt)
- static int itimer_set_periodic(struct clock_event_device *evt)
- {
- 	unsigned long long interval = NSEC_PER_SEC / HZ;
-+	int cpu = evt - &timer_clockevent[0];
- 
- 	if (time_travel_mode != TT_MODE_OFF) {
- 		time_travel_del_event(&time_travel_timer_event);
-@@ -805,7 +811,7 @@ static int itimer_set_periodic(struct clock_event_device *evt)
- 
- 	if (time_travel_mode != TT_MODE_INFCPU &&
- 	    time_travel_mode != TT_MODE_EXTERNAL)
--		os_timer_set_interval(interval);
-+		os_timer_set_interval(cpu, interval);
- 
- 	return 0;
- }
-@@ -825,7 +831,7 @@ static int itimer_next_event(unsigned long delta,
- 
- 	if (time_travel_mode != TT_MODE_INFCPU &&
- 	    time_travel_mode != TT_MODE_EXTERNAL)
--		return os_timer_one_shot(delta);
-+		return os_timer_one_shot(raw_smp_processor_id(), delta);
- 
- 	return 0;
- }
-@@ -835,10 +841,9 @@ static int itimer_one_shot(struct clock_event_device *evt)
- 	return itimer_next_event(0, evt);
+ 			WARN(err < 0, "os_set_fd_async returned %d\n", err);
+ 			entry->suspended = false;
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 617886d1fb1e..2544a0fc9fbb 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -391,8 +391,12 @@ int os_pipe(int *fds, int stream, int close_on_exec)
+ 	return err;
  }
  
--static struct clock_event_device timer_clockevent = {
-+static struct clock_event_device _timer_clockevent = {
- 	.name			= "posix-timer",
- 	.rating			= 250,
--	.cpumask		= cpu_possible_mask,
- 	.features		= CLOCK_EVT_FEAT_PERIODIC |
- 				  CLOCK_EVT_FEAT_ONESHOT,
- 	.set_state_shutdown	= itimer_shutdown,
-@@ -856,6 +861,9 @@ static struct clock_event_device timer_clockevent = {
- 
- static irqreturn_t um_timer(int irq, void *dev)
+-int os_set_fd_async(int fd)
++int os_set_fd_async(int fd, int self)
  {
-+	int cpu = raw_smp_processor_id();
-+	struct clock_event_device *evt = &timer_clockevent[cpu];
-+
- 	/*
- 	 * Interrupt the (possibly) running userspace process, technically this
- 	 * should only happen if userspace is currently executing.
-@@ -867,7 +875,7 @@ static irqreturn_t um_timer(int irq, void *dev)
- 	    get_current()->mm)
- 		os_alarm_process(get_current()->mm->context.id.pid);
- 
--	(*timer_clockevent.event_handler)(&timer_clockevent);
-+	evt->event_handler(evt);
- 
- 	return IRQ_HANDLED;
- }
-@@ -904,6 +912,23 @@ static struct clocksource timer_clocksource = {
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
- };
- 
-+int um_setup_timer(void)
-+{
-+	int cpu = raw_smp_processor_id();
-+	struct clock_event_device *evt = &timer_clockevent[cpu];
-+	int err;
-+
-+	err = os_timer_create();
-+	if (err)
-+		return err;
-+
-+	memcpy(evt, &_timer_clockevent, sizeof(*evt));
-+	evt->cpumask = cpumask_of(cpu);
-+	clockevents_register_device(evt);
-+
-+	return 0;
-+}
-+
- static void __init um_timer_setup(void)
- {
- 	int err;
-@@ -913,8 +938,8 @@ static void __init um_timer_setup(void)
- 		printk(KERN_ERR "register_timer : request_irq failed - "
- 		       "errno = %d\n", -err);
- 
--	err = os_timer_create();
--	if (err != 0) {
-+	err = um_setup_timer();
-+	if (err) {
- 		printk(KERN_ERR "creation of timer failed - errno = %d\n", -err);
- 		return;
- 	}
-@@ -924,7 +949,6 @@ static void __init um_timer_setup(void)
- 		printk(KERN_ERR "clocksource_register_hz returned %d\n", err);
- 		return;
- 	}
--	clockevents_register_device(&timer_clockevent);
- }
- 
- void read_persistent_clock64(struct timespec64 *ts)
-@@ -961,21 +985,21 @@ static int setup_time_travel(char *str)
- {
- 	if (strcmp(str, "=inf-cpu") == 0) {
- 		time_travel_mode = TT_MODE_INFCPU;
--		timer_clockevent.name = "time-travel-timer-infcpu";
-+		_timer_clockevent.name = "time-travel-timer-infcpu";
- 		timer_clocksource.name = "time-travel-clock";
- 		return 1;
- 	}
- 
- 	if (strncmp(str, "=ext:", 5) == 0) {
- 		time_travel_mode = TT_MODE_EXTERNAL;
--		timer_clockevent.name = "time-travel-timer-external";
-+		_timer_clockevent.name = "time-travel-timer-external";
- 		timer_clocksource.name = "time-travel-clock-external";
- 		return time_travel_connect_external(str + 5);
- 	}
- 
- 	if (!*str) {
- 		time_travel_mode = TT_MODE_BASIC;
--		timer_clockevent.name = "time-travel-timer";
-+		_timer_clockevent.name = "time-travel-timer";
- 		timer_clocksource.name = "time-travel-clock";
- 		return 1;
- 	}
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index 3c63ce19e3bf..730723106228 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -171,7 +171,7 @@ int __init main(int argc, char **argv, char **envp)
- 	 */
- 
- 	/* stop timers and set timer signal to be ignored */
--	os_timer_disable();
-+	os_timer_disable(0);
- 
- 	/* disable SIGIO for the fds and set SIGIO to be ignored */
- 	err = deactivate_all_fds();
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index f25a4196bab7..e38b6f84287b 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -16,7 +16,7 @@
- #include <os.h>
- #include <string.h>
- 
--static timer_t event_high_res_timer = 0;
-+static timer_t event_high_res_timer[CONFIG_NR_CPUS] = { 0 };
- 
- static inline long long timespec_to_ns(const struct timespec *ts)
- {
-@@ -31,20 +31,30 @@ long long os_persistent_clock_emulation(void)
- 	return timespec_to_ns(&realtime_tp);
- }
- 
-+#ifndef sigev_notify_thread_id
-+#define sigev_notify_thread_id _sigev_un._tid
-+#endif
-+
- /**
-  * os_timer_create() - create an new posix (interval) timer
-  */
- int os_timer_create(void)
- {
--	timer_t *t = &event_high_res_timer;
-+	timer_t *t = &event_high_res_timer[0];
-+	struct sigevent sev = {
-+		.sigev_notify = SIGEV_THREAD_ID,
-+		.sigev_signo = SIGALRM,
-+		.sigev_value.sival_ptr = t,
-+		.sigev_notify_thread_id = gettid(),
++	struct f_owner_ex owner = {
++		.type = F_OWNER_TID,
++		.pid = self ? gettid() : os_getpid(),
 +	};
+ 	int err, flags;
  
--	if (timer_create(CLOCK_MONOTONIC, NULL, t) == -1)
-+	if (timer_create(CLOCK_MONOTONIC, &sev, t) == -1)
- 		return -1;
+ 	flags = fcntl(fd, F_GETFL);
+@@ -408,9 +412,9 @@ int os_set_fd_async(int fd)
+ 	}
  
- 	return 0;
- }
- 
--int os_timer_set_interval(unsigned long long nsecs)
-+int os_timer_set_interval(int cpu, unsigned long long nsecs)
- {
- 	struct itimerspec its;
- 
-@@ -54,13 +64,13 @@ int os_timer_set_interval(unsigned long long nsecs)
- 	its.it_interval.tv_sec = nsecs / UM_NSEC_PER_SEC;
- 	its.it_interval.tv_nsec = nsecs % UM_NSEC_PER_SEC;
- 
--	if (timer_settime(event_high_res_timer, 0, &its, NULL) == -1)
-+	if (timer_settime(event_high_res_timer[cpu], 0, &its, NULL) == -1)
- 		return -errno;
- 
- 	return 0;
- }
- 
--int os_timer_one_shot(unsigned long long nsecs)
-+int os_timer_one_shot(int cpu, unsigned long long nsecs)
- {
- 	struct itimerspec its = {
- 		.it_value.tv_sec = nsecs / UM_NSEC_PER_SEC,
-@@ -70,19 +80,19 @@ int os_timer_one_shot(unsigned long long nsecs)
- 		.it_interval.tv_nsec = 0, // we cheat here
- 	};
- 
--	timer_settime(event_high_res_timer, 0, &its, NULL);
-+	timer_settime(event_high_res_timer[cpu], 0, &its, NULL);
- 	return 0;
- }
- 
- /**
-  * os_timer_disable() - disable the posix (interval) timer
-  */
--void os_timer_disable(void)
-+void os_timer_disable(int cpu)
- {
- 	struct itimerspec its;
- 
- 	memset(&its, 0, sizeof(struct itimerspec));
--	timer_settime(event_high_res_timer, 0, &its, NULL);
-+	timer_settime(event_high_res_timer[cpu], 0, &its, NULL);
- }
- 
- long long os_nsecs(void)
+ 	if ((fcntl(fd, F_SETSIG, SIGIO) < 0) ||
+-	    (fcntl(fd, F_SETOWN, os_getpid()) < 0)) {
++	    (fcntl(fd, F_SETOWN_EX, &owner) < 0)) {
+ 		err = -errno;
+-		printk(UM_KERN_ERR "os_set_fd_async : Failed to fcntl F_SETOWN "
++		printk(UM_KERN_ERR "os_set_fd_async : Failed to fcntl F_SETOWN_EX "
+ 		       "(or F_SETSIG) fd %d, errno = %d\n", fd, errno);
+ 		return err;
+ 	}
 -- 
 2.34.1
 
