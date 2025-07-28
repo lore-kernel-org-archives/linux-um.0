@@ -4,45 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4279C87FC9
-	for <linux-um@archiver.kernel.org>; Mon, 28 Jul 2025 15:33:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220DBC83F26
+	for <linux-um@archiver.kernel.org>; Mon, 28 Jul 2025 17:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MUAxr81O75BjtzwkUftLSmn9zrZcUMS8SkgxDTq6MVw=; b=3dZATBkKxNkVmOLIpmdI+022vR
-	wOkpUQNee+GmHDz9R5Yvr6x1HZPQ9YNwBoQKG/NDcpIeNk066zDv2GDpfwhr2NsArr9JIBMJ2haXx
-	puKKBNLLrPLwMH3Ct1qW0dYP1orlScXidPhkkPnkvSHy5eGZIS5Z8GOkc4OlD4EQrUW4GsCFigcaU
-	n3IncOB3GxLaT95K2vq3gVKdx0TDVw3eVya5/uoeiLnDtaZ1xj/R9g8F6Xzv5+oCy1mRjKagA1OrB
-	SRRLp4z9x5dJYpk/yLITGNZSHbldu/luGtv9apBMajopCM/jKhqR45qWNHyoczMeujatRdCMPElxZ
-	xG6YbTVg==;
+	bh=PVAGEmVQivoenw+PuhZbfG45bOVJetfwBov2q28tJeM=; b=SL6p3r9yBLY0MVOOcjR6q9siws
+	VaIgjB9JA6UlxAEoYF4pmHVYgbTgLVcgFwPYr7HzX9kTNj9+atPCqe8+kZ6MEdaYL89IVu3wZoI7Z
+	mHmcjLF9j5sPL2onh5A0SojScjwAZz/NRDfzrHV88KZlj9FF/WVjWUSn0mOW73hWlwWjfHpz9b7bx
+	a79u06MKQdF2uHpK+1UIFVWd3L2UVw76Mzzd+bK5zKx8TM1CArW3eEKVtgtFeovy7U4r5k63g1l2+
+	g4faS7oVvDoZiHHjN/ODRY4p2yoi7MME2kzXO3PSg8XyDbS4u05PSHBJvOHsxSpMdCme9Ck5QSqsA
+	bna1V/8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugPrH-0000000EpW0-0rF9;
-	Mon, 28 Jul 2025 15:33:47 +0000
-Received: from [50.53.25.54] (helo=[192.168.254.17])
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugPmU-0000000EobJ-41zE;
-	Mon, 28 Jul 2025 15:28:51 +0000
-Message-ID: <dcc88c8f-9330-4e1c-9ee4-4e0dfe7bda71@infradead.org>
-Date: Mon, 28 Jul 2025 08:28:50 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	id 1ugRO2-0000000F4f8-0sVc;
+	Mon, 28 Jul 2025 17:11:42 +0000
+Received: from out-181.mta1.migadu.com ([2001:41d0:203:375::b5])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ugQLg-0000000EvR0-25GB
+	for linux-um@lists.infradead.org;
+	Mon, 28 Jul 2025 16:05:14 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753718707;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PVAGEmVQivoenw+PuhZbfG45bOVJetfwBov2q28tJeM=;
+	b=iZL3rH/OA7FED0dzkOn8GdHFHfz4vGTSnPzD0TI9edaOwIGy3RvXl9RDKQE0MqbCZmP92q
+	Mc72es2gf/APVHvmSDKjquilHwGZTGZTZ5wtsjTWc/CvdTh5C2OcAVtWKKn1kIOtCHaQU+
+	A3kmfzGoMdHPTGa33baBWimBlRhYxoQ=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: johannes@sipsolutions.net
+Cc: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
 Subject: Re: [PATCH 9/9] um: Add initial SMP support
-To: Johannes Berg <johannes@sipsolutions.net>, Tiwei Bie
- <tiwei.bie@linux.dev>, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, tiwei.btw@antgroup.com,
- linux-arch@vger.kernel.org
-References: <20250727062937.1369050-1-tiwei.bie@linux.dev>
- <20250727062937.1369050-10-tiwei.bie@linux.dev>
- <233c916a5c598ca246b3138d13aaad44fdde68b2.camel@sipsolutions.net>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
+Date: Tue, 29 Jul 2025 00:04:19 +0800
+Message-Id: <20250728160419.3256752-1-tiwei.bie@linux.dev>
 In-Reply-To: <233c916a5c598ca246b3138d13aaad44fdde68b2.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <233c916a5c598ca246b3138d13aaad44fdde68b2.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250728_090512_821685_4CBCFE36 
+X-CRM114-Status: GOOD (  28.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -57,22 +71,128 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Mon, 28 Jul 2025 12:47:08 +0200, Johannes Berg wrote:
+> On Sun, 2025-07-27 at 14:29 +0800, Tiwei Bie wrote:
+> > 
+> > +++ b/arch/um/include/asm/smp.h
+> > @@ -2,6 +2,27 @@
+> >  #ifndef __UM_SMP_H
+> >  #define __UM_SMP_H
+> >  
+> > -#define hard_smp_processor_id()		0
+> > +#if IS_ENABLED(CONFIG_SMP)
+> > +
+> > +#include <linux/bitops.h>
+> > +#include <asm/current.h>
+> > +#include <linux/cpumask.h>
+> > +#include <shared/smp.h>
+> > +
+> > +#define raw_smp_processor_id() uml_curr_cpu()
+> > +
+> > +void arch_smp_send_reschedule(int cpu);
+> > +
+> > +void arch_send_call_function_single_ipi(int cpu);
+> > +
+> > +void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+> > +
+> > +static inline void smp_cpus_done(unsigned int maxcpus) { }
+> > +
+> > +#else /* !CONFIG_SMP */
+> > +
+> > +#define raw_smp_processor_id() 0
+> 
+> This seems a bit odd to me, linux/smp.h also defines
+> raw_smp_processor_id() to 0 the same way, unconditionally.
+> 
+> It almost seems to me we should define raw_smp_processor_id() only for
+> SMP? But then also __smp_processor_id()? Maybe not?
 
+I think you're right. I should't define raw_smp_processor_id() for non-SMP.
 
-On 7/28/25 3:47 AM, Johannes Berg wrote:
->> +int smp_sigio_handler(struct uml_pt_regs *regs)
->> +{
->> +	int cpu = raw_smp_processor_id();
->> +
->> +	IPI_handler(cpu, regs);
->> +	if (cpu != 0)
->> +		return 1;
->> +	return 0;
+> 
+> linux-arch folks, do you have any comments?
+> 
+> > --- /dev/null
+> > +++ b/arch/um/include/asm/spinlock.h
+> > @@ -0,0 +1,8 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __ASM_UM_SPINLOCK_H
+> > +#define __ASM_UM_SPINLOCK_H
+> > +
+> > +#include <asm/processor.h>
+> > +#include <asm-generic/spinlock.h>
+> > +
+> > +#endif /* __ASM_UM_SPINLOCK_H */
+> 
+> Do we need this file? Maybe asm-generic should be including the right
+> things it needs?
+
+I added this file to include asm/processor.h; otherwise, there would be
+a lot of compilation errors. Other architectures seem to do the same:
+
+$ grep -r asm/processor.h arch/ | grep asm/spinlock.h
+arch/arm/include/asm/spinlock.h:#include <asm/processor.h>
+arch/alpha/include/asm/spinlock.h:#include <asm/processor.h>
+arch/arc/include/asm/spinlock.h:#include <asm/processor.h>
+arch/hexagon/include/asm/spinlock.h:#include <asm/processor.h>
+arch/parisc/include/asm/spinlock.h:#include <asm/processor.h>
+arch/x86/include/asm/spinlock.h:#include <asm/processor.h>
+arch/s390/include/asm/spinlock.h:#include <asm/processor.h>
+arch/mips/include/asm/spinlock.h:#include <asm/processor.h>
+arch/loongarch/include/asm/spinlock.h:#include <asm/processor.h>
+
+> 
+> > +void enter_turnstile(struct mm_id *mm_id);
+> > +void exit_turnstile(struct mm_id *mm_id);
+> 
+> We could add __acquires(turnstile) and __releases(turnstile) or
+> something, to have sparse check that it's locked/unlocked correctly, but
+> not sure it's worth it.
+
+Will do.
+
+> 
+> > +int disable_kmalloc[NR_CPUS] = { 0 };
+> 
+> nit: you can remove the "0".
+
+Will fix all the nits in the next version.
+
+> 
+> > +int smp_sigio_handler(struct uml_pt_regs *regs)
+> > +{
+> > +	int cpu = raw_smp_processor_id();
+> > +
+> > +	IPI_handler(cpu, regs);
+> > +	if (cpu != 0)
+> > +		return 1;
+> > +	return 0;
+> 
 > nit: "return cpu != 0;" perhaps
+> 
+> > +__uml_setup("ncpus=", uml_ncpus_setup,
+> > +"ncpus=<# of desired CPUs>\n"
+> > +"    This tells UML how many virtual processors to start. The maximum\n"
+> > +"    number of supported virtual processors can be obtained by querying\n"
+> > +"    the CONFIG_NR_CPUS option using --showconfig.\n\n"
+> 
+> 
+> I feel like probably this should at least for now be mutually exclusive
+> with time-travel= parameters, at least if it's not 1? Or perhaps only
+> with time-travel=ext?
 
-	return !!cpu;
+Currently, the UML_TIME_TRAVEL_SUPPORT option depends on !SMP:
 
--- 
-~Randy
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/um/Kconfig?h=v6.16#n218
 
+so they can't be enabled at the same time during build.
+
+> 
+> The timer code is in another patch, will look at that also. I guess
+> until then it's more of a gut feeling on "how would this work" :)
+
+Thanks for the review! :)
+
+Regards,
+Tiwei
 
