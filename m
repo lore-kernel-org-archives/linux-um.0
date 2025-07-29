@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F36DC83F26
-	for <linux-um@archiver.kernel.org>; Mon, 28 Jul 2025 17:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE152C83F26
+	for <linux-um@archiver.kernel.org>; Tue, 29 Jul 2025 01:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y4ljMbNbX+OMnkLybnUIH3jYWnqLfyv0p+qfTNsHIus=; b=BMHoWBBzm4C8stzocZSqCNSrIm
-	wkUZ2O0GOpwI0kPphzC4OKmimydcUm1xfJR6h0E2fCzfJ1Bo4eb0PnwHFp2sLZ8BPPTHXrVFk+QQv
-	QQltXazf0EyDUqkYirRJz4sHGkLDeAeToGaP9u4M6wMIAnwp/EN6gJzhI1rVM1yBviJzwJhyjaaS1
-	kOj0+XXp+OzJsy6MPVdHTSppzowBnk3toctmLKbl2aB8BZeEYwb6Ps+qtUW+ylkt+reVoPXjSJ/WM
-	FsgJa1L4vNztFTgEJVdmcU0dNp1rc3iMoiuxowwcbn6VpQFywiZMXP37r84R1Jq+zOolO9IV4TPAu
-	yOfvFhhw==;
+	bh=yr8KDwnS8yCHzRHikp953ERke/RESR+CuC69C8dL30I=; b=OzkoVUOXG0M1pJFxEiufXL6A8V
+	nMI0Yjs2m163MWRlBuuM+p9IWuKjxtWrZmpQ6FTflafGGfjBAKW3wgcOxaFh/XbNMDUBBqTgx/dW9
+	rcVscxh/4kdZSKN30pH5LVKhO5KzGbRpBx71geX9WeLMGNg5bWqpwxmMKXzlMrsV5D2Ps8ITRPQoJ
+	RojUnPgCYQqyIZuNRj2ItLAtiU3wr8nnjRkalybmOUzsmpOB16dki3rKklIK2KicORIevJ+/yBzV4
+	xfpUnGzhuyXAe4w/gaSWOf2y6h3ovkWPqVdKyLLg8JBKdGiVajWdiWy81+ea+euGH33JnNB3DVokH
+	3iRd2lnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugRaA-0000000F5q1-3jIT;
-	Mon, 28 Jul 2025 17:24:14 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1ugYsX-0000000FgIh-1f8C;
+	Tue, 29 Jul 2025 01:11:41 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ugQhg-0000000Eyqf-3Mms
-	for linux-um@lists.infradead.org;
-	Mon, 28 Jul 2025 16:27:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Y4ljMbNbX+OMnkLybnUIH3jYWnqLfyv0p+qfTNsHIus=;
-	t=1753720076; x=1754929676; b=ZXI1y21COngpEJDoY497zSAo0nBrttNcQfwu1crFYlcb8Qj
-	K41jRsct6jpH6ZzWkrGKQgOnLH0orgEOpM1KsuDvr7x7xwkydDx0nGUMe6B/Wkg0otcD64pIUBHxz
-	B0s61aeKeOmTyUeaqw4PlGKwYdxfOsrM/0suZ85Efs7ULNn5Jg5sQozNjpYA74gFsvdbU6cyiGYm1
-	LXr3ez38P7JTsZKcZweQU4laYliZM16Pbuq+Ql9uJyb9qW7OK/P2dSsTuNuj1ao7mbIDp+Dz7wnuH
-	g5cQRsG8exMsLn9yTFJ1IHYXrV3l9YlVFYp1yJKIDQ3FsYyG+xenokO0vjYXJAwg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1ugQhe-0000000D1aq-0lIZ;
-	Mon, 28 Jul 2025 18:27:54 +0200
-Message-ID: <1310a0eaf8c8e3a1e944ad3f4f289f02164702cf.camel@sipsolutions.net>
-Subject: Re: [PATCH 9/9] um: Add initial SMP support
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Tiwei Bie <tiwei.bie@linux.dev>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, 
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- tiwei.btw@antgroup.com
-Date: Mon, 28 Jul 2025 18:27:53 +0200
-In-Reply-To: <20250728160419.3256752-1-tiwei.bie@linux.dev>
-References: <233c916a5c598ca246b3138d13aaad44fdde68b2.camel@sipsolutions.net>
-	 <20250728160419.3256752-1-tiwei.bie@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250728_092756_840766_24BD4BDF 
-X-CRM114-Status: GOOD (  18.10  )
+	id 1ugYsU-0000000FgIJ-2brt;
+	Tue, 29 Jul 2025 01:11:38 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id D1D7A601EB;
+	Tue, 29 Jul 2025 01:11:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A19EC4CEEF;
+	Tue, 29 Jul 2025 01:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753751496;
+	bh=8ZaxoHBTEhVL12axKf/WX+LwUM3Y/BFGh5lAMOgD5zg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=VYacduDBsz15Xg+SgB5nuf2LLCwR/ZQLnHAeY89QssQwJkwueQk+gOc3P9X3M8ERc
+	 StQHaCIjU+ApLe7jJ1kkQ1SZSrlnoE0XfZBTw8Yh+roL1ES9ZIfl3oMlPK7Nd5vIme
+	 keZEIUjTWzO7k+Xn5laz3kmccx4u/wXUQCxvKazPAkCcbgCoN5asGQOK49wsxNUWzg
+	 4V8Tr4vXYS3H1wOaKUIe57TRZzvYstxc8p2ZRo6fWA+RbWlSndzB3fEL4aGd9Fgn3b
+	 ZBNnQvFR6RJKhSTgEfjDhuJgvmCxPS2qK55MY85inxik6zCKjNO7RH2cHI8IhVIhst
+	 yOtThARlrGBsA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34A0C383BF5F;
+	Tue, 29 Jul 2025 01:11:54 +0000 (UTC)
+Subject: Re: [GIT PULL] execve updates for v6.17
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <202507261437.F2079B3B7@keescook>
+References: <202507261437.F2079B3B7@keescook>
+X-PR-Tracked-List-Id: <linux-sh.vger.kernel.org>
+X-PR-Tracked-Message-Id: <202507261437.F2079B3B7@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.17
+X-PR-Tracked-Commit-Id: 7f71195c15dcf5f34c4c7f056603659374e3a525
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d900c4ce638d707f09c7e5c2afa71e035c0bb33d
+Message-Id: <175375151288.918485.7118599213274098690.pr-tracker-bot@kernel.org>
+Date: Tue, 29 Jul 2025 01:11:52 +0000
+To: Kees Cook <kees@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Akihiko Odaki <akihiko.odaki@daynix.com>, Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>, Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, Alexandre Ghiti <alex@ghiti.fr>, Andreas Larsson <andreas@gaisler.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Chris Zankel <chris@zankel.net>, Dave Hansen <dave.hansen@linux.intel.com>, Dave Martin <Dave.Martin@arm.com>, David Hildenbrand <david@redhat.com>, "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Dishank Jogi <dishank.jogi@siqol.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@
+ zytor.com>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Johannes Berg <johannes@sipsolutions.net>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Jonas Bonn <jonas@southpole.se>, Kees Cook <kees@kernel.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, loongarch@lists.linux.dev, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov
+  <oleg@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, x86@kernel.org, Yin Fengwei <fengwei_yin@linux.alibaba.com>, Yoshinori Sato <ysato@users.sourceforge.jp>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,51 +75,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2025-07-29 at 00:04 +0800, Tiwei Bie wrote:
-> > > +++ b/arch/um/include/asm/spinlock.h
-> > > @@ -0,0 +1,8 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef __ASM_UM_SPINLOCK_H
-> > > +#define __ASM_UM_SPINLOCK_H
-> > > +
-> > > +#include <asm/processor.h>
-> > > +#include <asm-generic/spinlock.h>
-> > > +
-> > > +#endif /* __ASM_UM_SPINLOCK_H */
-> >=20
-> > Do we need this file? Maybe asm-generic should be including the right
-> > things it needs?
->=20
-> I added this file to include asm/processor.h; otherwise, there would be
-> a lot of compilation errors. Other architectures seem to do the same:
->=20
-> $ grep -r asm/processor.h arch/ | grep asm/spinlock.h
-> arch/arm/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/alpha/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/arc/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/hexagon/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/parisc/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/x86/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/s390/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/mips/include/asm/spinlock.h:#include <asm/processor.h>
-> arch/loongarch/include/asm/spinlock.h:#include <asm/processor.h>
+The pull request you sent on Sat, 26 Jul 2025 14:39:20 -0700:
 
-Except for loongarch they all do something else too though. Feels to me
-um (and loongarch) really shouldn't need that file.
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.17
 
-> > I feel like probably this should at least for now be mutually exclusive
-> > with time-travel=3D parameters, at least if it's not 1? Or perhaps only
-> > with time-travel=3Dext?
->=20
-> Currently, the UML_TIME_TRAVEL_SUPPORT option depends on !SMP:
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
-rch/um/Kconfig?h=3Dv6.16#n218
->=20
-> so they can't be enabled at the same time during build.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d900c4ce638d707f09c7e5c2afa71e035c0bb33d
 
-Oops, sorry, missed that. Good. I didn't see anything particularly wrong
-in the time code, but I'm sure it won't work there :)
+Thank you!
 
-johannes
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
