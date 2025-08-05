@@ -4,87 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABBFFC87FDB
-	for <linux-um@archiver.kernel.org>; Mon,  4 Aug 2025 08:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B83C87FD2
+	for <linux-um@archiver.kernel.org>; Tue,  5 Aug 2025 15:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=W2j21EdQ9+BzhX5K3jWbsgABY3uftB7nrDoPZVb6R/s=; b=XA9sDtsHYSvOtfB9wkVATSmEDA
-	wPk1VJvQwUMjM4xPiK4MpCR3uoJLrlh5jyXoQiWN2RNyyaBP3/9eKo/XTlNe2d1vvXMycdf3G+NDH
-	cuTIjJ2HhV0lf6wHp0e6Hn8tGe/Qs4NifY6JCXgXluP35XUibO1/w10dPGSQMj+VqDumPsg4TFt6i
-	5GGfKFlBf5zrClr7D41GclaTPFI8yPz8F7ni2jlmyatxahkhAQh+NbStEiDHRxOdwl3DdObrkkTLx
-	ZgBVfcW/8Z2ucXHyacmTBCMBMpxdwbNKKykcWq4GTLadQ1776L0Y1IEFgLCfM9Ks8A/Gov4fkAow3
-	aaX5y/9A==;
+	bh=pksKKRBtO31JVCyUig2REP3M3oI0Y/m5ILEfob1JeTo=; b=xH68xjp+F207dkItDpGZbcl1Gk
+	G6TBOLtlUX6kfEMvm6kt5B/AyYuOnpjmK2rj8H5G91UrhWMvmHF7V/sGHQ+7byR18alPcX8CLRUY4
+	4MbFLpW6m62HeOshI5Mq2N3onuj5Fli6wYxhAipWcxO3nkh6vMtrQdwTkKgy5dJBxiEEyyMpxjpq/
+	B52mkyO1vVdelL0VmA5OFMLVeI1UwQVb3yZr8WjoxS1gQOC0Anog3nq+z/DP4DQ83/eE5mNCUXQTy
+	RzHQOjPDe8CIBHq9v5uj1Y7/KSukF0DWv7Xfsu7oKwxjKfQqQGZmCb7xIwKYMxWdjha3hGGpvd579
+	Qz8xbc2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uiqTQ-00000009vwl-0z8J;
-	Mon, 04 Aug 2025 08:23:12 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1ujJkV-0000000DAW4-2TJn;
+	Tue, 05 Aug 2025 15:38:47 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uiq6u-00000009sZ9-3JtI
-	for linux-um@lists.infradead.org;
-	Mon, 04 Aug 2025 07:59:57 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-31f314fe0aaso3202306a91.0
-        for <linux-um@lists.infradead.org>; Mon, 04 Aug 2025 00:59:56 -0700 (PDT)
+	id 1ujIcY-0000000D0Ou-2Y04;
+	Tue, 05 Aug 2025 14:26:32 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-55b8b8e00caso5505669e87.3;
+        Tue, 05 Aug 2025 07:26:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754294396; x=1754899196; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W2j21EdQ9+BzhX5K3jWbsgABY3uftB7nrDoPZVb6R/s=;
-        b=Uy9cAC2atQKoSoZeqZaFxmVOaWJaZ9OAWsuAme+wCBadm+CNkupjNqYD+a6MzfUPNu
-         QgJd3WkBNChgitiKQ0lT+xwlZiG1FQY53NztknMFdz/cf90sKOyo97ZjZ/deUpU3OHLW
-         opfrBtZfgJuZm3Db6zA9wEJFL7f/a7G54GfZ69+Ng3iRywNutSxEt9GL514Y6B4bAbho
-         IVLNpUvjsWrDpM7Tinup1ZxdX5/4iVc4qRjiWNhI5DfG7BsB6BVHfLEiJzEaQakJF7bj
-         NBZNS51fD9ggiu8CkNhzttUbh28WSf73HH6xZb6hXUma0AwWTO3TDhU0PQvFb2kptC5S
-         cK7g==
+        d=gmail.com; s=20230601; t=1754403988; x=1755008788; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pksKKRBtO31JVCyUig2REP3M3oI0Y/m5ILEfob1JeTo=;
+        b=NFUVvT+knnC0U6UHhaH42ZabqDCjVS1bidUuXFgze8Ei/VKzUO2XnL2k+qbvx7YPFT
+         tPNJi0AIHYUFlitje6YnmmgHeCRsDadSDW3HvAhxQwrj7zQfZuo4D4N8pgZRp/bZmLlJ
+         nkACakz4Am5+cJdK7iNavHtgK/lLauk934/6EI11AYB8FDhJ7Gri9Ukan2m1hN00r/UW
+         SNiVo4F2qXI7OrRyzIOMpWZBGNbm8A6TB8BRfJrnvN7Z4kDDTSlv3R8HM24bed5zJ733
+         H4/zdnb3QqJOEv1Ia6mCm+0lEMr9vzr3vQTtUvW2//rxNyQ0ZPqU8bfQtV5Z5b4AG/XT
+         GnDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754294396; x=1754899196;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W2j21EdQ9+BzhX5K3jWbsgABY3uftB7nrDoPZVb6R/s=;
-        b=LHDDB+ZZ0qJut5X9dWLLImDWraGZkhRefneK3Tdwv/VQ08RqSnoU++2h7NyT0KYDXb
-         CHRbSNmCOEJfpvezKKNGeZ5Ai3zVvug8hTLdtN3uQN9pUv36U6IkiHeAkGoC/KWI64xj
-         o1r2osSYXNQY8MJ1vYuOg+wCsJoos7X7qd+y/LbBh+FYB/Ht1Rk51AKX/BVBCckPphtB
-         WSDcLzf7ee3gH3/D2rSerYSBiFumF3FJsHlhaaR2BMJ2TKbIlQoahm8vg4Hg3f/0trxS
-         JlMAZfRVow1IPEkmYgbKIeE/Ar3V8/m1pfH9RL4dDs05v5I3hUDr69g6Cb4fGdZE3eqf
-         Q8KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWvr6cTFe5Znolwqbs6iLSTVt+97sm9su4U/jtXgrA+kNxg31mNfdFPOb0nhhjoX7hfbkRI1D6Pkw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzLMgjp1xR1JXg9/LsvZ3OQOrZ4gOlgtF8VHEqlzkFVVRMxkGwT
-	fkDba14g442OBdTNUTsATj8rQZJy5W6ctro3cxhTqIsqcuDwuUy9XcTxKDWCuLhA1M38TA==
-X-Gm-Gg: ASbGncvtl6e4NLEj5t2t4sOxjGKdantzDNLFIemc4jkLPUX7Bj4d88TG+Xax0yQYIOM
-	w01DhyBgxwITO6I8U+d0a+bFy+qxFOMOGOaaFZAmW47K8q/S9l9344AryZEGAmlHuuLDqgnYtTp
-	cOdMFI8BixBbdyUo8zihgrSWX9gO/Fbvp9ObhQh7BABVb71wyV8cTIuq94UtvLNqZP7+5f0TH8w
-	8ftHZWC5Chj8zyZ5uvZMea4BoqKSaai/epxyyL2Hds+eSwNZuT/Cqbfs0FpbFqaIpkM073UFyhP
-	kcRdmt7vF934L2grlbw3VyFFOCrLm4pXksPNKkfpe7jAKRqLVwQybqrCLhzSDil6us9K3f74wut
-	5dAtOkXmEz8lFCG0MOfj9BdOGTIdcrAMIFPA=
-X-Google-Smtp-Source: AGHT+IF7alqB/6wZ98S0FEX+bkqM69+K+32EZW07YuWmetJ1TBK03m4jlJehXUkJP0iXJhxQOzaY0g==
-X-Received: by 2002:a17:90b:4c4d:b0:321:43b2:4743 with SMTP id 98e67ed59e1d1-32143b248demr1268396a91.23.1754294395745;
-        Mon, 04 Aug 2025 00:59:55 -0700 (PDT)
-Received: from c45b92c47440.. ([202.120.234.58])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-31f63f0ba97sm13749540a91.29.2025.08.04.00.59.51
+        d=1e100.net; s=20230601; t=1754403988; x=1755008788;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pksKKRBtO31JVCyUig2REP3M3oI0Y/m5ILEfob1JeTo=;
+        b=b8qPoCdHED+0XvEMz7eqTJDJuaWH/n8OG8Oc6evpKcUqgXQYiFCtjCFSRVVkVrKYHx
+         4R8a89fW2/Au4xQIkNpJ/+xmTsbYEbTeTH4fy3vR4vv5qxeG6jCny/spuPGvxIPAu0lH
+         6BOLI8s4gM3Ao1iR6DB5t4GbrlAAL2p5cadp8C87t60kLchIkdDVnWSLgxhmeiwfx4IE
+         BjBKYd3lYixW4whYs5CyuHu2lSRCeaCnGexjK3bwuEHVLysSX4U00x2fJrNbp4PCEriZ
+         KS18qmFuY3JHObqZGYT0pXWz7XY94TXR9S0dDTmDIuDNCevbkOmP9iyeexXWYsEc2q+4
+         +CTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKjh4yOuO5BI1oUSIVVFj8VsDdntY97DGN5G+Ih7IaO34xVJetJQrMGWCQtj3N5a+Z7w4k6p58cs/KCQ==@lists.infradead.org, AJvYcCXpbGsC6dMhdGjw+4HZXYMSr5SCKsv0jID1O35gQmABF6VJIyxhXn/2JDyST9gptDSbZdGsxl54GVw=@lists.infradead.org
+X-Gm-Message-State: AOJu0YynzpIRzr246hQQUGDzGnPbSbnh9DqKpHfxUREFLvWd5TD49F3T
+	yATysGc4ZdxNERN4CIoXmitwskEq0GN2PicJJgcyNMIWclA9PuD8IEO/
+X-Gm-Gg: ASbGncskJHLaEFgRDk56dmmA29nbDBrjX0LQLH7Mo1jH/nkmqFaRsFaS5SwJO+Y8r3E
+	1st4rOs5Jns3dsT4aw2pAJS422Obbjb34VFJEwWzcu+Q02VoEszSnK5QcmTwl6/Xki82NXl3nod
+	raZNLYRoo1qPMDAAj2N78o98qJM4DBZYlOY+NiX3nwmziLNR1J31ChUoVLmdsTTPMqmKlW8k3Ru
+	0f+pSOeQY0phgzVh0bcjhDfnM/ECN6lb0C0ZazmKndPqRMsiNBgkP7HokJi7eYFNwHIQeA3EzMW
+	mpSbqTtV9oTaVoARlD5PMux4QBfB2SbWbGReCfIjrGryYhldt0BrnxHNuPxm5c/7ciQZrYjnEB6
+	PzBE8eFDycEZmvc1yPeaOu9tY1U0q/PNAyzwC/vMIYfnBoXN2h1JTaHW260nihAh2TXKt6w==
+X-Google-Smtp-Source: AGHT+IGy1WhFbslChqIwW3zDEXwo6CDb6xK1zgNUQQFWNlekigvy4oRcbBK1ihRZGuO8OayIKRf+qA==
+X-Received: by 2002:a05:6512:39cc:b0:55b:9647:8e7b with SMTP id 2adb3069b0e04-55b97b75a15mr4601956e87.43.1754403988090;
+        Tue, 05 Aug 2025 07:26:28 -0700 (PDT)
+Received: from localhost.localdomain (178.90.89.143.dynamic.telecom.kz. [178.90.89.143])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b889a290fsm1976379e87.54.2025.08.05.07.26.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 00:59:55 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Benjamin Berg <benjamin.berg@intel.com>,
-	Tiwei Bie <tiwei.btw@antgroup.com>,
-	Miaoqian Lin <linmq006@gmail.com>,
+        Tue, 05 Aug 2025 07:26:27 -0700 (PDT)
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To: ryabinin.a.a@gmail.com,
+	hca@linux.ibm.com,
+	christophe.leroy@csgroup.eu,
+	andreyknvl@gmail.com,
+	agordeev@linux.ibm.com,
+	akpm@linux-foundation.org,
+	zhangqing@loongson.cn,
+	chenhuacai@loongson.cn,
+	trishalfonso@google.com,
+	davidgow@google.com
+Cc: glider@google.com,
+	dvyukov@google.com,
+	kasan-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
 	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] um: virtio_uml: Fix use-after-free after put_device in probe
-Date: Mon,  4 Aug 2025 11:59:42 +0400
-Message-Id: <20250804075944.3612712-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	linux-mm@kvack.org,
+	snovitoll@gmail.com
+Subject: [PATCH v4 0/9] kasan: unify kasan_arch_is_ready() and remove arch-specific implementations
+Date: Tue,  5 Aug 2025 19:26:13 +0500
+Message-Id: <20250805142622.560992-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250804_005956_850365_D7041318 
-X-CRM114-Status: GOOD (  12.23  )
+X-CRM114-CacheID: sfid-20250805_072630_656116_8117A443 
+X-CRM114-Status: GOOD (  11.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,34 +112,109 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When register_virtio_device() fails in virtio_uml_probe(),
-the code sets vu_dev->registered = 1 even though
-the device was not successfully registered.
-This can lead to use-after-free or other issues.
+This patch series addresses the fragmentation in KASAN initialization
+across architectures by introducing a unified approach that eliminates
+duplicate static keys and arch-specific kasan_arch_is_ready()
+implementations.
 
-Fixes: 04e5b1fb0183 ("um: virtio: Remove device on disconnect")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
- arch/um/drivers/virtio_uml.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The core issue is that different architectures have inconsistent approaches
+to KASAN readiness tracking:
+- PowerPC, LoongArch, and UML arch, each implement own kasan_arch_is_ready()
+- Only HW_TAGS mode had a unified static key (kasan_flag_enabled)
+- Generic and SW_TAGS modes relied on arch-specific solutions
+  or always-on behavior
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index ad8d78fb1d9a..c402c4cc908a 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -1250,8 +1250,10 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 	device_set_wakeup_capable(&vu_dev->vdev.dev, true);
- 
- 	rc = register_virtio_device(&vu_dev->vdev);
--	if (rc)
-+	if (rc) {
- 		put_device(&vu_dev->vdev.dev);
-+		return rc;
-+	}
- 	vu_dev->registered = 1;
- 	return rc;
- 
+This series implements two-level approach:
+1. kasan_enabled() - compile-time check for KASAN configuration
+2. kasan_shadow_initialized() - runtime check for shadow memory readiness
+
+Changes in v4:
+- Unified patches where ARCH_DEFER_KASAN is introduced and used
+  in the KASAN code (Andrey Ryabinin)
+- Fixed kasan_enable() for HW_TAGS mode (Andrey Ryabinin)
+- Replaced !kasan_enabled() with !kasan_shadow_initialized() in
+  loongarch which selects ARCH_DEFER_KASAN (Andrey Ryabinin)
+- Addressed the issue in UML arch, where kasan_init_generic() is
+  called before jump_label_init() (Andrey Ryabinin)
+
+Adding in TO additional recipients who developed KASAN in LoongArch, UML.
+
+Tested on:
+- powerpc - selects ARCH_DEFER_KASAN
+Built ppc64_defconfig (PPC_BOOK3S_64) - OK
+Booted via qemu-system-ppc64 - OK
+
+- um - selects ARCH_DEFER_KASAN
+Built defconfig with KASAN_INLINE - OK
+Built defconfig with STATIC_LINK && KASAN_OUTLINE - OK
+Booted ./linux - OK
+
+- loongarch - selects ARCH_DEFER_KASAN
+Built defconfig with KASAN_GENERIC - OK
+Haven't tested the boot. Asking Loongarch developers to verify - N/A
+But should be good, since Loongarch does not have specific "kasan_init()"
+call like UML does. It selects ARCH_DEFER_KASAN and calls kasan_init()
+in the end of setup_arch() after jump_label_init().
+
+- arm64
+Built defconfig, kvm_guest.config with HW_TAGS, SW_TAGS, GENERIC - OK
+KASAN_KUNIT_TEST - OK
+Booted via qemu-system-arm64 - OK
+
+- x86_64
+Built defconfig, kvm_guest.config with KASAN_GENERIC - OK
+KASAN_KUNIT_TEST - OK
+Booted via qemu-system-x86 - OK
+
+- s390, riscv, xtensa, arm
+Built defconfig with KASAN_GENERIC - OK
+
+Previous v3 thread: https://lore.kernel.org/all/20250717142732.292822-1-snovitoll@gmail.com/
+Previous v2 thread: https://lore.kernel.org/all/20250626153147.145312-1-snovitoll@gmail.com/
+
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217049
+
+Sabyrzhan Tasbolatov (9):
+  kasan: introduce ARCH_DEFER_KASAN and unify static key across modes
+  kasan/powerpc: select ARCH_DEFER_KASAN and call kasan_init_generic
+  kasan/arm,arm64: call kasan_init_generic in kasan_init
+  kasan/xtensa: call kasan_init_generic in kasan_init
+  kasan/loongarch: select ARCH_DEFER_KASAN and call kasan_init_generic
+  kasan/um: select ARCH_DEFER_KASAN and call kasan_init_generic
+  kasan/x86: call kasan_init_generic in kasan_init
+  kasan/s390: call kasan_init_generic in kasan_init
+  kasan/riscv: call kasan_init_generic in kasan_init
+
+ arch/arm/mm/kasan_init.c               |  2 +-
+ arch/arm64/mm/kasan_init.c             |  4 +--
+ arch/loongarch/Kconfig                 |  1 +
+ arch/loongarch/include/asm/kasan.h     |  7 -----
+ arch/loongarch/mm/kasan_init.c         |  8 ++---
+ arch/powerpc/Kconfig                   |  1 +
+ arch/powerpc/include/asm/kasan.h       | 12 --------
+ arch/powerpc/mm/kasan/init_32.c        |  2 +-
+ arch/powerpc/mm/kasan/init_book3e_64.c |  2 +-
+ arch/powerpc/mm/kasan/init_book3s_64.c |  6 +---
+ arch/riscv/mm/kasan_init.c             |  1 +
+ arch/s390/kernel/early.c               |  3 +-
+ arch/um/Kconfig                        |  1 +
+ arch/um/include/asm/kasan.h            |  5 ---
+ arch/um/kernel/mem.c                   | 12 ++++++--
+ arch/x86/mm/kasan_init_64.c            |  2 +-
+ arch/xtensa/mm/kasan_init.c            |  2 +-
+ include/linux/kasan-enabled.h          | 36 +++++++++++++++++-----
+ include/linux/kasan.h                  | 42 ++++++++++++++++++++------
+ lib/Kconfig.kasan                      |  8 +++++
+ mm/kasan/common.c                      | 18 +++++++----
+ mm/kasan/generic.c                     | 23 ++++++++------
+ mm/kasan/hw_tags.c                     |  9 +-----
+ mm/kasan/kasan.h                       | 36 ++++++++++++++++------
+ mm/kasan/shadow.c                      | 32 +++++---------------
+ mm/kasan/sw_tags.c                     |  4 ++-
+ mm/kasan/tags.c                        |  2 +-
+ 27 files changed, 157 insertions(+), 124 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
 
