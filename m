@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 742E3C87FD1
-	for <linux-um@archiver.kernel.org>; Tue,  5 Aug 2025 15:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A233C87FDA
+	for <linux-um@archiver.kernel.org>; Tue,  5 Aug 2025 15:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4lUgc2mQ1RFMODut/DxjH0e3nH7UxMqXiDg2xTFsSSw=; b=DNBnjbtSQNVhmHW5B4luH7ygOd
-	IEPywyo17CIu5HEFdHb9K/P2U8RqSU/dHmEw1Kmv5FWBlpma0dSzG+hzz6E35xmqEUmyjrFnSrxDb
-	b1HkYoisttSUU68NRP+LX77qfgigHZxCjT7+NggVyMOfwmHHE3zRrPjBOTN4qO3JWjE4MXK9ZoCnC
-	nLmk5RyJ5hhSN/rmbu8H9aviHAFFCTbEvUrzLGQLKS01T5f7VAYoE6sdRSM2pCzAtOga4B3Jwv+5+
-	scm2Va5gYcRT3RgZxCfg1kOuZoUzrbgE0AVLf2CxVmBKyrF9WARHm3YdPPA8UGSX6XMkDwaxOvJgV
-	L47Qurkg==;
+	bh=DdpO03g2oqaaq9F6m1+GGOlZl0qQTOQbdkE3YGqW9w0=; b=4IErp5W+d03oZAi36MvJjqhfpx
+	FnSkuNDBGqiZnYaiVHVbPyixg2aQKTrF0s5kYuynKbitdLTee4MlxNGqIRmax9erawap4jN71VzDw
+	ovH4aaaA1rzJ4Cm+9pOkvKt+y/k2DwGjXuNkzv90nZ+9uQimBvj3gmChhYa1uRe1hWyJxMXXXJaEG
+	gGb+fSxZCS1B/CgB2UzYzGEJp34TbOzoP2Z0wDF7A9Vvdx5MTHeaznZk1IE1C44Q5RoXgNmVDsc0E
+	YW9mDvGoS2COEge5ICK9AAtZ0G7jIbPEc1ufkgMXvsIBIwUX2UYMXmc/KEQU3l7F1iBALRwmPEJyt
+	VBKnUdYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujJkk-0000000DAkb-0IsG;
-	Tue, 05 Aug 2025 15:39:02 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1ujJkl-0000000DAoN-3HNB;
+	Tue, 05 Aug 2025 15:39:03 +0000
+Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujIcp-0000000D0ZW-0OEZ;
-	Tue, 05 Aug 2025 14:26:48 +0000
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-55b733911b3so6124931e87.2;
-        Tue, 05 Aug 2025 07:26:46 -0700 (PDT)
+	id 1ujIcr-0000000D0bE-0kUQ;
+	Tue, 05 Aug 2025 14:26:50 +0000
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5561ab55c4dso6047226e87.2;
+        Tue, 05 Aug 2025 07:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754404005; x=1755008805; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1754404008; x=1755008808; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4lUgc2mQ1RFMODut/DxjH0e3nH7UxMqXiDg2xTFsSSw=;
-        b=Xht3zyKf6u3Xke9tANeXN1V6Rh0IXgmTnUrDwTqOcL8nJgP/zOT3GGCL8FgS926/m0
-         69Jcu5lns2VVeUeW5QwUoR3Ft3lVXqNjQ/Go76l8fLv+szSeWAiKDdsMEf57mhVJBT5n
-         Gh0MBszKz1vNYleH0nA+WK5uHPHCWwa/QpSItnjcz26LhXRNoBu+4f68OaGJlX2w+8dy
-         PZD1x3odRJXIZp+RYwdtqD64XygDFE6Ii3kHDiaHf8LYeSxbqN2v4Pl+jnKj3ocue6dG
-         Ilg4CRnX3vmobHF1DKLGhZ0jAhpikIaq8tp3jjxNsXWzUwIuN69SOZi1dlC4mHn/OHcm
-         XLVw==
+        bh=DdpO03g2oqaaq9F6m1+GGOlZl0qQTOQbdkE3YGqW9w0=;
+        b=Wq0Nh/Wa63ibLjw9YZmEEr/2vYF4UTnEH4oSyu42Pj3MG2UXk+QZ0NvmGiLWlsYmH7
+         OGucOzvJFlAxnlJofARHo+DN2Q6L50RKKJlt1/f1cDVZGeKLpNko19hqqB9hAomOYHBw
+         CB663QyxwFBBssi6U1sIpSxBGgje/fEf+g5tSLPa76s4x0GnOt8xkfhP6RIn7FZyzMBI
+         s1cyNlWAr7YVPhyCkLI6aZbgQ4gJQvHP4sux3clzF+JQLxGTMfs/63CEtq2c/w2p2jbl
+         yXXcPCsemPiaquwx04UD5D1RzJ94rgOm5+y12bISzHwGQTBlEjJB3XUoUhRoFTGlNG5C
+         3m0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754404005; x=1755008805;
+        d=1e100.net; s=20230601; t=1754404008; x=1755008808;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4lUgc2mQ1RFMODut/DxjH0e3nH7UxMqXiDg2xTFsSSw=;
-        b=wEX+mj3NNd93qQEqSv+Uxv8kjwsu5qjNW/letFx11lXRWPLDAW0yfBkQCmor1bG+4m
-         didycjMeIhMzzpYfFkjA0+6cnEOspDRKPyXV166kkPzT042ZWaEJvIOr6310GnRK1BgR
-         Yel5/CPuxAEkEDDPfNBrNWCuSzLEVlwOs5e9tCEDvKMGD2t9+T1QgvFFOXkefC2mteUd
-         8sfHW3EgEZXRVWdj2muqLI8ivLG0jQ+vANjn5K5gIR6wXquxpm3BLm2gjn+QgUllYiVD
-         SZ/1gyE7Gze8AuUAA25Z3aIIxQZAqziGmDTvYbzDL6+yLuzjAuJ9/Ya00eJwrDGF1w3U
-         HbLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdeQLERe1wQ4khIIyGeXmi4QNVqyYEsk53W2M8ASMN1YSkqr4fo8GgDratnjZ+8kbEBkFWei/O3sc=@lists.infradead.org, AJvYcCVaDPCj8sPvusUIyg5DqJ+2+W1QWwbXxPDtssWRxVLKm9zSE6pfkuqY3tJpAQcimaTT8fYqLV88OwPVdA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx9Va27n8vcj54eTPbJ5VpRYKLq+7E2vXFmEj843KOkaiD3pniT
-	pkAi4UdzgRP8TEqKd/BF3Sun55c+V13WDllnJMZ78VwdMiJLJ4cTXFv0
-X-Gm-Gg: ASbGncthXmr5xEEmCj34IlYgrLJy50Rd3oqOvWeUL6yBwmLrKKPhKXqjOdKfh7xmh5g
-	S2/lfF4r72popu55KzqSvVlEKFtNj2fJtwfR5Y1VbB058kfXGt6SW9/hPxboXAf6ObV5iqMj/uE
-	7U2dbnPPaagSBvxRf2zkOvlbhqO2twouXpTEzeU+3jFK3hwrPGVNRJvyUL8XBPSMm43W01oippl
-	1/XmsTXz0scJBby1Y8Stz6cgRCb9JSF64uFVnmN/uLMoikaeBBzFy5ZFytyMLhMWN3pIIO4p4sn
-	o8k4rMIpLkmnsvtiEHv5As5YIC9DOXZi+WseUftWYP06u6djP4llJvJZZ+Nsz9lmkJMZQ+7QTk0
-	aCECA9p6PcGj9KE9oy8fat6ugXrvD7w5MTAMIUQGS+jGWSsp4SaBML2fpKImJy7utQ2LQCU7eiT
-	wmSahr
-X-Google-Smtp-Source: AGHT+IEfdK6xUGSau1shbIGz1OserWC83V4+ELanbWHlOwkRpBjVR9Bm+3vZR0IX6iJXBqrfn1b6mA==
-X-Received: by 2002:a05:6512:3c97:b0:55b:8277:22a2 with SMTP id 2adb3069b0e04-55b97ac64ccmr3140519e87.21.1754404005154;
-        Tue, 05 Aug 2025 07:26:45 -0700 (PDT)
+        bh=DdpO03g2oqaaq9F6m1+GGOlZl0qQTOQbdkE3YGqW9w0=;
+        b=hRXNLqrHSaTplEnN1El4XN7VhXHRjMt6FrdF5Ay8bhDNCllI7HQugkDYInjFk487tL
+         j3ENomJQv/z7pUbFRBuW6DbrFUWLsxu/+BYZZ/SgQhkYposMjQhxnqxHH0vEvcrpafK1
+         AzVZ//vZpsLau5rSQISJkhRdMmbIBIGw++D/3itNDOceIPDnNAN4Y0JLZ3pEQ2NgOnyM
+         0zs0fHriOQAsrgGtJ1/srcvgi4pEN8zI9ECCa4J/ojjH+5tzZ0JwaU8holn6eg4F4O31
+         hvP6WMC2iFfRq6GbGk0krzFnarQRWcPhHmlmsaxorwj1wKIy/l7WGeMhnvAOSBpzHMHm
+         VZjw==
+X-Forwarded-Encrypted: i=1; AJvYcCUrHOHvsCzAVs0WII9kI+U1BJxoqKI4X0vyMdDVD6yJKGFXx4uvnotnNETmokw7scE2xmAezL2IHj1vMA==@lists.infradead.org, AJvYcCW9pRbLo5Jdr6dNUnF3R0viJ49lq6drBWPdekl0LGALIkbHe5omxir5xYdm8Bc9JYtHZSIrhwXwJn0=@lists.infradead.org
+X-Gm-Message-State: AOJu0YyREbsTL5NkA2mt1IADDnP3SavRcUSv8CYCe0IUvBiM9lG01nfm
+	rn99Vb27jgCfPYlk9r8lEfAnLSN78kjtKEZsbmcXJZVfAxhxbr1VPQFw
+X-Gm-Gg: ASbGnctL1mK4HP9KZBv2GTUNKvYFDjy6u4l9hj4Q/FqwAASBfqSYAAvFjjojMvb1g8p
+	B6QoZcGLFDaUws80HTjvKO88u4beMMTl8o0GyFp2iJKOzCXgJH6eAnfAaSsMo22JKhZl0SJrwry
+	ABz3ovBcU5uZqcXWI1IMM4CZAm9ydezqzUYRyODT2jpvNL5jCpLb1kDmvPM+ijit/Ubg9PQ3Xmk
+	O6Ptppx7nLbYVSFgeUga6CRFyjc48NKtwLM+PMWxPWrQp43JcYsyqRi8p+e/fVW10zzaQJb95Cs
+	+ZGxJMzbMLbSoKnA9+zo9ozujPqRnOBFk/YB0T7UYqrv589/37nwzvIt664gFMHwRPlUJLeP0CC
+	fhFaczL3y94MdgGlx0+xp0IUhq8Yp0YGH46LNobiplmIiQR1kliDDqPuk1bR3rJ8YLw/uXQ==
+X-Google-Smtp-Source: AGHT+IEVcUaDrsN/KncF3Ds7Ejr3CDmhOGcodfBsVHrYzHQORJKCgwrZQppnXPfaGPKlSAziWl9h7g==
+X-Received: by 2002:a05:6512:1254:b0:55b:842d:5825 with SMTP id 2adb3069b0e04-55b97b9395fmr4615455e87.43.1754404007496;
+        Tue, 05 Aug 2025 07:26:47 -0700 (PDT)
 Received: from localhost.localdomain (178.90.89.143.dynamic.telecom.kz. [178.90.89.143])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b889a290fsm1976379e87.54.2025.08.05.07.26.42
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b889a290fsm1976379e87.54.2025.08.05.07.26.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 07:26:44 -0700 (PDT)
+        Tue, 05 Aug 2025 07:26:46 -0700 (PDT)
 From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 To: ryabinin.a.a@gmail.com,
 	hca@linux.ibm.com,
@@ -91,18 +90,17 @@ Cc: glider@google.com,
 	linux-um@lists.infradead.org,
 	linux-mm@kvack.org,
 	snovitoll@gmail.com
-Subject: [PATCH v4 7/9] kasan/x86: call kasan_init_generic in kasan_init
-Date: Tue,  5 Aug 2025 19:26:20 +0500
-Message-Id: <20250805142622.560992-8-snovitoll@gmail.com>
+Subject: [PATCH v4 8/9] kasan/s390: call kasan_init_generic in kasan_init
+Date: Tue,  5 Aug 2025 19:26:21 +0500
+Message-Id: <20250805142622.560992-9-snovitoll@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250805142622.560992-1-snovitoll@gmail.com>
 References: <20250805142622.560992-1-snovitoll@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250805_072647_131009_796D9722 
-X-CRM114-Status: UNSURE (   9.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250805_072649_230242_CDA45F3E 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,27 +116,40 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Call kasan_init_generic() which handles Generic KASAN initialization
-and prints the banner. Since x86 doesn't select ARCH_DEFER_KASAN,
+and prints the banner. Since s390 doesn't select ARCH_DEFER_KASAN,
 kasan_enable() will be a no-op, and kasan_enabled() will return
 IS_ENABLED(CONFIG_KASAN) for optimal compile-time behavior.
+
+s390 sets up KASAN mappings in the decompressor and can run with KASAN
+enabled from very early, so it doesn't need runtime control.
 
 Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217049
 Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
- arch/x86/mm/kasan_init_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/early.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/kasan_init_64.c b/arch/x86/mm/kasan_init_64.c
-index 0539efd0d21..998b6010d6d 100644
---- a/arch/x86/mm/kasan_init_64.c
-+++ b/arch/x86/mm/kasan_init_64.c
-@@ -451,5 +451,5 @@ void __init kasan_init(void)
- 	__flush_tlb_all();
- 
+diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
+index 9adfbdd377d..544e5403dd9 100644
+--- a/arch/s390/kernel/early.c
++++ b/arch/s390/kernel/early.c
+@@ -21,6 +21,7 @@
+ #include <linux/kernel.h>
+ #include <asm/asm-extable.h>
+ #include <linux/memblock.h>
++#include <linux/kasan.h>
+ #include <asm/access-regs.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/machine.h>
+@@ -65,7 +66,7 @@ static void __init kasan_early_init(void)
+ {
+ #ifdef CONFIG_KASAN
  	init_task.kasan_depth = 0;
 -	pr_info("KernelAddressSanitizer initialized\n");
 +	kasan_init_generic();
+ #endif
  }
+ 
 -- 
 2.34.1
 
