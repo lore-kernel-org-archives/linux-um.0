@@ -4,96 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B09EC87FCB
-	for <linux-um@archiver.kernel.org>; Wed,  6 Aug 2025 13:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97F7BC87FDA
+	for <linux-um@archiver.kernel.org>; Wed,  6 Aug 2025 14:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pDOCIZR6gSwH1CTXkpwwYCK6HLPl+F0ICSkVzqPXsh0=; b=uCMJBl7Qa0qvJuCWCUf4h2pwFl
-	6TUQTay/YhB9eWGgat214uzQD0myWQbkFLnNQ8vyxwyUA8ksX2s9K6UMLJKvT+8h8XN9BgXftPXs7
-	WOr/QNS4Ekkl7rtsQr/Q8XodwUcLyT1kSbwBO/bJOZPbJIIa6bgQ5O154HcjM5Y/+KTd9cyfRo5oe
-	wBJTi7Jo96yNseQUeuykZT7G+n4c1M+lPmljksVV9VRLY0hDMk19ZLswtRi6gjqNVG3WQVR4INeSK
-	kV699FfhQbTjxKosT1mVBNLu1d90LSHobOvYA99G5wVXSUI2EJ3+x9HQANiQ0HoLcQP7mahtN8oKN
-	J7/pBW6g==;
+	bh=HHHtXBq5WO+vvcc0f+jtGoFoRXRDF9tjNLE6vwGhp98=; b=OiR3mXx6i3KL9LPapeN1gjXuyu
+	LLSdkfrjfE9Ydobt0LAiuVTgEBW6UUJv7yE3A4i6h8UiPxlJ4vQCp4v5yrtW/xSeod/+LtyjKpYSX
+	u1QlcXoAsxWyHFpdXJ/YYSdR0odktBQmr9lMLlmpBdz5oV7mQuJ2C/XiSkXcxwuFWHQeINLygLKJt
+	0wFYa98LtvtgoKyRaZLfH8oUQteCO1kLaqTtmyLQHe4CTgXH9mKRkwI5fgxDwHMgWNd+9P2N1xm76
+	7BDc92gj7M43RHiGQo1ix7sHT+xaHkZJbrEFRDo27W4iT6eda+19BIQmyFipKVmCozrh3ognASnY6
+	Z85tOAFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujefi-0000000FMe9-3Slk;
-	Wed, 06 Aug 2025 13:59:14 +0000
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
+	id 1ujexL-0000000FQGD-03d8;
+	Wed, 06 Aug 2025 14:17:27 +0000
+Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujeWy-0000000FLDq-1jcP;
-	Wed, 06 Aug 2025 13:50:13 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-332468a0955so7034261fa.1;
-        Wed, 06 Aug 2025 06:50:12 -0700 (PDT)
+	id 1ujevI-0000000FPzb-14nr;
+	Wed, 06 Aug 2025 14:15:21 +0000
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-55b93104888so5884472e87.1;
+        Wed, 06 Aug 2025 07:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754488210; x=1755093010; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pDOCIZR6gSwH1CTXkpwwYCK6HLPl+F0ICSkVzqPXsh0=;
-        b=LhebYhjalqT+HfvXipRUx1FbhnKTYQccQ0udjhV4Ag+k58MzIrcGpJVXuexEff56un
-         jNQEAw7h+R7eY80FBx8ieyqrf18hbSuuZ4fyHFg4vAokmsvFkhLQgqMLLxNCbrkMwXAw
-         QBx7g3BzswfzGv1GNzCW/rpwrfF+5ywnZWSb3FZZGYHx1CXdUZf/OzWmsCXvwkW+EE6o
-         TP8t4XnpcGtbWa5CTlkmFtxm6TVgWuf0pKPD4diucfHnzTXrR3gjI8WreXPryUnliq8B
-         OqJODdcVjEIotM7SJpdRON26G1Q8lPvDBQV0q+2TD2mUYKfWd8Y6A1YbpO75gmO61myJ
-         cycg==
+        d=gmail.com; s=20230601; t=1754489718; x=1755094518; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HHHtXBq5WO+vvcc0f+jtGoFoRXRDF9tjNLE6vwGhp98=;
+        b=PLLTK7asOcjbBBZXyw2CRmWAkWxNGCgC9uIaHDOkokG8fLKb/FTvxalPLmXY0xO0zY
+         Xcdp/6JmpcI6sBSPBUXgM16grhA35mVYfuxk4n5Fd4TptZhHyo4oQpYLl52Ggv9+RjUk
+         26L1+pAy6O5v136kyMpXyNnN9Z3J2qKvmn29LOM3PH8tvP4LuzmwicaDp1+Gb6Xyr11t
+         9cd5qiTAXvdKTI2HGOQBZRJzkh279Xn9cp4KeKOgNm7NIuGNEFKpj4Bcwbbyuk0BJo6B
+         4a8GhFJy8oY93v6HERZqfYcA/w1ighk0uoZ0qDT0sgNAAuVItS3n4WB/7RbVIFXJvPxt
+         RVMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754488210; x=1755093010;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pDOCIZR6gSwH1CTXkpwwYCK6HLPl+F0ICSkVzqPXsh0=;
-        b=IrWSPd4w045TUtpMnhTFoO+Hl8DxjNJ8T8DZ4ua7vDz7gEhvm8WsefOKxioiPhcoVG
-         3a8tNTViKEIqfVuC2ToN8fwojpvvWkZDjws1XXnRy0tLEpupP3WfOBCJC6YLS0ybTKCW
-         bm51w6b9uFf0JR5ThSavwZydCVsWoz/FTOrtYnF2clAc80sj96w9VvbObM3PTvg3V+rN
-         Zk5rxCAtssL4ufoDfzwdPySHiG5nq57tKLzPvsQVfJZwYFJE5tGkDIULq/ZN3EajMnIR
-         YIK3PU3dg6UKGDnqUNwOAwG7Jo9TVLd+NrgowweWpZS4VFYeLzR525A56RQqXtog5+WM
-         iM/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUXJ5mKkYeFlJh8pvgX3eB7DZGD8+nbGVs31sQ1zqek3aaA5ZwTV4ikO8ju6PrviPH+OgX72h83uhY=@lists.infradead.org, AJvYcCXQj+9HvDewrBgGeF1pVrpnDhxgot8ZiSUxhHIqnzmX2LWPmtpM3vR0bJ7bUxsi7RlSQUvwfy3VeJoPOA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxc6WhnAr8ArFkdJjowbn+IiqfE9Sr92cMjmurNqo/b4YjQi6xG
-	yX3/uXdU5pPE+IU/r3r710xHDQOes9Yhqk5NUrMpUKOjtaXgHhSj+od4
-X-Gm-Gg: ASbGnctDHSONwb2Ks6cnl6n6kuV0IUHsnY8EG4ltSIkulpypmuoS6UX8/w93wvh7peX
-	BotWURbxbrI7cy6Zb9m9x+OllrtLnoBnphskGdf813gbCKW/tnw6gAid4HZN35rldg/Mls0kCnD
-	L8GmTfjr/SHVBTk/zURWROeg6xk3tLVGRwd+7S5ZL34ePpnmsLpFDa79c9T8wy/YycvpAFfgZFK
-	o3YmbK8mSIARUmHHUq1N/lMDctFKBhNO21bwsI+aTSayHutNhBSWIpMUofkgnz/Som6UYQ4/kGJ
-	S4MlA8QvUYW1Q1fIEMui8nsA5ajziaZi5/Efpr7QJTws+IC8j/A5PXG0P7z9flHELkO89iPJTua
-	ZHvrlXY+aMBCx8pTltozuoRs+uLMVjU/Agsd4pV5v/D8xL4yPig==
-X-Google-Smtp-Source: AGHT+IEsyaC4e5C8bAXA34DF26BCI2kUm+pbeFPiYngQRQqOaMh9b3JgYLiHo/Ul9EDDlBD4plM96A==
-X-Received: by 2002:a05:6512:3b1f:b0:550:ecdf:a7f9 with SMTP id 2adb3069b0e04-55caf35fc1amr414988e87.10.1754488210277;
-        Wed, 06 Aug 2025 06:50:10 -0700 (PDT)
-Received: from [10.214.35.248] ([80.93.240.68])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b88cabbd8sm2356761e87.149.2025.08.06.06.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Aug 2025 06:50:09 -0700 (PDT)
-Message-ID: <ece4aab9-a195-47c9-b370-c84f5dcc0098@gmail.com>
-Date: Wed, 6 Aug 2025 15:49:22 +0200
+        d=1e100.net; s=20230601; t=1754489718; x=1755094518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HHHtXBq5WO+vvcc0f+jtGoFoRXRDF9tjNLE6vwGhp98=;
+        b=JCZwbpu/cwIefXp00rPQ8LLdVrJmOarFJnIpavRfCRSc/x0Kqcn47Gvnm8hOwyeRMe
+         fCbSBsg+iKHIh3Fa14uYDO2oBIraFTNptex9B9vEHh+VgpmQdDXR7dk/AcpCsDEy6B/d
+         fRCjdJTlz/fCRSvZ2/BOKCrg+0W1zfFXzSZEXTqwJDWDZLDyVBTPSOm+5ovh/huUcYtL
+         MtPTV8WVxoojKbN6mt5d9qHTgIr5MamMe/SmidaAQY/cG3ClY3ZoemEXvPw0RmpoWVOH
+         xKjyHCviH2ZTXZkdQwYlb9r8IcqaKeLX1p/4fp932w9YoP3hZR7XY2LhWuC3WakC5A5m
+         MN9w==
+X-Forwarded-Encrypted: i=1; AJvYcCV0ygI4YzxG7Gb2l2b98zMxi4thBefZWQ7VwYAqIxKaicpqilNaEu/ITF3Z/OyQrsHlScO/99ge7bE=@lists.infradead.org, AJvYcCWnEwn+PJg/FCRH/swin0GM3C7X20oLN5xR56WS74UJkSBZQc9P0xw396Bw8X6Z4PwPGipliOftCcX5Pw==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzy5jbLXklx9Y2YBkMteOjc3ym+BFJwunvzVTDEamBxvEM7zfki
+	pAjyHhLCVIw4oDxHNrQ+O2ldzUrLjIaSi59CMrif3Z4zi/HCTHWPLd4a7sLmgUCI5dcnIOsP+vS
+	XHGFOyw08QIGeJ6M9JR/teLKjwQB5aqQ=
+X-Gm-Gg: ASbGncsjX9W0MDAych7IbZLTEPEKUlS84iJNMDtsqCPAgZEBbCwyvUKpHtIExgXeUs0
+	UmY50o6gPW0eP3aPf8Rqd9dVkDhLQ3XgPszRhLBMqZOr7LAC/zbHF4Ug00J7Y+8bSK7hhN065vK
+	NDhPJu55FEMt3SbonywzqE6ejPvOS8cY6vBlpJttXZIRYb9H8Pzc20V6r+OnI+j186yxfSfN5M3
+	sQhVtM9oZWnIENFmA==
+X-Google-Smtp-Source: AGHT+IGJIXTvnACCtHBTy4xxxFNjsKAhes5Wv7IRo3RcAz7+56gG6smaMf7pNYbDbu4cgI3F5Fzl+OIwDZB8GhsMAoI=
+X-Received: by 2002:a05:6512:144c:10b0:55a:90b:7a37 with SMTP id
+ 2adb3069b0e04-55caf3b36c2mr652245e87.50.1754489718011; Wed, 06 Aug 2025
+ 07:15:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/9] kasan/um: select ARCH_DEFER_KASAN and call
- kasan_init_generic
-To: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc: hca@linux.ibm.com, christophe.leroy@csgroup.eu, andreyknvl@gmail.com,
- agordeev@linux.ibm.com, akpm@linux-foundation.org, zhangqing@loongson.cn,
- chenhuacai@loongson.cn, trishalfonso@google.com, davidgow@google.com,
- glider@google.com, dvyukov@google.com, kasan-dev@googlegroups.com,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
-References: <20250805142622.560992-1-snovitoll@gmail.com>
- <20250805142622.560992-7-snovitoll@gmail.com>
- <60895f3d-abe2-4fc3-afc3-176a188f06d4@gmail.com>
- <CACzwLxhs+Rt9-q6tKi3Kvu7HpZ2VgZAc4XEXZ4MEB60UbFjDKg@mail.gmail.com>
-Content-Language: en-US
-From: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-In-Reply-To: <CACzwLxhs+Rt9-q6tKi3Kvu7HpZ2VgZAc4XEXZ4MEB60UbFjDKg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20250805142622.560992-1-snovitoll@gmail.com> <20250805142622.560992-2-snovitoll@gmail.com>
+ <5a73e633-a374-47f2-a1e1-680e24d9f260@gmail.com>
+In-Reply-To: <5a73e633-a374-47f2-a1e1-680e24d9f260@gmail.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Date: Wed, 6 Aug 2025 19:15:01 +0500
+X-Gm-Features: Ac12FXyPyQ2NShErRdFgyvw5rZUg2mPvtAtIHmw2QjkFVe_vIUdzA6ST_4dfZTU
+Message-ID: <CACzwLxg=zC-82sY6f-z0VOnmbpN2E8tQxe7RyOnynpbJEFP+NA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/9] kasan: introduce ARCH_DEFER_KASAN and unify static
+ key across modes
+To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: hca@linux.ibm.com, christophe.leroy@csgroup.eu, andreyknvl@gmail.com, 
+	agordeev@linux.ibm.com, akpm@linux-foundation.org, zhangqing@loongson.cn, 
+	chenhuacai@loongson.cn, trishalfonso@google.com, davidgow@google.com, 
+	glider@google.com, dvyukov@google.com, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250806_065012_463892_358586A6 
-X-CRM114-Status: GOOD (  18.11  )
+X-CRM114-CacheID: sfid-20250806_071520_307668_D20CF903 
+X-CRM114-Status: GOOD (  35.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,69 +101,277 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Wed, Aug 6, 2025 at 6:35=E2=80=AFPM Andrey Ryabinin <ryabinin.a.a@gmail.=
+com> wrote:
+>
+>
+>
+> On 8/5/25 4:26 PM, Sabyrzhan Tasbolatov wrote:
+> > Introduce CONFIG_ARCH_DEFER_KASAN to identify architectures that need
+> > to defer KASAN initialization until shadow memory is properly set up,
+> > and unify the static key infrastructure across all KASAN modes.
+> >
+> > Some architectures (like PowerPC with radix MMU) need to set up their
+> > shadow memory mappings before KASAN can be safely enabled, while others
+> > (like s390, x86, arm) can enable KASAN much earlier or even from the
+> > beginning.
+> >
+> > Historically, the runtime static key kasan_flag_enabled existed only fo=
+r
+> > CONFIG_KASAN_HW_TAGS mode. Generic and SW_TAGS modes either relied on
+> > architecture-specific kasan_arch_is_ready() implementations or evaluate=
+d
+> > KASAN checks unconditionally, leading to code duplication.
+> >
+> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217049
+> > Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+> > ---
+> > Changes in v4:
+> > - Fixed HW_TAGS static key functionality (was broken in v3)
+>
+> I don't think it fixed. Before you patch kasan_enabled() esentially
+> worked like this:
+>
+>  if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+>         return static_branch_likely(&kasan_flag_enabled);
+>  else
+>         return IS_ENABLED(CONFIG_KASAN);
+>
+> Now it's just IS_ENABLED(CONFIG_KASAN);
 
+In v4 it is:
 
-On 8/6/25 6:35 AM, Sabyrzhan Tasbolatov wrote:
-> On Tue, Aug 5, 2025 at 10:19 PM Andrey Ryabinin <ryabinin.a.a@gmail.com> wrote:
->>
->>
->>
->> On 8/5/25 4:26 PM, Sabyrzhan Tasbolatov wrote:
->>>
->>> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
->>> index 9083bfdb773..8d14c8fc2cd 100644
->>> --- a/arch/um/Kconfig
->>> +++ b/arch/um/Kconfig
->>> @@ -5,6 +5,7 @@ menu "UML-specific options"
->>>  config UML
->>>       bool
->>>       default y
->>> +     select ARCH_DEFER_KASAN
->>
->> select ARCH_DEFER_KASAN if STATIC_LINK
-> 
-> As pointed out in commit 5b301409e8bc("UML: add support for KASAN
-> under x86_64"),
-> 
-> : Also note that, while UML supports both KASAN in inline mode
-> (CONFIG_KASAN_INLINE)
-> : and static linking (CONFIG_STATIC_LINK), it does not support both at
-> the same time.
-> 
-> I've tested that for UML,
-> ARCH_DEFER_KASAN works if STATIC_LINK && KASAN_OUTLINE
-> ARCH_DEFER_KASAN works if KASAN_INLINE && !STATIC_LINK
-> 
-> ARCH_DEFER_KASAN if STATIC_LINK, and KASAN_INLINE=y by default from defconfig
-> crashes with SEGFAULT here (I didn't understand what it is, I think
-> the main() constructors
-> is not prepared in UML):
-> 
->  ► 0       0x609d6f87 strlen+43
->    1       0x60a20db0 _dl_new_object+48
->    2       0x60a24627 _dl_non_dynamic_init+103
->    3       0x60a25f9a __libc_init_first+42
->    4       0x609eb6b2 __libc_start_main_impl+2434
->    5       0x6004a025 _start+37
-> 
+        #if defined(CONFIG_ARCH_DEFER_KASAN) || defined(CONFIG_KASAN_HW_TAG=
+S)
+        static __always_inline bool kasan_shadow_initialized(void)
+        {
+                return static_branch_likely(&kasan_flag_enabled);
+        }
+        #else
+        static __always_inline bool kasan_shadow_initialized(void)
+        {
+                return kasan_enabled(); // which is IS_ENABLED(CONFIG_KASAN=
+);
+        }
+        #endif
 
-No surprise here, kasan_arch_is_ready() or ARCH_DEFER_KASAN doesn't work with KASAN_INLINE=y
-This configuration combination (STATIC_LINK + KASAN_INLINE) wasn't possible before:
+So for HW_TAGS, KASAN is enabled in kasan_init_hw_tags().
 
-#ifndef kasan_arch_is_ready
-static inline bool kasan_arch_is_ready(void)   { return true; }
-#elif !defined(CONFIG_KASAN_GENERIC) || !defined(CONFIG_KASAN_OUTLINE)
-#error kasan_arch_is_ready only works in KASAN generic outline mode!
-#endif
+>
+> And there are bunch of kasan_enabled() calls left whose behavior changed =
+for
+> no reason.
 
+By having in v5 the only check kasan_enabled() and used in current mainline=
+ code
+should be right. I've addressed this comment below. Thanks!
 
+>
+>
+> > - Merged configuration and implementation for atomicity
+> > ---
+> >  include/linux/kasan-enabled.h | 36 +++++++++++++++++++++++-------
+> >  include/linux/kasan.h         | 42 +++++++++++++++++++++++++++--------
+> >  lib/Kconfig.kasan             |  8 +++++++
+> >  mm/kasan/common.c             | 18 ++++++++++-----
+> >  mm/kasan/generic.c            | 23 +++++++++++--------
+> >  mm/kasan/hw_tags.c            |  9 +-------
+> >  mm/kasan/kasan.h              | 36 +++++++++++++++++++++---------
+> >  mm/kasan/shadow.c             | 32 ++++++--------------------
+> >  mm/kasan/sw_tags.c            |  4 +++-
+> >  mm/kasan/tags.c               |  2 +-
+> >  10 files changed, 133 insertions(+), 77 deletions(-)
+> >
+> > diff --git a/include/linux/kasan-enabled.h b/include/linux/kasan-enable=
+d.h
+> > index 6f612d69ea0..52a3909f032 100644
+> > --- a/include/linux/kasan-enabled.h
+> > +++ b/include/linux/kasan-enabled.h
+> > @@ -4,32 +4,52 @@
+> >
+> >  #include <linux/static_key.h>
+> >
+> > -#ifdef CONFIG_KASAN_HW_TAGS
+> > +/* Controls whether KASAN is enabled at all (compile-time check). */
+> > +static __always_inline bool kasan_enabled(void)
+> > +{
+> > +     return IS_ENABLED(CONFIG_KASAN);
+> > +}
+> >
+> > +#if defined(CONFIG_ARCH_DEFER_KASAN) || defined(CONFIG_KASAN_HW_TAGS)
+> > +/*
+> > + * Global runtime flag for KASAN modes that need runtime control.
+> > + * Used by ARCH_DEFER_KASAN architectures and HW_TAGS mode.
+> > + */
+> >  DECLARE_STATIC_KEY_FALSE(kasan_flag_enabled);
+> >
+> > -static __always_inline bool kasan_enabled(void)
+> > +/*
+> > + * Runtime control for shadow memory initialization or HW_TAGS mode.
+> > + * Uses static key for architectures that need deferred KASAN or HW_TA=
+GS.
+> > + */
+> > +static __always_inline bool kasan_shadow_initialized(void)
+>
+> Don't rename it, just leave as is - kasan_enabled().
+> It's better name, shorter and you don't need to convert call sites, so
+> there is less chance of mistakes due to unchanged kasan_enabled() -> kasa=
+n_shadow_initialized().
 
-> Since this is the case only for UML, AFAIU, I don't think we want to change
-> conditions in lib/Kconfig.kasan. Shall I leave UML Kconfig as it is? e.g.
-> 
-> select ARCH_DEFER_KASAN
-> 
+I actually had the only check "kasan_enabled()" in v2, but went to
+double check approach in v3
+after this comment:
+https://lore.kernel.org/all/CA+fCnZcGyTECP15VMSPh+duLmxNe=3DApHfOnbAY3NqtFH=
+ZvceZw@mail.gmail.com/
 
-No, this should have if STATIC_LINK
+Ok, we will have the **only** check kasan_enabled() then in
+kasan-enabled.h which
 
+        #if defined(CONFIG_ARCH_DEFER_KASAN) || defined(CONFIG_KASAN_HW_TAG=
+S)
+        static __always_inline bool kasan_enabled(void)
+        {
+                return static_branch_likely(&kasan_flag_enabled);
+        }
+        #else
+        static inline bool kasan_enabled(void)
+        {
+                return IS_ENABLED(CONFIG_KASAN);
+        }
+
+And will remove kasan_arch_is_ready (current kasan_shadow_initialized in v4=
+).
+
+So it is the single place to check if KASAN is enabled for all arch
+and internal KASAN code.
+Same behavior is in the current mainline code but only for HW_TAGS.
+
+Is this correct?
+
+>
+>
+> >  {
+> >       return static_branch_likely(&kasan_flag_enabled);
+> >  }
+> >
+> > -static inline bool kasan_hw_tags_enabled(void)
+> > +static inline void kasan_enable(void)
+> > +{
+> > +     static_branch_enable(&kasan_flag_enabled);
+> > +}
+> > +#else
+> > +/* For architectures that can enable KASAN early, use compile-time che=
+ck. */
+> > +static __always_inline bool kasan_shadow_initialized(void)
+> >  {
+> >       return kasan_enabled();
+> >  }
+> >
+>
+> ...
+>
+> >
+> >  void kasan_populate_early_vm_area_shadow(void *start, unsigned long si=
+ze);
+> > -int kasan_populate_vmalloc(unsigned long addr, unsigned long size);
+> > -void kasan_release_vmalloc(unsigned long start, unsigned long end,
+> > +
+> > +int __kasan_populate_vmalloc(unsigned long addr, unsigned long size);
+> > +static inline int kasan_populate_vmalloc(unsigned long addr, unsigned =
+long size)
+> > +{
+> > +     if (!kasan_shadow_initialized())
+> > +             return 0;
+>
+>
+> What's the point of moving these checks to header?
+> Leave it in C, it's easier to grep and navigate code this way.
+
+Andrey Konovalov had comments [1] to avoid checks in C
+by moving them to headers under __wrappers.
+
+: 1. Avoid spraying kasan_arch_is_ready() throughout the KASAN
+: implementation and move these checks into include/linux/kasan.h (and
+: add __wrappers when required).
+
+[1] https://lore.kernel.org/all/CA+fCnZcGyTECP15VMSPh+duLmxNe=3DApHfOnbAY3N=
+qtFHZvceZw@mail.gmail.com/
+
+>
+>
+> > +     return __kasan_populate_vmalloc(addr, size);
+> > +}
+> > +
+> > +void __kasan_release_vmalloc(unsigned long start, unsigned long end,
+> >                          unsigned long free_region_start,
+> >                          unsigned long free_region_end,
+> >                          unsigned long flags);
+> > +static inline void kasan_release_vmalloc(unsigned long start,
+> > +                        unsigned long end,
+> > +                        unsigned long free_region_start,
+> > +                        unsigned long free_region_end,
+> > +                        unsigned long flags)
+> > +{
+> > +     if (kasan_shadow_initialized())
+> > +             __kasan_release_vmalloc(start, end, free_region_start,
+> > +                        free_region_end, flags);
+> > +}
+> >
+>
+> ...> @@ -250,7 +259,7 @@ static inline void poison_slab_object(struct kme=
+m_cache *cache, void *object,
+> >  bool __kasan_slab_pre_free(struct kmem_cache *cache, void *object,
+> >                               unsigned long ip)
+> >  {
+> > -     if (!kasan_arch_is_ready() || is_kfence_address(object))
+> > +     if (is_kfence_address(object))
+> >               return false;
+> >       return check_slab_allocation(cache, object, ip);
+> >  }
+> > @@ -258,7 +267,7 @@ bool __kasan_slab_pre_free(struct kmem_cache *cache=
+, void *object,
+> >  bool __kasan_slab_free(struct kmem_cache *cache, void *object, bool in=
+it,
+> >                      bool still_accessible)
+> >  {
+> > -     if (!kasan_arch_is_ready() || is_kfence_address(object))
+> > +     if (is_kfence_address(object))
+> >               return false;
+> >
+> >       poison_slab_object(cache, object, init, still_accessible);
+> > @@ -282,9 +291,6 @@ bool __kasan_slab_free(struct kmem_cache *cache, vo=
+id *object, bool init,
+> >
+> >  static inline bool check_page_allocation(void *ptr, unsigned long ip)
+> >  {
+> > -     if (!kasan_arch_is_ready())
+> > -             return false;
+> > -
+>
+>
+> Well, you can't do this yet, because no arch using ARCH_DEFER_KASAN yet, =
+so this breaks
+> bisectability.
+> Leave it, and remove with separate patch only when there are no users lef=
+t.
+
+Will do in v5 at the end of patch series.
+
+>
+> >       if (ptr !=3D page_address(virt_to_head_page(ptr))) {
+> >               kasan_report_invalid_free(ptr, ip, KASAN_REPORT_INVALID_F=
+REE);
+> >               return true;
+> > @@ -511,7 +517,7 @@ bool __kasan_mempool_poison_object(void *ptr, unsig=
+ned long ip)
+> >               return true;
+> >       }
+> >
+> > -     if (is_kfence_address(ptr) || !kasan_arch_is_ready())
+> > +     if (is_kfence_address(ptr))
+> >               return true;
+> >
+> >       slab =3D folio_slab(folio);
+>
+>
 
