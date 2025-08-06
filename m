@@ -4,95 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E837C87FD2
-	for <linux-um@archiver.kernel.org>; Tue,  5 Aug 2025 17:48:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 442F9C87FCA
+	for <linux-um@archiver.kernel.org>; Wed,  6 Aug 2025 04:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q/FfZaSan1eV7HDF3Wa83lEa0xPcSUpZYrzYE5G9wjk=; b=bwFWkjbJhwRmMTAlcVTXO9ssA4
-	S38kZ/LYGj1MqZUAfmEQi00CiK4h0bODh7fQvG4HoxPUck0ylcfT0YwM2vDoNG20JvVZjE2qGrwj2
-	SKiApQAh0rwWxHhrE0N5M3uoRPfj3NdrOB93KXYDNvLVwFO71ndKsL0qomHCRzRuZIamwaI0xD1WX
-	zzCHsNhTj/OkktB1xtRFQNoB6EUqoBZ/zapquubu3haSPD0rSyrrpI4XVYKBOmd+awKw93Y2NnLyw
-	Y2375WuxWZSnTCLkmOSNNxgov1UDBm/0TU+L2iW5GTyVhCBIWuD7oe1v9Jh/MGvJlmMRG+hZmg8jE
-	Y9+RyE1w==;
+	bh=dyl+4iOlTi/aeKebUp39F24cwHyqM1kxjjt1F2AMIE8=; b=IEGRYYYGAXqEfCk47+VLUJfmz5
+	M3/m7TNPxkOaAwkn84AmsilSQ1jqT+kLEIe8HTCcjPpPPxOCVAnjv4KugsZb6gMLyM3Ci+pPPq3V7
+	mD8ZdSawtuLLrtV/EUEmivOzFtjLS0dOMhuAtgDkFzadHYmwG290J7+GG4Skt1Z/wUGzmG/AoyNDa
+	YXc+GtnDspZqL//w9kHVgmVaLokWeIsBL2hx8H2TuZ8LSQmVGUgbZEckleJ10/Dun4VLPaiG9BIQZ
+	RS8us1p2DgNlD38cg230DXVOOWtccq137E3D4bdaFjMWGzDncwzgE7T8uE5oO+LFpwh3lCKLxb8eK
+	+ovP7zBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujLlk-0000000DT20-3N2P;
-	Tue, 05 Aug 2025 17:48:12 +0000
-Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
+	id 1ujVse-0000000EHLE-2jZK;
+	Wed, 06 Aug 2025 04:36:00 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ujLKQ-0000000DPdn-1Vou;
-	Tue, 05 Aug 2025 17:19:59 +0000
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-55b858e8778so214017e87.2;
-        Tue, 05 Aug 2025 10:19:58 -0700 (PDT)
+	id 1ujVsb-0000000EHKj-1RbL;
+	Wed, 06 Aug 2025 04:35:58 +0000
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-332559ace6eso38270441fa.1;
+        Tue, 05 Aug 2025 21:35:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754414396; x=1755019196; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q/FfZaSan1eV7HDF3Wa83lEa0xPcSUpZYrzYE5G9wjk=;
-        b=g33GiZSXHE5WFOioqA+OyFumqb3YF0BJkmL649TYnPcassaYguH0IOJRZGy9t0A6eI
-         GtrcYedVrASRIlDVBzEt4Dbqxft432gt2HkOlFNMiC1A4rdgKD8vHw1Ww6ANWHkg7ec2
-         I0ctkRQk6eh//65nCLDqL9H7TqBj9DQcKbUWfWrDyu+IPle8tmUAI6DSaGuGxXEArrRQ
-         pFAgeAx5xBB0Jvy1fuWxLsz9ZZWEsCABtS+wdvZ7oqIzIHeVz5jZlnUww4Ou1Sl1+fOO
-         6eE4+/KaO7ZacWEbHliK9IXdi/gk/yAjgZPQqNsmZemgfMTGNWEUYivK5MHweprVySQx
-         9jcA==
+        d=gmail.com; s=20230601; t=1754454955; x=1755059755; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dyl+4iOlTi/aeKebUp39F24cwHyqM1kxjjt1F2AMIE8=;
+        b=E6sd8qNKvd2Xzebrv6Q9NrPUKkMzFOEEdBNeawH/y2CxdFB0QBqxlA0o0NUiNh0kQw
+         3qQ5S+FNXZoyV3XJTzaABqAvnwSKxWQ9BHyfsUdwse836fKrRNI3VJjMG9iFLM06kAjN
+         pCr3g+cYtMLdZI01JpkUw37cbwoZpuqSvHgldvfimjpU/driFyYXE3GXjSUGJduD584N
+         P3baPiDhcTSJhphQUJajfYRltZzGZPH0bN2zaCSRFKRwicZVXWWIvfE1CXwu0UtHMaVn
+         RKuoLnVWB5hM72I4NlMbmP65fLQ6pLfT+SSD4d7DwpHlTkohtXG2vl/ywW0alBT8Vjph
+         9J5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754414396; x=1755019196;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q/FfZaSan1eV7HDF3Wa83lEa0xPcSUpZYrzYE5G9wjk=;
-        b=q9daB202+B1wFi0nR0r2A5yXpulEF8UACVmVeXTMyEuz7HHPmshGMpFmIB8rt0ph18
-         Zh4LeJSkoW9uiC6/NJpkXSpIgXsWgIjTkL6vihi5mMBfFlPEKSuWTWXOWh/h2tBGH3mp
-         X7xr8W6l9WPQn5mgWoEWj/9xTCoetDaoR6q+i0itlm/57wdqO1uB1ODhi2Oj3v1YY0f8
-         sR/9CQ33QONJ0cWllclam3ed8bY9BRjlIdcMMfWE9TW1BzxEJsOpEPtdZcLp6rDVfqgs
-         lCvJbjI5kJU9/k1s49qCPaDSKBFQT46Vi/48ukuL9/RqMamThP4QQiCBY2E8MZ3Yl5RL
-         koxg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6Do58xiKE5BXzffPg0m3rPyenMnf+RNJFmKr3faKEjOlm1KD7BoEVSO1JUaHxglTkkBhgrqBS79o=@lists.infradead.org, AJvYcCVSR6jDDmHL54K1YhP8rlNWFFcuuJc8MxSamCjF9STxJ2qi/qt8sA9HKewYbKKQKIzbIzWtZQ1lw3lS0Q==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx4ZYjzyuU4qpX9ytXk3dWrQ8wQLEAdeJdOyXiJpPbqByLGQ/Zi
-	VCMKOnITBqrdyuwmcm8v+6uVkMm4KVKBYswD9tyX0ekwxam+XWogf2KG
-X-Gm-Gg: ASbGncs8pR+hvUQbpGlChaMssG6J2gj6E4nwvntbTYcGRnaDg6Ty4nD/y2AJMKN8GGh
-	ffqIp3z2R0Fx1ZN7hq16Ec3em6CVHe8ldn1awifYLFJZGJ3oJhP5WkcLTXfQz5A+4xcq7jus44e
-	xWUcRbX0GZDzXKN53w83iZMLSYKbZrRk8gFvCiUMRWxd1MrsMhfOB2rsH3SYfvodVREfi38yEIo
-	jF7xo73NtgPFy/Selr4GwmW5hiYJCzeBQVqzHFoTWfRq/aGOIMRsqjJVfAyyBl2VWakx9f1u3v9
-	JpeykoRCHdH0x7a7GRKT0kCCDVqPKm4tj+vqXb/JJNPCx0VJv/4QQdixi6aYPtXSjlaS+rIT2/7
-	lFrioujiyEavEUESWByu7XEU4aBIM
-X-Google-Smtp-Source: AGHT+IFZ9pdK1jvsk2cxgalB1qSoH0zZWAWc/VG+Lc+QySUYQJ+aNEU1tTzI15MgaTEZ+riRKR17/A==
-X-Received: by 2002:a05:6512:6d1:b0:553:2480:230a with SMTP id 2adb3069b0e04-55b979b819amr1540170e87.0.1754414396425;
-        Tue, 05 Aug 2025 10:19:56 -0700 (PDT)
-Received: from [10.214.35.248] ([80.93.240.68])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-332382a9483sm19586481fa.23.2025.08.05.10.19.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Aug 2025 10:19:56 -0700 (PDT)
-Message-ID: <60895f3d-abe2-4fc3-afc3-176a188f06d4@gmail.com>
-Date: Tue, 5 Aug 2025 19:19:09 +0200
+        d=1e100.net; s=20230601; t=1754454955; x=1755059755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dyl+4iOlTi/aeKebUp39F24cwHyqM1kxjjt1F2AMIE8=;
+        b=KYtEVc1tETU1H8BoMLb/7T5ug27xxzCOcdwPDjGgC7cwygBG/JW1ld8Mnzfd74VQEx
+         mOJvH3CX3Ha3wRkvu7voO4hXHNmGqRAijqdz0kity5TnmoNWeD7ftAkbZYUhU/oq0Hog
+         vRphecWYTcuHGGKZbJ0auyTvhIgsZsSGek1abpRvIHfhi/9LOF9BTQvkAVRVpwEQT5pV
+         BRe06OD6JqnvJ9SQWIaUBDxKHJnPe6h/nL9kyUigWdkKmJCfd1HLV/Siewz3YFtJnMju
+         NksaXXxnZQk5oc0F55S0odB4IM8rBY+E+9G/3fWgfMgSPSwvHfJNyouzVQb7vkqU6OCZ
+         VzUw==
+X-Forwarded-Encrypted: i=1; AJvYcCU7bEnqFyXRmIlrFD+9hoDiV0J/Eateid0bOIP2WU1gDvSiLKB92jTB7w5DiasJQ6U7I2oLvWQ4ABs=@lists.infradead.org, AJvYcCWm99J8yBoiFB37UrJi2sNTR5OLPAaFjvyTN9R5ThFqU0tQnOXskEjEaNKNR8sa9iE8JEWbNxhQo+QXzA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxsYNgOoQE877T0qIfNYBiWqoirM6n/WFORM3Q6XVm+b3rLLgyE
+	hwbqeQHZ/DTy4/8f96QN4UCMJo20R7C6K7SPMARdaqYvd4FD903sAyRIbOnjMPOPnNcuyf+BW+d
+	x2Ffgf6GNPUyL4wNFlfPOKM7hXx+1JZY=
+X-Gm-Gg: ASbGncuw1261ucsDyfNRF4Ocp/wyhO9oh8jfhq7/or69bT+Pm4PGXoq8Bh6FPabcb/r
+	f/7Hq2WuefBSWhG7/kV4jZ2EcnjAdiq0t9ykKEgMf8lyxiioDERV9z9PYI4IIqgBFJn6XlVvj6N
+	17r52zO4tnWOrkLVcC0+H/bz+n9QEaMOY7e1TFsBeEMUdTjNSX8ShCHfJp019EYS6OTEEXbUhf/
+	kPQ1lc=
+X-Google-Smtp-Source: AGHT+IELREFbM69cWDMgkv0oAyeZWfUsogtR626ngafWyGyn4A7prZJUgwVT4kX8m1x5U9hUnIU0ztH0bEfAmGCquxc=
+X-Received: by 2002:a05:651c:f0e:b0:32c:e253:20cc with SMTP id
+ 38308e7fff4ca-3338128c651mr2551171fa.11.1754454955157; Tue, 05 Aug 2025
+ 21:35:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/9] kasan/um: select ARCH_DEFER_KASAN and call
- kasan_init_generic
-To: Sabyrzhan Tasbolatov <snovitoll@gmail.com>, hca@linux.ibm.com,
- christophe.leroy@csgroup.eu, andreyknvl@gmail.com, agordeev@linux.ibm.com,
- akpm@linux-foundation.org, zhangqing@loongson.cn, chenhuacai@loongson.cn,
- trishalfonso@google.com, davidgow@google.com
-Cc: glider@google.com, dvyukov@google.com, kasan-dev@googlegroups.com,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
-References: <20250805142622.560992-1-snovitoll@gmail.com>
- <20250805142622.560992-7-snovitoll@gmail.com>
-Content-Language: en-US
-From: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-In-Reply-To: <20250805142622.560992-7-snovitoll@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250805142622.560992-1-snovitoll@gmail.com> <20250805142622.560992-7-snovitoll@gmail.com>
+ <60895f3d-abe2-4fc3-afc3-176a188f06d4@gmail.com>
+In-Reply-To: <60895f3d-abe2-4fc3-afc3-176a188f06d4@gmail.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Date: Wed, 6 Aug 2025 09:35:38 +0500
+X-Gm-Features: Ac12FXwBfBQD8yoFidSr60fw7LigvE8ZBweRU29uoAzLmmdybvheO1FdbNA_5DM
+Message-ID: <CACzwLxhs+Rt9-q6tKi3Kvu7HpZ2VgZAc4XEXZ4MEB60UbFjDKg@mail.gmail.com>
+Subject: Re: [PATCH v4 6/9] kasan/um: select ARCH_DEFER_KASAN and call kasan_init_generic
+To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: hca@linux.ibm.com, christophe.leroy@csgroup.eu, andreyknvl@gmail.com, 
+	agordeev@linux.ibm.com, akpm@linux-foundation.org, zhangqing@loongson.cn, 
+	chenhuacai@loongson.cn, trishalfonso@google.com, davidgow@google.com, 
+	glider@google.com, dvyukov@google.com, kasan-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250805_101958_403499_E40B4D75 
-X-CRM114-Status: UNSURE (   9.45  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250805_213557_384138_2141A784 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,39 +100,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Tue, Aug 5, 2025 at 10:19=E2=80=AFPM Andrey Ryabinin <ryabinin.a.a@gmail=
+.com> wrote:
+>
+>
+>
+> On 8/5/25 4:26 PM, Sabyrzhan Tasbolatov wrote:
+> >
+> > diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> > index 9083bfdb773..8d14c8fc2cd 100644
+> > --- a/arch/um/Kconfig
+> > +++ b/arch/um/Kconfig
+> > @@ -5,6 +5,7 @@ menu "UML-specific options"
+> >  config UML
+> >       bool
+> >       default y
+> > +     select ARCH_DEFER_KASAN
+>
+> select ARCH_DEFER_KASAN if STATIC_LINK
 
+As pointed out in commit 5b301409e8bc("UML: add support for KASAN
+under x86_64"),
 
-On 8/5/25 4:26 PM, Sabyrzhan Tasbolatov wrote:
-> 
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index 9083bfdb773..8d14c8fc2cd 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -5,6 +5,7 @@ menu "UML-specific options"
->  config UML
->  	bool
->  	default y
-> +	select ARCH_DEFER_KASAN
+: Also note that, while UML supports both KASAN in inline mode
+(CONFIG_KASAN_INLINE)
+: and static linking (CONFIG_STATIC_LINK), it does not support both at
+the same time.
 
-select ARCH_DEFER_KASAN if STATIC_LINK
+I've tested that for UML,
+ARCH_DEFER_KASAN works if STATIC_LINK && KASAN_OUTLINE
+ARCH_DEFER_KASAN works if KASAN_INLINE && !STATIC_LINK
 
->  	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
->  	select ARCH_HAS_CACHE_LINE_SIZE
->  	select ARCH_HAS_CPU_FINALIZE_INIT
-> diff --git a/arch/um/include/asm/kasan.h b/arch/um/include/asm/kasan.h
-> index f97bb1f7b85..81bcdc0f962 100644
-> --- a/arch/um/include/asm/kasan.h
-> +++ b/arch/um/include/asm/kasan.h
-> @@ -24,11 +24,6 @@
->  
->  #ifdef CONFIG_KASAN
->  void kasan_init(void);
-> -extern int kasan_um_is_ready;
-> -
-> -#ifdef CONFIG_STATIC_LINK
-> -#define kasan_arch_is_ready() (kasan_um_is_ready)
-> -#endif
->  #else
->  static inline void kasan_init(void) { }
->  #endif /* CONFIG_KASAN */
+ARCH_DEFER_KASAN if STATIC_LINK, and KASAN_INLINE=3Dy by default from defco=
+nfig
+crashes with SEGFAULT here (I didn't understand what it is, I think
+the main() constructors
+is not prepared in UML):
+
+ =E2=96=BA 0       0x609d6f87 strlen+43
+   1       0x60a20db0 _dl_new_object+48
+   2       0x60a24627 _dl_non_dynamic_init+103
+   3       0x60a25f9a __libc_init_first+42
+   4       0x609eb6b2 __libc_start_main_impl+2434
+   5       0x6004a025 _start+37
+
+Since this is the case only for UML, AFAIU, I don't think we want to change
+conditions in lib/Kconfig.kasan. Shall I leave UML Kconfig as it is? e.g.
+
+select ARCH_DEFER_KASAN
+
+>
+> >       select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+> >       select ARCH_HAS_CACHE_LINE_SIZE
+> >       select ARCH_HAS_CPU_FINALIZE_INIT
+> > diff --git a/arch/um/include/asm/kasan.h b/arch/um/include/asm/kasan.h
+> > index f97bb1f7b85..81bcdc0f962 100644
+> > --- a/arch/um/include/asm/kasan.h
+> > +++ b/arch/um/include/asm/kasan.h
+> > @@ -24,11 +24,6 @@
+> >
+> >  #ifdef CONFIG_KASAN
+> >  void kasan_init(void);
+> > -extern int kasan_um_is_ready;
+> > -
+> > -#ifdef CONFIG_STATIC_LINK
+> > -#define kasan_arch_is_ready() (kasan_um_is_ready)
+> > -#endif
+> >  #else
+> >  static inline void kasan_init(void) { }
+> >  #endif /* CONFIG_KASAN */
 
