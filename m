@@ -4,78 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8189DC87FCF
-	for <linux-um@archiver.kernel.org>; Thu,  7 Aug 2025 14:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18938C87FCF
+	for <linux-um@archiver.kernel.org>; Thu,  7 Aug 2025 19:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i2q2VldIGrqUnIilSyzoFVcdVtTaRr5YroaOFtpTjHE=; b=C+/p0BfWoVgotckRs6gMZOSdnV
-	IA/kITQHqTLAxEO3MHDd9YlnApCsPUlf84Du3ikoQuuUGsIrsRInHkybkND3w15mA7d8prYcFmHrH
-	popLUMZI6XjPOFs774Dc2Fx0TkBvJwWGrJgHJuCzLJDk9VzLNK8rTf9SCR5aAT9RaNWVqc0TiaBKd
-	DgR9hHzN6LqHTatBzd73CSu7Tv4JzaYFgkxUYXg23ycP14qoiC+/dCr0WbetN4f/mFe4ohP2FfAJ/
-	1hbSCM+BeMulgvAGPtldIgKMMncDSGPGdwTDW+dK7QR9B3LFMv9YP1+GOG09WMTxeMafLzZI1YqZM
-	TP5GZXMw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ZxujgbgbPZueP+pnQ5s6H3MUryeO1an975QxEYXuWHk=; b=g/6zXvSEUFznXlB1RE6kbguv+t
+	z6ZtZd1SvLSPlyhXpBGsZ+13GpmDKNpfXpCi0pdITtwLe9otQy0kLLpLzyinQ7LPJFH54VM/UAfh4
+	0inunUs9q4+JnMY8MjlushKQKRK/kkNQ9cQTx0wI+KrODeQVZihPnbXKujn200XDw15yiAebCk1zd
+	txE6QV93ESOj3r51Yv5uRqZodrr1Sq9Sb0M4OJlYZ+Z3UJ0Tm7kCwLKGsBhNaPwF0uNe0XEZnbccs
+	Rp+EE6WAXe6JDPfInt41J5OfES2NvH5bxn+FybXHWbWEqUnOf3ZTKaF9YzPPvH/ux/2z0IkF0A5jV
+	7JWniORg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uk1rO-00000000rRW-363u;
-	Thu, 07 Aug 2025 14:44:50 +0000
-Received: from mgamail.intel.com ([192.198.163.8])
+	id 1uk6Vy-00000001Q57-2Cs7;
+	Thu, 07 Aug 2025 19:43:02 +0000
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uk1rL-00000000rQZ-2rr2
-	for linux-um@lists.infradead.org;
-	Thu, 07 Aug 2025 14:44:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1754577888; x=1786113888;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xHdG9bnegdsYFSda4X6vtCSBfN1sfDNUPWqToEBiZ6c=;
-  b=OeQSbLKbch0tvmq63OefcdctNA1qMkIj2JTyXwBv28YY7L2inMIesZ/T
-   n1j2Ji6AhS1U6bp06YO+ZqM4+595neRkukPFN/e4uJSMN2AyKVvTgUOc3
-   5bQP6+U/WKoFe0RSuUZSCMN3CtSTPTvmsaCvDesnu70Xcl2YUZRhJlEf8
-   Dz6eMLKfHLx08RWvMbn0gAmQdd/by0oHvjnB2tGvDliLGYcpxE7Yy8icQ
-   yIvxV+yddoMnQrkDkXGDU2Mbi1xYgn/J0ApI108LY6Vtb9BT5KUkF39e+
-   PmFoMAMfa+QhDgt4NBb91ABudegT/Wg8CPqjR1Kr4+I0z3L6NzXywg17M
-   g==;
-X-CSE-ConnectionGUID: LDgbWvMURdiIRvrrfReoUw==
-X-CSE-MsgGUID: wBVp4wM+RQ2jPXxFGQcgXg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11514"; a="74493135"
-X-IronPort-AV: E=Sophos;i="6.17,271,1747724400"; 
-   d="scan'208";a="74493135"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2025 07:44:47 -0700
-X-CSE-ConnectionGUID: SaH2uLB5SMieo43Bc+Do+g==
-X-CSE-MsgGUID: EwgTw66xQCOkmf5Ynca02A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,271,1747724400"; 
-   d="scan'208";a="202242117"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 07 Aug 2025 07:44:44 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uk1rG-0002tK-0i;
-	Thu, 07 Aug 2025 14:44:42 +0000
-Date: Thu, 7 Aug 2025 22:44:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, richard@nod.at
-Cc: oe-kbuild-all@lists.linux.dev, anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net, linux-um@lists.infradead.org,
+	id 1uk6TN-00000001PfZ-36ty;
+	Thu, 07 Aug 2025 19:40:23 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-3322a34e84fso12584761fa.0;
+        Thu, 07 Aug 2025 12:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754595619; x=1755200419; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZxujgbgbPZueP+pnQ5s6H3MUryeO1an975QxEYXuWHk=;
+        b=NWoTb6dnOE2vLMS6dU+ybkKd5/Z31IfhtWuyJMQDb7LLUN2uA8qfYHPm03Ds5azUDy
+         LpntT+Q69aRlWsj9EnAJ2amLz4lkIE0Vidk7qyH60JVnhiIam7IMPUfIC1Jcx4r35ksa
+         Pqs+WNQmf/CdEmk5sC0/T13pNIvFRLWaDJETCpyJQizLwsgItYm4cvPqoDQgxaqmkgej
+         TS89KsZoPz9dlqC/yNLsoO+zhiqoNe7XfZMl/2cLJd2bP9XwSZZq+OfdY0kWH2qQgCCT
+         nLvUiw6y9DfoU7WkauLD6krcjZKDgIKhJk8DMXfeXSILtV+8ayTZ64ikrJWGHYdDC9tU
+         sE5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754595619; x=1755200419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZxujgbgbPZueP+pnQ5s6H3MUryeO1an975QxEYXuWHk=;
+        b=QToJ4I0auCxk2SdB88Y7Lj7zEK+uvFdc0tqG0tMpQsqfkrzdW9GcLeQ4MbE1/A3UmP
+         o+lYv1Xj18Rg3Yr9ZfBgwfnJLftzQ8/8mccVZQ6pq+ZSTTrfjue3NQiSB27kwomzsKb0
+         02y2DDiWbJknOqegqB6kB2VeURD4Mb2Yr19RNOafvU/zUxyyN30ZBkguo5N/5GgUZflT
+         3ugVMHMYh02I+aTLh1UG8XGlYqqG/psBZyYOmP0IZnRUUoDYr89iQdOryTSBU6hgQ8Dh
+         fQbnnh/OCag854ojoZ4PCu0McVz5QCSefkcj14hjSnTtAvO2ZRQk21PCxJSAP7ER0LjV
+         r0TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVv0m3oiXWbgCL/aJJCKsnh2U1vbdx7WnElD4RFoTMjifk8R68zOIT5CjCUsPa+NyqjXhmXTgGa/EFkaUg=@lists.infradead.org, AJvYcCWGA9W5Kq4YwftpClPtnQyNrUbt3wkeiiS01UHrbmHDmaB2p8D8kClcMXjh17WdwQ00lo1S5NJ748s=@lists.infradead.org, AJvYcCXngPySY7dQ1Yizd1fK3pw0uEDVpEVXngHRS+qe49VG3/Ec530dMGAG8jOGS0mHzDzQ515wv0bEUPEDLeXOWjIR@lists.infradead.org
+X-Gm-Message-State: AOJu0YyceaRINpA0wVzHzsPhkuDofq6M1KmPhXDw/uYmjzen3WZz1Pf/
+	dj4BjUEf2h/ym/P18yhk5cGwGzIhz7Mia4ynFtBh+yEtX189tWykincv
+X-Gm-Gg: ASbGnctvThiWOLmWHzSLG7/3Zs8c8EyAZ4yfsyC423gTTAjUtqWQcUbRYrJY5kh+BX8
+	GJDlXT6rSW747eY7cw8NN+EmzAGym8IVlpLw/+sw7Ooi832DAC27DvDECOQ9ZlohMqeEZ7UFARu
+	yLJ8q9EpoIYtL/devcQWyoYFwbG24CuWld700qeqh6+GOLbSNPc2Ew64SPdnrDMMQHi7usWcCIg
+	SHJ9KEcKrpAQ9O2tZz0AX0YY489c3ZlM3bUaHN0gZEFozHxhx0y91Y8W+A/Rgq0TVrladVQcfIt
+	rbLEZEvTMYtIi5GeQcgtuShgWBBPd3fhNHJKKJOGA1a0RXBQWBEPCvjN48SQMgRem3NwVwyNjYn
+	mQe+bxk44EUnRqpZb0W0Me2Sr/k9buTmV4uhJSN1V70Fl3ghYl+qbUZ6FZgmau8dFl0B33g==
+X-Google-Smtp-Source: AGHT+IE3k4ZwCdWcT+X+hcq7vhHbrmZfaduJaslrnOP/WdlfOXcdLd8Kfq+JS+ZAkrsMnQsJjZ39NA==
+X-Received: by 2002:a05:6512:3d09:b0:55b:57e8:16c4 with SMTP id 2adb3069b0e04-55cc012c003mr7357e87.30.1754595619107;
+        Thu, 07 Aug 2025 12:40:19 -0700 (PDT)
+Received: from localhost.localdomain (178.90.89.143.dynamic.telecom.kz. [178.90.89.143])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55b88c98c2asm2793570e87.77.2025.08.07.12.40.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Aug 2025 12:40:18 -0700 (PDT)
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To: ryabinin.a.a@gmail.com,
+	bhe@redhat.com,
+	hca@linux.ibm.com,
+	christophe.leroy@csgroup.eu,
+	andreyknvl@gmail.com,
+	akpm@linux-foundation.org,
+	zhangqing@loongson.cn,
+	chenhuacai@loongson.cn,
+	davidgow@google.co,
+	glider@google.com,
+	dvyukov@google.com
+Cc: alex@ghiti.fr,
+	agordeev@linux.ibm.com,
+	vincenzo.frascino@arm.com,
+	elver@google.com,
+	kasan-dev@googlegroups.com,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] um: Use ARRAY_SIZE for array length
-Message-ID: <202508072253.pVtUjvoV-lkp@intel.com>
-References: <20250807023227.2443863-1-jiapeng.chong@linux.alibaba.com>
+	loongarch@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-mm@kvack.org,
+	snovitoll@gmail.com
+Subject: [PATCH v5 0/2] kasan: unify kasan_enabled() and remove arch-specific implementations
+Date: Fri,  8 Aug 2025 00:40:10 +0500
+Message-Id: <20250807194012.631367-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250807023227.2443863-1-jiapeng.chong@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250807_074447_736193_CC48764C 
-X-CRM114-Status: GOOD (  16.28  )
+X-CRM114-CacheID: sfid-20250807_124021_782994_51C052A1 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,243 +116,113 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Jiapeng,
+This patch series addresses the fragmentation in KASAN initialization
+across architectures by introducing a unified approach that eliminates
+duplicate static keys and arch-specific kasan_arch_is_ready()
+implementations.
 
-kernel test robot noticed the following build errors:
+The core issue is that different architectures have inconsistent approaches
+to KASAN readiness tracking:
+- PowerPC, LoongArch, and UML arch, each implement own kasan_arch_is_ready()
+- Only HW_TAGS mode had a unified static key (kasan_flag_enabled)
+- Generic and SW_TAGS modes relied on arch-specific solutions
+  or always-on behavior
 
-[auto build test ERROR on next-20250806]
+Changes in v5:
+- Unified patches where arch (powerpc, UML, loongarch) selects
+  ARCH_DEFER_KASAN in the first patch not to break
+  bisectability. So in v5 we have 2 patches now in the series instead of 9.
+- Removed kasan_arch_is_ready completely as there is no user
+- Removed __wrappers in v4, left only those where it's necessary
+  due to different implementations
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiapeng-Chong/um-Use-ARRAY_SIZE-for-array-length/20250807-103534
-base:   next-20250806
-patch link:    https://lore.kernel.org/r/20250807023227.2443863-1-jiapeng.chong%40linux.alibaba.com
-patch subject: [PATCH -next] um: Use ARRAY_SIZE for array length
-config: um-randconfig-001-20250807 (https://download.01.org/0day-ci/archive/20250807/202508072253.pVtUjvoV-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250807/202508072253.pVtUjvoV-lkp@intel.com/reproduce)
+Tested on:
+- powerpc - selects ARCH_DEFER_KASAN
+Built ppc64_defconfig (PPC_BOOK3S_64) - OK
+Booted via qemu-system-ppc64 - OK
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508072253.pVtUjvoV-lkp@intel.com/
+I have not tested in v4 powerpc without KASAN enabled.
 
-All errors (new ones prefixed by >>):
+In v4 arch/powerpc/Kconfig it was:
+	select ARCH_DEFER_KASAN			if PPC_RADIX_MMU
 
-   arch/um/kernel/skas/stub_exe.c: In function 'real_init':
->> arch/um/kernel/skas/stub_exe.c:196:32: error: implicit declaration of function 'ARRAY_SIZE' [-Werror=implicit-function-declaration]
-     196 |                         .len = ARRAY_SIZE(filter),
-         |                                ^~~~~~~~~~
-   cc1: some warnings being treated as errors
+and compiling with ppc64_defconfig caused:
+  lib/stackdepot.o:(__jump_table+0x8): undefined reference to `kasan_flag_enabled'
 
+I have fixed it in v5 via adding KASAN condition:
+	select ARCH_DEFER_KASAN			if KASAN && PPC_RADIX_MMU
 
-vim +/ARRAY_SIZE +196 arch/um/kernel/skas/stub_exe.c
+- um - selects ARCH_DEFER_KASAN
 
-    12	
-    13	noinline static void real_init(void)
-    14	{
-    15		struct stub_init_data init_data;
-    16		unsigned long res;
-    17		struct {
-    18			void  *ss_sp;
-    19			int    ss_flags;
-    20			size_t ss_size;
-    21		} stack = {
-    22			.ss_size = STUB_DATA_PAGES * UM_KERN_PAGE_SIZE,
-    23		};
-    24		struct {
-    25			void *sa_handler_;
-    26			unsigned long sa_flags;
-    27			void *sa_restorer;
-    28			unsigned long long sa_mask;
-    29		} sa = {
-    30			/* Need to set SA_RESTORER (but the handler never returns) */
-    31			.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO | 0x04000000,
-    32		};
-    33	
-    34		/* set a nice name */
-    35		stub_syscall2(__NR_prctl, PR_SET_NAME, (unsigned long)"uml-userspace");
-    36	
-    37		/* Make sure this process dies if the kernel dies */
-    38		stub_syscall2(__NR_prctl, PR_SET_PDEATHSIG, SIGKILL);
-    39	
-    40		/* Needed in SECCOMP mode (and safe to do anyway) */
-    41		stub_syscall5(__NR_prctl, PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-    42	
-    43		/* read information from STDIN and close it */
-    44		res = stub_syscall3(__NR_read, 0,
-    45				    (unsigned long)&init_data, sizeof(init_data));
-    46		if (res != sizeof(init_data))
-    47			stub_syscall1(__NR_exit, 10);
-    48	
-    49		/* In SECCOMP mode, FD 0 is a socket and is later used for FD passing */
-    50		if (!init_data.seccomp)
-    51			stub_syscall1(__NR_close, 0);
-    52		else
-    53			stub_syscall3(__NR_fcntl, 0, F_SETFL, O_NONBLOCK);
-    54	
-    55		/* map stub code + data */
-    56		res = stub_syscall6(STUB_MMAP_NR,
-    57				    init_data.stub_start, UM_KERN_PAGE_SIZE,
-    58				    PROT_READ | PROT_EXEC, MAP_FIXED | MAP_SHARED,
-    59				    init_data.stub_code_fd, init_data.stub_code_offset);
-    60		if (res != init_data.stub_start)
-    61			stub_syscall1(__NR_exit, 11);
-    62	
-    63		res = stub_syscall6(STUB_MMAP_NR,
-    64				    init_data.stub_start + UM_KERN_PAGE_SIZE,
-    65				    STUB_DATA_PAGES * UM_KERN_PAGE_SIZE,
-    66				    PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED,
-    67				    init_data.stub_data_fd, init_data.stub_data_offset);
-    68		if (res != init_data.stub_start + UM_KERN_PAGE_SIZE)
-    69			stub_syscall1(__NR_exit, 12);
-    70	
-    71		/* In SECCOMP mode, we only need the signalling FD from now on */
-    72		if (init_data.seccomp) {
-    73			res = stub_syscall3(__NR_close_range, 1, ~0U, 0);
-    74			if (res != 0)
-    75				stub_syscall1(__NR_exit, 13);
-    76		}
-    77	
-    78		/* setup signal stack inside stub data */
-    79		stack.ss_sp = (void *)init_data.stub_start + UM_KERN_PAGE_SIZE;
-    80		stub_syscall2(__NR_sigaltstack, (unsigned long)&stack, 0);
-    81	
-    82		/* register signal handlers */
-    83		sa.sa_handler_ = (void *) init_data.signal_handler;
-    84		sa.sa_restorer = (void *) init_data.signal_restorer;
-    85		if (!init_data.seccomp) {
-    86			/* In ptrace mode, the SIGSEGV handler never returns */
-    87			sa.sa_mask = 0;
-    88	
-    89			res = stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-    90					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-    91			if (res != 0)
-    92				stub_syscall1(__NR_exit, 14);
-    93		} else {
-    94			/* SECCOMP mode uses rt_sigreturn, need to mask all signals */
-    95			sa.sa_mask = ~0ULL;
-    96	
-    97			res = stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-    98					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-    99			if (res != 0)
-   100				stub_syscall1(__NR_exit, 15);
-   101	
-   102			res = stub_syscall4(__NR_rt_sigaction, SIGSYS,
-   103					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-   104			if (res != 0)
-   105				stub_syscall1(__NR_exit, 16);
-   106	
-   107			res = stub_syscall4(__NR_rt_sigaction, SIGALRM,
-   108					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-   109			if (res != 0)
-   110				stub_syscall1(__NR_exit, 17);
-   111	
-   112			res = stub_syscall4(__NR_rt_sigaction, SIGTRAP,
-   113					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-   114			if (res != 0)
-   115				stub_syscall1(__NR_exit, 18);
-   116	
-   117			res = stub_syscall4(__NR_rt_sigaction, SIGILL,
-   118					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-   119			if (res != 0)
-   120				stub_syscall1(__NR_exit, 19);
-   121	
-   122			res = stub_syscall4(__NR_rt_sigaction, SIGFPE,
-   123					    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-   124			if (res != 0)
-   125				stub_syscall1(__NR_exit, 20);
-   126		}
-   127	
-   128		/*
-   129		 * If in seccomp mode, install the SECCOMP filter and trigger a syscall.
-   130		 * Otherwise set PTRACE_TRACEME and do a SIGSTOP.
-   131		 */
-   132		if (init_data.seccomp) {
-   133			struct sock_filter filter[] = {
-   134	#if __BITS_PER_LONG > 32
-   135				/* [0] Load upper 32bit of instruction pointer from seccomp_data */
-   136				BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-   137					 (offsetof(struct seccomp_data, instruction_pointer) + 4)),
-   138	
-   139				/* [1] Jump forward 3 instructions if the upper address is not identical */
-   140				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) >> 32, 0, 3),
-   141	#endif
-   142				/* [2] Load lower 32bit of instruction pointer from seccomp_data */
-   143				BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-   144					 (offsetof(struct seccomp_data, instruction_pointer))),
-   145	
-   146				/* [3] Mask out lower bits */
-   147				BPF_STMT(BPF_ALU | BPF_AND | BPF_K, 0xfffff000),
-   148	
-   149				/* [4] Jump to [6] if the lower bits are not on the expected page */
-   150				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) & 0xfffff000, 1, 0),
-   151	
-   152				/* [5] Trap call, allow */
-   153				BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_TRAP),
-   154	
-   155				/* [6,7] Check architecture */
-   156				BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-   157					 offsetof(struct seccomp_data, arch)),
-   158				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,
-   159					 UM_SECCOMP_ARCH_NATIVE, 1, 0),
-   160	
-   161				/* [8] Kill (for architecture check) */
-   162				BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-   163	
-   164				/* [9] Load syscall number */
-   165				BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-   166					 offsetof(struct seccomp_data, nr)),
-   167	
-   168				/* [10-16] Check against permitted syscalls */
-   169				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_futex,
-   170					 7, 0),
-   171				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,__NR_recvmsg,
-   172					 6, 0),
-   173				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,__NR_close,
-   174					 5, 0),
-   175				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
-   176					 4, 0),
-   177				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_munmap,
-   178					 3, 0),
-   179	#ifdef __i386__
-   180				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_set_thread_area,
-   181					 2, 0),
-   182	#else
-   183				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_arch_prctl,
-   184					 2, 0),
-   185	#endif
-   186				BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_rt_sigreturn,
-   187					 1, 0),
-   188	
-   189				/* [17] Not one of the permitted syscalls */
-   190				BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-   191	
-   192				/* [18] Permitted call for the stub */
-   193				BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-   194			};
-   195			struct sock_fprog prog = {
- > 196				.len = ARRAY_SIZE(filter),
-   197				.filter = filter,
-   198			};
-   199	
-   200			if (stub_syscall3(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
-   201					  SECCOMP_FILTER_FLAG_TSYNC,
-   202					  (unsigned long)&prog) != 0)
-   203				stub_syscall1(__NR_exit, 21);
-   204	
-   205			/* Fall through, the exit syscall will cause SIGSYS */
-   206		} else {
-   207			stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
-   208	
-   209			stub_syscall2(__NR_kill, stub_syscall0(__NR_getpid), SIGSTOP);
-   210		}
-   211	
-   212		stub_syscall1(__NR_exit, 30);
-   213	
-   214		__builtin_unreachable();
-   215	}
-   216	
+KASAN_GENERIC && KASAN_INLINE && STATIC_LINK
+	Before:
+		In file included from mm/kasan/common.c:32:
+		mm/kasan/kasan.h:550:2: error: #error kasan_arch_is_ready only works in KASAN generic outline mode!
+		550 | #error kasan_arch_is_ready only works in KASAN generic outline mode
+
+	After (with auto-selected ARCH_DEFER_KASAN):
+		./arch/um/include/asm/kasan.h:29:2: error: #error UML does not work in KASAN_INLINE mode with STATIC_LINK enabled!
+		29 | #error UML does not work in KASAN_INLINE mode with STATIC_LINK enabled!
+
+KASAN_GENERIC && KASAN_OUTLINE && STATIC_LINK && 
+	Before:
+		./linux boots.
+
+	After (with auto-selected ARCH_DEFER_KASAN):
+		./linux boots.
+
+KASAN_GENERIC && KASAN_OUTLINE && !STATIC_LINK
+	Before:
+		./linux boots
+
+	After (with auto-disabled !ARCH_DEFER_KASAN):
+		./linux boots
+
+- loongarch - selects ARCH_DEFER_KASAN
+Built defconfig with KASAN_GENERIC - OK
+Haven't tested the boot. Asking Loongarch developers to verify - N/A
+But should be good, since Loongarch does not have specific "kasan_init()"
+call like UML does. It selects ARCH_DEFER_KASAN and calls kasan_init()
+in the end of setup_arch() after jump_label_init().
+
+Previous v4 thread: https://lore.kernel.org/all/20250805142622.560992-1-snovitoll@gmail.com/
+Previous v3 thread: https://lore.kernel.org/all/20250717142732.292822-1-snovitoll@gmail.com/
+Previous v2 thread: https://lore.kernel.org/all/20250626153147.145312-1-snovitoll@gmail.com/
+
+Sabyrzhan Tasbolatov (2):
+  kasan: introduce ARCH_DEFER_KASAN and unify static key across modes
+  kasan: call kasan_init_generic in kasan_init
+
+ arch/arm/mm/kasan_init.c               |  2 +-
+ arch/arm64/mm/kasan_init.c             |  4 +---
+ arch/loongarch/Kconfig                 |  1 +
+ arch/loongarch/include/asm/kasan.h     |  7 ------
+ arch/loongarch/mm/kasan_init.c         |  8 +++----
+ arch/powerpc/Kconfig                   |  1 +
+ arch/powerpc/include/asm/kasan.h       | 12 ----------
+ arch/powerpc/mm/kasan/init_32.c        |  2 +-
+ arch/powerpc/mm/kasan/init_book3e_64.c |  2 +-
+ arch/powerpc/mm/kasan/init_book3s_64.c |  6 +----
+ arch/riscv/mm/kasan_init.c             |  1 +
+ arch/s390/kernel/early.c               |  3 ++-
+ arch/um/Kconfig                        |  1 +
+ arch/um/include/asm/kasan.h            |  5 ++--
+ arch/um/kernel/mem.c                   | 10 ++++++--
+ arch/x86/mm/kasan_init_64.c            |  2 +-
+ arch/xtensa/mm/kasan_init.c            |  2 +-
+ include/linux/kasan-enabled.h          | 32 ++++++++++++++++++--------
+ include/linux/kasan.h                  |  6 +++++
+ lib/Kconfig.kasan                      |  8 +++++++
+ mm/kasan/common.c                      | 17 ++++++++++----
+ mm/kasan/generic.c                     | 19 +++++++++++----
+ mm/kasan/hw_tags.c                     |  9 +-------
+ mm/kasan/kasan.h                       |  8 ++++++-
+ mm/kasan/shadow.c                      | 12 +++++-----
+ mm/kasan/sw_tags.c                     |  1 +
+ mm/kasan/tags.c                        |  2 +-
+ 27 files changed, 107 insertions(+), 76 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
