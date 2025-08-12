@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D18A6CA0EC4
-	for <linux-um@archiver.kernel.org>; Wed, 13 Aug 2025 00:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA54CA0EC4
+	for <linux-um@archiver.kernel.org>; Wed, 13 Aug 2025 00:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ocpYCKboOzsXvp9S4GkZMFmGo0Y3Ahh47qZn3BQyDok=; b=O/aZMxVngILLamYH+6r2Vmp8JK
-	HU667aijvkQBulQIH+sQX1N/Y9l90qtkN/9kpCKE+ngkgbenn+fZty3ZvhLLZWpyoo+mrioEIcGCT
-	YydXs7E9w49P5Gm5bVhVepi6FAAbF9Kq8Lc9uQ9cGVXMvJLQM1KvxaNrGbHgsM/Zj8WlCqZsmFULS
-	O5ymA3XmEwr++wzADPQRV/WWpqUUV15tAMeatEF4sYJstUd+0gqMsybrs1RVq4SFxefzq2fDYsbOb
-	2Yk7o+gLVwOaFHesVceAUd+ELzekEKSdvZbP/e0h/dfjskyuW7X3CSrZNNsTfPl7Qsz87xK8pO4bT
-	Uw783jyg==;
+	bh=Qr+IqnRuSlDkHyFoN/sJwPITYwHJggwkYv4hfZlQ2Yg=; b=1ZM9E9LPJ1Rg3lK6Q/iPNPUiEG
+	xPWcE1lYTmNI7AnCbFx7709ai6Qq/Ju57sF0JcYnEnM51HNqK+oGx8dX/B9cvrdlB0FGBad+zpd4e
+	lb8d9VLdqWOVzAbBplTTf+sO63jkqv8AfjQmRKA9frcxOmdBFQcf9MVleepKtRljJo9R9EReQwIN8
+	POmv9+40u7Vmd42TcsF91+xpjBSFh0kHoXgrxz7LtEdUXUMaENBwuHiFv79QDKpVxi0ylM8V3Yqxp
+	UlLSDfxSk4KUKEcefcZ8diCqBRxLZAvL8Ou9Yl1rzkXGPphPch+5S9XYAWrUUTP5pE/DNTmVe1wGw
+	84dsubDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulyz9-0000000CG4J-1Mqx;
-	Wed, 13 Aug 2025 00:04:55 +0000
+	id 1ulyzI-0000000CG7D-1PyK;
+	Wed, 13 Aug 2025 00:05:04 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulyz7-0000000CG3j-1pO9;
-	Wed, 13 Aug 2025 00:04:53 +0000
+	id 1ulyzG-0000000CG6M-3JYz;
+	Wed, 13 Aug 2025 00:05:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=ocpYCKboOzsXvp9S4GkZMFmGo0Y3Ahh47qZn3BQyDok=; b=EpMFwq2/UNe2/c5hMspphcneFU
-	wESEMW/MGZSs8uY13/C/+vU5S5fmW+8W94pQoch7tTO79It7i78zxXu+fUtKHM84zBuacISM6+mOg
-	3qu8G6COGtpsBvmei/Er1d+sLBnecJ+FkTY6HDuItkYpH8FB7mS84MnTrNwUTwtdZ/l62f/VDkpVh
-	MYg8F80UEz10xOycqqD7UKKvu/5Q2yTsgXrxyQl+8SwpeYxrebAGmP8TMt9OjEZLUBDhXGnSl2v/o
-	xvZ9uLI5osa98OKeWJob8NUp/8BdTiUCEsTqiblDa9N7siBN5jJz0oF0r2i5aGNaJrM2BBfPWDYQv
-	oo/52eqg==;
+	bh=Qr+IqnRuSlDkHyFoN/sJwPITYwHJggwkYv4hfZlQ2Yg=; b=LnUCT/j+0txLywIEIH7hI0cZp9
+	YqGykkmZZczYfXuZa7WxclT8rbBkIJYJ7ymQkb+0k7CcP950zQD81X839j64lj5iCUNV5aunF0Ezs
+	/7VG/K9+cC6220ELUbl0gft5dQ8qfNXonHmF6Xnzo+CV94ZWWEmywdqU4lhrMvn3EE6ZUiPmcSD9W
+	lk3b6dsUqks1ur0F1r22xwlZAfwfl1eX+2LyEt6OfDruBPJ7kUdDyIKMbthh9bt4VK+SYFeAxWXf4
+	FyErOY9iYNJRpj/gQHOSKEXK3+xTBfD6ycnqtha7Q5ca24ro2QQdPrO1SXa6VBgRWnwXMOJ0boz6K
+	he8732wQ==;
 Received: from neil.brown.name ([103.29.64.221])
 	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulyz2-00000003U4s-3msY;
-	Wed, 13 Aug 2025 00:04:52 +0000
+	id 1ulyzC-00000003U7S-1XKD;
+	Wed, 13 Aug 2025 00:05:01 +0000
 Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
 	by neil.brown.name with esmtp (Exim 4.95)
 	(envelope-from <mr@neil.brown.name>)
-	id 1ulynM-005Y23-70;
-	Tue, 12 Aug 2025 23:52:45 +0000
+	id 1ulynO-005Y29-KL;
+	Tue, 12 Aug 2025 23:52:48 +0000
 From: NeilBrown <neil@brown.name>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>,
@@ -77,17 +77,17 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-cifs@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] VFS: add rename_lookup()
-Date: Tue, 12 Aug 2025 12:25:08 +1000
-Message-ID: <20250812235228.3072318-6-neil@brown.name>
+Subject: [PATCH 08/11] VFS: allow d_splice_alias() and d_add() to work on hashed dentries.
+Date: Tue, 12 Aug 2025 12:25:11 +1000
+Message-ID: <20250812235228.3072318-9-neil@brown.name>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20250812235228.3072318-1-neil@brown.name>
 References: <20250812235228.3072318-1-neil@brown.name>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250813_010450_143829_A8D4BC77 
-X-CRM114-Status: GOOD (  23.59  )
+X-CRM114-CacheID: sfid-20250813_010459_522412_B84974D5 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,452 +102,186 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-rename_lookup() combines lookup and locking for a rename.
+Proposed locking changes will require a dentry to remain hashed during
+all directory operations which are currently protected by i_rwsem, or
+for there to be a controlled transition from one hashed dentry to
+another which maintains the lock - which will then be on the dentry.
 
-Two names - new_last and old_last - are added to struct renamedata so it
-can be passed to rename_lookup() to have the old and new dentries filled
-in.
+The current practice of dropping (unhashing) a dentry before calling
+d_splice_alias() and d_add() defeats this need.
 
-__rename_lookup() in vfs-internal and assumes that the names are already
-hashed and skips permission checking.  This is appropriate for use after
-filename_parentat().
-
-rename_lookup_noperm() does hash the name but avoids permission
-checking.  This will be used by debugfs.
-
-If either old_dentry or new_dentry are not NULL, the corresponding
-"last" is ignored and the dentry is used as-is.  This provides similar
-functionality to dentry_lookup_continue().  After locks are obtained we
-check that the parent is still correct.  If old_parent was not given,
-then it is set to the parent of old_dentry which was locked.  new_parent
-must never be NULL.
-
-On success new references are geld on old_dentry, new_dentry and old_parent.
-
-done_rename_lookup() unlocks and drops those three references.
-
-No __free() support is provided as done_rename_lookup() cannot be safely
-called after rename_lookup() returns an error.
+This patch changes d_splice_alias() and d_add() to accept a hashed
+dentry and to only drop it when necessary immediately before an
+alternate dentry is hashed.  These functions will, in a subsequent patch,
+transfer the dentry locking across so that the name remains locked in
+the directory.
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/namei.c            | 318 ++++++++++++++++++++++++++++++++++--------
- include/linux/fs.h    |   4 +
- include/linux/namei.h |   3 +
- 3 files changed, 263 insertions(+), 62 deletions(-)
+ Documentation/filesystems/vfs.rst | 4 ++--
+ fs/ceph/file.c                    | 2 --
+ fs/ceph/inode.c                   | 3 ---
+ fs/dcache.c                       | 8 +++++---
+ fs/fuse/dir.c                     | 1 -
+ fs/hostfs/hostfs_kern.c           | 1 -
+ fs/nfs/dir.c                      | 5 +----
+ fs/nfs/nfs4proc.c                 | 1 -
+ fs/smb/client/dir.c               | 1 -
+ 9 files changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index df21b6fa5a0e..cead810d53c6 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3507,6 +3507,233 @@ void unlock_rename(struct dentry *p1, struct dentry *p2)
- }
- EXPORT_SYMBOL(unlock_rename);
+diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+index 486a91633474..642dd6afb139 100644
+--- a/Documentation/filesystems/vfs.rst
++++ b/Documentation/filesystems/vfs.rst
+@@ -580,8 +580,8 @@ otherwise noted.
+ 	dentry before the first mkdir returns.
  
-+/**
-+ * __rename_lookup - lookup and lock names for rename
-+ * @rd:           rename data containing relevant details
-+ * @lookup_flags: extra flags to pass to ->lookup (e.g. LOOKUP_REVAL,
-+ *                LOOKUP_NO_SYMLINKS etc).
-+ *
-+ * Optionally look up two names and ensure locks are in place for
-+ * rename.
-+ * Normally @rd.old_dentry and @rd.new_dentry are %NULL and the
-+ * old and new directories and last names are given in @rd.  In this
-+ * case the names are looked up with appropriate locking and the
-+ * results stored in @rd.old_dentry and @rd.new_dentry.
-+ *
-+ * If either are not NULL, then the corresponding lookup is avoided but
-+ * the required locks are still taken.  In this case @rd.old_parent may
-+ * be %NULL, otherwise @rd.old_dentry must still have @rd.old_parent as
-+ * its d_parent after the locks are obtained.  @rd.new_parent must
-+ * always be non-NULL, and must always be the correct parent after
-+ * locking.
-+ *
-+ * On success a reference is held on @rd.old_dentry, @rd.new_dentry,
-+ * and @rd.old_parent whether they were originally %NULL or not.  These
-+ * references are dropped by done_rename_lookup().  @rd.new_parent
-+ * must always be non-NULL and no extra reference is taken.
-+ *
-+ * The passed in qstrs must have the hash calculated, and no permission
-+ * checking is performed.
-+ *
-+ * Returns: zero or an error.
-+ */
-+static int
-+__rename_lookup(struct renamedata *rd, int lookup_flags)
-+{
-+	struct dentry *p;
-+	struct dentry *d1, *d2;
-+	int target_flags = LOOKUP_RENAME_TARGET | LOOKUP_CREATE;
-+	int err;
-+
-+	if (rd->flags & RENAME_EXCHANGE)
-+		target_flags = 0;
-+	if (rd->flags & RENAME_NOREPLACE)
-+		target_flags |= LOOKUP_EXCL;
-+
-+	if (rd->old_dentry) {
-+		/* Already have the dentry - need to be sure to lock the correct parent */
-+		p = lock_rename_child(rd->old_dentry, rd->new_parent);
-+		if (IS_ERR(p))
-+			return PTR_ERR(p);
-+		if (d_unhashed(rd->old_dentry) ||
-+		    (rd->old_parent && rd->old_parent != rd->old_dentry->d_parent)) {
-+			/* dentry was removed, or moved and explicit parent requested */
-+			unlock_rename(rd->old_dentry->d_parent, rd->new_parent);
-+			return -EINVAL;
-+		}
-+		rd->old_parent = dget(rd->old_dentry->d_parent);
-+		d1 = dget(rd->old_dentry);
-+	} else {
-+		p = lock_rename(rd->old_parent, rd->new_parent);
-+		if (IS_ERR(p))
-+			return PTR_ERR(p);
-+		dget(rd->old_parent);
-+
-+		d1 = lookup_one_qstr_excl(&rd->old_last, rd->old_parent,
-+					  lookup_flags);
-+		if (IS_ERR(d1))
-+			goto out_unlock_1;
-+	}
-+	if (rd->new_dentry) {
-+		if (d_unhashed(rd->new_dentry) ||
-+		    rd->new_dentry->d_parent != rd->new_parent) {
-+			/* new_dentry was moved or removed! */
-+			goto out_unlock_2;
-+		}
-+		d2 = dget(rd->new_dentry);
-+	} else {
-+		d2 = lookup_one_qstr_excl(&rd->new_last, rd->new_parent,
-+					  lookup_flags | target_flags);
-+		if (IS_ERR(d2))
-+			goto out_unlock_2;
-+	}
-+
-+	if (d1 == p) {
-+		/* source is an ancestor of target */
-+		err = -EINVAL;
-+		goto out_unlock_3;
-+	}
-+
-+	if (d2 == p) {
-+		/* target is an ancestor of source */
-+		if (rd->flags & RENAME_EXCHANGE)
-+			err = -EINVAL;
-+		else
-+			err = -ENOTEMPTY;
-+		goto out_unlock_3;
-+	}
-+
-+	rd->old_dentry = d1;
-+	rd->new_dentry = d2;
-+	return 0;
-+
-+out_unlock_3:
-+	dput(d2);
-+	d2 = ERR_PTR(err);
-+out_unlock_2:
-+	dput(d1);
-+	d1 = d2;
-+out_unlock_1:
-+	unlock_rename(rd->old_parent, rd->new_parent);
-+	dput(rd->old_parent);
-+	return PTR_ERR(d1);
-+}
-+
-+/**
-+ * rename_lookup_noperm - lookup and lock names for rename
-+ * @rd:           rename data containing relevant details
-+ * @lookup_flags: extra flags to pass to ->lookup (e.g. LOOKUP_REVAL,
-+ *                LOOKUP_NO_SYMLINKS etc).
-+ *
-+ * Optionally look up two names and ensure locks are in place for
-+ * rename.
-+ * Normally @rd.old_dentry and @rd.new_dentry are %NULL and the
-+ * old and new directories and last names are given in @rd.  In this
-+ * case the names are looked up with appropriate locking and the
-+ * results stored in @rd.old_dentry and @rd.new_dentry.
-+ *
-+ * If either are not NULL, then the corresponding lookup is avoided but
-+ * the required locks are still taken.  In this case @rd.old_parent may
-+ * be %NULL, otherwise @rd.old_dentry must still have @rd.old_parent as
-+ * its d_parent after the locks are obtained.  @rd.new_parent must
-+ * always be non-NULL, and must always be the correct parent after
-+ * locking.
-+ *
-+ * On success a reference is held on @rd.old_dentry, @rd.new_dentry,
-+ * and @rd.old_parent whether they were originally %NULL or not.  These
-+ * references are dropped by done_rename_lookup().  @rd.new_parent
-+ * must always be non-NULL and no extra reference is taken.
-+ *
-+ * The passed in qstrs need not have the hash calculated, and no
-+ * permission checking is performed.
-+ *
-+ * Returns: zero or an error.
-+ */
-+int rename_lookup_noperm(struct renamedata *rd, int lookup_flags)
-+{
-+	int err;
-+
-+	if (!rd->old_dentry) {
-+		err = lookup_noperm_common(&rd->old_last, rd->old_parent);
-+		if (err)
-+			return err;
-+	}
-+	if (!rd->new_dentry) {
-+		err = lookup_noperm_common(&rd->new_last, rd->new_parent);
-+		if (err)
-+			return err;
-+	}
-+	return __rename_lookup(rd, lookup_flags);
-+}
-+EXPORT_SYMBOL(rename_lookup_noperm);
-+
-+/**
-+ * rename_lookup - lookup and lock names for rename
-+ * @rd:           rename data containing relevant details
-+ * @lookup_flags: extra flags to pass to ->lookup (e.g. LOOKUP_REVAL,
-+ *                LOOKUP_NO_SYMLINKS etc).
-+ *
-+ * Optionally look up two names and ensure locks are in place for
-+ * rename.
-+ * Normally @rd.old_dentry and @rd.new_dentry are %NULL and the
-+ * old and new directories and last names are given in @rd.  In this
-+ * case the names are looked up with appropriate locking and the
-+ * results stored in @rd.old_dentry and @rd.new_dentry.
-+ *
-+ * If either are not NULL, then the corresponding lookup is avoided but
-+ * the required locks are still taken.  In this case @rd.old_parent may
-+ * be %NULL, otherwise @rd.old_dentry must still have @rd.old_parent as
-+ * its d_parent after the locks are obtained.  @rd.new_parent must
-+ * always be non-NULL, and must always be the correct parent after
-+ * locking.
-+ *
-+ * On success a reference is held on @rd.old_dentry, @rd.new_dentry,
-+ * and @rd.old_parent whether they were originally %NULL or not.  These
-+ * references are dropped by done_rename_lookup().  @rd.new_parent
-+ * must always be non-NULL and no extra reference is taken.
-+ *
-+ * The passed in qstrs need not have the hash calculated, and normal
-+ * permission checking for MAY_EXEC is performed.
-+ *
-+ * Returns: zero or an error.
-+ */
-+int rename_lookup(struct renamedata *rd, int lookup_flags)
-+{
-+	int err;
-+
-+	if (!rd->old_dentry) {
-+		err = lookup_one_common(rd->old_mnt_idmap, &rd->old_last,
-+					rd->old_parent);
-+		if (err)
-+			return err;
-+	}
-+	if (!rd->new_dentry) {
-+		err = lookup_one_common(rd->new_mnt_idmap, &rd->new_last,
-+					rd->new_parent);
-+		if (err)
-+			return err;
-+	}
-+	return __rename_lookup(rd, lookup_flags);
-+}
-+EXPORT_SYMBOL(rename_lookup);
-+
-+/**
-+ * done_rename_lookup - unlock dentries after rename
-+ * @rd: the struct renamedata that was passed to rename_lookup()
-+ *
-+ * After a successful rename_lookup() (or similar) call, and after
-+ * any required renaming is performed, done_rename_rename() must be called
-+ * to drop any locks and references that were obtained by the earlier function.
-+ */
-+void done_rename_lookup(struct renamedata *rd)
-+{
-+	unlock_rename(rd->old_parent, rd->new_parent);
-+	dput(rd->old_parent);
-+	dput(rd->old_dentry);
-+	dput(rd->new_dentry);
-+}
-+EXPORT_SYMBOL(done_rename_lookup);
-+
- /**
-  * vfs_prepare_mode - prepare the mode to be used for a new inode
-  * @idmap:	idmap of the mount the inode was found from
-@@ -5336,14 +5563,10 @@ int do_renameat2(int olddfd, struct filename *from, int newdfd,
- 		 struct filename *to, unsigned int flags)
- {
- 	struct renamedata rd;
--	struct dentry *old_dentry, *new_dentry;
--	struct dentry *trap;
- 	struct path old_path, new_path;
--	struct qstr old_last, new_last;
- 	int old_type, new_type;
- 	struct inode *delegated_inode = NULL;
--	unsigned int lookup_flags = 0, target_flags =
--		LOOKUP_RENAME_TARGET | LOOKUP_CREATE;
-+	unsigned int lookup_flags = 0;
- 	bool should_retry = false;
- 	int error = -EINVAL;
+ 	If there is any chance this could happen, then the new inode
+-	should be d_drop()ed and attached with d_splice_alias().  The
+-	returned dentry (if any) should be returned by ->mkdir().
++	should be attached with d_splice_alias().  The returned dentry
++	(if any) should be returned by ->mkdir().
  
-@@ -5354,19 +5577,14 @@ int do_renameat2(int olddfd, struct filename *from, int newdfd,
- 	    (flags & RENAME_EXCHANGE))
- 		goto put_names;
- 
--	if (flags & RENAME_EXCHANGE)
--		target_flags = 0;
--	if (flags & RENAME_NOREPLACE)
--		target_flags |= LOOKUP_EXCL;
--
- retry:
- 	error = filename_parentat(olddfd, from, lookup_flags, &old_path,
--				  &old_last, &old_type);
-+				  &rd.old_last, &old_type);
- 	if (error)
- 		goto put_names;
- 
--	error = filename_parentat(newdfd, to, lookup_flags, &new_path, &new_last,
--				  &new_type);
-+	error = filename_parentat(newdfd, to, lookup_flags, &new_path,
-+				  &rd.new_last, &new_type);
- 	if (error)
- 		goto exit1;
- 
-@@ -5388,67 +5606,43 @@ int do_renameat2(int olddfd, struct filename *from, int newdfd,
- 		goto exit2;
- 
- retry_deleg:
--	trap = lock_rename(new_path.dentry, old_path.dentry);
--	if (IS_ERR(trap)) {
--		error = PTR_ERR(trap);
-+	rd.old_parent	   = old_path.dentry;
-+	rd.old_mnt_idmap   = mnt_idmap(old_path.mnt);
-+	rd.old_dentry	   = NULL;
-+	rd.new_parent	   = new_path.dentry;
-+	rd.new_mnt_idmap   = mnt_idmap(new_path.mnt);
-+	rd.new_dentry	   = NULL;
-+	rd.delegated_inode = &delegated_inode;
-+	rd.flags	   = flags;
-+
-+	error = __rename_lookup(&rd, lookup_flags);
-+	if (error)
- 		goto exit_lock_rename;
--	}
- 
--	old_dentry = lookup_one_qstr_excl(&old_last, old_path.dentry,
--					  lookup_flags);
--	error = PTR_ERR(old_dentry);
--	if (IS_ERR(old_dentry))
--		goto exit3;
--	new_dentry = lookup_one_qstr_excl(&new_last, new_path.dentry,
--					  lookup_flags | target_flags);
--	error = PTR_ERR(new_dentry);
--	if (IS_ERR(new_dentry))
--		goto exit4;
- 	if (flags & RENAME_EXCHANGE) {
--		if (!d_is_dir(new_dentry)) {
-+		if (!d_is_dir(rd.new_dentry)) {
- 			error = -ENOTDIR;
--			if (new_last.name[new_last.len])
--				goto exit5;
-+			if (rd.new_last.name[rd.new_last.len])
-+				goto exit_unlock;
+ ``rmdir``
+ 	called by the rmdir(2) system call.  Only required if you want
+diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+index c02f100f8552..27eb1ac06177 100644
+--- a/fs/ceph/file.c
++++ b/fs/ceph/file.c
+@@ -755,8 +755,6 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
+ 			unlock_new_inode(inode);
+ 		}
+ 		if (d_in_lookup(dentry) || d_really_is_negative(dentry)) {
+-			if (!d_unhashed(dentry))
+-				d_drop(dentry);
+ 			dn = d_splice_alias(inode, dentry);
+ 			WARN_ON_ONCE(dn && dn != dentry);
+ 		}
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index fc543075b827..7acd6ac0d50f 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -1480,9 +1480,6 @@ static int splice_dentry(struct dentry **pdn, struct inode *in)
  		}
  	}
- 	/* unless the source is a directory trailing slashes give -ENOTDIR */
--	if (!d_is_dir(old_dentry)) {
-+	if (!d_is_dir(rd.old_dentry)) {
- 		error = -ENOTDIR;
--		if (old_last.name[old_last.len])
--			goto exit5;
--		if (!(flags & RENAME_EXCHANGE) && new_last.name[new_last.len])
--			goto exit5;
--	}
--	/* source should not be ancestor of target */
--	error = -EINVAL;
--	if (old_dentry == trap)
--		goto exit5;
--	/* target should not be an ancestor of source */
--	if (!(flags & RENAME_EXCHANGE))
--		error = -ENOTEMPTY;
--	if (new_dentry == trap)
--		goto exit5;
-+		if (rd.old_last.name[rd.old_last.len])
-+			goto exit_unlock;
-+		if (!(flags & RENAME_EXCHANGE) && rd.new_last.name[rd.new_last.len])
-+			goto exit_unlock;
-+	}
  
--	error = security_path_rename(&old_path, old_dentry,
--				     &new_path, new_dentry, flags);
-+	error = security_path_rename(&old_path, rd.old_dentry,
-+				     &new_path, rd.new_dentry, flags);
- 	if (error)
--		goto exit5;
-+		goto exit_unlock;
+-	/* dn must be unhashed */
+-	if (!d_unhashed(dn))
+-		d_drop(dn);
+ 	realdn = d_splice_alias(in, dn);
+ 	if (IS_ERR(realdn)) {
+ 		pr_err_client(cl, "error %ld %p inode %p ino %llx.%llx\n",
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 60046ae23d51..0db256098adb 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2709,7 +2709,11 @@ static inline void __d_add(struct dentry *dentry, struct inode *inode,
+ 		raw_write_seqcount_end(&dentry->d_seq);
+ 		fsnotify_update_flags(dentry);
+ 	}
+-	__d_rehash(dentry);
++	if (d_unhashed(dentry))
++		__d_rehash(dentry);
++	else if (inode && (dentry->d_flags &
++			   (DCACHE_LRU_LIST|DCACHE_SHRINK_LIST)) == DCACHE_LRU_LIST)
++		this_cpu_dec(nr_dentry_negative);
+ 	if (dir)
+ 		end_dir_add(dir, n, d_wait);
+ 	spin_unlock(&dentry->d_lock);
+@@ -2990,8 +2994,6 @@ struct dentry *d_splice_alias_ops(struct inode *inode, struct dentry *dentry,
+ 	if (IS_ERR(inode))
+ 		return ERR_CAST(inode);
  
--	rd.old_parent	   = old_path.dentry;
--	rd.old_dentry	   = old_dentry;
--	rd.old_mnt_idmap   = mnt_idmap(old_path.mnt);
--	rd.new_parent	   = new_path.dentry;
--	rd.new_dentry	   = new_dentry;
--	rd.new_mnt_idmap   = mnt_idmap(new_path.mnt);
--	rd.delegated_inode = &delegated_inode;
--	rd.flags	   = flags;
- 	error = vfs_rename(&rd);
--exit5:
--	dput(new_dentry);
--exit4:
--	dput(old_dentry);
--exit3:
--	unlock_rename(new_path.dentry, old_path.dentry);
-+exit_unlock:
-+	done_rename_lookup(&rd);
- exit_lock_rename:
- 	if (delegated_inode) {
- 		error = break_deleg_wait(&delegated_inode);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index db644150b58f..b12203afa0da 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2011,9 +2011,11 @@ int vfs_unlink(struct mnt_idmap *, struct inode *, struct dentry *,
-  * @old_mnt_idmap:     idmap of the old mount the inode was found from
-  * @old_parent:        parent of source
-  * @old_dentry:                source
-+ * @old_last:          name for old_dentry in old_dir, if old_dentry not given
-  * @new_mnt_idmap:     idmap of the new mount the inode was found from
-  * @new_parent:        parent of destination
-  * @new_dentry:                destination
-+ * @new_last:          name for new_dentry in new_dir, if new_dentry not given
-  * @delegated_inode:   returns an inode needing a delegation break
-  * @flags:             rename flags
-  */
-@@ -2021,9 +2023,11 @@ struct renamedata {
- 	struct mnt_idmap *old_mnt_idmap;
- 	struct dentry *old_parent;
- 	struct dentry *old_dentry;
-+	struct qstr old_last;
- 	struct mnt_idmap *new_mnt_idmap;
- 	struct dentry *new_parent;
- 	struct dentry *new_dentry;
-+	struct qstr new_last;
- 	struct inode **delegated_inode;
- 	unsigned int flags;
- } __randomize_layout;
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index 67eef91603cc..26e5778c665f 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -108,6 +108,9 @@ extern int follow_up(struct path *);
- extern struct dentry *lock_rename(struct dentry *, struct dentry *);
- extern struct dentry *lock_rename_child(struct dentry *, struct dentry *);
- extern void unlock_rename(struct dentry *, struct dentry *);
-+int rename_lookup(struct renamedata *rd, int lookup_flags);
-+int rename_lookup_noperm(struct renamedata *rd, int lookup_flags);
-+void done_rename_lookup(struct renamedata *rd);
+-	BUG_ON(!d_unhashed(dentry));
+-
+ 	if (!inode)
+ 		goto out;
  
- /**
-  * mode_strip_umask - handle vfs umask stripping
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 2d817d7cab26..60e7763da8c8 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -834,7 +834,6 @@ static struct dentry *create_new_entry(struct mnt_idmap *idmap, struct fuse_moun
+ 	}
+ 	kfree(forget);
+ 
+-	d_drop(entry);
+ 	d = d_splice_alias(inode, entry);
+ 	if (IS_ERR(d))
+ 		return d;
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 01e516175bcd..8e51fc623301 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -700,7 +700,6 @@ static struct dentry *hostfs_mkdir(struct mnt_idmap *idmap, struct inode *ino,
+ 		dentry = ERR_PTR(err);
+ 	} else {
+ 		inode = hostfs_iget(dentry->d_sb, file);
+-		d_drop(dentry);
+ 		dentry = d_splice_alias(inode, dentry);
+ 	}
+ 	__putname(file);
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index d81217923936..250a826d5480 100644
+--- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -2136,7 +2136,6 @@ int nfs_atomic_open(struct inode *dir, struct dentry *dentry,
+ 		err = PTR_ERR(inode);
+ 		trace_nfs_atomic_open_exit(dir, ctx, open_flags, err);
+ 		put_nfs_open_context(ctx);
+-		d_drop(dentry);
+ 		switch (err) {
+ 		case -ENOENT:
+ 			d_splice_alias(NULL, dentry);
+@@ -2157,6 +2156,7 @@ int nfs_atomic_open(struct inode *dir, struct dentry *dentry,
+ 		default:
+ 			break;
+ 		}
++		d_drop(dentry);
+ 		goto out;
+ 	}
+ 	file->f_mode |= FMODE_CAN_ODIRECT;
+@@ -2304,8 +2304,6 @@ nfs_add_or_obtain(struct dentry *dentry, struct nfs_fh *fhandle,
+ 	struct dentry *d;
+ 	int error;
+ 
+-	d_drop(dentry);
+-
+ 	if (fhandle->size == 0) {
+ 		error = NFS_PROTO(dir)->lookup(dir, dentry, &dentry->d_name,
+ 					       fhandle, fattr);
+@@ -2652,7 +2650,6 @@ nfs_link(struct dentry *old_dentry, struct inode *dir, struct dentry *dentry)
+ 		old_dentry, dentry);
+ 
+ 	trace_nfs_link_enter(inode, dir, dentry);
+-	d_drop(dentry);
+ 	if (S_ISREG(inode->i_mode))
+ 		nfs_sync_inode(inode);
+ 	error = NFS_PROTO(dir)->link(inode, dir, &dentry->d_name);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 7d2b67e06cc3..d8739c286a99 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -3175,7 +3175,6 @@ static int _nfs4_open_and_get_state(struct nfs4_opendata *opendata,
+ 	dentry = opendata->dentry;
+ 	if (d_really_is_negative(dentry)) {
+ 		struct dentry *alias;
+-		d_drop(dentry);
+ 		alias = d_splice_alias(igrab(state->inode), dentry);
+ 		/* d_splice_alias() can't fail here - it's a non-directory */
+ 		if (alias) {
+diff --git a/fs/smb/client/dir.c b/fs/smb/client/dir.c
+index 5223edf6d11a..8cbc284c5005 100644
+--- a/fs/smb/client/dir.c
++++ b/fs/smb/client/dir.c
+@@ -439,7 +439,6 @@ static int cifs_do_create(struct inode *inode, struct dentry *direntry, unsigned
+ 			goto out_err;
+ 		}
+ 
+-	d_drop(direntry);
+ 	d_add(direntry, newinode);
+ 
+ out:
 -- 
 2.50.0.107.gf914562f5916.dirty
 
