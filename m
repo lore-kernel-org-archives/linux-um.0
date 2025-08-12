@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36FDAC87FCB
-	for <linux-um@archiver.kernel.org>; Tue, 12 Aug 2025 06:45:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E49CA0EDA
+	for <linux-um@archiver.kernel.org>; Tue, 12 Aug 2025 06:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Fu8g+Fl052E34f4ajc7aTfb2t7+sWP8BOva3sbFf3lI=; b=LFglOpXBZWIbqz1ikB0EMuwk+N
-	K/YII1Bws6hM1bV6abM8iN7hZozOLAjT7BeJV7MJr0X31ge5vbMlQ4Jg23QhafrYCfSAWOLhsmfuk
-	EL4WXSGp573pfxSaI/Yg8TvVG8rPSkbxEThHw8My4hcg7j1jYfZUouUfTOxo+YtA5HjAnrVsfV6pp
-	TvK1oX59AXeo8u3y60YNk3a+Ty8oU8sJBr8dLtSWRZ4m0Mq6gKze2SDh3kjMGV8mgl+SfXuwg6tiA
-	+AMVTl2GoV3bKJOud+IrPoUamcOuCPhmKaHvGxDM/mAjVV3s3FnR1CPn0k3BzRt5uuNQP4O1q1X/q
-	DM+Yu2UA==;
+	bh=RN97XE6hq4h6w5B+XqqRkUL6Oa3s/oZNOsBBeDOPqXk=; b=1n1o23C46XHwLOP4U6t+55WThq
+	bF7vpRA5l19IGLTlENuOPccvvkKjHruJE6U/kRwDM1PFtahehcfBM2Z5/RCRCx9KsBNnacjbwBzrb
+	CqT6jRllOd0p07NX+Rv5c+1Tiv4HDYTFFS3/vuWosUi9FAL4lfGYTYXkxCcaVd3Ar5Igc5OkHtpwL
+	A2MJAo+ACSb7VztP7EESEC3XHVStR+q+4ACL9UJFfIcVsmvc5ksK+cO/NdpPfaJ1TSLZQaFg65Kt+
+	4jvPcTWuxGATz2Tj7xCvNbbY79oLaaFIheXTjg0jbOjKfiBrPmmp1Eb8utiw0ifPyKGeRnTm5a8zq
+	ay1Ca5Xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulilf-0000000A3He-3yO8;
-	Tue, 12 Aug 2025 06:45:55 +0000
+	id 1ulilh-0000000A3JB-13lL;
+	Tue, 12 Aug 2025 06:45:57 +0000
 Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulhoL-00000009ulG-0hP9;
-	Tue, 12 Aug 2025 05:44:39 +0000
+	id 1ulhoQ-00000009ur7-1vXp;
+	Tue, 12 Aug 2025 05:44:45 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1754977474;
+	s=2020; t=1754977476;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Fu8g+Fl052E34f4ajc7aTfb2t7+sWP8BOva3sbFf3lI=;
-	b=ag9FAR4SoucTPGK9KbbFPSxHt3EGXWPDHgV/1vttnN8ZMg/XUycb91t+tFbpufLilWVZJc
-	iv7mLDRjfB/vUT6zU4juqwzTsGL37zfulfZnVoEffSqPyWLXRWe6mZoYNxwxgi2JsgZeOj
-	vaTIFKA8ZLwhTPnCXn8AcYRo2vbX4t0UfG3o8JCPvRgDywKfdUm4EIBExPwiXhJe6WRElC
-	XH/kqQovrfbFLDCwvKDA3Wr4Qs/rzupFlRIuuOsCstYKLVhwrpBvxiT2E23d3igcm2Nzad
-	+z+dNwP5ZwaDpNvYg/bP+/pZl5Qc6dW3Y1/iAuiY+hy3M+SDK4mp9VECVhhnng==
+	bh=RN97XE6hq4h6w5B+XqqRkUL6Oa3s/oZNOsBBeDOPqXk=;
+	b=mLjsKlYQewBg1qvOIfA7m9lY8m6wQ0I2osKbix3ki74IDpLfpzNserKG5oCub6NYuXURne
+	qs1TBw7xX632hfRCj6cziv4OFZV6Tpts3AQCOfe9mYai/R/2LIH8n5MLAvKQfXjd7+jFVl
+	M8e8TWWJq+5Vfn+oLXstahf5dz3Ejblp55Ho1VRqVwPoVX8inlAw+aVv2kyc/KVCchlDzr
+	h9k+Ams00b4uzzsDgpFU01xLdxXFz4wMGVnkUcv2R0Sts3QQZkNEjZKID7vGCmpsOXJIxQ
+	FuvpWU044Xe3xaAWtcLhr5hagM8RZ/gLjvC0lh8DhxSE+2hWp4w2K7HAKexzzQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1754977474;
+	s=2020e; t=1754977476;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Fu8g+Fl052E34f4ajc7aTfb2t7+sWP8BOva3sbFf3lI=;
-	b=u1ensITgZsRSuAKcfQs1pdhqsC2IlINyzHYx57P8Q57sYhYZ5ukMwC9TLF12sumTqJCETa
-	fnc0xR546UaaGWDA==
-Date: Tue, 12 Aug 2025 07:44:20 +0200
-Subject: [PATCH v4 07/24] LoongArch: Move relocation constants to UAPI
+	bh=RN97XE6hq4h6w5B+XqqRkUL6Oa3s/oZNOsBBeDOPqXk=;
+	b=dt2jUDtKfQwK8Kol+FEYKBxQdjjYtFl4hwNGokoib37bY2IkgdTZ8RbP/Oq8n6eG8TUY4O
+	b7Xcni87IN2XoQCQ==
+Date: Tue, 12 Aug 2025 07:44:24 +0200
+Subject: [PATCH v4 11/24] vdso: Add the vdsocheck tool
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250812-vdso-absolute-reloc-v4-7-61a8b615e5ec@linutronix.de>
+Message-Id: <20250812-vdso-absolute-reloc-v4-11-61a8b615e5ec@linutronix.de>
 References: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
 In-Reply-To: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -95,17 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1754977469; l=8191;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754977469; l=26811;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=ZVAGLGCFxsrer4ZyNLb2NhW6qORCMiIw2HqWP+N4aV4=;
- b=VNc1TNZKDL/LVFRVz5BOq//QDqCWfYoW6xL5masgZ6JYWblQeOQ1NV9Vtszx6Gx5w6k8t92RO
- XtANlYV7IFzCsW7AORv1Q1VBm7p4qIgmE7oOIsux5VBBNXD24DMBz6d
+ bh=ny+/mk92QdWvHIPM7pRuV3n2ghhYt3d8gWmZQ0OBRe4=;
+ b=LEH7+qv4ZL2gVqA/q2OcFKWniIM9KvHufZwuL5Ev0iRm0/AuwCBW95e7p2iNhi1wkvc8kD+7N
+ HIjIGytoXVRBRL8mkHvYbnxeljJZ9FcczxWn4bVR0NlJiXk77Z3VLSc
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250811_224437_353708_28B9CCF9 
-X-CRM114-Status: UNSURE (   9.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250811_224442_872209_75EF381D 
+X-CRM114-Status: GOOD (  20.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,237 +119,787 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-These constants are useful for cross-platform userspace, for example to
-process ELF files during kernel cross-compilation.
+All vDSO code needs to be completely position independent. Symbol
+references are marked as hidden so the compiler emits PC-relative
+relocations. However there are cases where the compiler may still
+emit absolute relocations, as they are valid in regular PIC DSO code.
+These would be resolved by the linker and will break at runtime.
+This has been observed on arm64, see commit 0c314cda9325 ("arm64: vdso:
+Work around invalid absolute relocations from GCC")
 
-Move them from the kernel-private architecture-specific header to the UAPI.
+Introduce a tool to check for absolute relocations during the build,
+as the current inline-shell logic is not expressive enough.
+The check is done on the object files as the relocations will not exist
+anymore in the final DSO. As there is no extension point for the
+compilation of each object file, perform the validation in vdso_check.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/loongarch/include/asm/elf.h | 100 ---------------------------------------
- include/uapi/linux/elf-r.h       | 100 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 100 insertions(+), 100 deletions(-)
+ lib/vdso/Kconfig            |   6 +
+ lib/vdso/Makefile           |   2 +
+ lib/vdso/Makefile.include   |  17 ++
+ lib/vdso/check/.gitignore   |   3 +
+ lib/vdso/check/Makefile     |  28 +++
+ lib/vdso/check/elf.rs       | 488 ++++++++++++++++++++++++++++++++++++++++++++
+ lib/vdso/check/vdsocheck.rs | 154 ++++++++++++++
+ 7 files changed, 698 insertions(+)
 
-diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-index f16bd42456e4ccf3ad6c8917165176b8ef5d8f05..5e4bcba21da2fe1b95045821156764a8f2c61fca 100644
---- a/arch/loongarch/include/asm/elf.h
-+++ b/arch/loongarch/include/asm/elf.h
-@@ -21,106 +21,6 @@
- #define EF_LOONGARCH_ABI_ILP32_SINGLE_FLOAT	0x6
- #define EF_LOONGARCH_ABI_ILP32_DOUBLE_FLOAT	0x7
- 
--/* LoongArch relocation types used by the dynamic linker */
--#define R_LARCH_NONE				0
--#define R_LARCH_32				1
--#define R_LARCH_64				2
--#define R_LARCH_RELATIVE			3
--#define R_LARCH_COPY				4
--#define R_LARCH_JUMP_SLOT			5
--#define R_LARCH_TLS_DTPMOD32			6
--#define R_LARCH_TLS_DTPMOD64			7
--#define R_LARCH_TLS_DTPREL32			8
--#define R_LARCH_TLS_DTPREL64			9
--#define R_LARCH_TLS_TPREL32			10
--#define R_LARCH_TLS_TPREL64			11
--#define R_LARCH_IRELATIVE			12
--#define R_LARCH_MARK_LA				20
--#define R_LARCH_MARK_PCREL			21
--#define R_LARCH_SOP_PUSH_PCREL			22
--#define R_LARCH_SOP_PUSH_ABSOLUTE		23
--#define R_LARCH_SOP_PUSH_DUP			24
--#define R_LARCH_SOP_PUSH_GPREL			25
--#define R_LARCH_SOP_PUSH_TLS_TPREL		26
--#define R_LARCH_SOP_PUSH_TLS_GOT		27
--#define R_LARCH_SOP_PUSH_TLS_GD			28
--#define R_LARCH_SOP_PUSH_PLT_PCREL		29
--#define R_LARCH_SOP_ASSERT			30
--#define R_LARCH_SOP_NOT				31
--#define R_LARCH_SOP_SUB				32
--#define R_LARCH_SOP_SL				33
--#define R_LARCH_SOP_SR				34
--#define R_LARCH_SOP_ADD				35
--#define R_LARCH_SOP_AND				36
--#define R_LARCH_SOP_IF_ELSE			37
--#define R_LARCH_SOP_POP_32_S_10_5		38
--#define R_LARCH_SOP_POP_32_U_10_12		39
--#define R_LARCH_SOP_POP_32_S_10_12		40
--#define R_LARCH_SOP_POP_32_S_10_16		41
--#define R_LARCH_SOP_POP_32_S_10_16_S2		42
--#define R_LARCH_SOP_POP_32_S_5_20		43
--#define R_LARCH_SOP_POP_32_S_0_5_10_16_S2	44
--#define R_LARCH_SOP_POP_32_S_0_10_10_16_S2	45
--#define R_LARCH_SOP_POP_32_U			46
--#define R_LARCH_ADD8				47
--#define R_LARCH_ADD16				48
--#define R_LARCH_ADD24				49
--#define R_LARCH_ADD32				50
--#define R_LARCH_ADD64				51
--#define R_LARCH_SUB8				52
--#define R_LARCH_SUB16				53
--#define R_LARCH_SUB24				54
--#define R_LARCH_SUB32				55
--#define R_LARCH_SUB64				56
--#define R_LARCH_GNU_VTINHERIT			57
--#define R_LARCH_GNU_VTENTRY			58
--#define R_LARCH_B16				64
--#define R_LARCH_B21				65
--#define R_LARCH_B26				66
--#define R_LARCH_ABS_HI20			67
--#define R_LARCH_ABS_LO12			68
--#define R_LARCH_ABS64_LO20			69
--#define R_LARCH_ABS64_HI12			70
--#define R_LARCH_PCALA_HI20			71
--#define R_LARCH_PCALA_LO12			72
--#define R_LARCH_PCALA64_LO20			73
--#define R_LARCH_PCALA64_HI12			74
--#define R_LARCH_GOT_PC_HI20			75
--#define R_LARCH_GOT_PC_LO12			76
--#define R_LARCH_GOT64_PC_LO20			77
--#define R_LARCH_GOT64_PC_HI12			78
--#define R_LARCH_GOT_HI20			79
--#define R_LARCH_GOT_LO12			80
--#define R_LARCH_GOT64_LO20			81
--#define R_LARCH_GOT64_HI12			82
--#define R_LARCH_TLS_LE_HI20			83
--#define R_LARCH_TLS_LE_LO12			84
--#define R_LARCH_TLS_LE64_LO20			85
--#define R_LARCH_TLS_LE64_HI12			86
--#define R_LARCH_TLS_IE_PC_HI20			87
--#define R_LARCH_TLS_IE_PC_LO12			88
--#define R_LARCH_TLS_IE64_PC_LO20		89
--#define R_LARCH_TLS_IE64_PC_HI12		90
--#define R_LARCH_TLS_IE_HI20			91
--#define R_LARCH_TLS_IE_LO12			92
--#define R_LARCH_TLS_IE64_LO20			93
--#define R_LARCH_TLS_IE64_HI12			94
--#define R_LARCH_TLS_LD_PC_HI20			95
--#define R_LARCH_TLS_LD_HI20			96
--#define R_LARCH_TLS_GD_PC_HI20			97
--#define R_LARCH_TLS_GD_HI20			98
--#define R_LARCH_32_PCREL			99
--#define R_LARCH_RELAX				100
--#define R_LARCH_DELETE				101
--#define R_LARCH_ALIGN				102
--#define R_LARCH_PCREL20_S2			103
--#define R_LARCH_CFA				104
--#define R_LARCH_ADD6				105
--#define R_LARCH_SUB6				106
--#define R_LARCH_ADD_ULEB128			107
--#define R_LARCH_SUB_ULEB128			108
--#define R_LARCH_64_PCREL			109
--
- #ifndef ELF_ARCH
- 
- /* ELF register definitions */
-diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
-index 02e420c255df67f8f7e4bc3165f808b9935f5b1c..576d974db6e31f8a9cd995f7428c85bd41102415 100644
---- a/include/uapi/linux/elf-r.h
-+++ b/include/uapi/linux/elf-r.h
-@@ -380,4 +380,104 @@
- #define R_RISCV_SET_ULEB128	60
- #define R_RISCV_SUB_ULEB128	61
- 
-+/* LoongArch relocation types used by the dynamic linker */
-+#define R_LARCH_NONE				0
-+#define R_LARCH_32				1
-+#define R_LARCH_64				2
-+#define R_LARCH_RELATIVE			3
-+#define R_LARCH_COPY				4
-+#define R_LARCH_JUMP_SLOT			5
-+#define R_LARCH_TLS_DTPMOD32			6
-+#define R_LARCH_TLS_DTPMOD64			7
-+#define R_LARCH_TLS_DTPREL32			8
-+#define R_LARCH_TLS_DTPREL64			9
-+#define R_LARCH_TLS_TPREL32			10
-+#define R_LARCH_TLS_TPREL64			11
-+#define R_LARCH_IRELATIVE			12
-+#define R_LARCH_MARK_LA				20
-+#define R_LARCH_MARK_PCREL			21
-+#define R_LARCH_SOP_PUSH_PCREL			22
-+#define R_LARCH_SOP_PUSH_ABSOLUTE		23
-+#define R_LARCH_SOP_PUSH_DUP			24
-+#define R_LARCH_SOP_PUSH_GPREL			25
-+#define R_LARCH_SOP_PUSH_TLS_TPREL		26
-+#define R_LARCH_SOP_PUSH_TLS_GOT		27
-+#define R_LARCH_SOP_PUSH_TLS_GD			28
-+#define R_LARCH_SOP_PUSH_PLT_PCREL		29
-+#define R_LARCH_SOP_ASSERT			30
-+#define R_LARCH_SOP_NOT				31
-+#define R_LARCH_SOP_SUB				32
-+#define R_LARCH_SOP_SL				33
-+#define R_LARCH_SOP_SR				34
-+#define R_LARCH_SOP_ADD				35
-+#define R_LARCH_SOP_AND				36
-+#define R_LARCH_SOP_IF_ELSE			37
-+#define R_LARCH_SOP_POP_32_S_10_5		38
-+#define R_LARCH_SOP_POP_32_U_10_12		39
-+#define R_LARCH_SOP_POP_32_S_10_12		40
-+#define R_LARCH_SOP_POP_32_S_10_16		41
-+#define R_LARCH_SOP_POP_32_S_10_16_S2		42
-+#define R_LARCH_SOP_POP_32_S_5_20		43
-+#define R_LARCH_SOP_POP_32_S_0_5_10_16_S2	44
-+#define R_LARCH_SOP_POP_32_S_0_10_10_16_S2	45
-+#define R_LARCH_SOP_POP_32_U			46
-+#define R_LARCH_ADD8				47
-+#define R_LARCH_ADD16				48
-+#define R_LARCH_ADD24				49
-+#define R_LARCH_ADD32				50
-+#define R_LARCH_ADD64				51
-+#define R_LARCH_SUB8				52
-+#define R_LARCH_SUB16				53
-+#define R_LARCH_SUB24				54
-+#define R_LARCH_SUB32				55
-+#define R_LARCH_SUB64				56
-+#define R_LARCH_GNU_VTINHERIT			57
-+#define R_LARCH_GNU_VTENTRY			58
-+#define R_LARCH_B16				64
-+#define R_LARCH_B21				65
-+#define R_LARCH_B26				66
-+#define R_LARCH_ABS_HI20			67
-+#define R_LARCH_ABS_LO12			68
-+#define R_LARCH_ABS64_LO20			69
-+#define R_LARCH_ABS64_HI12			70
-+#define R_LARCH_PCALA_HI20			71
-+#define R_LARCH_PCALA_LO12			72
-+#define R_LARCH_PCALA64_LO20			73
-+#define R_LARCH_PCALA64_HI12			74
-+#define R_LARCH_GOT_PC_HI20			75
-+#define R_LARCH_GOT_PC_LO12			76
-+#define R_LARCH_GOT64_PC_LO20			77
-+#define R_LARCH_GOT64_PC_HI12			78
-+#define R_LARCH_GOT_HI20			79
-+#define R_LARCH_GOT_LO12			80
-+#define R_LARCH_GOT64_LO20			81
-+#define R_LARCH_GOT64_HI12			82
-+#define R_LARCH_TLS_LE_HI20			83
-+#define R_LARCH_TLS_LE_LO12			84
-+#define R_LARCH_TLS_LE64_LO20			85
-+#define R_LARCH_TLS_LE64_HI12			86
-+#define R_LARCH_TLS_IE_PC_HI20			87
-+#define R_LARCH_TLS_IE_PC_LO12			88
-+#define R_LARCH_TLS_IE64_PC_LO20		89
-+#define R_LARCH_TLS_IE64_PC_HI12		90
-+#define R_LARCH_TLS_IE_HI20			91
-+#define R_LARCH_TLS_IE_LO12			92
-+#define R_LARCH_TLS_IE64_LO20			93
-+#define R_LARCH_TLS_IE64_HI12			94
-+#define R_LARCH_TLS_LD_PC_HI20			95
-+#define R_LARCH_TLS_LD_HI20			96
-+#define R_LARCH_TLS_GD_PC_HI20			97
-+#define R_LARCH_TLS_GD_HI20			98
-+#define R_LARCH_32_PCREL			99
-+#define R_LARCH_RELAX				100
-+#define R_LARCH_DELETE				101
-+#define R_LARCH_ALIGN				102
-+#define R_LARCH_PCREL20_S2			103
-+#define R_LARCH_CFA				104
-+#define R_LARCH_ADD6				105
-+#define R_LARCH_SUB6				106
-+#define R_LARCH_ADD_ULEB128			107
-+#define R_LARCH_SUB_ULEB128			108
-+#define R_LARCH_64_PCREL			109
+diff --git a/lib/vdso/Kconfig b/lib/vdso/Kconfig
+index 45df764b49ad62479e6456e00c053e46131936a3..b461e2be6db80eae957c8e0a1ab573a85d78fd15 100644
+--- a/lib/vdso/Kconfig
++++ b/lib/vdso/Kconfig
+@@ -48,3 +48,9 @@ config GENERIC_VDSO_DATA_STORE
+ 	bool
+ 	help
+ 	  Selected by architectures that use the generic vDSO data store.
 +
- #endif /* _UAPI_LINUX_ELF_R_H */
++config HAVE_VDSOCHECK
++	bool
++	help
++	  Selected for architectures that are supported by the 'vdsocheck' progam.
++	  Only transitional.
+diff --git a/lib/vdso/Makefile b/lib/vdso/Makefile
+index aedd40aaa950c86f1454d095d9d46992b0cc0abd..861ca416f9b3343645542f9fd1bd020c5da057b5 100644
+--- a/lib/vdso/Makefile
++++ b/lib/vdso/Makefile
+@@ -1,3 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
++obj-y += check/
++
+ obj-$(CONFIG_GENERIC_VDSO_DATA_STORE) += datastore.o
+diff --git a/lib/vdso/Makefile.include b/lib/vdso/Makefile.include
+index cedbf15f80874d4bb27c097244bc5b11272f261c..759fe41b48f658c399f54aa7d54a3dfeb07e5c9c 100644
+--- a/lib/vdso/Makefile.include
++++ b/lib/vdso/Makefile.include
+@@ -6,6 +6,15 @@ GENERIC_VDSO_DIR := $(dir $(GENERIC_VDSO_MK_PATH))
+ c-gettimeofday-$(CONFIG_GENERIC_GETTIMEOFDAY) := $(addprefix $(GENERIC_VDSO_DIR), gettimeofday.c)
+ c-getrandom-$(CONFIG_VDSO_GETRANDOM) := $(addprefix $(GENERIC_VDSO_DIR), getrandom.c)
+ 
++ifeq ($(CONFIG_RUST_IS_AVAILABLE)$(CONFIG_HAVE_VDSOCHECK),yy)
++vdsocheck := lib/vdso/check/vdsocheck
++
++$(vdsocheck): FORCE
++	$(Q)$(MAKE) $(build)=lib/vdso/check vdsocheck
++else
++vdsocheck :=
++endif
++
+ # This cmd checks that the vdso library does not contain dynamic relocations.
+ # It has to be called after the linking of the vdso library and requires it
+ # as a parameter.
+@@ -13,6 +22,14 @@ c-getrandom-$(CONFIG_VDSO_GETRANDOM) := $(addprefix $(GENERIC_VDSO_DIR), getrand
+ # As a workaround for some GNU ld ports which produce unneeded R_*_NONE
+ # dynamic relocations, ignore R_*_NONE.
+ quiet_cmd_vdso_check = VDSOCHK $@
++ifneq ($(vdsocheck),)
++      cmd_vdso_check = $(vdsocheck) $(filter %.o, $(real-prereqs)) $@
++else
+       cmd_vdso_check = if $(READELF) -rW $@ | grep -v _NONE | grep -q " R_\w*_"; \
+ 		       then (echo >&2 "$@: dynamic relocations are not supported"; \
+ 			     rm -f $@; /bin/false); fi
++endif
++
++# Variant of cmd_ld which does not try to link the vdsocheck tool.
++quiet_cmd_ld_vdso = VDSOLD $@
++      cmd_ld_vdso = $(LD) $(ld_flags) $(filter-out $(vdsocheck), $(real-prereqs)) -o $@
+diff --git a/lib/vdso/check/.gitignore b/lib/vdso/check/.gitignore
+new file mode 100644
+index 0000000000000000000000000000000000000000..751be38f11f2147b3fd369539a8913d16546b07c
+--- /dev/null
++++ b/lib/vdso/check/.gitignore
+@@ -0,0 +1,3 @@
++/bindings.rs
++/libbindings.rlib
++/vdsocheck
+diff --git a/lib/vdso/check/Makefile b/lib/vdso/check/Makefile
+new file mode 100644
+index 0000000000000000000000000000000000000000..052997e9ece5c09c6caa15e637455ced1405676f
+--- /dev/null
++++ b/lib/vdso/check/Makefile
+@@ -0,0 +1,28 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++quiet_cmd_host_bindgen = HOSTBINDGEN $@
++      cmd_host_bindgen = $(BINDGEN) $< -o $@ --depfile $(depfile) -- $(HOSTBINDGEN_FLAGS)
++
++quiet_cmd_host_rustlib = HOSTRUSTLIB $@
++      cmd_host_rustlib = \
++	$(HOSTRUSTC) $(hostrust_flags) \
++		--emit=dep-info=$(depfile) --emit=link=$@ \
++		--crate-type rlib \
++		--crate-name $(patsubst %.rlib,%,$(notdir $@)) $<
++
++$(obj)/bindings.rs: HOSTBINDGEN_FLAGS := -I$(srctree)/tools/include/uapi
++$(obj)/bindings.rs: $(srctree)/tools/include/uapi/linux/elf.h FORCE
++	$(call if_changed_dep,host_bindgen)
++
++HOSTRUSTFLAGS_libbindings := -Awarnings
++$(obj)/libbindings.rlib: $(obj)/bindings.rs FORCE
++	$(call if_changed_dep,host_rustlib)
++
++targets += bindings.rs libbindings.rlib
++
++hostprogs += vdsocheck
++vdsocheck-rust := y
++HOSTRUSTFLAGS_vdsocheck := --extern bindings=$(obj)/libbindings.rlib
++$(obj)/vdsocheck: $(obj)/libbindings.rlib
++
++vdsocheck: $(obj)/vdsocheck
+diff --git a/lib/vdso/check/elf.rs b/lib/vdso/check/elf.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..66e8ab3497aaa9b17a99182a3179273df8845a79
+--- /dev/null
++++ b/lib/vdso/check/elf.rs
+@@ -0,0 +1,488 @@
++// SPDX-License-Identifier: GPL-2.0
++
++use std::fmt;
++use std::iter::Iterator;
++use std::result::Result;
++use std::str;
++
++use ::bindings;
++
++#[derive(Debug, Copy, Clone)]
++enum ByteOrder {
++    LittleEndian,
++    BigEndian,
++}
++
++trait ToCpu {
++    fn to_cpu(self, byteorder: ByteOrder) -> Self;
++}
++
++macro_rules! declare_to_cpu {
++    ($t:ty) => {
++        impl ToCpu for $t {
++            fn to_cpu(self, byteorder: ByteOrder) -> Self {
++                match byteorder {
++                    ByteOrder::LittleEndian => Self::from_le(self),
++                    ByteOrder::BigEndian => Self::from_be(self),
++                }
++            }
++        }
++    };
++}
++
++declare_to_cpu!(u16);
++declare_to_cpu!(u32);
++declare_to_cpu!(u64);
++
++#[derive(Debug, Copy, Clone)]
++enum Class {
++    Elf32,
++    Elf64,
++}
++
++enum ClassAlternative<T32, T64> {
++    Elf32(T32),
++    Elf64(T64),
++}
++
++#[derive(Debug)]
++pub(crate) enum ParseError {
++    InvalidFileMagic([u8; 4]),
++    InvalidFileClass(u32),
++    InvalidFileByteOrder(u32),
++    InvalidSectionSize,
++    MissingStringTable,
++    StrtabIndexOutOfRange,
++    IndexOutOfRange,
++    StrtabInvalidData(str::Utf8Error),
++}
++
++pub(crate) type ParseResult<T> = Result<T, ParseError>;
++
++impl fmt::Display for ParseError {
++    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
++        match self {
++            ParseError::InvalidFileMagic(m) => write!(f, "Invalid ELF magic {:?}", m),
++            ParseError::InvalidFileClass(c) => write!(f, "Invalid ELF class {}", c),
++            ParseError::InvalidFileByteOrder(b) => write!(f, "Invalid ELF byteorder {}", b),
++            ParseError::InvalidSectionSize => write!(f, "Invalid ELF section size"),
++            ParseError::MissingStringTable => write!(f, "Missing string table"),
++            ParseError::IndexOutOfRange => write!(f, "Index out of range"),
++            ParseError::StrtabIndexOutOfRange => write!(f, "String table index out of range"),
++            ParseError::StrtabInvalidData(e) => write!(f, "Invalid data in string table: {}", e),
++        }
++    }
++}
++
++fn read_from_bytes<T>(data: &[u8]) -> ParseResult<T> {
++    if data.len() < std::mem::size_of::<T>() {
++        Err(ParseError::IndexOutOfRange)?
++    }
++    let ptr = data.as_ptr() as *const T;
++    let t: T = unsafe { std::ptr::read_unaligned(ptr) };
++    Ok(t)
++}
++
++fn get_data_subslice(data: &[u8], offset: u64, size: u64) -> ParseResult<&[u8]> {
++    let start: usize = offset.try_into().map_err(|_| ParseError::IndexOutOfRange)?;
++    let size: usize = size.try_into().map_err(|_| ParseError::IndexOutOfRange)?;
++    let end = start.checked_add(size).ok_or(ParseError::IndexOutOfRange)?;
++
++    Ok(&data[start..end])
++}
++
++/// Representation of a complete ELF file.
++#[derive(Debug)]
++pub(crate) struct File<'a> {
++    byteorder: ByteOrder,
++    class: Class,
++    pub type_: u16,
++    pub machine: u16,
++    pub data: &'a [u8],
++    section_headers: SectionInfo<'a>,
++    section_names: StrtabSection<'a>,
++}
++
++impl<'a> File<'a> {
++    pub(crate) fn new_from_bytes(data: &'a [u8]) -> Result<Self, ParseError> {
++        const ELF_MAGIC: [u8; 4] = [
++            bindings::ELFMAG0 as u8,
++            bindings::ELFMAG1 as u8,
++            bindings::ELFMAG2 as u8,
++            bindings::ELFMAG3 as u8,
++        ];
++        let ehdr: bindings::elf32_hdr = read_from_bytes(data)?;
++
++        let magic = [
++            ehdr.e_ident[bindings::EI_MAG0 as usize],
++            ehdr.e_ident[bindings::EI_MAG1 as usize],
++            ehdr.e_ident[bindings::EI_MAG2 as usize],
++            ehdr.e_ident[bindings::EI_MAG3 as usize],
++        ];
++
++        if magic != ELF_MAGIC {
++            return Err(ParseError::InvalidFileMagic(magic));
++        }
++
++        let class = match ehdr.e_ident[bindings::EI_CLASS as usize] as u32 {
++            bindings::ELFCLASS32 => Class::Elf32,
++            bindings::ELFCLASS64 => Class::Elf64,
++            c => return Err(ParseError::InvalidFileClass(c)),
++        };
++
++        let byteorder = match ehdr.e_ident[bindings::EI_DATA as usize] as u32 {
++            bindings::ELFDATA2LSB => ByteOrder::LittleEndian,
++            bindings::ELFDATA2MSB => ByteOrder::BigEndian,
++            b => return Err(ParseError::InvalidFileByteOrder(b)),
++        };
++
++        let (type_, machine, shnum, shoff, shentsize, shstrndx) = match class {
++            Class::Elf32 => {
++                let ehdr: bindings::elf32_hdr = read_from_bytes(data)?;
++                (
++                    ehdr.e_type.to_cpu(byteorder),
++                    ehdr.e_machine.to_cpu(byteorder),
++                    ehdr.e_shnum.to_cpu(byteorder),
++                    ehdr.e_shoff.to_cpu(byteorder).into(),
++                    ehdr.e_shentsize.to_cpu(byteorder),
++                    ehdr.e_shstrndx.to_cpu(byteorder),
++                )
++            }
++            Class::Elf64 => {
++                let ehdr: bindings::elf64_hdr = read_from_bytes(data)?;
++                (
++                    ehdr.e_type.to_cpu(byteorder),
++                    ehdr.e_machine.to_cpu(byteorder),
++                    ehdr.e_shnum.to_cpu(byteorder),
++                    ehdr.e_shoff.to_cpu(byteorder),
++                    ehdr.e_shentsize.to_cpu(byteorder),
++                    ehdr.e_shstrndx.to_cpu(byteorder),
++                )
++            }
++        };
++
++        let section_headers = SectionInfo {
++            byteorder,
++            class,
++            entsize: shentsize.into(),
++            data: get_data_subslice(data, shoff, u64::from(shnum) * u64::from(shentsize))?,
++            name: "<section headers>",
++        };
++
++        let string_table = SectionHeaderIterator::new(&section_headers, data)?
++            .nth(shstrndx.into())
++            .ok_or(ParseError::MissingStringTable)??;
++
++        let section_names = StrtabSection(SectionInfo {
++            name: "<section header names>",
++            byteorder,
++            class,
++            data: string_table.data,
++            entsize: string_table.entsize,
++        });
++
++        Ok(File {
++            byteorder,
++            class,
++            type_,
++            machine,
++            section_headers,
++            section_names,
++            data,
++        })
++    }
++
++    pub(crate) fn sections(&self) -> ParseResult<SectionIterator<'_>> {
++        Ok(SectionIterator {
++            file: self,
++            section_headers: SectionHeaderIterator::new(&self.section_headers, self.data)?,
++        })
++    }
++}
++
++/// High-level representation of an ELF section.
++#[derive(Clone, Debug)]
++pub(crate) struct SectionInfo<'a> {
++    byteorder: ByteOrder,
++    class: Class,
++    pub name: &'a str,
++    entsize: u64,
++    pub data: &'a [u8],
++}
++
++/// Typed high-level iterator over all sections in a `File`.
++#[derive(Debug)]
++pub(crate) enum Section<'a> {
++    Null(SectionInfo<'a>),
++    Rel(RelSection<'a>),
++    Rela(RelaSection<'a>),
++    Strtab(StrtabSection<'a>),
++    Unknown(SectionInfo<'a>),
++}
++
++impl<'a> Section<'a> {
++    pub(crate) fn info(&'a self) -> &'a SectionInfo<'a> {
++        match self {
++            Section::Null(info) | Section::Unknown(info) => info,
++            Section::Rel(rel) => &rel.0,
++            Section::Rela(rela) => &rela.0,
++            Section::Strtab(strtab) => &strtab.0,
++        }
++    }
++}
++
++pub(crate) struct SectionIterator<'a> {
++    file: &'a File<'a>,
++    section_headers: SectionHeaderIterator<'a, 'a>,
++}
++
++impl<'a> Iterator for SectionIterator<'a> {
++    type Item = ParseResult<Section<'a>>;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        self.section_headers.next().map(|header| {
++            let header = header?;
++            let info = SectionInfo {
++                byteorder: self.file.byteorder,
++                class: self.file.class,
++                name: self.file.section_names.entry(header.name)?,
++                entsize: header.entsize,
++                data: header.data,
++            };
++
++            Ok(match header.type_ {
++                bindings::SHT_NULL => Section::Null(info),
++                bindings::SHT_RELA => Section::Rela(RelaSection(info)),
++                bindings::SHT_REL => Section::Rel(RelSection(info)),
++                bindings::SHT_STRTAB => Section::Strtab(StrtabSection(info)),
++                _ => Section::Unknown(info),
++            })
++        })
++    }
++}
++
++/// Iterator over a section of data containing instances of type `T`.
++struct SectionEntityIterator<'a, T> {
++    data: &'a [u8],
++    byteorder: ByteOrder,
++    _phantom: std::marker::PhantomData<T>,
++}
++
++impl<'a, T> SectionEntityIterator<'a, T> {
++    const ENTITY_SIZE: usize = std::mem::size_of::<T>();
++
++    fn new(section: &'a SectionInfo<'a>) -> ParseResult<Self> {
++        let data = section.data;
++
++        if section.entsize != Self::ENTITY_SIZE as u64 {
++            Err(ParseError::InvalidSectionSize)
++        } else if data.len().is_multiple_of(Self::ENTITY_SIZE) {
++            Ok(Self {
++                data,
++                byteorder: section.byteorder,
++                _phantom: std::marker::PhantomData,
++            })
++        } else {
++            Err(ParseError::InvalidSectionSize)
++        }
++    }
++}
++
++impl<'a, T> Iterator for SectionEntityIterator<'a, T> {
++    type Item = T;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        if self.data.len() != 0 {
++            let ptr = self.data.as_ptr() as *const T;
++            let entity: T = unsafe { std::ptr::read_unaligned(ptr) };
++            self.data = &self.data[Self::ENTITY_SIZE..];
++            Some(entity)
++        } else {
++            None
++        }
++    }
++}
++
++/// Class-independent representation of an entry in a section header table.
++#[derive(Debug)]
++struct SectionHeader<'a> {
++    name: u32,
++    type_: u32,
++    entsize: u64,
++    data: &'a [u8],
++}
++
++/// Iterator over the section header table.
++struct SectionHeaderIterator<'f: 'a, 'a>(
++    ClassAlternative<
++        SectionEntityIterator<'a, bindings::elf32_shdr>,
++        SectionEntityIterator<'a, bindings::elf64_shdr>,
++    >,
++    &'f [u8],
++);
++
++impl<'f: 'a, 'a> SectionHeaderIterator<'f, 'a> {
++    fn new(section: &'a SectionInfo<'a>, file_data: &'f [u8]) -> ParseResult<Self> {
++        Ok(Self(
++            match section.class {
++                Class::Elf32 => ClassAlternative::Elf32(SectionEntityIterator::new(section)?),
++                Class::Elf64 => ClassAlternative::Elf64(SectionEntityIterator::new(section)?),
++            },
++            file_data,
++        ))
++    }
++}
++
++impl<'f: 'a, 'a> Iterator for SectionHeaderIterator<'f, 'a> {
++    type Item = ParseResult<SectionHeader<'f>>;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        let file_data = self.1;
++
++        match &mut self.0 {
++            ClassAlternative::Elf32(iter) => iter.next().map(|n| {
++                Ok(SectionHeader {
++                    name: n.sh_name.to_cpu(iter.byteorder).into(),
++                    type_: n.sh_type.to_cpu(iter.byteorder).into(),
++                    entsize: n.sh_entsize.to_cpu(iter.byteorder).into(),
++                    data: get_data_subslice(
++                        file_data,
++                        n.sh_offset.to_cpu(iter.byteorder).into(),
++                        n.sh_size.to_cpu(iter.byteorder).into(),
++                    )?,
++                })
++            }),
++            ClassAlternative::Elf64(iter) => iter.next().map(|n| {
++                Ok(SectionHeader {
++                    name: n.sh_name.to_cpu(iter.byteorder).into(),
++                    type_: n.sh_type.to_cpu(iter.byteorder).into(),
++                    entsize: n.sh_entsize.to_cpu(iter.byteorder).into(),
++                    data: get_data_subslice(
++                        file_data,
++                        n.sh_offset.to_cpu(iter.byteorder).into(),
++                        n.sh_size.to_cpu(iter.byteorder).into(),
++                    )?,
++                })
++            }),
++        }
++    }
++}
++
++/// High-level interface to a SHT_STRTAB string table.
++#[derive(Debug)]
++pub(crate) struct StrtabSection<'a>(SectionInfo<'a>);
++
++impl<'a> StrtabSection<'a> {
++    pub(crate) fn entry(&'a self, index: u32) -> ParseResult<&'a str> {
++        let data = self.0.data;
++        let index = index as usize;
++
++        if index >= data.len() {
++            Err(ParseError::StrtabIndexOutOfRange)
++        } else {
++            let len = data[index..]
++                .iter()
++                .position(|b| *b == 0x00)
++                .ok_or(ParseError::StrtabIndexOutOfRange)?;
++            let s = std::str::from_utf8(&data[index..index + len])
++                .map_err(|e| ParseError::StrtabInvalidData(e))?;
++            Ok(s)
++        }
++    }
++}
++
++/// High-level interface to a SHT_REL relocation table.
++#[derive(Debug)]
++pub(crate) struct RelSection<'a>(SectionInfo<'a>);
++
++impl<'a> RelSection<'a> {
++    pub(crate) fn entries(&'a self) -> ParseResult<RelSectionIterator<'a>> {
++        RelSectionIterator::new(&self.0)
++    }
++}
++
++#[derive(Debug)]
++pub(crate) struct Rel {
++    pub type_: u32,
++}
++
++pub(crate) struct RelSectionIterator<'a>(
++    ClassAlternative<
++        SectionEntityIterator<'a, bindings::elf32_rel>,
++        SectionEntityIterator<'a, bindings::elf64_rel>,
++    >,
++);
++
++impl<'a> RelSectionIterator<'a> {
++    fn new(section: &'a SectionInfo<'a>) -> ParseResult<Self> {
++        Ok(Self(match section.class {
++            Class::Elf32 => ClassAlternative::Elf32(SectionEntityIterator::new(section)?),
++            Class::Elf64 => ClassAlternative::Elf64(SectionEntityIterator::new(section)?),
++        }))
++    }
++}
++
++impl<'a> Iterator for RelSectionIterator<'a> {
++    type Item = Rel;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        match &mut self.0 {
++            ClassAlternative::Elf32(iter) => iter.next().map(|n| {
++                let type_ = n.r_info.to_cpu(iter.byteorder) & 0xff;
++                Self::Item { type_ }
++            }),
++            ClassAlternative::Elf64(iter) => iter.next().map(|n| {
++                let type_ = n.r_info.to_cpu(iter.byteorder) as u32;
++                Self::Item { type_ }
++            }),
++        }
++    }
++}
++
++/// High-level interface to a SHT_RELA relocation table.
++#[derive(Debug)]
++pub(crate) struct RelaSection<'a>(SectionInfo<'a>);
++
++impl<'a> RelaSection<'a> {
++    pub(crate) fn entries(&'a self) -> ParseResult<RelaSectionIterator<'a>> {
++        RelaSectionIterator::new(&self.0)
++    }
++}
++
++#[derive(Debug)]
++pub(crate) struct Rela {
++    pub type_: u32,
++}
++
++pub(crate) struct RelaSectionIterator<'a>(
++    ClassAlternative<
++        SectionEntityIterator<'a, bindings::elf32_rela>,
++        SectionEntityIterator<'a, bindings::elf64_rela>,
++    >,
++);
++
++impl<'a> RelaSectionIterator<'a> {
++    fn new(section: &'a SectionInfo<'a>) -> ParseResult<Self> {
++        Ok(Self(match section.class {
++            Class::Elf32 => ClassAlternative::Elf32(SectionEntityIterator::new(section)?),
++            Class::Elf64 => ClassAlternative::Elf64(SectionEntityIterator::new(section)?),
++        }))
++    }
++}
++
++impl<'a> Iterator for RelaSectionIterator<'a> {
++    type Item = Rela;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        match &mut self.0 {
++            ClassAlternative::Elf32(iter) => iter.next().map(|n| {
++                let type_ = n.r_info.to_cpu(iter.byteorder) & 0xff;
++                Self::Item { type_ }
++            }),
++            ClassAlternative::Elf64(iter) => iter.next().map(|n| {
++                let type_ = n.r_info.to_cpu(iter.byteorder) as u32;
++                Self::Item { type_ }
++            }),
++        }
++    }
++}
+diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..3c421100a91740ce3735edfbc9837ef49f55d8f8
+--- /dev/null
++++ b/lib/vdso/check/vdsocheck.rs
+@@ -0,0 +1,154 @@
++// SPDX-License-Identifier: GPL-2.0
++
++//! vDSO build-time validation
++//!
++//! Check that the vDSO library does not contain dynamic relocations.
++
++use std::fmt;
++use std::fs;
++use std::option::Option;
++use std::process;
++
++use ::bindings;
++
++mod elf;
++
++struct AllowedRelocations<'a> {
++    ignored_object_file_sections: Option<&'a [&'a str]>,
++    in_object_file: &'a [u32],
++}
++
++impl<'a> AllowedRelocations<'a> {
++    fn is_ignored_section(&self, section: &elf::Section<'_>) -> bool {
++        let name = section.info().name;
++
++        if name.starts_with(".rel.debug_") || name.starts_with(".rela.debug_") {
++            true
++        } else if let Some(ignored_object_file_sections) = self.ignored_object_file_sections {
++            ignored_object_file_sections.contains(&name)
++        } else {
++            false
++        }
++    }
++}
++
++fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'static>> {
++    match machine as u32 {
++        _ => None,
++    }
++}
++
++#[derive(Debug)]
++enum ValidationError<'a> {
++    ParseError(elf::ParseError),
++    UnsupportedArchitecture(u16),
++    UnrecognizedElfFileType(u32),
++    UnexpectedSection(elf::Section<'a>),
++    InvalidRelocation(elf::Section<'a>, u32),
++}
++
++impl<'a> From<elf::ParseError> for ValidationError<'a> {
++    fn from(parse_error: elf::ParseError) -> Self {
++        Self::ParseError(parse_error)
++    }
++}
++
++impl fmt::Display for ValidationError<'_> {
++    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
++        match self {
++            ValidationError::ParseError(e) => write!(f, "Parsing error: {}", e),
++            ValidationError::UnsupportedArchitecture(n) => {
++                write!(f, "Unsupported ELF architecture {}", n)
++            }
++            ValidationError::UnrecognizedElfFileType(t) => {
++                write!(f, "Unrecognized ELF file type {}", t)
++            }
++            ValidationError::UnexpectedSection(ref s) => {
++                write!(f, "Unexpected section '{}'", s.info().name)
++            }
++            ValidationError::InvalidRelocation(ref s, t) => {
++                write!(f, "Invalid relocation {} in section '{}'", t, s.info().name)
++            }
++        }
++    }
++}
++
++type ValidationResult<'a> = Result<(), ValidationError<'a>>;
++
++fn validate_linked_dso<'a>(file: &'a elf::File<'a>) -> ValidationResult<'a> {
++    for section in file.sections()? {
++        let section = section?;
++
++        /* No relocations are allowed */
++        match section {
++            elf::Section::Rel(_) | elf::Section::Rela(_) => {
++                return Err(ValidationError::UnexpectedSection(section))
++            }
++            _ => {}
++        }
++    }
++
++    Ok(())
++}
++
++fn validate_object_file<'a>(file: &'a elf::File<'a>) -> ValidationResult<'a> {
++    let allowed_relocs = allowed_relocations_for_machine(file.machine)
++        .ok_or(ValidationError::UnsupportedArchitecture(file.machine))?;
++
++    for section in file.sections()? {
++        let section = section?;
++
++        if allowed_relocs.is_ignored_section(&section) {
++            continue;
++        }
++
++        match section {
++            elf::Section::Rel(ref rel) => {
++                for entry in rel.entries()? {
++                    if !allowed_relocs.in_object_file.contains(&entry.type_) {
++                        return Err(ValidationError::InvalidRelocation(section, entry.type_));
++                    }
++                }
++            }
++            elf::Section::Rela(ref rela) => {
++                for entry in rela.entries()? {
++                    if !allowed_relocs.in_object_file.contains(&entry.type_) {
++                        return Err(ValidationError::InvalidRelocation(section, entry.type_));
++                    }
++                }
++            }
++            _ => {}
++        };
++    }
++
++    Ok(())
++}
++
++fn main() {
++    let mut args = std::env::args_os();
++
++    let program_name = args.next().unwrap_or("vdsocheck".into());
++
++    for path in args {
++        let data = fs::read(&path).unwrap_or_else(|err| {
++            println!("{}: {}: {}", program_name.display(), path.display(), err);
++            process::exit(1);
++        });
++
++        let file = elf::File::new_from_bytes(&data).unwrap_or_else(|err| {
++            println!("{}: {}: {}", program_name.display(), path.display(), err);
++            process::exit(2);
++        });
++
++        let result = match file.type_ as u32 {
++            bindings::ET_DYN => validate_linked_dso(&file),
++            bindings::ET_REL => validate_object_file(&file),
++            t => Err(ValidationError::UnrecognizedElfFileType(t)),
++        };
++
++        result.unwrap_or_else(|err| {
++            println!("{}: {}: {}", program_name.display(), path.display(), err);
++            process::exit(3);
++        });
++    }
++}
 
 -- 
 2.50.1
