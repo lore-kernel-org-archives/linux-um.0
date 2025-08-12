@@ -4,70 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D83CA0EDB
-	for <linux-um@archiver.kernel.org>; Tue, 12 Aug 2025 06:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E56CECA0EC4
+	for <linux-um@archiver.kernel.org>; Tue, 12 Aug 2025 08:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8J7TMiJJPZpKeE1Ou1BERsW/DWLgHHFhkRd6+bQxh4o=; b=gg7RZXpgbA8AKIYHGtzq229WuV
-	bO6bMoujMvQEsKvVYYANlzjgLgtiMQ3poFZIcnrWrRWFlEvPRBDCexk1mv5HlGl8pvqJjx4BQId3C
-	mDxujgeJHqvrcKQaH4W8TbyhTDv9rnwyvZxIxHk6holfpwSTl0QYOcR7qsdy3GqY9U2zvOlUzk3yG
-	4cGkinskmcTRjiRNQnTQ6LPJETB+oOQAXTgXMNTbFP9h7gQqXRhthOSGkQP5+1KFaLd0EL90m1A/D
-	aanfPNPY2ixX0hQVAZ+CevsnN2BvwZJrZWw7fxfcXntSrYEoYz8r99pxz6v0c0t5yk+r88z8bNEAa
-	kYcL9fjQ==;
+	bh=xLFF7RcTXEh7J++8oRFtDMgib541QPR3j3iTPRakVR4=; b=1XCNdmVJQpVRYXEUgI9oX6P0Kd
+	3qrBQXt/eOdjSER/ArMJM1iN7KZcWeVLDYeN8wXLJYEtDh3xOZtXS5OTxNxw+UjzOJUGyIP/Dmtgj
+	jp5+rkgVmuF1BArcmyTEmfuE/5rTovfSUKlNnxxQs9isvWh5hJwBeakGogwOya1zZbVa3FOwpeCLi
+	nGL34jqwX4MJq3Hr4SDLSQm5W1iqQUSlcipJPRM0yJgV1WBqK6Tan3n9QcSlRaO/UUxDYYQmFUmVM
+	yqs0BbvjGosuudbgzI6Eju1moVdS3FuLcmWJ5gD3O4HUcnROZN+Y4eqFNkHPlp8RxUZk0CJSwEcFY
+	bJ5pjeAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulilm-0000000A3PC-2NBS;
-	Tue, 12 Aug 2025 06:46:02 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1uljwG-0000000AB8q-10OY;
+	Tue, 12 Aug 2025 08:00:56 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulhod-00000009v73-0DjJ;
-	Tue, 12 Aug 2025 05:44:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=8J7TMiJJPZpKeE1Ou1BERsW/DWLgHHFhkRd6+bQxh4o=; b=JbiMQUlJ7pg16mc6kL6D90jeNv
-	3d/h80kgG/BSV0EfXtFd/YkeL52UU00tyQeFRFgACaDR8lsM4916F4rHJnuBzRhVfkZJvQVPHx8Mp
-	tylryDKBx1ZnQ+ZQrmvmcqt+GRmecyvRlO2ANJRsxzGh3RpNelokCBHrwCvcmfCBD/jW9zKGThHWz
-	D0y9wXMRzIljuFJ1zPiQBQRxJ+wBg8YybesxqYefr9h4xgpO7KDX4cWxV6qbQy/kFlYkA8syJOucM
-	zryr83fertdPCHlsNA1OpUw42xiFvvg0mDT+2JTERPyx3nidgS5snQkZKkxJ0r/rMD3J9C/03j8xr
-	SxqjyEnA==;
-Received: from galois.linutronix.de ([193.142.43.55])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ulhoX-0000000Fg9f-34iq;
-	Tue, 12 Aug 2025 05:44:51 +0000
+	id 1ulhoK-00000009ukX-1ZDm;
+	Tue, 12 Aug 2025 05:44:39 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1754977478;
+	s=2020; t=1754977473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8J7TMiJJPZpKeE1Ou1BERsW/DWLgHHFhkRd6+bQxh4o=;
-	b=F22xZcK20TXBf5jZYwevz3QDaZU3UZdkYRKPWY6C4m9SOtAW/94DLHjYy+CQODOajcbuP8
-	MPuKnXuduuI/jhqsirbr4WDRq0UCEwLS9ico7i3W51ZwBK//QX5U/DFAfzE1ZfWMKRv1fo
-	U204HMGXOXouMg9NvdzgNnQ3u5xAm7roz2wc8MIoolSJvm4oYaWLKrkRHYueW7rKS1NB1M
-	M66TWmw08jIG99a4Abb4Ty+uqba/s3TVFyhenXOKgI+lnOHn0VOL47w8Nbea7L7Aa9lbbq
-	qDIyaw6x+h/5wdjGBDsWrXJDjrCbuIbIvo6NedGG2NbzD7A6pnHseaNfqod0Fg==
+	bh=xLFF7RcTXEh7J++8oRFtDMgib541QPR3j3iTPRakVR4=;
+	b=xmdZdIHsWwP/TxhfVFisseNTc/0hbdZicN0qfGKNGeNlzKewzVkXv5sdA4lM27FEH7QMYE
+	4QKhLUaNxvKkExW0VFtSrE4t0q9FrVpd4/cBeivIZBP5fi3pj0Q2Y7QMvLbWQkr6+n1wo9
+	jFox27nxR//Pwo5WgItwK6Jj3DT4yo/xZpgFYRbQd4kP0McfvtHYIMbAHq/4T8kPOxsiTN
+	MYSLVKmQvoc0cVXaSB+H07FPBTnFfNQJ4YoXXoiC+NBV0aOeKZ5CttUwtasDbWQyh/Mby2
+	CBKsQ8v4MYuZI2Y6GLTDGq3dYFUTYHoJSpVxJD8nQwTQhoAHmOkryjb4sNqxLg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1754977478;
+	s=2020e; t=1754977473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8J7TMiJJPZpKeE1Ou1BERsW/DWLgHHFhkRd6+bQxh4o=;
-	b=CIvDa3NH3jry3aeRacozBMFDrQSzLfZ5hYqcOa0ZRn/0gu5GgdotOJzL+xdQny7o5u5pZT
-	TOIV6QFRAgoN9fCw==
-Date: Tue, 12 Aug 2025 07:44:29 +0200
-Subject: [PATCH v4 16/24] powerpc/vdso: Enable the vdsocheck tool
+	bh=xLFF7RcTXEh7J++8oRFtDMgib541QPR3j3iTPRakVR4=;
+	b=p9LomzChEORTxM1tlQ8Uf6LNOyTc69rJSBAcj7cgFyKnXKqJPsVlZUyH8jeP2NLLcC3ZbB
+	bztzjjgIw+CLksCA==
+Date: Tue, 12 Aug 2025 07:44:19 +0200
+Subject: [PATCH v4 06/24] riscv: elf: Move relocation constants to UAPI
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250812-vdso-absolute-reloc-v4-16-61a8b615e5ec@linutronix.de>
+Message-Id: <20250812-vdso-absolute-reloc-v4-6-61a8b615e5ec@linutronix.de>
 References: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
 In-Reply-To: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -109,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1754977469; l=3422;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754977469; l=5027;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=r7UGwjKWy5Zeb3xhIIrMh9pf0ciHc2+w+MWcQSjDNGA=;
- b=Q0EZvSWT3Q75vpmTxwYRVjiyR2O2xw9tAfm1kD1FblKw0cRCQJd0iAfyLt/+gYR+ZyTVxexIt
- TIIS6p5vayTD8+ve2mOSceJuJpTEl1kRVjS440cBUU/8+/7OHdQGucC
+ bh=JvVhNnXqLZi9Urcv3cUqECDYuPaTssZzAN5WZwS9T8c=;
+ b=cptfkIfZYzK20UK+A4ARj+d2phq5mEEoCRFgWfpV+I4Wc+7KlP2R8hpKDZkDsX1BB87WWP8wh
+ BGrov+RrHd1CwtMXd0tfU3+rXk87A3z6hSUldor6cipygzbxcVGxdE+
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250812_064449_940387_430744F6 
-X-CRM114-Status: GOOD (  12.08  )
+X-CRM114-CacheID: sfid-20250811_224436_657876_C728F5F0 
+X-CRM114-Status: GOOD (  10.94  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,83 +119,167 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The vdsocheck tool validates the object files and final .so library.
-It can detect if the compiler created relocations which are incompatible
-with the vDSO which need to be worked around.
+These constants are useful for cross-platform userspace, for example to
+process ELF files during kernel cross-compilation.
 
-Wire it up for the architecture.
+Move them from the kernel-private architecture-specific header to the UAPI.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/powerpc/kernel/vdso/Makefile |  4 ++--
- lib/vdso/Kconfig                  |  1 +
- lib/vdso/check/vdsocheck.rs       | 25 +++++++++++++++++++++++++
- 3 files changed, 28 insertions(+), 2 deletions(-)
+ arch/riscv/include/uapi/asm/elf.h | 66 ---------------------------------------
+ include/uapi/linux/elf-r.h        | 66 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 66 deletions(-)
 
-diff --git a/arch/powerpc/kernel/vdso/Makefile b/arch/powerpc/kernel/vdso/Makefile
-index 8834dfe9d72796c8f1e20b84ebcb33a6b74b82f0..193af6877eba25898aeaf55a04cd834f7a2eb753 100644
---- a/arch/powerpc/kernel/vdso/Makefile
-+++ b/arch/powerpc/kernel/vdso/Makefile
-@@ -75,9 +75,9 @@ targets += vdso64.lds
- CPPFLAGS_vdso64.lds += -P -C
+diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
+index 11a71b8533d5759ec724a8359d0ffa2a4f2e976d..05cf74a4a53579006a9cef1ed1dbff81d0e50c87 100644
+--- a/arch/riscv/include/uapi/asm/elf.h
++++ b/arch/riscv/include/uapi/asm/elf.h
+@@ -32,70 +32,4 @@ typedef union __riscv_fp_state elf_fpregset_t;
+ #define ELF_RISCV_R_TYPE(r_info)	ELF32_R_TYPE(r_info)
+ #endif
  
- # link rule for the .so file, .lds has to be first
--$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o FORCE
-+$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o $(vdsocheck) FORCE
- 	$(call if_changed,vdso32ld_and_check)
--$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o FORCE
-+$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o $(vdsocheck) FORCE
- 	$(call if_changed,vdso64ld_and_check)
+-/*
+- * RISC-V relocation types
+- */
+-
+-/* Relocation types used by the dynamic linker */
+-#define R_RISCV_NONE		0
+-#define R_RISCV_32		1
+-#define R_RISCV_64		2
+-#define R_RISCV_RELATIVE	3
+-#define R_RISCV_COPY		4
+-#define R_RISCV_JUMP_SLOT	5
+-#define R_RISCV_TLS_DTPMOD32	6
+-#define R_RISCV_TLS_DTPMOD64	7
+-#define R_RISCV_TLS_DTPREL32	8
+-#define R_RISCV_TLS_DTPREL64	9
+-#define R_RISCV_TLS_TPREL32	10
+-#define R_RISCV_TLS_TPREL64	11
+-#define R_RISCV_IRELATIVE	58
+-
+-/* Relocation types not used by the dynamic linker */
+-#define R_RISCV_BRANCH		16
+-#define R_RISCV_JAL		17
+-#define R_RISCV_CALL		18
+-#define R_RISCV_CALL_PLT	19
+-#define R_RISCV_GOT_HI20	20
+-#define R_RISCV_TLS_GOT_HI20	21
+-#define R_RISCV_TLS_GD_HI20	22
+-#define R_RISCV_PCREL_HI20	23
+-#define R_RISCV_PCREL_LO12_I	24
+-#define R_RISCV_PCREL_LO12_S	25
+-#define R_RISCV_HI20		26
+-#define R_RISCV_LO12_I		27
+-#define R_RISCV_LO12_S		28
+-#define R_RISCV_TPREL_HI20	29
+-#define R_RISCV_TPREL_LO12_I	30
+-#define R_RISCV_TPREL_LO12_S	31
+-#define R_RISCV_TPREL_ADD	32
+-#define R_RISCV_ADD8		33
+-#define R_RISCV_ADD16		34
+-#define R_RISCV_ADD32		35
+-#define R_RISCV_ADD64		36
+-#define R_RISCV_SUB8		37
+-#define R_RISCV_SUB16		38
+-#define R_RISCV_SUB32		39
+-#define R_RISCV_SUB64		40
+-#define R_RISCV_GNU_VTINHERIT	41
+-#define R_RISCV_GNU_VTENTRY	42
+-#define R_RISCV_ALIGN		43
+-#define R_RISCV_RVC_BRANCH	44
+-#define R_RISCV_RVC_JUMP	45
+-#define R_RISCV_GPREL_I		47
+-#define R_RISCV_GPREL_S		48
+-#define R_RISCV_TPREL_I		49
+-#define R_RISCV_TPREL_S		50
+-#define R_RISCV_RELAX		51
+-#define R_RISCV_SUB6		52
+-#define R_RISCV_SET6		53
+-#define R_RISCV_SET8		54
+-#define R_RISCV_SET16		55
+-#define R_RISCV_SET32		56
+-#define R_RISCV_32_PCREL	57
+-#define R_RISCV_PLT32		59
+-#define R_RISCV_SET_ULEB128	60
+-#define R_RISCV_SUB_ULEB128	61
+-
+-
+ #endif /* _UAPI_ASM_RISCV_ELF_H */
+diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
+index 0d0dfaa7c724d5f0230e5b7b9b713d8587030637..02e420c255df67f8f7e4bc3165f808b9935f5b1c 100644
+--- a/include/uapi/linux/elf-r.h
++++ b/include/uapi/linux/elf-r.h
+@@ -314,4 +314,70 @@
+ /* Keep this the last entry.  */
+ #define R_PPC64_NUM		253
  
- # assembly rules for the .S files
-diff --git a/lib/vdso/Kconfig b/lib/vdso/Kconfig
-index 3037b15476bb60ee47c1e083eae3968ab9604f59..8994419d90e7b5c66ac77449b6c3bd96c968983d 100644
---- a/lib/vdso/Kconfig
-+++ b/lib/vdso/Kconfig
-@@ -54,6 +54,7 @@ config HAVE_VDSOCHECK
- 	default y if X86
- 	default y if ARM
- 	default y if ARM64
-+	default y if PPC
- 	help
- 	  Selected for architectures that are supported by the 'vdsocheck' progam.
- 	  Only transitional.
-diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
-index a695aed95ad391a0c55e5388bc6d1f1141fd784e..54372a547b1cde05c1a4454b9a21de357b22b0df 100644
---- a/lib/vdso/check/vdsocheck.rs
-+++ b/lib/vdso/check/vdsocheck.rs
-@@ -65,6 +65,31 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
-                 bindings::R_AARCH64_CALL26,
-             ],
-         }),
-+        bindings::EM_PPC => Some(AllowedRelocations {
-+            ignored_object_file_sections: None,
-+            in_object_file: &[
-+                bindings::R_PPC_REL24,
-+                bindings::R_PPC_REL14,
-+                bindings::R_PPC_REL32,
-+                bindings::R_PPC_REL16,
-+                bindings::R_PPC_REL16_LO,
-+                bindings::R_PPC_REL16_HI,
-+                bindings::R_PPC_REL16_HA,
-+            ],
-+        }),
-+        bindings::EM_PPC64 => Some(AllowedRelocations {
-+            ignored_object_file_sections: None,
-+            in_object_file: &[
-+                bindings::R_PPC64_REL24,
-+                bindings::R_PPC64_REL14,
-+                bindings::R_PPC64_REL32,
-+                bindings::R_PPC64_REL64,
-+                bindings::R_PPC64_REL16,
-+                bindings::R_PPC64_REL16_LO,
-+                bindings::R_PPC64_REL16_HI,
-+                bindings::R_PPC64_REL16_HA,
-+            ],
-+        }),
-         _ => None,
-     }
- }
++
++/*
++ * RISC-V relocation types
++ */
++
++/* Relocation types used by the dynamic linker */
++#define R_RISCV_NONE		0
++#define R_RISCV_32		1
++#define R_RISCV_64		2
++#define R_RISCV_RELATIVE	3
++#define R_RISCV_COPY		4
++#define R_RISCV_JUMP_SLOT	5
++#define R_RISCV_TLS_DTPMOD32	6
++#define R_RISCV_TLS_DTPMOD64	7
++#define R_RISCV_TLS_DTPREL32	8
++#define R_RISCV_TLS_DTPREL64	9
++#define R_RISCV_TLS_TPREL32	10
++#define R_RISCV_TLS_TPREL64	11
++#define R_RISCV_IRELATIVE	58
++
++/* Relocation types not used by the dynamic linker */
++#define R_RISCV_BRANCH		16
++#define R_RISCV_JAL		17
++#define R_RISCV_CALL		18
++#define R_RISCV_CALL_PLT	19
++#define R_RISCV_GOT_HI20	20
++#define R_RISCV_TLS_GOT_HI20	21
++#define R_RISCV_TLS_GD_HI20	22
++#define R_RISCV_PCREL_HI20	23
++#define R_RISCV_PCREL_LO12_I	24
++#define R_RISCV_PCREL_LO12_S	25
++#define R_RISCV_HI20		26
++#define R_RISCV_LO12_I		27
++#define R_RISCV_LO12_S		28
++#define R_RISCV_TPREL_HI20	29
++#define R_RISCV_TPREL_LO12_I	30
++#define R_RISCV_TPREL_LO12_S	31
++#define R_RISCV_TPREL_ADD	32
++#define R_RISCV_ADD8		33
++#define R_RISCV_ADD16		34
++#define R_RISCV_ADD32		35
++#define R_RISCV_ADD64		36
++#define R_RISCV_SUB8		37
++#define R_RISCV_SUB16		38
++#define R_RISCV_SUB32		39
++#define R_RISCV_SUB64		40
++#define R_RISCV_GNU_VTINHERIT	41
++#define R_RISCV_GNU_VTENTRY	42
++#define R_RISCV_ALIGN		43
++#define R_RISCV_RVC_BRANCH	44
++#define R_RISCV_RVC_JUMP	45
++#define R_RISCV_GPREL_I		47
++#define R_RISCV_GPREL_S		48
++#define R_RISCV_TPREL_I		49
++#define R_RISCV_TPREL_S		50
++#define R_RISCV_RELAX		51
++#define R_RISCV_SUB6		52
++#define R_RISCV_SET6		53
++#define R_RISCV_SET8		54
++#define R_RISCV_SET16		55
++#define R_RISCV_SET32		56
++#define R_RISCV_32_PCREL	57
++#define R_RISCV_PLT32		59
++#define R_RISCV_SET_ULEB128	60
++#define R_RISCV_SUB_ULEB128	61
++
+ #endif /* _UAPI_LINUX_ELF_R_H */
 
 -- 
 2.50.1
