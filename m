@@ -4,62 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8880CA0EE0
-	for <linux-um@archiver.kernel.org>; Wed, 13 Aug 2025 08:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6AF5C87FCF
+	for <linux-um@archiver.kernel.org>; Wed, 13 Aug 2025 08:18:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:References:
-	In-reply-to:Subject:Cc:To:From:MIME-Version:Content-Transfer-Encoding:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=z8d0qKm/FVIUNgO//NlQgQeK4MVZOhZvgla35aT/CI0=; b=rFbGjmtzKolFOCpZ41ELXFQp54
-	BocFmcp6gyukC9481l+LQwZA9ePSXN/MnjMpzQhO3H4NUNQtZkNyaZEA2A0uKx6FV/I/A7hS7LyVH
-	LGjPSZkEa2G5njTkdwQr0P8k8fvfKkU0G1YhGufsiHVDwa+JnKktFTdHpVRLCH2FUV5wywSeZLrmt
-	Vyoc6+xXdnVuuTl+uMEViMK7ZiOA4JYXT4L/FMAJj1TUpt8Hvxgjd2yl5SI02UjZjdhN5c4Xt8bnp
-	gVCblYAVaEx3ByxwfTrGUdIBA37C1QBWi0M5hfxDu2Meqcp+nPiaR0JNFnVDW7gnQKweBNzZ7wK92
-	7pS8r8zA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=vgBW8b/WLrVQq0BHMU+zEk/Lyyfrm6a/mGbcYhX7PWw=; b=isjnlLsg65BpzgKO3Oxx3wyCb6
+	8lG8GnmcKS0MqfyJFlILriMCJHbJH3THbgSwcKsG0yZJKCLBpb888MvJW6bPf4wH/ecGXDlk0isGC
+	5NBIb2cswy8HcNzjrNpInjolhNl9xj0NUB0QSHxEGKRox8ZUPOpkHJseiWF0nrYYo3I/q5MjXC25Z
+	coaCWfhrmtEifbnFYqx2Kz+mY4SjHW4UieDshygzD0BAiYSurZxPjFD1ZSaqo5MevlQNQZ9wW2M/E
+	eF/V4zOYKQqb9Iw9JV7kSo29ceNk3+mF6SKLlOSqlJHy7orWzxCGgmIxY7IZXu25M6SfVVT7txvl+
+	+oLXPJXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1um6gn-0000000D4Gj-15LN;
-	Wed, 13 Aug 2025 08:18:29 +0000
-Received: from neil.brown.name ([103.29.64.221])
+	id 1um6gp-0000000D4IS-2EwZ;
+	Wed, 13 Aug 2025 08:18:31 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1um6Tl-0000000D1wL-0Uwy;
-	Wed, 13 Aug 2025 08:05:02 +0000
-Received: from 196.186.233.220.static.exetel.com.au ([220.233.186.196] helo=home.neil.brown.name)
-	by neil.brown.name with esmtp (Exim 4.95)
-	(envelope-from <mr@neil.brown.name>)
-	id 1um6TH-005b1O-BY;
-	Wed, 13 Aug 2025 08:04:33 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	id 1um6eY-0000000D3lA-2VRK;
+	Wed, 13 Aug 2025 08:16:13 +0000
+Date: Wed, 13 Aug 2025 10:16:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1755072965;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vgBW8b/WLrVQq0BHMU+zEk/Lyyfrm6a/mGbcYhX7PWw=;
+	b=t3ZaanvFJHTW1l1H2nSwoa1VFh8EVFo/BJn0UMRG7bq78PXYOpzqMO9UGefI5UiLZP7nNe
+	J1FX1/E5cqcFOVpKvUjolk1j8zY71ykS0B7X6UJ1jM73mZGhOMT+2RFDhdp4Y1WmHG3lB8
+	fhvgGlk/PFabS5Cn+w3uMjkgmqVzkQuRRvX4xJrjg/8hJ+0j7jOT/qLXJIWkp6a9jfxObj
+	LUOs4JziO5PF87uDbwzJHBzRMHIM1CkGRGPGIwWfVdP7ckTLMMlHtUDzc+O5vxoBEjlmG7
+	1skI/bKKNj/R2CTmQujVy01wAp2WhS97QfxNvozWzsRXygdxqvZz7+ZCEZyixQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1755072965;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vgBW8b/WLrVQq0BHMU+zEk/Lyyfrm6a/mGbcYhX7PWw=;
+	b=E1zvWv48KJJ+SOu4RstGU/Hts0jpCLaRVEpYFntAu8DSCAbOKCuCF3vYrHswu5Uo/Nk8OK
+	GMt5eI9bpKssCIDA==
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+	Kees Cook <kees@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, 
+	Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
+	Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>, 
+	Nicolas Schier <nicolas.schier@linux.dev>, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, linux-mm@kvack.org, linux-um@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	linux-s390@vger.kernel.org, linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, Jan Stancek <jstancek@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: Re: [PATCH v4 00/24] vdso: Reject absolute relocations during build
+Message-ID: <20250813101305-04911850-2375-4be5-9a06-ced21de3ca22@linutronix.de>
+References: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
+ <CANiq72nV62c8cVBzke73OH-sfLdgerDBGrLKTmT83+OQtK6PjA@mail.gmail.com>
 MIME-Version: 1.0
-From: "NeilBrown" <neil@brown.name>
-To: "Al Viro" <viro@zeniv.linux.org.uk>
-Cc: "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Tyler Hicks" <code@tyhicks.com>,
- "Miklos Szeredi" <miklos@szeredi.hu>, "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Trond Myklebust" <trondmy@kernel.org>, "Anna Schumaker" <anna@kernel.org>,
- "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
- "Amir Goldstein" <amir73il@gmail.com>, "Steve French" <sfrench@samba.org>,
- "Namjae Jeon" <linkinjeon@kernel.org>, "Carlos Maiolino" <cem@kernel.org>,
- linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
- netfs@lists.linux.dev, ceph-devel@vger.kernel.org, ecryptfs@vger.kernel.org,
- linux-um@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/11] VFS: add rename_lookup()
-In-reply-to: <20250813043531.GB222315@ZenIV>
-References: <>, <20250813043531.GB222315@ZenIV>
-Date: Wed, 13 Aug 2025 18:04:32 +1000
-Message-id: <175507227245.2234665.4311084523419609794@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72nV62c8cVBzke73OH-sfLdgerDBGrLKTmT83+OQtK6PjA@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250813_010501_309550_AFEB9FF9 
-X-CRM114-Status: GOOD (  45.52  )
+X-CRM114-CacheID: sfid-20250813_011610_785478_D5DC9FC3 
+X-CRM114-Status: GOOD (  15.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,212 +104,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 13 Aug 2025, Al Viro wrote:
-> On Tue, Aug 12, 2025 at 12:25:08PM +1000, NeilBrown wrote:
-> > rename_lookup() combines lookup and locking for a rename.
-> >=20
-> > Two names - new_last and old_last - are added to struct renamedata so it
-> > can be passed to rename_lookup() to have the old and new dentries filled
-> > in.
-> >=20
-> > __rename_lookup() in vfs-internal and assumes that the names are already
-> > hashed and skips permission checking.  This is appropriate for use after
-> > filename_parentat().
-> >=20
-> > rename_lookup_noperm() does hash the name but avoids permission
-> > checking.  This will be used by debugfs.
->=20
-> WTF would debugfs do anything of that sort?  Explain.  Unlike vfs_rename(),
-> there we
-> 	* are given the source dentry
-> 	* are limited to pure name changes - same-directory only and
-> target must not exist.
-> 	* do not take ->s_vfs_rename_mutex
-> 	...
+On Tue, Aug 12, 2025 at 01:07:34PM +0200, Miguel Ojeda wrote:
+> On Tue, Aug 12, 2025 at 7:44 AM Thomas Weißschuh
+> <thomas.weissschuh@linutronix.de> wrote:
+> >
+> > Kbuild and Rust folks: This contains custom definitions of hostprog
+> > bindgen and rust library commands.
+> > These are currently only defined inside the subsystem directory.
+> > Let me know if they should go into scripts/Makefile.host.
+> 
+> Glad to see more Rust host progs :)
+> 
+> Keeping them local may be a bit easier initially to land, I guess
+> (e.g. no docs), and then we can generalize when needed later.
 
-Sure, debugfs_change_name() could have a simplified rename_lookup()
-which doesn't just skip the perm checking but also skips other
-s_vfs_rename_mutex etc.  But is there any value in creating a neutered
-interface just because there is a case where all the functionality isn't
-needed?
+I'm happy to do the docs etc. I only wanted to avoid doing all that work,
+only for it to stay a subsystem-local solution.
 
-Or maybe I misunderstand your problem with rename_lookup_noperm().
+Also it would be nice to have a Kconfig symbol, RUSTC_CAN_LINK or similar,
+which indicates that the rust compiler can build host programs.
 
+> By the way, for consistency with elsewhere, probably we want
+> `HOSTRUSTLIB` -> `HOSTRUSTC L`. Though I am thinking to remove the `L`
+> anyway since eventually a lot of code will be "lib".
 
->=20
-> > If either old_dentry or new_dentry are not NULL, the corresponding
-> > "last" is ignored and the dentry is used as-is.  This provides similar
-> > functionality to dentry_lookup_continue().  After locks are obtained we
-> > check that the parent is still correct.  If old_parent was not given,
-> > then it is set to the parent of old_dentry which was locked.  new_parent
-> > must never be NULL.
->=20
-> That screams "bad API" to me...  Again, I want to see the users; you are
-> asking to accept a semantics that smells really odd, and it's impossible
-> to review without seeing the users.
-
-There is a git tree you could pull.....
-
-My API effectively supports both lock_rename() users and
-lock_rename_child() users.  Maybe you want to preserve the two different
-APIs.  I'd rather avoid the code duplication.
-
->=20
-> > On success new references are geld on old_dentry, new_dentry and old_pare=
-nt.
-> >=20
-> > done_rename_lookup() unlocks and drops those three references.
-> >=20
-> > No __free() support is provided as done_rename_lookup() cannot be safely
-> > called after rename_lookup() returns an error.
-> >=20
-> > Signed-off-by: NeilBrown <neil@brown.name>
-> > ---
-> >  fs/namei.c            | 318 ++++++++++++++++++++++++++++++++++--------
-> >  include/linux/fs.h    |   4 +
-> >  include/linux/namei.h |   3 +
-> >  3 files changed, 263 insertions(+), 62 deletions(-)
-> >=20
-> > diff --git a/fs/namei.c b/fs/namei.c
-> > index df21b6fa5a0e..cead810d53c6 100644
-> > --- a/fs/namei.c
-> > +++ b/fs/namei.c
-> > @@ -3507,6 +3507,233 @@ void unlock_rename(struct dentry *p1, struct dent=
-ry *p2)
-> >  }
-> >  EXPORT_SYMBOL(unlock_rename);
-> > =20
-> > +/**
-> > + * __rename_lookup - lookup and lock names for rename
-> > + * @rd:           rename data containing relevant details
-> > + * @lookup_flags: extra flags to pass to ->lookup (e.g. LOOKUP_REVAL,
-> > + *                LOOKUP_NO_SYMLINKS etc).
-> > + *
-> > + * Optionally look up two names and ensure locks are in place for
-> > + * rename.
-> > + * Normally @rd.old_dentry and @rd.new_dentry are %NULL and the
-> > + * old and new directories and last names are given in @rd.  In this
-> > + * case the names are looked up with appropriate locking and the
-> > + * results stored in @rd.old_dentry and @rd.new_dentry.
-> > + *
-> > + * If either are not NULL, then the corresponding lookup is avoided but
-> > + * the required locks are still taken.  In this case @rd.old_parent may
-> > + * be %NULL, otherwise @rd.old_dentry must still have @rd.old_parent as
-> > + * its d_parent after the locks are obtained.  @rd.new_parent must
-> > + * always be non-NULL, and must always be the correct parent after
-> > + * locking.
-> > + *
-> > + * On success a reference is held on @rd.old_dentry, @rd.new_dentry,
-> > + * and @rd.old_parent whether they were originally %NULL or not.  These
-> > + * references are dropped by done_rename_lookup().  @rd.new_parent
-> > + * must always be non-NULL and no extra reference is taken.
-> > + *
-> > + * The passed in qstrs must have the hash calculated, and no permission
-> > + * checking is performed.
-> > + *
-> > + * Returns: zero or an error.
-> > + */
-> > +static int
-> > +__rename_lookup(struct renamedata *rd, int lookup_flags)
-> > +{
-> > +	struct dentry *p;
-> > +	struct dentry *d1, *d2;
-> > +	int target_flags =3D LOOKUP_RENAME_TARGET | LOOKUP_CREATE;
-> > +	int err;
-> > +
-> > +	if (rd->flags & RENAME_EXCHANGE)
-> > +		target_flags =3D 0;
-> > +	if (rd->flags & RENAME_NOREPLACE)
-> > +		target_flags |=3D LOOKUP_EXCL;
-> > +
-> > +	if (rd->old_dentry) {
-> > +		/* Already have the dentry - need to be sure to lock the correct paren=
-t */
-> > +		p =3D lock_rename_child(rd->old_dentry, rd->new_parent);
-> > +		if (IS_ERR(p))
-> > +			return PTR_ERR(p);
-> > +		if (d_unhashed(rd->old_dentry) ||
-> > +		    (rd->old_parent && rd->old_parent !=3D rd->old_dentry->d_parent)) {
-> > +			/* dentry was removed, or moved and explicit parent requested */
-> > +			unlock_rename(rd->old_dentry->d_parent, rd->new_parent);
-> > +			return -EINVAL;
-> > +		}
-> > +		rd->old_parent =3D dget(rd->old_dentry->d_parent);
-> > +		d1 =3D dget(rd->old_dentry);
-> > +	} else {
-> > +		p =3D lock_rename(rd->old_parent, rd->new_parent);
-> > +		if (IS_ERR(p))
-> > +			return PTR_ERR(p);
-> > +		dget(rd->old_parent);
-> > +
-> > +		d1 =3D lookup_one_qstr_excl(&rd->old_last, rd->old_parent,
-> > +					  lookup_flags);
-> > +		if (IS_ERR(d1))
-> > +			goto out_unlock_1;
-> > +	}
-> > +	if (rd->new_dentry) {
-> > +		if (d_unhashed(rd->new_dentry) ||
-> > +		    rd->new_dentry->d_parent !=3D rd->new_parent) {
-> > +			/* new_dentry was moved or removed! */
-> > +			goto out_unlock_2;
-> > +		}
-> > +		d2 =3D dget(rd->new_dentry);
-> > +	} else {
-> > +		d2 =3D lookup_one_qstr_excl(&rd->new_last, rd->new_parent,
-> > +					  lookup_flags | target_flags);
-> > +		if (IS_ERR(d2))
-> > +			goto out_unlock_2;
-> > +	}
-> > +
-> > +	if (d1 =3D=3D p) {
-> > +		/* source is an ancestor of target */
-> > +		err =3D -EINVAL;
-> > +		goto out_unlock_3;
-> > +	}
-> > +
-> > +	if (d2 =3D=3D p) {
-> > +		/* target is an ancestor of source */
-> > +		if (rd->flags & RENAME_EXCHANGE)
-> > +			err =3D -EINVAL;
-> > +		else
-> > +			err =3D -ENOTEMPTY;
-> > +		goto out_unlock_3;
-> > +	}
-> > +
-> > +	rd->old_dentry =3D d1;
-> > +	rd->new_dentry =3D d2;
-> > +	return 0;
-> > +
-> > +out_unlock_3:
-> > +	dput(d2);
-> > +	d2 =3D ERR_PTR(err);
-> > +out_unlock_2:
-> > +	dput(d1);
-> > +	d1 =3D d2;
-> > +out_unlock_1:
-> > +	unlock_rename(rd->old_parent, rd->new_parent);
-> > +	dput(rd->old_parent);
-> > +	return PTR_ERR(d1);
-> > +}
->=20
-> This is too fucking ugly to live, IMO.  Too many things are mixed into it.
-> I will NAK that until I get a chance to see the users of all that stuff.
-> Sorry.
->=20
-
-Can you say more about what you think it ugly?
-
-Are you OK with combining the lookup and the locking in the one
-function?
-Are you OK with passing a 'struct rename_data' rather than a list of
-assorted args?
-Are you OK with deducing the target flags in this function, or do you
-want them explicitly passed in?
-Is it just that the function can use with lock_rename or
-lock_rename_child depending on context?
-
-???
-
-Thanks,
-NeilBrown
+Ack.
 
