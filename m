@@ -4,108 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD478CA0EE4
-	for <linux-um@archiver.kernel.org>; Thu, 14 Aug 2025 14:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DDE8CA0EDC
+	for <linux-um@archiver.kernel.org>; Thu, 14 Aug 2025 14:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kknE7rDUjEpODcHDSlY2nJGg21LqzdjsCFp42JS4Ico=; b=CoJUxThemVQ69VFTVFIYMcvvd7
-	cjDATl7qtjUyaW6QpRdsJbCAA3ZgEpakMBQbcs6mT8oJRIZLakYch4ksSuFjHwUXlhv+oUIw5yoSo
-	xkGkR05JiiszQWwHDWaT9OEPSKPH143DZX4EhhPanEEDf+ad+lrbSInAo4KrT+OX3Ql/kstEcmMIk
-	Xx8Qjtxc9pTKeQh0vmdnL0KIt2ghRciLRsSfXeCMyp5udIWDi1lcarypP1hsm0VjN38IFsfdtaUep
-	CTadmg5D0FhXUihpTSrxCHv3LiY16iFYnY+w4uwbVf53MPIFenDwXUhQLNHr4rzKUOYXsJqUBO1kN
-	tKwB6ZyA==;
+	bh=S5J+mLAP2QlIEt8PDLcOSFod+Rvn+2kAxka0kZb8QO0=; b=BQLMV3AMocoOmaikeEd1cE0Zpy
+	T+rrqL9hpwHPUBhf3/H78xmKvWEu+ahpzsHuDh/Sc7DQdszNracpn5pSMLN0n7geEWl3DqvC1KqAc
+	svnnrDmB92hd1B2YUvdT3x/XQ5HuXLOwRUuaIpF+hDQH470y+wae+ta4Wn6y791kAqmVZ+k2Xb2TR
+	s0RXHrZyCWaN60I2xeN4gCECgv9+2NjaK8H/OftemJlglG8f53C3L63ORWL4Q9OOSFrle+pJ89lq5
+	fJLfOWU2Q8RrCQkR8faRsKKpnCRJG1M2Fq/8kB+Vu0rjpmueyH2o2TmB2nRHQ9b4PZEI5S0JtvweD
+	9z60oXQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umYtY-0000000HFZh-0pRM;
-	Thu, 14 Aug 2025 14:25:32 +0000
+	id 1umYtZ-0000000HFaD-0a7U;
+	Thu, 14 Aug 2025 14:25:33 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umYJP-0000000H6Gu-2qe7;
-	Thu, 14 Aug 2025 13:48:11 +0000
+	id 1umYLp-0000000H6bq-31aN;
+	Thu, 14 Aug 2025 13:50:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=kknE7rDUjEpODcHDSlY2nJGg21LqzdjsCFp42JS4Ico=; b=gEqU/uofwjXkP2OrjPahe97mxp
-	YCCAXvL9zCcAyjJ4slKHVrpUeVlLdjDsLkTZ4BRTR80IkhSHHX5vkN7Hwd7ZSIecnAwUXwtkeuzqt
-	B8SoMjLomtwsLgG3CtJdSp770WoKX0dMRKjiiq1z5fNLoUJDaASCdjwxsx9/MEF57pFuUiiEIQMrG
-	dOKq2gjxKSFKAXCN4hNZ2QD8mCpZ52zK1wHQsblLdgz6XeARCjoY8RxdvaRcaApr+YQIyv7MaUCmz
-	luGu5+pYmFGwTRE3nqMnGg7yrP5OSMZNlkzwBRDCB/M6xXiv9U4s6D7uHGHsonOb/T8ieI8UgAARq
-	7q252cyw==;
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1umYJL-0000000GPzc-3pfR;
-	Thu, 14 Aug 2025 13:48:10 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-6188b6f501cso1197034a12.2;
-        Thu, 14 Aug 2025 06:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755179285; x=1755784085; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kknE7rDUjEpODcHDSlY2nJGg21LqzdjsCFp42JS4Ico=;
-        b=dYSHMjrhNmBDxdIxJSzdNOYIGv0RdoKbkOxf/LBHFhRi+XlYyZllUeYOP0oqMJb1ti
-         oFDlFi2QjFpTIYyO50YJgP0SRLTVULzaC06BSL3/gTavws8ZsSrIbrrx1yD0/vkTfry7
-         TPkOUsR2I6IRbh0s9+iU8s/N3VjtIcLgcVdkGeTBT6rBXq/oQ4zzM+rEj4N+eCWmKIkS
-         dPsDWPzDZi9KwV2q89IHFcGwliHrR24lF0xQx6GUDLfhOoOnJi9lcJyHZpiMj3n9Vsgo
-         lBd+o2anfOKzK5fPTX2FJh5VEc6WlPxSG/WBI4ThXtbXDfyPxwhiyqZP/QLlhQCTXaFb
-         oP2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755179285; x=1755784085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kknE7rDUjEpODcHDSlY2nJGg21LqzdjsCFp42JS4Ico=;
-        b=IiYkJV3zNK6VhXukDtYhQbbfPBd57AX+oLTNpKKT7CniXGi5rOxUti5NpXLIwo6M9u
-         nUbEv53TjB9abSiKmSax10i71+xT1rI5TvDTDhrc1hMoKO/WRl2lB3O0QRLI18+RTmkE
-         9s9bQJpx5pgh613ibVyCe4IqVXtfftAGzbqYDg+ygdoaT30vYXSlgP9un9K2nXQElks/
-         KjA4L8qSAoYb8GemTTNl7MJ0RshZATsNjP743YXfwCKlXd5ysJfNb0ZvT/MMVaRGcf0m
-         C627uWCqQr4B+G1E8xrtHK0r/+ftuDSdpseKG8PSQ08nLNCTj8XJDPo738lmh/rld2/F
-         VuIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1DOZjIgxT209iYl5ua0ZKWu7WLmTpyt2j0yspdgPYN8aGGW57t6MKtkL4v263mViJio+Q2eKOgTM=@lists.infradead.org, AJvYcCX4jc9mSBRA2PrmwWcReayn7z0SRbu+Y9jgMOvZzlzvjXnS6NfDX/XM9Hx5AQ4UeFaF5D7ZWemUjN8=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxeuTAUsdbhwS0NY/S+a8fdrbFnfKtIlZy8RyuVsBHCNhhomsow
-	+gDGuX6mO9v8gio+/SyQAN1Eh30ZCKBFqh7CAAgzi8jemiVOsrMnVOUxf8kPlolv4dvJ7ehk1ns
-	QC1wMlSdt70z7+T3TFETS10JNE6L/D+Y=
-X-Gm-Gg: ASbGncs+BGrv6HrApf0pbnYZAnWoHweaLUWJb+95XE6llZIoPs3alZRJA4+OXAsnnWs
-	0qDpqTw1phGEYSG/Q8A23Y0k3MjJVkEPA3Z5WaXmd9NSmva1W4/oN0wvajx47qm2ODENloCfN1k
-	ccGMQc4hy8QdTLLl3ZqyVqyMJU6E+zbxREN2LmbMfPBa0B3pYo/Amygbb6X/1bDHplwpwbP6JyX
-	kDLTo0=
-X-Google-Smtp-Source: AGHT+IEyNlWqeAhk/LpScYt9w4g0zV4KI7o0RDFgyEsYgfPOIWzZIEz6LWnNRfl0s84eTTaO2QcDUYXHT6IzkeoX6zs=
-X-Received: by 2002:a05:6402:348e:b0:617:b2ab:fba2 with SMTP id
- 4fb4d7f45d1cf-6188c1f81c9mr2881340a12.34.1755179284840; Thu, 14 Aug 2025
- 06:48:04 -0700 (PDT)
+	bh=S5J+mLAP2QlIEt8PDLcOSFod+Rvn+2kAxka0kZb8QO0=; b=SLZ3WtGTwHNowNUvb0tI0PIxn6
+	gB3MYoC6eQTDhtso4xMDxKKXDhzGmSFe/0U7uguI5/NnP1Csr+oN6VAVcAB1Q+orJOIh/tF1sT8EI
+	0xRz/q1gZUfMFqarDYEFRNGUDgpXQ8shuwgNd9+TaXONapG3GisnfAP+efUX/Zg15I+yt269JY3TJ
+	HlD1iF1b5MgvqapZ+mvxRigKtbdlJlVrdHXgmSHieSkReyRhoEgMNgrod5FZweFSw4WMybZipOxZq
+	y8upWGcM7Yce6Bg6WsmUCEyszwtIU8Z4NJcMP+k4ZC0IfVsS8nv7b1szlonkIA/OyZS5dts4e2tMy
+	6er/1qRg==;
+Received: from pegase2.c-s.fr ([93.17.235.10])
+	by desiato.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1umYLl-0000000GQCJ-2rxr;
+	Thu, 14 Aug 2025 13:50:40 +0000
+Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4c2mf947xHz9sSR;
+	Thu, 14 Aug 2025 15:43:13 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id mPu6Xjo1vLlQ; Thu, 14 Aug 2025 15:43:13 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4c2mf83Tw5z9sSL;
+	Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 4D6A38B765;
+	Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id eqmp3JHpIEX9; Thu, 14 Aug 2025 15:43:12 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id C584A8B763;
+	Thu, 14 Aug 2025 15:43:09 +0200 (CEST)
+Message-ID: <86186254-b2c6-4818-af0a-4eb67d90e501@csgroup.eu>
+Date: Thu, 14 Aug 2025 15:43:09 +0200
 MIME-Version: 1.0
-References: <20250813065333.GG222315@ZenIV> <175513726277.2234665.5395852687971371437@noble.neil.brown.name>
-In-Reply-To: <175513726277.2234665.5395852687971371437@noble.neil.brown.name>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 14 Aug 2025 15:47:53 +0200
-X-Gm-Features: Ac12FXwtQAorrE4W3bWM28WxLsn_dOcgt6iMm2QuEDqDEmfUynv58IGzMVEJihs
-Message-ID: <CAOQ4uxjOvsfV7o5Mnn_VBKYCR15FkmQBDASvwq0UQKPwxh1H2g@mail.gmail.com>
-Subject: Re: [PATCH 11/11] VFS: introduce d_alloc_noblock() and d_alloc_locked()
-To: NeilBrown <neil@brown.name>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Tyler Hicks <code@tyhicks.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
-	Steve French <sfrench@samba.org>, Namjae Jeon <linkinjeon@kernel.org>, 
-	Carlos Maiolino <cem@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-afs@lists.infradead.org, netfs@lists.linux.dev, 
-	ceph-devel@vger.kernel.org, ecryptfs@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-nfs@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/24] vdso: Reject absolute relocations during build
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Kees Cook <kees@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>,
+ Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+ Danilo Krummrich <dakr@kernel.org>, Nicolas Schier <nicolas.schier@linux.dev>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, linux-mm@kvack.org, linux-um@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, linux-s390@vger.kernel.org,
+ linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, Jan Stancek <jstancek@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@redhat.com>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>
+References: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Language: fr-FR
+In-Reply-To: <20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250814_144808_040802_C0491268 
-X-CRM114-Status: GOOD (  36.32  )
+X-CRM114-CacheID: sfid-20250814_145037_918008_53F64AFD 
+X-CRM114-Status: GOOD (  20.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,98 +125,120 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Aug 14, 2025 at 4:08=E2=80=AFAM NeilBrown <neil@brown.name> wrote:
->
-> On Wed, 13 Aug 2025, Al Viro wrote:
-> > On Tue, Aug 12, 2025 at 12:25:14PM +1000, NeilBrown wrote:
-> > > Several filesystems use the results of readdir to prime the dcache.
-> > > These filesystems use d_alloc_parallel() which can block if there is =
-a
-> > > concurrent lookup.  Blocking in that case is pointless as the lookup
-> > > will add info to the dcache and there is no value in the readdir wait=
-ing
-> > > to see if it should add the info too.
-> > >
-> > > Also these calls to d_alloc_parallel() are made while the parent
-> > > directory is locked.  A proposed change to locking will lock the pare=
-nt
-> > > later, after d_alloc_parallel().  This means it won't be safe to wait=
- in
-> > > d_alloc_parallel() while holding the directory lock.
-> > >
-> > > So this patch introduces d_alloc_noblock() which doesn't block
-> > > but instead returns ERR_PTR(-EWOULDBLOCK).  Filesystems that prime th=
-e
-> > > dcache now use that and ignore -EWOULDBLOCK errors as harmless.
-> > >
-> > > A few filesystems need more than -EWOULDBLOCK - they need to be able =
-to
-> > > create the missing dentry within the readdir.  procfs is a good examp=
-le
-> > > as the inode number is not known until the lookup completes, so readd=
-ir
-> > > must perform a full lookup.
-> > >
-> > > For these filesystems d_alloc_locked() is provided.  It will return a
-> > > dentry which is already d_in_lookup() but will also lock it against
-> > > concurrent lookup.  The filesystem's ->lookup function must co-operat=
-e
-> > > by calling lock_lookup() before proceeding with the lookup.  This way=
- we
-> > > can ensure exclusion between a lookup performed in ->iterate_shared a=
-nd
-> > > a lookup performed in ->lookup.  Currently this exclusion is provided=
- by
-> > > waiting in d_wait_lookup().  The proposed changed to dir locking will
-> > > mean that calling d_wait_lookup() (in readdir) while already holding
-> > > i_rwsem could deadlock.
-> >
-> > The last one is playing fast and loose with one assertion that is used
-> > in quite a few places in correctness proofs - that the only thing other
-> > threads do to in-lookup dentries is waiting on them (and that - only
-> > in d_wait_lookup()).  I can't tell whether it will be a problem without
-> > seeing what you do in the users of that thing, but that creates an
-> > unpleasant areas to watch out for in the future ;-/
->
-> Yeah, it's not my favourite part of the series.
->
-> >
-> > Which filesystems are those, aside of procfs?
-> >
->
-> afs in afs_lookup_atsys().  While looking up a name that ends "@sys" it
-> need to look up the prefix with various alternate suffixes appended.
-> So this isn't readdir related, but is a lookup-within-a-lookup.
->
-> The use of d_add_ci() in xfs is the same basic pattern.
->
-> overlayfs does something in ovl_lookup_real_one() that I don't
-> understand yet but it seems to need a lookup while the directory is
-> locked.
 
-We decoded a connected real directory path (from file handle) and we
-are trying to lookup in overlay a directory that is referencing the
-underlying real dir that we decoded.
 
-This is the context. Not sure what problem exactly this code gives you.
+Le 12/08/2025 à 07:44, Thomas Weißschuh a écrit :
+> The compiler can emit absolute relocations in vDSO code,
+> which are invalid in vDSO code.
+> Detect them at compile-time.
 
->
-> ovl_cache_update is in the ovl iterate_shared code (which in fact holds
-> an exclusive lock).  I think this is the same pattern as procfs in that
-> an inode number needs to be allocated at lookup time, but there might be
-> more too it.
->
+I'm a bit puzzled with this series.
 
-It's kind of a hack I guess.
-ovl has those rules (see xino) to compose a consistent inode number
-from real inode number and layer number.
-lookup of children during readdir composes the child stack to realize
-the consistent xino.
+If I understand correctly, the check will be done only when you have 
+RUST available ?
 
-We could do this internally in ovl by doing lookups on the real layers
-and composing the xino, but calling lookup on ovl during readdir was
-so much easier :/
+I wouldn't expect having RUST to build a C kernel.
 
-Thanks,
-Amir.
+By the way, aren't relocations already detected by command 
+cmd_vdso_check in lib/vdso/Makefile.include , using readelf ? Why is a 
+new tool needed and why does it have to be written in RUST langage ?
+
+Thanks
+Christophe
+
+> 
+> libc elf.h is missing some of the relocation constants,
+> so make user of the kernels own UAPI headers instead.
+> 
+> Kbuild and Rust folks: This contains custom definitions of hostprog
+> bindgen and rust library commands.
+> These are currently only defined inside the subsystem directory.
+> Let me know if they should go into scripts/Makefile.host.
+> 
+> This will conflict with my SPARC64 generic vDSO patches [0].
+> If both end up being applied at the same time, please leave out commit
+> 'vdso/vdsocheck: Drop the transitional kconfig option' from this series.
+> 
+> [0] https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F20250724-vdso-sparc64-generic-2-v1-0-e376a3bd24d1%40linutronix.de%2F&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749561064%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=HacF%2FvlUoxA9P6fTiN1ytw49gwayX1wNE7IxfEkFutE%3D&reserved=0
+> 
+> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+> ---
+> Changes in v4:
+> - Replace the inline shell logic with a dedicated build-time tool
+> - Link to v3: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250611-vdso-absolute-reloc-v3-0-47897d73784b%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749584369%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=7NxAhutk6IXl%2B3fe1kkZEzhZz6CWye%2FVAcFO%2BgtS4uo%3D&reserved=0
+> 
+> Changes in v3:
+> - Drop already applied bugfix for arm64
+> - Disable LTO for the riscv vDSO, as it is incompatible
+> - Link to v2: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250430-vdso-absolute-reloc-v2-0-5efcc3bc4b26%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749600546%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=uv0qMS5qq0DovLHtxfRvT42atbJEkztylpOS8zt6bJ4%3D&reserved=0
+> 
+> Changes in v2:
+> - Link to openend (invalid) GCC bug containing more explanations
+> - Refine commit messages
+> - Don't fail on commit absolute relocations in debug info
+> - Link to v1: https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fr%2F20250429-vdso-absolute-reloc-v1-0-987a0afd10b5%40linutronix.de&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7C3f03f6747325451ee98808ddd9634f27%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C638905742749616057%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=K5iwoz0Xqc8kheotWEc4M2KrZ7UVMDObOyFfCPj4N8Q%3D&reserved=0
+> 
+> ---
+> Thomas Weißschuh (24):
+>        elf, uapi: Add a header for relocation constants
+>        x86/elf, um/x86/elf: Move relocation constants to UAPI
+>        ARM: elf: Move relocation constants to UAPI
+>        arm64: elf: Move relocation constants to UAPI
+>        powerpc/elf: Move relocation constants to UAPI
+>        riscv: elf: Move relocation constants to UAPI
+>        LoongArch: Move relocation constants to UAPI
+>        s390/elf: Move relocation constants to UAPI
+>        MIPS: ELF: Move relocation constants to UAPI
+>        tools headers UAPI: Sync ELF headers with the kernel sources
+>        vdso: Add the vdsocheck tool
+>        x86/vdso: Enable the vdsocheck tool
+>        ARM: vdso: Enable the vdsocheck tool
+>        arm64: vdso: Enable the vdsocheck tool
+>        powerpc/elf: Add 32-bit REL16 relocation definitions
+>        powerpc/vdso: Enable the vdsocheck tool
+>        riscv: vdso: Deduplicate CFLAGS_REMOVE_* variables
+>        riscv: vdso: Disable LTO for the vDSO
+>        riscv: vdso: Enable the vdsocheck tool
+>        LoongArch: vDSO: Enable the vdsocheck tool
+>        s390/vdso: Enable the vdsocheck tool
+>        MIPS: ELF: Add more PC-relative relocation definitions
+>        MIPS: vdso: Enable the vdsocheck tool
+>        vdso/vdsocheck: Drop the transitional kconfig option
+> 
+>   arch/arm/include/asm/elf.h          |  24 --
+>   arch/arm/vdso/Makefile              |   4 +-
+>   arch/arm64/include/asm/elf.h        |  55 ----
+>   arch/arm64/kernel/vdso/Makefile     |   4 +-
+>   arch/loongarch/include/asm/elf.h    | 100 ------
+>   arch/loongarch/vdso/Makefile        |   4 +-
+>   arch/mips/include/asm/elf.h         |  53 ---
+>   arch/mips/vdso/Makefile             |   8 +-
+>   arch/powerpc/include/uapi/asm/elf.h | 201 ------------
+>   arch/powerpc/kernel/vdso/Makefile   |   4 +-
+>   arch/riscv/include/uapi/asm/elf.h   |  66 ----
+>   arch/riscv/kernel/vdso/Makefile     |  11 +-
+>   arch/s390/include/asm/elf.h         |  83 -----
+>   arch/s390/kernel/vdso32/Makefile    |   4 +-
+>   arch/s390/kernel/vdso64/Makefile    |   4 +-
+>   arch/x86/entry/vdso/Makefile        |   6 +-
+>   arch/x86/include/asm/elf.h          |  34 --
+>   arch/x86/um/asm/elf.h               |  33 --
+>   include/uapi/linux/elf-r.h          | 631 ++++++++++++++++++++++++++++++++++++
+>   include/uapi/linux/elf.h            |   1 +
+>   lib/vdso/Makefile                   |   2 +
+>   lib/vdso/Makefile.include           |  17 +
+>   lib/vdso/check/.gitignore           |   3 +
+>   lib/vdso/check/Makefile             |  28 ++
+>   lib/vdso/check/elf.rs               | 488 ++++++++++++++++++++++++++++
+>   lib/vdso/check/vdsocheck.rs         | 279 ++++++++++++++++
+>   tools/include/uapi/linux/elf-em.h   |  71 ++++
+>   tools/include/uapi/linux/elf-r.h    | 631 ++++++++++++++++++++++++++++++++++++
+>   tools/include/uapi/linux/elf.h      | 112 ++++++-
+>   29 files changed, 2277 insertions(+), 684 deletions(-)
+> ---
+> base-commit: 5180c6526acc9f1cb58f8b11fba67583c22e0854
+> change-id: 20250428-vdso-absolute-reloc-a226293c1761
+> 
+> Best regards,
+
 
