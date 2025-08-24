@@ -4,72 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E95EBCA0EEB
-	for <linux-um@archiver.kernel.org>; Thu, 21 Aug 2025 12:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10B65CA0EFF
+	for <linux-um@archiver.kernel.org>; Sun, 24 Aug 2025 15:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
-	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=E2sh7PkU99v95gXhyMFBk9zs8wQA9SBmo0ZEWgF1/ao=; b=aLUpL5/qXDBa0V
-	wr/hV3kax2e0PFGSaqb9wppgu05ZZz/hPVUJX7W2iS+tk58Q53ybYC6+xi3l4syfkmSdM2AXYmvgX
-	tC4HgynN1DDNwm0mj6u4nAqBQjUdFZRL/eF3fZbbEdVU41wOWxv67XAUwuEX2VxpPp7bJm94mPK+u
-	4fS1ipWZCYd9ahxv1EjSZZSwQIVFEr71kBT4sze9hFe+0AKqZ7Gkwy2uk3wvGDWedp9Qz6NCps4tl
-	jmpz/eR1xHI3dMVHrhR2vCxX+xMYhFWq5GiuiQgGyqQ4ehjd+5SgwEk4eGW0IiwQ3GrDKhCNLGp/F
-	KzfeXOZmRoN4cckndBdQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JVPNkJpiAMCpzoNqNDnjxDyp0f81tgE5bxKkui3WVFY=; b=JJp4fwBrtT+irIO2F3aUD4S2nW
+	BmLAtJIhAdGGtWD7cuWJZSVC+0tnm5FlbejXm7eijki3xw/wkHgf5qU5/WArW9G/eyXvK1JZV3X1t
+	YWqCowCeZluJIwXNY0Gsz2KBdFu0+iu7ezG7WsaM8IfBe+/uPJnOWUMjIqLTykS1QsiQTsadc44IL
+	B5V7UPYVPFkbn3suYw4zN1KYDUYqdDKyoDqQcbxPIGPC5Ma3Va0z1bY4/Bd7T7dNkFNA6yf3bE7/M
+	SuPZmBADEfagLSgqJp9Ywjs0f7W+1L8ttvZvP7Jt4g4KjOmJajX/2P9bWj9nlfHo6ZFVW0+k/RKFG
+	GGkeLVTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1up4XX-0000000GvHM-0gEf;
-	Thu, 21 Aug 2025 12:37:11 +0000
-Received: from securitygw1.exwire.com ([216.171.192.25])
+	id 1uqCuC-00000006JFQ-26L6;
+	Sun, 24 Aug 2025 15:45:16 +0000
+Received: from out-178.mta1.migadu.com ([95.215.58.178])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1up2P6-0000000GZLL-1y3T
+	id 1uqCu9-00000006JEg-1Tg4
 	for linux-um@lists.infradead.org;
-	Thu, 21 Aug 2025 10:20:21 +0000
-X-exwire-MailScanner-EFA-Watermark: 1756375894.7111@NKFSP0puqCEtFyZhdLNzKA
-X-exwire-MailScanner-EFA-To: linux-um@lists.infradead.org
-X-exwire-MailScanner-EFA-From: nancymc@exwire.com
-X-exwire-MailScanner-EFA-SpamScore: sssssss
-X-exwire-MailScanner-EFA: Found to be clean
-X-exwire-MailScanner-EFA-ID: 914F31CDD7B.A5438
-X-exwire-MailScanner-EFA-Information: Please contact jdeverse@exwire.com for more information
-Received: from smtp01.exwire.com (smtp01.exwire.com [216.171.192.225])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by securitygw1.exwire.com (Postfix) with ESMTPS id 914F31CDD7B
-	for <linux-um@lists.infradead.org>; Thu, 21 Aug 2025 03:11:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 securitygw1.exwire.com 914F31CDD7B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=exwire.com;
-	s=default; t=1755771094;
-	bh=HV6ngFc0kAPeZqm3RhmqrUX5EZoxx49VvdfM3cgWoeI=;
-	h=Reply-To:From:To:Subject:Date:From;
-	b=jkyzytT8nmB6SYnnLgzRb1sYOjOBvP76r44Keun+ik9xyV4+x3M5nnjnF/FZI0btc
-	 bmBDUAHZ3prZPj0PDCy6EPtNEevwmUa8FKwOgrnWSLO850SRywqLASZ/n7xqW74X1M
-	 F/ovvG91GUyQN2uuof5LI/4SlOz1CSvl2iWFgxAk=
-Received: from localhost (localhost [127.0.0.1])
-	by smtp01.exwire.com (Postfix) with ESMTP id 9E40459E103
-	for <linux-um@lists.infradead.org>; Thu, 21 Aug 2025 01:28:13 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at smtp01.exwire.com
-Received: from smtp01.exwire.com ([127.0.0.1])
-	by localhost (smtp01.exwire.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id T1HbM03w9hak for <linux-um@lists.infradead.org>;
-	Thu, 21 Aug 2025 01:28:13 -0700 (PDT)
-Received: from [45.138.16.152] (unknown [45.138.16.152])
-	by smtp01.exwire.com (Postfix) with ESMTPSA id 5DF4F5825C5
-	for <linux-um@lists.infradead.org>; Wed, 20 Aug 2025 23:25:31 -0700 (PDT)
-From: nancymc@exwire.com
-To: linux-um@lists.infradead.org
-Subject: xl
-Date: 20 Aug 2025 23:25:30 -0700
-Message-ID: <20250820232530.8B7E1ECBCA514EFB@exwire.com>
+	Sun, 24 Aug 2025 15:45:15 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756050311;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JVPNkJpiAMCpzoNqNDnjxDyp0f81tgE5bxKkui3WVFY=;
+	b=Yq6qoRhBr+d8qdoHEgz2CuXFBdoOYvDTAHK5I4TWvWhzxkYecRyJEMXhypIbvLM8ZGGyk/
+	QuS2ZO1XyvlHE2OWbbX/PHFRjFx0qTv3f6EVUgdNuw9tchMSpgFlkD2Yykk1nV5ESUQGXu
+	cg6/y6DXwuifr/nyk6e1PQZQ7ZppAFA=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
+Subject: [PATCH 5/7] um: Remove unused offset and child_err fields from stub_data
+Date: Sun, 24 Aug 2025 23:44:23 +0800
+Message-Id: <20250824154425.2243375-6-tiwei.bie@linux.dev>
+In-Reply-To: <20250824154425.2243375-1-tiwei.bie@linux.dev>
+References: <20250824154425.2243375-1-tiwei.bie@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250821_032020_510042_0FCE56DD 
-X-CRM114-Status: UNSURE (   2.13  )
+X-CRM114-CacheID: sfid-20250824_084513_781340_71E98231 
+X-CRM114-Status: UNSURE (   7.20  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,27 +68,33 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: info.superenalotto@gmail.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Wir freuen uns, Ihnen mitteilen zu k=C3=B6nnen, dass Sie zu den=20
-Gewinnern der j=C3=BCngsten SuperEnalotto-Ziehung in Zusammenarbeit=20
-mit Lotto24, EuroMillions und Powerball geh=C3=B6ren. Sie haben einen=20
-einmaligen Gewinn von =E2=82=AC3.850.000  in der zweiten Gewinnklasse=20
-gewonnen. Um Ihren Gewinn abzuwickeln, senden Sie uns bitte=20
-folgende Informationen per E-Mail:
+From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Vollst=C3=A4ndiger Name: Land: Wohnadresse: Alter: Geschlecht: Beruf:=20
-Handynummer: WhatsApp-Nummer.
+They are no longer used. Remove them.
 
-Im Namen der Online-Lotterieabteilungen SuperEnalotto,=20
-EuroMillions und Powerball gratulieren wir Ihnen herzlich zu=20
-Ihrem Gewinn.
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ arch/um/include/shared/skas/stub-data.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Mit freundlichen Gr=C3=BC=C3=9Fen
+diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
+index c261a77a32f6..27db38e95df9 100644
+--- a/arch/um/include/shared/skas/stub-data.h
++++ b/arch/um/include/shared/skas/stub-data.h
+@@ -53,8 +53,7 @@ struct stub_syscall {
+ };
+ 
+ struct stub_data {
+-	unsigned long offset;
+-	long err, child_err;
++	long err;
+ 
+ 	int syscall_data_len;
+ 	/* 128 leaves enough room for additional fields in the struct */
+-- 
+2.34.1
 
-Frau Katherine Federico
-Leiterin Online-Zahlungen / Validierungsmanagerin
-Code-Nachricht: 737GHS98
 
