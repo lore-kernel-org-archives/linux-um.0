@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACA4CA0FE7
-	for <linux-um@archiver.kernel.org>; Tue, 26 Aug 2025 01:38:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D617BCA0EE4
+	for <linux-um@archiver.kernel.org>; Tue, 26 Aug 2025 05:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lf0RRyVLXxZA0rd9NMG8zW8kzFDO8nThOhsfKLP33mo=; b=K6eV0hM+cT8rBhDMrPqPXAnyq6
-	tZXSU0K8fo5vCWyhOkX7HCIMn+7xC3TF4aOXXEo796/jiLnlDQRnSWEdcNNR6avW9HLVX16xQxaxQ
-	HfszJWc3DW6/u1toUmGlEzXQ13CVDwWez1jyhJYCeURWGhXQvt6OTU5ZP6Rrisz7u1ty7lGFDHDwH
-	2xCqS9t2XdfpFOK/z4T/zicuHG5JmxJbWwl+8exqWh/Bl09MzDlLDoUNZ8sxYzD6ghWzhtvSHYdQl
-	Lb8H4PPMU82rWgEmSKbYl7rJZh20/BVOvhEWLfk1GOb9a3N9omjxqEgtRh/a2hznZUoMy/l6Z5w4c
-	h3O9zohw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=65ayLE+QQynk9aQmcYEngRqdHtxeY4HUGz5dhtcY1F0=; b=it7W78XxxP8C3rS55Wuh1jCtD0
+	XZVw4etHhIk6dwv0sgOiD1dx11OEXIpuaqFJHB95GsDxWxKu9SvcyoZDcmLQlI7U70/wnYXjoARDn
+	q/xSGBsJPkZ6D9kNtym8P7LkNkeEiWQchG2PwweiqdUS7L9aECBO+5mur8g4MXi2gZOHMwu/Sf58T
+	/rflPN5VGwQY3DrGohn379Ej6FDu9A/RPL9BXi0i4N//UNo8q0l4pQHF9B0iwhnzUQK+RuBDJ6+Rd
+	rcL5Cu8YV6pDd0G7kqoqm9/aQPI9DAaQEUC4bSCSQqvsYsfoYaeZ6KUPqKElF4mmlTM83lrUtNzXU
+	yo+dS6Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uqidm-0000000AIJH-1oZ6;
-	Tue, 26 Aug 2025 01:38:26 +0000
-Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
+	id 1uqmFK-0000000AalB-1ffW;
+	Tue, 26 Aug 2025 05:29:26 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uqidk-0000000AIIe-1Pyz
+	id 1uqmFI-0000000Aaki-22Ks
 	for linux-um@lists.infradead.org;
-	Tue, 26 Aug 2025 01:38:25 +0000
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-2445806e03cso58905785ad.1
-        for <linux-um@lists.infradead.org>; Mon, 25 Aug 2025 18:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756172303; x=1756777103; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lf0RRyVLXxZA0rd9NMG8zW8kzFDO8nThOhsfKLP33mo=;
-        b=yeD81+7Gx/hLuUcSPHrdr59QzV1B2+07gvtZEf1ul00Gbm+JLGcvMYpFjv7zEngGJX
-         TOvtmUSVXUEOMlLQUkjXOv5LYLI2vfu9OKpPHVdbbB5I3HLKX102kridn69vc7YDfDed
-         aLyRNgAmBMfQhR0jlw3pqw0Eup3afohRyIJRnJJHnnu/7YmOZocAWfh7lwJQSOYK3me9
-         AP+/+OWEnE56sRKaqQPhK5Bi+u26q2LfTYulYCbxr6Dy3yxdBH7F71nW6plgUYOk4D5o
-         KAkQvljKPgWj9ZElvl5VSDzBpbKT2ddAFkz3n0av+Yur3BxhewKOWWxrkK793IEtoakZ
-         O6Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756172303; x=1756777103;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lf0RRyVLXxZA0rd9NMG8zW8kzFDO8nThOhsfKLP33mo=;
-        b=J/jJtOOaHkROuaY3QSx/qte1NB2/yGxu69ef13JXhe10825tqD5IVjpdUnV/dPVnn2
-         dhBnJpgFzAe9ZyOj8+LxUg8GodOXDBp797gGL+2lCBiq76nrFKK5GyYG9YOQ3jcrcy8p
-         D/K+Zf+pq//1X7vzoUfJdcQFFSb4jIJDW66SPUtArj4JpMmQC5TaEZ5D6aHSZ7BptBSZ
-         eaiNZt6FgRFr7wjC3XjE3/xaFSNRatMqqdAk3p+96sNZRucQ4tHK4mGUUjcfhs1kZk4X
-         TVdDiyNzAVGQnfnh81Bk5r+/mQcd8pGFiI4jsBodskFvru22prbtuYhCFo/+LS77XJ1o
-         JbHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgmxzcYs3uVZ8OP/z+sJMBjJ4simiYmFtZyRQULVrbtWJMXdexLpQ1XWDZ18Bsc4cNdD2XtDZZsg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwVXnfzrm7YBkSfhQwDJ1RXUuZql0cfXx8/BVZf9WMxcP9tfAoZ
-	b0q7/dKbnsGslE0v9itQgSSscyCB6vhs2tHUTNCrjn669KYy+6LtAvih4Qp89i/jHyTJUQabjJF
-	T4K51a75QcteDrM+BK0OAuUpx9uGjAZ49Vjtw58nx
-X-Gm-Gg: ASbGncvkXCzRCZHfBY/b43T9HPdKeaphmhfCg9yG+oODYGsTLAYQUE8Cf1CiUH+xS5K
-	29TgooZLmmeV3xrqMXY55dqTrQuMqCkiQQrV/YIiQ3JIsR4Jt2HvwYedgzdDbc0rLjgMRZ0DIVO
-	5MnYrh4bz/FPaMIEHwtlFMQ4PDoQOJ3ntcrHNS/3xgLFlEDxxN9F0kJpWuy3Kda+WqJIBWhq9U/
-	1WlTt1CmSs+
-X-Google-Smtp-Source: AGHT+IF5/61I4XwZ/vyS07+EaWHZ4Fq0osHGUkL4sWnZXvln1liKe/SWCO0zbzJoVRiXSB3WxcjUl+4cuyofOvP7o5s=
-X-Received: by 2002:a17:903:246:b0:245:f7a8:bc68 with SMTP id
- d9443c01a7336-2462efbdcddmr170812525ad.57.1756172302616; Mon, 25 Aug 2025
- 18:38:22 -0700 (PDT)
+	Tue, 26 Aug 2025 05:29:25 +0000
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1756186159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=65ayLE+QQynk9aQmcYEngRqdHtxeY4HUGz5dhtcY1F0=;
+	b=Wq6Ux+WC2gIff/jZ/isyQz+BbCWLrcjOr4FQaQf29+xxJllaVC2St0w7reMOMbwCf0ucpg
+	wMHNDP6oXt85ysteE3C15+xukHVemOZGaY/xYcgwf1ueeMfvan+cO7iHdI1hnvasFLMVKA
+	wIAtvnoJcQSfPrg80ljFFzoJ5dxD4sHJtTHMbgzvoK11ywq67dzS57viFFMo4nEgU8URaw
+	bO5LlyBGRQY5QRW0z/PfZzxaUodPaMCfOmz0JSuWlI04RKILD8IFxF+IlVeDTQ3ncL1LY5
+	sSe7w1h62t377FLJPMimvuWZtf6i7zY1EscHlJCgbxSJbBMJS+vE72xsTYZpGg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1756186159;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=65ayLE+QQynk9aQmcYEngRqdHtxeY4HUGz5dhtcY1F0=;
+	b=sKuNjYhfjcMqtbi/xJ6keKKcRYn6EZO9jbKAcc5QJRj9FYL4OA5rbvIG5YsuMAshlGQr/W
+	An4saYE4LMRJs5Bw==
+Date: Tue, 26 Aug 2025 07:29:11 +0200
+Subject: [PATCH] vdso: Remove struct getcpu_cache
 MIME-Version: 1.0
-References: <20250825212031.111027-1-briannorris@chromium.org>
-In-Reply-To: <20250825212031.111027-1-briannorris@chromium.org>
-From: David Gow <davidgow@google.com>
-Date: Tue, 26 Aug 2025 09:38:08 +0800
-X-Gm-Features: Ac12FXwHhnvEdYizKzz9_FSPwRdLEkJkn9ajTHPE2BmbVh7Mebbnl6TJogbignA
-Message-ID: <CABVgOS=rbrs_bnXb4pJ8iEh5pgfGJ3F1ofzwG7YEYdfx48-TdA@mail.gmail.com>
-Subject: Re: [PATCH] um: Support SPARSE_IRQ
-To: Brian Norris <briannorris@chromium.org>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Sinan Nalkaya <sardok@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000004ceb34063d3abab6"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20250826-getcpu_cache-v1-1-8748318f6141@linutronix.de>
+X-B4-Tracking: v=1; b=H4sIACZGrWgC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1MDCyNT3fTUkuSC0vjkxOSMVF3jxKTkFKNUM1MTY3MloJaCotS0zAqwcdG
+ xtbUAwJ29uV4AAAA=
+X-Change-ID: 20250825-getcpu_cache-3abcd2e65437
+To: Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Andy Lutomirski <luto@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ linux-s390@vger.kernel.org, linux-um@lists.infradead.org, 
+ linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756186155; l=9757;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=zAA65t+biCTL2Eftd5Vt0eFjHTRHEoaWFGOLEH6aG4w=;
+ b=oCH06dxxdjmFh7WWuVm9nzzFq2kCgh1Ogw3db72JXYeGBbeG8IW+QjHv1UcScE5HMJWzhJ0V8
+ RIFNkDMcDqBDhl6Nfn7WDqgAyYQep8GaP8LuLJF9TlYHxgP3yYaCx0i
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250825_183824_402924_DF46C5E2 
-X-CRM114-Status: GOOD (  29.43  )
+X-CRM114-CacheID: sfid-20250825_222924_678487_E416EC57 
+X-CRM114-Status: GOOD (  18.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,206 +98,248 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---0000000000004ceb34063d3abab6
-Content-Type: text/plain; charset="UTF-8"
+The cache parameter of getcpu() is not used by the kernel and no user ever
+passes it in anyways.
 
-On Tue, 26 Aug 2025 at 05:20, Brian Norris <briannorris@chromium.org> wrote:
->
-> From: Sinan Nalkaya <sardok@gmail.com>
->
-> Motivation: IRQ KUnit tests are going to require CONFIG_SPARSE_IRQ [1] in
-> order to:
-> (a) reliably allocate additional (fake) IRQs and
-> (b) ensure we can test managed affinity, which is only supported with
->     SPARSE_IRQ.
->
-> It seems that the only thing necessary for ARCH=um is to tell the genirq
-> core to skip over our preallocated NR_IRQS.
->
-> Tested with:
->
->   $ ./tools/testing/kunit/kunit.py run
->   [...]
->   [13:55:58] Testing complete. Ran 676 tests: passed: 646, skipped: 30
->   [...]
->
-> This comparse with pre-patch results:
->
->     Ran 672 tests: passed: 644, skipped: 28
->
-> i.e., we no longer skip tests that 'depend on SPARSE_IRQ', and existing
-> tests all pass.
->
-> [1]
-> [PATCH v2 4/6] genirq/test: Depend on SPARSE_IRQ
-> https://lore.kernel.org/all/CABVgOSngoD0fh1WEkUCEwSdk0Joypo3dA_Y_SjW+K=nVDnZs3Q@mail.gmail.com/
->
-> Signed-off-by: Sinan Nalkaya <sardok@gmail.com>
-> [Brian: Adapted Sinan's patch; rewrote commit message]
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
+Remove the struct and its header.
 
-Thanks -- this seems to work well here. I can confirm the KUnit tests
-pass (including with 32-bit builds), and nothing I've tested has
-failed so far.
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+We could also completely remove the parameter, but I am not sure if
+that is a good idea for syscalls and vDSO entrypoints.
+---
+ arch/loongarch/vdso/vgetcpu.c                   |  5 ++---
+ arch/s390/kernel/vdso64/getcpu.c                |  3 +--
+ arch/s390/kernel/vdso64/vdso.h                  |  4 +---
+ arch/x86/entry/vdso/vgetcpu.c                   |  5 ++---
+ arch/x86/include/asm/vdso/processor.h           |  4 +---
+ arch/x86/um/vdso/um_vdso.c                      |  7 +++----
+ include/linux/getcpu.h                          | 19 -------------------
+ include/linux/syscalls.h                        |  3 +--
+ kernel/sys.c                                    |  4 +---
+ tools/testing/selftests/vDSO/vdso_test_getcpu.c |  4 +---
+ 10 files changed, 13 insertions(+), 45 deletions(-)
 
-Tested-by: David Gow <davidgow@google.com>
+diff --git a/arch/loongarch/vdso/vgetcpu.c b/arch/loongarch/vdso/vgetcpu.c
+index 5301cd9d0f839eb0fd7b73a1d36e80aaa75d5e76..aefba899873ed035d70766a95b0b6fea881e94df 100644
+--- a/arch/loongarch/vdso/vgetcpu.c
++++ b/arch/loongarch/vdso/vgetcpu.c
+@@ -4,7 +4,6 @@
+  */
+ 
+ #include <asm/vdso.h>
+-#include <linux/getcpu.h>
+ 
+ static __always_inline int read_cpu_id(void)
+ {
+@@ -20,8 +19,8 @@ static __always_inline int read_cpu_id(void)
+ }
+ 
+ extern
+-int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused);
+-int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused)
++int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused);
++int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)
+ {
+ 	int cpu_id;
+ 
+diff --git a/arch/s390/kernel/vdso64/getcpu.c b/arch/s390/kernel/vdso64/getcpu.c
+index 5c5d4a848b7669436e73df8e3b711e5b876eb3db..1e17665616c5fa766ca66c8de276b212528934bd 100644
+--- a/arch/s390/kernel/vdso64/getcpu.c
++++ b/arch/s390/kernel/vdso64/getcpu.c
+@@ -2,11 +2,10 @@
+ /* Copyright IBM Corp. 2020 */
+ 
+ #include <linux/compiler.h>
+-#include <linux/getcpu.h>
+ #include <asm/timex.h>
+ #include "vdso.h"
+ 
+-int __s390_vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
++int __s390_vdso_getcpu(unsigned *cpu, unsigned *node, void *unused)
+ {
+ 	union tod_clock clk;
+ 
+diff --git a/arch/s390/kernel/vdso64/vdso.h b/arch/s390/kernel/vdso64/vdso.h
+index 9e5397e7b590a23c149ccc6043d0c0b0d5ea8457..cadd307d7a365cabf53f5c8d313be3718625533d 100644
+--- a/arch/s390/kernel/vdso64/vdso.h
++++ b/arch/s390/kernel/vdso64/vdso.h
+@@ -4,9 +4,7 @@
+ 
+ #include <vdso/datapage.h>
+ 
+-struct getcpu_cache;
+-
+-int __s390_vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused);
++int __s390_vdso_getcpu(unsigned *cpu, unsigned *node, void *unused);
+ int __s390_vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+ int __s390_vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+ int __s390_vdso_clock_getres(clockid_t clock, struct __kernel_timespec *ts);
+diff --git a/arch/x86/entry/vdso/vgetcpu.c b/arch/x86/entry/vdso/vgetcpu.c
+index e4640306b2e3c95d74d73037ab6b09294b8e1d6c..6381b472b7c52487bccf3cbf0664c3d7a0e59699 100644
+--- a/arch/x86/entry/vdso/vgetcpu.c
++++ b/arch/x86/entry/vdso/vgetcpu.c
+@@ -6,17 +6,16 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/getcpu.h>
+ #include <asm/segment.h>
+ #include <vdso/processor.h>
+ 
+ notrace long
+-__vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
++__vdso_getcpu(unsigned *cpu, unsigned *node, void *unused)
+ {
+ 	vdso_read_cpunode(cpu, node);
+ 
+ 	return 0;
+ }
+ 
+-long getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *tcache)
++long getcpu(unsigned *cpu, unsigned *node, void *tcache)
+ 	__attribute__((weak, alias("__vdso_getcpu")));
+diff --git a/arch/x86/include/asm/vdso/processor.h b/arch/x86/include/asm/vdso/processor.h
+index 7000aeb59aa287e2119c3d43ab3eaf82befb59c4..93e0e24e5cb47f7b0056c13f2a7f2304ed4a0595 100644
+--- a/arch/x86/include/asm/vdso/processor.h
++++ b/arch/x86/include/asm/vdso/processor.h
+@@ -18,9 +18,7 @@ static __always_inline void cpu_relax(void)
+ 	native_pause();
+ }
+ 
+-struct getcpu_cache;
+-
+-notrace long __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused);
++notrace long __vdso_getcpu(unsigned *cpu, unsigned *node, void *unused);
+ 
+ #endif /* __ASSEMBLER__ */
+ 
+diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
+index cbae2584124fd0ff0f9d240c33fefb8d213c84cd..9aa2c62cce6b7a07bbaf8441014d347162d1950d 100644
+--- a/arch/x86/um/vdso/um_vdso.c
++++ b/arch/x86/um/vdso/um_vdso.c
+@@ -10,14 +10,13 @@
+ #define DISABLE_BRANCH_PROFILING
+ 
+ #include <linux/time.h>
+-#include <linux/getcpu.h>
+ #include <asm/unistd.h>
+ 
+ /* workaround for -Wmissing-prototypes warnings */
+ int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts);
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
+ __kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
+-long __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused);
++long __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused);
+ 
+ int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+@@ -60,7 +59,7 @@ __kernel_old_time_t __vdso_time(__kernel_old_time_t *t)
+ __kernel_old_time_t time(__kernel_old_time_t *t) __attribute__((weak, alias("__vdso_time")));
+ 
+ long
+-__vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused)
++__vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)
+ {
+ 	/*
+ 	 * UML does not support SMP, we can cheat here. :)
+@@ -74,5 +73,5 @@ __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused
+ 	return 0;
+ }
+ 
+-long getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *tcache)
++long getcpu(unsigned int *cpu, unsigned int *node, void *tcache)
+ 	__attribute__((weak, alias("__vdso_getcpu")));
+diff --git a/include/linux/getcpu.h b/include/linux/getcpu.h
+deleted file mode 100644
+index c304dcdb4eac2a9117080e6a14f4e3f28d07fd56..0000000000000000000000000000000000000000
+--- a/include/linux/getcpu.h
++++ /dev/null
+@@ -1,19 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _LINUX_GETCPU_H
+-#define _LINUX_GETCPU_H 1
+-
+-/* Cache for getcpu() to speed it up. Results might be a short time
+-   out of date, but will be faster.
+-
+-   User programs should not refer to the contents of this structure.
+-   I repeat they should not refer to it. If they do they will break
+-   in future kernels.
+-
+-   It is only a private cache for vgetcpu(). It will change in future kernels.
+-   The user program must store this information per thread (__thread)
+-   If you want 100% accurate information pass NULL instead. */
+-struct getcpu_cache {
+-	unsigned long blob[128 / sizeof(long)];
+-};
+-
+-#endif
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 77f45e5d44139da36a5dacbf9db7b65261d13398..81822d203eac5d8d91488a18ff7fcdc65670df54 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -59,7 +59,6 @@ struct compat_stat;
+ struct old_timeval32;
+ struct robust_list_head;
+ struct futex_waitv;
+-struct getcpu_cache;
+ struct old_linux_dirent;
+ struct perf_event_attr;
+ struct file_handle;
+@@ -714,7 +713,7 @@ asmlinkage long sys_getrusage(int who, struct rusage __user *ru);
+ asmlinkage long sys_umask(int mask);
+ asmlinkage long sys_prctl(int option, unsigned long arg2, unsigned long arg3,
+ 			unsigned long arg4, unsigned long arg5);
+-asmlinkage long sys_getcpu(unsigned __user *cpu, unsigned __user *node, struct getcpu_cache __user *cache);
++asmlinkage long sys_getcpu(unsigned __user *cpu, unsigned __user *node, void __user *cache);
+ asmlinkage long sys_gettimeofday(struct __kernel_old_timeval __user *tv,
+ 				struct timezone __user *tz);
+ asmlinkage long sys_settimeofday(struct __kernel_old_timeval __user *tv,
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 1e28b40053ce206d7d0ed27e8a4fce8b616c3565..a830d78c1e1eb1d6cef31294feeb6a88dc0f83f3 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -31,7 +31,6 @@
+ #include <linux/tty.h>
+ #include <linux/signal.h>
+ #include <linux/cn_proc.h>
+-#include <linux/getcpu.h>
+ #include <linux/task_io_accounting_ops.h>
+ #include <linux/seccomp.h>
+ #include <linux/cpu.h>
+@@ -2813,8 +2812,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	return error;
+ }
+ 
+-SYSCALL_DEFINE3(getcpu, unsigned __user *, cpup, unsigned __user *, nodep,
+-		struct getcpu_cache __user *, unused)
++SYSCALL_DEFINE3(getcpu, unsigned __user *, cpup, unsigned __user *, nodep, void __user *, unused)
+ {
+ 	int err = 0;
+ 	int cpu = raw_smp_processor_id();
+diff --git a/tools/testing/selftests/vDSO/vdso_test_getcpu.c b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
+index cdeaed45fb26c61f6314c58fe1b71fa0be3c0108..994ce569dc37c6689b1a3c79156e3dfc8bf27f22 100644
+--- a/tools/testing/selftests/vDSO/vdso_test_getcpu.c
++++ b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
+@@ -16,9 +16,7 @@
+ #include "vdso_config.h"
+ #include "vdso_call.h"
+ 
+-struct getcpu_cache;
+-typedef long (*getcpu_t)(unsigned int *, unsigned int *,
+-			 struct getcpu_cache *);
++typedef long (*getcpu_t)(unsigned int *, unsigned int *, void *);
+ 
+ int main(int argc, char **argv)
+ {
 
-Cheers,
--- David
+---
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+change-id: 20250825-getcpu_cache-3abcd2e65437
 
-> This is adapted from Sinan's work at:
-> [PATCH 1/1] um: Fix broken IRQs if SPARSE_IRQ is selected
-> https://lore.kernel.org/all/1360193940-31504-1-git-send-email-sardok@gmail.com/
->
-> Place any blame for errors on me of course.
->
-> I'm not much of a UML developer, although I've been developing KUnit
-> tests which default to running on ARCH=um.
->
-> I also can't quite tell if MAY_HAVE_SPARSE_IRQ or SPARSE_IRQ is a better
-> 'select' target. Almost every other architecture uses 'select
-> SPARSE_IRQ', with the one exception of arch/csky. For my purposes, it's
-> better to 'select SPARSE_IRQ', for consistency with other ARCH'es, and
-> to make it easier for KUnit builds to get it. But I'm less sure if there
-> are good reasons to want to make it user-(un)selectable.
->
->  arch/um/Kconfig      | 1 +
->  arch/um/kernel/irq.c | 7 +++++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index 9083bfdb7735..8161cc5ae6f7 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -38,6 +38,7 @@ config UML
->         select HAVE_ARCH_TRACEHOOK
->         select HAVE_SYSCALL_TRACEPOINTS
->         select THREAD_INFO_IN_TASK
-> +       select SPARSE_IRQ
->
->  config MMU
->         bool
-> diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-> index 0dfaf96bb7da..d59a5a0f7fbf 100644
-> --- a/arch/um/kernel/irq.c
-> +++ b/arch/um/kernel/irq.c
-> @@ -691,6 +691,13 @@ void __init init_IRQ(void)
->         os_setup_epoll();
->  }
->
-> +#ifdef CONFIG_SPARSE_IRQ
-> +int __init arch_probe_nr_irqs(void)
-> +{
-> +       return NR_IRQS;
-> +}
-> +#endif
-> +
->  void sigchld_handler(int sig, struct siginfo *unused_si,
->                      struct uml_pt_regs *regs, void *mc)
->  {
-> --
-> 2.51.0.261.g7ce5a0a67e-goog
->
+Best regards,
+-- 
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
---0000000000004ceb34063d3abab6
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIUnQYJKoZIhvcNAQcCoIIUjjCCFIoCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ghIEMIIGkTCCBHmgAwIBAgIQfofDAVIq0iZG5Ok+mZCT2TANBgkqhkiG9w0BAQwFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSNjETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMzA0MTkwMzUzNDdaFw0zMjA0MTkwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFI2IFNNSU1FIENBIDIwMjMwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDYydcdmKyg
-4IBqVjT4XMf6SR2Ix+1ChW2efX6LpapgGIl63csmTdJQw8EcbwU9C691spkltzTASK2Ayi4aeosB
-mk63SPrdVjJNNTkSbTowej3xVVGnYwAjZ6/qcrIgRUNtd/mbtG7j9W80JoP6o2Szu6/mdjb/yxRM
-KaCDlloE9vID2jSNB5qOGkKKvN0x6I5e/B1Y6tidYDHemkW4Qv9mfE3xtDAoe5ygUvKA4KHQTOIy
-VQEFpd/ZAu1yvrEeA/egkcmdJs6o47sxfo9p/fGNsLm/TOOZg5aj5RHJbZlc0zQ3yZt1wh+NEe3x
-ewU5ZoFnETCjjTKz16eJ5RE21EmnCtLb3kU1s+t/L0RUU3XUAzMeBVYBEsEmNnbo1UiiuwUZBWiJ
-vMBxd9LeIodDzz3ULIN5Q84oYBOeWGI2ILvplRe9Fx/WBjHhl9rJgAXs2h9dAMVeEYIYkvW+9mpt
-BIU9cXUiO0bky1lumSRRg11fOgRzIJQsphStaOq5OPTb3pBiNpwWvYpvv5kCG2X58GfdR8SWA+fm
-OLXHcb5lRljrS4rT9MROG/QkZgNtoFLBo/r7qANrtlyAwPx5zPsQSwG9r8SFdgMTHnA2eWCZPOmN
-1Tt4xU4v9mQIHNqQBuNJLjlxvalUOdTRgw21OJAFt6Ncx5j/20Qw9FECnP+B3EPVmQIDAQABo4IB
-ZTCCAWEwDgYDVR0PAQH/BAQDAgGGMDMGA1UdJQQsMCoGCCsGAQUFBwMCBggrBgEFBQcDBAYJKwYB
-BAGCNxUGBgkrBgEEAYI3FQUwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUM7q+o9Q5TSoZ
-18hmkmiB/cHGycYwHwYDVR0jBBgwFoAUrmwFo5MT4qLn4tcc1sfwf8hnU6AwewYIKwYBBQUHAQEE
-bzBtMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vcm9vdHI2MDsGCCsG
-AQUFBzAChi9odHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9yb290LXI2LmNydDA2
-BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL3Jvb3QtcjYuY3JsMBEG
-A1UdIAQKMAgwBgYEVR0gADANBgkqhkiG9w0BAQwFAAOCAgEAVc4mpSLg9A6QpSq1JNO6tURZ4rBI
-MkwhqdLrEsKs8z40RyxMURo+B2ZljZmFLcEVxyNt7zwpZ2IDfk4URESmfDTiy95jf856Hcwzdxfy
-jdwx0k7n4/0WK9ElybN4J95sgeGRcqd4pji6171bREVt0UlHrIRkftIMFK1bzU0dgpgLMu+ykJSE
-0Bog41D9T6Swl2RTuKYYO4UAl9nSjWN6CVP8rZQotJv8Kl2llpe83n6ULzNfe2QT67IB5sJdsrNk
-jIxSwaWjOUNddWvCk/b5qsVUROOuctPyYnAFTU5KY5qhyuiFTvvVlOMArFkStNlVKIufop5EQh6p
-jqDGT6rp4ANDoEWbHKd4mwrMtvrh51/8UzaJrLzj3GjdkJ/sPWkDbn+AIt6lrO8hbYSD8L7RQDqK
-C28FheVr4ynpkrWkT7Rl6npWhyumaCbjR+8bo9gs7rto9SPDhWhgPSR9R1//WF3mdHt8SKERhvtd
-NFkE3zf36V9Vnu0EO1ay2n5imrOfLkOVF3vtAjleJnesM/R7v5tMS0tWoIr39KaQNURwI//WVuR+
-zjqIQVx5s7Ta1GgEL56z0C5GJoNE1LvGXnQDyvDO6QeJVThFNgwkossyvmMAaPOJYnYCrYXiXXle
-A6TpL63Gu8foNftUO0T83JbV/e6J8iCOnGZwZDrubOtYn1QwggWDMIIDa6ADAgECAg5F5rsDgzPD
-hWVI5v9FUTANBgkqhkiG9w0BAQwFADBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBS
-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
-jmkLAgMBAAGjggHgMIIB3DAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1UdDwEB
-/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFBp5bTxrTm/d
-WMmRETO8lNkA4c7fMFgGA1UdIARRME8wCQYHZ4EMAQUBAjBCBgorBgEEAaAyCgMDMDQwMgYIKwYB
-BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQC
-MAAwgZoGCCsGAQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWdu
-LmNvbS9jYS9nc2F0bGFzcjZzbWltZWNhMjAyMzBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5n
-bG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3J0MB8GA1UdIwQYMBaA
-FDO6vqPUOU0qGdfIZpJogf3BxsnGMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vY2EvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3JsMA0GCSqGSIb3DQEBCwUAA4ICAQBF
-tO3/N2l9hTaij/K0xCpLwIlrqpNo0nMAvvG5LPQQjSeHnTh06tWTgsPCOJ65GX+bqWRDwGTu8WTq
-c5ihCNOikBs25j82yeLkfdbeN/tzRGUb2RD+8n9I3CnyMSG49U2s0ZdncsrIVFh47KW2TpHTF7R8
-N1dri01wPg8hw4u0+XoczR2TiBrBOISKmAlkAi+P9ivT31gSHdbopoL4x0V2Ow9IOp0chrQQUZtP
-KBytLhzUzd9wIsE0QMNDbw6jeG8+a4sd17zpXSbBywIGw7sEvPtnBjMaf5ib3kznlOne6tuDVx4y
-QFExTCSrP3OTMUkNbpIdgzg2CHQ2aB8i8YsTZ8Q8Q8ztPJ+xDNsqBUeYxILLjTjxQQovToqipB3f
-6IMyk+lWCdDS+iCLYZULV1BTHSdwp1NM3t4jZ8TMlV+JzAyRqz4lzSl8ptkFhKBJ7w2tDrZ3BEXB
-8ASUByRxeh+pC1Z5/HhqfiWMVPjaWmlRRJVlRk+ObKIv2CblwxMYlo2Mn8rrbEDyfum1RTMW55Z6
-Vumvw5QTHe29TYxSiusovM6OD5y0I+4zaIaYDx/AtF0mMOFXb1MDyynf1CDxhtkgnrBUseHSOU2e
-MYs7IqzRap5xsgpJS+t7cp/P8fdlCNvsXss9zZa279tKwaxR0U2IzGxRGsWKGxDysn1HT6pqMDGC
-Al0wggJZAgEBMGgwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKjAo
-BgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjYgU01JTUUgQ0EgMjAyMwIQAUXA7LnOuRz2DvkWTeMc
-0TANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQg2iqp08WW+0tai/AkQk6KxQHTxQDl
-hNxRtgVzjF35o5AwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUw
-ODI2MDEzODIzWjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
-YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcN
-AQEBBQAEggEAhIINc2F/Ut4nakZrIe+eCQM1TlM3E7JPNVlTMaUNo3VX4vzYLVyqFfoW5+HEDUl6
-jyQbq99G+R9BD2/ZFd20Y/iOezEeIzKkDtZqt6vx/qfoqa2nmqjy5dhxXSLeR7VEt4SoYSruYFL5
-5UStVLBwIaqhTd1RgIGv4iTwznNNmZ5Bvz6l4CZr8CKKrY1lgbanUgmnD4Mwgnt/2v4BRtdKB+7l
-mNQMsz8xzyemnKQmr7PEvs34w2CYDr7GC7tQYf+grxejDUZvo0kMS+eZ22B7IKzRRlZFNxH4wn1r
-z9Jrx0ky3/+vw1kJr4QG4lKpv7V6V+qYPjYa00Fr5/m837K4xw==
---0000000000004ceb34063d3abab6--
 
