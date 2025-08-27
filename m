@@ -4,58 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FFBCA1000
-	for <linux-um@archiver.kernel.org>; Wed, 27 Aug 2025 20:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E801CA0FED
+	for <linux-um@archiver.kernel.org>; Wed, 27 Aug 2025 20:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=prJFTRV6aEluy++/g+Xzgr4e95zWjm1BtN9ti9sIpMg=; b=sxIh0Kg08PwhGnet4RGanf3I4h
-	s7urPW7WxxBd7I+5KaRts+GhPd+W9V3Qonju+vYQzBUgPYhNFHtYaTzh2IrYWrUg8OiPz7oxPqdHB
-	aSAXL05tCXg6hx4b5/9Jb+/wrfBk4cFh0Sfrp7+aEO046+RauYEvXjgkP9g2/ho7R08OaiSNHrmp5
-	OnO070LIV8b+qHdLR7rmpSt65iq8J4MaQbs1rGIn1maj+gps/D511M2QNJp+Xia8nWOZBbuCVb4iN
-	syXSFNfn2hXSddtIxYhElN+OGbbG0weRduVUP3rtGBZUVWw1PlvOTDF/IVc90kbmp7z7FjKEnlSgV
-	iL9+FA9g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OcF76ThxDzseiSVRi9ITwryzKooFVtGhEDdOZb1GMK4=; b=5FnnO3kQ6ZrICj7IVhyG9dmuGg
+	LH2ewsGJf0l9VkLTrHujaupF2jtUmf8p7rvVL/c4qNvSioeXCxMTWMo2P6rgUvg9okzPSHMYYORFA
+	uBkxEIGpiRO1yt11tjLApCeCK2jhW/0FYpY4rYfciY3FKuxp1ryjIqPqRW7o1+C6pC2WdZ7HRJyOk
+	dmzmCY9mv0ZR6v/eThQmTq+j3d2zZAu5as60GtzByebdzTU7QPn0fj2+hYQheeAxnwmiZT3ro4Ema
+	LDVE/GrAEn4grClTCPrTpzE9Tgb3qw4lOs7LHa/aC8eIeQoEpllCPMyFz4CKLMrJy9ZmgBM2wJmmT
+	oA+uqp2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urMh4-0000000GkAI-3dI5;
-	Wed, 27 Aug 2025 20:24:30 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1urMh7-0000000GkDQ-0cv1;
+	Wed, 27 Aug 2025 20:24:33 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urLvp-0000000GctI-1CVt
+	id 1urM1U-0000000GeFb-0V25
 	for linux-um@lists.infradead.org;
-	Wed, 27 Aug 2025 19:35:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=prJFTRV6aEluy++/g+Xzgr4e95zWjm1BtN9ti9sIpMg=; t=1756323340; x=1757532940; 
-	b=Y2VGJ/Hjqe6+H4EkBeHFeSJOCwhPKjnhkwBiQJ50eNp0JRgagUxb7CHuBzJZZ1FO51gdMpNrOvE
-	Kjtha9eDk/2q1LxGj3ZvtxPwBf17LEj9noV0piqOpgzKSss2ejaQn3YIIlfgzZsZPkp5P4uu7H8jz
-	GM+luwPwAU5EN5HovVezg35AAqc8xD9nNt50LqPn5mi8KDNqvNgx2N5nFo269PbxFp5Gfvk3m8Qfg
-	D/a/MsTAGMRk5lmT/SCE7PjEa8wFkxI6qc0SmeUIPCQNz+dLQ63+5bn+4Xmba+GPsXMPidYEpPwUG
-	eWtARnvlGPRu9Pp9MKtpdFhm6/D5rgd3pVaw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1urLvl-000000060jt-35yX;
-	Wed, 27 Aug 2025 21:35:37 +0200
-From: Johannes Berg <johannes@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] um: virtio-pci: implement .shutdown()
-Date: Wed, 27 Aug 2025 21:35:35 +0200
-Message-ID: <20250827213534.f32fb9855088.I9052dffe235981e93254830eba73542ae37eea42@changeid>
-X-Mailer: git-send-email 2.51.0
+	Wed, 27 Aug 2025 19:41:33 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-2460757107bso1927905ad.2
+        for <linux-um@lists.infradead.org>; Wed, 27 Aug 2025 12:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1756323691; x=1756928491; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OcF76ThxDzseiSVRi9ITwryzKooFVtGhEDdOZb1GMK4=;
+        b=N95NzEgQy2XYQ+ORrgzcgL3EEmKqj8mi8sax8eSB+P0JDOy7Cruj4wN1kROJYCMtDV
+         d40XmA5pxqG9AYq19/7L2gMPe9FNmr54QJqio0JTYUywqYNmT8mdUHia+ZbHjIX26JI2
+         amfXub5F4L3m7mQqx1i/ZWPOuIKznZK+4jajE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756323691; x=1756928491;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OcF76ThxDzseiSVRi9ITwryzKooFVtGhEDdOZb1GMK4=;
+        b=HbuZHhC6xd/3sODNi2zKwWvbI4c1HPvkjhdHwQGkyOT7rPP1NsP+uUzS7J/Zg74ULO
+         QX/OfFAOg5SJxOMMy8AJEKiWXsbN6DeeazwFr9us+EkqneRegnUS02ZXjUH74n4PneSv
+         qnweyjYeOaXR6/fWOfRgbbql8080GO/82z7vKcmyZK6ZEOqldHSUIrBRvAiKz4vAvXoE
+         UhDUnZ1WN4xc89B2XqsDQr/QrO9f125xeTEC+fDNnDwYTvNoukCoarcPPBQtUKV/JYSD
+         SLGW26kQ2NIH0U/utNMJpoMd65iEKyVbz7zXya88voJdDZUy6JwgbueBsZ0gA2zCzyqa
+         F8mw==
+X-Forwarded-Encrypted: i=1; AJvYcCUd0exO5AKVLKU1QsJiCF7u0/sGoH8HfW0AWfazSOdh1PipgWJ9rebZHCZ9IHLi0pLgRV20ldG6IA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzlqS0a14eo2sITCKnkU9lGy/oaagWsiJXECRx2wtqReXPIg1N6
+	Dqb5o1j85vBH+Qgtsl8SRf0mmSbClUC20wr6d6UuKW46BoxImnLyOZBMWK9E0tT81g==
+X-Gm-Gg: ASbGnctR/CBb/mZhrF1A3RTccGcIlY8jg1GLkM50tWayO0/nnyTTLka1lnnK5yjgznH
+	OGMF2t1nHQXFZ4ICbh7bZtROTAtb2bonyqm0ryeK/heqGWZIa67WkhNLbtBrEqF2oMuE2YyOA3w
+	inKni3Cm38whFB1TMTJiJOiRHutXaiMpLdi1rLl6s2N6QtRZmjflJ7n9dJvf5UVt00Ia6x13uYI
+	0HNU61/LVnYnCgOBJ0oMn2heLSBNt8xy3H0t39uL3d4rpekdV9YoqyBKrbKaLQ2y6gQzlQB97d+
+	Ck1EsHiOlpGJilt2UMgGki0/+etzdPgr0p1ZBNznegDS86hhqH0kpy2QFk7iqD02IDw4a+wkyGS
+	vqTStQ06ZjBbccaGUgvqfO/Yzd6rI0HsDOAnHEJ2UO2VPsrOIqP9pAqXsyks/
+X-Google-Smtp-Source: AGHT+IFZiE4r45aDuqweIbhvj5Uvc3wABlr9GNax9UlaNDtrOMl0n6Aq3+PixqrRUWTKPTqBfnW1tA==
+X-Received: by 2002:a17:902:d4d2:b0:248:9964:3796 with SMTP id d9443c01a7336-24899643b24mr48265415ad.43.1756323691105;
+        Wed, 27 Aug 2025 12:41:31 -0700 (PDT)
+Received: from localhost ([2a00:79e0:2e14:7:36f6:f0a2:9401:263d])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2466889e11csm128094265ad.155.2025.08.27.12.41.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Aug 2025 12:41:30 -0700 (PDT)
+Date: Wed, 27 Aug 2025 12:41:28 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	David Gow <davidgow@google.com>, Sinan Nalkaya <sardok@gmail.com>
+Subject: Re: [PATCH] um: Support SPARSE_IRQ
+Message-ID: <aK9faES_JZYCgyip@google.com>
+References: <20250825212031.111027-1-briannorris@chromium.org>
+ <155ce30d5fad5a444f72b681eb096418384542b3.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <155ce30d5fad5a444f72b681eb096418384542b3.camel@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250827_123541_351917_27CA9E45 
-X-CRM114-Status: UNSURE (   9.62  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250827_124132_188932_5BAA61AD 
+X-CRM114-Status: GOOD (  14.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,45 +97,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, Aug 27, 2025 at 09:38:17PM +0200, Johannes Berg wrote:
+> On Mon, 2025-08-25 at 14:19 -0700, Brian Norris wrote:
+> > 
+> > +#ifdef CONFIG_SPARSE_IRQ
+> > +int __init arch_probe_nr_irqs(void)
+> > 
+> 
+> Is there much point in the ifdef if it's anyway always going to be
+> enabled due to the 'select'?
 
-We don't want queues stopped since the shutdown can still
-be doing things with PCI devices, so implement .shutdown()
-to avoid the generic virtio shutdown.
+Oh, good question. No, I don't see much point. I think I was waffling
+about the MAY_HAVE_SPARSE_IRQ question, but if we go with 'select
+SPARSE_IRQ' as proposed, I should probably drop the #ifdef.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-I already wrote this ~2.5 months ago but seem to have totally
-forgotten ...
----
- arch/um/drivers/virtio_pcidev.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Will send v2 if that's the only question/request.
 
-diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcidev.c
-index e9e23cc3f357..f9b4b6f7582c 100644
---- a/arch/um/drivers/virtio_pcidev.c
-+++ b/arch/um/drivers/virtio_pcidev.c
-@@ -598,6 +598,11 @@ static void virtio_pcidev_virtio_remove(struct virtio_device *vdev)
- 	kfree(dev);
- }
- 
-+static void virtio_pcidev_virtio_shutdown(struct virtio_device *vdev)
-+{
-+	/* nothing to do, we just don't want queue shutdown */
-+}
-+
- static struct virtio_device_id id_table[] = {
- 	{ CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -609,6 +614,7 @@ static struct virtio_driver virtio_pcidev_virtio_driver = {
- 	.id_table = id_table,
- 	.probe = virtio_pcidev_virtio_probe,
- 	.remove = virtio_pcidev_virtio_remove,
-+	.shutdown = virtio_pcidev_virtio_shutdown,
- };
- 
- static int __init virtio_pcidev_init(void)
--- 
-2.51.0
-
+Brian
 
