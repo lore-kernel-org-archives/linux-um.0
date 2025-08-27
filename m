@@ -4,58 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44DECCA0FED
-	for <linux-um@archiver.kernel.org>; Wed, 27 Aug 2025 00:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2027FCA0FFF
+	for <linux-um@archiver.kernel.org>; Wed, 27 Aug 2025 20:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AZUgzDSlOQo2n/wfmPCfCySZHQCIjEluJ3AqIU5SzeQ=; b=WJ4JhUSKHCxcDxZXDrt7bR1x2f
-	yJ357lMn9XDSDC8LvcXCeDIgetIHDxDZnAay8ULuyTSYb8bgL8g3p/54YwrWvBVhAkZ4nbvLqd9jj
-	SgkiaDktJm0ujPFOs96xexV8r5rx+XjnxccA5xd0l1dVANrYgMlsrnDClqpf5fjPYGRlN4j89sJSN
-	rUDhvzoT+5BUPP/tH3MyR3+j/Cp4ranhVOXD6l6V4ZGUltfNKZu2hGPHuExmi3RhToGJt4BB2hy/e
-	9V25NI7qvVOfZh31XCWbADG6Nxi+s6abN6oMb5X9yNWT1idAIWG1UCcwA4YM4/A7Q/UuBlOoMnjNY
-	bXbOJGUw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bmGI/NEfAfgDB/a+dal7o7pLk2x1XlSfdfQurPmEfKc=; b=hgoV9fJfM7i1ZqR4rrywuga+72
+	jnbOamj41BF2bG56KGZr1ZJbNgMRhECTAgOEdSrXKpnnnDwd8FiZLuRHHGvhQemNOg58XFi4j7Anl
+	Q8iCV8fzujbBswl4gk1wBJKRGMDLovmA4X3uXMYZcjs18NE3YIVSkKcLZ0763bJE87UxylZ3ub2PO
+	VHxOcRutjasxQUW6/pS2Hfoe03867CMuYI5LDO2L4Lj7lqoY5BhRorIO5cb5l/PwHOsoQ3WBi0cRQ
+	b/abriBFYQBOtaabEeRo0EyfVhpCMmbwARAGUp4AzjpZfJ3r7joYBj8pLwNB6qUo5SsDhrReGr+V9
+	0h7QEFhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ur4Tz-0000000DTZB-08Nh;
-	Wed, 27 Aug 2025 00:57:47 +0000
-Received: from out-188.mta1.migadu.com ([2001:41d0:203:375::bc])
+	id 1urMh5-0000000GkCM-3Uy3;
+	Wed, 27 Aug 2025 20:24:31 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ur4Tw-0000000DTSZ-0BL5
+	id 1urLyO-0000000GdXs-2gyA
 	for linux-um@lists.infradead.org;
-	Wed, 27 Aug 2025 00:57:45 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756256261;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AZUgzDSlOQo2n/wfmPCfCySZHQCIjEluJ3AqIU5SzeQ=;
-	b=XCvuqo5ZNh4lcKlkZ1Ku1swXjTT8e3XNHtwHfVIPLljxdG1poWUSo5By+7j3TMUdwWWTAK
-	WKaa450F7aOGzruxJcHbgQNQD/lZxBvtJ+2sU1d6brG9mQm8b1JGtIu4lb5ue+9e1gMf6j
-	bwtf+PIsot3jNE83MJuZ/rrnhb0w2BA=
-From: Tiwei Bie <tiwei.bie@linux.dev>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	tiwei.btw@antgroup.com,
-	tiwei.bie@linux.dev
-Subject: [PATCH v2 7/7] um: Centralize stub size calculations
-Date: Wed, 27 Aug 2025 08:57:03 +0800
-Message-Id: <20250827005703.3847636-8-tiwei.bie@linux.dev>
-In-Reply-To: <20250827005703.3847636-1-tiwei.bie@linux.dev>
-References: <20250827005703.3847636-1-tiwei.bie@linux.dev>
+	Wed, 27 Aug 2025 19:38:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=bmGI/NEfAfgDB/a+dal7o7pLk2x1XlSfdfQurPmEfKc=;
+	t=1756323500; x=1757533100; b=Vj8IC4GohMaSkqILQu8BGWXkdAMPv0ZJA0mdtxF/5zghln8
+	YbMaJzp+cK+PbYEA1XwNQFIOyqO4dt4TpF+/F/DOUpLj4UUxyiU92imETBYAI++xiV4Hr+WkfQLQu
+	JZ5MEaPTOV9XQ/BolhM7L2xe8NJSG36AQGPKwVrMWZ5qZumFg5wmf0B9VufN3pBK8nQL7EA85Gxb/
+	weT1hUbkjhfx/HfOYloIeAwHCfbqilD4hVb67ms3M2fBF0kk7/1LqAed6kEiau9ztif6vuxOu+AjA
+	QG72cIuD+h36ceVzcaDgDIYFA67ah2GSUvGuM7htDv6ZCuFMROdrzPnHR0zueI4g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1urLyM-000000060vA-04ur;
+	Wed, 27 Aug 2025 21:38:18 +0200
+Message-ID: <155ce30d5fad5a444f72b681eb096418384542b3.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: Support SPARSE_IRQ
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Brian Norris <briannorris@chromium.org>, Richard Weinberger
+ <richard@nod.at>,  Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, David Gow
+	 <davidgow@google.com>, Sinan Nalkaya <sardok@gmail.com>
+Date: Wed, 27 Aug 2025 21:38:17 +0200
+In-Reply-To: <20250825212031.111027-1-briannorris@chromium.org>
+References: <20250825212031.111027-1-briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250826_175744_262236_881E0794 
-X-CRM114-Status: GOOD (  10.29  )
+X-CRM114-CacheID: sfid-20250827_123820_692643_32DEFE15 
+X-CRM114-Status: UNSURE (   7.00  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,76 +75,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+On Mon, 2025-08-25 at 14:19 -0700, Brian Norris wrote:
+>=20
+> +#ifdef CONFIG_SPARSE_IRQ
+> +int __init arch_probe_nr_irqs(void)
+>=20
 
-Currently, the stub size is calculated in multiple places. Define
-a macro that performs the calculation so that the code is easier
-to read and maintain.
+Is there much point in the ifdef if it's anyway always going to be
+enabled due to the 'select'?
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/include/shared/as-layout.h  | 3 ++-
- arch/um/kernel/um_arch.c            | 4 +---
- arch/x86/um/shared/sysdep/stub_32.h | 2 +-
- arch/x86/um/shared/sysdep/stub_64.h | 2 +-
- 4 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index eacf18ec9d0c..7c7e17bce403 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -24,7 +24,8 @@
- #define STUB_CODE STUB_START
- #define STUB_DATA (STUB_CODE + UM_KERN_PAGE_SIZE)
- #define STUB_DATA_PAGES 2
--#define STUB_END (STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE)
-+#define STUB_SIZE ((1 + STUB_DATA_PAGES) * UM_KERN_PAGE_SIZE)
-+#define STUB_END (STUB_START + STUB_SIZE)
- 
- #ifndef __ASSEMBLER__
- 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 2f5ee045bc7a..6cd464c9095f 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -331,9 +331,7 @@ int __init linux_main(int argc, char **argv, char **envp)
- 
- 	host_task_size = get_top_address(envp);
- 	/* reserve a few pages for the stubs */
--	stub_start = host_task_size - STUB_DATA_PAGES * PAGE_SIZE;
--	/* another page for the code portion */
--	stub_start -= PAGE_SIZE;
-+	stub_start = host_task_size - STUB_SIZE;
- 	host_task_size = stub_start;
- 
- 	/* Limit TASK_SIZE to what is addressable by the page table */
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index df568fc3ceb4..9dc2efaf5df1 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -129,7 +129,7 @@ static __always_inline void *get_stub_data(void)
- 		"subl %0,%%esp ;"					\
- 		"movl %1, %%eax ; "					\
- 		"call *%%eax ;"						\
--		:: "i" ((1 + STUB_DATA_PAGES) * UM_KERN_PAGE_SIZE),	\
-+		:: "i" (STUB_SIZE),					\
- 		   "i" (&fn))
- 
- static __always_inline void
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 9cfd31afa769..9fd56954e2e0 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -133,7 +133,7 @@ static __always_inline void *get_stub_data(void)
- 		"subq %0,%%rsp ;"					\
- 		"movq %1,%%rax ;"					\
- 		"call *%%rax ;"						\
--		:: "i" ((1 + STUB_DATA_PAGES) * UM_KERN_PAGE_SIZE),	\
-+		:: "i" (STUB_SIZE),					\
- 		   "i" (&fn))
- 
- static __always_inline void
--- 
-2.34.1
-
+johannes
 
