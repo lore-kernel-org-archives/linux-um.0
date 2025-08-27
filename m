@@ -4,62 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2027FCA0FFF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FFBCA1000
 	for <linux-um@archiver.kernel.org>; Wed, 27 Aug 2025 20:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bmGI/NEfAfgDB/a+dal7o7pLk2x1XlSfdfQurPmEfKc=; b=hgoV9fJfM7i1ZqR4rrywuga+72
-	jnbOamj41BF2bG56KGZr1ZJbNgMRhECTAgOEdSrXKpnnnDwd8FiZLuRHHGvhQemNOg58XFi4j7Anl
-	Q8iCV8fzujbBswl4gk1wBJKRGMDLovmA4X3uXMYZcjs18NE3YIVSkKcLZ0763bJE87UxylZ3ub2PO
-	VHxOcRutjasxQUW6/pS2Hfoe03867CMuYI5LDO2L4Lj7lqoY5BhRorIO5cb5l/PwHOsoQ3WBi0cRQ
-	b/abriBFYQBOtaabEeRo0EyfVhpCMmbwARAGUp4AzjpZfJ3r7joYBj8pLwNB6qUo5SsDhrReGr+V9
-	0h7QEFhQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=prJFTRV6aEluy++/g+Xzgr4e95zWjm1BtN9ti9sIpMg=; b=sxIh0Kg08PwhGnet4RGanf3I4h
+	s7urPW7WxxBd7I+5KaRts+GhPd+W9V3Qonju+vYQzBUgPYhNFHtYaTzh2IrYWrUg8OiPz7oxPqdHB
+	aSAXL05tCXg6hx4b5/9Jb+/wrfBk4cFh0Sfrp7+aEO046+RauYEvXjgkP9g2/ho7R08OaiSNHrmp5
+	OnO070LIV8b+qHdLR7rmpSt65iq8J4MaQbs1rGIn1maj+gps/D511M2QNJp+Xia8nWOZBbuCVb4iN
+	syXSFNfn2hXSddtIxYhElN+OGbbG0weRduVUP3rtGBZUVWw1PlvOTDF/IVc90kbmp7z7FjKEnlSgV
+	iL9+FA9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urMh5-0000000GkCM-3Uy3;
-	Wed, 27 Aug 2025 20:24:31 +0000
+	id 1urMh4-0000000GkAI-3dI5;
+	Wed, 27 Aug 2025 20:24:30 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urLyO-0000000GdXs-2gyA
+	id 1urLvp-0000000GctI-1CVt
 	for linux-um@lists.infradead.org;
-	Wed, 27 Aug 2025 19:38:21 +0000
+	Wed, 27 Aug 2025 19:35:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=bmGI/NEfAfgDB/a+dal7o7pLk2x1XlSfdfQurPmEfKc=;
-	t=1756323500; x=1757533100; b=Vj8IC4GohMaSkqILQu8BGWXkdAMPv0ZJA0mdtxF/5zghln8
-	YbMaJzp+cK+PbYEA1XwNQFIOyqO4dt4TpF+/F/DOUpLj4UUxyiU92imETBYAI++xiV4Hr+WkfQLQu
-	JZ5MEaPTOV9XQ/BolhM7L2xe8NJSG36AQGPKwVrMWZ5qZumFg5wmf0B9VufN3pBK8nQL7EA85Gxb/
-	weT1hUbkjhfx/HfOYloIeAwHCfbqilD4hVb67ms3M2fBF0kk7/1LqAed6kEiau9ztif6vuxOu+AjA
-	QG72cIuD+h36ceVzcaDgDIYFA67ah2GSUvGuM7htDv6ZCuFMROdrzPnHR0zueI4g==;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=prJFTRV6aEluy++/g+Xzgr4e95zWjm1BtN9ti9sIpMg=; t=1756323340; x=1757532940; 
+	b=Y2VGJ/Hjqe6+H4EkBeHFeSJOCwhPKjnhkwBiQJ50eNp0JRgagUxb7CHuBzJZZ1FO51gdMpNrOvE
+	Kjtha9eDk/2q1LxGj3ZvtxPwBf17LEj9noV0piqOpgzKSss2ejaQn3YIIlfgzZsZPkp5P4uu7H8jz
+	GM+luwPwAU5EN5HovVezg35AAqc8xD9nNt50LqPn5mi8KDNqvNgx2N5nFo269PbxFp5Gfvk3m8Qfg
+	D/a/MsTAGMRk5lmT/SCE7PjEa8wFkxI6qc0SmeUIPCQNz+dLQ63+5bn+4Xmba+GPsXMPidYEpPwUG
+	eWtARnvlGPRu9Pp9MKtpdFhm6/D5rgd3pVaw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1urLyM-000000060vA-04ur;
-	Wed, 27 Aug 2025 21:38:18 +0200
-Message-ID: <155ce30d5fad5a444f72b681eb096418384542b3.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Support SPARSE_IRQ
+	id 1urLvl-000000060jt-35yX;
+	Wed, 27 Aug 2025 21:35:37 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Brian Norris <briannorris@chromium.org>, Richard Weinberger
- <richard@nod.at>,  Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, David Gow
-	 <davidgow@google.com>, Sinan Nalkaya <sardok@gmail.com>
-Date: Wed, 27 Aug 2025 21:38:17 +0200
-In-Reply-To: <20250825212031.111027-1-briannorris@chromium.org>
-References: <20250825212031.111027-1-briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] um: virtio-pci: implement .shutdown()
+Date: Wed, 27 Aug 2025 21:35:35 +0200
+Message-ID: <20250827213534.f32fb9855088.I9052dffe235981e93254830eba73542ae37eea42@changeid>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250827_123820_692643_32DEFE15 
-X-CRM114-Status: UNSURE (   7.00  )
+X-CRM114-CacheID: sfid-20250827_123541_351917_27CA9E45 
+X-CRM114-Status: UNSURE (   9.62  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,14 +70,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2025-08-25 at 14:19 -0700, Brian Norris wrote:
->=20
-> +#ifdef CONFIG_SPARSE_IRQ
-> +int __init arch_probe_nr_irqs(void)
->=20
+From: Johannes Berg <johannes.berg@intel.com>
 
-Is there much point in the ifdef if it's anyway always going to be
-enabled due to the 'select'?
+We don't want queues stopped since the shutdown can still
+be doing things with PCI devices, so implement .shutdown()
+to avoid the generic virtio shutdown.
 
-johannes
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+I already wrote this ~2.5 months ago but seem to have totally
+forgotten ...
+---
+ arch/um/drivers/virtio_pcidev.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcidev.c
+index e9e23cc3f357..f9b4b6f7582c 100644
+--- a/arch/um/drivers/virtio_pcidev.c
++++ b/arch/um/drivers/virtio_pcidev.c
+@@ -598,6 +598,11 @@ static void virtio_pcidev_virtio_remove(struct virtio_device *vdev)
+ 	kfree(dev);
+ }
+ 
++static void virtio_pcidev_virtio_shutdown(struct virtio_device *vdev)
++{
++	/* nothing to do, we just don't want queue shutdown */
++}
++
+ static struct virtio_device_id id_table[] = {
+ 	{ CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID, VIRTIO_DEV_ANY_ID },
+ 	{ 0 },
+@@ -609,6 +614,7 @@ static struct virtio_driver virtio_pcidev_virtio_driver = {
+ 	.id_table = id_table,
+ 	.probe = virtio_pcidev_virtio_probe,
+ 	.remove = virtio_pcidev_virtio_remove,
++	.shutdown = virtio_pcidev_virtio_shutdown,
+ };
+ 
+ static int __init virtio_pcidev_init(void)
+-- 
+2.51.0
+
 
