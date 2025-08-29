@@ -4,89 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CE0CCA0FF6
-	for <linux-um@archiver.kernel.org>; Thu, 28 Aug 2025 07:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE7C9CA0FFE
+	for <linux-um@archiver.kernel.org>; Sat, 30 Aug 2025 00:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=1aOcVnvWN8g6UfQh+XzURaGBPWpWkDYdfcs5GE0kaLU=; b=0nDK1xiJn1hZqttncyih+0cipB
-	53q5Pv7FurDw7Md/sKWCgyIztvgIc75YkR7IhuyMnJqNKccGLThiPVbUMagZXq632QEpbn9iSonKT
-	memDajv/uT4SNZY8QbB3qEtE0IkCEx+ksoeSR9ayDMjJ3UcuVyxOiA+SKT3MnyEe5X4gbSshxbNsn
-	TQ53m718Qv2b4au1iTptmt0Jy5AybmxMQ1oxIx2daJWpMEsPBrBNGDWMjId9fHPlz59Wfh16mxxkC
-	OW1zLWSoDszzd6ed0ScmV1OJctl9tOse3a7/j+DCMsyqBotXWthmsW27a6y7rmASErpdThrAcTKuE
-	onXWCwWg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IM3Rq/jMchEW7yYUELIEwYv6KDlI0ImkIrkVAXEH6so=; b=k0PlZ7a20GQ85ah4ymve3uAH+J
+	bAvjTE/Uy1J345MuOQW2nTJtKoPvn50Jta4b6ViLyCywd44G2Ne/wIBkEAZFg0NQGnIKjdnQpg6rw
+	JF04XzwpcppcDyAEF3M3SyFEn7WuI2SFzrG4dxUrYssqGWAQO/vMQDRxdaErfV9RMkx/PXQO4l14D
+	Y5McuHVMJst/peiuOma29v9BfgPihOfuL4hBF1qwnq97UvPMF87UiN/4MpyxETgVaGmRB9VC1FUTs
+	L0kn0RLucuZxTKsb9QCnmANOyNgAAFDQAYhJDNt/snFYoKiYXKY53tSDUhU3B7PiXvvjoCijR9fVp
+	c90/80Kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urWdA-00000000WKT-2HAJ;
-	Thu, 28 Aug 2025 07:01:08 +0000
-Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
+	id 1us9m6-00000007B2q-2uVe;
+	Sat, 30 Aug 2025 00:48:58 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1urWd8-00000000WJP-3XGJ
+	id 1us3YJ-00000006boT-0noe
 	for linux-um@lists.infradead.org;
-	Thu, 28 Aug 2025 07:01:08 +0000
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-b4c1fc383eeso467644a12.1
-        for <linux-um@lists.infradead.org>; Thu, 28 Aug 2025 00:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756364465; x=1756969265; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1aOcVnvWN8g6UfQh+XzURaGBPWpWkDYdfcs5GE0kaLU=;
-        b=TKyONAYGW3GR3KR9AQ2n6nisIze6b65s/AIOn8ymvVvGWAW8YbRruVflY6enDQVdv1
-         nBm3CRU1diMZFoKB2j1hZExdqhDiqat3JX7Z0M2qPdAPLLl4UOyrcDtI1tnw3dgjqgXL
-         ZKgXsqoiKHbrNFTb8EqwRuGkCong8TmEsDR8fe8Gtym/93whVs/8fYOW0fL2Ve8HbB+x
-         IuolzjzWGmjFX4xRWxnxuyTNuxUOV6igG0R0i7c/jkqT6VnEMJJHPsOXpFXZRjust2vI
-         zPXSEy4C1XO/7ABlwjURUBis8Ly9AqkTI61/R5BSygdYiLGv3gb9i9HG3nCb41gQwy26
-         ti7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756364465; x=1756969265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1aOcVnvWN8g6UfQh+XzURaGBPWpWkDYdfcs5GE0kaLU=;
-        b=xJd1OlDlbv5tB2Z+jSxaUm/FamXvuE5d1ZQhwlZSGm55g0CKyaGC6dfVSTYuyZIJeh
-         Wl51uSm3YSCU1xTR0cqqzmyNYI7bfES4NzXDFOkMw109Zzw++gVXPW1XoZovJGeavr+i
-         TCqOUFZ8XjUy+C15+zs665xwWgWxFihiutm15r6EdS0YWiA8WGBsKCNPo3h3GsqQGgeo
-         0HaC/7vHhmQR/2wizh8Ki6uFGGQxaEc+eza+BmcD+bRPT2/868kKBQtXt1Dq7eIky1TY
-         SI3h0hGWWeek6saWOWotA8DEA/yxBEeUNktmaxyaoXox4az8MVU3Ksw4yzjaEitT/WJm
-         C1hw==
-X-Forwarded-Encrypted: i=1; AJvYcCVdggAwD1pSbmFRnoVZfxdIERTYPs5bOlX4HSm/OsPQJNTAN2ACD36YPY3a7Jcr9Zs4avj2P6vEMg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyIZPVLqbxuTf2DsUOk7THtmK96rLRuWABiwTe7pwhDtDLt4k5F
-	rt+46uEynG/kUsLE55tsON9qiI7LGf3aToD+zXNkNvpER8JFqqQOENgk
-X-Gm-Gg: ASbGncskEZy5oVnnqI15rHVnlDZ7tGR4afevl5a9fs9fzqZIgr94Z1S3h6C8t3ViLX9
-	dLVaKoJijttPsSFbQ37G9F+EUwRQKiTccYxPZLMbbd2XyBsuoNmGCIBe76VQrsgfZm7fBm/13oB
-	Df3q3KWVUDY42JMVYgHNMN4iHAy/JtEJZxxm2czt8W1DtEhxJzb75vPfdPaHxVQwEbZXSvYzNw0
-	AVyczOG+OIonqWr3i/wzpXhb/B9b8xnG7SMKvjoAru5NC/hUffj5+1l0SBZNvsCNhZo5ExPss4I
-	ChQfH6sIh2+0HX876RLt0t/zWT2YAwx16dtLnv9cu5znCgjc7qjSkRa3l6EjWq+wMHv5MbjwiOX
-	s8D9aImgFNakXmUO9Igd6ZHil5aDN1mA5fL8Ma9Zk/PD704beOw8jqTuItpIeLviBLf1lRj4bxw
-	npJwrxowrV5d8=
-X-Google-Smtp-Source: AGHT+IFGQQsK30mCIpp68bAN9dNCGp0foY/SytgIaAfNqbLTP9wA1efm42gK0s3lba/qv0EaQY9UEQ==
-X-Received: by 2002:a17:90b:3905:b0:323:7e80:881a with SMTP id 98e67ed59e1d1-32518b82606mr32688817a91.37.1756364465327;
-        Thu, 28 Aug 2025 00:01:05 -0700 (PDT)
-Received: from localhost.localdomain ([112.97.61.188])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-32787c455b8sm1632608a91.1.2025.08.28.00.00.59
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 28 Aug 2025 00:01:04 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Benjamin Berg <benjamin.berg@intel.com>,
-	Tiwei Bie <tiwei.btw@antgroup.com>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: linmq006@gmail.com
-Subject: [PATCH v2] um: virtio_uml: Fix use-after-free after put_device in probe
-Date: Thu, 28 Aug 2025 15:00:51 +0800
-Message-Id: <20250828070052.23606-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	Fri, 29 Aug 2025 18:10:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id C9BED456C4;
+	Fri, 29 Aug 2025 18:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C02C4CEF0;
+	Fri, 29 Aug 2025 18:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756491018;
+	bh=SXu3T17dYbp/ukZ8uJydGVdZ6zcCuFcjGzpDGMwa+Nc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ooi7zA7T9NmpAVf2EhalPYoUyuzdraHp5C4oj/l4tumul2weopj5FJ1utOM+alOHE
+	 kKgusS+zU63i44OmypyAXKPtErTb3bB1GndFYFN2okuf9dT8hCaNdpoFVkJ5p8agh+
+	 KkkEsMX5T3gC8JIm2Ov+5zT8s4L7tpEw7w/6ThgCsQL1Xlg6GXrAAbC6OLHWNTeh0w
+	 FXzd4JTSiV52V1QufIh9KkzXjYT+hvbp3zSg4ylf/XGvXabRt4g7AwLZFCUhy7Zrgf
+	 S8hNoGjWZuOpsjDmYOt//9aCCpoZgyxV/RwMeINevxHuMv5KmXpH/JQL39xFf9C15W
+	 UspQvwHff7f7A==
+Date: Fri, 29 Aug 2025 11:10:07 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Jinghao Jia <jinghao7@illinois.edu>,
+	Wentao Zhang <wentaoz5@illinois.edu>,
+	Sasha Levin <sashal@kernel.org>
+Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
+	andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
+	ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
+	chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
+	dvyukov@google.com, hpa@zytor.com, johannes@sipsolutions.net,
+	jpoimboe@kernel.org, justinstitt@google.com, kees@kernel.org,
+	kent.overstreet@linux.dev, linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org, Wentao Zhang <wentaoz5@illinois.edu>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
+	masahiroy@kernel.org, maskray@google.com,
+	mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
+	mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
+	ndesaulniers@google.com, oberpar@linux.ibm.com, paulmck@kernel.org,
+	peterz@infradead.org, richard@nod.at, rostedt@goodmis.org,
+	samitolvanen@google.com, samuel.sarkisian@boeing.com,
+	steven.h.vanderleest@boeing.com, tglx@linutronix.de,
+	tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
+Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code
+ Coverage and MC/DC with Clang
+Message-ID: <20250829181007.GA468030@ax162>
+References: <20241002045347.GE555609@thelio-3990X>
+ <20241002064252.41999-1-wentaoz5@illinois.edu>
+ <20241003232938.GA1663252@thelio-3990X>
+ <284fe8fa-c094-49b7-8e16-3318676d38e3@illinois.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <284fe8fa-c094-49b7-8e16-3318676d38e3@illinois.edu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250828_000106_881468_8E997E67 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20250829_111019_275568_597EBCAB 
+X-CRM114-Status: GOOD (  27.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,41 +94,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When register_virtio_device() fails in virtio_uml_probe(),
-the code sets vu_dev->registered = 1 even though
-the device was not successfully registered.
-This can lead to use-after-free or other issues.
+Hi Jinghao and Wentao,
 
-Fixes: 04e5b1fb0183 ("um: virtio: Remove device on disconnect")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-changes in v2:
-- statically 'return 0' in the normal path.
-- v1 link: https://lore.kernel.org/all/20250804075944.3612712-1-linmq006@gmail.com/
----
- arch/um/drivers/virtio_uml.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On Thu, Nov 21, 2024 at 11:05:14PM -0600, Jinghao Jia wrote:
+...
+> On 10/3/24 6:29 PM, Nathan Chancellor wrote:
+> > I seem to have narrowed down it to a few different configurations on top
+> > of x86_64_defconfig but I will include the full bad configuration as an
+> > attachment just in case anything else is relevant.
+...
+> > $ qemu-system-x86_64 \
+> >     -display none \
+> >     -nodefaults \
+> >     -M q35 \
+> >     -d unimp,guest_errors \
+> >     -append 'console=ttyS0 earlycon=uart8250,io,0x3f8' \
+> >     -kernel arch/x86/boot/bzImage
+> >     -initrd rootfs.cpio \
+> >     -cpu host \
+> >     -enable-kvm \
+> >     -m 8G \
+> >     -smp 8 \
+> >     -serial mon:stdio
+> > <hangs with no output>
+> 
+> This hang is caused by an early boot exception -- gdb shows the execution
+> reaches the halt loop in early_fixup_exception().  Dumping regs->ip associated
+> with this exception points us to the following instruction:
+> 
+> ffffffff89b58074:       48 ff 05 85 7f 4a 76    incq   0x764a7f85(%rip)        # 0 <fixed_percpu_data>
+> 
+> This is apparently an incorrect access to the per-cpu variable (the cpu offset
+> in %gs is needed) and triggers a null-ptr-deref. Without CONFIG_AMD_MEM_ENCRYPT
+> (one of the bad configs), it turns out the instruction is actually accessing
+> the llvm prof-counter of strscpy():
+> 
+> ffffffff89b85a04:       48 ff 05 6d 94 7d fa    incq   -0x5826b93(%rip)        # ffffffff8435ee78 <__profc__Z13sized_strscpyPcU25pass_dynamic_object_size1PKcU25pass_dynamic_object_size1m>
+> 
+> This symbol is left undefined in the bad vmlinux, which explains why the
+> faulting instruction is accessing address 0.  Tracing through the kernel
+> linking process shows that the symbol is still defined (as a weak symbol) in
+> vmlinux.a and vmlinux.o, but becomes undefined after the first round of linking
+> of the kernel image (.tmp_vmlinux1).
+> 
+> After playing with it a little bit, we found the creation of vmlinux.o to be
+> the problem. Specifically, if we use mold[1] instead of lld to create the
+> object and pass it to the later stages of kernel linking, the symbol will be
+> properly defined as a data symbol (and the kernel can boot).
+> 
+> It seems that the issue does not reproduce with LLVM-20. Nevertheless we have
+> reported[2] this to upstream llvm.
+> 
+> [1]: https://github.com/rui314/mold
+> [2]: https://github.com/llvm/llvm-project/issues/116575
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index ad8d78fb1d9a..de7867ae220d 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -1250,10 +1250,12 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 	device_set_wakeup_capable(&vu_dev->vdev.dev, true);
- 
- 	rc = register_virtio_device(&vu_dev->vdev);
--	if (rc)
-+	if (rc) {
- 		put_device(&vu_dev->vdev.dev);
-+		return rc;
-+	}
- 	vu_dev->registered = 1;
--	return rc;
-+	return 0;
- 
- error_init:
- 	os_close_file(vu_dev->sock);
--- 
-2.39.5 (Apple Git-154)
+Sasha pinged me on IRC earlier this week about this series and this
+issue, noting that he was unable to reproduce it with a similar
+toolchain version and the instructions above. I was able to confirm that
+at 6.17-rc1 with this patch set applied (after fixing a couple of minor
+conflicts), I no longer see this boot issue but it is still reproducible
+on 6.12.
 
+In attempting to narrow my bisect window to find what patch fixes this
+issue, I noticed that this configuration actually fails to build with
+
+  Absolute reference to symbol '__llvm_prf_cnts' not permitted in .head.text
+
+in 6.15 and 6.14 as a result of Ard's commit faf0ed487415 ("x86/boot:
+Reject absolute references in .head.text"). Bisecting between 6.15 and
+6.16 reveals Ard's commit a3cbbb4717e1 ("x86/boot: Move SEV startup code
+into startup/") resolves the build error and that kernel boots, which
+seems to make sense to me given what code was involved here. It is
+possible that arch/x86/boot/startup will want 'LLVM_COV_PROFILE := n'
+since all other instrumentation is disabled.
+
+I built v6.17-rc1 + this series with a fuller distribution configuration
+and CONFIG_LLVM_COV_PROFILE_ALL=y. That kernel boots fine in QEMU but I
+have done no further evaluation.
+
+Cheers,
+Nathan
 
