@@ -4,49 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B71BCA0EFF
-	for <linux-um@archiver.kernel.org>; Sat, 30 Aug 2025 12:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69431CA0FFF
+	for <linux-um@archiver.kernel.org>; Sat, 30 Aug 2025 18:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
 	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=E2sh7PkU99v95gXhyMFBk9zs8wQA9SBmo0ZEWgF1/ao=; b=Wdeb+6ne+ZXNjF
-	s1ELb7FvKnVUyBv1v1JdXIb47U0YLj2Wd8h5Fl2euBu7x7dOGrY6B2kpGRiB/qK0TppJ4BiHaJXj/
-	oQno8c11TZ41cr7FP6wZM9YtB2hdP6h1Ux9jc5dTmorAKYZfi7SabDLWs3OEBknd8RXJpnmVtN+6q
-	gfvIBv8ET7LpqU71MxJvENpfNeEl/iUFg+Po3SiD36J/EaU+AQC5aAkm/P/2FEYZuRa357spz2CMR
-	5cGqKiDc1WQPMpOFXfUv6Olomrwg8gkWPK0ptvJhBD/s68qEBpbXXjev/n/C/+LO/lKKn1DixPFTD
-	iPePrISQrm/O1ovHlK5g==;
+	List-Owner; bh=E2sh7PkU99v95gXhyMFBk9zs8wQA9SBmo0ZEWgF1/ao=; b=OizabC53Kvo6h0
+	J9ffKUxxmi+sJMS9AerPOTGFLa3B7VS6vl8N+hfW0ldObOlWx1q2gVaFLnG3ntD1WD2Ud6nxqg88J
+	OVUiVmz30GSAmQGBKfRInke3GRXvXi8g5oizbw3JxyupSPjz5NYLgKGO0fs7odqQl5hC+DLb8pHF0
+	e1LWiSG1W+WDCm2cC6oGSXYYzQHiXzh+oV71kZpnlCGMkBRigri2kW1sBdJNAWMvj3oQHlXYTSj31
+	zWnLIgP5jSpuGytFsSSZ7yXxS6cQjiO++7+9GMbuFUoP6jXVxCbhNrD5MkBZbL7Bqq1BGs5uL5Mu3
+	Ds3Wa639JLoHAr01X6Hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1usKTD-00000007r7n-06vF;
-	Sat, 30 Aug 2025 12:14:11 +0000
-Received: from mx2.inter.hu ([88.99.86.175])
+	id 1usQX6-00000008JLJ-3ICL;
+	Sat, 30 Aug 2025 18:42:36 +0000
+Received: from mail.saluslaboris.com ([170.231.171.166])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1usKTA-00000007r7S-3MZP
+	id 1usQX4-00000008JK7-2vyq
 	for linux-um@lists.infradead.org;
-	Sat, 30 Aug 2025 12:14:09 +0000
-Received: from mx2.inter.hu (localhost [127.0.0.1])
-	by mx2.inter.hu (Postfix) with ESMTP id 4FE812CE30
-	for <linux-um@lists.infradead.org>; Sat, 30 Aug 2025 14:03:54 +0200 (CEST)
+	Sat, 30 Aug 2025 18:42:35 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.saluslaboris.com (Postfix) with ESMTP id DF45CDD143C6
+	for <linux-um@lists.infradead.org>; Sat, 30 Aug 2025 13:33:19 -0500 (-05)
+Received: from mail.saluslaboris.com ([127.0.0.1])
+ by localhost (mail.saluslaboris.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id tr7RM30zucwa for <linux-um@lists.infradead.org>;
+ Sat, 30 Aug 2025 13:33:19 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.saluslaboris.com (Postfix) with ESMTP id 8F84ADD15F73
+	for <linux-um@lists.infradead.org>; Sat, 30 Aug 2025 13:29:09 -0500 (-05)
+X-Virus-Scanned: amavis at saluslaboris.com
+Received: from mail.saluslaboris.com ([127.0.0.1])
+ by localhost (mail.saluslaboris.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id h7EO6lgckP4k for <linux-um@lists.infradead.org>;
+ Sat, 30 Aug 2025 13:29:09 -0500 (-05)
 Received: from [45.138.16.152] (unknown [45.138.16.152])
-	(Authenticated sender: vecseii@martonyi.hu)
-	by mx2.inter.hu (Postfix) with ESMTPSA id A927B29D30
-	for <linux-um@lists.infradead.org>; Sat, 30 Aug 2025 13:48:59 +0200 (CEST)
-From: vecseii@martonyi.hu
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.saluslaboris.com (Postfix) with ESMTPSA id 82747DD144E7
+	for <linux-um@lists.infradead.org>; Sat, 30 Aug 2025 13:21:17 -0500 (-05)
+From: edwin.herrera@saluslaboris.com
 To: linux-um@lists.infradead.org
 Subject: xls
-Date: 30 Aug 2025 04:48:59 -0700
-Message-ID: <20250830044859.72FC9CEEF6DA15EE@martonyi.hu>
+Date: 30 Aug 2025 11:21:16 -0700
+Message-ID: <20250830112116.76F131FA8BF53795@saluslaboris.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: ClamAV using ClamSMTP
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250830_051408_992505_DDBCAC28 
-X-CRM114-Status: UNSURE (  -0.15  )
+X-CRM114-CacheID: sfid-20250830_114234_870030_CEBD499F 
+X-CRM114-Status: UNSURE (  -0.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
