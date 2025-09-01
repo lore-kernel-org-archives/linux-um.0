@@ -4,110 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E21CA0FFF
-	for <linux-um@archiver.kernel.org>; Mon,  1 Sep 2025 17:06:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8390ACA100A
+	for <linux-um@archiver.kernel.org>; Mon,  1 Sep 2025 17:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WYwpi82W7VIihj8uBfuL+qMQaHX4FplKNy0RIRsXcCU=; b=WKuayT+zQDEv6yrbJo1B2wCd2K
-	bEHi2Jr/gDALJRqHuRmCVjQsZYXoOotxSS7s/KFbLUsJLfeD6m7gSturk3ngLLM50ljnBJc/+nrCk
-	zy59QoADUWrPPTCHwFNyzwGwkNZZGYbDsxz3c5ErRpsF5sgIYXaHO63QmVzb1h57fJ5sxGAALLCJ8
-	SL2/X/mkQWXM8Au6Crx0g4sQclOUsD/+1pBKAj3yFRnLUlhhWw1hfU8rmAtzjcgUHr62wqco1ervE
-	/sn16kAS/Hx9rRBsX/rKv8UtPQhP72QGLhLWHdy36a0gicMZIDAj92MnxWU+SHh5Sd94AQp9onoHX
-	hNxLO9FA==;
+	bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=; b=xwV3LZP0SkvQkgsU73vf1GX89V
+	ZomI5YWRHHa6//HnGbcj3FiLCV7po/K1UcOYXc1GVvkuP6GuOGRMc+6DdCGxco6LraC5phNhmUXx5
+	dkMEmHpNwHeI96vkyEG+JWWgaMBPFjPWXqa+rYBNZA+acYPtvYbxozjb4kPRjVyeAcjaCUvfveF6p
+	yN0m+ALd6jy8SIiuE4LWepgIsSlIjo0E4+VkwswrYE26ELqJ4a5Lao9EsG8XjTd7LyI7589aeCG+J
+	KOJLJHgEQyHspgDnqB84W8yqEzjY8pdvRZ8/ckT1eyP/jKU3s13uTq1+h3Dde0yd5Uk2kGu4KtTi/
+	66YMrJRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut7zD-0000000DOm8-43rY;
-	Mon, 01 Sep 2025 17:06:31 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1ut7zF-0000000DOnN-11V9;
+	Mon, 01 Sep 2025 17:06:33 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut4kH-0000000CiIN-3LFI
-	for linux-um@bombadil.infradead.org;
-	Mon, 01 Sep 2025 13:38:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=WYwpi82W7VIihj8uBfuL+qMQaHX4FplKNy0RIRsXcCU=; b=qFPZaRxkdFPtlydnl/rN502yjz
-	Ev4KY8NsoYDZnuGy1cQn/4zgE583eNEq6TkHCgMd1/GCEgOvB4HxaXcOK6LPyCGd4E30mvQQjjDat
-	EDwrjE0m9O3kVxBiVepOmyu2iecSgqRwgOF3MJjI/15GjSKB7It8c1s3ua5ll0E0Ij0dfjLPl6vDG
-	XkwIRdXqNWU9DGHiQqzhcB+4sRvjxUa4ChhuWkwezQh5vRjOjPSWbfTakXGmnlXBwGCnx/0BzyWDY
-	QhDtqahGtDeNvSYd1GWG5Dkm9tKUXYcoElLybLFsVgqNf6/FXKFpwTQlQu4Nh4YMQtpAwOSpLXCGV
-	dQ982sWQ==;
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut4kE-00000003jsb-2SXW
+	id 1ut4lC-0000000CiV0-2DzR
 	for linux-um@lists.infradead.org;
-	Mon, 01 Sep 2025 13:38:52 +0000
+	Mon, 01 Sep 2025 13:39:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756733928;
+	s=mimecast20190719; t=1756733989;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WYwpi82W7VIihj8uBfuL+qMQaHX4FplKNy0RIRsXcCU=;
-	b=YRG/ThSg+vf5ZEJ0hj2j8TYCJ4er4FkTLnR1/gq83+s3TxcBZqDhnQySUgR9xO7vhHDhmn
-	AbEZAOz+jBQGdZPcNm63wz97VnaIYBcnnpqiseo6iNrP2L37bjQm+cU2EoXTCjAktb+2t8
-	l5LNVEYzkIPyOgP7qjr6/Xdz8/W0Js4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756733928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WYwpi82W7VIihj8uBfuL+qMQaHX4FplKNy0RIRsXcCU=;
-	b=YRG/ThSg+vf5ZEJ0hj2j8TYCJ4er4FkTLnR1/gq83+s3TxcBZqDhnQySUgR9xO7vhHDhmn
-	AbEZAOz+jBQGdZPcNm63wz97VnaIYBcnnpqiseo6iNrP2L37bjQm+cU2EoXTCjAktb+2t8
-	l5LNVEYzkIPyOgP7qjr6/Xdz8/W0Js4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=;
+	b=OhIIMhDhN0R9e+Qpi4e5rhyVhRYRQcc0i7MzxZ/PzPpDCXrV7EI5Z5wzzXSVR1a9nxXWYI
+	lW28PCavEN3yDNWWrdQP/UTU9w/PhTXyBCXOrWLH4r2KlgMvNUSyTEfmbAPZI6A0fBESuY
+	s/lWoMCFvoP13WdsDtmRy64Dg72jUWU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-16-gpKJd6htMB-bcLaS0XblMA-1; Mon, 01 Sep 2025 09:38:47 -0400
-X-MC-Unique: gpKJd6htMB-bcLaS0XblMA-1
-X-Mimecast-MFC-AGG-ID: gpKJd6htMB-bcLaS0XblMA_1756733926
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3d226c3a675so1023093f8f.1
-        for <linux-um@lists.infradead.org>; Mon, 01 Sep 2025 06:38:47 -0700 (PDT)
+ us-mta-589-EElcwhWzNvmTeWl4Z_9qlQ-1; Mon, 01 Sep 2025 09:39:48 -0400
+X-MC-Unique: EElcwhWzNvmTeWl4Z_9qlQ-1
+X-Mimecast-MFC-AGG-ID: EElcwhWzNvmTeWl4Z_9qlQ_1756733987
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3d92d519713so39262f8f.1
+        for <linux-um@lists.infradead.org>; Mon, 01 Sep 2025 06:39:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756733926; x=1757338726;
+        d=1e100.net; s=20230601; t=1756733987; x=1757338787;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WYwpi82W7VIihj8uBfuL+qMQaHX4FplKNy0RIRsXcCU=;
-        b=Wm+yMy3BXbeMOOoTTwT8GdhHdd3kF7IWH/3JzgL5ck/9XNEytdr+jDodti5qbO5Yek
-         EalyDsmY/bdMGbv32Gvi+XRO9spVRLqdEQcdbQD05KbKIL2Yybvos9Pd8/AD5dC7wpl5
-         OMNLlyFGUW3UfBO4bUgBxPJhuWBHNjCafR7x915d3zf2ZMJB9GjcsGth9bZ5ZZorRe1d
-         nkO+66lCdsUzQ1OVhxRyCrGfSNpHeolC0Fy3cCr9PCQyGn1FDYcu2vMFXAWv6KI7O+aa
-         VUOJS1GgJTiajM6uyoNzXGUnm5bq5Fz+55Y3nPe2diNvoGh8y9ILA+mLgYqiOmmfIqzh
-         lB1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXF6fEXt02AGk+ls5va24RwA12chcmc6hfRQWPVP4nIWM5FM4ZEokQr502zokTq1B/ymhdqba0jaw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxFQ/Qnik+7JgSAjFLnuQL26f8BIrI8chJetPbfAWFGdr9i7nq6
-	1ZQduvz5l/9e3zijkRwDYE7awfBw1PHOKMH6w3OtWFt+mhcmUpNWU56d8I/dJmoyX95SyyDtkpd
-	b4+5vVNnmJTBzEcNML4puHtTixIBO9CK4JMh9ebV02Sz1Sw1sTfh0R0zQqNdnv/5WsQ==
-X-Gm-Gg: ASbGncu5bZ83kEI8W25v2IXGosaJ/pBwddHwYG+CCWW0ihRKiHXWEk/x4sXOkkH05zx
-	o48bmwMK3MGCBmgSWh1K1x4v0sUG7C9HdeKrJJdsmAHGs+uB7TzrT+mXqMFeAMBMG0OxwdU3Ur7
-	dzRaEQ1oMvLiv69N15TCFGTakeYjj0IOobSm4nkwR8oAyGcsyNPC/Zu5j5bOyz9tUVwU0JGa26K
-	UwvNWpI0bfNEeeJZ3RCMSqNiFbUljykbjEizn9BUZbWHLGGrb0fxTpSSlX1OP2pSv8UWpMRREK2
-	kyWTU222MzEuV1ei2LAuo5B2nqWcCl/+neRuJmYk9hCfzCflS8e4Ord6XQ1Zpw7D+M5pG+PlGK1
-	XMV4HGBHm+9QMV+M0ubB6IocOBmaEghNrNHXwMjtxjKxiQnYrdLHB4mBK5wAZUSIhmSI=
-X-Received: by 2002:a05:6000:2102:b0:3d3:8711:d934 with SMTP id ffacd0b85a97d-3d38711dcc7mr3315120f8f.14.1756733925998;
-        Mon, 01 Sep 2025 06:38:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF3DliMw41VU4hxaIWHMLNG+OBiPKQ08qUXWAlqHFXtcpv953/vrh5P5rTJMXfl1jn2z2RQzw==
-X-Received: by 2002:a05:6000:2102:b0:3d3:8711:d934 with SMTP id ffacd0b85a97d-3d38711dcc7mr3315078f8f.14.1756733925456;
-        Mon, 01 Sep 2025 06:38:45 -0700 (PDT)
+        bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=;
+        b=wog06TjspwS+op8tv8URDCdqTs+Nu38H/yDGiKRvqc6njo6kNOCJ/wd+mdWBic0HYW
+         6jIRke4+uYEs8mmN6UbEULeX6Mx3YbbJaJ3yw+cvg2EpPshVRZonl5oS5HbCwi1KcUpu
+         8m0wd29s1h9R12ZyKyQIR4Q1GbRyGf8llMJoCA3eYQX1PQbd07O9cSejgd4XY7qBcI1P
+         R53w9IbcCARZm59kytErSC/SkD/zz169UseEhluI7WBkqb1KHh/pLZVYu4gHArDbTidZ
+         5OuA2xrBn+c71zkh+ChU+oEbfQQbgB8cUpJWZnwMf3J1DfFz6x8ukJAb0LvbxA4fKxNk
+         ksJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVQYMWU7v5N8eqSnQhgF+lfv4oK4QDnEx//+yKZ9qNceDW4P+aQsG+A5a9iHbkWJ8Z5j8NxdEk6pw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzF8p3aC7WFwIK7tHVsvZ26697kdWzNyAOxXlqChuvpIsj055BH
+	gQ7kcqBteNt9EsobFDz/7Hdx3w7a2Aah6/mbevKVpPVHRn9MmFH7uFCMYlcJ+r+dNqdPHgmTVyt
+	XOFqIu1YGhUFVPnhGtSfvI2vE18i5SfLtF8LXU6S+dlF7Fqelq6ZTyYn5dbbAJBXb3w==
+X-Gm-Gg: ASbGncv8FEqkl5xzGUjeB4J1aC061csfU0ck7k52zs81ecgtOo3cSIiaJU/L92M5Ule
+	RsmmQbCN84eg647zDI5QuhUJuYibJgLn/puRRljancXCo45oP09jLhwS95u3tP3uRZCupAfdmLo
+	BpbWMhEpS57uamAYlMYAVIImbsu+izVAUZhhw498vk/Q9bmcikTHWpcZFjVBVWIkTPS4c+oYoTh
+	Zc4YxjmxQmJtvdPQ6H1L2IJ/v9EydcVziyvbLLVx64YhgQJP5Ogb+4hPYhBX094kTclw2xnwmoN
+	b1riMlWbXaZyDjDYDWLKIXQ6dWVWiTpNRgfg1dpYQWxmnP0Zzck33BLYxObVORrCwJ4sN8Tc8jC
+	mymYElHGfK6VLOI0infJ/trxT+J5DDd2B1qmOxt4VRF2C1yzap71UJaBpcOlOd6lLl54=
+X-Received: by 2002:a05:6000:659:10b0:3d2:633f:d02e with SMTP id ffacd0b85a97d-3d2634f1711mr4945724f8f.2.1756733987329;
+        Mon, 01 Sep 2025 06:39:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF16bYB/CPbtI8bBu7Fukc9/QEkuztuZV5dc0Mxq3hfWjQ0mUxmJtka4Y09bvawf1aVKd4/5g==
+X-Received: by 2002:a05:6000:659:10b0:3d2:633f:d02e with SMTP id ffacd0b85a97d-3d2634f1711mr4945678f8f.2.1756733986750;
+        Mon, 01 Sep 2025 06:39:46 -0700 (PDT)
 Received: from ?IPV6:2003:d8:2f37:2b00:948c:dd9f:29c8:73f4? (p200300d82f372b00948cdd9f29c873f4.dip0.t-ipconnect.de. [2003:d8:2f37:2b00:948c:dd9f:29c8:73f4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d21a80c723sm10359081f8f.9.2025.09.01.06.38.43
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b6f0c6fe5sm238421945e9.5.2025.09.01.06.39.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Sep 2025 06:38:45 -0700 (PDT)
-Message-ID: <48ee3dd0-9af3-4513-aef2-25e185cce349@redhat.com>
-Date: Mon, 1 Sep 2025 15:38:42 +0200
+        Mon, 01 Sep 2025 06:39:46 -0700 (PDT)
+Message-ID: <72558e21-2ebf-448a-a93a-3d1a3181a592@redhat.com>
+Date: Mon, 1 Sep 2025 15:39:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] copy_process: pass clone_flags as u64 across
- calltree
+Subject: Re: [PATCH v2 3/4] arch: copy_thread: pass clone_flags as u64
 To: schuster.simon@siemens-energy.com, Dinh Nguyen <dinguyen@kernel.org>,
  Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
  Andrew Morton <akpm@linux-foundation.org>,
@@ -129,7 +103,7 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
  linux-um@lists.infradead.org
 References: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
- <20250901-nios2-implement-clone3-v2-2-53fcf5577d57@siemens-energy.com>
+ <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -175,16 +149,16 @@ Autocrypt: addr=david@redhat.com; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20250901-nios2-implement-clone3-v2-2-53fcf5577d57@siemens-energy.com>
+In-Reply-To: <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: NDVfpFr20O_bvYqv8ESe6DVriNonEvE__RSUPF69K_0_1756733926
+X-Mimecast-MFC-PROC-ID: 8-8z9HuR2LuWbqeW8LcgJQJ1vCEEkXZDlfCOMc8fVfc_1756733987
 X-Mimecast-Originator: redhat.com
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250901_143850_964349_9D4CFDB3 
-X-CRM114-Status: GOOD (  16.70  )
+X-CRM114-CacheID: sfid-20250901_063950_647785_DC645BF7 
+X-CRM114-Status: GOOD (  13.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -212,65 +186,43 @@ On 01.09.25 15:09, Simon Schuster via B4 Relay wrote:
 > (CLONE_CLEAR_SIGHAND and CLONE_INTO_CGROUP) are evaluated, this is still
 > undesirable in terms of the principle of least surprise.
 > 
-> Thus, this commit fixes all relevant interfaces of callees to
-> sys_clone3/copy_process (excluding the architecture-specific
-> copy_thread) to consistently pass clone_flags as u64, so that
-> no truncation to 32-bit integers occurs on 32-bit architectures.
+> Thus, this commit fixes all relevant interfaces of the copy_thread
+> function that is called from copy_process to consistently pass
+> clone_flags as u64, so that no truncation to 32-bit integers occurs on
+> 32-bit architectures.
 > 
 > Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
-> Reviewed-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 > ---
->   block/blk-ioc.c                | 2 +-
->   fs/namespace.c                 | 2 +-
->   include/linux/cgroup.h         | 4 ++--
->   include/linux/cred.h           | 2 +-
->   include/linux/iocontext.h      | 6 +++---
->   include/linux/ipc_namespace.h  | 4 ++--
->   include/linux/lsm_hook_defs.h  | 2 +-
->   include/linux/mnt_namespace.h  | 2 +-
->   include/linux/nsproxy.h        | 2 +-
->   include/linux/pid_namespace.h  | 4 ++--
->   include/linux/rseq.h           | 4 ++--
->   include/linux/sched/task.h     | 2 +-
->   include/linux/security.h       | 4 ++--
->   include/linux/sem.h            | 4 ++--
->   include/linux/time_namespace.h | 4 ++--
->   include/linux/uprobes.h        | 4 ++--
->   include/linux/user_events.h    | 4 ++--
->   include/linux/utsname.h        | 4 ++--
->   include/net/net_namespace.h    | 4 ++--
->   include/trace/events/task.h    | 6 +++---
->   ipc/namespace.c                | 2 +-
->   ipc/sem.c                      | 2 +-
->   kernel/cgroup/namespace.c      | 2 +-
->   kernel/cred.c                  | 2 +-
->   kernel/events/uprobes.c        | 2 +-
->   kernel/fork.c                  | 8 ++++----
->   kernel/nsproxy.c               | 4 ++--
->   kernel/pid_namespace.c         | 2 +-
->   kernel/sched/core.c            | 4 ++--
->   kernel/sched/fair.c            | 2 +-
->   kernel/sched/sched.h           | 4 ++--
->   kernel/time/namespace.c        | 2 +-
->   kernel/utsname.c               | 2 +-
->   net/core/net_namespace.c       | 2 +-
->   security/apparmor/lsm.c        | 2 +-
->   security/security.c            | 2 +-
->   security/selinux/hooks.c       | 2 +-
->   security/tomoyo/tomoyo.c       | 2 +-
->   38 files changed, 59 insertions(+), 59 deletions(-)
+>   arch/alpha/kernel/process.c      | 2 +-
+>   arch/arc/kernel/process.c        | 2 +-
+>   arch/arm/kernel/process.c        | 2 +-
+>   arch/arm64/kernel/process.c      | 2 +-
+>   arch/csky/kernel/process.c       | 2 +-
+>   arch/hexagon/kernel/process.c    | 2 +-
+>   arch/loongarch/kernel/process.c  | 2 +-
+>   arch/m68k/kernel/process.c       | 2 +-
+>   arch/microblaze/kernel/process.c | 2 +-
+>   arch/mips/kernel/process.c       | 2 +-
+>   arch/nios2/kernel/process.c      | 2 +-
+>   arch/openrisc/kernel/process.c   | 2 +-
+>   arch/parisc/kernel/process.c     | 2 +-
+>   arch/powerpc/kernel/process.c    | 2 +-
+>   arch/riscv/kernel/process.c      | 2 +-
+>   arch/s390/kernel/process.c       | 2 +-
+>   arch/sh/kernel/process_32.c      | 2 +-
+>   arch/sparc/kernel/process_32.c   | 2 +-
+>   arch/sparc/kernel/process_64.c   | 2 +-
+>   arch/um/kernel/process.c         | 2 +-
+>   arch/x86/include/asm/fpu/sched.h | 2 +-
+>   arch/x86/include/asm/shstk.h     | 4 ++--
+>   arch/x86/kernel/fpu/core.c       | 2 +-
+>   arch/x86/kernel/process.c        | 2 +-
+>   arch/x86/kernel/shstk.c          | 2 +-
+>   arch/xtensa/kernel/process.c     | 2 +-
+>   26 files changed, 27 insertions(+), 27 deletions(-)
 > 
-> diff --git a/block/blk-ioc.c b/block/blk-ioc.c
-> index 9fda3906e5f5..d15918d7fabb 100644
-> --- a/block/blk-ioc.c
 
-(adjust To: list)
-
-Hopefully we caught most of them. The ones not called "clone_flags" are 
-a bit nasty.
-
-We could have split of some changes (e.g., trace event), but likely not 
-worth  it.
+(Adjust To: list)
 
 Thanks!
 
