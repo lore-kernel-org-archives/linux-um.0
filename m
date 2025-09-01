@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 454D3CA1011
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43810CA1010
 	for <linux-um@archiver.kernel.org>; Tue,  2 Sep 2025 21:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
@@ -12,46 +12,60 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:
 	Subject:Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=R9h85W+fSSI+7uZFmaVzkxnCdkX5mPfS4n/17CJoupQ=; b=lWNLFDhgxc8Hdv2WxaUG0ljhVE
-	NZFtCxbCaP7Hiik2Vn9gboHi3Zzkhwy8NbpouuMdXtOazW+kNLsZmCtRhtsweYPa30fp2W19nKKlc
-	j/TfsdUpEEPSPbaaKqbW9Lrog3uTc39ilieOHqHFeavGxvNm5hKZB0vQeLiPUbXdBIUppATtX/pgn
-	QCinn0iFI0zXshI4eTishyyApJKGvFORgntRQb97mbCqHmjUlwhAHgF74UvUvXoFkK3vr/ZkUwvYA
-	9YTvDHUl6CM22T0s9K44Nd3MqjVUm5BFXv8oHe/GvfI0Ece2sn+yuy0qH3lBWH3YbqV8Chj6D3kqA
-	h01Ln9sg==;
+	bh=xioHQ5KTG+jebQzTOOBaTVLdwwFRjLNCqggcN57Q9EM=; b=z5VhQ+Z0zNOnGlvPf3myeDhlo2
+	rWOdEdd6TEKvWG8MZYCIATj9+oWBmmyCKfXwEDu0neRuYSN+zb6zJr8w2Q8ckdbO7+QalBJHhIq4o
+	0vpZpPY1oNCUGxX8E42VCqfm2bSzgb2CBTgzZ3e9wYBEm4vY8k/NQXpebUKH0UhXaTmnAg6Toelgw
+	J2c9igQQh35aT/gWta/kTT5MH8ZCipyjuuE289BsDjmfZZo5dhtr3GqGxoZg8ZgoHJQcK/FrD2sMr
+	E5dakDW3ypd04ZeB0ppZZzWnQQhmx0KXdAf6GcGFmlozRcl1OAzHJoq8MwLOJsZT4Om1dp8bmpdAN
+	/gUh6gSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1utYlq-00000002ABZ-0PZb;
+	id 1utYlq-00000002AC4-35pg;
 	Tue, 02 Sep 2025 21:42:30 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut4J9-0000000Cdq8-3s17;
-	Mon, 01 Sep 2025 13:10:52 +0000
+	id 1ut4JK-0000000CdsM-0KiA;
+	Mon, 01 Sep 2025 13:11:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Reply-To:Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Content-ID:Content-Description;
+	bh=xioHQ5KTG+jebQzTOOBaTVLdwwFRjLNCqggcN57Q9EM=; b=aq+mflZasVG2hQiFUYERq/oW+Y
+	3rvFpMjYJeqSViuSvJxBe+crzh3bd3pff9XMu1VX8WwCyRFyXa6o1oF1Epo+mh2nfWbMH5UM/Za2i
+	eGhwYm1hAzV6F6MKeB2mc2RV/yaKwwYj+FTeSxzwz17Za9GLogk0qieWjRmXwi9xa7jXVuBXaWM1t
+	ic7EgnhuoJ6BlQd8XTqWpl6sugCsd6QxWCb+FVRl9r9LqNHdO6ITfYiGr5C3xphm8nBXtbDPv/oN6
+	ae83tFyZJ4b8KD3FDJwc6vMLDecH6oWu6Ez19L01AcQMMyGl+BcpvEZRq6pxA/22Gk8FmC/Dv5kmg
+	IMlmR4lA==;
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ut4JE-00000003ixr-2QFO;
+	Mon, 01 Sep 2025 13:11:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D227D601E3;
-	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 45B16C4CEF9;
+	by sea.source.kernel.org (Postfix) with ESMTP id 0ED504501F;
+	Mon,  1 Sep 2025 13:10:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3F4DC4CEFA;
 	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1756732249;
-	bh=GpW3AHZfYEj2qBnLMRG4myPQbSyXtECqk6ttoxpv2os=;
+	bh=VOxu8arS/s7gFRMCG19RKI+wB0Hc+6Kyu4sWG8FSmZ0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=iaoRKEYseCqQuDc8g1DT9Ylgds2yXTGrRDMFrMWem9akxSs2kSuDZh8RQy7GyhVc0
-	 DgRW0DslNS/vaFDraU32r0MjYx+fOSj7uoPNFHlkuuXYvgF1l43svB/w5612yBF+xJ
-	 25fgVdHp0mlGc/VdDsfBP4qIyALFA7BKLsJbQ73ickI5yAaCdxOpDZAB0XQL8T8L5F
-	 dx5EwoZS2e25GQhGK0HQZUzgv2mCfV/qUx5aQ/SatgfyRijgLuYK357zFCmZazIp6+
-	 A+uvFfZ+PHpkq8v4BfU9r2WTm7F1rYTj29lF0zZTwKApQf/GIGwsNmiQOBYAXmaqwU
-	 H9oLgllzFmmaQ==
+	b=j4YsDfs041pcEA4PsPM9Fv3cx+Fety1JSDdn80JTlpQfdfbDx49Pj5d73mfbToakx
+	 PgLya/HeSbiEPI6JiRWwnf1/+pAmv8a8iYyHCBp4Ds6IqCe4hIez3MU/eu+hu2SbYz
+	 lB4Gfs5Y6gmt4q60PKIgOXRBHP3WM5szwT1cuKL2dPIwcwbo6IwaMAPb7M6vbKuZPg
+	 afObqthiKmeuNnWe2LTyybg0Ox7TgWLw5aDYxA3PnhAkUwFQMdAsEPqIaAFdzVpS01
+	 mAjgyzCoEp77jX8f+cQSGeAlXuVYIZcMVOt/vaDMeLJVmMQHLoFTN/48ISQ6HnWeAn
+	 I5XBnsB1pmvdQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2517ACA1005;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCDDCA0FF0;
 	Mon,  1 Sep 2025 13:10:49 +0000 (UTC)
 From: Simon Schuster via B4 Relay <devnull+schuster.simon.siemens-energy.com@kernel.org>
-Date: Mon, 01 Sep 2025 15:09:50 +0200
-Subject: [PATCH v2 1/4] copy_sighand: Handle architectures where
- sizeof(unsigned long) < sizeof(u64)
+Date: Mon, 01 Sep 2025 15:09:53 +0200
+Subject: [PATCH v2 4/4] nios2: implement architecture-specific portion of
+ sys_clone3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250901-nios2-implement-clone3-v2-1-53fcf5577d57@siemens-energy.com>
+Message-Id: <20250901-nios2-implement-clone3-v2-4-53fcf5577d57@siemens-energy.com>
 References: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
 In-Reply-To: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
 To: Dinh Nguyen <dinguyen@kernel.org>, 
@@ -136,19 +150,22 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
  linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
  linux-um@lists.infradead.org, 
- Simon Schuster <schuster.simon@siemens-energy.com>, stable@vger.kernel.org
+ Simon Schuster <schuster.simon@siemens-energy.com>
 X-Mailer: b4 0.14.3-dev-2ce6c
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756732247; l=1758;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756732247; l=2260;
  i=schuster.simon@siemens-energy.com; s=20250818;
  h=from:subject:message-id;
- bh=jiicr5q6EjOw72QZuuzAVeCE1iVdBx6rJ537Y02m/X4=;
- b=n8Guw0NV6Suno8Y591Jo1ssUzIYYJXAn95WjDsM26gTG4Diqo4wBaGcjduFDj4CyxOi+UP+1Q
- bc9vUqGSvG9BfaNZEbUUprgB/BwuM16c7iW1ZlIRYBMLPMmyTCfDYFP
+ bh=af84J4YQt0c2u1+xik140Isbk9cuIhCMOLjW6thJwsY=;
+ b=d7NLA1iQDxLQGisMH0KtrKIUv8tslRZQ31+BK5A9IfF7XRRqtN0/NtBHPN1763CSVsp/AaVUs
+ Xc5SawZJT/gDUL4ePU56689mSaXuGDc8R0/3KXZ7O8sV4jJB/D/Z4M0
 X-Developer-Key: i=schuster.simon@siemens-energy.com; a=ed25519;
  pk=PUhOMiSp43aSeRE1H41KApxYOluamBFFiMfKlBjocvo=
 X-Endpoint-Received: by B4 Relay for
  schuster.simon@siemens-energy.com/20250818 with auth_id=495
 X-Original-From: Simon Schuster <schuster.simon@siemens-energy.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250901_141057_055711_78C3C6D3 
+X-CRM114-Status: GOOD (  17.00  )
 X-Mailman-Approved-At: Tue, 02 Sep 2025 11:45:36 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -167,52 +184,71 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Simon Schuster <schuster.simon@siemens-energy.com>
 
-With the introduction of clone3 in commit 7f192e3cd316 ("fork: add
-clone3") the effective bit width of clone_flags on all architectures was
-increased from 32-bit to 64-bit. However, the signature of the copy_*
-helper functions (e.g., copy_sighand) used by copy_process was not
-adapted.
+This commit adds the sys_clone3 entry point for nios2. An
+architecture-specific wrapper (__sys_clone3) is required to save and
+restore additional registers to the kernel stack via SAVE_SWITCH_STACK
+and RESTORE_SWITCH_STACK.
 
-As such, they truncate the flags on any 32-bit architectures that
-supports clone3 (arc, arm, csky, m68k, microblaze, mips32, openrisc,
-parisc32, powerpc32, riscv32, x86-32 and xtensa).
-
-For copy_sighand with CLONE_CLEAR_SIGHAND being an actual u64
-constant, this triggers an observable bug in kernel selftest
-clone3_clear_sighand:
-
-        if (clone_flags & CLONE_CLEAR_SIGHAND)
-
-in function copy_sighand within fork.c will always fail given:
-
-        unsigned long /* == uint32_t */ clone_flags
-        #define CLONE_CLEAR_SIGHAND 0x100000000ULL
-
-This commit fixes the bug by always passing clone_flags to copy_sighand
-via their declared u64 type, invariant of architecture-dependent integer
-sizes.
-
-Fixes: b612e5df4587 ("clone3: add CLONE_CLEAR_SIGHAND")
-Cc: stable@vger.kernel.org # linux-5.5+
 Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
-Reviewed-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 ---
- kernel/fork.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/nios2/include/asm/syscalls.h | 1 +
+ arch/nios2/include/asm/unistd.h   | 2 --
+ arch/nios2/kernel/entry.S         | 6 ++++++
+ arch/nios2/kernel/syscall_table.c | 1 +
+ 4 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 5115be549234..82f5d52fecf1 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1599,7 +1599,7 @@ static int copy_files(unsigned long clone_flags, struct task_struct *tsk,
- 	return 0;
- }
+diff --git a/arch/nios2/include/asm/syscalls.h b/arch/nios2/include/asm/syscalls.h
+index b4d4ed3bf9c8..0e214b0a0ac8 100644
+--- a/arch/nios2/include/asm/syscalls.h
++++ b/arch/nios2/include/asm/syscalls.h
+@@ -7,6 +7,7 @@
  
--static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
-+static int copy_sighand(u64 clone_flags, struct task_struct *tsk)
- {
- 	struct sighand_struct *sig;
+ int sys_cacheflush(unsigned long addr, unsigned long len,
+ 				unsigned int op);
++asmlinkage long __sys_clone3(struct clone_args __user *uargs, size_t size);
  
+ #include <asm-generic/syscalls.h>
+ 
+diff --git a/arch/nios2/include/asm/unistd.h b/arch/nios2/include/asm/unistd.h
+index 1146e56473c5..213f6de3cf7b 100644
+--- a/arch/nios2/include/asm/unistd.h
++++ b/arch/nios2/include/asm/unistd.h
+@@ -7,6 +7,4 @@
+ #define __ARCH_WANT_STAT64
+ #define __ARCH_WANT_SET_GET_RLIMIT
+ 
+-#define __ARCH_BROKEN_SYS_CLONE3
+-
+ #endif
+diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
+index 99f0a65e6234..dd40dfd908e5 100644
+--- a/arch/nios2/kernel/entry.S
++++ b/arch/nios2/kernel/entry.S
+@@ -403,6 +403,12 @@ ENTRY(sys_clone)
+ 	addi    sp, sp, 4
+ 	RESTORE_SWITCH_STACK
+ 	ret
++/* long syscall(SYS_clone3, struct clone_args *cl_args, size_t size); */
++ENTRY(__sys_clone3)
++	SAVE_SWITCH_STACK
++	call	sys_clone3
++	RESTORE_SWITCH_STACK
++	ret
+ 
+ ENTRY(sys_rt_sigreturn)
+ 	SAVE_SWITCH_STACK
+diff --git a/arch/nios2/kernel/syscall_table.c b/arch/nios2/kernel/syscall_table.c
+index 434694067d8f..c99818aac9e1 100644
+--- a/arch/nios2/kernel/syscall_table.c
++++ b/arch/nios2/kernel/syscall_table.c
+@@ -13,6 +13,7 @@
+ #define __SYSCALL_WITH_COMPAT(nr, native, compat)        __SYSCALL(nr, native)
+ 
+ #define sys_mmap2 sys_mmap_pgoff
++#define sys_clone3 __sys_clone3
+ 
+ void *sys_call_table[__NR_syscalls] = {
+ 	[0 ... __NR_syscalls-1] = sys_ni_syscall,
 
 -- 
 2.39.5
