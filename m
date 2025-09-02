@@ -4,90 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8390ACA100A
-	for <linux-um@archiver.kernel.org>; Mon,  1 Sep 2025 17:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9D3CCA1005
+	for <linux-um@archiver.kernel.org>; Tue,  2 Sep 2025 13:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=; b=xwV3LZP0SkvQkgsU73vf1GX89V
-	ZomI5YWRHHa6//HnGbcj3FiLCV7po/K1UcOYXc1GVvkuP6GuOGRMc+6DdCGxco6LraC5phNhmUXx5
-	dkMEmHpNwHeI96vkyEG+JWWgaMBPFjPWXqa+rYBNZA+acYPtvYbxozjb4kPRjVyeAcjaCUvfveF6p
-	yN0m+ALd6jy8SIiuE4LWepgIsSlIjo0E4+VkwswrYE26ELqJ4a5Lao9EsG8XjTd7LyI7589aeCG+J
-	KOJLJHgEQyHspgDnqB84W8yqEzjY8pdvRZ8/ckT1eyP/jKU3s13uTq1+h3Dde0yd5Uk2kGu4KtTi/
-	66YMrJRA==;
+	bh=voGobjfJ+JDIyxPuu8fGQb2u9QP7Z513vboXRHjWrpI=; b=VRJLWyt3OBmIUWfq4p0WKAyBwh
+	3l6TE2vmA/Ug9BX1x+Y2KnGhqhID3VTUggPblMbVnTJOgirFBEAlp4g63/IDHAHCZae83kpuzsngP
+	snVTsNrRmTZBS/heOuR/15fEFVvWytVG9HKPcPt45ZwcVycNzDhQ0IjS+ryBQMNg2Foux5L2gU/4K
+	r+AfDiwjvA4Zt1Qm6vXaKpOvhS2KmPuG340y0Z3s4NBW5pCgOUJx9aIEuo1x3HR2SRGvxM5P1Yj8E
+	PlzXLyYzeVaqqGrtKLK1PXfcXWz1RHnztHb5HEwKUOJfZkOxa8GikISFv9DbTXFr0KG3dhIa3zYhK
+	PrWXyHNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut7zF-0000000DOnN-11V9;
-	Mon, 01 Sep 2025 17:06:33 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1utRDq-0000000062d-3tcQ;
+	Tue, 02 Sep 2025 13:38:54 +0000
+Received: from smtp-out3.simply.com ([94.231.106.210])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ut4lC-0000000CiV0-2DzR
-	for linux-um@lists.infradead.org;
-	Mon, 01 Sep 2025 13:39:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1756733989;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=;
-	b=OhIIMhDhN0R9e+Qpi4e5rhyVhRYRQcc0i7MzxZ/PzPpDCXrV7EI5Z5wzzXSVR1a9nxXWYI
-	lW28PCavEN3yDNWWrdQP/UTU9w/PhTXyBCXOrWLH4r2KlgMvNUSyTEfmbAPZI6A0fBESuY
-	s/lWoMCFvoP13WdsDtmRy64Dg72jUWU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-EElcwhWzNvmTeWl4Z_9qlQ-1; Mon, 01 Sep 2025 09:39:48 -0400
-X-MC-Unique: EElcwhWzNvmTeWl4Z_9qlQ-1
-X-Mimecast-MFC-AGG-ID: EElcwhWzNvmTeWl4Z_9qlQ_1756733987
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3d92d519713so39262f8f.1
-        for <linux-um@lists.infradead.org>; Mon, 01 Sep 2025 06:39:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756733987; x=1757338787;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H3id/gOofLyuF/iZzklWJhNUkAhzxEH18RZFHORTa7Q=;
-        b=wog06TjspwS+op8tv8URDCdqTs+Nu38H/yDGiKRvqc6njo6kNOCJ/wd+mdWBic0HYW
-         6jIRke4+uYEs8mmN6UbEULeX6Mx3YbbJaJ3yw+cvg2EpPshVRZonl5oS5HbCwi1KcUpu
-         8m0wd29s1h9R12ZyKyQIR4Q1GbRyGf8llMJoCA3eYQX1PQbd07O9cSejgd4XY7qBcI1P
-         R53w9IbcCARZm59kytErSC/SkD/zz169UseEhluI7WBkqb1KHh/pLZVYu4gHArDbTidZ
-         5OuA2xrBn+c71zkh+ChU+oEbfQQbgB8cUpJWZnwMf3J1DfFz6x8ukJAb0LvbxA4fKxNk
-         ksJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQYMWU7v5N8eqSnQhgF+lfv4oK4QDnEx//+yKZ9qNceDW4P+aQsG+A5a9iHbkWJ8Z5j8NxdEk6pw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzF8p3aC7WFwIK7tHVsvZ26697kdWzNyAOxXlqChuvpIsj055BH
-	gQ7kcqBteNt9EsobFDz/7Hdx3w7a2Aah6/mbevKVpPVHRn9MmFH7uFCMYlcJ+r+dNqdPHgmTVyt
-	XOFqIu1YGhUFVPnhGtSfvI2vE18i5SfLtF8LXU6S+dlF7Fqelq6ZTyYn5dbbAJBXb3w==
-X-Gm-Gg: ASbGncv8FEqkl5xzGUjeB4J1aC061csfU0ck7k52zs81ecgtOo3cSIiaJU/L92M5Ule
-	RsmmQbCN84eg647zDI5QuhUJuYibJgLn/puRRljancXCo45oP09jLhwS95u3tP3uRZCupAfdmLo
-	BpbWMhEpS57uamAYlMYAVIImbsu+izVAUZhhw498vk/Q9bmcikTHWpcZFjVBVWIkTPS4c+oYoTh
-	Zc4YxjmxQmJtvdPQ6H1L2IJ/v9EydcVziyvbLLVx64YhgQJP5Ogb+4hPYhBX094kTclw2xnwmoN
-	b1riMlWbXaZyDjDYDWLKIXQ6dWVWiTpNRgfg1dpYQWxmnP0Zzck33BLYxObVORrCwJ4sN8Tc8jC
-	mymYElHGfK6VLOI0infJ/trxT+J5DDd2B1qmOxt4VRF2C1yzap71UJaBpcOlOd6lLl54=
-X-Received: by 2002:a05:6000:659:10b0:3d2:633f:d02e with SMTP id ffacd0b85a97d-3d2634f1711mr4945724f8f.2.1756733987329;
-        Mon, 01 Sep 2025 06:39:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF16bYB/CPbtI8bBu7Fukc9/QEkuztuZV5dc0Mxq3hfWjQ0mUxmJtka4Y09bvawf1aVKd4/5g==
-X-Received: by 2002:a05:6000:659:10b0:3d2:633f:d02e with SMTP id ffacd0b85a97d-3d2634f1711mr4945678f8f.2.1756733986750;
-        Mon, 01 Sep 2025 06:39:46 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f37:2b00:948c:dd9f:29c8:73f4? (p200300d82f372b00948cdd9f29c873f4.dip0.t-ipconnect.de. [2003:d8:2f37:2b00:948c:dd9f:29c8:73f4])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45b6f0c6fe5sm238421945e9.5.2025.09.01.06.39.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Sep 2025 06:39:46 -0700 (PDT)
-Message-ID: <72558e21-2ebf-448a-a93a-3d1a3181a592@redhat.com>
-Date: Mon, 1 Sep 2025 15:39:44 +0200
+	id 1utPRd-0000000Gynk-1BrA;
+	Tue, 02 Sep 2025 11:45:03 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4cGP6x6Rpwz1FZPJ;
+	Tue,  2 Sep 2025 13:44:57 +0200 (CEST)
+Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4cGP6w5mgsz1FXjD;
+	Tue,  2 Sep 2025 13:44:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=simplycom2; t=1756813497;
+	bh=voGobjfJ+JDIyxPuu8fGQb2u9QP7Z513vboXRHjWrpI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=jXmzEnXapdgWj3k2C76LGG7k/5mt1kwvMqAYSfMFYlJ0dMOQ80Oj2YE0pnZAtNJ4t
+	 tXQk/LzaZA57Nv160y42KGcSc12HLtx5zDkXLTwO001yujBIUCUp0jXWbSqOup1wEK
+	 caelEQWo/j1aiLxV7BPWjSbstlue7ClkuM93YSG2cSzlCJSLWryT6cSw2EEQcr+aVF
+	 FTt0lGn6fnMuHg7U0U6sd3U2Ku9tEiPKwlVMzDHUsOHxPUryMAOV1qAvelOgjen0aR
+	 RoDQinmHdiIG1eCVLztKOXDNMYphrSPAPE4G8u5ceaF4FDq1DzCH6UTTJUx5w29cc0
+	 vZYTj+Lq2QLjQ==
+Message-ID: <92bace9a-b5c4-4ea1-a1f7-4742c15a64a0@gaisler.com>
+Date: Tue, 2 Sep 2025 13:44:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 3/4] arch: copy_thread: pass clone_flags as u64
-To: schuster.simon@siemens-energy.com, Dinh Nguyen <dinguyen@kernel.org>,
- Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
- <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Arnd Bergmann <arnd@arndb.de>
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org,
  linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -104,61 +68,17 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org
 References: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
  <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 8-8z9HuR2LuWbqeW8LcgJQJ1vCEEkXZDlfCOMc8fVfc_1756733987
-X-Mimecast-Originator: redhat.com
+ <f2371539-cd4e-4d70-9576-4bb1c677104c@gaisler.com>
+ <11a4d0a953e3a9405177d67f287c69379a2b2f8f.camel@physik.fu-berlin.de>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <11a4d0a953e3a9405177d67f287c69379a2b2f8f.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250901_063950_647785_DC645BF7 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20250902_044501_607328_19799C7E 
+X-CRM114-Status: UNSURE (   5.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -173,64 +93,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 01.09.25 15:09, Simon Schuster via B4 Relay wrote:
-> From: Simon Schuster <schuster.simon@siemens-energy.com>
+On 2025-09-02 09:15, John Paul Adrian Glaubitz wrote:
+>> Thanks for this and for the whole series! Needed foundation for a
+>> sparc32 clone3 implementation as well.
 > 
-> With the introduction of clone3 in commit 7f192e3cd316 ("fork: add
-> clone3") the effective bit width of clone_flags on all architectures was
-> increased from 32-bit to 64-bit, with a new type of u64 for the flags.
-> However, for most consumers of clone_flags the interface was not
-> changed from the previous type of unsigned long.
-> 
-> While this works fine as long as none of the new 64-bit flag bits
-> (CLONE_CLEAR_SIGHAND and CLONE_INTO_CGROUP) are evaluated, this is still
-> undesirable in terms of the principle of least surprise.
-> 
-> Thus, this commit fixes all relevant interfaces of the copy_thread
-> function that is called from copy_process to consistently pass
-> clone_flags as u64, so that no truncation to 32-bit integers occurs on
-> 32-bit architectures.
-> 
-> Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
-> ---
->   arch/alpha/kernel/process.c      | 2 +-
->   arch/arc/kernel/process.c        | 2 +-
->   arch/arm/kernel/process.c        | 2 +-
->   arch/arm64/kernel/process.c      | 2 +-
->   arch/csky/kernel/process.c       | 2 +-
->   arch/hexagon/kernel/process.c    | 2 +-
->   arch/loongarch/kernel/process.c  | 2 +-
->   arch/m68k/kernel/process.c       | 2 +-
->   arch/microblaze/kernel/process.c | 2 +-
->   arch/mips/kernel/process.c       | 2 +-
->   arch/nios2/kernel/process.c      | 2 +-
->   arch/openrisc/kernel/process.c   | 2 +-
->   arch/parisc/kernel/process.c     | 2 +-
->   arch/powerpc/kernel/process.c    | 2 +-
->   arch/riscv/kernel/process.c      | 2 +-
->   arch/s390/kernel/process.c       | 2 +-
->   arch/sh/kernel/process_32.c      | 2 +-
->   arch/sparc/kernel/process_32.c   | 2 +-
->   arch/sparc/kernel/process_64.c   | 2 +-
->   arch/um/kernel/process.c         | 2 +-
->   arch/x86/include/asm/fpu/sched.h | 2 +-
->   arch/x86/include/asm/shstk.h     | 4 ++--
->   arch/x86/kernel/fpu/core.c       | 2 +-
->   arch/x86/kernel/process.c        | 2 +-
->   arch/x86/kernel/shstk.c          | 2 +-
->   arch/xtensa/kernel/process.c     | 2 +-
->   26 files changed, 27 insertions(+), 27 deletions(-)
-> 
+> Can you implement clone3 for sparc64 as well?
 
-(Adjust To: list)
+(heavily pairing down the to list)
 
-Thanks!
+We'll take a look at that as well.
 
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers
-
-David / dhildenb
+Cheers,
+Andreas
 
 
