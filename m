@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D62CA1016
-	for <linux-um@archiver.kernel.org>; Thu, 11 Sep 2025 07:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F306CA1016
+	for <linux-um@archiver.kernel.org>; Thu, 11 Sep 2025 07:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HdnqPYodhpR04ucnmjP64RcI7avQd7r4ewcWEUbKzTs=; b=zhsWxWFU60jdOGtTvB8CF98YOy
-	osZsZiYGK+CYC1WLj1bP7MjaMxwQrxzjdsyqtHmyNsixw3Sn68n2KwDqXkqaDvCxpPfSYT9nYeh6M
-	AaPopmCV8CHiAHJfQdWqIUvn2xJ4fKdAFtoc6/yAJnOy0zFrYnq3aYeKoWwS7pzHrRzQyaZ0P8/gK
-	rbLDLWO6w7MsR6C6JhuZwgg652RHdWYYNtSUM20anE8j7dQ/jxLej9pAqBikO6kymh1+SK3CUz5ef
-	ZspJoawFZwvUQR14x3hI2RUP4ddQ9Q9JnOdxTtyy2fG23ZDC4GSsTGL6y9ufSG04mlNJRvmLl1598
-	nAVL7Uww==;
+	bh=TNaDwTJZop2ddQ5UDh22YAz8ggmdQrz12HT+woTeAOQ=; b=scsh7Qb6JBaewThaK9u4d88ZtW
+	A2ujCDtCFStdO/+bITBqvz9twtShYARH4HPNe0i2ZrTTvfotBAkb1OPvD2qSt1hW/iu8se3VqNPx+
+	raOzNetgdDeIWewVdWPmAut4Tf3jIARLhkoRo4Kt5+cfWs6Bwj3fPTJo/42t2YjTk2FQdEPdzqHon
+	Sa1Qor9eEGzw+fvQ9oafbxnSNJL9w0FF5UNgHKjdF1MNum4gXbyEFSi4vzf2x5cwiKmL0+8fzf5xN
+	JUEJyytl8WsC9SfPXwNdgPIk2RyoXNNAhOKmBKLgFxKeWXfv3nKI8TOcDGGLQxSjbVlYtHYHk2saO
+	zKuQjxtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwbHr-00000001Mwr-3xY2;
-	Thu, 11 Sep 2025 07:00:07 +0000
+	id 1uwbsg-00000001XfN-31r8;
+	Thu, 11 Sep 2025 07:38:10 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwbHp-00000001MvK-1C4B
+	id 1uwbse-00000001Xdz-2oam
 	for linux-um@lists.infradead.org;
-	Thu, 11 Sep 2025 07:00:07 +0000
+	Thu, 11 Sep 2025 07:38:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=HdnqPYodhpR04ucnmjP64RcI7avQd7r4ewcWEUbKzTs=;
-	t=1757574005; x=1758783605; b=lSmG0qIudA9SbSx6XC2h/69U6uJowcznwzUqaeK+Lh78KGU
-	Ga2AZZ5qIEEpLIoLSeT56i1UgrqCYfmm/llKOaSa+xgH47QziJf202gQnB2I3j598Zmc9c+m/GVFi
-	3yqlt2GBjesCEQVntCUR0CV5zkqs/PTm1ppKqYXBriIijQPqX6boIB2pIFNv+x9B8iQseJc8x13lu
-	/swEylAqMTHQw8DA7iFeXS6jI5OQkIG53rTlUSQ/cDKGP7wuG15B5KQ8A/WvXfU18pmwo2u738P0+
-	RBK7h5B98J4dgth59mg4C33hZWApHe5mKBkKS/H4nTgIRJ9qGwvOPZcelsiW4FDw==;
+	Resent-Cc:Resent-Message-ID; bh=TNaDwTJZop2ddQ5UDh22YAz8ggmdQrz12HT+woTeAOQ=;
+	t=1757576288; x=1758785888; b=B9rY8sPkkGwMFNf/5xOK+bk3/QLG2nVu2zTqdlUjcuGiTjj
+	7I7fuCdWb7HTzX1nWbkqyMaPXxkiUWwdb8C6GcDS8SN/dKNA96nRp4VPYduuBNHEig4JDfqRQ0Xf0
+	eQmB0S5pwt3F3l/Bmoa7VvWmzVsXVeWwWoQJjSqGE6HBM37vcHBVCL1OviNHG/6MPuQsQE8R4Etev
+	ZgrzKfPWGKxntonjhAaZ+OO0LLYBRJ88VC5UHxptolyTeMXxn1zo4XwHn3pvNw7w12dCLbwVcOBNX
+	pQhrqsBAfPUXZtqW1OaL2sVW0aFwBKPNOgxzi9C3V5PcPa5i/+KCn58t6ZYGuSyg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1uwbHi-0000000Enrr-2rRz;
-	Thu, 11 Sep 2025 08:59:58 +0200
-Message-ID: <579899d18d5aa4422f970d28e19dc363c9ed218a.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 05/10] um: Determine sleep based on need_resched()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Tiwei Bie <tiwei.bie@linux.dev>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com,
- benjamin@sipsolutions.net, 	arnd@arndb.de, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, 	tiwei.btw@antgroup.com
-Date: Thu, 11 Sep 2025 08:59:57 +0200
-In-Reply-To: <20250911043918.2950727-1-tiwei.bie@linux.dev>
-References: <55cace5b8e1078bd04b4a1acb5df9faa6a83b6e8.camel@sipsolutions.net>
-	 <20250911043918.2950727-1-tiwei.bie@linux.dev>
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uwbsX-0000000Er1b-0oKo;
+	Thu, 11 Sep 2025 09:38:01 +0200
+Message-ID: <3c4bc989c4f10609eab699b26e8331bc878c2a0a.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 04/10] um: Turn signals_* into thread-local variables
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Tiwei Bie <tiwei.bie@linux.dev>, johannes@sipsolutions.net
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	tiwei.btw@antgroup.com
+Date: Thu, 11 Sep 2025 09:37:58 +0200
+In-Reply-To: <20250911043434.2897892-1-tiwei.bie@linux.dev>
+References: <f402a7b5ddfe92a8fbbc1460102cac7b5a5864b5.camel@sipsolutions.net>
+	 <20250911043434.2897892-1-tiwei.bie@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250911_000005_355086_A48C22A6 
-X-CRM114-Status: GOOD (  16.54  )
+X-CRM114-CacheID: sfid-20250911_003808_709977_79B78F04 
+X-CRM114-Status: GOOD (  14.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,32 +75,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-09-11 at 12:39 +0800, Tiwei Bie wrote:
-> On Wed, 10 Sep 2025 14:10:37 +0200, Johannes Berg wrote:
+Hi,
+
+On Thu, 2025-09-11 at 12:34 +0800, Tiwei Bie wrote:
+> On Wed, 10 Sep 2025 14:15:28 +0200, Johannes Berg wrote:
 > > On Sun, 2025-08-10 at 13:51 +0800, Tiwei Bie wrote:
 > > > From: Tiwei Bie <tiwei.btw@antgroup.com>
 > > >=20
-> > > With SMP and NO_HZ enabled, the CPU may still need to sleep even
-> > > if the timer is disarmed. Switch to deciding whether to sleep based
-> > > on pending resched. This is a preparation for adding SMP support.
+> > > Turn signals_enabled, signals_pending and signals_active into
+> > > thread-local variables. This enables us to control and track
+> > > signals independently on each CPU thread. This is a preparation
+> > > for adding SMP support.
 > >=20
-> > What's the rationale for need_resched()? Is that somehow defined for
-> > this? Is it what other architectures use? I guess I'm just not entirely
-> > sure what it means.
+> > [...]
+> >=20
+> > > +static __thread int signals_enabled;
+> >=20
+> > How much glibc infrastructure does __thread rely on? More
+> > specifically:
+> > Some time ago we had a discussion about building UML as a nolibc
+> > binary,
+> > what would that mean for the __thread usage here?
 >=20
-> Here is a relevant document:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/scheduler/sched-arch.rst?h=3Dv6.17-rc5#n37
->=20
-> There is a similar check on x86:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
-rch/x86/kernel/process.c?h=3Dv6.17-rc5#n916
+> We would need to parse TLS data (PT_TLS) from the ELF file ourselves
+> and properly set up TLS when creating threads using clone().
 
-Ah cool, thanks for the pointers. Though "1." part there is a bit
-confusing, I guess I'll send a patch to reword it :)
+I guess right now we cannot use PER_CPU variables in these files.
+However, my expectation that this is possible when using nolibc, and
+then it should be simple enough to replace the __thread.
 
-FWIW I already applied a few patches, but I'll take another look,
-hopefully today.
-
-johannes
+Benjamin=20
 
