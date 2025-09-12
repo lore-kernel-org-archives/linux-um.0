@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BBB2CA1016
-	for <linux-um@archiver.kernel.org>; Thu, 11 Sep 2025 10:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4550CAC58E
+	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 00:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hvOZY8Zm8Xu9d/QPkVVnky/0m0Z0DyGiA59b6hOBpMo=; b=CnXiGRVpafm5JXaijJLQZ+47wl
-	Owmck2aUjo0RzSeBh1WHCrsek96HYkxHPPIdNBhqGxT29LHNvYrPH9Mtp1wHZfEExesAmV1TUA4DL
-	qmBvCsbz8/QblRai0s+ly0DiGkSLiR/sXSMHOptSlJuJUD5ZMQ/5l6F7fwgarUqowaSorbYxBkJ3z
-	94lyxarURzqgKicISPCMbEDlolsvaAckzFU8Ko+xJ+csGqN55j0mpJfqABnlpzc4V8wqTyvIpLDwg
-	5UdfLZ30GJvWwlPQL8CUcZ3jwG595KRjAj6qAB4roHHuwqCw0tAMZCc6HXkAQ0GdptbEfvgGDnjQa
-	L4yVAjAA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=EZxU73zTx/9g+dWjgY/xVOQON0jaT8APRpXiMYNVZyc=; b=HcKpO9Gm22JYa7McETKeYDnGno
+	CVDR8mCSLFnyCO04p54eFRiNOdwWpM2x+TJMc9K3LmWl3S4NC/JeDV+gSwrODf2Y+IrF6yu8RzqYQ
+	W5LD4xVXxmeMjLTP7MVHnIJocFXw2Q3fOcCFX89Jy9eHzF84JuWKOoWeaTSZRJ5i8oKy+t900hFv4
+	5pbythMhTqmx26kk9UtHmwv6U46L0cGCBmWSVJl9uP7ee7JmAJ2Q5rWLI7vYUY68sVujwzbZfEWuC
+	zTaWhKVkyGg5kYyCU3o1xzNtpt1qo2ENXNvlpXd4oH63YiN9HPRdUQj28ZEq77z2Bhy3/1gUWTIa8
+	qXL3G7ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwee1-00000002Pap-0zpC;
-	Thu, 11 Sep 2025 10:35:13 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uwrhE-000000065Mu-2bnE;
+	Fri, 12 Sep 2025 00:31:24 +0000
+Received: from out-178.mta0.migadu.com ([2001:41d0:1004:224b::b2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwedz-00000002PZG-399D
+	id 1uwrhA-000000065MU-3B6R
 	for linux-um@lists.infradead.org;
-	Thu, 11 Sep 2025 10:35:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=hvOZY8Zm8Xu9d/QPkVVnky/0m0Z0DyGiA59b6hOBpMo=;
-	t=1757586911; x=1758796511; b=rOGR0CCCM909bfjQCezQglDYSTcjKjRbbbui+c/25Y+69wr
-	GF3hTTvudc3AckwMS6ml0u6KCa/jyCYDeocrXOd/lsNPCEfdfbKq/ff98BBbcYX55FQkJ9EFhAZ3d
-	dsVXsnM43JyFMdg89CaTouzs6t/pnabUY2RFZniuu5gjg+n9trpMWmE7+FpUbzjcAFXraLtgPqieG
-	fdsB/M+PP2TrNeU3zLQp3zSQ/OY/0I90OeYaAzaeCDMaMPd4ijX+4Ka3H64SuzZBp88O+9l/gAEcJ
-	GKmRclS7kRczplDfuGt6Wvq+yyG5GbLpsFpNa/SD2/Yie991+cZx6UN4A7pvCHfQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uwedr-0000000F6oE-1dg4;
-	Thu, 11 Sep 2025 12:35:03 +0200
-Message-ID: <263b95a673f92d1436ece3913b134f81eef3355d.camel@sipsolutions.net>
+	Fri, 12 Sep 2025 00:31:23 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757637074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EZxU73zTx/9g+dWjgY/xVOQON0jaT8APRpXiMYNVZyc=;
+	b=hpNzexgmJhu8VyBysEyHt3YLiXdHNjA6/43xJrjFF8XDfRdNDiA2za4rG6vaCf9mrodWZ1
+	Rsb69FTkg9bMCXFpWE0BoJ1zXFLXrGYoKGHtF9zqYP7wp1wsNW9pLMG5AFpDIRfS95o7Cd
+	HxvnJBa910jt61gODQpFumI47JnXbsI=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: benjamin@sipsolutions.net
+Cc: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	arnd@arndb.de,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
 Subject: Re: [PATCH v2 04/10] um: Turn signals_* into thread-local variables
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Johannes Berg <johannes@sipsolutions.net>, Tiwei Bie
- <tiwei.bie@linux.dev>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, arnd@arndb.de, 
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	tiwei.btw@antgroup.com
-Date: Thu, 11 Sep 2025 12:35:02 +0200
-In-Reply-To: <b1a57068ec7578d20dcb3b28234e4ce7ec216657.camel@sipsolutions.net> (sfid-20250911_114423_984872_A9251D1F)
-References: <f402a7b5ddfe92a8fbbc1460102cac7b5a5864b5.camel@sipsolutions.net>
-			 <20250911043434.2897892-1-tiwei.bie@linux.dev>
-		 <3c4bc989c4f10609eab699b26e8331bc878c2a0a.camel@sipsolutions.net>
-	 <b1a57068ec7578d20dcb3b28234e4ce7ec216657.camel@sipsolutions.net>
-	 (sfid-20250911_114423_984872_A9251D1F)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+Date: Fri, 12 Sep 2025 08:30:54 +0800
+Message-Id: <20250912003054.2564842-1-tiwei.bie@linux.dev>
+In-Reply-To: <75ba2109fcdfb8a1629fdf5f6b4e58694b975c9f.camel@sipsolutions.net>
+References: <75ba2109fcdfb8a1629fdf5f6b4e58694b975c9f.camel@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250911_033511_790479_E08CA633 
-X-CRM114-Status: GOOD (  23.56  )
+X-CRM114-CacheID: sfid-20250911_173121_345932_3BE709BD 
+X-CRM114-Status: GOOD (  26.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,53 +73,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2025-09-11 at 11:44 +0200, Johannes Berg wrote:
+Hi,
+
+On Thu, 11 Sep 2025 10:06:53 +0200, Benjamin Berg wrote:
 > On Thu, 2025-09-11 at 09:37 +0200, Benjamin Berg wrote:
-> > Hi,
-> >=20
 > > On Thu, 2025-09-11 at 12:34 +0800, Tiwei Bie wrote:
 > > > On Wed, 10 Sep 2025 14:15:28 +0200, Johannes Berg wrote:
 > > > > On Sun, 2025-08-10 at 13:51 +0800, Tiwei Bie wrote:
 > > > > > From: Tiwei Bie <tiwei.btw@antgroup.com>
-> > > > >=20
+> > > > > 
 > > > > > Turn signals_enabled, signals_pending and signals_active into
 > > > > > thread-local variables. This enables us to control and track
 > > > > > signals independently on each CPU thread. This is a preparation
 > > > > > for adding SMP support.
-> > > >=20
+> > > > 
 > > > > [...]
-> > > >=20
+> > > > 
 > > > > > +static __thread int signals_enabled;
-> > > >=20
+> > > > 
 > > > > How much glibc infrastructure does __thread rely on? More
 > > > > specifically:
 > > > > Some time ago we had a discussion about building UML as a nolibc
 > > > > binary,
 > > > > what would that mean for the __thread usage here?
-> > >=20
-> > > We would need to parse TLS data (PT_TLS) from the ELF file ourselves
+> > > 
+> > > We would need to parse TLS data (PT_TLS) from the ELF file
+> > > ourselves
 > > > and properly set up TLS when creating threads using clone().
-> >=20
+> > 
 > > I guess right now we cannot use PER_CPU variables in these files.
->=20
-> Maybe? The only thing would be to know which "CPU" we're executing on?
-> getpid() is async signal safe (i.e. you can call it), but there could be
-> better ways of doing this such as setting different signal handler
-> functions in different CPUs.
+> > However, my expectation that this is possible when using nolibc, and
+> > then it should be simple enough to replace the __thread.
 
-There are a number of ways to solve that problem.
+Good idea!
 
-One way would be to use a signal stack and calculating it from the
-stack pointer. Though I am still considering that we should use the
-tasks stack as the signal stack, in which case we may need to track the
-CPU that a task is executing on.
+> 
+> That said, I do believe that the allocations from the libc itself are
+> problematic. A lot of the mappings from UML are there already (i.e. the
+> physical memory is mapped). However, I believe the vmalloc area for
+> example is not guarded.
+> 
+> So when pthread allocates the thread specific memory (stack, TLS, ...),
+> we really do not know where this will be mapped into the address space.
+> If it happens to be in an area that UML wants to use later, then UML
+> could map e.g. vmalloc data over it.
+> 
+> Now, it could be that (currently) the addresses picked by pthread (or
+> the host kernel) do not actually clash with anything. However, I do not
+> think there is any guarantee for that.
 
-On 64bit, one could also use the FS/GS registers for per-CPU data. I
-believe the libc uses FS only on 64bit, so we could probably already
-use the GS register to for per-CPU data.
+Indeed. The mmap from libc (pthread, shared libs, ...) can potentially
+conflict with UML. The reason it has been working on x86_64 so far might
+be that we did this in linux_main():
 
-So, I am not really worried about this, we probably need a nice
-solution for per-CPU data anyway.
+	task_size = task_size & PGDIR_MASK;
 
-Benjamin
+The current layout is:
+
+shared libs and pthreads are located at 7ffxxxxxxxxx
+TASK_SIZE                             = 7f8000000000
+VMALLOC_END                           = 7f7fffffe000 (which is TASK_SIZE-2*PAGE_SIZE)
+
+However, on i386, the risk of conflicts looks much higher:
+
+TASK_SIZE   = ffc00000
+VMALLOC_END = ffbfe000
+
+......
+f7c00000-f7c20000 r--p 00000000 08:01 9114                               /usr/lib32/libc.so.6
+f7c20000-f7d9e000 r-xp 00020000 08:01 9114                               /usr/lib32/libc.so.6
+f7d9e000-f7e23000 r--p 0019e000 08:01 9114                               /usr/lib32/libc.so.6
+f7e23000-f7e24000 ---p 00223000 08:01 9114                               /usr/lib32/libc.so.6
+f7e24000-f7e26000 r--p 00223000 08:01 9114                               /usr/lib32/libc.so.6
+f7e26000-f7e27000 rw-p 00225000 08:01 9114                               /usr/lib32/libc.so.6
+f7e27000-f7e31000 rw-p 00000000 00:00 0 
+f7fbe000-f7fc0000 rw-p 00000000 00:00 0 
+f7fc0000-f7fc4000 r--p 00000000 00:00 0                                  [vvar]
+f7fc4000-f7fc6000 r-xp 00000000 00:00 0                                  [vdso]
+f7fc6000-f7fc7000 r--p 00000000 08:01 9107                               /usr/lib32/ld-linux.so.2
+f7fc7000-f7fec000 r-xp 00001000 08:01 9107                               /usr/lib32/ld-linux.so.2
+f7fec000-f7ffb000 r--p 00026000 08:01 9107                               /usr/lib32/ld-linux.so.2
+f7ffb000-f7ffd000 r--p 00034000 08:01 9107                               /usr/lib32/ld-linux.so.2
+f7ffd000-f7ffe000 rw-p 00036000 08:01 9107                               /usr/lib32/ld-linux.so.2
+fffdd000-ffffe000 rw-p 00000000 00:00 0                                  [stack]
+
+Ideally, we could completely eliminate the dependency on libc. Before that,
+perhaps we could reserve a region of address space for UML with mmap(PROT_NONE).
+
+Regards,
+Tiwei
 
