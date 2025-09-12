@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1284ACAC58E
-	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 01:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD68CA101F
+	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 07:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MMiBSaInF+hhMFgiKTpM6CvmtWD3eEqrpblFLp2j2fs=; b=uBg87yrPISL3uj80ZRLjdUFe/l
-	6GkE7g52nd6V3E71OYgDVouKlLEEvDu2ITE0oFAf1b6zMy1UdbHQkT1BdFyUjKbez1TH4kH4zOKoz
-	DD3difm7XZZn3C7Rkd+0ZXrt5nQgSutnxXL5Il7gm00wKdyZaArlOd7IyX6ZZQuDT5/NPoaJOr82c
-	8QrUgLMv+PzLf3dIPsFJ7QMhiVkshnlUloGC7e9zz2kEKpy9gtVg2t6WzEN8W7Xj+QkAvLCiOG+TH
-	noJgNIJAQeGuWO4CMslI3Bzo6IXmmYaT1196J8WkdN/cqa/NRNAkHMS86cyg8HQHs9c05FipNsx++
-	PRAc1XzA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=j03RuNT7+4gCtGue33+Zbji2ovGTMqcwJmLO6kcquqI=; b=KlQC1tBIYwxNTVIQGtHbtdp1wF
+	zAOLuGUnwX55/UTXYzXYkL6RnkEUQ5t/ooW0ZHooWLwoj9YchL51u920c6WYvd63c/jX8FgDFYO+6
+	JqXBdEC4U/z7vKbnDp3V2uuonLJCuj4A+uXrIEvXuLBfeONM5+W4uGOyEnHgQlqT98qRwdUHKDo4h
+	72giFEnoHxUq178nfhLrP8SfA2aP2ZJkoBYHRdkeOr3blUDltXNDKuZNLXEYbKhzAZu+o2KAfmvXL
+	/WrhCdXfvLR9vObTjubfggZJxwiYhoMOBm7CskGXmfT7jsWSNS09c1vU5z9EUpdUDgtUVmKiQ+SCu
+	NS758tzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uws8w-00000006CWy-1XQW;
-	Fri, 12 Sep 2025 01:00:02 +0000
-Received: from out-183.mta1.migadu.com ([2001:41d0:203:375::b7])
+	id 1uwygH-00000007mNJ-42ad;
+	Fri, 12 Sep 2025 07:58:53 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uws8t-00000006CUy-1nZb
+	id 1uwygG-00000007mKB-0R95
 	for linux-um@lists.infradead.org;
-	Fri, 12 Sep 2025 01:00:00 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757638796;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MMiBSaInF+hhMFgiKTpM6CvmtWD3eEqrpblFLp2j2fs=;
-	b=mcRztRBQaFMlOm2orlCvPRojMiGJk0l7CngY10PlmoXqmkf6djqozSfCHOrXhPNhalswQD
-	2EQBwYE4tHjCcFxNmjBXt5NF5wVUH56J5v6oE2zYgsMOKpIOO3sYK1UYKBAtNFKX0snY8N
-	2bTMHsqNeYrIwrX5ydgmQQrwlmsAkJ0=
-From: Tiwei Bie <tiwei.bie@linux.dev>
-To: johannes@sipsolutions.net
-Cc: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	benjamin@sipsolutions.net,
-	arnd@arndb.de,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	tiwei.btw@antgroup.com,
-	tiwei.bie@linux.dev
-Subject: Re: [PATCH v2 05/10] um: Determine sleep based on need_resched()
-Date: Fri, 12 Sep 2025 08:59:32 +0800
-Message-Id: <20250912005932.2568228-1-tiwei.bie@linux.dev>
-In-Reply-To: <579899d18d5aa4422f970d28e19dc363c9ed218a.camel@sipsolutions.net>
-References: <579899d18d5aa4422f970d28e19dc363c9ed218a.camel@sipsolutions.net>
+	Fri, 12 Sep 2025 07:58:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=j03RuNT7+4gCtGue33+Zbji2ovGTMqcwJmLO6kcquqI=;
+	t=1757663931; x=1758873531; b=BGQ8WFCJr5FV16pwx6L5qGSReQ5dCVC4/8aOlqIuoXxMKRP
+	rDHKtK89gxx+D6h0K7lZJ2hK5qi/Tu+FvStO/BCOCZohqvi7VpWx3aB9mCzuH7+T2pnNUh7ptkCMd
+	ooyVQwfPQMBQzBFfINIzX7TxUtrlSQZIao0LeY5plyOOXqTF9BAMykkvnRii6u5+jbK91RlkqBrcq
+	JT70c1rpNCfTajuKDuGbEe37Y8MQ312ku1BDYJkweVInPd/3ZcKmP09DmkjVYYuZamnbM0C5SfXW6
+	YbGUB24B/zQFPCNrZCtPTouHlLLfiq40Dj7pbsuD7FIBxUKeH/+ixsMLZsKnDnWA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1uwyg6-0000000GtkT-28wT;
+	Fri, 12 Sep 2025 09:58:42 +0200
+Message-ID: <d8b8e87871f847473d4e2ca91fce00b7b12b8f19.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 08/10] um: Add initial SMP support
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Tiwei Bie <tiwei.bie@linux.dev>
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com,
+ benjamin@sipsolutions.net, 	arnd@arndb.de, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, 	tiwei.btw@antgroup.com
+Date: Fri, 12 Sep 2025 09:58:41 +0200
+In-Reply-To: <20250912004501.2565976-1-tiwei.bie@linux.dev> (sfid-20250912_024557_736137_0C9523E1)
+References: <03cb4661a6135a641c5a3779f2cb424356b8e345.camel@sipsolutions.net>
+	 <20250912004501.2565976-1-tiwei.bie@linux.dev>
+	 (sfid-20250912_024557_736137_0C9523E1)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250911_175959_605467_AAB42417 
-X-CRM114-Status: GOOD (  18.00  )
+X-CRM114-CacheID: sfid-20250912_005852_161044_5186A28D 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,34 +76,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 11 Sep 2025 08:59:57 +0200, Johannes Berg wrote:
-> On Thu, 2025-09-11 at 12:39 +0800, Tiwei Bie wrote:
-> > On Wed, 10 Sep 2025 14:10:37 +0200, Johannes Berg wrote:
-> > > On Sun, 2025-08-10 at 13:51 +0800, Tiwei Bie wrote:
-> > > > From: Tiwei Bie <tiwei.btw@antgroup.com>
-> > > > 
-> > > > With SMP and NO_HZ enabled, the CPU may still need to sleep even
-> > > > if the timer is disarmed. Switch to deciding whether to sleep based
-> > > > on pending resched. This is a preparation for adding SMP support.
-> > > 
-> > > What's the rationale for need_resched()? Is that somehow defined for
-> > > this? Is it what other architectures use? I guess I'm just not entirely
-> > > sure what it means.
-> > 
-> > Here is a relevant document:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/scheduler/sched-arch.rst?h=v6.17-rc5#n37
-> > 
-> > There is a similar check on x86:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/process.c?h=v6.17-rc5#n916
-> 
-> Ah cool, thanks for the pointers. Though "1." part there is a bit
-> confusing, I guess I'll send a patch to reword it :)
-> 
-> FWIW I already applied a few patches, but I'll take another look,
-> hopefully today.
+On Fri, 2025-09-12 at 08:45 +0800, Tiwei Bie wrote:
+> >=20
+> > Another thing that isn't covered is anything relating to interrupt
+> > affinity, I guess? Is that automatically not working, or will it look
+> > like you can change things but that not do anything?
+> >=20
+> > I don't think it's important now (though eventually I would actually
+> > like to have it for our simulations), but was just thinking about it.
+>=20
+> Currently, our irq_chips haven't implemented the irq_set_affinity
+> method, so setting IRQ affinity is not supported at the moment, e.g.,
+> attempting to set affinity through /proc/irq/IRQ#/smp_affinity will
+> fail with EPERM. And yeah, we should support it eventually. :)
 
-Thanks for the review! :)
+OK cool, thanks for taking a look!
 
-Regards,
-Tiwei
+johannes
 
