@@ -4,118 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 349BBCA101F
-	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 22:46:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29AAFCA101F
+	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 23:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=q9iQK8EdIF6RRP4HkX18/uU6rY0egPm6PmmgTdmDikE=; b=gs1gQ93neAoRSLPC8acuNB5EOu
-	VZTxM9Gj9SmikquvZnnucRxRDWZx0g5GvocTeW0Qq7SyXpYAsjuSoANk+jYJsI+y00Zmv+NWVfTh9
-	3EM9tpI00G9ZAjeAVpDxp9eQ0tptz4Ab39G3LK4oLIePAdod4wTUYw98L4QjkHeX/NsczNJGutsZB
-	pBPMtlYoU3yJwywN9LJULkb7c18wB5RfynxZVI7lG7vHxo1R/ret4GL5blw7BsJLS/M+y/sBD2xf0
-	5WKDKfgojnizYTfww6/83oB6+7DoFij/ZH0bWNn0CEVlZ4rmOIPhWUgPk7L/9h+4wiVeDBAiZo/Ie
-	cAMzWXtw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=wj2EzCDO/uH/NVYiO2SSDOzQUMFnuWGG6J5ju6LXtrM=; b=XgjZXen/DoyoXl2YEXGeQQXLqt
+	QkJlPmeanEh6FkpuwFDD9+yB1vWzzsG82/X7wZSv2SiSSN6G63U3xeUgLsWsvvNYY0tVcr2u0HAwj
+	QFjks+ZOs+FKQiuhWekWEIdgm/cY+jCTcxVXUJhHFILZQUwVFpFGtDLwanYXjTt6DoEqMyJLvCj5V
+	JoWJz7BFEn8giL9Am+ubQL8+anGHcUCrF4FvC2sdwWBfpdr/8VZLoaSrFqwP+6JnX5uyccX2oIOx6
+	kv0Co5rRMcn3sHIpxOzQ+TN2D0yhRgejMWTuN6j1qIpx7POycuIpgAFLjJeFMyYdjtp6qojIlvQGK
+	3He5y1Cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxCWq-0000000BvpE-2l1r;
-	Fri, 12 Sep 2025 22:46:04 +0000
-Received: from sender4-pp-o95.zoho.com ([136.143.188.95])
+	id 1uxCtv-0000000C0pf-23B6;
+	Fri, 12 Sep 2025 23:09:55 +0000
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxCWo-0000000Bvnc-139F;
-	Fri, 12 Sep 2025 22:46:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1757716883; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=cYmkTWVTcQlLmLr5V8p1CrwhziHK5jWEHqN1/x0dbbnP4N6eqwJhNpFD+YvvcG1JcA1pILR0lg+/Ny7uiewAqWrYp0xgwBVqCid/qUwxU2pBACMW8E+qi9+gH5uFDpaMNSKBUmBcqwPg32DVp6NEprKLCwOzLldRlExaYRgKRTw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1757716883; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=q9iQK8EdIF6RRP4HkX18/uU6rY0egPm6PmmgTdmDikE=; 
-	b=Ju1dqMVIkIYpU5LdsWBIf/CGwDsN0K99qbvJhITUG43b4iO5ReBci570gSrCvJZpIaavRZGeh519zGwQ3xzl9eLPP7B/6fd5qSQvFqfvp30skE+0PjF0wF1ZPM088gDBmx9lu1/Hmu9iiGaXsgt143EyXlTcYz1mO0b4E8ZkWow=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=zohomail.com;
-	spf=pass  smtp.mailfrom=safinaskar@zohomail.com;
-	dmarc=pass header.from=<safinaskar@zohomail.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1757716883;
-	s=zm2022; d=zohomail.com; i=safinaskar@zohomail.com;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID:Message-Id:Reply-To;
-	bh=q9iQK8EdIF6RRP4HkX18/uU6rY0egPm6PmmgTdmDikE=;
-	b=acIupnwFZvyRH5FokPCft4nvGFUMr39pqEpKs0NtNZVw5kg9Xyn8fLnVwVnsMrYi
-	icAGCn5xQY/D8nPVu8I73mfObC5kAiAiUgDDUOK0dT7tuN6mPBE7LpoJ79v5Pcf1s+2
-	+A3prhgVdkGFxaNK2Z8tJ6RB7TjqHAI2HFOwbXVs=
-Received: by mx.zohomail.com with SMTPS id 1757716881894668.1339002049043;
-	Fri, 12 Sep 2025 15:41:21 -0700 (PDT)
-From: Askar Safin <safinaskar@zohomail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@lst.de>,
-	Jens Axboe <axboe@kernel.dk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
-	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Art Nikpal <email2tema@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Curtin <ecurtin@redhat.com>,
-	Alexander Graf <graf@amazon.com>,
-	Rob Landley <rob@landley.net>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	linux-arch@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	linux-block@vger.kernel.org,
-	initramfs@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	"Theodore Y . Ts'o" <tytso@mit.edu>,
-	linux-acpi@vger.kernel.org,
-	Michal Simek <monstr@monstr.eu>,
-	devicetree@vger.kernel.org,
+	id 1uxCtt-0000000C0oD-0aEO
+	for linux-um@lists.infradead.org;
+	Fri, 12 Sep 2025 23:09:54 +0000
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-76e6cbb991aso2418520b3a.1
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 16:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1757718592; x=1758323392; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wj2EzCDO/uH/NVYiO2SSDOzQUMFnuWGG6J5ju6LXtrM=;
+        b=E0HZgStcRpQLwGIyleqCz31ZEqppbWtulO6o4uuuF1d4E+VQ+0n3lEQ6Qxtvu33jtM
+         8rS/wccNMuFwzDrzF8QHV+JFPnKBTWnY6KzWRRnBb7Ga0CBN4GS3VK1PXQkHiMGe8yxY
+         JkIpuJk5xHrxxtAD/yd4c4g29HKl8gpBF4K88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757718592; x=1758323392;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wj2EzCDO/uH/NVYiO2SSDOzQUMFnuWGG6J5ju6LXtrM=;
+        b=TnXCisikM0sNeF9uprq0nyyqShJwAsRt2W6ZbrJj14NvHSamLL7PjlZBFfL5OCk3eQ
+         /9MIEu2r4sc2qBEeKChqK+stOLNZJohHZz8uQFAkFOgdRAxPukfn7rE8CFaA9DfHJDiF
+         bQVAVzrD0FIdbz31spAbewzvaKhWXiAhkJTYTOQTiFrFKXmSpKNxdQ066DJUab0Dtj/Y
+         KqtbUZUKd2UfDmjZM3TzYZkq714OJXSJxicDoqQ6JVGKBEalyQonyyv0CDwcUgpDNCyE
+         jL/+Cdt2e0maX7KfqfTb4tMOw3phwi2Ljpq8Id9nx0HKouMMPSMT/ySz3Np5EgSsFKF9
+         +d5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXMrkcnT0D8asi5whqVWou6EsdEIrZC0tQIsUY2FLeRvL2gSsAwSeF3QBR/kVYaTTQq6i83x+ubtQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxAMSH05zxG1Im/4ZRUCJ9e2I0eeMchWrPJIlPGZdD3VvHWeU18
+	tHXp0tJoyBxnYq8EL91rNvm/8Da1NG5Ds+FyN0bBvbmFBLrK+rsoSr2boW44xaz4kA==
+X-Gm-Gg: ASbGncv9oighO+CCj2nOOWqRuZhC4GLCUrwdUMDdK+1NJ2Oa7jIDgyp0rNHS1Xed8X6
+	qBie8VGds+EfdWOxb6Svsxo2ZKwIyD/q2ZZbIGLh9zwMVi2vT9dyNPBPA2oekflu43U5116OZ6i
+	KrnBvynR8ZgD2LSguororzKH26gejSVsCFunLKR/UifGZWi6KG7tFOSRGmQECtA6CHx4su/EY3l
+	00wZmBlvF2ME+DgLMzUAezibKvFDyIFUHFEv4D19a+vRbBA4N4a5NxMBeX9vjLabvaaqxlANc80
+	fgSkccMPJO+4/dQg7pAqmWYtpNFYsHAb38/SQIWTNJHsxT9dPvVGJ8bxrlPb6kcOSo5egOsr91z
+	STyWVtueEblk2B7PdfOyHoxoFE30VFGGcFrC6ziz4WhId3s8wKVsDYSCpQ48=
+X-Google-Smtp-Source: AGHT+IE5DR0gvGWUro9z10EvotDyakdL5SHVeYZ/tNuNggcehVsLSaHVKcMNLMyAhxmQVoCyYfqTvQ==
+X-Received: by 2002:a05:6a20:9147:b0:251:9f29:454b with SMTP id adf61e73a8af0-2602bb59347mr5854185637.39.1757718592010;
+        Fri, 12 Sep 2025 16:09:52 -0700 (PDT)
+Received: from localhost ([2a00:79e0:2e14:7:e464:c3f:39d8:1bab])
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-32df97c3b9csm1227762a91.11.2025.09.12.16.09.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Sep 2025 16:09:51 -0700 (PDT)
+From: Brian Norris <briannorris@chromium.org>
+To: Bjorn Helgaas <bhelgaas@google.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	patches@lists.linux.dev,
-	stable+noautosel@kernel.org
-Subject: [PATCH 03/62] init: sh, sparc, x86: remove unused constants RAMDISK_PROMPT_FLAG and RAMDISK_LOAD_FLAG
-Date: Fri, 12 Sep 2025 22:38:38 +0000
-Message-ID: <20250912223937.3735076-4-safinaskar@zohomail.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250912223937.3735076-1-safinaskar@zohomail.com>
-References: <20250912223937.3735076-1-safinaskar@zohomail.com>
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Daniel Gomez <da.gomez@kernel.org>
+Cc: linux-pci@vger.kernel.org,
+	David Gow <davidgow@google.com>,
+	Rae Moar <rmoar@google.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Richard Weinberger <richard@nod.at>,
+	Wei Liu <wei.liu@kernel.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	kunit-dev@googlegroups.com,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	linux-um@lists.infradead.org,
+	Brian Norris <briannorris@chromium.org>
+Subject: [PATCH 0/4] PCI: Add support and tests for FIXUP quirks in modules
+Date: Fri, 12 Sep 2025 15:59:31 -0700
+Message-ID: <20250912230208.967129-1-briannorris@chromium.org>
+X-Mailer: git-send-email 2.51.0.384.g4c02a37b29-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Feedback-ID: rr080112274be46f51a3e6d7b65453b8c4000084fba7464352cc4dc9cd50377fd7f09b0684ed62a16f1e6eeb:zu08011227aebba3291345918c920d3b3a00008f86ff3411911b832b8b206255ff0b95bb9fe1592be8b5327b:rf0801122cd997ff081c6a0f543772417b00002b369a2b05bf7efffc2b9c1c1140566e0d80ce0978fa409c151951bada9a:ZohoMail
-X-ZohoMailClient: External
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_154602_339122_E8BFC328 
-X-CRM114-Status: UNSURE (   9.33  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250912_160953_213427_8A8FCD94 
+X-CRM114-Status: GOOD (  12.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,87 +108,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-They were used for initrd before c8376994c86.
+This series primarily adds support for DECLARE_PCI_FIXUP_*() in modules.
+There are a few drivers that already use this, and so they are
+presumably broken when built as modules.
 
-c8376994c86c made them unused and forgot to remove them
+While at it, I wrote some unit tests that emulate a fake PCI device, and
+let the PCI framework match/not-match its vendor/device IDs. This test
+can be built into the kernel or built as a module.
 
-Fixes: c8376994c86c ("initrd: remove support for multiple floppies")
-Cc: <stable+noautosel@kernel.org> # because changes uapi headers
-Signed-off-by: Askar Safin <safinaskar@zohomail.com>
----
- arch/sh/kernel/setup.c                | 2 --
- arch/sparc/kernel/setup_32.c          | 2 --
- arch/sparc/kernel/setup_64.c          | 2 --
- arch/x86/include/uapi/asm/bootparam.h | 2 --
- arch/x86/kernel/setup.c               | 2 --
- 5 files changed, 10 deletions(-)
+I also include some infrastructure changes (patch 3 and 4), so that
+ARCH=um (the default for kunit.py), ARCH=arm, and ARCH=arm64 will run
+these tests by default. These patches have different maintainers and are
+independent, so they can probably be picked up separately. I included
+them because otherwise the tests in patch 2 aren't so easy to run.
 
-diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
-index 039a51291002..d66f098e9e9f 100644
---- a/arch/sh/kernel/setup.c
-+++ b/arch/sh/kernel/setup.c
-@@ -71,8 +71,6 @@ EXPORT_SYMBOL(sh_mv);
- extern int root_mountflags;
- 
- #define RAMDISK_IMAGE_START_MASK	0x07FF
--#define RAMDISK_PROMPT_FLAG		0x8000
--#define RAMDISK_LOAD_FLAG		0x4000
- 
- static char __initdata command_line[COMMAND_LINE_SIZE] = { 0, };
- 
-diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
-index 704375c061e7..eb60be31127f 100644
---- a/arch/sparc/kernel/setup_32.c
-+++ b/arch/sparc/kernel/setup_32.c
-@@ -172,8 +172,6 @@ extern unsigned short root_flags;
- extern unsigned short root_dev;
- extern unsigned short ram_flags;
- #define RAMDISK_IMAGE_START_MASK	0x07FF
--#define RAMDISK_PROMPT_FLAG		0x8000
--#define RAMDISK_LOAD_FLAG		0x4000
- 
- extern int root_mountflags;
- 
-diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
-index 63615f5c99b4..f728f1b00aca 100644
---- a/arch/sparc/kernel/setup_64.c
-+++ b/arch/sparc/kernel/setup_64.c
-@@ -145,8 +145,6 @@ extern unsigned short root_flags;
- extern unsigned short root_dev;
- extern unsigned short ram_flags;
- #define RAMDISK_IMAGE_START_MASK	0x07FF
--#define RAMDISK_PROMPT_FLAG		0x8000
--#define RAMDISK_LOAD_FLAG		0x4000
- 
- extern int root_mountflags;
- 
-diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index dafbf581c515..f53dd3f319ba 100644
---- a/arch/x86/include/uapi/asm/bootparam.h
-+++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -6,8 +6,6 @@
- 
- /* ram_size flags */
- #define RAMDISK_IMAGE_START_MASK	0x07FF
--#define RAMDISK_PROMPT_FLAG		0x8000
--#define RAMDISK_LOAD_FLAG		0x4000
- 
- /* loadflags */
- #define LOADED_HIGH	(1<<0)
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 1b2edd07a3e1..6409e766fb17 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -223,8 +223,6 @@ extern int root_mountflags;
- unsigned long saved_video_mode;
- 
- #define RAMDISK_IMAGE_START_MASK	0x07FF
--#define RAMDISK_PROMPT_FLAG		0x8000
--#define RAMDISK_LOAD_FLAG		0x4000
- 
- static char __initdata command_line[COMMAND_LINE_SIZE];
- #ifdef CONFIG_CMDLINE_BOOL
+
+Brian Norris (4):
+  PCI: Support FIXUP quirks in modules
+  PCI: Add KUnit tests for FIXUP quirks
+  um: Select PCI_DOMAINS_GENERIC
+  kunit: qemu_configs: Add PCI to arm, arm64
+
+ arch/um/Kconfig                           |   1 +
+ drivers/pci/Kconfig                       |  11 ++
+ drivers/pci/Makefile                      |   1 +
+ drivers/pci/fixup-test.c                  | 197 ++++++++++++++++++++++
+ drivers/pci/quirks.c                      |  62 +++++++
+ include/linux/module.h                    |  18 ++
+ kernel/module/main.c                      |  26 +++
+ tools/testing/kunit/qemu_configs/arm.py   |   1 +
+ tools/testing/kunit/qemu_configs/arm64.py |   1 +
+ 9 files changed, 318 insertions(+)
+ create mode 100644 drivers/pci/fixup-test.c
+
 -- 
-2.47.2
+2.51.0.384.g4c02a37b29-goog
 
 
