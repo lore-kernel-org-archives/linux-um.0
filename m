@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7059ACAC582
-	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 07:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCCAACA101F
+	for <linux-um@archiver.kernel.org>; Fri, 12 Sep 2025 13:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QTKTUxIFnCPKq3z2etimM7StM1iR5OtLKa3yZ0aoRRo=; b=1exqFZ0Q28AKUFlt2U/vfMMvXB
-	wNy0kVNqENFvM9gOAd/WP9Ji+gL70yMiBDFzYIKzazLf7jT+jDvhHUQ5RouOIhqsWNEQw4qL9F1hF
-	Nv3jWGKJdz4HWF9Z54glLgYbTGeIDzu9ZvilQerFAShgSfIHYH03noeVlPEbY50ox5cfiP4e8t0ZJ
-	ItkvkpXuZYH+ftlZfor5jdBDcpenTqCLRW9jCPXkfUvSj3ul87k15s2ZrkV5bpBEzGXUg8MCkInmA
-	izvJojQIz1qrt6qAYX63045PAP88ecjvNfcE7ZZ8IrdvVZGyKj0ANLY7dMWjJESm9ARYLbQmqbHwZ
-	rk27kjfA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+ns7H8CB30PHzOE+CLH8DzyRO1n3rgJ84XgwC8jafww=; b=zfJCAcVGxdfdGg62JIJHOR6lrA
+	PpJI9QYytIZzyz22WsmljAxeCbymlXNlKZf7oOP2pISGiJq7/oKSLI24ni1HZcNc8Eqw6D6XtXYp4
+	Az5uqzMUjEkkgGqfu5wcowjbdWoEkNbxvrdD04YMXQYs1iUMrTqg9jfHmOmNzVpnYa7v44ovX7rKw
+	/T+HzOqLBQCWiQPN97PxX0cZ9w7yqOH9KOmYFlcHZSLYtRkCJAZ+Suy2wNSiGm+zs4L2hG49Tx0di
+	UENpnEOv05eVbtE7GLH/fVvtpTnsd8VXxiysu0Tbi9Yz/VKyQY3TiA7bGypu72u05ji2krYz2CGTP
+	/4I6HO+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwygN-00000007mQI-0ulK;
-	Fri, 12 Sep 2025 07:58:59 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1ux3pW-00000009ZCA-1cf2;
+	Fri, 12 Sep 2025 13:28:46 +0000
+Received: from out-179.mta1.migadu.com ([2001:41d0:203:375::b3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uwygL-00000007mNt-0vmf
+	id 1ux3pU-00000009Z4N-05MZ
 	for linux-um@lists.infradead.org;
-	Fri, 12 Sep 2025 07:58:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=QTKTUxIFnCPKq3z2etimM7StM1iR5OtLKa3yZ0aoRRo=;
-	t=1757663937; x=1758873537; b=ahLwqzG4Ccwb1APG5h6Yvx+LWMVYmwZ+AvgO3B/r/rpYfTt
-	5xtgQD1liosCaMLw1DiTZwW2FJSWmkHxoVTOOz/LEL1fgBG/1jGkpIXa91oZ1hmZGdJS1UgMkTD1U
-	1LMYara2MivsLkOANZuw6fC5RFnUiHsZkxuSAtja0rkp3ty1ZYYm5xJbNtfMOi92MAfIduCZYom55
-	3ES3HlH3//V7LUiw7N42DvIo+JVCNDnt+YTOFlyw5FCTyGXWvjbn3Bt1yjfr6wdAiVghZvhGlaIFE
-	phLwSk5Bk1SlZ1VJU6pTWGHBSq86c/r70GCPVHrerDYAVzU32BJAgjFD33fugpWw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uwygE-0000000GtlD-0WIW;
-	Fri, 12 Sep 2025 09:58:50 +0200
-Message-ID: <250234d1acd54553bf5f55972d9b05cfccb2cfab.camel@sipsolutions.net>
+	Fri, 12 Sep 2025 13:28:45 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757683707;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+ns7H8CB30PHzOE+CLH8DzyRO1n3rgJ84XgwC8jafww=;
+	b=cmWWpW59hiaPFvHb/tGmBvinl/fxs1nqNO9wiy6G69d+tDQBnuBciv/B3Dr9Mpj7+ZI2Ss
+	O3oYzUtE9RXp9zt/xTaG2IMtocMombghGby2kJxyQOECQwdkXsvil/kc1KWbbNyVo/n06D
+	gnkn0OmpK90PoogBSiBmEnOVscCQHII=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: benjamin@sipsolutions.net
+Cc: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	arnd@arndb.de,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
 Subject: Re: [PATCH v2 04/10] um: Turn signals_* into thread-local variables
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Tiwei Bie <tiwei.bie@linux.dev>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com,
- johannes@sipsolutions.net, 	arnd@arndb.de, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, 	tiwei.btw@antgroup.com
-Date: Fri, 12 Sep 2025 09:58:49 +0200
-In-Reply-To: <20250912003054.2564842-1-tiwei.bie@linux.dev>
-References: <75ba2109fcdfb8a1629fdf5f6b4e58694b975c9f.camel@sipsolutions.net>
-	 <20250912003054.2564842-1-tiwei.bie@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+Date: Fri, 12 Sep 2025 21:27:53 +0800
+Message-Id: <20250912132753.2651038-1-tiwei.bie@linux.dev>
+In-Reply-To: <250234d1acd54553bf5f55972d9b05cfccb2cfab.camel@sipsolutions.net>
+References: <250234d1acd54553bf5f55972d9b05cfccb2cfab.camel@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_005857_267147_A864EB32 
-X-CRM114-Status: GOOD (  22.98  )
+X-CRM114-CacheID: sfid-20250912_062844_201785_D1F62319 
+X-CRM114-Status: GOOD (  23.52  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,79 +73,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCAyMDI1LTA5LTEyIGF0IDA4OjMwICswODAwLCBUaXdlaSBCaWUgd3JvdGU6Cj4gT24g
-VGh1LCAxMSBTZXAgMjAyNSAxMDowNjo1MyArMDIwMCwgQmVuamFtaW4gQmVyZyB3cm90ZToKPiAK
-PiA+IFtTTklQXQo+ID4gVGhhdCBzYWlkLCBJIGRvIGJlbGlldmUgdGhhdCB0aGUgYWxsb2NhdGlv
-bnMgZnJvbSB0aGUgbGliYyBpdHNlbGYgYXJlCj4gPiBwcm9ibGVtYXRpYy4gQSBsb3Qgb2YgdGhl
-IG1hcHBpbmdzIGZyb20gVU1MIGFyZSB0aGVyZSBhbHJlYWR5IChpLmUuIHRoZQo+ID4gcGh5c2lj
-YWwgbWVtb3J5IGlzIG1hcHBlZCkuIEhvd2V2ZXIsIEkgYmVsaWV2ZSB0aGUgdm1hbGxvYyBhcmVh
-IGZvcgo+ID4gZXhhbXBsZSBpcyBub3QgZ3VhcmRlZC4KPiA+IAo+ID4gU28gd2hlbiBwdGhyZWFk
-IGFsbG9jYXRlcyB0aGUgdGhyZWFkIHNwZWNpZmljIG1lbW9yeSAoc3RhY2ssIFRMUywgLi4uKSwK
-PiA+IHdlIHJlYWxseSBkbyBub3Qga25vdyB3aGVyZSB0aGlzIHdpbGwgYmUgbWFwcGVkIGludG8g
-dGhlIGFkZHJlc3Mgc3BhY2UuCj4gPiBJZiBpdCBoYXBwZW5zIHRvIGJlIGluIGFuIGFyZWEgdGhh
-dCBVTUwgd2FudHMgdG8gdXNlIGxhdGVyLCB0aGVuIFVNTAo+ID4gY291bGQgbWFwIGUuZy4gdm1h
-bGxvYyBkYXRhIG92ZXIgaXQuCj4gPiAKPiA+IE5vdywgaXQgY291bGQgYmUgdGhhdCAoY3VycmVu
-dGx5KSB0aGUgYWRkcmVzc2VzIHBpY2tlZCBieSBwdGhyZWFkIChvcgo+ID4gdGhlIGhvc3Qga2Vy
-bmVsKSBkbyBub3QgYWN0dWFsbHkgY2xhc2ggd2l0aCBhbnl0aGluZy4gSG93ZXZlciwgSSBkbyBu
-b3QKPiA+IHRoaW5rIHRoZXJlIGlzIGFueSBndWFyYW50ZWUgZm9yIHRoYXQuCj4gCj4gSW5kZWVk
-LiBUaGUgbW1hcCBmcm9tIGxpYmMgKHB0aHJlYWQsIHNoYXJlZCBsaWJzLCAuLi4pIGNhbiBwb3Rl
-bnRpYWxseQo+IGNvbmZsaWN0IHdpdGggVU1MLiBUaGUgcmVhc29uIGl0IGhhcyBiZWVuIHdvcmtp
-bmcgb24geDg2XzY0IHNvIGZhciBtaWdodAo+IGJlIHRoYXQgd2UgZGlkIHRoaXMgaW4gbGludXhf
-bWFpbigpOgo+IAo+IAl0YXNrX3NpemUgPSB0YXNrX3NpemUgJiBQR0RJUl9NQVNLOwo+IAo+IFRo
-ZSBjdXJyZW50IGxheW91dCBpczoKPiAKPiBzaGFyZWQgbGlicyBhbmQgcHRocmVhZHMgYXJlIGxv
-Y2F0ZWQgYXQgN2ZmeHh4eHh4eHh4Cj4gVEFTS19TSVpFwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgPSA3ZjgwMDAwMDAwMDAKPiBWTUFMTE9D
-X0VORMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-PSA3ZjdmZmZmZmUwMDAgKHdoaWNoIGlzIFRBU0tfU0laRS0yKlBBR0VfU0laRSkKClVoLCByaWdo
-dCwgeWVzLiBCZWNhdXNlIG9mIHRoZSBtYXNraW5nIHdlIGFyZSBjYXBwaW5nIG91cnNlbHZlcyB0
-bwoweDdmODAwMDAwMDAwMC4gQW5kIHRoZW4gYWxsIG9mIHRoZSBpbnRlcmVzdGluZyBiaXRzICh2
-ZHNvLCAuLi4pIGhhcHBlbgp0byBiZSBtYXBwZWQgYWJvdmUgdGhhdCBhZGRyZXNzIGFuZCBhcmUg
-ZWZmZWN0aXZlbHkgcHJvdGVjdGVkLiBBbmQsCnRoZXJlIGlzIGFsc28gcGxlbnR5IG9mIHNwYWNl
-IGZvciBvdGhlciBhbGxvY2F0aW9ucyB0ZWNobmljYWxseS4KClRoYXQgaXMga2luZCBvZiBob3Jy
-aWJsZSwgYXMgaXQgb25seSB3b3JrcyBiZWNhdXNlIGFsbCBvZiB0aGlzIGhhcHBlbnMKdG8gYmUg
-bWFwcGVkIGludG8gdGhlIHRvcCBvZiB0aGUgYWRkcmVzcyBzcGFjZS4gQnV0LCBtYXliZSBzb21l
-dGhpbmcgdG8KanVzdCB3aWxmdWxseSBpZ25vcmUgYW5kIG9ubHkgZml4IGFzIHBhcnQgb2YgYSBu
-b2xpYmMgcG9ydD8KCj4gSG93ZXZlciwgb24gaTM4NiwgdGhlIHJpc2sgb2YgY29uZmxpY3RzIGxv
-b2tzIG11Y2ggaGlnaGVyOgo+IAo+IFRBU0tfU0laRcKgwqAgPSBmZmMwMDAwMAo+IFZNQUxMT0Nf
-RU5EID0gZmZiZmUwMDAKPiAKPiAuLi4uLi4KPiBmN2MwMDAwMC1mN2MyMDAwMCByLS1wIDAwMDAw
-MDAwIDA4OjAxIDkxMTTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgL3Vzci9saWIzMi9saWJjLnNvLjYKPiBmN2MyMDAwMC1mN2Q5ZTAw
-MCByLXhwIDAwMDIwMDAwIDA4OjAxIDkxMTTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgL3Vzci9saWIzMi9saWJjLnNvLjYKPiBmN2Q5
-ZTAwMC1mN2UyMzAwMCByLS1wIDAwMTllMDAwIDA4OjAxIDkxMTTCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgL3Vzci9saWIzMi9saWJj
-LnNvLjYKPiBmN2UyMzAwMC1mN2UyNDAwMCAtLS1wIDAwMjIzMDAwIDA4OjAxIDkxMTTCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgL3Vz
-ci9saWIzMi9saWJjLnNvLjYKPiBmN2UyNDAwMC1mN2UyNjAwMCByLS1wIDAwMjIzMDAwIDA4OjAx
-IDkxMTTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgL3Vzci9saWIzMi9saWJjLnNvLjYKPiBmN2UyNjAwMC1mN2UyNzAwMCBydy1wIDAw
-MjI1MDAwIDA4OjAxIDkxMTTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgL3Vzci9saWIzMi9saWJjLnNvLjYKPiBmN2UyNzAwMC1mN2Uz
-MTAwMCBydy1wIDAwMDAwMDAwIDAwOjAwIDAgCj4gZjdmYmUwMDAtZjdmYzAwMDAgcnctcCAwMDAw
-MDAwMCAwMDowMCAwIAo+IGY3ZmMwMDAwLWY3ZmM0MDAwIHItLXAgMDAwMDAwMDAgMDA6MDAgMMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBbdnZhcl0KPiBmN2ZjNDAwMC1mN2ZjNjAwMCByLXhwIDAwMDAwMDAwIDAwOjAwIDDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgW3Zkc29dCj4gZjdmYzYwMDAtZjdmYzcwMDAgci0tcCAwMDAwMDAwMCAwODowMSA5
-MTA3wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIC91c3IvbGliMzIvbGQtbGludXguc28uMgo+IGY3ZmM3MDAwLWY3ZmVjMDAwIHIteHAg
-MDAwMDEwMDAgMDg6MDEgOTEwN8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvdXNyL2xpYjMyL2xkLWxpbnV4LnNvLjIKPiBmN2ZlYzAw
-MC1mN2ZmYjAwMCByLS1wIDAwMDI2MDAwIDA4OjAxIDkxMDfCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgL3Vzci9saWIzMi9sZC1saW51
-eC5zby4yCj4gZjdmZmIwMDAtZjdmZmQwMDAgci0tcCAwMDAzNDAwMCAwODowMSA5MTA3wqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC91
-c3IvbGliMzIvbGQtbGludXguc28uMgo+IGY3ZmZkMDAwLWY3ZmZlMDAwIHJ3LXAgMDAwMzYwMDAg
-MDg6MDEgOTEwN8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAvdXNyL2xpYjMyL2xkLWxpbnV4LnNvLjIKPiBmZmZkZDAwMC1mZmZmZTAw
-MCBydy1wIDAwMDAwMDAwIDAwOjAwIDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgW3N0YWNrXQo+IAo+IElkZWFsbHksIHdl
-IGNvdWxkIGNvbXBsZXRlbHkgZWxpbWluYXRlIHRoZSBkZXBlbmRlbmN5IG9uIGxpYmMuIEJlZm9y
-ZSB0aGF0LAo+IHBlcmhhcHMgd2UgY291bGQgcmVzZXJ2ZSBhIHJlZ2lvbiBvZiBhZGRyZXNzIHNw
-YWNlIGZvciBVTUwgd2l0aCBtbWFwKFBST1RfTk9ORSkuCgpZZWFoLCB0aGF0IGRvZXMgc2VlbSBy
-ZWFzb25hYmxlLiBUaGF0IHNob3VsZCBhdCBsZWFzdCBwcm90ZWN0IHVzIGZyb20KbGliYyB1c2lu
-ZyBvdXIgdm1hbGxvYyBhcmVhLiBBbmQgaXQgaXMgZWFzeSB0byBkbywgYXMgaXQganVzdCBuZWVk
-cyBhbgppbml0aWFsIG1tYXAgYW5kIGNoYW5naW5nIHRoZSBrZXJuX3VubWFwIGltcGxlbWVudGF0
-aW9uIGluIHRsYi5jCgpCZW5qYW1pbgo=
+On Fri, 12 Sep 2025 09:58:49 +0200, Benjamin Berg wrote:
+> On Fri, 2025-09-12 at 08:30 +0800, Tiwei Bie wrote:
+> > On Thu, 11 Sep 2025 10:06:53 +0200, Benjamin Berg wrote:
+> > 
+> > > [SNIP]
+> > > That said, I do believe that the allocations from the libc itself are
+> > > problematic. A lot of the mappings from UML are there already (i.e. the
+> > > physical memory is mapped). However, I believe the vmalloc area for
+> > > example is not guarded.
+> > > 
+> > > So when pthread allocates the thread specific memory (stack, TLS, ...),
+> > > we really do not know where this will be mapped into the address space.
+> > > If it happens to be in an area that UML wants to use later, then UML
+> > > could map e.g. vmalloc data over it.
+> > > 
+> > > Now, it could be that (currently) the addresses picked by pthread (or
+> > > the host kernel) do not actually clash with anything. However, I do not
+> > > think there is any guarantee for that.
+> > 
+> > Indeed. The mmap from libc (pthread, shared libs, ...) can potentially
+> > conflict with UML. The reason it has been working on x86_64 so far might
+> > be that we did this in linux_main():
+> > 
+> > 	task_size = task_size & PGDIR_MASK;
+> > 
+> > The current layout is:
+> > 
+> > shared libs and pthreads are located at 7ffxxxxxxxxx
+> > TASK_SIZE                             = 7f8000000000
+> > VMALLOC_END                           = 7f7fffffe000 (which is TASK_SIZE-2*PAGE_SIZE)
+> 
+> Uh, right, yes. Because of the masking we are capping ourselves to
+> 0x7f8000000000. And then all of the interesting bits (vdso, ...) happen
+> to be mapped above that address and are effectively protected. And,
+> there is also plenty of space for other allocations technically.
+> 
+> That is kind of horrible, as it only works because all of this happens
+> to be mapped into the top of the address space.
 
++1.
+
+> But, maybe something to
+> just wilfully ignore and only fix as part of a nolibc port?
+
+Sure. Thanks!
+
+Regards,
+Tiwei
 
