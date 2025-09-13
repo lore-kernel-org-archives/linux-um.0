@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F7F6CAC582
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:41:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2A16CAC582
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XF39SoyvPO4HSizOmVkN9E4c/OCzbmGR6ZiNtCSz3R4=; b=erqN9E890LEqjvqq38HLZqnxub
-	8XovWFOnJZGO3cup4RMm4RXucT/aKGnMm8Aw/UOFQcbzTxlOi3c0FjB7I3QKpc3sLuCaKgOlbesO0
-	lkWaHhzVkh8aNEcuhpd94IfyNekMfudxB9MK3pn7u5a8nc9r1oO4EStvsDzSRtIjzWm1rK3e7WqR6
-	SLcdyxhEQCs9Gw1lPuAwBO15pP8ZG2N5DnKtuwtwir2OuwQvw9BslQhVPt+0HbroEXgnjFly/1iV8
-	YcaIGjbPuHemW4+9Fv64yllu/8tpaCNoMDuM+dFwW8BqjL3p1F4ewyFl81+ZUpIYgURE4FTJ+ZE2s
-	W6fbHVbw==;
+	bh=Iq4EBZrV1lfKd4Zb7NXCMDMChiW0nY1yh2iMeYqfP7Y=; b=SMev9LexvDdUhOMu+F2/3HgsDF
+	A/JCXb6M355Y7W/rVgBT0UiV/YKnsbB3dHzbFT1FW10DQRFciOetiw0QtCWwRIVHJiALveJB16k7i
+	e4W+JERbIL1XHCXHhb810h9Yxqif7ABHCYnybTvgirEL5GBCai7HCy65NagBuf1ctmi9qi2Z1QZ0O
+	NIcjnkEeQtcXv0ERn/wuqsFKGvEUG6oQvA2/dSPoksQgpRgNiP/NRzW5ZEeoHEfoRx8hCYwoyvaW7
+	Y0ysiS6AIaUgWU1Z5ZKhch9s0QYOHt12wjj+l4K5tpnIMZaiMMTZaN9ll1VS1zKT5OGN9HkF0nzIP
+	Wce89GOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEKH-0000000CM6O-3GZm;
-	Sat, 13 Sep 2025 00:41:13 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1uxELI-0000000CMa1-1LEZ;
+	Sat, 13 Sep 2025 00:42:16 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEKD-0000000CM2M-22n0
+	id 1uxELG-0000000CMYV-219Y
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 00:41:12 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-62ee43b5e96so1599047a12.1
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:41:08 -0700 (PDT)
+	Sat, 13 Sep 2025 00:42:15 +0000
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-62f0411577aso357648a12.1
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:42:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724067; x=1758328867; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757724133; x=1758328933; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XF39SoyvPO4HSizOmVkN9E4c/OCzbmGR6ZiNtCSz3R4=;
-        b=jgHBWjTBpR9ofd9bjTmn8WznQPYetX9glgjv0eovzP8pIV5L1SJh+QFSE4Nh4bMgBA
-         pdlu4txxBYbosriEcbK8iv3IrUH0+rgbphaOSjGZ2FsU4iHLPrV3Zvc/ldthTPotXulm
-         ohw7nX1HVahV0GGRtokMxW0/v75qvfNrJ8G2K4CBjWWDtxA+X9NhyIDiQMyusORka795
-         l03t+AyBxeQMTyRCIQI9GWWydhEaJHR5NcmD43KU+ciPW669VFqjIGfoxgBbInz3gYke
-         Ober4BIGtHxeRITvQHl1gbNnaRNMpH2Dxb/Nj95cakW/LP02EPYliclBMtJHNjnS7ldE
-         /m2Q==
+        bh=Iq4EBZrV1lfKd4Zb7NXCMDMChiW0nY1yh2iMeYqfP7Y=;
+        b=Oa7irtmYAeJyJHS3toAWX7EVvqAMUf2gFbcnnEvNkp4+el4TcLqIdDYC7dDfNWi2m/
+         fgjs9yjrt1Hg/vpgPv5up/pG0p5O2lkY55DUefgyjhBVlYWKtjmRJuDhi9me8UnZgt6B
+         ydeM7qxIfXbIY+iKEXgfVolLMycrygs5tkbko8MClfdrAvEQpInOr7Smlc349Ag+7vH8
+         9BCUofyHg5YY3VDFwS9cCgbgUWPmsh5mI06eYAv2tZuv2DBM5F+iXwplYQRLnELhdT+Z
+         juWdYQ6JYAuNPMeASqrY9KVQuRiK2rI4+pxySIg8djJ6pT+Z2bjBbYLbuLQc7NqYJ6yp
+         88fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724067; x=1758328867;
+        d=1e100.net; s=20230601; t=1757724133; x=1758328933;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XF39SoyvPO4HSizOmVkN9E4c/OCzbmGR6ZiNtCSz3R4=;
-        b=C/7aObhW1MtXRAu9AGGQzs6Rb1zRByHDqyoV1o8xN9RxFR/exeGT8ApMeKvPKl3pKx
-         GMG+Uyrj1OSzwR3mIrnsSc8Q5XnB1qXRA3l/ps8NZbM4N+mD3Bu4h2RayuVMaSS2H7fu
-         J6fNXIQFezzHJa7U41hg5PIHWqif9+B/rlPHeIIe68sHx3J+BaCxYKADMfKSkEYP/bS0
-         0k3j2ZaDdX4k8AnfdEGi+KanpzF0V9tscOyyMxuppTEJXgFkTKZGvpRzNy/P9bw/pjcy
-         l1ydJGxw0aykmnsg961U4pHW5Qhn8bXo8Ai6mk3xmhEzzY/kN6k96VbcLSfumG+BAvz/
-         JR9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUsROsoAOlA8seuZndsbFRwrH6VT0EkTxOBzq19OiAUUXh7CGB6FroA7w9cxKJ69njyfzeg4W3XWg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YztioCey3+M9p8r9lUtVNNnTrEdNhAm730F9aTVhGVUVtj3Wj6c
-	dHggIzx85NJE2Jj6NJR3R2+Ew2+ohWqiTs3J/DveGnSulzLP78Ip79z+
-X-Gm-Gg: ASbGncso1owI+9yGaqqH6CFOqxaLFZ6U9BdbN7VTnn+QfmS09xZX1m6WV4VQiYvvBwo
-	n3ga4YeFJHVibuAB/P0W4wUUu+h/zBxT0AjOPe7Oll7KpVBDBvwUYvuHAW6PX61H//62WHF1mSy
-	eih+Ol4X6KI4LhjSYGa/D8yL7XOvPTkaLRJTtB60MM8mP8ADRQ4XybZf1w6Uhq/RWudD5vav73Y
-	jU9zc44qh4zoPQG9L0imcbgMQh46w+CW6kJpCB47SbLVNFsk6w5G5A+bjJqKe8qpvt+/NMQhtl9
-	J5O4MnPHAamWP8jNIaPeYSsAik3d9hMvJx29XVzNkTsUp1VrAPc3jYa4cQG0O4FiPNcnpjUTaAI
-	O7bZO2iXjOGWYEKVh0PzgVxjwixoLwxaDXdv53wyd
-X-Google-Smtp-Source: AGHT+IEtE+sLJ/l9Jfm7JaiF1fYpyMVV9PhBGBMQ2H0UV0Mi6JbllI7aH7Kqq18B0Ua9aQ0IxOB0Jg==
-X-Received: by 2002:a05:6402:3552:b0:62e:ed2f:a660 with SMTP id 4fb4d7f45d1cf-62eed2fa993mr2339876a12.11.1757724067127;
-        Fri, 12 Sep 2025 17:41:07 -0700 (PDT)
+        bh=Iq4EBZrV1lfKd4Zb7NXCMDMChiW0nY1yh2iMeYqfP7Y=;
+        b=AX2a7CdNWEJ39y12cgbn4Fqhr8zdCXOGODikIpcwl2yrpJenVkGjIF8sutY0udsjJJ
+         2FuBpQ8D/NjLA7IzWODvG8o2/lTSPnvyNQDT1HBDRVLxwGIGAvjwf14Y9gQE8rACYlhj
+         WCrKLcAQdJROIQt3nXt7fAvToo5JXzXLoCqzjdUoQMMs7JZIKiwLFRwNVBC6MsDVHaej
+         om/9m7lZzyo6MEF8VeQqKHjlsrwj0RKlvJZk2DojN1IW1aNtqeKHa2YA7JgJ7e2CBBA1
+         /hf8dmmpniTy2Fpgx7r201M5l9aeXuul4staPHRRPRlcDr4m8s65P0t7vUoQ3/iodjy1
+         rcaA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqZij7QdF3dWfkC4Dwc9EXEqW00T1Nsa/I9nKzYWSh4/b2d+T/i86cGbATAe08mERQGEfAhK9K4g==@lists.infradead.org
+X-Gm-Message-State: AOJu0YztWcC8XRSu5C8DNfqc1230L7fCkoS5oFiXbVh4yUxy7vUXnmoO
+	s/hnLyqCypIidt2BlWiQfXr6IEF/L3yT5ZxupsQlVCr+yGB1oNAbiNPQ
+X-Gm-Gg: ASbGncsvfIo1lsiFz/ope0+9HRii0CQrdRsCGqt3idrqFCMExNlfHHK7+9/uI3j7PTD
+	s1tuQ53pboaWcPyp2+gtnSDMeHpGRPpjtLYb9HFfiG1gq+pMzyAazV0Z6HI2AiTe+x0WweEb2As
+	XDAMPhdTA6zzObyYMWeWYyZGVszFBNeStwkuSwVwlzvKLPSrf6wZrxQ1TVgHG3PwqmxxGHN2GFw
+	pRBwkgqLDd26YT8Ncs7zG9AxtG/2t3pt49ZrIwi+Pes1DkTHjkcIXl1CubQwpHxVAiZbX12HDzR
+	GrbIn7GQPil/7iO2knT55rrStmE9uUgE2XlEKgvesiSniRTYJ83xhK+TgWGQizsObJbe64ZG3xb
+	PRNXPz5y+mxJfr6u94+g=
+X-Google-Smtp-Source: AGHT+IF0YGOwgI/SiDLzLobCRbGCMEuk6UiMOqwXQtTxtsbaeH+eIG/iAAo9vQw+zhuCea49+yp7bA==
+X-Received: by 2002:a17:907:2d2b:b0:afe:8761:e77a with SMTP id a640c23a62f3a-b07c35833dfmr474345066b.19.1757724132448;
+        Fri, 12 Sep 2025 17:42:12 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62f0c7a5546sm189920a12.43.2025.09.12.17.41.02
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b3128a5csm466901366b.37.2025.09.12.17.42.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:41:06 -0700 (PDT)
+        Fri, 12 Sep 2025 17:42:12 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -124,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 01/62] init: remove deprecated "load_ramdisk" command line parameter, which does nothing
-Date: Sat, 13 Sep 2025 00:37:40 +0000
-Message-ID: <20250913003842.41944-2-safinaskar@gmail.com>
+Subject: [PATCH RESEND 02/62] init: remove deprecated "prompt_ramdisk" command line parameter, which does nothing
+Date: Sat, 13 Sep 2025 00:37:41 +0000
+Message-ID: <20250913003842.41944-3-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_174109_590048_B4D1BA57 
-X-CRM114-Status: GOOD (  11.05  )
+X-CRM114-CacheID: sfid-20250912_174214_546955_16438FB4 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,53 +155,53 @@ Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
  Documentation/admin-guide/kernel-parameters.txt | 2 --
  arch/arm/configs/neponset_defconfig             | 2 +-
- init/do_mounts.c                                | 7 -------
+ init/do_mounts_rd.c                             | 7 -------
  3 files changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 747a55abf494..d3b05ce249ff 100644
+index d3b05ce249ff..f940c1184912 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3275,8 +3275,6 @@
- 			If there are multiple matching configurations changing
- 			the same attribute, the last one is used.
+@@ -5229,8 +5229,6 @@
+ 			Param: <number> - step/bucket size as a power of 2 for
+ 				statistical time based profiling.
  
--	load_ramdisk=	[RAM] [Deprecated]
+-	prompt_ramdisk=	[RAM] [Deprecated]
 -
- 	lockd.nlm_grace_period=P  [NFS] Assign grace period.
- 			Format: <integer>
- 
+ 	prot_virt=	[S390] enable hosting protected virtual machines
+ 			isolated from the hypervisor (if hardware supports
+ 			that). If enabled, the default kernel base address
 diff --git a/arch/arm/configs/neponset_defconfig b/arch/arm/configs/neponset_defconfig
-index 2227f86100ad..16f7300239da 100644
+index 16f7300239da..4d720001c12e 100644
 --- a/arch/arm/configs/neponset_defconfig
 +++ b/arch/arm/configs/neponset_defconfig
 @@ -9,7 +9,7 @@ CONFIG_ASSABET_NEPONSET=y
  CONFIG_ZBOOT_ROM_TEXT=0x80000
  CONFIG_ZBOOT_ROM_BSS=0xc1000000
  CONFIG_ZBOOT_ROM=y
--CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) load_ramdisk=1 prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
-+CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
+-CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
++CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) mem=32M noinitrd initrd=0xc0800000,3M"
  CONFIG_FPE_NWFPE=y
  CONFIG_PM=y
  CONFIG_MODULES=y
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 6af29da8889e..0f2f44e6250c 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -34,13 +34,6 @@ static int root_wait;
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index ac021ae6e6fa..f7d53bc21e41 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -17,13 +17,6 @@
+ static struct file *in_file, *out_file;
+ static loff_t in_pos, out_pos;
  
- dev_t ROOT_DEV;
- 
--static int __init load_ramdisk(char *str)
+-static int __init prompt_ramdisk(char *str)
 -{
--	pr_warn("ignoring the deprecated load_ramdisk= option\n");
+-	pr_warn("ignoring the deprecated prompt_ramdisk= option\n");
 -	return 1;
 -}
--__setup("load_ramdisk=", load_ramdisk);
+-__setup("prompt_ramdisk=", prompt_ramdisk);
 -
- static int __init readonly(char *str)
- {
- 	if (*str)
+ int __initdata rd_image_start;		/* starting block # of image */
+ 
+ static int __init ramdisk_start_setup(char *str)
 -- 
 2.47.2
 
