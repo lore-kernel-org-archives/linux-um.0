@@ -4,107 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD9B8CAC587
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 06:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F6C2CAC58E
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 06:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ukCkckAuGMje9cA2p4fcL/eu4iSUrEgrcmTG6KbdR1M=; b=jFt9Ynr3f4Anm8VYtvB5/EsdR0
-	R84RdZtHkXWfW4qxaqOi51IPokD6NVJCPWo6wVuyvVtcm4MUzQYi5xSVJFvs+EXSqPojkrkAO09XN
-	SbvJZxAF8/v9LyOPDUtgOdXx9eYJqhtrYHKznN2laFw5d0IF92Q3jCTP87Natkzo5XPSTVVKYsnEN
-	PPHVpAIF9kDkg6mDKr6bn+57b1LP1wn+BpjUtV0QpUf8VJR4NYFWKmN2ycfF9b2Hw/qFZzbv3GPhi
-	1bhbMGImeDm9t8TFCcwis87KVSblMu6eAIT6JdReZZPI9a5urT8KbGGdN91VzikfCZSOlpKAOFPVu
-	53ra/q1g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XCvwV5WoqoYVySUmFtMHQmX2ZgogkxDxtUeViriH4AA=; b=oLa9o73RCtiW/IbrZznCpob7G3
+	aoLBiu7negerluDsnSVQEFi4nx5djo9xFprCdTkUCeRzzbxKB4qoXhs/9y7/e0nUbWEDMGMrivbxW
+	yWw7IvgEzA06GDVUTBrIQTnuHckX89NsCeio4nwCiXzrfkyIyGOykZr7lboz13nyUQ+djXFXTKdgH
+	FgEBpUaDkkIt6wZZYtIe3BaByvgoWlL0XfVEev55OlVWq+sHZxygBQK7puPNilcFipLKR59Enpp1K
+	LlxKgMSYdDXt/9zc0aZsmPls92i7i1gyjnniVNHTWQHUN/zOQRhaH9BKRbVoQba/xaQMCV+N/w2pp
+	LhTlqddQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxJJh-0000000DRK5-3iMD;
-	Sat, 13 Sep 2025 06:00:57 +0000
-Received: from mail.alien8.de ([2a01:4f9:3051:3f93::2])
+	id 1uxJWs-0000000DUNW-2unf;
+	Sat, 13 Sep 2025 06:14:34 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxJJd-0000000DRHP-3zmB;
-	Sat, 13 Sep 2025 06:00:55 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A0B8040E016D;
-	Sat, 13 Sep 2025 06:00:50 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 5iEw13_6N0hx; Sat, 13 Sep 2025 06:00:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1757743247; bh=ukCkckAuGMje9cA2p4fcL/eu4iSUrEgrcmTG6KbdR1M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M+CzmzEWar56cJJ17KOTR6P8eSnXvk4pSviym3bg7uW6BkqS0j+mtX3BQDzmjsLKN
-	 cBfUjtOzG0dtMWCm8gmhsUa3Xxo4FILO/a/EoDcNG+tlw8kR4uStWeJwPdhqSPG8vi
-	 dptoTCZKzdi0Lb7IKesUGcadI0V7LIgtuqv7+ljIAgi+MxFM4i8iy5ZzhN+eNcVDkT
-	 2U5qJFAQwTYKNKjXv/HnQbujbbxSSpVXj5bVy2aRYmWxFocdRZ21hDbVAksBWj/ayB
-	 IyVl/MGqAXPtO85g0YsubzV7s6ahQw9h0Csu9TVUFWQlf+WnPcHv5LpdW2BLaZTSLx
-	 MMPWrLyToEYejhS/laszKvXwNVgYIRKtn46zcfAmgWcVrksJjmgrxaFWOjZaf7IcIu
-	 69gMcfJR5mcDILFbprN0LrSSpnH27j6cHrFVqj50Pgarn5Z+5kEA74Cuh7F+wkwKag
-	 IgiVg9veF2ZWXTokCLUb6KziC0viJ3MFRPeERhFpkN9McnxLf/Lom5CWCUO/GLLsrO
-	 Ik0vYi9bLtv3NWaKGrZ5U38zUX6p3F6aTmchXQOEPOWj3S4lIPOayyV2rrbopxaE+l
-	 7bAPj5LxiMGFgfJow+wWYdkCpmcS3w+RlVWftduP1hFNqKDXn6mv7Glb2r+ccLg5uk
-	 Ktt/rgo0zlxIwboDscbgVlBU=
-Received: from zn.tnic (p5de8ed27.dip0.t-ipconnect.de [93.232.237.39])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id 3961D40E015C;
-	Sat, 13 Sep 2025 05:59:52 +0000 (UTC)
-Date: Sat, 13 Sep 2025 07:59:45 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Askar Safin <safinaskar@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
-	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Art Nikpal <email2tema@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>,
-	linux-block@vger.kernel.org, initramfs@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
-	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org,
-	Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-Subject: Re: [PATCH RESEND 28/62] init: alpha, arc, arm, arm64, csky, m68k,
- microblaze, mips, nios2, openrisc, parisc, powerpc, s390, sh, sparc, um,
- x86, xtensa: rename initrd_{start,end} to
- virt_external_initramfs_{start,end}
-Message-ID: <20250913055851.GBaMUIGyF8VhpUsOZg@fat_crate.local>
-References: <20250913003842.41944-1-safinaskar@gmail.com>
- <20250913003842.41944-29-safinaskar@gmail.com>
- <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local>
+	id 1uxJWq-0000000DUMT-2sO0
+	for linux-um@lists.infradead.org;
+	Sat, 13 Sep 2025 06:14:34 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-722d5d8fa11so21929616d6.3
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 23:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1757744070; x=1758348870; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XCvwV5WoqoYVySUmFtMHQmX2ZgogkxDxtUeViriH4AA=;
+        b=SBtkSNAcZL+fReyUaHoHeCvqKtFGDwdEUN55erdwik5relkKpVF9v9cGTpcN3j45SZ
+         UvihoJj4e9yT57uCC289wAsfj0nfIPC5VWvfEYZTvz8h85CyEqKoKsukZyyteti26Y7t
+         AQTvI32HOVNN9/nR8Rj7mmXSxFUtyYNzmUwtrmSTIx9KYB7TfuHiMyFmo1W+8akkTh7h
+         HfM6QofrvKcmQ6b0tX7RvNoqcoMF40276Vi7dWbqaU+7KkBpRv1/PtBsiSsu5eEEwt7u
+         UkpUGH+cbomP5czwoVCsOFV44bTFErY+ywAlGzwCuLASe5ZhoTpcD6209reb823kS/ao
+         k5qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757744070; x=1758348870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XCvwV5WoqoYVySUmFtMHQmX2ZgogkxDxtUeViriH4AA=;
+        b=t2RUOB460EulAZ4reooygpEVelhbc6U+ECLK81ncHJEdSyTVpFAHlI56FPTd1HUEyd
+         /2q2au7tYWUBBKWBfcTcelG/urcXRyFwK4G+qM/8I5DBoll+pynNSWkZyP6xMkQD06hc
+         gRP8t88dtVdTlf69c87futSha/jTTTXSJ5TuLBz9Wi5a371gHuKqfE7IiwlmALpjrtfu
+         XNtFs27jtc9IDKpSTkTjU18s2b0xKIjvJNSZAMyJZYr93mmrUhPw3QAi4ogb1Ib2w1gy
+         I6bDfTk+BOA1X5DwTQODAtDIhUZI39BSMwgErFr3Ud4EnGTXCZeHJMIOzq3aOy6E8fyD
+         F/gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWCAeeyhpfZAn7QEtmD5ch5WwjexcnSjlRxENlsm56FDVTSMylmyEfpfIpo/J1oIq/IJwu4HIhp7w==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzFWLJwC4o8xri3eV6eJuS74H4NqCBMPQBBCnKNO7S7ZEAOJJJU
+	HYElvkJpIPHZXbNnVYkweb3lsGWhuQHo+GTarBDm0wiQ4tHLlFmLfww1eNPmB/PFrcUtz89NfNN
+	cwXl//LmXiocg7las5rpf98oa4Ux/cRouAs/ohOgy
+X-Gm-Gg: ASbGncubXWDHzy/wA4h5fkHF3g1AnyFpHE9gywXPzyQM7iGcI/37lJy+0vs3Ps54NJr
+	TMYUizi+LBose2v+YuWKHppC9ungDNCL/+Hsqc2lZjZTaznZDYx3/U1LbB7ZnkhkY2p/o4vJf8Z
+	Jv6dx8UbbPH6ew/xouEUBljW3HK8ZO74liUJEYVpACbxTVSB3JX5QsgZFXKeqlUWq2PqPnA8ekH
+	4K8ghefy4CfTMx3nwUZM7x7tsXsChirFw==
+X-Google-Smtp-Source: AGHT+IHJrx6ozvbMDWYDP71LNjU3nqhgVJjdnL9fmTR9g9kuYNj5UraKu8PJNDMK54JfJxbFZNaR1S+PCFRCKfHmv5I=
+X-Received: by 2002:ad4:5cea:0:b0:766:ab7c:3e89 with SMTP id
+ 6a1803df08f44-767c5621b4bmr71883766d6.64.1757744070327; Fri, 12 Sep 2025
+ 23:14:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local>
+References: <20250908-kunit-uml-pci-v2-1-d8eba5f73c9d@linutronix.de>
+In-Reply-To: <20250908-kunit-uml-pci-v2-1-d8eba5f73c9d@linutronix.de>
+From: David Gow <davidgow@google.com>
+Date: Sat, 13 Sep 2025 14:14:18 +0800
+X-Gm-Features: AS18NWAwSSI4FfaR6_Z8Utcpxcsk0azDBC1iBVWsOW6hluo678X_JayUhmQMwFs
+Message-ID: <CABVgOSmCNs2DQbyj=MAm-LHBRbEiCO1Adb-mSt+fbgOa8v4iYA@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2] kunit: Enable PCI on UML without triggering WARN()
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, Rae Moar <rmoar@google.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, linux-kselftest@vger.kernel.org, 
+	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_230054_150308_9A867357 
-X-CRM114-Status: UNSURE (   9.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250912_231432_753968_AF7F410D 
+X-CRM114-Status: GOOD (  24.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,23 +98,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Sep 13, 2025 at 07:48:37AM +0200, Borislav Petkov wrote:
-> On Sat, Sep 13, 2025 at 12:38:07AM +0000, Askar Safin wrote:
-> > Rename initrd_start to virt_external_initramfs_start and
-> > initrd_end to virt_external_initramfs_end.
-> 
-> "virt" as in "virtualization"?
+On Mon, 8 Sept 2025 at 15:03, Thomas Wei=C3=9Fschuh
+<thomas.weissschuh@linutronix.de> wrote:
+>
+> Various KUnit tests require PCI infrastructure to work. All normal
+> platforms enable PCI by default, but UML does not. Enabling PCI from
+> .kunitconfig files is problematic as it would not be portable. So in
+> commit 6fc3a8636a7b ("kunit: tool: Enable virtio/PCI by default on UML")
+> PCI was enabled by way of CONFIG_UML_PCI_OVER_VIRTIO=3Dy. However
+> CONFIG_UML_PCI_OVER_VIRTIO requires additional configuration of
+> CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID or will otherwise trigger a WARN() i=
+n
+> virtio_pcidev_init(). However there is no one correct value for
+> UML_PCI_OVER_VIRTIO_DEVICE_ID which could be used by default.
+>
+> This warning is confusing when debugging test failures.
+>
+> On the other hand, the functionality of CONFIG_UML_PCI_OVER_VIRTIO is not
+> used at all, given that it is completely non-functional as indicated by
+> the WARN() in question. Instead it is only used as a way to enable
+> CONFIG_UML_PCI which itself is not directly configurable.
+>
+> Instead of going through CONFIG_UML_PCI_OVER_VIRTIO, introduce a custom
+> configuration option which enables CONFIG_UML_PCI without triggering
+> warnings or building dead code.
+>
+> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+> Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+> ---
 
-Ooh, now I see it - you have virtual and physical initramfs address things. We
-usually call those "va" and "pa". So
+Reviewed-by: David Gow <davidgow@google.com>
 
-initramfs_{va,pa}_{start,end}
+Cheers,
+-- David
 
-perhaps...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Changes in v2:
+> - Rebase onto v6.17-rc1
+> - Pick up review from Johannes
+> - Link to v1: https://lore.kernel.org/r/20250627-kunit-uml-pci-v1-1-a622f=
+a445e58@linutronix.de
+> ---
+>  lib/kunit/Kconfig                           | 7 +++++++
+>  tools/testing/kunit/configs/arch_uml.config | 5 ++---
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+> index c10ede4b1d2201d5f8cddeb71cc5096e21be9b6a..1823539e96da30e165fa8d395=
+ccbd3f6754c836e 100644
+> --- a/lib/kunit/Kconfig
+> +++ b/lib/kunit/Kconfig
+> @@ -106,4 +106,11 @@ config KUNIT_DEFAULT_TIMEOUT
+>           If unsure, the default timeout of 300 seconds is suitable for m=
+ost
+>           cases.
+>
+> +config KUNIT_UML_PCI
+> +       bool "KUnit UML PCI Support"
+> +       depends on UML
+> +       select UML_PCI
+> +       help
+> +         Enables the PCI subsystem on UML for use by KUnit tests.
+> +
+>  endif # KUNIT
+> diff --git a/tools/testing/kunit/configs/arch_uml.config b/tools/testing/=
+kunit/configs/arch_uml.config
+> index 54ad8972681a2cc724e6122b19407188910b9025..28edf816aa70e6f408d9486ef=
+ff8898df79ee090 100644
+> --- a/tools/testing/kunit/configs/arch_uml.config
+> +++ b/tools/testing/kunit/configs/arch_uml.config
+> @@ -1,8 +1,7 @@
+>  # Config options which are added to UML builds by default
+>
+> -# Enable virtio/pci, as a lot of tests require it.
+> -CONFIG_VIRTIO_UML=3Dy
+> -CONFIG_UML_PCI_OVER_VIRTIO=3Dy
+> +# Enable pci, as a lot of tests require it.
+> +CONFIG_KUNIT_UML_PCI=3Dy
+>
+>  # Enable FORTIFY_SOURCE for wider checking.
+>  CONFIG_FORTIFY_SOURCE=3Dy
+>
+> ---
+> base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+> change-id: 20250626-kunit-uml-pci-a2b687553746
+>
+> Best regards,
+> --
+> Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+>
 
