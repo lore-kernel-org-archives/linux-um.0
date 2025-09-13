@@ -4,86 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C9E9CAC582
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48071CAC582
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SN8Fbr3lsgOHKoe91M3D1QrN7Q3MG8ghhn6m4CViO8A=; b=AMG/5cgIXOQjj25AN+V/St9bxJ
-	mjfjYo/vKJB00B27L1S2uX2252e+OhoUecp3jLG9L1MHgN1G8e4MQqK9I2V2Au5q4iGrlTx5sA9ql
-	On20YT09Zx7PflNlnYLVwGISeX6zLeeAeVAAFgTLCcUwjXW6lG1E7pyOTVbZde2uzAHXMcfGhyf0t
-	I3TXsQnFATJIIRuMgy50t7tTONIbRViNxiHkJgcioz8UaegHpsJMP6V/g0G26ZiNgLfzfvtgRDXmo
-	YNVtuLjXWMxM543UEW8nFOuMP7Mx8OGxB/xqva0jZ9q0jUHuG6ooeOzZ8mG1UXXefYs5EkOLScyMs
-	giFpBtwA==;
+	bh=MdGbmKxqlcMl0rLfzu7p7wshkZ7f+lqXVhPxNRPgNLM=; b=XambVpxLlf72sl394NCQwpiWiB
+	hCQ9CbhAHak8/uzoaDHbbpJJtglWFY3RNnfn3OIkEzaJGqN4YwEed9LqjgkYX7xlMWTYn43rA7YPi
+	etKD+ohzGLb+PkflC+cvuHarJ6bPL8yVGcng5+PN4GSQDXRFaASwrCto9NRb+QyRyZA9LOsK23wje
+	4v/fPHmXCtqzONqd8vgPS2zfo9ZC2lwxQ/N7TMoAZx7/e9qRPclTNKUpUvKkOU+Qg+CcmOaf4QwB7
+	t4GOwNj+wKTsFfcJMIbExOtnYLt9RnwVQqpje9nLQNun7eN2oF3zMKHKh5pgY4WiabVrvPYv9X0gt
+	rfxl89cA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxETp-0000000CQBp-1jXj;
-	Sat, 13 Sep 2025 00:51:05 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1uxEUq-0000000CQUA-01Z2;
+	Sat, 13 Sep 2025 00:52:08 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxETn-0000000CQAx-1ZvA
-	for linux-um@bombadil.infradead.org;
-	Sat, 13 Sep 2025 00:51:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=SN8Fbr3lsgOHKoe91M3D1QrN7Q3MG8ghhn6m4CViO8A=; b=i1LBlsIYkTj+Jfxp8pDcops7Um
-	v+kH/YsB8YhCofJd2vFvqCmeVmVuY/3Tz6V1JnYtO15iS10p8E8l1C8uVqVPLkoLfj7ftjhuRKUK0
-	YnDKdsMVKVdN/Ae+8dj3Je1CZWmyIXUZwjMjhr49HzkWLeWYK/xQFBPddKB7WKE2z5WZxdF1FWtXU
-	1BxBvQL6N5BJbAoMLnx3HOi2PNu5Y96sLr+xwJaW5YWU5ept6p4fEoEC7AFe8qWVU+EWVJG0AWrvF
-	yWdCqBuYqxttKvfyQPSWsbAbIKBJj37vFruRqca6p5FfF1+DMdJm2Y3sxB3utigDpBf1vWroW5ihh
-	tgASTJCg==;
-Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxETj-00000006Uc3-2VQI
+	id 1uxEUm-0000000CQRK-2Bbi
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 00:51:01 +0000
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-b079c13240eso405970966b.1
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:50:59 -0700 (PDT)
+	Sat, 13 Sep 2025 00:52:06 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-b0418f6fc27so429552666b.3
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:52:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724657; x=1758329457; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757724723; x=1758329523; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SN8Fbr3lsgOHKoe91M3D1QrN7Q3MG8ghhn6m4CViO8A=;
-        b=LNQG/D2SVLeX7Hlc4fcjkusRLYmKgFvALMoJLy6A5kPRT31Lhi2SMs2LsHApTuwmYk
-         W46U0BUMgv0HID8875Wz6kUKRu73BwBSQJx+AishY/yOWUf5CF8wnWy41R6J7GRgCDf5
-         5EYmnNER34VNpRRuVi/BluoksX0R1INdWw5S9dGoJcGz+r9gE8lldghSPWH+JOxmKtOj
-         czcsLQpsv43LqugQtbS5hoz3JZz8rwKLKeC5KiYspYSKe9AzLMhhp/aB1hJQw0sr1jym
-         Mb0grYmKD6TI0H2eq3jTnflwJ1rkD0Pc0rC4fY1dYySYJ/2cRiIDXTZ0WiOTn+o3R/xH
-         s3mA==
+        bh=MdGbmKxqlcMl0rLfzu7p7wshkZ7f+lqXVhPxNRPgNLM=;
+        b=LWJEPJWNg6+MJVu5KgFTMaI/k9WvgodQJLiTZPyO/yTvgEh88nxa6BlIcqI3qE3GBv
+         yPfGw0W4S1sZmDmQZ9TgNtUw6tSGn7wXHgwm/tMV6lzTqXhIsDIqqP0FMANtO1mSZ0LC
+         ny68YBgtfgc6j7Lt3qbvZCjNLoH/S0yjm8Vm1+JBS5TSi7INkG0ouvSpTTy4UJYNnywE
+         o3SlR7VU4Hd8aSqYl2DiL0rV1DUtcyT92VxK30olHGIOO2t1IAWrZRqGAvr3AhgPaxHx
+         yR25DRo01DZZqwhw8MDYar7JCkW6LtA3PXazV4ySD76gTVEBF13sYrUCDXcAxMqTPyP3
+         HnAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724657; x=1758329457;
+        d=1e100.net; s=20230601; t=1757724723; x=1758329523;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SN8Fbr3lsgOHKoe91M3D1QrN7Q3MG8ghhn6m4CViO8A=;
-        b=n1rjSZUK9mJXn6F1gGRPkLGQtRKCdIMb2noAKtIt7yJxEO0YhaXEi1AWAdzVFjbYLx
-         U71wviSPii8Vw7Iww4ngLqC0ZUrTidHq2Nb6crbQ10E8NKeeI6z9JyTjvce584hk2Osz
-         Vg6EaSPh3GraA7nfKmotW1DMyhOwS5aKgEnblHUCH5AcIUhmbvMApPnyTYhibL9pTleP
-         Xu7NM6XPujaRc0V8GdKv+yBXe0A4T9xr2y5Z15lZZtWxqXim8ntFMNV40eKGUibXHjIF
-         M/O+MeRD1V3td0rnmjOuu5vFSJXPuNtpUSwrUTXIqicDe6z7hRhZOgmcb6PVuHqSxCUz
-         153w==
-X-Forwarded-Encrypted: i=1; AJvYcCXTL+y9+okxAuSdNvytFMcTfVkDtP6v6SwSKF4EYByoqJS7tAi0jjrjfZGiI/+Qmdh0rBYjSybR2w==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzfgz15W/oCOfh9EWr0lWwtH1KItJftCXUQy/4qZ+ba8kinbscV
-	bS8GK0C/Bdq5ZKPWcsD0WvzDqOkUT5yB1QS6mkX8ANBHUOuCxdoxR8E8
-X-Gm-Gg: ASbGncv1D7KRXmvB2JZx7LZpACEd9SejNqA3OEl5vFdtO00BN+Hs0zDv2bbXdwwF3KQ
-	OkCdOHzxxCA002l0Z+IAvY76u5jYB00nPB7vrwkP9FQdg2aoYjdCZQhCRnmTvhIELZjSqJpgc1P
-	wmppUPbj734TRhTWQlmlnaAD2+I8cq7w72wKiLh07yenl6XIx/35v5dsV70kr2+Hu7s4PCCBgFN
-	qqLp0tDmrYzgFfehMAikAvLfmBrp54p0GRaPxl1gWGrvvJ7NoBuBxgfm1o9vMU+lxC/ctXeSXoK
-	FL1ZGW9kszWZeszduZdtfOoMtY6RpFZuIHxtBZWHIXt1tgsijS5SQQSa2gICtIcpmKzih7WAtUD
-	/fCRhVXf/W+hrEs/GzbL5O47WMGc5Ng==
-X-Google-Smtp-Source: AGHT+IGwBv9kpJ07X8t0d529bui6CA1o44YQPv7ZkxxgSRyUsVjcwLK5rfqrILP1RhklHdaMqIUraQ==
-X-Received: by 2002:a17:907:7e9a:b0:afe:ea93:ddbb with SMTP id a640c23a62f3a-b07c38673ccmr474649366b.45.1757724657092;
-        Fri, 12 Sep 2025 17:50:57 -0700 (PDT)
+        bh=MdGbmKxqlcMl0rLfzu7p7wshkZ7f+lqXVhPxNRPgNLM=;
+        b=F5Pj4GOwhCfoSD/BUE94iqdyzaT5pdYAWkEcb78NsKQPbjDzWSx+5EhN01zrWC+lTc
+         j5x0zky4awE7PjLS8PpYHIRi0JboJgf4cUstFqSStVYIh585ZzU/15JH2BXk4+A+TaHy
+         rUZknOqJG9ROL8feXABKWGhX1fS9I1r7e2gK3M8Zsb+IBbvzlQ31+neufxaDNW8Z2LlU
+         +MWSl9uYxGHqkig5XJkG99982U1rb50awhIfC8cs80whu97/SGNpIERe1PmCtT0p/UB8
+         9jOQzfakaIHwpBiMj4i2AAn7LCwUOwflA/04QOoICQuMkqoKBTJqZH/Z+E70RDmKqBLy
+         H5qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXjYH9pJojTGcZA69Qzoo07A22JrcqIrmgKgnbdrtMtYMWCwz6XiLSLSmw1xrugKZbFCtNSiT9zPg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwRrJoY0Zcb3dGaUp1CkUWBOBm0m+Fm/BKAL1uGnQaL9XU1PEs4
+	3Dw+Me6TEW/oiYxdwEOUJRBRb1bwON7ymiuPLhtExSmmLes6rsSF5Zxh
+X-Gm-Gg: ASbGncvB48f3XeE8PNKxF3TKO0FSMYUZveXy1CNXGZ3An566OsSk4FvCbknnPNE7rqc
+	XFs1PVdk8aN91SZ1TCcBqo8veMLODb6GdeRtWK1Odaq/oMlPNQDkireYDPqD0MgtKaT0i4/Iynn
+	+mfkV/roH7iI1r3h76+F5/xF0LCrGfWFSTJ/YgkiSBr1S5AKySrspD6SJggPml5Kx1z2ZD65Bdw
+	r9lV7OeQGs/tuL30dSO0iDRNzwsEptYUOEZKbXFSukYw4Tx0xoelhweJDtaDc7WITY7F4qrE8Qd
+	a8821qC11X9aWsd7nk2ZkBB5vXKZbhM3/baPDpQcgeJ23E1BfOr99PrlLDg/iqXLkRS6RISgopZ
+	Z7HlE/265zOA574JnsbufpTEIl4SpsQ==
+X-Google-Smtp-Source: AGHT+IEOxv4u1csoR3Asex+KK1PngLg51+/kQQMoUV5EwO+MoxI2Yose6oae6R3weUM2rN4atBIYiQ==
+X-Received: by 2002:a17:907:9801:b0:afe:6c9b:c828 with SMTP id a640c23a62f3a-b07c37b8165mr442852966b.61.1757724722473;
+        Fri, 12 Sep 2025 17:52:02 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07c2d043desm299210066b.40.2025.09.12.17.50.52
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b08cab32303sm25787366b.72.2025.09.12.17.51.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:50:56 -0700 (PDT)
+        Fri, 12 Sep 2025 17:52:02 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -139,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 10/62] initrd: remove initrd (initial RAM disk) support
-Date: Sat, 13 Sep 2025 00:37:49 +0000
-Message-ID: <20250913003842.41944-11-safinaskar@gmail.com>
+Subject: [PATCH RESEND 11/62] init, efi: remove "noinitrd" command line parameter
+Date: Sat, 13 Sep 2025 00:37:50 +0000
+Message-ID: <20250913003842.41944-12-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_015059_996828_D105FAC9 
-X-CRM114-Status: GOOD (  41.68  )
+X-CRM114-CacheID: sfid-20250912_175204_595973_C1A1DB87 
+X-CRM114-Status: GOOD (  14.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,1101 +149,144 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Initrd was deprecated in 2020.
-
-Initramfs and (non-initial) RAM disks still work.
-
-Both built-in and bootloader-supplied initramfs still work.
-
-Also remove Documentation/admin-guide/initrd.rst . It contains
-paragraph about initramfs, but initramfs already covered in
-Documentation/filesystems/ramfs-rootfs-initramfs.rst
+It was inconsistent before initrd removal: it mostly
+controlled initrd only, but in EFI stub boot mode
+it controlled both initrd and initramfs
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- Documentation/admin-guide/devices.txt         |   6 -
- Documentation/admin-guide/index.rst           |   1 -
- Documentation/admin-guide/initrd.rst          | 383 ------------------
- Documentation/admin-guide/nfs/nfsroot.rst     |   4 +-
- Documentation/power/swsusp-dmcrypt.rst        |   2 +-
- fs/init.c                                     |  14 -
- include/linux/init_syscalls.h                 |   1 -
- include/linux/initrd.h                        |   2 -
- init/Kconfig                                  |   2 +-
- init/Makefile                                 |   1 -
- init/do_mounts.c                              |   6 +-
- init/do_mounts.h                              |  22 -
- init/do_mounts_initrd.c                       |  83 ----
- init/do_mounts_rd.c                           | 318 ---------------
- init/initramfs.c                              |  31 +-
- .../ktest/examples/bootconfigs/tracing.bconf  |   3 -
- 16 files changed, 6 insertions(+), 873 deletions(-)
- delete mode 100644 Documentation/admin-guide/initrd.rst
- delete mode 100644 init/do_mounts_rd.c
+ Documentation/admin-guide/kernel-parameters.txt | 3 ---
+ arch/arm/configs/collie_defconfig               | 2 +-
+ arch/arm/configs/imx_v6_v7_defconfig            | 2 +-
+ arch/arm/configs/neponset_defconfig             | 2 +-
+ arch/arm/configs/spitz_defconfig                | 2 +-
+ drivers/firmware/efi/libstub/efi-stub-helper.c  | 5 +----
+ init/do_mounts_initrd.c                         | 9 ---------
+ 7 files changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
-index 94c98be1329a..27835389ca49 100644
---- a/Documentation/admin-guide/devices.txt
-+++ b/Documentation/admin-guide/devices.txt
-@@ -21,12 +21,6 @@
- 		  0 = /dev/ram0		First RAM disk
- 		  1 = /dev/ram1		Second RAM disk
- 		    ...
--		250 = /dev/initrd	Initial RAM disk
--
--		Older kernels had /dev/ramdisk (1, 1) here.
--		/dev/initrd refers to a RAM disk which was preloaded
--		by the boot loader; newer kernels use /dev/ram0 for
--		the initrd.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 07e8878f1e13..ad52e3d26014 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4271,9 +4271,6 @@
+ 			Note that this argument takes precedence over
+ 			the CONFIG_RCU_NOCB_CPU_DEFAULT_ALL option.
  
-    2 char	Pseudo-TTY masters
- 		  0 = /dev/ptyp0	First PTY master
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index 259d79fbeb94..b3b2628ea515 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -51,7 +51,6 @@ Booting the kernel
-    bootconfig
-    kernel-parameters
-    efi-stub
--   initrd
+-	noinitrd	[RAM] Tells the kernel not to load any configured
+-			initial RAM disk.
+-
+ 	nointremap	[X86-64,Intel-IOMMU,EARLY] Do not enable interrupt
+ 			remapping.
+ 			[Deprecated - use intremap=off]
+diff --git a/arch/arm/configs/collie_defconfig b/arch/arm/configs/collie_defconfig
+index 578c6a4af620..00dc8ae22824 100644
+--- a/arch/arm/configs/collie_defconfig
++++ b/arch/arm/configs/collie_defconfig
+@@ -9,7 +9,7 @@ CONFIG_ARCH_MULTI_V4=y
+ # CONFIG_ARCH_MULTI_V7 is not set
+ CONFIG_ARCH_SA1100=y
+ CONFIG_SA1100_COLLIE=y
+-CONFIG_CMDLINE="noinitrd root=/dev/mtdblock2 rootfstype=jffs2 fbcon=rotate:1"
++CONFIG_CMDLINE="root=/dev/mtdblock2 rootfstype=jffs2 fbcon=rotate:1"
+ CONFIG_FPE_NWFPE=y
+ CONFIG_PM=y
+ # CONFIG_SWAP is not set
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 9a57763a8d38..b53ae2c052fc 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -32,7 +32,7 @@ CONFIG_SMP=y
+ CONFIG_ARM_PSCI=y
+ CONFIG_HIGHMEM=y
+ CONFIG_ARCH_FORCE_MAX_ORDER=13
+-CONFIG_CMDLINE="noinitrd console=ttymxc0,115200"
++CONFIG_CMDLINE="console=ttymxc0,115200"
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+diff --git a/arch/arm/configs/neponset_defconfig b/arch/arm/configs/neponset_defconfig
+index 4d720001c12e..a61eb27373a8 100644
+--- a/arch/arm/configs/neponset_defconfig
++++ b/arch/arm/configs/neponset_defconfig
+@@ -9,7 +9,7 @@ CONFIG_ASSABET_NEPONSET=y
+ CONFIG_ZBOOT_ROM_TEXT=0x80000
+ CONFIG_ZBOOT_ROM_BSS=0xc1000000
+ CONFIG_ZBOOT_ROM=y
+-CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) mem=32M noinitrd initrd=0xc0800000,3M"
++CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) mem=32M initrd=0xc0800000,3M"
+ CONFIG_FPE_NWFPE=y
+ CONFIG_PM=y
+ CONFIG_MODULES=y
+diff --git a/arch/arm/configs/spitz_defconfig b/arch/arm/configs/spitz_defconfig
+index ac2a0f998c73..8582b6f2cf9d 100644
+--- a/arch/arm/configs/spitz_defconfig
++++ b/arch/arm/configs/spitz_defconfig
+@@ -10,7 +10,7 @@ CONFIG_ARCH_PXA=y
+ CONFIG_PXA_SHARPSL=y
+ CONFIG_MACH_AKITA=y
+ CONFIG_MACH_BORZOI=y
+-CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2   debug"
++CONFIG_CMDLINE="console=ttyS0,115200n8 console=tty1 root=/dev/mtdblock2 rootfstype=jffs2   debug"
+ CONFIG_FPE_NWFPE=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+index 7aa2f9ad2935..6d89bf941d57 100644
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -21,7 +21,6 @@ bool efi_nochunk;
+ bool efi_nokaslr = !IS_ENABLED(CONFIG_RANDOMIZE_BASE);
+ bool efi_novamap;
  
+-static bool efi_noinitrd;
+ static bool efi_nosoftreserve;
+ static bool efi_disable_pci_dma = IS_ENABLED(CONFIG_EFI_DISABLE_PCI_DMA);
  
- Tracking down and identifying problems
-diff --git a/Documentation/admin-guide/initrd.rst b/Documentation/admin-guide/initrd.rst
-deleted file mode 100644
-index 67bbad8806e8..000000000000
---- a/Documentation/admin-guide/initrd.rst
-+++ /dev/null
-@@ -1,383 +0,0 @@
--Using the initial RAM disk (initrd)
--===================================
--
--Written 1996,2000 by Werner Almesberger <werner.almesberger@epfl.ch> and
--Hans Lermen <lermen@fgan.de>
--
--
--initrd provides the capability to load a RAM disk by the boot loader.
--This RAM disk can then be mounted as the root file system and programs
--can be run from it. Afterwards, a new root file system can be mounted
--from a different device. The previous root (from initrd) is then moved
--to a directory and can be subsequently unmounted.
--
--initrd is mainly designed to allow system startup to occur in two phases,
--where the kernel comes up with a minimum set of compiled-in drivers, and
--where additional modules are loaded from initrd.
--
--This document gives a brief overview of the use of initrd. A more detailed
--discussion of the boot process can be found in [#f1]_.
--
--
--Operation
-----------
--
--When using initrd, the system typically boots as follows:
--
--  1) the boot loader loads the kernel and the initial RAM disk
--  2) the kernel converts initrd into a "normal" RAM disk and
--     frees the memory used by initrd
--  3) if the root device is not ``/dev/ram0``, the old (deprecated)
--     change_root procedure is followed. see the "Obsolete root change
--     mechanism" section below.
--  4) root device is mounted. if it is ``/dev/ram0``, the initrd image is
--     then mounted as root
--  5) /sbin/init is executed (this can be any valid executable, including
--     shell scripts; it is run with uid 0 and can do basically everything
--     init can do).
--  6) init mounts the "real" root file system
--  7) init places the root file system at the root directory using the
--     pivot_root system call
--  8) init execs the ``/sbin/init`` on the new root filesystem, performing
--     the usual boot sequence
--  9) the initrd file system is removed
--
--Note that changing the root directory does not involve unmounting it.
--It is therefore possible to leave processes running on initrd during that
--procedure. Also note that file systems mounted under initrd continue to
--be accessible.
--
--
--Boot command-line options
---------------------------
--
--initrd adds the following new options::
--
--  initrd=<path>    (e.g. LOADLIN)
--
--    Loads the specified file as the initial RAM disk. When using LILO, you
--    have to specify the RAM disk image file in /etc/lilo.conf, using the
--    INITRD configuration variable.
--
--  noinitrd
--
--    initrd data is preserved but it is not converted to a RAM disk and
--    the "normal" root file system is mounted. initrd data can be read
--    from /dev/initrd. Note that the data in initrd can have any structure
--    in this case and doesn't necessarily have to be a file system image.
--    This option is used mainly for debugging.
--
--    Note: /dev/initrd is read-only and it can only be used once. As soon
--    as the last process has closed it, all data is freed and /dev/initrd
--    can't be opened anymore.
--
--  root=/dev/ram0
--
--    initrd is mounted as root, and the normal boot procedure is followed,
--    with the RAM disk mounted as root.
--
--Compressed cpio images
------------------------
--
--Recent kernels have support for populating a ramdisk from a compressed cpio
--archive. On such systems, the creation of a ramdisk image doesn't need to
--involve special block devices or loopbacks; you merely create a directory on
--disk with the desired initrd content, cd to that directory, and run (as an
--example)::
--
--	find . | cpio --quiet -H newc -o | gzip -9 -n > /boot/imagefile.img
--
--Examining the contents of an existing image file is just as simple::
--
--	mkdir /tmp/imagefile
--	cd /tmp/imagefile
--	gzip -cd /boot/imagefile.img | cpio -imd --quiet
--
--Installation
--------------
--
--First, a directory for the initrd file system has to be created on the
--"normal" root file system, e.g.::
--
--	# mkdir /initrd
--
--The name is not relevant. More details can be found on the
--:manpage:`pivot_root(2)` man page.
--
--If the root file system is created during the boot procedure (i.e. if
--you're building an install floppy), the root file system creation
--procedure should create the ``/initrd`` directory.
--
--If initrd will not be mounted in some cases, its content is still
--accessible if the following device has been created::
--
--	# mknod /dev/initrd b 1 250
--	# chmod 400 /dev/initrd
--
--Second, the kernel has to be compiled with RAM disk support and with
--support for the initial RAM disk enabled. Also, at least all components
--needed to execute programs from initrd (e.g. executable format and file
--system) must be compiled into the kernel.
--
--Third, you have to create the RAM disk image. This is done by creating a
--file system on a block device, copying files to it as needed, and then
--copying the content of the block device to the initrd file. With recent
--kernels, at least three types of devices are suitable for that:
--
-- - a floppy disk (works everywhere but it's painfully slow)
-- - a RAM disk (fast, but allocates physical memory)
-- - a loopback device (the most elegant solution)
--
--We'll describe the loopback device method:
--
-- 1) make sure loopback block devices are configured into the kernel
-- 2) create an empty file system of the appropriate size, e.g.::
--
--	# dd if=/dev/zero of=initrd bs=300k count=1
--	# mke2fs -F -m0 initrd
--
--    (if space is critical, you may want to use the Minix FS instead of Ext2)
-- 3) mount the file system, e.g.::
--
--	# mount -t ext2 -o loop initrd /mnt
--
-- 4) create the console device::
--
--    # mkdir /mnt/dev
--    # mknod /mnt/dev/console c 5 1
--
-- 5) copy all the files that are needed to properly use the initrd
--    environment. Don't forget the most important file, ``/sbin/init``
--
--    .. note:: ``/sbin/init`` permissions must include "x" (execute).
--
-- 6) correct operation the initrd environment can frequently be tested
--    even without rebooting with the command::
--
--	# chroot /mnt /sbin/init
--
--    This is of course limited to initrds that do not interfere with the
--    general system state (e.g. by reconfiguring network interfaces,
--    overwriting mounted devices, trying to start already running demons,
--    etc. Note however that it is usually possible to use pivot_root in
--    such a chroot'ed initrd environment.)
-- 7) unmount the file system::
--
--	# umount /mnt
--
-- 8) the initrd is now in the file "initrd". Optionally, it can now be
--    compressed::
--
--	# gzip -9 initrd
--
--For experimenting with initrd, you may want to take a rescue floppy and
--only add a symbolic link from ``/sbin/init`` to ``/bin/sh``. Alternatively, you
--can try the experimental newlib environment [#f2]_ to create a small
--initrd.
--
--Finally, you have to boot the kernel and load initrd. Almost all Linux
--boot loaders support initrd. Since the boot process is still compatible
--with an older mechanism, the following boot command line parameters
--have to be given::
--
--  root=/dev/ram0 rw
--
--(rw is only necessary if writing to the initrd file system.)
--
--With LOADLIN, you simply execute::
--
--     LOADLIN <kernel> initrd=<disk_image>
--
--e.g.::
--
--	LOADLIN C:\LINUX\BZIMAGE initrd=C:\LINUX\INITRD.GZ root=/dev/ram0 rw
--
--With LILO, you add the option ``INITRD=<path>`` to either the global section
--or to the section of the respective kernel in ``/etc/lilo.conf``, and pass
--the options using APPEND, e.g.::
--
--  image = /bzImage
--    initrd = /boot/initrd.gz
--    append = "root=/dev/ram0 rw"
--
--and run ``/sbin/lilo``
--
--For other boot loaders, please refer to the respective documentation.
--
--Now you can boot and enjoy using initrd.
--
--
--Changing the root device
--------------------------
--
--When finished with its duties, init typically changes the root device
--and proceeds with starting the Linux system on the "real" root device.
--
--The procedure involves the following steps:
-- - mounting the new root file system
-- - turning it into the root file system
-- - removing all accesses to the old (initrd) root file system
-- - unmounting the initrd file system and de-allocating the RAM disk
--
--Mounting the new root file system is easy: it just needs to be mounted on
--a directory under the current root. Example::
--
--	# mkdir /new-root
--	# mount -o ro /dev/hda1 /new-root
--
--The root change is accomplished with the pivot_root system call, which
--is also available via the ``pivot_root`` utility (see :manpage:`pivot_root(8)`
--man page; ``pivot_root`` is distributed with util-linux version 2.10h or higher
--[#f3]_). ``pivot_root`` moves the current root to a directory under the new
--root, and puts the new root at its place. The directory for the old root
--must exist before calling ``pivot_root``. Example::
--
--	# cd /new-root
--	# mkdir initrd
--	# pivot_root . initrd
--
--Now, the init process may still access the old root via its
--executable, shared libraries, standard input/output/error, and its
--current root directory. All these references are dropped by the
--following command::
--
--	# exec chroot . what-follows <dev/console >dev/console 2>&1
--
--Where what-follows is a program under the new root, e.g. ``/sbin/init``
--If the new root file system will be used with udev and has no valid
--``/dev`` directory, udev must be initialized before invoking chroot in order
--to provide ``/dev/console``.
--
--Note: implementation details of pivot_root may change with time. In order
--to ensure compatibility, the following points should be observed:
--
-- - before calling pivot_root, the current directory of the invoking
--   process should point to the new root directory
-- - use . as the first argument, and the _relative_ path of the directory
--   for the old root as the second argument
-- - a chroot program must be available under the old and the new root
-- - chroot to the new root afterwards
-- - use relative paths for dev/console in the exec command
--
--Now, the initrd can be unmounted and the memory allocated by the RAM
--disk can be freed::
--
--	# umount /initrd
--	# blockdev --flushbufs /dev/ram0
--
--It is also possible to use initrd with an NFS-mounted root, see the
--:manpage:`pivot_root(8)` man page for details.
--
--
--Usage scenarios
-----------------
--
--The main motivation for implementing initrd was to allow for modular
--kernel configuration at system installation. The procedure would work
--as follows:
--
--  1) system boots from floppy or other media with a minimal kernel
--     (e.g. support for RAM disks, initrd, a.out, and the Ext2 FS) and
--     loads initrd
--  2) ``/sbin/init`` determines what is needed to (1) mount the "real" root FS
--     (i.e. device type, device drivers, file system) and (2) the
--     distribution media (e.g. CD-ROM, network, tape, ...). This can be
--     done by asking the user, by auto-probing, or by using a hybrid
--     approach.
--  3) ``/sbin/init`` loads the necessary kernel modules
--  4) ``/sbin/init`` creates and populates the root file system (this doesn't
--     have to be a very usable system yet)
--  5) ``/sbin/init`` invokes ``pivot_root`` to change the root file system and
--     execs - via chroot - a program that continues the installation
--  6) the boot loader is installed
--  7) the boot loader is configured to load an initrd with the set of
--     modules that was used to bring up the system (e.g. ``/initrd`` can be
--     modified, then unmounted, and finally, the image is written from
--     ``/dev/ram0`` or ``/dev/rd/0`` to a file)
--  8) now the system is bootable and additional installation tasks can be
--     performed
--
--The key role of initrd here is to re-use the configuration data during
--normal system operation without requiring the use of a bloated "generic"
--kernel or re-compiling or re-linking the kernel.
--
--A second scenario is for installations where Linux runs on systems with
--different hardware configurations in a single administrative domain. In
--such cases, it is desirable to generate only a small set of kernels
--(ideally only one) and to keep the system-specific part of configuration
--information as small as possible. In this case, a common initrd could be
--generated with all the necessary modules. Then, only ``/sbin/init`` or a file
--read by it would have to be different.
--
--A third scenario is more convenient recovery disks, because information
--like the location of the root FS partition doesn't have to be provided at
--boot time, but the system loaded from initrd can invoke a user-friendly
--dialog and it can also perform some sanity checks (or even some form of
--auto-detection).
--
--Last not least, CD-ROM distributors may use it for better installation
--from CD, e.g. by using a boot floppy and bootstrapping a bigger RAM disk
--via initrd from CD; or by booting via a loader like ``LOADLIN`` or directly
--from the CD-ROM, and loading the RAM disk from CD without need of
--floppies.
--
--
--Obsolete root change mechanism
--------------------------------
--
--The following mechanism was used before the introduction of pivot_root.
--Current kernels still support it, but you should _not_ rely on its
--continued availability.
--
--It works by mounting the "real" root device (i.e. the one set with rdev
--in the kernel image or with root=... at the boot command line) as the
--root file system when linuxrc exits. The initrd file system is then
--unmounted, or, if it is still busy, moved to a directory ``/initrd``, if
--such a directory exists on the new root file system.
--
--In order to use this mechanism, you do not have to specify the boot
--command options root, init, or rw. (If specified, they will affect
--the real root file system, not the initrd environment.)
--
--If /proc is mounted, the "real" root device can be changed from within
--linuxrc by writing the number of the new root FS device to the special
--file /proc/sys/kernel/real-root-dev, e.g.::
--
--  # echo 0x301 >/proc/sys/kernel/real-root-dev
--
--Note that the mechanism is incompatible with NFS and similar file
--systems.
--
--This old, deprecated mechanism is commonly called ``change_root``, while
--the new, supported mechanism is called ``pivot_root``.
--
--
--Mixed change_root and pivot_root mechanism
--------------------------------------------
--
--In case you did not want to use ``root=/dev/ram0`` to trigger the pivot_root
--mechanism, you may create both ``/linuxrc`` and ``/sbin/init`` in your initrd
--image.
--
--``/linuxrc`` would contain only the following::
--
--	#! /bin/sh
--	mount -n -t proc proc /proc
--	echo 0x0100 >/proc/sys/kernel/real-root-dev
--	umount -n /proc
--
--Once linuxrc exited, the kernel would mount again your initrd as root,
--this time executing ``/sbin/init``. Again, it would be the duty of this init
--to build the right environment (maybe using the ``root= device`` passed on
--the cmdline) before the final execution of the real ``/sbin/init``.
--
--
--Resources
-----------
--
--.. [#f1] Almesberger, Werner; "Booting Linux: The History and the Future"
--    https://www.almesberger.net/cv/papers/ols2k-9.ps.gz
--.. [#f2] newlib package (experimental), with initrd example
--    https://www.sourceware.org/newlib/
--.. [#f3] util-linux: Miscellaneous utilities for Linux
--    https://www.kernel.org/pub/linux/utils/util-linux/
-diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
-index 135218f33394..60452bdfd454 100644
---- a/Documentation/admin-guide/nfs/nfsroot.rst
-+++ b/Documentation/admin-guide/nfs/nfsroot.rst
-@@ -18,8 +18,8 @@ Mounting the root filesystem via NFS (nfsroot)
- In order to use a diskless system, such as an X-terminal or printer server for
- example, it is necessary for the root filesystem to be present on a non-disk
- device. This may be an initramfs (see
--Documentation/filesystems/ramfs-rootfs-initramfs.rst), a ramdisk (see
--Documentation/admin-guide/initrd.rst) or a filesystem mounted via NFS. The
-+Documentation/filesystems/ramfs-rootfs-initramfs.rst)
-+or a filesystem mounted via NFS. The
- following text describes on how to use NFS for the root filesystem. For the rest
- of this text 'client' means the diskless system, and 'server' means the NFS
- server.
-diff --git a/Documentation/power/swsusp-dmcrypt.rst b/Documentation/power/swsusp-dmcrypt.rst
-index 426df59172cd..afb29a58fdf8 100644
---- a/Documentation/power/swsusp-dmcrypt.rst
-+++ b/Documentation/power/swsusp-dmcrypt.rst
-@@ -10,7 +10,7 @@ Some prerequisites:
- You know how dm-crypt works. If not, visit the following web page:
- http://www.saout.de/misc/dm-crypt/
- You have read Documentation/power/swsusp.rst and understand it.
--You did read Documentation/admin-guide/initrd.rst and know how an initrd works.
-+You did read Documentation/filesystems/ramfs-rootfs-initramfs.rst and know how an initrd works.
- You know how to create or how to modify an initrd.
+@@ -75,8 +74,6 @@ efi_status_t efi_parse_options(char const *cmdline)
+ 			efi_nokaslr = true;
+ 		} else if (!strcmp(param, "quiet")) {
+ 			efi_loglevel = CONSOLE_LOGLEVEL_QUIET;
+-		} else if (!strcmp(param, "noinitrd")) {
+-			efi_noinitrd = true;
+ 		} else if (IS_ENABLED(CONFIG_X86_64) && !strcmp(param, "no5lvl")) {
+ 			efi_no5lvl = true;
+ 		} else if (IS_ENABLED(CONFIG_ARCH_HAS_MEM_ENCRYPT) &&
+@@ -614,7 +611,7 @@ efi_status_t efi_load_initrd(efi_loaded_image_t *image,
+ 	efi_status_t status = EFI_SUCCESS;
+ 	struct linux_efi_initrd initrd, *tbl;
  
- Now your system is properly set up, your disk is encrypted except for
-diff --git a/fs/init.c b/fs/init.c
-index eef5124885e3..dfa50474647c 100644
---- a/fs/init.c
-+++ b/fs/init.c
-@@ -27,20 +27,6 @@ int __init init_mount(const char *dev_name, const char *dir_name,
- 	return ret;
- }
+-	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD) || efi_noinitrd)
++	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD))
+ 		return EFI_SUCCESS;
  
--int __init init_umount(const char *name, int flags)
--{
--	int lookup_flags = LOOKUP_MOUNTPOINT;
--	struct path path;
--	int ret;
--
--	if (!(flags & UMOUNT_NOFOLLOW))
--		lookup_flags |= LOOKUP_FOLLOW;
--	ret = kern_path(name, lookup_flags, &path);
--	if (ret)
--		return ret;
--	return path_umount(&path, flags);
--}
--
- int __init init_chdir(const char *filename)
- {
- 	struct path path;
-diff --git a/include/linux/init_syscalls.h b/include/linux/init_syscalls.h
-index 92045d18cbfc..0bdbc458a881 100644
---- a/include/linux/init_syscalls.h
-+++ b/include/linux/init_syscalls.h
-@@ -2,7 +2,6 @@
- 
- int __init init_mount(const char *dev_name, const char *dir_name,
- 		const char *type_page, unsigned long flags, void *data_page);
--int __init init_umount(const char *name, int flags);
- int __init init_chdir(const char *filename);
- int __init init_chroot(const char *filename);
- int __init init_chown(const char *filename, uid_t user, gid_t group, int flags);
-diff --git a/include/linux/initrd.h b/include/linux/initrd.h
-index b42235c21444..cc389ef1a738 100644
---- a/include/linux/initrd.h
-+++ b/include/linux/initrd.h
-@@ -3,8 +3,6 @@
- #ifndef __LINUX_INITRD_H
- #define __LINUX_INITRD_H
- 
--#define INITRD_MINOR 250 /* shouldn't collide with /dev/ram* too soon ... */
--
- /* 1 if it is not an error if initrd_start < memory_start */
- extern int initrd_below_start_ok;
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index e3eb63eadc87..0263c08960bc 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1441,7 +1441,7 @@ config BLK_DEV_INITRD
- 	  boot loader (loadlin or lilo) and that is mounted as root
- 	  before the normal boot procedure. It is typically used to
- 	  load modules needed to mount the "real" root file system,
--	  etc. See <file:Documentation/admin-guide/initrd.rst> for details.
-+	  etc. See <file:Documentation/filesystems/ramfs-rootfs-initramfs.rst> for details.
- 
- 	  If RAM disk support (BLK_DEV_RAM) is also included, this
- 	  also enables initial RAM disk (initrd) support and adds
-diff --git a/init/Makefile b/init/Makefile
-index d6f75d8907e0..b020154b3d2a 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -17,7 +17,6 @@ obj-$(CONFIG_INITRAMFS_TEST)   += initramfs_test.o
- obj-y                          += init_task.o
- 
- mounts-y			:= do_mounts.o
--mounts-$(CONFIG_BLK_DEV_RAM)	+= do_mounts_rd.o
- mounts-$(CONFIG_BLK_DEV_INITRD)	+= do_mounts_initrd.o
- 
- #
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 0f2f44e6250c..f0b1a83dbda4 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -452,7 +452,7 @@ static dev_t __init parse_root_device(char *root_device_name)
- }
- 
- /*
-- * Prepare the namespace - decide what/where to mount, load ramdisks, etc.
-+ * Prepare the namespace - decide what/where to mount, etc.
-  */
- void __init prepare_namespace(void)
- {
-@@ -476,13 +476,9 @@ void __init prepare_namespace(void)
- 	if (saved_root_name[0])
- 		ROOT_DEV = parse_root_device(saved_root_name);
- 
--	if (initrd_load(saved_root_name))
--		goto out;
--
- 	if (root_wait)
- 		wait_for_root(saved_root_name);
- 	mount_root(saved_root_name);
--out:
- 	devtmpfs_mount();
- 	init_mount(".", "/", NULL, MS_MOVE, NULL);
- 	init_chroot(".");
-diff --git a/init/do_mounts.h b/init/do_mounts.h
-index 6069ea3eb80d..6c7a535e71ce 100644
---- a/init/do_mounts.h
-+++ b/init/do_mounts.h
-@@ -22,28 +22,6 @@ static inline __init int create_dev(char *name, dev_t dev)
- 	return init_mknod(name, S_IFBLK | 0600, new_encode_dev(dev));
- }
- 
--#ifdef CONFIG_BLK_DEV_RAM
--
--int __init rd_load_disk(int n);
--int __init rd_load_image(char *from);
--
--#else
--
--static inline int rd_load_disk(int n) { return 0; }
--static inline int rd_load_image(char *from) { return 0; }
--
--#endif
--
--#ifdef CONFIG_BLK_DEV_INITRD
--bool __init initrd_load(char *root_device_name);
--#else
--static inline bool initrd_load(char *root_device_name)
--{
--	return false;
--	}
--
--#endif
--
- /* Ensure that async file closing finished to prevent spurious errors. */
- static inline void init_flush_fput(void)
- {
+ 	status = efi_load_initrd_dev_path(&initrd, hard_limit);
 diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
-index f6867bad0d78..308744254c08 100644
+index 308744254c08..bec1c5d684a3 100644
 --- a/init/do_mounts_initrd.c
 +++ b/init/do_mounts_initrd.c
-@@ -69,86 +69,3 @@ static int __init early_initrd(char *p)
- 	return early_initrdmem(p);
- }
- early_param("initrd", early_initrd);
--
--static int __init init_linuxrc(struct subprocess_info *info, struct cred *new)
--{
--	ksys_unshare(CLONE_FS | CLONE_FILES);
--	console_on_rootfs();
--	/* move initrd over / and chdir/chroot in initrd root */
--	init_chdir("/root");
--	init_mount(".", "/", NULL, MS_MOVE, NULL);
--	init_chroot(".");
--	ksys_setsid();
--	return 0;
--}
--
--static void __init handle_initrd(char *root_device_name)
--{
--	struct subprocess_info *info;
--	static char *argv[] = { "linuxrc", NULL, };
--	extern char *envp_init[];
--	int error;
--
--	pr_warn("using deprecated initrd support, will be removed soon.\n");
--
--	real_root_dev = new_encode_dev(ROOT_DEV);
--	create_dev("/dev/root.old", Root_RAM0);
--	/* mount initrd on rootfs' /root */
--	mount_root_generic("/dev/root.old", root_device_name,
--			   root_mountflags & ~MS_RDONLY);
--	init_mkdir("/old", 0700);
--	init_chdir("/old");
--
--	info = call_usermodehelper_setup("/linuxrc", argv, envp_init,
--					 GFP_KERNEL, init_linuxrc, NULL, NULL);
--	if (!info)
--		return;
--	call_usermodehelper_exec(info, UMH_WAIT_PROC|UMH_FREEZABLE);
--
--	/* move initrd to rootfs' /old */
--	init_mount("..", ".", NULL, MS_MOVE, NULL);
--	/* switch root and cwd back to / of rootfs */
--	init_chroot("..");
--
--	if (new_decode_dev(real_root_dev) == Root_RAM0) {
--		init_chdir("/old");
--		return;
--	}
--
--	init_chdir("/");
--	ROOT_DEV = new_decode_dev(real_root_dev);
--	mount_root(root_device_name);
--
--	printk(KERN_NOTICE "Trying to move old root to /initrd ... ");
--	error = init_mount("/old", "/root/initrd", NULL, MS_MOVE, NULL);
--	if (!error)
--		printk("okay\n");
--	else {
--		if (error == -ENOENT)
--			printk("/initrd does not exist. Ignored.\n");
--		else
--			printk("failed\n");
--		printk(KERN_NOTICE "Unmounting old root\n");
--		init_umount("/old", MNT_DETACH);
--	}
--}
--
--bool __init initrd_load(char *root_device_name)
--{
--	if (mount_initrd) {
--		create_dev("/dev/ram", Root_RAM0);
--		/*
--		 * Load the initrd data into /dev/ram0. Execute it as initrd
--		 * unless /dev/ram0 is supposed to be our actual root device,
--		 * in that case the ram disk is just set up here, and gets
--		 * mounted in the normal path.
--		 */
--		if (rd_load_image("/initrd.image") && ROOT_DEV != Root_RAM0) {
--			init_unlink("/initrd.image");
--			handle_initrd(root_device_name);
--			return true;
--		}
--	}
--	init_unlink("/initrd.image");
--	return false;
--}
-diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
-deleted file mode 100644
-index 864fa88d9f89..000000000000
---- a/init/do_mounts_rd.c
-+++ /dev/null
-@@ -1,318 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/kernel.h>
--#include <linux/fs.h>
--#include <linux/minix_fs.h>
--#include <linux/ext2_fs.h>
--#include <linux/romfs_fs.h>
--#include <uapi/linux/cramfs_fs.h>
--#include <linux/initrd.h>
--#include <linux/string.h>
--#include <linux/slab.h>
--
--#include "do_mounts.h"
--#include "../fs/squashfs/squashfs_fs.h"
--
--#include <linux/decompress/generic.h>
--
--static struct file *in_file, *out_file;
--static loff_t in_pos, out_pos;
--
--static int __init crd_load(decompress_fn deco);
--
--/*
-- * This routine tries to find a RAM disk image to load, and returns the
-- * number of blocks to read for a non-compressed image, 0 if the image
-- * is a compressed image, and -1 if an image with the right magic
-- * numbers could not be found.
-- *
-- * We currently check for the following magic numbers:
-- *	minix
-- *	ext2
-- *	romfs
-- *	cramfs
-- *	squashfs
-- *	gzip
-- *	bzip2
-- *	lzma
-- *	xz
-- *	lzo
-- *	lz4
-- */
--static int __init
--identify_ramdisk_image(struct file *file, loff_t pos,
--		decompress_fn *decompressor)
--{
--	const int size = 512;
--	struct minix_super_block *minixsb;
--	struct romfs_super_block *romfsb;
--	struct cramfs_super *cramfsb;
--	struct squashfs_super_block *squashfsb;
--	int nblocks = -1;
--	unsigned char *buf;
--	const char *compress_name;
--	unsigned long n;
--	int start_block = 0;
--
--	buf = kmalloc(size, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	minixsb = (struct minix_super_block *) buf;
--	romfsb = (struct romfs_super_block *) buf;
--	cramfsb = (struct cramfs_super *) buf;
--	squashfsb = (struct squashfs_super_block *) buf;
--	memset(buf, 0xe5, size);
--
--	/*
--	 * Read block 0 to test for compressed kernel
--	 */
--	pos = start_block * BLOCK_SIZE;
--	kernel_read(file, buf, size, &pos);
--
--	*decompressor = decompress_method(buf, size, &compress_name);
--	if (compress_name) {
--		printk(KERN_NOTICE "RAMDISK: %s image found at block %d\n",
--		       compress_name, start_block);
--		if (!*decompressor)
--			printk(KERN_EMERG
--			       "RAMDISK: %s decompressor not configured!\n",
--			       compress_name);
--		nblocks = 0;
--		goto done;
--	}
--
--	/* romfs is at block zero too */
--	if (romfsb->word0 == ROMSB_WORD0 &&
--	    romfsb->word1 == ROMSB_WORD1) {
--		printk(KERN_NOTICE
--		       "RAMDISK: romfs filesystem found at block %d\n",
--		       start_block);
--		nblocks = (ntohl(romfsb->size)+BLOCK_SIZE-1)>>BLOCK_SIZE_BITS;
--		goto done;
--	}
--
--	if (cramfsb->magic == CRAMFS_MAGIC) {
--		printk(KERN_NOTICE
--		       "RAMDISK: cramfs filesystem found at block %d\n",
--		       start_block);
--		nblocks = (cramfsb->size + BLOCK_SIZE - 1) >> BLOCK_SIZE_BITS;
--		goto done;
--	}
--
--	/* squashfs is at block zero too */
--	if (le32_to_cpu(squashfsb->s_magic) == SQUASHFS_MAGIC) {
--		printk(KERN_NOTICE
--		       "RAMDISK: squashfs filesystem found at block %d\n",
--		       start_block);
--		nblocks = (le64_to_cpu(squashfsb->bytes_used) + BLOCK_SIZE - 1)
--			 >> BLOCK_SIZE_BITS;
--		goto done;
--	}
--
--	/*
--	 * Read 512 bytes further to check if cramfs is padded
--	 */
--	pos = start_block * BLOCK_SIZE + 0x200;
--	kernel_read(file, buf, size, &pos);
--
--	if (cramfsb->magic == CRAMFS_MAGIC) {
--		printk(KERN_NOTICE
--		       "RAMDISK: cramfs filesystem found at block %d\n",
--		       start_block);
--		nblocks = (cramfsb->size + BLOCK_SIZE - 1) >> BLOCK_SIZE_BITS;
--		goto done;
--	}
--
--	/*
--	 * Read block 1 to test for minix and ext2 superblock
--	 */
--	pos = (start_block + 1) * BLOCK_SIZE;
--	kernel_read(file, buf, size, &pos);
--
--	/* Try minix */
--	if (minixsb->s_magic == MINIX_SUPER_MAGIC ||
--	    minixsb->s_magic == MINIX_SUPER_MAGIC2) {
--		printk(KERN_NOTICE
--		       "RAMDISK: Minix filesystem found at block %d\n",
--		       start_block);
--		nblocks = minixsb->s_nzones << minixsb->s_log_zone_size;
--		goto done;
--	}
--
--	/* Try ext2 */
--	n = ext2_image_size(buf);
--	if (n) {
--		printk(KERN_NOTICE
--		       "RAMDISK: ext2 filesystem found at block %d\n",
--		       start_block);
--		nblocks = n;
--		goto done;
--	}
--
--	printk(KERN_NOTICE
--	       "RAMDISK: Couldn't find valid RAM disk image starting at %d.\n",
--	       start_block);
--
--done:
--	kfree(buf);
--	return nblocks;
--}
--
--static unsigned long nr_blocks(struct file *file)
--{
--	struct inode *inode = file->f_mapping->host;
--
--	if (!S_ISBLK(inode->i_mode))
--		return 0;
--	return i_size_read(inode) >> 10;
--}
--
--int __init rd_load_image(char *from)
--{
--	int res = 0;
--	unsigned long rd_blocks, devblocks;
--	int nblocks, i;
--	char *buf = NULL;
--	unsigned short rotate = 0;
--	decompress_fn decompressor = NULL;
--#if !defined(CONFIG_S390)
--	char rotator[4] = { '|' , '/' , '-' , '\\' };
--#endif
--
--	out_file = filp_open("/dev/ram", O_RDWR, 0);
--	if (IS_ERR(out_file))
--		goto out;
--
--	in_file = filp_open(from, O_RDONLY, 0);
--	if (IS_ERR(in_file))
--		goto noclose_input;
--
--	in_pos = 0;
--	nblocks = identify_ramdisk_image(in_file, in_pos, &decompressor);
--	if (nblocks < 0)
--		goto done;
--
--	if (nblocks == 0) {
--		if (crd_load(decompressor) == 0)
--			goto successful_load;
--		goto done;
--	}
--
--	/*
--	 * NOTE NOTE: nblocks is not actually blocks but
--	 * the number of kibibytes of data to load into a ramdisk.
--	 */
--	rd_blocks = nr_blocks(out_file);
--	if (nblocks > rd_blocks) {
--		printk("RAMDISK: image too big! (%dKiB/%ldKiB)\n",
--		       nblocks, rd_blocks);
--		goto done;
--	}
--
--	/*
--	 * OK, time to copy in the data
--	 */
--	if (strcmp(from, "/initrd.image") == 0)
--		devblocks = nblocks;
--	else
--		devblocks = nr_blocks(in_file);
--
--	if (devblocks == 0) {
--		printk(KERN_ERR "RAMDISK: could not determine device size\n");
--		goto done;
--	}
--
--	buf = kmalloc(BLOCK_SIZE, GFP_KERNEL);
--	if (!buf) {
--		printk(KERN_ERR "RAMDISK: could not allocate buffer\n");
--		goto done;
--	}
--
--	printk(KERN_NOTICE "RAMDISK: Loading %dKiB [%ld disk%s] into ram disk... ",
--		nblocks, ((nblocks-1)/devblocks)+1, nblocks>devblocks ? "s" : "");
--	for (i = 0; i < nblocks; i++) {
--		if (i && (i % devblocks == 0)) {
--			pr_cont("done disk #1.\n");
--			rotate = 0;
--			fput(in_file);
--			break;
--		}
--		kernel_read(in_file, buf, BLOCK_SIZE, &in_pos);
--		kernel_write(out_file, buf, BLOCK_SIZE, &out_pos);
--#if !defined(CONFIG_S390)
--		if (!(i % 16)) {
--			pr_cont("%c\b", rotator[rotate & 0x3]);
--			rotate++;
--		}
--#endif
--	}
--	pr_cont("done.\n");
--
--successful_load:
--	res = 1;
--done:
--	fput(in_file);
--noclose_input:
--	fput(out_file);
--out:
--	kfree(buf);
--	init_unlink("/dev/ram");
--	return res;
--}
--
--int __init rd_load_disk(int n)
--{
--	create_dev("/dev/root", ROOT_DEV);
--	create_dev("/dev/ram", MKDEV(RAMDISK_MAJOR, n));
--	return rd_load_image("/dev/root");
--}
--
--static int exit_code;
--static int decompress_error;
--
--static long __init compr_fill(void *buf, unsigned long len)
--{
--	long r = kernel_read(in_file, buf, len, &in_pos);
--	if (r < 0)
--		printk(KERN_ERR "RAMDISK: error while reading compressed data");
--	else if (r == 0)
--		printk(KERN_ERR "RAMDISK: EOF while reading compressed data");
--	return r;
--}
--
--static long __init compr_flush(void *window, unsigned long outcnt)
--{
--	long written = kernel_write(out_file, window, outcnt, &out_pos);
--	if (written != outcnt) {
--		if (decompress_error == 0)
--			printk(KERN_ERR
--			       "RAMDISK: incomplete write (%ld != %ld)\n",
--			       written, outcnt);
--		decompress_error = 1;
--		return -1;
--	}
--	return outcnt;
--}
--
--static void __init error(char *x)
--{
--	printk(KERN_ERR "%s\n", x);
--	exit_code = 1;
--	decompress_error = 1;
--}
--
--static int __init crd_load(decompress_fn deco)
--{
--	int result;
--
--	if (!deco) {
--		pr_emerg("Invalid ramdisk decompression routine.  "
--			 "Select appropriate config option.\n");
--		panic("Could not decompress initial ramdisk image.");
--	}
--
--	result = deco(NULL, 0, compr_fill, compr_flush, NULL, NULL, error);
--	if (decompress_error)
--		result = 1;
--	return result;
--}
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 097673b97784..850cb0de873e 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -692,28 +692,6 @@ static inline bool kexec_free_initrd(void)
- }
- #endif /* CONFIG_KEXEC_CORE */
+@@ -15,7 +15,6 @@
+ unsigned long initrd_start, initrd_end;
+ int initrd_below_start_ok;
+ static unsigned int real_root_dev;	/* do_proc_dointvec cannot handle kdev_t */
+-static int __initdata mount_initrd = 1;
  
--#ifdef CONFIG_BLK_DEV_RAM
--static void __init populate_initrd_image(char *err)
+ phys_addr_t phys_initrd_start __initdata;
+ unsigned long phys_initrd_size __initdata;
+@@ -39,14 +38,6 @@ static __init int kernel_do_mounts_initrd_sysctls_init(void)
+ late_initcall(kernel_do_mounts_initrd_sysctls_init);
+ #endif /* CONFIG_SYSCTL */
+ 
+-static int __init no_initrd(char *str)
 -{
--	ssize_t written;
--	struct file *file;
--	loff_t pos = 0;
--
--	printk(KERN_INFO "rootfs image is not initramfs (%s); looks like an initrd\n",
--			err);
--	file = filp_open("/initrd.image", O_WRONLY|O_CREAT|O_LARGEFILE, 0700);
--	if (IS_ERR(file))
--		return;
--
--	written = xwrite(file, (char *)initrd_start, initrd_end - initrd_start,
--			&pos);
--	if (written != initrd_end - initrd_start)
--		pr_err("/initrd.image: incomplete write (%zd != %ld)\n",
--		       written, initrd_end - initrd_start);
--	fput(file);
+-	mount_initrd = 0;
+-	return 1;
 -}
--#endif /* CONFIG_BLK_DEV_RAM */
 -
- static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+-__setup("noinitrd", no_initrd);
+-
+ static int __init early_initrdmem(char *p)
  {
- 	/* Load the built in initramfs */
-@@ -724,18 +702,11 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
- 	if (!initrd_start || IS_ENABLED(CONFIG_INITRAMFS_FORCE))
- 		goto done;
- 
--	if (IS_ENABLED(CONFIG_BLK_DEV_RAM))
--		printk(KERN_INFO "Trying to unpack rootfs image as initramfs...\n");
--	else
--		printk(KERN_INFO "Unpacking initramfs...\n");
-+	printk(KERN_INFO "Unpacking initramfs...\n");
- 
- 	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
- 	if (err) {
--#ifdef CONFIG_BLK_DEV_RAM
--		populate_initrd_image(err);
--#else
- 		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
--#endif
- 	}
- 
- done:
-diff --git a/tools/testing/ktest/examples/bootconfigs/tracing.bconf b/tools/testing/ktest/examples/bootconfigs/tracing.bconf
-index bf117c78115a..c81ee5e30d2d 100644
---- a/tools/testing/ktest/examples/bootconfigs/tracing.bconf
-+++ b/tools/testing/ktest/examples/bootconfigs/tracing.bconf
-@@ -16,9 +16,6 @@ ftrace {
- 			myevent2 {
- 				probes = "vfs_write $arg2 +0($arg2):ustring $arg3";
- 			}
--			myevent3 {
--				probes = "initrd_load";
--			}
- 			enable
- 		}
- 	}
+ 	phys_addr_t start;
 -- 
 2.47.2
 
