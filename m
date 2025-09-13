@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87F71CA101F
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4488CAC593
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mS1RU3iN10evrK469i2WiyUlx0z0fCCFudj+RlZ74kg=; b=ZlIg/QtRWrWw5aVjiENDVZY+er
-	g1ylpC4yPOVms/WLDo4vIwmBEA2qdNhSv0IBxWqOUfbAWfSdG1SQd0BhnPCwWpT1921nyKzkrQ7tn
-	pH9DCFh8Tcd/jEi5BkAuTd8P/w3No15HgNuFXKEi86AtOyv1xE+o9bOykOXyQshErTuDh24ySHBJg
-	ieImB5kwjDwhoGrZrzlUGTiqej4u4+a0i5hr62un8TKtWpB+Wr3kDdxQg83u+p/cIyLSY9w8XUBuZ
-	4SFggfOn5AFokp/hvlIo98SCdfvk4AbXshuWFedl8akBpXUBY8j/uai/vwzOYz0Z/pdSBLyLZF7vA
-	aoFlYuJw==;
+	bh=fi1FJKwP9nWnSjptSGh11GRsqwR1G48l7l6Ou3g4XAs=; b=nFzQJNwrrz9GRtOphXJ0018jae
+	YG0J85S3frCD0o0C3sUqzpKFfRC3gkYJS4peaUvDz2U+0LWnuxkizGEO5xN3j4jYTZX/+BOtnXOaB
+	Hvivn8aTAYrwrYSSJm79XzNCqtrqfu+kIWKfq1fQjl4CsLfPSNZRg2cJF5knNEwjdRlpBO2TQ0EgJ
+	u3URVAzuq16i64Nr/+TPSQ/GrfZxhI+xmkWaa4R55IWj2aU+vKADlnW4vRZ8/Yd2HysqDtSseXUKx
+	FIrNnN6e1nV9dBCQeVahYmpuhHhvBxFrvnCRQ2fdcoAvwjaAua437fRHXMl5+/6LzIPkKf3ycXCrj
+	OcM2nQ+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxENR-0000000CNbf-038y;
-	Sat, 13 Sep 2025 00:44:29 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1uxEOU-0000000CNyW-0nqo;
+	Sat, 13 Sep 2025 00:45:34 +0000
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxENN-0000000CNYB-1VtA
+	id 1uxEOQ-0000000CNwE-3Z99
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 00:44:28 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-b046fc9f359so374133766b.0
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:44:24 -0700 (PDT)
+	Sat, 13 Sep 2025 00:45:33 +0000
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-b04271cfc3eso311676166b.3
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724263; x=1758329063; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757724329; x=1758329129; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mS1RU3iN10evrK469i2WiyUlx0z0fCCFudj+RlZ74kg=;
-        b=TiDdHuplZ5onmqdGTF5hMy8SCLz50WFSMOFRtbQiSJmJYG3rpVDMgmWc1jaXwEIl7P
-         B9Rk9COI9QyGf4tAtnT+6CqeLJ2KJt0BnDEGaQGfWRa1H3obBYlGItbpAq0uHFhNGMPT
-         PfsU72kdN7nMNh+HjPWAyOA8GyQ3ODMa46wmcl//CZUoQVuQD3VPcMyJqaH3/bFSP1uf
-         o2CvcnjZ+OSjoj/fPCzi3hAvkPeR73EILzLubTvAHvcFVFofSGjO8uwKt1uehIEBFoPp
-         RCc053FwWCkHawQjODySXiL071VydcVU/EypTRk8uenbHr1KOMIJHjx4r04r5dLw51xj
-         RRFQ==
+        bh=fi1FJKwP9nWnSjptSGh11GRsqwR1G48l7l6Ou3g4XAs=;
+        b=mSprhB5RyxyZORyznotfPNWc/0UcKQ2e7uIAOIYWbccO3ythPL2DIR6ZBOTvp89hmi
+         oq6AWwT3bRdzD4VZuOb4/fIb72bGCWCt8nBIbT1k49jiJQL+8Ja+Mgy2NVS/KCHk6dui
+         aL7tO+UI1G+7s5dtiu+IXzoRmhPHXIwyLCkgqjV9aMpcdMwDCK6kQL4y5aXGScKOGRBd
+         u14sV7Zm7Y7smR4yb+5RlL4RI/m9dWYZ3yOLygugC5ch4aIvKxLQ3jpgIWcr4hI+buj8
+         0oMysndDHDYV4GiUBrwcSg1P7arLhTgNqnmXdbQGVhVY282cAATgRm9MPJ1aOD2FD7ye
+         hXxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724263; x=1758329063;
+        d=1e100.net; s=20230601; t=1757724329; x=1758329129;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mS1RU3iN10evrK469i2WiyUlx0z0fCCFudj+RlZ74kg=;
-        b=S/xHe+bLEo+taehQnr0kivciSX6F1qtPVAh+pJPjWHVqJ/XBGjxzVOcYUgzf/46s8I
-         FmQEJcJwOcdlNqXYAWPJkpi5NG+Bb/k/dF3hFbm5JRqPA0obaeZoKM+EsexOQN2ko5gJ
-         SXVBripLrm0s+qx+qfiQWbc2pLPN+XnCJKKShIZPwpZKx8TQCZTKXd6si2YCQHFJXfxT
-         wEr95Rkb88+KfbqXhdpUCktNPl1ZgRXju6+La9io5tVBuu9PtP/PL3v1blHOddizynyB
-         UH94iI16dHx48kswjl/JnaAn6F+gBlgSfQJNV2OCuZ83KmdcZJE3G1iGVtStPQGzEhq5
-         bpwA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDa0jkFg7Dp5BGYskgezj65zAvWZ5MwUpRzxvHg3Chit3ZG8JA22FXqvYijXBQEMsVB+j7mViRZA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx0m9GoHprC5VYRG93Yq+/c801Au2u49e4zkXrA3e0R12TZLp76
-	NAOfBhTwUr06wHJXHN19QNIGxgvC7T7VYXStt7AuaR30qmlZkPoseQAQ
-X-Gm-Gg: ASbGncvy6fCUZOxwskb7I1hVUKb2WbSuJ2mSvjR09ntC+2BK6FiqcgmBBmE/7GvyDJa
-	rotZ6CisybtMa0s87Zp8T/mCQ7n8OQ94mkypIBnY4GKEhqyGcY9TNmKmck9rf2F7jYelJB33Q9R
-	52ecWElQAS23Z3B44w71nScKyNcueRA7J6WGzC3qRLP+R8yVbMC2eqUXxreAPfC3c4z8e7T/IAq
-	buCquohk6hJAX9mUMTqiJC/pkGrHLV95SdJ6aVKRgF2d4ihjJrwK9IMBsv5oOj+oga0WoZTrg7/
-	BVkj2fDwq6kDNtv6tXrYJ6XL2HLwYuPnMphTqNqC4PcXnTxJLTRbHqgrkawUgw0SKxHSJ64CJOd
-	VslXdJbMYg5J7MsM2tHCWCVmp3P/yUD8KCs/wrMa/
-X-Google-Smtp-Source: AGHT+IGv+W1CKcLOi4yIcUzFHvekB6fCSOQ02Af5wm0+L59XCtUVRow/cynXcFSqj0NNtuL4eJLrqA==
-X-Received: by 2002:a17:906:f587:b0:b04:5a74:b66f with SMTP id a640c23a62f3a-b07c354e930mr489676666b.3.1757724263304;
-        Fri, 12 Sep 2025 17:44:23 -0700 (PDT)
+        bh=fi1FJKwP9nWnSjptSGh11GRsqwR1G48l7l6Ou3g4XAs=;
+        b=tx9KdDT87oEKwKvvEZZR3QPa2f54RRiG2I+l+TduwXN25ye7m2h2M3TfI8AuSHxs/G
+         FN+jA1qTwuxDHAkhVByWx3KOMxGqFEpalmYDsBkAMDdAKrgJwNhc2vIidiFOMaf6Lkwk
+         kOaoJAg/C1xyo6Mnn+Njji57o49+uoYnkbZYdLsmrVuimiSC3cDdZslmljC6CdWERzNJ
+         U5Zo3uUAWVLFm0OGG9I9bLQ60Efv1eg5tfKOaXv1D/IoThZrJo7nuFbr5cEEEKfIMGI5
+         AdWF9yvnkvL5anboP10EcDwwVvEu5wMKCfU3jP6eMgHtplQxbnr29e433du/BQPdHNWD
+         fCow==
+X-Forwarded-Encrypted: i=1; AJvYcCWGw3VKB1kRkgplXoqsziMBxMpFLjWBh8GjUm2hrlWebzabtZhP2WNhXWmfkhgqyLETKuntTiseeA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzGImY10UJ2mJ66qHg7yPpFVfQCgdVYsexLVM6BAEs9ym43Kigu
+	c5HVyTM0CV8joo7/7/+nPgaXm0iHrJk5FlvTBQLMHMnDFfUJ//75Gwxl
+X-Gm-Gg: ASbGnct81xMI0vvEKHxCSYZxJg01XuyewRxAm3T1dbGoP642ESPH+26bNRrI8syrorI
+	zNCuDYEdiigSaLYZWH2VKbX9kJpNNoCzw7EDtnWDzjV2EyduHb1+iXD0JE6OXBKrdPYO2EUZYGf
+	cQtqNq0FanfGSoXtA+Z9JmeZYkjeKZOHsFWawiBEt0jxk04NaBw2aTmS3sMa81fkn7ASfiL5CZE
+	rV/h4c+2JtLO4lYUlwYsHiH6aknxMio6JTams2oOmGBRAUtYs4OpWvRQ8fas+WSbQpodJaVOhsU
+	iuoQKgzb7msDt/DTXhy/ryAo1N3z0jmONVDc3SluDxGNc53GjnS0iX9AQEk/pbyK5gwkfl8IpnK
+	HD4aq02r9aAk8NLG/vQ0=
+X-Google-Smtp-Source: AGHT+IEY39yKNpHOwhu+b8E85JfZO5GXoHp0A73FES6zZeZtQwPXvLC0BV0HcFzY55ZLXxqy2VO9oA==
+X-Received: by 2002:a17:907:9405:b0:b07:c9b2:dbd with SMTP id a640c23a62f3a-b07c9b20f2cmr456963866b.4.1757724328684;
+        Fri, 12 Sep 2025 17:45:28 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b30da327sm475829066b.11.2025.09.12.17.44.18
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dd5casm460965366b.68.2025.09.12.17.45.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:44:22 -0700 (PDT)
+        Fri, 12 Sep 2025 17:45:28 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -124,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 04/62] init: x86, arm, sh, sparc: remove variable rd_image_start, which controls starting block number of initrd
-Date: Sat, 13 Sep 2025 00:37:43 +0000
-Message-ID: <20250913003842.41944-5-safinaskar@gmail.com>
+Subject: [PATCH RESEND 05/62] init: remove "ramdisk_start" command line parameter, which controls starting block number of initrd
+Date: Sat, 13 Sep 2025 00:37:44 +0000
+Message-ID: <20250913003842.41944-6-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_174425_474920_3E7069D8 
-X-CRM114-Status: GOOD (  19.16  )
+X-CRM114-CacheID: sfid-20250912_174530_900162_75E87639 
+X-CRM114-Status: GOOD (  13.32  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,332 +153,60 @@ This is preparation for initrd removal
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- Documentation/arch/x86/boot.rst       | 4 ++--
- arch/arm/kernel/atags_parse.c         | 2 --
- arch/sh/include/asm/setup.h           | 1 -
- arch/sh/kernel/head_32.S              | 2 +-
- arch/sh/kernel/setup.c                | 9 +--------
- arch/sparc/boot/piggyback.c           | 4 ++--
- arch/sparc/kernel/head_32.S           | 4 ++--
- arch/sparc/kernel/head_64.S           | 6 ++++--
- arch/sparc/kernel/setup_32.c          | 5 -----
- arch/sparc/kernel/setup_64.c          | 5 -----
- arch/x86/boot/header.S                | 2 +-
- arch/x86/include/uapi/asm/bootparam.h | 5 +----
- arch/x86/kernel/setup.c               | 5 -----
- include/linux/initrd.h                | 3 ---
- init/do_mounts_rd.c                   | 8 +++-----
- 15 files changed, 17 insertions(+), 48 deletions(-)
+ Documentation/admin-guide/blockdev/ramdisk.rst  | 3 +--
+ Documentation/admin-guide/kernel-parameters.txt | 2 --
+ init/do_mounts_rd.c                             | 7 -------
+ 3 files changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/Documentation/arch/x86/boot.rst b/Documentation/arch/x86/boot.rst
-index 77e6163288db..118aa7b69667 100644
---- a/Documentation/arch/x86/boot.rst
-+++ b/Documentation/arch/x86/boot.rst
-@@ -189,7 +189,7 @@ Offset/Size	Proto		Name			Meaning
- 01F1/1		ALL(1)		setup_sects		The size of the setup in sectors
- 01F2/2		ALL		root_flags		If set, the root is mounted readonly
- 01F4/4		2.04+(2)	syssize			The size of the 32-bit code in 16-byte paras
--01F8/2		ALL		ram_size		DO NOT USE - for bootsect.S use only
-+01F8/2		ALL		ram_size		DO NOT USE - for bootsect.S use only - used to control initrd, which was removed from Linux in 2025
- 01FA/2		ALL		vid_mode		Video mode control
- 01FC/2		ALL		root_dev		Default root device number
- 01FE/2		ALL		boot_flag		0xAA55 magic number
-@@ -308,7 +308,7 @@ Offset/size:	0x1f8/2
- Protocol:	ALL
- ============	===============
+diff --git a/Documentation/admin-guide/blockdev/ramdisk.rst b/Documentation/admin-guide/blockdev/ramdisk.rst
+index 9ce6101e8dd9..e57c61108dbc 100644
+--- a/Documentation/admin-guide/blockdev/ramdisk.rst
++++ b/Documentation/admin-guide/blockdev/ramdisk.rst
+@@ -74,12 +74,11 @@ arch/x86/boot/Makefile.
  
--  This field is obsolete.
-+  This field is obsolete. Used to control initrd, which was removed from Linux in 2025.
+ Some of the kernel command line boot options that may apply here are::
  
- ============	===================
- Field name:	vid_mode
-diff --git a/arch/arm/kernel/atags_parse.c b/arch/arm/kernel/atags_parse.c
-index 4ec591bde3df..a3f0a4f84e04 100644
---- a/arch/arm/kernel/atags_parse.c
-+++ b/arch/arm/kernel/atags_parse.c
-@@ -90,8 +90,6 @@ __tagtable(ATAG_VIDEOTEXT, parse_tag_videotext);
- #ifdef CONFIG_BLK_DEV_RAM
- static int __init parse_tag_ramdisk(const struct tag *tag)
- {
--	rd_image_start = tag->u.ramdisk.start;
+-  ramdisk_start=N
+   ramdisk_size=M
+ 
+ If you make a boot disk that has LILO, then for the above, you would use::
+ 
+-	append = "ramdisk_start=N ramdisk_size=M"
++	append = "ramdisk_size=M"
+ 
+ 4) An Example of Creating a Compressed RAM Disk
+ -----------------------------------------------
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index f940c1184912..07e8878f1e13 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5285,8 +5285,6 @@
+ 	ramdisk_size=	[RAM] Sizes of RAM disks in kilobytes
+ 			See Documentation/admin-guide/blockdev/ramdisk.rst.
+ 
+-	ramdisk_start=	[RAM] RAM disk image start address
 -
- 	if (tag->u.ramdisk.size)
- 		rd_size = tag->u.ramdisk.size;
- 
-diff --git a/arch/sh/include/asm/setup.h b/arch/sh/include/asm/setup.h
-index 84bb23a771f3..d1b97c5726e4 100644
---- a/arch/sh/include/asm/setup.h
-+++ b/arch/sh/include/asm/setup.h
-@@ -10,7 +10,6 @@
- #define PARAM	((unsigned char *)empty_zero_page)
- 
- #define MOUNT_ROOT_RDONLY (*(unsigned long *) (PARAM+0x000))
--#define RAMDISK_FLAGS (*(unsigned long *) (PARAM+0x004))
- #define ORIG_ROOT_DEV (*(unsigned long *) (PARAM+0x008))
- #define LOADER_TYPE (*(unsigned long *) (PARAM+0x00c))
- #define INITRD_START (*(unsigned long *) (PARAM+0x010))
-diff --git a/arch/sh/kernel/head_32.S b/arch/sh/kernel/head_32.S
-index b603b7968b38..4382c0f058c8 100644
---- a/arch/sh/kernel/head_32.S
-+++ b/arch/sh/kernel/head_32.S
-@@ -28,7 +28,7 @@
- 	.section	.empty_zero_page, "aw"
- ENTRY(empty_zero_page)
- 	.long	1		/* MOUNT_ROOT_RDONLY */
--	.long	0		/* RAMDISK_FLAGS */
-+	.long	0		/* RAMDISK_FLAGS - used to control initrd, which was removed from Linux in 2025 */
- 	.long	0x0200		/* ORIG_ROOT_DEV */
- 	.long	1		/* LOADER_TYPE */
- 	.long	0x00000000	/* INITRD_START */
-diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
-index d66f098e9e9f..50f1d39fe34f 100644
---- a/arch/sh/kernel/setup.c
-+++ b/arch/sh/kernel/setup.c
-@@ -70,8 +70,6 @@ EXPORT_SYMBOL(sh_mv);
- 
- extern int root_mountflags;
- 
--#define RAMDISK_IMAGE_START_MASK	0x07FF
--
- static char __initdata command_line[COMMAND_LINE_SIZE] = { 0, };
- 
- static struct resource code_resource = {
-@@ -273,19 +271,14 @@ void __init setup_arch(char **cmdline_p)
- 
- 	printk(KERN_NOTICE "Boot params:\n"
- 			   "... MOUNT_ROOT_RDONLY - %08lx\n"
--			   "... RAMDISK_FLAGS     - %08lx\n"
- 			   "... ORIG_ROOT_DEV     - %08lx\n"
- 			   "... LOADER_TYPE       - %08lx\n"
- 			   "... INITRD_START      - %08lx\n"
- 			   "... INITRD_SIZE       - %08lx\n",
--			   MOUNT_ROOT_RDONLY, RAMDISK_FLAGS,
-+			   MOUNT_ROOT_RDONLY,
- 			   ORIG_ROOT_DEV, LOADER_TYPE,
- 			   INITRD_START, INITRD_SIZE);
- 
--#ifdef CONFIG_BLK_DEV_RAM
--	rd_image_start = RAMDISK_FLAGS & RAMDISK_IMAGE_START_MASK;
--#endif
--
- 	if (!MOUNT_ROOT_RDONLY)
- 		root_mountflags &= ~MS_RDONLY;
- 	setup_initial_init_mm(_text, _etext, _edata, _end);
-diff --git a/arch/sparc/boot/piggyback.c b/arch/sparc/boot/piggyback.c
-index 6d74064add0a..a9cc55254ff8 100644
---- a/arch/sparc/boot/piggyback.c
-+++ b/arch/sparc/boot/piggyback.c
-@@ -220,8 +220,8 @@ int main(int argc,char **argv)
- 
- 	/*
- 	 * root_flags = 0
--	 * root_dev = 1 (RAMDISK_MAJOR)
--	 * ram_flags = 0
-+	 * root_dev = 1 (1 used to mean RAMDISK_MAJOR, i. e. initrd, which was removed from Linux)
-+	 * ram_flags = 0 (used to control initrd, which was removed from Linux in 2025)
- 	 * sparc_ramdisk_image = "PAGE aligned address after _end")
- 	 * sparc_ramdisk_size = size of image
- 	 */
-diff --git a/arch/sparc/kernel/head_32.S b/arch/sparc/kernel/head_32.S
-index 38345460d542..46f0e39b9037 100644
---- a/arch/sparc/kernel/head_32.S
-+++ b/arch/sparc/kernel/head_32.S
-@@ -65,7 +65,7 @@ empty_zero_page:	.skip PAGE_SIZE
- EXPORT_SYMBOL(empty_zero_page)
- 
- 	.global root_flags
--	.global ram_flags
-+	.global ram_flags /* used to control initrd, which was removed from Linux in 2025 */
- 	.global root_dev
- 	.global sparc_ramdisk_image
- 	.global sparc_ramdisk_size
-@@ -81,7 +81,7 @@ root_flags:
- 	.half	1
- root_dev:
- 	.half	0
--ram_flags:
-+ram_flags: /* used to control initrd, which was removed from Linux in 2025 */
- 	.half	0
- sparc_ramdisk_image:
- 	.word	0
-diff --git a/arch/sparc/kernel/head_64.S b/arch/sparc/kernel/head_64.S
-index cf0549134234..4480c0532fe9 100644
---- a/arch/sparc/kernel/head_64.S
-+++ b/arch/sparc/kernel/head_64.S
-@@ -52,7 +52,9 @@ stext:
-  * Fields should be kept upward compatible and whenever any change is made,
-  * HdrS version should be incremented.
-  */
--        .global root_flags, ram_flags, root_dev
-+        .global root_flags
-+        .global ram_flags /* used to control initrd, which was removed from Linux in 2025 */
-+        .global root_dev
-         .global sparc_ramdisk_image, sparc_ramdisk_size
- 	.global sparc_ramdisk_image64
- 
-@@ -71,7 +73,7 @@ root_flags:
-         .half   1
- root_dev:
-         .half   0
--ram_flags:
-+ram_flags: /* used to control initrd, which was removed from Linux in 2025 */
-         .half   0
- sparc_ramdisk_image:
-         .word   0
-diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
-index eb60be31127f..fb46fb3acf54 100644
---- a/arch/sparc/kernel/setup_32.c
-+++ b/arch/sparc/kernel/setup_32.c
-@@ -170,8 +170,6 @@ static void __init boot_flags_init(char *commands)
- 
- extern unsigned short root_flags;
- extern unsigned short root_dev;
--extern unsigned short ram_flags;
--#define RAMDISK_IMAGE_START_MASK	0x07FF
- 
- extern int root_mountflags;
- 
-@@ -335,9 +333,6 @@ void __init setup_arch(char **cmdline_p)
- 	if (!root_flags)
- 		root_mountflags &= ~MS_RDONLY;
- 	ROOT_DEV = old_decode_dev(root_dev);
--#ifdef CONFIG_BLK_DEV_RAM
--	rd_image_start = ram_flags & RAMDISK_IMAGE_START_MASK;
--#endif
- 
- 	prom_setsync(prom_sync_me);
- 
-diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
-index f728f1b00aca..79b56613c6d8 100644
---- a/arch/sparc/kernel/setup_64.c
-+++ b/arch/sparc/kernel/setup_64.c
-@@ -143,8 +143,6 @@ static void __init boot_flags_init(char *commands)
- 
- extern unsigned short root_flags;
- extern unsigned short root_dev;
--extern unsigned short ram_flags;
--#define RAMDISK_IMAGE_START_MASK	0x07FF
- 
- extern int root_mountflags;
- 
-@@ -640,9 +638,6 @@ void __init setup_arch(char **cmdline_p)
- 	if (!root_flags)
- 		root_mountflags &= ~MS_RDONLY;
- 	ROOT_DEV = old_decode_dev(root_dev);
--#ifdef CONFIG_BLK_DEV_RAM
--	rd_image_start = ram_flags & RAMDISK_IMAGE_START_MASK;
--#endif
- 
- #ifdef CONFIG_IP_PNP
- 	if (!ic_set_manually) {
-diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index 9bea5a1e2c52..0ced2e9f100e 100644
---- a/arch/x86/boot/header.S
-+++ b/arch/x86/boot/header.S
-@@ -235,7 +235,7 @@ hdr:
- 		.byte setup_sects - 1
- root_flags:	.word ROOT_RDONLY
- syssize:	.long ZO__edata / 16
--ram_size:	.word 0			/* Obsolete */
-+ram_size:	.word 0			/* Used to control initrd, which was removed from Linux in 2025 */
- vid_mode:	.word SVGA_MODE
- root_dev:	.word 0			/* Default to major/minor 0/0 */
- boot_flag:	.word 0xAA55
-diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index f53dd3f319ba..bf56549f79bb 100644
---- a/arch/x86/include/uapi/asm/bootparam.h
-+++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -4,9 +4,6 @@
- 
- #include <asm/setup_data.h>
- 
--/* ram_size flags */
--#define RAMDISK_IMAGE_START_MASK	0x07FF
--
- /* loadflags */
- #define LOADED_HIGH	(1<<0)
- #define KASLR_FLAG	(1<<1)
-@@ -37,7 +34,7 @@ struct setup_header {
- 	__u8	setup_sects;
- 	__u16	root_flags;
- 	__u32	syssize;
--	__u16	ram_size;
-+	__u16	ram_size; /* used to control initrd, which was removed from Linux in 2025 */
- 	__u16	vid_mode;
- 	__u16	root_dev;
- 	__u16	boot_flag;
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 6409e766fb17..797c3c9fc75e 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -222,8 +222,6 @@ extern int root_mountflags;
- 
- unsigned long saved_video_mode;
- 
--#define RAMDISK_IMAGE_START_MASK	0x07FF
--
- static char __initdata command_line[COMMAND_LINE_SIZE];
- #ifdef CONFIG_CMDLINE_BOOL
- char builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
-@@ -541,9 +539,6 @@ static void __init parse_boot_params(void)
- 	bootloader_version  = bootloader_type & 0xf;
- 	bootloader_version |= boot_params.hdr.ext_loader_ver << 4;
- 
--#ifdef CONFIG_BLK_DEV_RAM
--	rd_image_start = boot_params.hdr.ram_size & RAMDISK_IMAGE_START_MASK;
--#endif
- #ifdef CONFIG_EFI
- 	if (!strncmp((char *)&boot_params.efi_info.efi_loader_signature,
- 		     EFI32_LOADER_SIGNATURE, 4)) {
-diff --git a/include/linux/initrd.h b/include/linux/initrd.h
-index f1a1f4c92ded..6320a9cb6686 100644
---- a/include/linux/initrd.h
-+++ b/include/linux/initrd.h
-@@ -5,9 +5,6 @@
- 
- #define INITRD_MINOR 250 /* shouldn't collide with /dev/ram* too soon ... */
- 
--/* starting block # of image */
--extern int rd_image_start;
--
- /* size of a single RAM disk */
- extern unsigned long rd_size;
- 
+ 	random.trust_cpu=off
+ 			[KNL,EARLY] Disable trusting the use of the CPU's
+ 			random number generator (if available) to
 diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
-index f7d53bc21e41..8e0a774a9c6f 100644
+index 8e0a774a9c6f..864fa88d9f89 100644
 --- a/init/do_mounts_rd.c
 +++ b/init/do_mounts_rd.c
-@@ -17,11 +17,9 @@
+@@ -17,13 +17,6 @@
  static struct file *in_file, *out_file;
  static loff_t in_pos, out_pos;
  
--int __initdata rd_image_start;		/* starting block # of image */
+-static int __init ramdisk_start_setup(char *str)
+-{
+-	/* will be removed in next commit */
+-	return 1;
+-}
+-__setup("ramdisk_start=", ramdisk_start_setup);
 -
- static int __init ramdisk_start_setup(char *str)
- {
--	rd_image_start = simple_strtol(str,NULL,0);
-+	/* will be removed in next commit */
- 	return 1;
- }
- __setup("ramdisk_start=", ramdisk_start_setup);
-@@ -60,7 +58,7 @@ identify_ramdisk_image(struct file *file, loff_t pos,
- 	unsigned char *buf;
- 	const char *compress_name;
- 	unsigned long n;
--	int start_block = rd_image_start;
-+	int start_block = 0;
+ static int __init crd_load(decompress_fn deco);
  
- 	buf = kmalloc(size, GFP_KERNEL);
- 	if (!buf)
-@@ -196,7 +194,7 @@ int __init rd_load_image(char *from)
- 	if (IS_ERR(in_file))
- 		goto noclose_input;
- 
--	in_pos = rd_image_start * BLOCK_SIZE;
-+	in_pos = 0;
- 	nblocks = identify_ramdisk_image(in_file, in_pos, &decompressor);
- 	if (nblocks < 0)
- 		goto done;
+ /*
 -- 
 2.47.2
 
