@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1772CAC58F
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 05:49:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD9B8CAC587
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 06:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=msWjE/k4XDYFNkRqUljSzhRmzL+P+KgKrTjqUiQu4aI=; b=2RhebmYUmzCoqfxTwzGoVigCX8
-	R2rGhBin0sWT8IMjyHjqi4De90Rt6aIweRaFJHKJd7ocRG9yp78MseLmaZhmM/k0UZQ9y7uVyLMn7
-	Q1ha9uPJrqFntvdRWpjsbYNY9GViQmh11lmB+rhXrBBji3det6Dsq0ubc29EW4OY6yO4hGz1AM8DZ
-	tR0UjhG6bGaNa5PlAYVDqLHKYtGHJ1X2Ish65n/uyEt/fP8BjdPO0/+yV8IesHKEf6rRf3UYWMZxZ
-	fQGR0PA3JjI2mCULGjwHwjCi74yVUB68TNGwQWgs3XvEjlKXdWpbCw5LuykAnfI8QgxABJ94DVVEI
-	HFVRSZqg==;
+	bh=ukCkckAuGMje9cA2p4fcL/eu4iSUrEgrcmTG6KbdR1M=; b=jFt9Ynr3f4Anm8VYtvB5/EsdR0
+	R84RdZtHkXWfW4qxaqOi51IPokD6NVJCPWo6wVuyvVtcm4MUzQYi5xSVJFvs+EXSqPojkrkAO09XN
+	SbvJZxAF8/v9LyOPDUtgOdXx9eYJqhtrYHKznN2laFw5d0IF92Q3jCTP87Natkzo5XPSTVVKYsnEN
+	PPHVpAIF9kDkg6mDKr6bn+57b1LP1wn+BpjUtV0QpUf8VJR4NYFWKmN2ycfF9b2Hw/qFZzbv3GPhi
+	1bhbMGImeDm9t8TFCcwis87KVSblMu6eAIT6JdReZZPI9a5urT8KbGGdN91VzikfCZSOlpKAOFPVu
+	53ra/q1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxJ90-0000000DOjL-1QC9;
-	Sat, 13 Sep 2025 05:49:54 +0000
+	id 1uxJJh-0000000DRK5-3iMD;
+	Sat, 13 Sep 2025 06:00:57 +0000
 Received: from mail.alien8.de ([2a01:4f9:3051:3f93::2])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxJ8v-0000000DOgh-330k;
-	Sat, 13 Sep 2025 05:49:51 +0000
+	id 1uxJJd-0000000DRHP-3zmB;
+	Sat, 13 Sep 2025 06:00:55 +0000
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C3A3940E0174;
-	Sat, 13 Sep 2025 05:49:44 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A0B8040E016D;
+	Sat, 13 Sep 2025 06:00:50 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ojZM34cNAwPe; Sat, 13 Sep 2025 05:49:41 +0000 (UTC)
+	with ESMTP id 5iEw13_6N0hx; Sat, 13 Sep 2025 06:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1757742581; bh=msWjE/k4XDYFNkRqUljSzhRmzL+P+KgKrTjqUiQu4aI=;
+	t=1757743247; bh=ukCkckAuGMje9cA2p4fcL/eu4iSUrEgrcmTG6KbdR1M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jlbk0QitQVlp4rvpHe4vCXkRS2hvjoafx60Hi3+Hnx26MFN20WwiEWDlh3HCMXF/Y
-	 B7stY6Fyr3vILBwsJcBAqlOW5BxLtsbMmB1EXIFUnlm4GzKlbw7UGM+DEcOseX75hg
-	 FPGD/5ZdIiie/I55kLSBsHbTf5YW4dXDvezwU3bEqbq+FV7hIpAAHI6N3sgA2AvmXD
-	 3vQ0WadXH8uby4Ww6hVk8ohOCEr7dq/AnKiN+L5+0Qzw4HOeJ3KVUC98nYqPW67/YW
-	 aWpHSco3t3XyDwybSqnHdHsxJKU+VPv8otpwQRhG6Y850pLGVP+5QN03U8HBcvg3qJ
-	 YYfb20vCSvE4Ai0U8A9cSf9IR1mIJgy5iyavsFYWrU9iyZHBF0AYZx+WI/zWF0+N3j
-	 yYr/9bod0cW556Z6BwicNX0j4oLecbtI6kPTnTbfq9PIQRnjY49acw04OtWrRYjsbI
-	 DQkmlnaai3jYlBnsa1AnTSuTPIrVsWOuuni4+sHz/DQnxpwepInt7QWlTbdwLusW58
-	 k1GUpFnyMOR6rD+nZ2jz9MpyEHSQd/x6SVjlXFFhbnW6MajvATDtW+vN0PIKR+kSvH
-	 J/wpw42BbFvcsBnYbs2215b0y4rQlOHZTMFHZvjKHk3GMUIDXA+gFVW3s7E2BwGo8u
-	 197mO9Gq+6sAN+bvVMZHrolI=
+	b=M+CzmzEWar56cJJ17KOTR6P8eSnXvk4pSviym3bg7uW6BkqS0j+mtX3BQDzmjsLKN
+	 cBfUjtOzG0dtMWCm8gmhsUa3Xxo4FILO/a/EoDcNG+tlw8kR4uStWeJwPdhqSPG8vi
+	 dptoTCZKzdi0Lb7IKesUGcadI0V7LIgtuqv7+ljIAgi+MxFM4i8iy5ZzhN+eNcVDkT
+	 2U5qJFAQwTYKNKjXv/HnQbujbbxSSpVXj5bVy2aRYmWxFocdRZ21hDbVAksBWj/ayB
+	 IyVl/MGqAXPtO85g0YsubzV7s6ahQw9h0Csu9TVUFWQlf+WnPcHv5LpdW2BLaZTSLx
+	 MMPWrLyToEYejhS/laszKvXwNVgYIRKtn46zcfAmgWcVrksJjmgrxaFWOjZaf7IcIu
+	 69gMcfJR5mcDILFbprN0LrSSpnH27j6cHrFVqj50Pgarn5Z+5kEA74Cuh7F+wkwKag
+	 IgiVg9veF2ZWXTokCLUb6KziC0viJ3MFRPeERhFpkN9McnxLf/Lom5CWCUO/GLLsrO
+	 Ik0vYi9bLtv3NWaKGrZ5U38zUX6p3F6aTmchXQOEPOWj3S4lIPOayyV2rrbopxaE+l
+	 7bAPj5LxiMGFgfJow+wWYdkCpmcS3w+RlVWftduP1hFNqKDXn6mv7Glb2r+ccLg5uk
+	 Ktt/rgo0zlxIwboDscbgVlBU=
 Received: from zn.tnic (p5de8ed27.dip0.t-ipconnect.de [93.232.237.39])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id 8EFB740E0140;
-	Sat, 13 Sep 2025 05:48:45 +0000 (UTC)
-Date: Sat, 13 Sep 2025 07:48:37 +0200
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with UTF8SMTPSA id 3961D40E015C;
+	Sat, 13 Sep 2025 05:59:52 +0000 (UTC)
+Date: Sat, 13 Sep 2025 07:59:45 +0200
 From: Borislav Petkov <bp@alien8.de>
 To: Askar Safin <safinaskar@gmail.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -69,8 +69,7 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Gao Xiang <hsiangkao@linux.alibaba.com>,
 	Art Nikpal <email2tema@gmail.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Curtin <ecurtin@redhat.com>, Alexander Graf <graf@amazon.com>,
-	Rob Landley <rob@landley.net>,
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>,
 	Lennart Poettering <mzxreary@0pointer.de>,
 	linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-snps-arc@lists.infradead.org,
@@ -94,16 +93,17 @@ Subject: Re: [PATCH RESEND 28/62] init: alpha, arc, arm, arm64, csky, m68k,
  microblaze, mips, nios2, openrisc, parisc, powerpc, s390, sh, sparc, um,
  x86, xtensa: rename initrd_{start,end} to
  virt_external_initramfs_{start,end}
-Message-ID: <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local>
+Message-ID: <20250913055851.GBaMUIGyF8VhpUsOZg@fat_crate.local>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
  <20250913003842.41944-29-safinaskar@gmail.com>
+ <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250913003842.41944-29-safinaskar@gmail.com>
+In-Reply-To: <20250913054837.GAaMUFtd4YlaPqL2Ov@fat_crate.local>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_224949_918210_3BE1756E 
-X-CRM114-Status: UNSURE (   8.39  )
+X-CRM114-CacheID: sfid-20250912_230054_150308_9A867357 
+X-CRM114-Status: UNSURE (   9.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -119,19 +119,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Sep 13, 2025 at 12:38:07AM +0000, Askar Safin wrote:
-> Rename initrd_start to virt_external_initramfs_start and
-> initrd_end to virt_external_initramfs_end.
+On Sat, Sep 13, 2025 at 07:48:37AM +0200, Borislav Petkov wrote:
+> On Sat, Sep 13, 2025 at 12:38:07AM +0000, Askar Safin wrote:
+> > Rename initrd_start to virt_external_initramfs_start and
+> > initrd_end to virt_external_initramfs_end.
+> 
+> "virt" as in "virtualization"?
 
-"virt" as in "virtualization"?
+Ooh, now I see it - you have virtual and physical initramfs address things. We
+usually call those "va" and "pa". So
 
-That's not confusing at all... :-\
+initramfs_{va,pa}_{start,end}
 
-And "external" means what?
-
-> They refer to initramfs, not to initrd
-
-Why not simply initramfs_{start,end} if they belong to it?
+perhaps...
 
 -- 
 Regards/Gruss,
