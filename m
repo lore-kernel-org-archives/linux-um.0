@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97FADCAC582
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 01:17:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98AE2CAC582
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 01:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lOKK4KIFki64V1O84ArLWA6Jx4UbLCdmK3IY8vRFz3o=; b=ZzGtSdwb8ghfvSlt42IbstGMnx
-	Grk7o9PNRixYPqiEnYjs+JJ5nrqC8HInC7DGHE0GUMe4uj1UVlc041JAcnZQ2HfFthV5MVOgsku/B
-	/f9ITveuiOfjU0wJHSXXhasYarfXDl6WBTwH0ZI8Af1mk1E6+VijF45XXTczuKawURHcL5TyYndz6
-	jpUIaUtJnkOPqiGb/xNFf8o0fwBySWhbBV9UBQFU8LB2CpytJk0y1Q5BMLN0nRX11F0LXkSYrXyY7
-	WkfcFYKWR7gbk2Svx1fSdmJdumDFYNO8afccY8fhLcHvk0qZq3UfC5FoE0dkADUuDN0Tvi4FcgIKW
-	gcxGpw9g==;
+	bh=azZv/jvf6IRhG0wveCq5ECQcNHAHnPNLNif/IfsLlkA=; b=BkrAlf3F/UXbey3E0vv3M7g4z2
+	uj8ZuW/9CBgjVkHUZ/1qujFNPDeYtKy97ZJDa7bWH8meWfH/FtM1i2j8XxicgACfi/owDWQE4OC/N
+	ccoQD2JIi3TBQ3y53jGqemB9X9N9jn7R2WhabHoJHrv2SZ4Z/ATsnV+tAuAN7EySjzszHA2qEsZ3D
+	yDAGHJros0nL22tPfcL7cWOjM6kIjgtzsFIkeqHAyGA8HdaFj2C/NfVVArmBfTSVOZvDcgJV6Xpbc
+	1nRVSWq+Wd2sXmceXleLpn1aRqvp8uuz/0BK0WX8EKq6jkHVAfGQabnz/S8wh8G/3Xo4glWaF7FFc
+	O8gZV6bA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEtL-0000000CZyL-1aZW;
-	Sat, 13 Sep 2025 01:17:27 +0000
+	id 1uxEuO-0000000CaLS-1H1G;
+	Sat, 13 Sep 2025 01:18:32 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEtK-0000000CZx7-0pke
+	id 1uxEuM-0000000CaJp-2vvL
 	for linux-um@bombadil.infradead.org;
-	Sat, 13 Sep 2025 01:17:26 +0000
+	Sat, 13 Sep 2025 01:18:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=lOKK4KIFki64V1O84ArLWA6Jx4UbLCdmK3IY8vRFz3o=; b=mgJ3uaCZ6RM3d2E3fnRloSU6Ty
-	21QAaqnuWz6NLKIxG2UpODpdPIWSht1NCfj10LWmq1xPTPfzC88Vg8PVA3kUWo6gnwuqd9yjD8CXY
-	V9cpmbNwIpX4JHB8mURtD/18OEQbE5kzFH7YGm/JzuSqFHij3WNSXluf7pea23c2NMZ3ngWoySJlB
-	5DX4f/KdHffGm1QKWugpB5wauufOIQedOd8GbHYBFqOQj2lQMqr1bF6nRWBwJoz1VVuNsk6BlaYT2
-	J8VHBo08hTodU1X8xfd9yKL/jvas+5i5DO0LSwv1/STjHZvBaBfmprirPlA0UWmK++2Cs67mIs79j
-	WLpNbvnw==;
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	bh=azZv/jvf6IRhG0wveCq5ECQcNHAHnPNLNif/IfsLlkA=; b=dChpb33f0btNWsDkvfYf+DqLUT
+	pvwe+QV9LpGzdC2hvTeF2zXQAlqRbUyvkwf3OPsHjmjAKAz7I8QipA8KxIkphFQ9MXOawvvu0h8tv
+	TdZNR9DRztiL9nLgpmbLAUbTNSB9OJQjNSqBB8uulyOSHzPmShC3I+mY5mqQeIt4YMHEDPZuVxyHn
+	35NvyydOjaL0e8yZEFWlAQ6FWqHU6gLrMnUl/DkErlksm5eiuYinPrz6pPcdSYXdVzV3E3kOmrxvQ
+	f2/eS0NePsMdZuCxkCp0hLyfhd1bjRm7s3LknhwLGGPfFerRvljaEYabLwXWwAqnbn2+EchwghU4U
+	rBRI5uFw==;
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEtE-00000006WuG-3kuh
+	id 1uxEuJ-00000006X1g-0vQc
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 01:17:25 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-61cc281171cso4461446a12.0
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 18:17:20 -0700 (PDT)
+	Sat, 13 Sep 2025 01:18:29 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-b03fa5c5a89so369261866b.2
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 18:18:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757726239; x=1758331039; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757726305; x=1758331105; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lOKK4KIFki64V1O84ArLWA6Jx4UbLCdmK3IY8vRFz3o=;
-        b=VpdshuIOFQunxAVNnnW22h87XRKaMcskRK2uhbiwDyAVFCgG0YkFE2ocgCOv3tSgJk
-         ld0n7w3dvE9ow6lfFv39TDemfrnWbAGe8eJ71x0Sh553Xh8/QY5HdX+dVwmnXSQq9A5v
-         NPIWw5wUMdLm+g7gZw9KE6sCHFdxm+HzwOfL1PUno22f/cuFvq5++6GpLue26Xk9qQST
-         LWqzeqRqHk+Yx/9bXvRt3Du6OT06VHHQyppmyIKZxQYpbIPjH6z1XfUHjnJYRv3swN15
-         nf4rpM/umt7WOnKwoAcqeDx6DVD1AfoswMtpj+i9DMpO1mYnpAeK1yydsMV7ogRV9TEX
-         fiuA==
+        bh=azZv/jvf6IRhG0wveCq5ECQcNHAHnPNLNif/IfsLlkA=;
+        b=gcObzO/2l9gGH4skKnp9LQq1Cg5r+dokWql+YyAnbaLuvk0Q17RHWWQQop3epXt/3x
+         tN6bmM+OfjCUHToJw+etICoUKc9tf9SpRzVZm7o/ADa7IWo8+4IKGBj0rI3m/OTHAIgS
+         EGjYqQg4Fchee9SSbPPdN5YOdpx5LWBrvAAfUQQFMl90Qhaz1nKkD/UT3/eTmf58zhoS
+         SY+APpTHJ1s9IJMscEnJwPriQy+5nhFIVQA92DgN4xJgSCKJBjZYqbQTP/I9Q8Dnue7C
+         FbJCJ4JUVhh7EZk0MoYoe1P+azZVZR8eR7jqwkTMJ+yCXwP6I9UJiMeOpdxVyMbXBmqK
+         Hmsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757726239; x=1758331039;
+        d=1e100.net; s=20230601; t=1757726305; x=1758331105;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lOKK4KIFki64V1O84ArLWA6Jx4UbLCdmK3IY8vRFz3o=;
-        b=bBKWO4mUlpw50xzZDFXOmJfYwRT2lPYKmgNqMUAot678/RoZ1FX0MEys42po1ywaxX
-         gaxe/YT1ZvPqHvPdZd+gdFeOutdq5+Pnc9PlSk1teTLSx3n1hMzfpf6952NyVjmfCjLg
-         SwXDEXQwVhQ6kMiJ6gBcbufYU1eULTUhkrAmGJD36THPlp0sAUuE3UVLnsNkcPO900s7
-         nCOI5BYP0AcoWXdy00A5uoYmDcxsNmwEYcv4CksmlYCW0z1JELFDhflGozKHkcM6zE+x
-         l1uJEZeLVf5ma/wqZi21NrJZOJNeV3hn3P7JICd0wvH4i4HiOyiE23+MeFTZL8qemxYh
-         /9pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVD13vMXThyW7+ul+Jb7f+6kMcO9IBfbB6qCM9irDBBN+4ZulKGqBZS3vXBU/k3yBb24c6ynKCPeA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyu7s2pbbQYS4BmKZTtMep8vLG+wZY8mHnXOyECIzXIPwg8HDAU
-	LfunGPlpTM8OKgbtYiHzdae9Iq5K1CmO1hyvZNxltUEuq/hbi6I9+H2d
-X-Gm-Gg: ASbGnctG9GxGK1kX+iiVkxSlIMKUpKT9v2pNXKWVA+N5a+qgDvMVC0IAWMrgJJHvMDa
-	3tryf0Oy4TNvvVDD5/Q2wdCwf5mBXfM7DIIpJEvorKFBLkV2ZMLQ9tvO6LUEnZ9nZy0gEEWMSPb
-	YT5pG7DKaHi76KbJmZ6H4ofo7hl6lZr8qdAhrSSO4Er85LtN48orEP09jDiWpwJnehNlzWGYi8i
-	38a7v6EK4Qt8OgzsLxeXa48XYF3Mu05iX0VRApXj2xrqpoPwbE27TXVdn9UPHBXMFCBUyFbktHZ
-	mGDCQrBmS10ZkxWniDvh2sDCPGcj63OoS1O893r9BD73uWqBBNM9fBKsrtE2IF4eHq4qRW99bDU
-	jkGrs9qiTqnMXgqLKp2M=
-X-Google-Smtp-Source: AGHT+IGWcEC7VhNjJKZzReFkWP7F1gkqH4tvvChKQBMnzdm+44287e9kqOEvM9aYYFOmJE4OYY5/Qw==
-X-Received: by 2002:a17:906:4788:b0:b04:b435:fc6b with SMTP id a640c23a62f3a-b07c3a79fefmr497358466b.60.1757726238469;
-        Fri, 12 Sep 2025 18:17:18 -0700 (PDT)
+        bh=azZv/jvf6IRhG0wveCq5ECQcNHAHnPNLNif/IfsLlkA=;
+        b=NihEUw6Psijnm7wx2yolYYP1H+i1Ht9VJlyi2HwwEAAJ/O+1VtVnMFoWByvceGczle
+         HXfbTC0GBHB5MA3WntnO42pv2hbC/DKqc604ynHC8UfbsHEgg6lPBltE8FCAl8uvK5JM
+         T0pI3KaEVodrghbK9MEIRm+GO8BqJzaqrBd1Mp9k0kqNkImC7rEVlfe0VbrswvQS5xAB
+         nDQoNYdBRUO5H2uH5tIwXmDg7NxVCTTg2iDbVLMX6XdVyyXSaEmJ8x1Pagu1RR0dKWIH
+         l64z/rJBNHgXFsCCjuwZeC8Az8pIM0mnwtp+se2EoJmU40NOxtHFFhmJflfxlVpsxwgm
+         OZ5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXh2dgmDxuXtcxdPK/h8JcSxyVtflkqz4RCTxqIRPZO7Zltw8xq1pk+05AWRxrg89w5OpyJv8v24Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwaAlS8VUpBVuAYdc4Sg32lf006/zHC3kW/1qZsLce5iTYS308r
+	jDwfDHnppdUvLgC58OY/jVDMX5npNo6R3fJYo9H8ADjdBlB1tnJGh4e2
+X-Gm-Gg: ASbGncvh0SkppUcCw1F5id8aFF+j3GRp6NI2jrBPjD3aLIkClYIvcJ85/WT2WcKHMq3
+	yHiIKiAi8EpBrgn36YNlaeG6yAfvS+j4e3MIf7oCgOCHff/AZiuqMCEFx+pLT5apCnrMF5ObFG9
+	FZ9isX34jZGNagWFELd20H0A3ciKMfuU+IFeQbMyQwJnnBuoiPNW5kAXDbLngL2TfY38RT1U6Nk
+	tfHqjviTdMENElaENU8GS9pSDZLCyjQN9Q+ViRL2+k/aSqDZ5tjg76kLs2MhHCzzWX3YxX8uw/l
+	8hP9bI1ARX33oykaRquI5+AsIlTedoQEmRRpVBaLmi02DHs1xPws2gs2ZoIlhA5s10Beu1n37Ew
+	CHvShSQfkJ5kggN2U9OU=
+X-Google-Smtp-Source: AGHT+IExQyu+Z7m4GD3MP2gVTN78xlktku98kUsQddou1aWuxY/hOtzAat6yYKAto7vnFggGkvcCIA==
+X-Received: by 2002:a17:907:3f18:b0:b04:45e1:5929 with SMTP id a640c23a62f3a-b07c35cd746mr507554266b.28.1757726304508;
+        Fri, 12 Sep 2025 18:18:24 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62ec33ae181sm4478774a12.22.2025.09.12.18.17.13
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dd309sm475244766b.53.2025.09.12.18.18.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 18:17:17 -0700 (PDT)
+        Fri, 12 Sep 2025 18:18:24 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -139,17 +139,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 34/62] init: inline create_dev into the only caller
-Date: Sat, 13 Sep 2025 00:38:13 +0000
-Message-ID: <20250913003842.41944-35-safinaskar@gmail.com>
+Subject: [PATCH RESEND 35/62] init: make mount_root_generic static
+Date: Sat, 13 Sep 2025 00:38:14 +0000
+Message-ID: <20250913003842.41944-36-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_021723_203148_1991C974 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20250913_021827_416330_77532750 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -168,43 +168,35 @@ This is cleanup after initrd removal
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- init/do_mounts.c | 5 ++++-
- init/do_mounts.h | 6 ------
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ init/do_mounts.c | 2 +-
+ init/do_mounts.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 5c407ca54063..60ba8a633d32 100644
+index 60ba8a633d32..c722351c991f 100644
 --- a/init/do_mounts.c
 +++ b/init/do_mounts.c
-@@ -366,7 +366,10 @@ static int __init mount_nodev_root(char *root_device_name)
- #ifdef CONFIG_BLOCK
- static void __init mount_block_root(char *root_device_name)
- {
--	int err = create_dev("/dev/root", ROOT_DEV);
-+	int err;
-+
-+	init_unlink("/dev/root");
-+	err = init_mknod("/dev/root", S_IFBLK | 0600, new_encode_dev(ROOT_DEV));
+@@ -174,7 +174,7 @@ static int __init do_mount_root(const char *name, const char *fs,
+ 	return ret;
+ }
  
- 	if (err < 0)
- 		pr_emerg("Failed to create /dev/root: %d\n", err);
+-void __init mount_root_generic(char *name, char *pretty_name, int flags)
++static void __init mount_root_generic(char *name, char *pretty_name, int flags)
+ {
+ 	struct page *page = alloc_page(GFP_KERNEL);
+ 	char *fs_names = page_address(page);
 diff --git a/init/do_mounts.h b/init/do_mounts.h
-index 6c7a535e71ce..f3df9d697304 100644
+index f3df9d697304..f291c30f7407 100644
 --- a/init/do_mounts.h
 +++ b/init/do_mounts.h
-@@ -16,12 +16,6 @@ void  mount_root_generic(char *name, char *pretty_name, int flags);
+@@ -12,7 +12,6 @@
+ #include <linux/task_work.h>
+ #include <linux/file.h>
+ 
+-void  mount_root_generic(char *name, char *pretty_name, int flags);
  void  mount_root(char *root_device_name);
  extern int root_mountflags;
  
--static inline __init int create_dev(char *name, dev_t dev)
--{
--	init_unlink(name);
--	return init_mknod(name, S_IFBLK | 0600, new_encode_dev(dev));
--}
--
- /* Ensure that async file closing finished to prevent spurious errors. */
- static inline void init_flush_fput(void)
- {
 -- 
 2.47.2
 
