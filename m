@@ -4,86 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F214CA101F
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 01:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D257CAC582
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 01:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=; b=zCW82OwEkQo3eWiJLrC8BtE0mj
-	JRokNWbAsiUbo2XB90GHxFHoedTeJ5r+N3cqHL9K6wmhLrltiQ3NOUE6VxplTmI10Z32IMYw+wPtO
-	Vl3+ZuWSFgLjubW/KdCPrVi9SSTaP0lb8Lgel/MsGbg1EHt2nb0YG3WW+lOiNMAzVTFSgAvIbM61w
-	S4CxkMlmNgCCN7PLLT7X0S56Ngbag9tHfw0zgE1BpMoMuGEco6SVV9di7PH8SCrzcbt8VYyEMuP5Y
-	e3YH72Q2hkbJ4piO+iQoJn+y5z9rc8xgiPDnqGz0rKdXh9819HAW0zkbOQYvWxAmIJv3LQsFaCz+Y
-	I9z6/L3A==;
+	bh=XZEc0E3RkrtT53PvUmeExPdZ+yV/ZVWq9ufU5BOWTEg=; b=C+Vidkz8vqQseNcL6KiybLTDQg
+	OsUEAMO0ktY5wGGE05rsj65ztV8ss+qVKmDlYq6Iw/ew6BD+pCpqOOsnnQAS9NzXWS5+QhOYiXu9g
+	WENaK2/GTnondnClipfocGHz8hLejUeHE6zQ9GbSdBtR2YqeLvm9xZHCheAd2eNOogAp6/8jR9F8Y
+	ONl3fvjtemWlct3wsiFaJbcMk1Xx5Fxix0uNwFmURNrgAh94gO5uyp2drSnYpv5C28qZ6rYY4o3eb
+	FtNKrj2t81/jcSKyuT3I5US5CswtjPGM3PuVPR7D1lBFVSaRFjaN7hpEbc+YIycr6WtZgRLE2dPmZ
+	FL6a7lHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEdK-0000000CTnA-0sRf;
-	Sat, 13 Sep 2025 01:00:54 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1uxEeJ-0000000CUDN-1mpr;
+	Sat, 13 Sep 2025 01:01:55 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEdJ-0000000CTlr-04zX
-	for linux-um@bombadil.infradead.org;
-	Sat, 13 Sep 2025 01:00:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=; b=qKIClnSiu5TgFcn2jdBJ/wLrXC
-	25xPNFzXJRvdLdyg/GU0K0+o6JA00szNpHgpXYJgsS4ypGLOg9HGxIT+pFoGIscIDuya1OlsKWcLW
-	NoJ3e4HsM8w+nyEoMJQMUow8sMd7LzEhAiHKYBLS/Alla7/ZDfFrcdKAbGvCfCubKD3s6dWvleZ/N
-	fL3zb3wMlAR8OzGgazGeGGFMMZPxIafvYY6vr8InF6V5zWK5oh2KgAbEk9JeXtIzSX4zr+yi7VVuC
-	DaVa6CS/G0rMYZTBcgGQRQzR5xXJsZVQ9myxr2KSo3XY0Pyj+m1JK+cRrmWq05GnTv4m0mlmawloA
-	1vfo8rWA==;
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEdD-00000006VaH-2IwK
+	id 1uxEeH-0000000CUBG-21Fy
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 01:00:51 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-b04b55d5a2cso428224566b.2
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 18:00:47 -0700 (PDT)
+	Sat, 13 Sep 2025 01:01:54 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-b0415e03e25so324647666b.0
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 18:01:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757725246; x=1758330046; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757725311; x=1758330111; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
-        b=Pih4sN4fDt9osXksUnfVugqpzSYw0DFJUFffB6cT+FYDRNIJlfCfD5AQJS8NqHORkI
-         ug4kOsoh7Ibwe338rwO0B+iMHm7SQfLHaYVMGxmFWgxY3xpep+goHb9l/1mJ86KaOUMS
-         TbIYrH01+pTzFrq+9CeFgR+3DPQpu9D1qv79DNNtx6zRp6iWrNNDDbOhEXfJGv3KWcSu
-         D9Jhz6T78on4F44MRk//BfDNmwvsI7buudBOYjWsi5N5Jv2MIM1stc3pL0evsOq495f9
-         8l7AJLi7zpioGME+FHUX/Lrv3I0A3eoTdHjOKOYR1/lXmjBye3T8/4C3vTVjgoGYdyCh
-         9mBQ==
+        bh=XZEc0E3RkrtT53PvUmeExPdZ+yV/ZVWq9ufU5BOWTEg=;
+        b=gTpUp5AjUpGnpTrcRBtN82RPx+OEvmekbm+WmmWM3vYir8hfDy2j1vJOL7FG4cxgzF
+         OaTAOYqKwWpRss4peVfKldvaCyYtqGOd/CTIsK+eHkU4vcYcTh8qxic5p46156qUmOcx
+         6wIlx0f2FIHf6WrlYG0Jqch1uaucg0HE6D5yVaeypxv1Il7ewBW0gSjTyWGdwlSe+NHI
+         TZIDXztXP0QcOu/R2iHcOuvdNjy2eus6qa+vWEp++y8AHrlOtMD7LrA8UAqcV9Qw6FJT
+         Wx24yQFofDn9HvPmiXKrGOq9tIcqcXqDf4kmeVnukdMjRnksCAaMakDXAiq60nl55NC9
+         /Y+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757725246; x=1758330046;
+        d=1e100.net; s=20230601; t=1757725311; x=1758330111;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
-        b=w9J+CZmA1ROSqI+8wcq9ysVbIBEUyKNiR7GPWZwsZNcKYjL6cHkvUzogNPDuAgMpl6
-         8P0xr6/u2XPLdV2vYFaK0dNpIF0wzhSBiXwLK7aOH2Mta6Oj9+ZRb3dCHa+nxMusXO4V
-         Mq4uxY3i51r841eLrCYf9fYGzuLTOW60B0zGu3pdN9IuVHEi1yRGYVp3To8g6busq5KW
-         AtFNTfoYviLc/h3auesAW/vA+2rnC0mdd2cOtIa4wtoXSfEtTEVQ5mIC4noKPTsTrtN+
-         OEKuQJm82tvtyNMmQtoUeeLrATRVc2Ml8Spf3EOjsltWoLTEtNBdmYC8wzWjPELs9eSU
-         tKXg==
-X-Forwarded-Encrypted: i=1; AJvYcCV2WPOi2l/42m59AJJFht5jR7dLFsrUfSgMmHP+uo/gja51dX22WpTA/QTkqfKjeLcerVwdPfcT0Q==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy+qy1tuOCTqjQA/xt6kvyUR1S45QyN51Io5J+8r8keCX7CbWsH
-	RkAS4XOvozA7ZIIAJg2/0UrZfBy6ZIQo0EmZbt3qfBWJea4kvte4qfuR
-X-Gm-Gg: ASbGncs+KAEJNLBz5ED+P477wQ3+EhpAcmP8i7zGT7MPQ9YobC3nX/WuJ8AJWIq0s+/
-	d/osSZxJC5dptaRHXY3K+pnndci3Fu34GU1M2qVlwzuIf8gai4oxsy2sNal5VvMVviu1Ro1W94m
-	0No2N9xQRZifV2VQufVXiXQ8Dpsbv//cMD+VZWA5l8XoaLXO6Ushpj9GI/0XVAg9KEuQ1suafoZ
-	h41KbyCimdJlGyDuHSjXTfBNRJg85PZBGW47NAuMQhf/NkI6kdeXUdWhTCixCwckcg6wQJtD662
-	oYMrrevFJN8w9AXwPKmLo+OjfrTIzo2TR3WY317gixZceWN9VmQtOJfr0635Nk5iYI1smKw6aaS
-	0uqVMrT3ZkI8V3jJIVJaeg//nCe3IWQ==
-X-Google-Smtp-Source: AGHT+IFN5sGx8Mx9m2aD2jbl3cQxyHXmx0LPyYapXdwnUwhP9+XvMT+8Mvs3QRhc/UxXrnFX4WIsYg==
-X-Received: by 2002:a17:907:daa:b0:b04:7232:3e97 with SMTP id a640c23a62f3a-b07c357507cmr467580066b.21.1757725245716;
-        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
+        bh=XZEc0E3RkrtT53PvUmeExPdZ+yV/ZVWq9ufU5BOWTEg=;
+        b=FfxZukjXEnDa4gr9y/R/b225BdtQAG95/xdVQXrp/5hglJ8OZOv0jHtKXeUxypHArr
+         B4/R0FCxFaI4rG2Ru+K7SJ+WIewhjBNbu0pQoSP/V89JggcLWKUvqDgO47ctvEIH/Co8
+         JZQfH4Fm9uwBPoQuFZ/9MDnnO0mc+TCXS9EUBH+ikwan8XCuqvJ73g5EMMwhtJjhJbA2
+         sBCRE9DTfs+WvZ7P+ffx2Le6+m1uyPirqF3fd7czz7te/dT8R2ST1iION4Qo9CBRM8Jm
+         OSp/UJOww8f7VqDIO+SexOa0VUoe/REb9Yt8hFd5DbRNg3D8Ad2+FnLuHxTnxJi+nejb
+         SgfA==
+X-Forwarded-Encrypted: i=1; AJvYcCUyh+yrbYNrycDI4JTcfLL5Hgu9aMuYwE901bGItBM+RDGHsTkhrf02L861qBrTLVxTXUz+U+XUfA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwF0f3VvthE64/5Q1vz4AvHgcnlOaHt5OonSy9p9+a+N4n2VB7w
+	8WEVRwM9kTRIq73TtBWZdj6gexOXIKknY844IWKeRLOLbHgZ3zCtY7KS
+X-Gm-Gg: ASbGnct35Tqsk7MFPgSvyyxeEr+qUBkR+/m065Wk0Ms5ZA1tZjurEtJlQK6R60/H06+
+	fyivw/bAJeZUzVJudnfh1huPDwJdYdL2pohz9V29FS5OT0dPLbEKl5We/YJWPEn9I/uWV5ilS7z
+	CYn4JGArEdQRdDfQUomwk1QCfmmikfJNxOAUofmjUKbOqwEEmn2rI1BiEr5RcWqaH9/oblucvCh
+	0DFD4rxklhr+0Opmh7SM8gB+NXvjAhyT1mt7j4l7UJRBM17ISCElUG8ehWdiQDqRrDfR1XOT71D
+	a+qCUikPG58FCu9EPDtIIwj2Kwl5dSkCUibgtmpcgw0yUievbtBcJwfFaLBI4TuugpaQBAgoqm6
+	ja8VpDOqrG9st3/fiiXWxOQBkqV2O1w==
+X-Google-Smtp-Source: AGHT+IEAi4xtonmhCaT33K2Hzh7yyRfMcFV0HvMSUAxXUtkPqhwfRFML0tJIQIoV7OGJ/h1kr7fV7w==
+X-Received: by 2002:a17:907:3d0c:b0:b04:7880:3e8c with SMTP id a640c23a62f3a-b07c3820252mr475574166b.38.1757725311044;
+        Fri, 12 Sep 2025 18:01:51 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dcf77sm470822766b.64.2025.09.12.18.00.41
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b317124esm476784166b.46.2025.09.12.18.01.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
+        Fri, 12 Sep 2025 18:01:50 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -139,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 19/62] init: remove mentions of "ramdisk=" command line parameter
-Date: Sat, 13 Sep 2025 00:37:58 +0000
-Message-ID: <20250913003842.41944-20-safinaskar@gmail.com>
+Subject: [PATCH RESEND 20/62] doc: remove Documentation/power/swsusp-dmcrypt.rst
+Date: Sat, 13 Sep 2025 00:37:59 +0000
+Message-ID: <20250913003842.41944-21-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_020048_053787_7E117227 
-X-CRM114-Status: GOOD (  13.33  )
+X-CRM114-CacheID: sfid-20250912_180153_562478_33928E8A 
+X-CRM114-Status: GOOD (  25.01  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,109 +149,186 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-It is already removed
+It contains obsolete initrd and lilo based instructions
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- arch/arm/boot/dts/samsung/exynos4210-origen.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 2 +-
- arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts | 2 +-
- arch/arm/configs/exynos_defconfig                 | 2 +-
- arch/arm/configs/s5pv210_defconfig                | 2 +-
- drivers/block/Kconfig                             | 1 -
- 7 files changed, 6 insertions(+), 7 deletions(-)
+ Documentation/power/index.rst                 |   1 -
+ Documentation/power/swsusp-dmcrypt.rst        | 140 ------------------
+ .../translations/zh_CN/power/index.rst        |   1 -
+ 3 files changed, 142 deletions(-)
+ delete mode 100644 Documentation/power/swsusp-dmcrypt.rst
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4210-origen.dts b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
-index f1927ca15e08..4dcf794bd18b 100644
---- a/arch/arm/boot/dts/samsung/exynos4210-origen.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
-@@ -36,7 +36,7 @@ aliases {
- 	};
- 
- 	chosen {
--		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
-+		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
- 		stdout-path = "serial2:115200n8";
- 	};
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
-index 18f4f494093b..4cdeddeff3fc 100644
---- a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
-@@ -30,7 +30,7 @@ aliases {
- 	};
- 
- 	chosen {
--		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
-+		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
- 		stdout-path = "serial1:115200n8";
- 	};
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
-index c83fb250e664..4b18cc55d6ca 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
-@@ -27,7 +27,7 @@ aliases {
- 	};
- 
- 	chosen {
--		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
-+		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
- 		stdout-path = "serial1:115200n8";
- 	};
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
-index bb623726ef1e..4164c7c2a3eb 100644
---- a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
-+++ b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
-@@ -27,7 +27,7 @@ memory@40000000 {
- 	};
- 
- 	chosen {
--		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
-+		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
- 		stdout-path = "serial2:115200n8";
- 	};
- 
-diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
-index 6915c766923a..77d3521f55d4 100644
---- a/arch/arm/configs/exynos_defconfig
-+++ b/arch/arm/configs/exynos_defconfig
-@@ -15,7 +15,7 @@ CONFIG_HIGHMEM=y
- CONFIG_SECCOMP=y
- CONFIG_ARM_APPENDED_DTB=y
- CONFIG_ARM_ATAG_DTB_COMPAT=y
--CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
-+CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
- CONFIG_CPU_FREQ=y
- CONFIG_CPU_FREQ_STAT=y
- CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
-diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
-index 02121eec3658..8ec82d9b51e4 100644
---- a/arch/arm/configs/s5pv210_defconfig
-+++ b/arch/arm/configs/s5pv210_defconfig
-@@ -8,7 +8,7 @@ CONFIG_KALLSYMS_ALL=y
- CONFIG_ARCH_S5PV210=y
- CONFIG_VMSPLIT_2G=y
- CONFIG_ARM_APPENDED_DTB=y
--CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
-+CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
- CONFIG_CPU_FREQ=y
- CONFIG_CPU_FREQ_STAT=y
- CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index df38fb364904..8cf06e40f61c 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -229,7 +229,6 @@ config BLK_DEV_RAM
- 	  store a copy of a minimal root file system off of a floppy into RAM
- 	  during the initial install of Linux.
- 
--	  Note that the kernel command line option "ramdisk=XX" is now obsolete.
- 	  For details, read <file:Documentation/admin-guide/blockdev/ramdisk.rst>.
- 
- 	  To compile this driver as a module, choose M here: the
+diff --git a/Documentation/power/index.rst b/Documentation/power/index.rst
+index a0f5244fb427..9f1758c92e48 100644
+--- a/Documentation/power/index.rst
++++ b/Documentation/power/index.rst
+@@ -22,7 +22,6 @@ Power Management
+     suspend-and-cpuhotplug
+     suspend-and-interrupts
+     swsusp-and-swap-files
+-    swsusp-dmcrypt
+     swsusp
+     video
+     tricks
+diff --git a/Documentation/power/swsusp-dmcrypt.rst b/Documentation/power/swsusp-dmcrypt.rst
+deleted file mode 100644
+index afb29a58fdf8..000000000000
+--- a/Documentation/power/swsusp-dmcrypt.rst
++++ /dev/null
+@@ -1,140 +0,0 @@
+-=======================================
+-How to use dm-crypt and swsusp together
+-=======================================
+-
+-Author: Andreas Steinmetz <ast@domdv.de>
+-
+-
+-
+-Some prerequisites:
+-You know how dm-crypt works. If not, visit the following web page:
+-http://www.saout.de/misc/dm-crypt/
+-You have read Documentation/power/swsusp.rst and understand it.
+-You did read Documentation/filesystems/ramfs-rootfs-initramfs.rst and know how an initrd works.
+-You know how to create or how to modify an initrd.
+-
+-Now your system is properly set up, your disk is encrypted except for
+-the swap device(s) and the boot partition which may contain a mini
+-system for crypto setup and/or rescue purposes. You may even have
+-an initrd that does your current crypto setup already.
+-
+-At this point you want to encrypt your swap, too. Still you want to
+-be able to suspend using swsusp. This, however, means that you
+-have to be able to either enter a passphrase or that you read
+-the key(s) from an external device like a pcmcia flash disk
+-or an usb stick prior to resume. So you need an initrd, that sets
+-up dm-crypt and then asks swsusp to resume from the encrypted
+-swap device.
+-
+-The most important thing is that you set up dm-crypt in such
+-a way that the swap device you suspend to/resume from has
+-always the same major/minor within the initrd as well as
+-within your running system. The easiest way to achieve this is
+-to always set up this swap device first with dmsetup, so that
+-it will always look like the following::
+-
+-  brw-------  1 root root 254, 0 Jul 28 13:37 /dev/mapper/swap0
+-
+-Now set up your kernel to use /dev/mapper/swap0 as the default
+-resume partition, so your kernel .config contains::
+-
+-  CONFIG_PM_STD_PARTITION="/dev/mapper/swap0"
+-
+-Prepare your boot loader to use the initrd you will create or
+-modify. For lilo the simplest setup looks like the following
+-lines::
+-
+-  image=/boot/vmlinuz
+-  initrd=/boot/initrd.gz
+-  label=linux
+-  append="root=/dev/ram0 init=/linuxrc rw"
+-
+-Finally you need to create or modify your initrd. Lets assume
+-you create an initrd that reads the required dm-crypt setup
+-from a pcmcia flash disk card. The card is formatted with an ext2
+-fs which resides on /dev/hde1 when the card is inserted. The
+-card contains at least the encrypted swap setup in a file
+-named "swapkey". /etc/fstab of your initrd contains something
+-like the following::
+-
+-  /dev/hda1   /mnt    ext3      ro                            0 0
+-  none        /proc   proc      defaults,noatime,nodiratime   0 0
+-  none        /sys    sysfs     defaults,noatime,nodiratime   0 0
+-
+-/dev/hda1 contains an unencrypted mini system that sets up all
+-of your crypto devices, again by reading the setup from the
+-pcmcia flash disk. What follows now is a /linuxrc for your
+-initrd that allows you to resume from encrypted swap and that
+-continues boot with your mini system on /dev/hda1 if resume
+-does not happen::
+-
+-  #!/bin/sh
+-  PATH=/sbin:/bin:/usr/sbin:/usr/bin
+-  mount /proc
+-  mount /sys
+-  mapped=0
+-  noresume=`grep -c noresume /proc/cmdline`
+-  if [ "$*" != "" ]
+-  then
+-    noresume=1
+-  fi
+-  dmesg -n 1
+-  /sbin/cardmgr -q
+-  for i in 1 2 3 4 5 6 7 8 9 0
+-  do
+-    if [ -f /proc/ide/hde/media ]
+-    then
+-      usleep 500000
+-      mount -t ext2 -o ro /dev/hde1 /mnt
+-      if [ -f /mnt/swapkey ]
+-      then
+-        dmsetup create swap0 /mnt/swapkey > /dev/null 2>&1 && mapped=1
+-      fi
+-      umount /mnt
+-      break
+-    fi
+-    usleep 500000
+-  done
+-  killproc /sbin/cardmgr
+-  dmesg -n 6
+-  if [ $mapped = 1 ]
+-  then
+-    if [ $noresume != 0 ]
+-    then
+-      mkswap /dev/mapper/swap0 > /dev/null 2>&1
+-    fi
+-    echo 254:0 > /sys/power/resume
+-    dmsetup remove swap0
+-  fi
+-  umount /sys
+-  mount /mnt
+-  umount /proc
+-  cd /mnt
+-  pivot_root . mnt
+-  mount /proc
+-  umount -l /mnt
+-  umount /proc
+-  exec chroot . /sbin/init $* < dev/console > dev/console 2>&1
+-
+-Please don't mind the weird loop above, busybox's msh doesn't know
+-the let statement. Now, what is happening in the script?
+-First we have to decide if we want to try to resume, or not.
+-We will not resume if booting with "noresume" or any parameters
+-for init like "single" or "emergency" as boot parameters.
+-
+-Then we need to set up dmcrypt with the setup data from the
+-pcmcia flash disk. If this succeeds we need to reset the swap
+-device if we don't want to resume. The line "echo 254:0 > /sys/power/resume"
+-then attempts to resume from the first device mapper device.
+-Note that it is important to set the device in /sys/power/resume,
+-regardless if resuming or not, otherwise later suspend will fail.
+-If resume starts, script execution terminates here.
+-
+-Otherwise we just remove the encrypted swap device and leave it to the
+-mini system on /dev/hda1 to set the whole crypto up (it is up to
+-you to modify this to your taste).
+-
+-What then follows is the well known process to change the root
+-file system and continue booting from there. I prefer to unmount
+-the initrd prior to continue booting but it is up to you to modify
+-this.
+diff --git a/Documentation/translations/zh_CN/power/index.rst b/Documentation/translations/zh_CN/power/index.rst
+index bc54983ba515..4ee880e65107 100644
+--- a/Documentation/translations/zh_CN/power/index.rst
++++ b/Documentation/translations/zh_CN/power/index.rst
+@@ -32,7 +32,6 @@ TODOList:
+     * suspend-and-cpuhotplug
+     * suspend-and-interrupts
+     * swsusp-and-swap-files
+-    * swsusp-dmcrypt
+     * swsusp
+     * video
+     * tricks
 -- 
 2.47.2
 
