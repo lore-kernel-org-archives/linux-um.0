@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7F34CA101F
-	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:46:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB48CA101F
+	for <linux-um@archiver.kernel.org>; Sat, 13 Sep 2025 00:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y83Wia04Z/mNTHCUGozzAt26nJVQ29vmo/6z8Jb/IIM=; b=ABePx3rlGoyrreDo++G0qslD8L
-	47Fi6/DYc/tXWbZ84inSGLM6B42oEKtGe5WIE9fc0SlchC+FoBeuLw0HbhWnv9NRDattZtcPIQk0k
-	KE/Vbq+milxRHAl75AqeUoDW6BSPe+Dhkyo3yAazVpOoeRYiB2LLKbBBvgU0hZDOTOVTuis1o3yFV
-	jkeZuTDEYqljcurRrzOp+1bZjxQ4AkAh/CcC5I0nbMLHR2+yU2GwLpCAoZhBW3QDNbuytm79hDONW
-	87LBFDTV1jvevtt4X3H4v7AQsm3wLF9PLfY1dvhTJtmdnNQ+OCTPBYyweXXvTcEwhNsqsDc5Noqq4
-	4gFnVTxA==;
+	bh=4fVjgLbGK8Q3VzkUirE6fakA1teoXIVC6opbXGA1ZT4=; b=KafuZy0J+YaO2gNhFMjwmmSSL8
+	KMcw1aTd986CBgPlPfLxy2LLunp36FDEPGbSqOoTqloQewXlZRX9hhqw470jGz6JFAZdbMPQ5UpvF
+	WHwGVS1Ubd3Er9HOBzNi43HkwiXf/a8EPQL0/IU52dVv7sGcCvBII6iSY04aKrPWWeyUxhDtobXvc
+	85DNtN/qBNgiz2r3ugkH5ScJbHL97/kt4X+mKTuuHWMyKmAfEbL/oCs6CjcVXMj8g3n8r2Gn4JvP1
+	D0u2sFEwt/MLFXEs9+qcDhtZmSFrzDrS+aTeH/lJtLUsh35kKJJVyTnlZGYKuknMyDqMS7qDID6Dg
+	8o7OF1qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEPY-0000000CONu-22Qp;
-	Sat, 13 Sep 2025 00:46:40 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1uxEQb-0000000COom-2JXN;
+	Sat, 13 Sep 2025 00:47:45 +0000
+Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxEPT-0000000COKg-48el
+	id 1uxEQY-0000000COm1-0wB0
 	for linux-um@lists.infradead.org;
-	Sat, 13 Sep 2025 00:46:38 +0000
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-61d3d622a2bso5239428a12.0
-        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:46:35 -0700 (PDT)
+	Sat, 13 Sep 2025 00:47:43 +0000
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-62ecd3c21d3so3049008a12.0
+        for <linux-um@lists.infradead.org>; Fri, 12 Sep 2025 17:47:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724394; x=1758329194; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757724460; x=1758329260; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y83Wia04Z/mNTHCUGozzAt26nJVQ29vmo/6z8Jb/IIM=;
-        b=MTS+QMJ7RiNE5+CTT4/kdIlIkxU6YcpNGkDGwEaXGncCyZ7HaEwYku7cQKwJ5MNAua
-         hBlzOPY4S9uIF4SZXt6dequJ08RQPGfl+c1QyoaVhgHZLJDArQziDiERAKTSlO9cOcEb
-         eQMRrbazldybJXM1e4CA1EUnjA/w+X+ymvSEAQloIMKfO/TBRdjAoPspcGwIXCHHXXB0
-         +8dkJwG8vYXZoAyygApoWWry7Fi58CzTEl024Wyl9k+iM/jsi1W45/0Qys5iBxXnMGdo
-         JIuk53C32Qk/IpZFlnhbkPEUMRgCnIGWqXqWulilArgz18oEaZh5gNcHH61Y7pipAZc8
-         kfkA==
+        bh=4fVjgLbGK8Q3VzkUirE6fakA1teoXIVC6opbXGA1ZT4=;
+        b=PLg9NsILWGDQ6WClNT/6Rwf2IxI9Y5hrj0cUjrfKCzVof2Xu/fDDXIwuF9/oGgJKt0
+         um6+xRTfazU4mEqu+BRqQ5uAlUIKt7E2mKYkWW3MOTUksjFsm37odG2ZZAhoxSwkGDT1
+         G4DYTClhVXZKZchVzOVnWXrXNzYtsk2D4sRY1NhrADXc0+/C928p6Q9qcLci6Q0IbKqr
+         Xk0lu3s3iKgpiPoh7QKMB/suEaqgvLQ/SY+Z1I4UIX/2+Ah8ivuRJFlQWuqn5Bfo05zS
+         eyxCot+p95JfZG7midfn68fjEmm01FEwtUHnzJVevxV0aiU9/6HMB4mRtQJ07jjO3ClZ
+         rUtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724394; x=1758329194;
+        d=1e100.net; s=20230601; t=1757724460; x=1758329260;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y83Wia04Z/mNTHCUGozzAt26nJVQ29vmo/6z8Jb/IIM=;
-        b=XqorLh3UO3q9YnPrrtkZpzOhM4Spfa1Xyg3lU/THNzT4tzkN9kweIMWGxfFgRDTfak
-         IDnqVKyCE6evctBAwTVhSb07kVKmyjkFsW3f2QZEjAIr0rOeK/6mniSbUigPDUrsBk+n
-         v7iuWGHi/jZwMzY3jl5FbXkGckuom9F9Hphw+GVSIiC4ejOs72pBPgPN+EcjM1pSvmvb
-         HBov0Ju9EdIKcPU1frxZFO18aO7zjHH3PiU1ZAk7g8W0kaEeSHXiCO9juxuh9YSBVS3I
-         JOWrmbbXGgfo2zuvwg5h2rbXMQ/HxTG7fUVd6GeyzJH0QNCe+WlEqO0SZ+v8Ww1EDTU8
-         Ozkw==
-X-Forwarded-Encrypted: i=1; AJvYcCXP0/j9UNYy7Og4JlmFKsA7pRyrrmOqfNC1EIMtEq23TElNEQatAW47jaUCNzKO+FCwGANqMygZKQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzK7UEvznLJMxbHqcaxyjR46F8C3jzuLtNw0hzlUQ4xeUC/WTN8
-	xctrqdMx1JgyVukIu0Fzejgqfivbo4sjX9w1uwIrD1A9DS/i4HWqrRXn
-X-Gm-Gg: ASbGncvkFdunKI4OrXe3nrkQhMljAntBNlscyyVkN22O20IYJPpnyXIUKlQim3EBKKL
-	Xc1zkHzmkcsusBKSkYxPJJpIUiN+g2lw9eNOTxHq30fMjm0ughZZ9i3oeNL5vuJTEPJtdk0jpuk
-	E7As9hpnRFcZ1P7MzXYOAt3EPpykaAyYd9tRAiLzKyGyHfK1rnewqGH5miqB9LcT1eVELeV21Dg
-	0QRJdpzN+Jbp7Dz+pfru1nLTPKAV3M0Ac+P36JKvx8XkYgCClmxFXNdHke80oN1ssyalotZ1tII
-	cJIU8VxQtAQo18C2CaAAmm5tqy0Uy2+1oloEiG+8I0f6+glQNuNy0mqZ8486i6/XHU4r+wPFz15
-	x0msd6uUw0dd/2Qn/03M=
-X-Google-Smtp-Source: AGHT+IEhRE4IwIn6e21II3sG+AWhFOewnNElGtSUdTtt48+B8a0G24fjikoaCpJ97iRLzEKC56BiAg==
-X-Received: by 2002:a17:907:96a3:b0:b07:e258:4629 with SMTP id a640c23a62f3a-b07e2584a05mr103605766b.16.1757724393999;
-        Fri, 12 Sep 2025 17:46:33 -0700 (PDT)
+        bh=4fVjgLbGK8Q3VzkUirE6fakA1teoXIVC6opbXGA1ZT4=;
+        b=gNAEZUhQNsIk/ChYeZelRQpIQlZ9s4U+uWzHqCGWRSVzZK0PPVmOxwTHm9LvBj3A7X
+         p7XsQ1kOOEuTeuYs6KG0GsvcUuO8iwcoSRjmlsqUYA4WnUYtmaVaBh6kRbHaL5Hq5+R7
+         qVQloSKsdMxM+z0yb+7ByBU/3TSg2M9nuHyOH+GaAvGKcVsRPIuCd4CDGbr00wh32tXR
+         y1ijP2a057psvjEG9GhOuRf3GSqf3K7OKyPt68OOOBfC8FKK0v3GAHqqO4uJoQViFn7Q
+         MJ+/zzlEWHExTnVugPjGJoi0SfLoYZm6DOIShgr39nY6mv+hq2ujskUKpUBZXMwwbYWJ
+         A+Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCUUsh0Psas1CbS4ZbmKAyLeLzIpLBkwHcnU1oCFGpQ0bk+mjFosHeHlmmrzZccEFoGfxMKCt1eoYQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzekD8t1XIvE2zjWZnlefuGVaGq6hE2wIApKb5iBGtHYQGMnXp2
+	LpQLazTtXOMTo8gK+svLyTAe5TE/t/fWAS0/xXjsBt5VvqL6Hro3isqE
+X-Gm-Gg: ASbGncu/3BAcXe4SykiKWmyZehrqBNayqc868EVLhj3yP2eNLC+oDMGPkTI0Bi4nSeX
+	kA7YQB0VjxHwJhLAZCqQ8yneQ7n4BqJW1cZDvtftwsncrF36zS13ESY+MFfe6MkcvFQFvLLlBQ+
+	Vd7o+/mSKex07KekHWuENRa9K0mubJFoCXDFztb92a0g+adFlu8cjbQu8fLpmiN4m63Qf36aXkM
+	XAah3ZXq/i8saG3L9VUIQGWztW0ugUQupDIAdJyIxdTollB1VhPuMjIOnZfai26pb6G3VCKQUk+
+	h6MeO/CZRwEwqXJCb/haRrLBmSQB2TohrZOR6ZI6dEkLgifZZS8EpYBUdFWCbuTCGyrPbXum1wO
+	PBIG4aAoosy8C/2291oA=
+X-Google-Smtp-Source: AGHT+IEn7MCXvWnM/H721JcTSYIJ22gozO3aCU54l5QL6th5VdkTEU9iyn+bkfXPUmCFMabMmsyKeA==
+X-Received: by 2002:a05:6402:40c9:b0:62e:ed71:601a with SMTP id 4fb4d7f45d1cf-62eed71640amr2549162a12.36.1757724460211;
+        Fri, 12 Sep 2025 17:47:40 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32f2334sm475232966b.78.2025.09.12.17.46.29
+        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62ec33f3c01sm4224385a12.34.2025.09.12.17.47.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:46:33 -0700 (PDT)
+        Fri, 12 Sep 2025 17:47:39 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -124,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 06/62] arm: init: remove special logic for setting brd.rd_size
-Date: Sat, 13 Sep 2025 00:37:45 +0000
-Message-ID: <20250913003842.41944-7-safinaskar@gmail.com>
+Subject: [PATCH RESEND 07/62] arm: init: remove ATAG_RAMDISK
+Date: Sat, 13 Sep 2025 00:37:46 +0000
+Message-ID: <20250913003842.41944-8-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250912_174636_045208_BB9EEB72 
-X-CRM114-Status: GOOD (  13.55  )
+X-CRM114-CacheID: sfid-20250912_174742_287827_A97A1A39 
+X-CRM114-Status: GOOD (  16.70  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,81 +149,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-There is no any reason for having special mechanism
-for setting ramdisk size.
-
-Also this allows us to change rd_size variable to static
+Previous commit removed last reference to ATAG_RAMDISK,
+so let's remove it
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- arch/arm/kernel/atags_parse.c | 12 ------------
- drivers/block/brd.c           |  8 ++++----
- include/linux/initrd.h        |  3 ---
- 3 files changed, 4 insertions(+), 19 deletions(-)
+ arch/arm/Kconfig                  |  2 +-
+ arch/arm/include/uapi/asm/setup.h | 10 ----------
+ arch/arm/kernel/atags_compat.c    |  8 --------
+ 3 files changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/arch/arm/kernel/atags_parse.c b/arch/arm/kernel/atags_parse.c
-index a3f0a4f84e04..615d9e83c9b5 100644
---- a/arch/arm/kernel/atags_parse.c
-+++ b/arch/arm/kernel/atags_parse.c
-@@ -87,18 +87,6 @@ static int __init parse_tag_videotext(const struct tag *tag)
- __tagtable(ATAG_VIDEOTEXT, parse_tag_videotext);
- #endif
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index b1f3df39ed40..afc161d76c5f 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1479,7 +1479,7 @@ config ARM_ATAG_DTB_COMPAT
+ 	depends on ARM_APPENDED_DTB
+ 	help
+ 	  Some old bootloaders can't be updated to a DTB capable one, yet
+-	  they provide ATAGs with memory configuration, the ramdisk address,
++	  they provide ATAGs with memory configuration,
+ 	  the kernel cmdline string, etc.  Such information is dynamically
+ 	  provided by the bootloader and can't always be stored in a static
+ 	  DTB.  To allow a device tree enabled kernel to be used with such
+diff --git a/arch/arm/include/uapi/asm/setup.h b/arch/arm/include/uapi/asm/setup.h
+index 8e50e034fec7..3a70890ce80f 100644
+--- a/arch/arm/include/uapi/asm/setup.h
++++ b/arch/arm/include/uapi/asm/setup.h
+@@ -59,15 +59,6 @@ struct tag_videotext {
+ 	__u16		video_points;
+ };
  
--#ifdef CONFIG_BLK_DEV_RAM
--static int __init parse_tag_ramdisk(const struct tag *tag)
--{
--	if (tag->u.ramdisk.size)
--		rd_size = tag->u.ramdisk.size;
+-/* describes how the ramdisk will be used in kernel */
+-#define ATAG_RAMDISK	0x54410004
 -
--	return 0;
--}
+-struct tag_ramdisk {
+-	__u32 flags;	/* bit 0 = load, bit 1 = prompt */
+-	__u32 size;	/* decompressed ramdisk size in _kilo_ bytes */
+-	__u32 start;	/* starting block of floppy-based RAM disk image */
+-};
 -
--__tagtable(ATAG_RAMDISK, parse_tag_ramdisk);
--#endif
--
- static int __init parse_tag_serialnr(const struct tag *tag)
- {
- 	system_serial_low = tag->u.serialnr.low;
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 0c2eabe14af3..72f02d2b8a99 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -27,6 +27,10 @@
- 
- #include <linux/uaccess.h>
- 
-+static unsigned long rd_size = CONFIG_BLK_DEV_RAM_SIZE;
-+module_param(rd_size, ulong, 0444);
-+MODULE_PARM_DESC(rd_size, "Size of each RAM disk in kbytes.");
-+
+ /* describes where the compressed ramdisk image lives (virtual address) */
  /*
-  * Each block ramdisk device has a xarray brd_pages of pages that stores
-  * the pages containing the block device's contents.
-@@ -209,10 +213,6 @@ static int rd_nr = CONFIG_BLK_DEV_RAM_COUNT;
- module_param(rd_nr, int, 0444);
- MODULE_PARM_DESC(rd_nr, "Maximum number of brd devices");
+  * this one accidentally used virtual addresses - as such,
+@@ -150,7 +141,6 @@ struct tag {
+ 		struct tag_core		core;
+ 		struct tag_mem32	mem;
+ 		struct tag_videotext	videotext;
+-		struct tag_ramdisk	ramdisk;
+ 		struct tag_initrd	initrd;
+ 		struct tag_serialnr	serialnr;
+ 		struct tag_revision	revision;
+diff --git a/arch/arm/kernel/atags_compat.c b/arch/arm/kernel/atags_compat.c
+index 10da11c212cc..b9747061fa97 100644
+--- a/arch/arm/kernel/atags_compat.c
++++ b/arch/arm/kernel/atags_compat.c
+@@ -122,14 +122,6 @@ static void __init build_tag_list(struct param_struct *params, void *taglist)
+ 	tag->u.core.pagesize = params->u1.s.page_size;
+ 	tag->u.core.rootdev = params->u1.s.rootdev;
  
--unsigned long rd_size = CONFIG_BLK_DEV_RAM_SIZE;
--module_param(rd_size, ulong, 0444);
--MODULE_PARM_DESC(rd_size, "Size of each RAM disk in kbytes.");
+-	tag = tag_next(tag);
+-	tag->hdr.tag = ATAG_RAMDISK;
+-	tag->hdr.size = tag_size(tag_ramdisk);
+-	tag->u.ramdisk.flags = (params->u1.s.flags & FLAG_RDLOAD ? 1 : 0) |
+-			       (params->u1.s.flags & FLAG_RDPROMPT ? 2 : 0);
+-	tag->u.ramdisk.size  = params->u1.s.ramdisk_size;
+-	tag->u.ramdisk.start = params->u1.s.rd_start;
 -
- static int max_part = 1;
- module_param(max_part, int, 0444);
- MODULE_PARM_DESC(max_part, "Num Minors to reserve between devices");
-diff --git a/include/linux/initrd.h b/include/linux/initrd.h
-index 6320a9cb6686..b42235c21444 100644
---- a/include/linux/initrd.h
-+++ b/include/linux/initrd.h
-@@ -5,9 +5,6 @@
- 
- #define INITRD_MINOR 250 /* shouldn't collide with /dev/ram* too soon ... */
- 
--/* size of a single RAM disk */
--extern unsigned long rd_size;
--
- /* 1 if it is not an error if initrd_start < memory_start */
- extern int initrd_below_start_ok;
- 
+ 	tag = tag_next(tag);
+ 	tag->hdr.tag = ATAG_INITRD;
+ 	tag->hdr.size = tag_size(tag_initrd);
 -- 
 2.47.2
 
