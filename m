@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3056FCAC582
-	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 03:53:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D39CAC582
+	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 03:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PB2E9PPBAv72v29AyxICCzYyZlb0WEV+ovfXoPOatKs=; b=1z5yeUEir9lASYG5QdmaAVU1sB
-	HcKOgNjIdLXxPJgBhSjVRCE2Md/hX/6A+/LgtNh9/BaapTrpdHqHxk+xUslmKHYrgEKN5rDLYCgHc
-	57qgWtTZLnA0G/rWgDHm6BC1QbtB1msqtZayXdtzfIlPIcGQ3XtCJhlq/UZ4pMTTZQALtQCHxKAGc
-	RujGTAjijwUK81kCjZQ0T61jEv4w51gy7+kJaFwT6V50Ahohxntf8Z+o0IBnwxIl2k5Bd91hKr6vQ
-	BBJdVWqUjWgA6S0peFsfWR/ZZRRD/76anB0qLLWzyOm3O/smeId0tAwBgO08bvIahH0EkxgbxYUT5
-	eGLpHr6w==;
+	bh=U0YiDU4Bzw7IKNW2/fgCfvKW6iRx1DQ4l7Ssn455PQA=; b=sBTIuKivi8tNuxP5hLorAAWxfu
+	11pBLfaOivQh+I/sUuDaL98McFUD8AhIVx/m6nrPOPWPNLhd/SSIsIObO9u/YVzhnRaV0E7OxFSpC
+	zallBcn/4SNw6l9+ZWOs1o1spNSfAh08oYqA58O947xG99oaZctfrmydUAZLa68bFPPZSojD5d4me
+	q3rKwS3ZhgM/DbJcKJfsQK/FWbRNL+YsjQj6qVIDFobEOEta0Mp90+Gdd+JEtVU5xRN+HFs/fmfvQ
+	GZviJAWmyk4Ni28+enWTuyEuYnrloIGAK7A8DditRdr5gBpNgmEZxA2QX6oWthdZ5Iv35g+r/VCoP
+	NwIw1eWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxdo1-0000000HMl1-3wyB;
-	Sun, 14 Sep 2025 03:53:37 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1uxdob-0000000HN5e-0ref;
+	Sun, 14 Sep 2025 03:54:13 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxdny-0000000HMhP-3Vp5
+	id 1uxdoY-0000000HN2f-042u
 	for linux-um@lists.infradead.org;
-	Sun, 14 Sep 2025 03:53:36 +0000
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-62ee43b5e5bso3293640a12.1
-        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 20:53:34 -0700 (PDT)
+	Sun, 14 Sep 2025 03:54:11 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-b03fa5c5a89so475277166b.2
+        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 20:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757822013; x=1758426813; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757822048; x=1758426848; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PB2E9PPBAv72v29AyxICCzYyZlb0WEV+ovfXoPOatKs=;
-        b=CtyLXqQHocSmGeRxK6xzaEzg9VFAigm0cseorL5Dl1YErpPmQtBSuyoi0zuaVKK00G
-         FeCKDamxoMd33sL1zV6aTPY0tcKJkzRmBBCk+iNgigTfUUsNBdPbepbItXbGU61X8RbK
-         sf3RYfNcfe9ltrZ6WkK0OXL5WKIzU+VUZxwJJt4XglLPtgDFYjlMDr55keyJNvcbtNfT
-         zqpbZjWVvsa2Gb6YM8/vHoTVP5o+3/J8OQ5QQzUCYhJ5tbi5S2WiiujhdwKbQEaGUOUB
-         o51xuh4V3QzbBh+f73qs6TI20sDuRyMiUiqZ9HDA7Aq27Ft4ijy+S4osdnnYF5mzjECn
-         ttdw==
+        bh=U0YiDU4Bzw7IKNW2/fgCfvKW6iRx1DQ4l7Ssn455PQA=;
+        b=jTGQaZar0UzFmlDsNCRsE3/st0+b97qgkJFkDRuoAhpXcipBOlJAUYF0BxZB/TaWas
+         CmNcqySEVJSL3IrX/3/vbvNNQvV7mnvMCay0Jf+HvSjGbOPok6mxf4+Tq3+rWe+Lde07
+         SKRt9a3QItIqRcIp2S0G1WF98wif9kFXtUiy1F92TkGJobY478ofpwjl0k97nauOOEyN
+         kFLasFINnTJLq27BUxXYMZuSUJLThfUJi/fqdnCerD72GjjgJ2J93uOlKRdM9wdECw7x
+         yTzw210MuERuwjR/qsElO1KR3iiM+LqiYcDMP2zF/tnO4CurSA6onxTOifMHxc4qCfqq
+         Mpdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757822013; x=1758426813;
+        d=1e100.net; s=20230601; t=1757822048; x=1758426848;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PB2E9PPBAv72v29AyxICCzYyZlb0WEV+ovfXoPOatKs=;
-        b=ClLuO2pxcwf6uV/x2e/H+/opPOKCpcMe4yFVPkFtuOeb+yhooIkAc/oBofmIGfqntr
-         2+lxPJFfnWyhNIbEc1oCBfG/9tzh2J1QHKQPueh9gv4f4WPd4OBM/nJKkoEeLVLvetUU
-         XvBjPodUVxTiL+UWXxHh0Up5EOhj9Siw+imPZTcAeSkFz8ndc+xliZSkF/mneWrWqf0u
-         BmVflKXN+N35g8FDMdcwjnxBxBfNTB67yauP1RfgX5p5+Vn0EZJ0+t5okxjWw2Mki/pO
-         cAC5NUD7CxxFjGD/2lRVqzuRRF5yZWi3oTHAESNt5a4h/A6jqJMnCRoiM8if5tmpXNcW
-         YjTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUaRSdfuDRr9kWqM/omvqjfHD0fPlZgvf4iTBhLA1/RtEia9k3L7HTv3VNGy5pLbsV+gr8iCWPlCA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxDbF5yWypg4iT/ldQTPvqXkyQyAfxBVJx8PvGUdmoX/bO1tL58
-	F35Zq6pBMIH5/wmh3aeWvpFbUjgwXZXgnXBj9uoZhFjqwkz735RHXEyl
-X-Gm-Gg: ASbGnctnxD3/t8dsU2FrfogMWKGWjf5ZaARosW/u+CowWnx0MwUCjwgm8vgr9RETWG7
-	CtmJQfgkTzJ6qpmIpbMh3hbVy6cwD9Vw2paEXdq/P/yb7YVFueztVGgjF6iGDElLjhoISjLN7Eq
-	rd/nLOk8N/vfKKk7f/xa44D8wOWV1+vp+hyqaFQYjB9V+11GNCMJPN6gHqDO1rQx3hMemTQUeDX
-	efaQ7gfhjESFXIEWigBAtrmw677ujT1D7+TXYbpfehAWvMveWxrNMYJ8bPmFTHODo14TFwU1jH6
-	AG7SUl/ZdrOmua8zfV4XFjQD/SbnqSQitTLBXyISbLPqv7HtTpjccu0ROnsDg6VaoErmUI9YImL
-	5JGItNdMTLfrtVbCR4p1ngOq6n/5zLA==
-X-Google-Smtp-Source: AGHT+IGUQXhZVcMzH5x4qrxgNQpCZ4sYyZ3ugDsvfNumu2I8pECs9df4oC+H+CMnm997jPnr5crTug==
-X-Received: by 2002:a05:6402:2111:b0:61d:2096:1e92 with SMTP id 4fb4d7f45d1cf-62ed82614c4mr7020136a12.15.1757822012514;
-        Sat, 13 Sep 2025 20:53:32 -0700 (PDT)
+        bh=U0YiDU4Bzw7IKNW2/fgCfvKW6iRx1DQ4l7Ssn455PQA=;
+        b=jfhraEOP9qQAeO1iqF9qETGnGe/mP7vfqgUETMx2EkS8S+op425H8daYY8+hqNVFgP
+         fYbWoHTTOnKjmdtEkrKB85UnzS3C4pr9yEnwKuWvPrvLUeYQMrtoA9/LyIaalKLbWNBO
+         gzq2IiW0ACJRg7nPdAcLXvjCjuyHsv4MflTL4d/SSy2Kbj63Z7PVFgLb5+ttESxzkA28
+         mmV9BcFnhAQxXSJAjUQaOeCGWLqif4UQVm8pmMaPI3d/PJ0LTmXeasGg44YIjboCIzWM
+         1Rmjsw363HfNg47mBWjuPZAphjnWiR4kVMwyOuwUfKS1YwIq+3FJlRrizkTdLNeChfCe
+         gSMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXCyJePZf8F7v390jTqPMHYkNbHcZKcWlT/yOKRs7XC+UgNW3u+RWwYY4y/uUubK0XGioMSFZkARw==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy7umIDNe4ODp9faKaAaDj4XPaixqZT6aAZP7fuSyXbtuckcnT3
+	2qSzfdg2RB3tEpPyq+j3tq4f05ZME+M9wh8CZVz7YF1o8k9SXInn3WuF
+X-Gm-Gg: ASbGncsbM31vtw0z6vPQm+dqmX5JgrnwEjaDzV3v9RAbQZC61NVwQGr3CIppg2NTGjE
+	+OlBHGPPQiuZy3F5IUATB8uv6ivHPNz6LioikA+WQXTmB0PPIUDkWfCEqxJq8lfrRl5LgDCCxJ+
+	ACgVn62/0IxwfiXUVLPfICNZLztOcGic/9fAq9dO+RB1WWFC3MFklvTzeInjJXKPr1yCr1RXdE1
+	OcS2AZ3TZziqjznKDlm8ywSU8DiYPcBMJ45I5spSbC+lfmZRGgxq3fTrhqecnThI3YI3htrW6oj
+	+FzFhQnScM03pYQGEVYMRZ4QzxtRKLihvVPbgb3U0oZym/FiBP7TEiwwFiMybvdnvaoIuieeZJ1
+	8RSZEHRV0k4mwkty14OWlJyIWMaCRvg==
+X-Google-Smtp-Source: AGHT+IEVLkeZlLSkzoTpPLzlBRvNTQ9m/bl133jXYp2zZldNvB+tlYKH8pXYzZ5ISfOO2+UjGM6RFg==
+X-Received: by 2002:a17:907:e8d:b0:b0e:3d88:27fd with SMTP id a640c23a62f3a-b0e3d97e027mr75192266b.8.1757822048020;
+        Sat, 13 Sep 2025 20:54:08 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62ec33f3a5esm6570485a12.30.2025.09.13.20.53.27
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07da7a8918sm303079766b.56.2025.09.13.20.54.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Sep 2025 20:53:32 -0700 (PDT)
+        Sat, 13 Sep 2025 20:54:07 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -124,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 43/62] setsid: inline ksys_setsid into the only caller
-Date: Sun, 14 Sep 2025 06:53:26 +0300
-Message-ID: <20250914035326.3661003-1-safinaskar@gmail.com>
+Subject: [PATCH RESEND 44/62] doc: kernel-parameters: remove [RAM] from reserve_mem=
+Date: Sun, 14 Sep 2025 06:54:02 +0300
+Message-ID: <20250914035402.3670906-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_205334_911100_8FA12AEE 
-X-CRM114-Status: GOOD (  10.91  )
+X-CRM114-CacheID: sfid-20250913_205410_062641_CDD6DF33 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,51 +149,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This is cleanup after initrd removal
+This parameter has nothing to do with ramdisk
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- include/linux/syscalls.h | 1 -
- kernel/sys.c             | 7 +------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 77f45e5d4413..75e9ee03d19b 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -1231,7 +1231,6 @@ int ksys_fchown(unsigned int fd, uid_t user, gid_t group);
- ssize_t ksys_read(unsigned int fd, char __user *buf, size_t count);
- void ksys_sync(void);
- int ksys_unshare(unsigned long unshare_flags);
--int ksys_setsid(void);
- int ksys_sync_file_range(int fd, loff_t offset, loff_t nbytes,
- 			 unsigned int flags);
- ssize_t ksys_pread64(unsigned int fd, char __user *buf, size_t count,
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 1e28b40053ce..66e1e2dfd585 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1265,7 +1265,7 @@ static void set_special_pids(struct pid **pids, struct pid *pid)
- 		change_pid(pids, curr, PIDTYPE_PGID, pid);
- }
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a259f2bdba0f..0805d3ebc75a 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6277,8 +6277,7 @@
+ 			them.  If <base> is less than 0x10000, the region
+ 			is assumed to be I/O ports; otherwise it is memory.
  
--int ksys_setsid(void)
-+SYSCALL_DEFINE0(setsid)
- {
- 	struct task_struct *group_leader = current->group_leader;
- 	struct pid *sid = task_pid(group_leader);
-@@ -1300,11 +1300,6 @@ int ksys_setsid(void)
- 	return err;
- }
- 
--SYSCALL_DEFINE0(setsid)
--{
--	return ksys_setsid();
--}
--
- DECLARE_RWSEM(uts_sem);
- 
- #ifdef COMPAT_UTS_MACHINE
+-	reserve_mem=	[RAM]
+-			Format: nn[KMG]:<align>:<label>
++	reserve_mem=	Format: nn[KMG]:<align>:<label>
+ 			Reserve physical memory and label it with a name that
+ 			other subsystems can use to access it. This is typically
+ 			used for systems that do not wipe the RAM, and this command
 -- 
 2.47.2
 
