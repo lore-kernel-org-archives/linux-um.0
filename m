@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA83CCAC582
-	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 03:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04B5ECAC58F
+	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 03:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dLgSWRUhBJ+Eb73oE0EhwiwscJ+skfUSjN5GwJ3O/gU=; b=uXyPhnDOUr53NN2bBoO2uyTkHt
-	+Zo+1lY7na9yNaaR9g6jLvYBhud+xHCQk7bLQLJ2oT75mYgqxRo2iYH6H8v4GTp2rnK67LVzBm5j/
-	L9Md6/bDavVP6LnXtEmhRQCBgZqFmNj/jJiXEmhFxYU5ZkCaD4vqiwGhStEfwNSW5DjRYlVNsp0Tm
-	mo839Jgivq9AHke/pXF/TnSdACHM9vsvXrWJygTZz0GSxqytq1WVqX6yO4wBsBmMJTmnQtquNwrAJ
-	cZh8DWdYo/aTAlXnLg7/XXXVftQqd8RxLNm2HvxvVlZE53ZgD7dmdFKXYNDHS2UB6zfu31AZbM7bN
-	zve09vSw==;
+	bh=8LDuJwsx1JnhEieEawhozXv7eEPm7AwX4v3UgIhLgCc=; b=g+aLyGHjsDRCvgvkuVhWRmhCog
+	cW0QTEy/70tPDCljxcM0jVNEpOsT77hyl5ntJzVP1a2SYtNBiv2fPDORNIzE/vCyNr0oa3JHCWdo0
+	jpzXoW8UiBv3svVgoQsl7xwKw2JP5tBcOy6/7f1xl+rj0Ivuqu80MwYTZsdZ22QGWVlfSD0epecf0
+	Lh9DO4KYCcO89hlP6B5E4RJ0l0GzuYd9t9X+cCwemgCqgly+FEzUpVOA1OXk+H7ixENYFIYG+6RkK
+	R2opYvP2nXcxSVR7fJ8eig4yvNgPasrRUdamYhFVFLkUqw8oICw6YS3QqGoclf6wvp3VyzFoyAdzC
+	+02IhLUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxds4-0000000HOpE-1UDx;
-	Sun, 14 Sep 2025 03:57:48 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1uxdtF-0000000HPUx-26rV;
+	Sun, 14 Sep 2025 03:59:01 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxds1-0000000HOmc-2lzH
+	id 1uxdtB-0000000HPRT-3cEH
 	for linux-um@lists.infradead.org;
-	Sun, 14 Sep 2025 03:57:46 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-afcb78ead12so403618466b.1
-        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 20:57:45 -0700 (PDT)
+	Sun, 14 Sep 2025 03:59:00 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-afcb7a16441so465873566b.2
+        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 20:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757822264; x=1758427064; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757822336; x=1758427136; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dLgSWRUhBJ+Eb73oE0EhwiwscJ+skfUSjN5GwJ3O/gU=;
-        b=VzaDoNOH3mhqXRAw8u7zfHGnI7GXO+Wuq4Ni+KVbigVWV626TX41ZwAtDyd7yCuB8O
-         Xz+uKg+Q4aq3rT4JsQ6exYMuDVTIw82+88NsuJMR/htUeofAX4EEK2ObLL7wmG8+ww8j
-         cEVhZXfq/WEUbazVBJuEbFJk3RsiBJDvQEFOoCPWLIO5a45yhMGqJKJ4sZjvQpPaNvEf
-         Zo0LlhS9mytM6fz2LvaClNs8rgVmeFLtohmgkSm4YNj2wZ4SMtoIGLZukPbEt7jKQN93
-         hKT/tbiSxuYyJp6MnEoAQw/HtoAUaK0MZXxtVrNybpwU6YSU/LaNsRLs3iWuxvsp1lIC
-         kA/g==
+        bh=8LDuJwsx1JnhEieEawhozXv7eEPm7AwX4v3UgIhLgCc=;
+        b=YylZMOitWf6KYGpLGV7bR6qGT10dUCITNTEk+xmOWs16p7lKkJcQeB/FxH+qiPdh71
+         qaGObB+1Awi+oCF4oNiy5ShXJG5XR2t5LPk6cKXxna405PULludHkBfhsriKuJWcrJhv
+         tNANTkwOHzCGE2XodXee2hbvbPAvMpRAg1I+hc/9R/0G37IJrsj6odr7hQmhR9x0jQ11
+         fADEuHi1t2hQ5WaQzyz6BnhTQpc3dsJqNqVltQPb3tMe8y8SH87SLUhYT8DSARnfR27S
+         NGqJZaTP8XsjiZcCG0zhmYNV+AOUuVr1e8gZTT2oqsERT/HDEVCFLaqULN0JkaewEmDN
+         Rdkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757822264; x=1758427064;
+        d=1e100.net; s=20230601; t=1757822336; x=1758427136;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dLgSWRUhBJ+Eb73oE0EhwiwscJ+skfUSjN5GwJ3O/gU=;
-        b=aN3STN7tFDthNZzKuvhB9zgqE8WgO0rd6ovOVo8P7FyRZkQIaYGaPyBhypPxOwxDmu
-         OcEk3f+Pnon8waIYt2zpDZI++lClR8tPC3axmJ8upul5zylzRLDL36NsdYmN+QGSCCYX
-         XmOJwYzJp/HJYUQ7pXqfSAkv882LI1Zo4yrnZSETGq7E2FqFCiTcUj5uek48FdFjgx0J
-         Hia7vkRmcUAhLn+ENmLQcZ0phuRvfIlCrxqe3jHnXnVCsWJ10TW3tcQd44xq+p2GvwaG
-         g1+sNYYhttbJKidz2P6mMOWBA74exa8pA5fr9OMG4rVyvXa6pK/Z17fQ/rZ6Xjgx3WvH
-         vV1w==
-X-Forwarded-Encrypted: i=1; AJvYcCX4oXwxb6ovfqo6puh7HDBujdz3b6l3IlwzkoiDcExnLv4dUW4VxPjhXEgkUko8EQnBYr670NsvSQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw1rMaNauW5QpLjwbW8DtaptS7VnGreF6FV6gLYhjd44FegQKf2
-	B0J2sEnZlB9t4OCNGx00NJun/TMUUJE7xhRvyFeQO8vMBv+lv6DjPIWC
-X-Gm-Gg: ASbGncsnq5QUB0jKS0h9WGaJA7StDPIoHnmbMhxtdvSGtKBc3HUUxSSQDFPh5+gQHZR
-	UskzQeFNjpe0PnRGWd2+a/G6tjj2mU0u/AB4JNLxwtxEofZL+0Mtxdal7Sbna8sul4bU27zO/nd
-	j9BxhSR+MCBjsjW4ywfpeMckthc8JMBVCU15D/4i0kda6xjffBKDvXnXOJbqnmNjRVeeg8LjQw6
-	xC4IIuAajQCOpHnkw5bMsYR2Ja5KcBbchLIPjLJAwERVQZ9TjPk8lN7qiqr4TdlHt4qlHHIhRUR
-	rnZUuryQgGMDJpqwlGC/opOM7QuOtzmVph1CMlP87zaiVjrO1ulc6I/hsGjJT9p/pu3QH6Qqit7
-	8lgC/Idlsre0qZUpVBvupTmW21kOD/A==
-X-Google-Smtp-Source: AGHT+IGOdPvfXOVddm8G6LJhfH2nNJDoTTLKR/3NE7kowNRoQPIuzhxmV+feQvXrrMYzfjsz5Ubcxg==
-X-Received: by 2002:a17:906:a84d:b0:b07:cf04:8a43 with SMTP id a640c23a62f3a-b07cf049441mr520202566b.41.1757822263792;
-        Sat, 13 Sep 2025 20:57:43 -0700 (PDT)
+        bh=8LDuJwsx1JnhEieEawhozXv7eEPm7AwX4v3UgIhLgCc=;
+        b=nNvX4oyI7MhjRwg28wqUZBuyBdRZ122Oh08bv5wDspOiA/1Y5uDhwuqmMd6fetiqPo
+         us+YDxbWpNPTOktjTqk0tjYB3hXAP08Pf64PjIvDLujp8Xj39eFflOb9nhAlTLS1nuxi
+         FHDWQVb1FJHxotiYERcsdMuOz3t4QVvWqSlEu2VidNegfqVpwWtIQBW0CzvxLU+xDY1a
+         enoHTNilml6qJrnzfL0DgMGwyOhBs+Z+9FiZPM2dK1ESCRE9yFe6J7KYX68eTXw9ij7i
+         Wzy90bW3MKD5cENnp/agXbT1OorTUW2vBTTSWntjHSULdDHZtDGjhi9bD1LWS4j28UEP
+         qZZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcwytLJ0L89UuleA5++FidS/nUyD1UsBZy4T0O6wFEK3sTnI7RQDDxqUQzGrCIjExgv3usfvt3TQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YziGvktPeDrRhDcCnwjFgukMykXRXQFEOmb2JX17D4pTgAZ/eki
+	qa8KWroo1MbTVxa4RZEPY9YuPyYP4KqVqvyer+5PNQ/XTsoyrUGVe9aH
+X-Gm-Gg: ASbGnct/J6ysDNs+M9bv0CnAT4rVWATxIv8DXMc8OpbjbaTvMl+9uJRedq3gD9XXowk
+	h0HMU0d/3/Ebu9a90q8Bp5brecweO1GM7p7ithgEehj3vBLT/ujtNXEfhzz9lWBjJ3hyYF6zyEs
+	8tvh/dMxET02BzIhBe2mCh2c0PRjnFhAQdBiB1ar6iBzuqlrsreRQe/GcC9y60vSTJ3vrmOa9gc
+	KEPgsTRTNwMLWv4FUayzogyF7b/1nMIAQ6OvmL1PFjxjwGCzqvrfn0HZJoJTXj8ANimmB7Ouc2P
+	bLi+8eDMFwH0FQWLlRrM7DqM4XOpc+mzOvCTh19t1LE7p1j94soVh8QUoBRcPYMrglJ2aZnY8Mm
+	8AnnJ9YaG4OswnonTzAP4T8PvmGCo1w==
+X-Google-Smtp-Source: AGHT+IHNLaKXJiC+zXQ2uAPY4azg+7W3/1g8JczFufMn8mQqgVOZ73ifHuYY/OKrygFTvfUSeCcOcw==
+X-Received: by 2002:a17:907:3e90:b0:afe:cbee:7660 with SMTP id a640c23a62f3a-b07c34d63c8mr797483566b.21.1757822335865;
+        Sat, 13 Sep 2025 20:58:55 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b31287cesm676665366b.30.2025.09.13.20.57.39
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b0cf2112639sm91581266b.104.2025.09.13.20.58.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Sep 2025 20:57:43 -0700 (PDT)
+        Sat, 13 Sep 2025 20:58:55 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -124,17 +124,17 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 50/62] init: rename ramdisk_command_access to initramfs_command_access
-Date: Sun, 14 Sep 2025 06:57:38 +0300
-Message-ID: <20250914035738.3741007-1-safinaskar@gmail.com>
+Subject: [PATCH RESEND 52/62] init: rename do_retain_initrd to retain_initramfs
+Date: Sun, 14 Sep 2025 06:58:50 +0300
+Message-ID: <20250914035850.3762697-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_205745_715158_3C245D94 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20250913_205857_922998_B4F75D62 
+X-CRM114-Status: GOOD (  13.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,29 +153,50 @@ This is cleanup after initrd removal
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- init/main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ init/initramfs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/init/main.c b/init/main.c
-index cbebd64f523c..a42f1f0fce84 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1587,11 +1587,11 @@ static noinline void __init kernel_init_freeable(void)
- 	 * check if there is an early userspace init.  If yes, let it do all
- 	 * the work
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 30e94ebf4902..40c8e4b05886 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -570,13 +570,13 @@ char * __init unpack_to_rootfs(char *buf, unsigned long len)
+ 	return message;
+ }
+ 
+-static int __initdata do_retain_initrd;
++static int __initdata retain_initramfs;
+ 
+ static int __init retain_initrd_param(char *str)
+ {
+ 	if (*str)
+ 		return 0;
+-	do_retain_initrd = 1;
++	retain_initramfs = 1;
+ 	return 1;
+ }
+ __setup("retain_initrd", retain_initrd_param);
+@@ -584,7 +584,7 @@ __setup("retain_initrd", retain_initrd_param);
+ #ifdef CONFIG_ARCH_HAS_KEEPINITRD
+ static int __init keepinitrd_setup(char *__unused)
+ {
+-	do_retain_initrd = 1;
++	retain_initramfs = 1;
+ 	return 1;
+ }
+ __setup("keepinitrd", keepinitrd_setup);
+@@ -743,9 +743,9 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ 	 * If the initrd region is overlapped with crashkernel reserved region,
+ 	 * free only memory that is not part of crashkernel region.
  	 */
--	int ramdisk_command_access;
--	ramdisk_command_access = init_eaccess(initramfs_execute_command);
--	if (ramdisk_command_access != 0) {
-+	int initramfs_command_access;
-+	initramfs_command_access = init_eaccess(initramfs_execute_command);
-+	if (initramfs_command_access != 0) {
- 		pr_warn("check access for rdinit=%s failed: %i, ignoring\n",
--			initramfs_execute_command, ramdisk_command_access);
-+			initramfs_execute_command, initramfs_command_access);
- 		initramfs_execute_command = NULL;
- 		prepare_namespace();
- 	}
+-	if (!do_retain_initrd && virt_external_initramfs_start && !kexec_free_initrd()) {
++	if (!retain_initramfs && virt_external_initramfs_start && !kexec_free_initrd()) {
+ 		free_initramfs_mem(virt_external_initramfs_start, virt_external_initramfs_end);
+-	} else if (do_retain_initrd && virt_external_initramfs_start) {
++	} else if (retain_initramfs && virt_external_initramfs_start) {
+ 		bin_attr_initrd.size = virt_external_initramfs_end - virt_external_initramfs_start;
+ 		bin_attr_initrd.private = (void *)virt_external_initramfs_start;
+ 		if (sysfs_create_bin_file(firmware_kobj, &bin_attr_initrd))
 -- 
 2.47.2
 
