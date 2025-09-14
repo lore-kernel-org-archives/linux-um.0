@@ -4,61 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C92DCAC587
-	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 15:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78B5FCAC587
+	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 20:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uWHTAE/9tK2VmYtJYChd0m6RlqKlICrq+eONEttRyNc=; b=xtd0Z/hjkVwrvhqoDf/fKiTE3c
-	uoVXsz5TZAC37f1ejTRjkn4KnYuVsg3FfnFelBHMczHWozojVgmdZaTf8fkOfNP31GOSssDB2nDrZ
-	VAsHLTnczBc/wqBlUYePxeQaYw9hy7IreLNoof5r6sNXoVYoRI8hRDyD8GiFthf6VY89GCoXi52+J
-	0OpsqR2JyWLg8NT3YO/4HRbwbv+pX89xQ057DXN/dKOxPZP29svYhPCw9cDKzPi1ocgMxTGUjXdKT
-	10Z7nPXZYVecbkfKYV16OIQq36UC3rzfaFmy7Qmd+usxJSwRvG4Job/HpFqXdqUBsLRKEqBLOIE5C
-	VHiCfiPg==;
+	bh=ZnyDJvO2Mn+VIk33nJO1BzAqt4g5FhopoIJFFkjc1Ek=; b=NXWBub3BAgILteXxspgQ1vhjpL
+	IEjueeUaHmM5TMdL8mpLHMGzgyDIa1Z/T0jRhsT/P3dfB50nA4b5mJJ3JV7c08TRPsTRbIx0+8nb6
+	7gmCXOYThZMJhpAQur+E73E3E+I3HvAsgdLKouOmXKBAolroVJL3LmBNHcxZEmsj11qjT3BXo0iCZ
+	8wRudai4kJmoM/Rt7hO8tHI+dxrUiN7nZvfA/g/7Ab7ij3Mw6T9TiXCiAS+DZf8T7TL9aPR6v4dr0
+	Tlmc+ZTRFVbckHBuek1oeaVIAJbhD4PC1cwKgU4iI2PyH4diKOaAH9/9scDaY1brzdBVIznplIt5H
+	8dzjTGjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxp8q-00000001mY7-241r;
-	Sun, 14 Sep 2025 15:59:52 +0000
-Received: from out-185.mta0.migadu.com ([91.218.175.185])
+	id 1uxt6F-000000027h8-3Ktn;
+	Sun, 14 Sep 2025 20:13:27 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxp8o-00000001lij-1WnC
-	for linux-um@lists.infradead.org;
-	Sun, 14 Sep 2025 15:59:51 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757865465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uWHTAE/9tK2VmYtJYChd0m6RlqKlICrq+eONEttRyNc=;
-	b=f/B4PnvK67yJlD9oFLRA2LCJgt2inszhoK2k7stiHdEgjOKdiNpA60Vkrht7OTRZOuu9YW
-	Fj+UEwnV8NIyOQ2Nko4WMXveMcdKXpzAkEBYT50TdWEZ0u58lHZnrEGAgfNpSz5Nwk1kWT
-	O2a6vteizNXDWeP/HCKPXqEAcSZhTwg=
-From: Tiwei Bie <tiwei.bie@linux.dev>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	benjamin@sipsolutions.net,
-	arnd@arndb.de,
-	tiwei.btw@antgroup.com,
-	tiwei.bie@linux.dev
-Subject: [PATCH v3 2/7] um: Determine sleep based on need_resched()
-Date: Sun, 14 Sep 2025 23:56:53 +0800
-Message-Id: <20250914155658.1028790-3-tiwei.bie@linux.dev>
-In-Reply-To: <20250914155658.1028790-1-tiwei.bie@linux.dev>
-References: <20250914155658.1028790-1-tiwei.bie@linux.dev>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+	id 1uxt6C-000000027fe-1d47;
+	Sun, 14 Sep 2025 20:13:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 5B693437D6;
+	Sun, 14 Sep 2025 20:13:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D19C4CEF0;
+	Sun, 14 Sep 2025 20:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1757880803;
+	bh=S1O2mYg/nuSFWiepEfi3INn1/VxeJMAKyzsDV4vYqvg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=2UPxRGMw8I/maQZ+HN3ir+gn07zWGBMkkdWTdW2X4OKEgkpUDDbZLiyj3E0pJDtL3
+	 1+D42ZKa/D0blrtutGoeATk6sFzQAtpGrIpNKIWACFz+9+7ensOkK9v2abyA5QnetQ
+	 dB1gPfBNpyMhvJhlFN9WW4x1lQUIWNYqbIuD5q6A=
+Date: Sun, 14 Sep 2025 13:13:21 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, Al
+ Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig
+ <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, Andy Shevchenko
+ <andy.shevchenko@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, Thomas
+ =?ISO-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>, Julian
+ Stecklina <julian.stecklina@cyberus-technology.de>, Gao Xiang
+ <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, Eric
+ Curtin <ecurtin@redhat.com>, Alexander Graf <graf@amazon.com>, Rob Landley
+ <rob@landley.net>, Lennart Poettering <mzxreary@0pointer.de>,
+ linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, x86@kernel.org, Ingo Molnar
+ <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org,
+ linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, "Theodore Y . Ts'o"
+ <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek
+ <monstr@monstr.eu>, devicetree@vger.kernel.org, Luis Chamberlain
+ <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, Thorsten Blum
+ <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>,
+ patches@lists.linux.dev
+Subject: Re: [PATCH RESEND 21/62] init: remove all mentions of
+ root=/dev/ram*
+Message-Id: <20250914131321.df00dfc835be48c10f4cce4b@linux-foundation.org>
+In-Reply-To: <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+References: <20250913003842.41944-1-safinaskar@gmail.com>
+	<20250913003842.41944-22-safinaskar@gmail.com>
+	<a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250914_085950_539353_71B474AD 
-X-CRM114-Status: GOOD (  16.64  )
+X-CRM114-CacheID: sfid-20250914_131324_889183_D01D05DA 
+X-CRM114-Status: UNSURE (   9.00  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,131 +99,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+On Sun, 14 Sep 2025 12:06:24 +0200 Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-With SMP and NO_HZ enabled, the CPU may still need to sleep even
-if the timer is disarmed. Switch to deciding whether to sleep based
-on pending resched. Additionally, because disabling IRQs does not
-block SIGALRM, it is also necessary to check for any pending timer
-alarms. This is a preparation for adding SMP support.
+> >  Documentation/admin-guide/kernel-parameters.txt          | 3 +--
+> >  Documentation/arch/m68k/kernel-options.rst               | 9 ++-------
+> >  arch/arm/boot/dts/arm/integratorap.dts                   | 2 +-
+> >  arch/arm/boot/dts/arm/integratorcp.dts                   | 2 +-
+> >  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cmm.dts     | 2 +-
+> >  .../boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dts    | 2 +-
+> >  .../arm/boot/dts/aspeed/aspeed-bmc-facebook-minipack.dts | 2 +-
+> >  .../arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge100.dts | 2 +-
+> >  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge40.dts | 2 +-
+> >  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yamp.dts    | 2 +-
+> >  .../boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi  | 2 +-
+> 
+> No, don't do that. DTS is always separate.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/include/shared/kern_util.h |  1 +
- arch/um/kernel/process.c           |  5 +++++
- arch/um/os-Linux/internal.h        |  5 +++++
- arch/um/os-Linux/signal.c          |  6 ++++++
- arch/um/os-Linux/time.c            | 15 +++++++++------
- 5 files changed, 26 insertions(+), 6 deletions(-)
-
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 00ca3e12fd9a..3daaa5c4b35d 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -55,6 +55,7 @@ extern int __uml_cant_sleep(void);
- extern int get_current_pid(void);
- extern int copy_from_user_proc(void *to, void *from, int size);
- extern char *uml_strdup(const char *string);
-+int uml_need_resched(void);
- 
- extern unsigned long to_irq_stack(unsigned long *mask_out);
- extern unsigned long from_irq_stack(int nested);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 1be644de9e41..41b3b3bf7309 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -225,6 +225,11 @@ int __uml_cant_sleep(void) {
- 	/* Is in_interrupt() really needed? */
- }
- 
-+int uml_need_resched(void)
-+{
-+	return need_resched();
-+}
-+
- extern exitcall_t __uml_exitcall_begin, __uml_exitcall_end;
- 
- void do_uml_exitcalls(void)
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-index 5d8d3b0817a9..c2c7a0dc673c 100644
---- a/arch/um/os-Linux/internal.h
-+++ b/arch/um/os-Linux/internal.h
-@@ -15,6 +15,11 @@ void scan_elf_aux(char **envp);
-  */
- void check_tmpexec(void);
- 
-+/*
-+ * signal.c
-+ */
-+int timer_alarm_pending(void);
-+
- /*
-  * skas/process.c
-  */
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 58da8c6ece98..554a87dd32cc 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -20,6 +20,7 @@
- #include <um_malloc.h>
- #include <sys/ucontext.h>
- #include <timetravel.h>
-+#include "internal.h"
- 
- void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) = {
- 	[SIGTRAP]	= relay_signal,
-@@ -159,6 +160,11 @@ void timer_set_signal_handler(void)
- 	set_handler(SIGALRM);
- }
- 
-+int timer_alarm_pending(void)
-+{
-+	return !!(signals_pending & SIGALRM_MASK);
-+}
-+
- void set_sigstack(void *sig_stack, int size)
- {
- 	stack_t stack = {
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index 4d5591d96d8c..f3d4547e5227 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -15,6 +15,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <string.h>
-+#include "internal.h"
- 
- static timer_t event_high_res_timer = 0;
- 
-@@ -98,18 +99,20 @@ long long os_nsecs(void)
-  */
- void os_idle_sleep(void)
- {
--	struct itimerspec its;
- 	sigset_t set, old;
- 
--	/* block SIGALRM while we analyze the timer state */
-+	/* Block SIGALRM while performing the need_resched check. */
- 	sigemptyset(&set);
- 	sigaddset(&set, SIGALRM);
- 	sigprocmask(SIG_BLOCK, &set, &old);
- 
--	/* check the timer, and if it'll fire then wait for it */
--	timer_gettime(event_high_res_timer, &its);
--	if (its.it_value.tv_sec || its.it_value.tv_nsec)
-+	/*
-+	 * Because disabling IRQs does not block SIGALRM, it is also
-+	 * necessary to check for any pending timer alarms.
-+	 */
-+	if (!uml_need_resched() && !timer_alarm_pending())
- 		sigsuspend(&old);
--	/* either way, restore the signal mask */
-+
-+	/* Restore the signal mask. */
- 	sigprocmask(SIG_UNBLOCK, &set, NULL);
- }
--- 
-2.34.1
-
+Why can't DTS changes be carried in a different tree?
 
