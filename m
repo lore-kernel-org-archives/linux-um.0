@@ -4,137 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F894CAC58F
-	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 04:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 971A2CAC582
+	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 04:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Mw6NNXq6XfJ0FNmZ5frjZGClHo0iZVSxbFf+bMTHIN8=; b=alPHB9CsMZsg55AnN4CVTuOq+C
-	IgX7BCYTbzTR9w/vza0MbSslCuzaDuyPmgFbVd1vEdzhfQB0IOH/L06Y/R92Pc/5uxPkDTaLr1SZ8
-	6fyr2aUX7LlK7DyEItXKQgijdRsDxfV4UhTDn7iiS66IqUnKJ2dL/AKg4XyiRyqmGXPYLqNnPA+EA
-	hfh6J8Fw/I09YefuvarItvB1gRQ0lkW933LpK0bC6r8xgi3YYNTD6+ozyyT2eBADh/vKJ7kdIGnAg
-	SbMrgtoC2kQ87b82NthDabPBvhIPO/9J5Wh0nneYbYNxrejQxXc8JYE3lH5FhD3UnNtqplsyxXpJv
-	48mXmo2w==;
+	bh=LXtvCmrZRR9OgP0sG11mqG9m/nOQIjqm8VdJ9uLACjc=; b=nnKLyaCVSSoAKvD6SyJkeYW8gG
+	9H296XVnjSbjIzscgn6THK0xIAYMg8QsthB+D8GSqFjD/rHji77pwsgns6XRBGzyOv99eAE7nH04x
+	YH2dwN0fJS/sCiNUgWMDwXVJOPednVDqNUxSOJgKk4CoWC3l0R3C6wywha8zIg4hhsRM0Uof7k/Aa
+	dq5EyIn5zG1RCbIcnTyM4Se0DWh08eC45T+Qbtt8DaiXBBJudpdySh9MPbudAguugYP9pg4kGSiMb
+	KNcQ2JLrTzLn6RHW516hlx8I2QVsb6BttTGj66LqcGFVfvT3/ImOa3uG9LxteU/3mwPiOte3UCaUr
+	hVORgb+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxdz5-0000000HSVU-2Hq9;
-	Sun, 14 Sep 2025 04:05:03 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1uxeD7-0000000HUqF-3Ddr;
+	Sun, 14 Sep 2025 04:19:33 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxdz1-0000000HSR5-3E3R
+	id 1uxeD4-0000000HUoY-2L6B
 	for linux-um@lists.infradead.org;
-	Sun, 14 Sep 2025 04:05:02 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-b07c081660aso429397966b.0
-        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 21:04:59 -0700 (PDT)
+	Sun, 14 Sep 2025 04:19:32 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-b042cc39551so517040366b.0
+        for <linux-um@lists.infradead.org>; Sat, 13 Sep 2025 21:19:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757822698; x=1758427498; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1757823569; x=1758428369; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mw6NNXq6XfJ0FNmZ5frjZGClHo0iZVSxbFf+bMTHIN8=;
-        b=lNp6TaR/XVX8skvYv9sVgurWygn3V58SvHCVBO3FINTU2+snmBbQm9+5ezKxUPws+h
-         Szz5pHPdRnd6kdTt8XDYHrhpwEFR8ttFvo0eGhj/3ZTcs6bGLvmT6UfA2K5emvSPMCeg
-         BR+8VAr2LVqoe8WZI0zI95bEM4b/ehhP1mLxDnKLwoBBSNV42tSe941hRx9Zc2V/fXNX
-         iLhSvo2AurLsoDU7Iyh8tDXL42RkxW9NB11AEZ18ImYV83qUp2wWjDFiaP0VljPOiqnw
-         i1ehzY651WSdl4YcgGscDYJhqEjMBoU0XR497WVQDF6l9sAesvZK/dXLo4mVB1gaqaBR
-         0xGw==
+        bh=LXtvCmrZRR9OgP0sG11mqG9m/nOQIjqm8VdJ9uLACjc=;
+        b=i61K4bxjQxphbKR5XDfL9ITN2JqnD8OT+w31bCn8eI6HYw/Coi1JYcuIEbL/PXghKv
+         eL4gzJriILRpdbtLoAaLpzmAKolqCHgWUzURnhMbVrFQ2ClwjSS/N6RN8CyuBPUY57rv
+         EN48beJxu3EnnxjGPuHKBeh9w8y9L+y5PRfMMEKmQMPM8aJMXefdcHwyCeAd3dxDalLR
+         gIBfNLzcl2VumagVps/Onnx3Sw7gKMxfDBi0vS5O+Kjfsi8U7CGSdEILLm6pp3Xe+HMP
+         nxqrPwS0Mut363cT1h3FKE/0f8w2n/qbnPKPGs4rOrFiroMlEdT1/2bMmAVGMZc6L4ly
+         aXWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757822698; x=1758427498;
+        d=1e100.net; s=20230601; t=1757823569; x=1758428369;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mw6NNXq6XfJ0FNmZ5frjZGClHo0iZVSxbFf+bMTHIN8=;
-        b=U+JFutDQNHq5oSuXp3R/ZoJl4WH5QE9w3kRph5G7rQgl1v8SHTuywiWqVxLHsW0As+
-         yfwjFiIYeSeZATQTid/FmP0IWhc/xwlLIqomrzsDXXzsaTV5YjRFegj9UlXarvIPS6XD
-         plsBvkaGhWTAoJzBGmCnnCK2L/c2ti4zxDV2+VLyXEg5FAWIb5Zs81/2T1R5EsoIji++
-         kxCpJEEjdAhd7oErmqg2Pd/mmOqUwxKzpDzulgULocRS+XCfV2W06JxMeAigsINqcm9S
-         Z0kBMXH3fJmvhfulqSPZ/rPKqwQ+FjViwJQilXNUzHla7TwVw4WjMvaCTPwM2HjtzCpC
-         EgAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFFwvXe976zFpkdJ0pwuKY+vm1onEjIfYsOrz0rd9nAEX4Ai3ZDVYq1KVvtqAHj0O9Tr2DQOeY8g==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzB6RGnjr1XeK/QSPDaWIdp8ICeuZEWKVmjMYrFdicSwhv7dPEo
-	p0z6DeD2GxsFOZBL/2qDDrblcTb7vWK9W5sZ72qCmSZ3jahx+pNt6oOV
-X-Gm-Gg: ASbGncuac0YrFBtRqwgciLRTiWjNZzAexSD7ISbwsH00i1/QmCPz68ky7+klVP/75Bc
-	Q6xdzncVX5ak5xfRDAaahJ2dSqdXAwyJuG0oj0TUFCxxC/yRln8Rjab19A0BQMpPrplV0rwyjeT
-	fIktDniGaDaj/3Tu3t5Dgz4pjFMgmo1sP7Hy+cPBzpfaWkrGjQ1Y6Y2fB7axwKa0aVwvXW6Eyr2
-	U8tcmdUAJgrNTHJ3DzLxStGxUVo4as+I5EDiUF9Hy3/qqYzh/K5eiMU2+JPIZRK2IluYaW93iNz
-	ZNPmO2juknSckcXAFRMt6W4OJBVc6MkxLN5Ba+h8uT/y6cXInrPle7jwFfu9CqYgjexA3xof/tE
-	9YDVD7J52f3mazGLQpN0=
-X-Google-Smtp-Source: AGHT+IEha/cEycx+vu0xF7TxjEegwfvZABBYj962u8Q3zWPEYF1LD+BxwewIqIoCpytaOJDSx3nrIQ==
-X-Received: by 2002:a17:907:3d8e:b0:b04:706a:bcfc with SMTP id a640c23a62f3a-b07c37fd45cmr876333266b.33.1757822697695;
-        Sat, 13 Sep 2025 21:04:57 -0700 (PDT)
+        bh=LXtvCmrZRR9OgP0sG11mqG9m/nOQIjqm8VdJ9uLACjc=;
+        b=hb9qJmY1GXyU2v+KXC18cnaiYKEcMvnM3l6p4CJU8ceb2iGGBEnjmu++01Wfix7+/u
+         7Az3DOzzNU3wAz+MCVMa9bdZXHOU3wQLQY+WHp1tx0bXGyRJ32eKA+cN4Wlnfbl5WLU/
+         0+N1yQlYFS422Mbqu60UXfpA4inKD+p/eM/7/+zEX21Hjd2QQoE5xTTsTu8VyH3kiOoS
+         LVJha5viFIWCDQ7WPAnBQD0BU/G8aydl4pnnBiR16in9x/bECfxTGjNXR98o1xTNVBRf
+         7eLAQA4F8og4rCiP5HnG4uGDKmqQeHGvWffAcXDyZu3pZGNyrRD8Jt4IKfIgipY6eXr0
+         O3qg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyUZ0adqntosnvZ/ChVTgyTzGs0IAq2WW+8g37hAB3jGNyYNf9QF+tNcxRg1v5DMyxO2MSKiAWbg==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz0O2Y5JLJpv4TUICa68R0uTStFAJ2mq8FMfPvgB405p07HBD/H
+	iGWscKarBjUnKw9yg+Ejl+2u6vr8EyW03fzXsJ1liYQlhC1hWZ0b1DI7
+X-Gm-Gg: ASbGncu35L/VWtlLz7GS716uQaqWQauh+xMgkxItdBAsn9X/sSi3HKKYlXAYiommaIc
+	lAQN5Hp4Ue+1EiTVlxY1mqRE5FpH0BmQ4sdWlNuJCGpxq0BLftsH4iMk4sfNyXihOwwQETDo5Lk
+	9Av64wm7G/+KuDAv3dHcTeOpPxRuLSfb2RPkoWrohLuf4J3LId7hQhnZlpoxXd2AwEszYicYIks
+	8pouZRqh5tDdEou9yw8VNu4zjy57Lhd/BvlH9DXA3My9ZpjIp3ryjMNWhAqUEYNT0V3lqwo5XYL
+	7eqr5uzCsgJXWj7aCumNhlDDEjG0zlW/Vn1JVz95/KM4nPK50PzZ5vS9Yfc0k/wcgn6Rday+jjh
+	xad5usKcMdd2WHfEkIj0ExT5DtcXQLQ==
+X-Google-Smtp-Source: AGHT+IF6mujdx9qWAhF6oXDc9ZfcQYBKEdRbKR8jum+cm7upWvg9UYWarRjAWufJtq6SFHzRS8+jpA==
+X-Received: by 2002:a17:907:9809:b0:b04:25e6:2ddc with SMTP id a640c23a62f3a-b07c353a723mr763099266b.8.1757823568595;
+        Sat, 13 Sep 2025 21:19:28 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07dbf5dbf5sm308085466b.79.2025.09.13.21.04.53
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07c28f190fsm504796666b.39.2025.09.13.21.19.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Sep 2025 21:04:57 -0700 (PDT)
+        Sat, 13 Sep 2025 21:19:28 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@lst.de>,
-	Jens Axboe <axboe@kernel.dk>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
-	Julian Stecklina <julian.stecklina@cyberus-technology.de>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Art Nikpal <email2tema@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Curtin <ecurtin@redhat.com>,
-	Alexander Graf <graf@amazon.com>,
-	Rob Landley <rob@landley.net>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	linux-arch@vger.kernel.org,
+To: safinaskar@gmail.com
+Cc: akpm@linux-foundation.org,
+	andy.shevchenko@gmail.com,
+	axboe@kernel.dk,
+	brauner@kernel.org,
+	cyphar@cyphar.com,
+	devicetree@vger.kernel.org,
+	ecurtin@redhat.com,
+	email2tema@gmail.com,
+	graf@amazon.com,
+	gregkh@linuxfoundation.org,
+	hca@linux.ibm.com,
+	hch@lst.de,
+	hsiangkao@linux.alibaba.com,
+	initramfs@vger.kernel.org,
+	jack@suse.cz,
+	julian.stecklina@cyberus-technology.de,
+	kees@kernel.org,
+	linux-acpi@vger.kernel.org,
 	linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
+	linux-api@vger.kernel.org,
+	linux-arch@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
+	linux-block@vger.kernel.org,
 	linux-csky@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
 	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	linux-mips@vger.kernel.org,
 	linux-openrisc@vger.kernel.org,
 	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
 	linux-riscv@lists.infradead.org,
 	linux-s390@vger.kernel.org,
 	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
 	linux-um@lists.infradead.org,
-	x86@kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	linux-block@vger.kernel.org,
-	initramfs@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	"Theodore Y . Ts'o" <tytso@mit.edu>,
-	linux-acpi@vger.kernel.org,
-	Michal Simek <monstr@monstr.eu>,
-	devicetree@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	patches@lists.linux.dev
-Subject: [PATCH RESEND 62/62] init: rename CONFIG_RD_ZSTD to CONFIG_INITRAMFS_DECOMPRESS_ZSTD
-Date: Sun, 14 Sep 2025 07:04:51 +0300
-Message-ID: <20250914040451.3848715-1-safinaskar@gmail.com>
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	mcgrof@kernel.org,
+	mingo@redhat.com,
+	monstr@monstr.eu,
+	mzxreary@0pointer.de,
+	patches@lists.linux.dev,
+	rob@landley.net,
+	sparclinux@vger.kernel.org,
+	thomas.weissschuh@linutronix.de,
+	thorsten.blum@linux.dev,
+	torvalds@linux-foundation.org,
+	tytso@mit.edu,
+	viro@zeniv.linux.org.uk,
+	x86@kernel.org
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+Date: Sun, 14 Sep 2025 07:19:23 +0300
+Message-ID: <20250914041923.4119219-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250913_210459_826900_FA0AD59F 
-X-CRM114-Status: GOOD (  13.01  )
+X-CRM114-CacheID: sfid-20250913_211930_606291_ADF3EFD4 
+X-CRM114-Status: UNSURE (   3.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,53 +151,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Initrd support was removed,
-and CONFIG_RD_ZSTD has nothing to do with ramdisks.
+Gmail banned me after first bunch of letters.
+Just now I sent remaining letters.
+So now the patchset is ready for review
 
-Update your configs
-
-Signed-off-by: Askar Safin <safinaskar@gmail.com>
----
- arch/riscv/configs/nommu_k210_defconfig | 2 +-
- usr/Kconfig                             | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
-index 6e961256a941..68cae0496b54 100644
---- a/arch/riscv/configs/nommu_k210_defconfig
-+++ b/arch/riscv/configs/nommu_k210_defconfig
-@@ -7,7 +7,7 @@ CONFIG_INITRAMFS=y
- # CONFIG_INITRAMFS_DECOMPRESS_XZ is not set
- # CONFIG_INITRAMFS_DECOMPRESS_LZO is not set
- # CONFIG_INITRAMFS_DECOMPRESS_LZ4 is not set
--# CONFIG_RD_ZSTD is not set
-+# CONFIG_INITRAMFS_DECOMPRESS_ZSTD is not set
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
- # CONFIG_SYSFS_SYSCALL is not set
- # CONFIG_FHANDLE is not set
-diff --git a/usr/Kconfig b/usr/Kconfig
-index 3a891a0c9ef4..06e1c1474b68 100644
---- a/usr/Kconfig
-+++ b/usr/Kconfig
-@@ -100,7 +100,7 @@ config INITRAMFS_DECOMPRESS_LZ4
- 	  Support loading of a LZ4 encoded initial ramfs.
- 	  If unsure, say N.
- 
--config RD_ZSTD
-+config INITRAMFS_DECOMPRESS_ZSTD
- 	bool "Support initial ramfs compressed using ZSTD"
- 	default y
- 	select DECOMPRESS_ZSTD
-@@ -206,7 +206,7 @@ config INITRAMFS_COMPRESSION_LZ4
- 
- config INITRAMFS_COMPRESSION_ZSTD
- 	bool "ZSTD"
--	depends on RD_ZSTD
-+	depends on INITRAMFS_DECOMPRESS_ZSTD
- 	help
- 	  ZSTD is a compression algorithm targeting intermediate compression
- 	  with fast decompression speed. It will compress better than GZIP and
 -- 
-2.47.2
-
+Askar Safin
 
