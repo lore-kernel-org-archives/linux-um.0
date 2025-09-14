@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0F9DCAC593
-	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 10:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40D75CAC58F
+	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 10:08:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rQXP67kYwWg6vM4UTDhamwKWj1krkQlt4rQZSoQPEdQ=; b=L2eyKX/7OcMFf6NEHI48ut/oet
-	iocQ28IKopAVBuSikLrQCAYo7kC0DUWxFHMjZsAqi+RDHliZsBdtCgihHewZqtnRa0F5ZY6OBl5Yg
-	QYt0pIHEbvmISsQouckebUeUTO9uEgvkFYukzdHqihX8bA3f/fHu/cZx38uU/8Cyu7BKHl01vfV1X
-	lqoDS1/wcHS/T1gydnGin0kBq84LekG4xJ+dn+QfzQ7aNd8fa2YaVgQ50jVF2t1mlS6/R7CIJlVMt
-	2oISeShndjhR++Gqb0+rcSW3guql7tpqRExNdcJPnGMkon7gF8ClEKk84qfQEs7zIz415Jx47rhby
-	Jt4Q4PbA==;
+	bh=iNB9S+KHoIuq835pSCI5j/XxSaZfePuersbV73tiLAU=; b=hL9QbR7/EFl18QK+tlhPxxzbo1
+	+vY+3uVEowI899Ju+n8TiLTJf5aSbX0gdHz+lPXBHUvgjFbDUkEfiUmoWcO1kMmi2XMisTZd9D/N6
+	rvuHDkt3FwLxrP4wsD0F0wnvNqq8Uuf8jiI1ccV70zQcuqTqzZR4MD/mmATtjI3k9k1ywazYjo4jX
+	rWjaYOVnaM7pB0cruLivN1lmvYqXfZrqQa31a3cP6Qpn4xYxZI5WefGklAWwS0TcnUqlCYHshRw8p
+	uWBFE/W1egmq8ph2Ku6PbeLKiPLFwWkACFdJInqSUCJRK0xCGmsF8ajC+ad7Vt7yGkACJMWCHXFou
+	smrq51EQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxjd6-00000000kLU-39UZ;
-	Sun, 14 Sep 2025 10:06:44 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1uxjef-00000000ksq-3UaE;
+	Sun, 14 Sep 2025 10:08:21 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxjd2-00000000kKH-3eLG;
-	Sun, 14 Sep 2025 10:06:42 +0000
+	id 1uxjed-00000000krO-0BBh;
+	Sun, 14 Sep 2025 10:08:19 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 20DFE438E7;
-	Sun, 14 Sep 2025 10:06:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4082AC4CEF0;
-	Sun, 14 Sep 2025 10:06:27 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 2C1EB6013A;
+	Sun, 14 Sep 2025 10:08:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EE8DC4CEF0;
+	Sun, 14 Sep 2025 10:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757844399;
-	bh=sAkxjJJfEShLrXBVvUbe5Nbuot2UFPkdNXybwJxcBYY=;
+	s=k20201202; t=1757844497;
+	bh=iNB9S+KHoIuq835pSCI5j/XxSaZfePuersbV73tiLAU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hGhVWy4h/gu84b8AUY5CAxhBjA4oE+f4FI8q2AbORfRl5Mzbjbj6lhOkyStQ0oi9M
-	 W8QoYlTDAMmDvzc22PRN4vIf6UvnWIEgHfPK3nbIaO6+Bgc4ot987GJoAgiZ4Qoss+
-	 dxJ+3IkBSVZOwu+N2Z4n4dxeuzzil+8fSxn4vpD6k3VBKvJUfWYkKTYv+ULvYtpxSe
-	 ARcPnImrypfujumW2c+Tkx9maY07yERhC6rWJz/fkMGgSqGvpdn/rBYS9IbwIOKyKB
-	 hvuk4ypNdLPnSksQeCF7GqwSkxro5/n9s5UJO1kqWTpzV4Z4DDYeQc9CzvLJ70Fc+A
-	 sMyziae1DQ/+A==
-Message-ID: <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
-Date: Sun, 14 Sep 2025 12:06:24 +0200
+	b=kF0Bsr1hS+INlgWKUO6WCGyowP6ofFz2gqsARdxwuHftxvqC15WRlIWIa1tcEEH0K
+	 zRONu8p005T8NOrRtrjiiMalx+5b5MmPeMCAC5WdySUXZpk5JFX9dAbFJC1pw2yTgR
+	 06izr0rhiwuQO1ROmsE5JCYQGQfbnRh7QRk3VsTJgPq93a82jDXI9DKM6BIvv5OiQI
+	 5yzdfVSOOxqoJ6mxXXi9LTUhuhUqq7CCY3/qkrpdXGztkJRGyoQH9nXtJiv5BDqtzQ
+	 EPdsVgvrN29VxLhSj5JAZBu4eGvycDX9Zt+Rn7eTIWDL7MTRVmoei3LDM3ObceBYUh
+	 L2YmShMnLBakw==
+Message-ID: <01631ab6-1dfb-4b43-af50-444c471d35f5@kernel.org>
+Date: Sun, 14 Sep 2025 12:08:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 21/62] init: remove all mentions of root=/dev/ram*
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
 To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
  linux-kernel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -77,7 +77,6 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  Kees Cook <kees@kernel.org>, Thorsten Blum <thorsten.blum@linux.dev>,
  Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
 References: <20250913003842.41944-1-safinaskar@gmail.com>
- <20250913003842.41944-22-safinaskar@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -123,13 +122,9 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <20250913003842.41944-22-safinaskar@gmail.com>
+In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250914_030640_957123_A4E8A712 
-X-CRM114-Status: UNSURE (   9.17  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,64 +139,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 13/09/2025 02:38, Askar Safin wrote:
-> Initrd support is removed, so root=/dev/ram* is never correct
+On 13/09/2025 02:37, Askar Safin wrote:
+> Intro
+> ====
+> This patchset removes classic initrd (initial RAM disk) support,
+> which was deprecated in 2020.
+> Initramfs still stays, and RAM disk itself (brd) still stays, too.
+> init/do_mounts* and init/*initramfs* are listed in VFS entry in
+> MAINTAINERS, so I think this patchset should go through VFS tree.
 
-For all your other patches (here is correct):
 
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+No, DTS cannot go via VFS directory, that's a clear NAK.
 
+For all other arch changes, are you sure you have everywhere actual
+dependency so it has to be combined together? Rather please look how to
+split it into logical bisectsble chunks, where some cleanups could be
+made independent.
 
-> 
-> Signed-off-by: Askar Safin <safinaskar@gmail.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt          | 3 +--
->  Documentation/arch/m68k/kernel-options.rst               | 9 ++-------
->  arch/arm/boot/dts/arm/integratorap.dts                   | 2 +-
->  arch/arm/boot/dts/arm/integratorcp.dts                   | 2 +-
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cmm.dts     | 2 +-
->  .../boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dts    | 2 +-
->  .../arm/boot/dts/aspeed/aspeed-bmc-facebook-minipack.dts | 2 +-
->  .../arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge100.dts | 2 +-
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge40.dts | 2 +-
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yamp.dts    | 2 +-
->  .../boot/dts/aspeed/ast2600-facebook-netbmc-common.dtsi  | 2 +-
-
-No, don't do that. DTS is always separate. Don't mix DTS into such huge
-patchbom, either.
-
->  arch/arm/boot/dts/hisilicon/hi3620-hi4511.dts            | 2 +-
->  .../boot/dts/intel/ixp/intel-ixp42x-welltech-epbx100.dts | 2 +-
->  arch/arm/boot/dts/nspire/nspire-classic.dtsi             | 2 +-
->  arch/arm/boot/dts/nspire/nspire-cx.dts                   | 2 +-
->  arch/arm/boot/dts/samsung/exynos4210-origen.dts          | 2 +-
->  arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts        | 2 +-
->  arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts        | 2 +-
->  arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts        | 2 +-
->  arch/arm/boot/dts/st/ste-nomadik-nhk15.dts               | 2 +-
->  arch/arm/boot/dts/st/ste-nomadik-s8815.dts               | 2 +-
->  arch/arm/boot/dts/st/stm32429i-eval.dts                  | 2 +-
->  arch/arm/boot/dts/st/stm32746g-eval.dts                  | 2 +-
->  arch/arm/boot/dts/st/stm32f429-disco.dts                 | 2 +-
->  arch/arm/boot/dts/st/stm32f469-disco.dts                 | 2 +-
->  arch/arm/boot/dts/st/stm32f746-disco.dts                 | 2 +-
->  arch/arm/boot/dts/st/stm32f769-disco.dts                 | 2 +-
->  arch/arm/boot/dts/st/stm32h743i-disco.dts                | 2 +-
->  arch/arm/boot/dts/st/stm32h743i-eval.dts                 | 2 +-
->  arch/arm/boot/dts/st/stm32h747i-disco.dts                | 2 +-
->  arch/arm/boot/dts/st/stm32h750i-art-pi.dts               | 2 +-
->  arch/arm/configs/assabet_defconfig                       | 2 +-
->  arch/arm/configs/at91_dt_defconfig                       | 2 +-
->  arch/arm/configs/exynos_defconfig                        | 2 +-
-
-To me your patchset is way too big bomb, too difficult to review. You
-touch too many subsystems in the same commits. In few cases I saw
-dependency, in other cases like here - there is no dependency! So why
-grouping independent things together? It only makes it difficult to review.
-
-Anyway, combining here DTS is a no-go for me.
+> This patchset touchs every subdirectory in arch/, so I tested it
+> on 8 (!!!) archs in Qemu (see details below).
+> Warning: this patchset renames CONFIG_BLK_DEV_INITRD (!!!) to CONFIG_INITRAMFS
+> and CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_* (for example,
+> CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP).
+> If you still use initrd, see below for workaround.
 
 Best regards,
 Krzysztof
