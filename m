@@ -4,40 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFC04CA0EE8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3728CAC587
 	for <linux-um@archiver.kernel.org>; Sun, 14 Sep 2025 15:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QSESnP/sa4r5ORTRPvhvwWnuR1/omMMQhE1G5EL1OGY=; b=ILePqhdHwce6Rzlv5nM2mXOUtx
-	kNPat8omWgmLFer6Zl9XW2VPYSlzmebK89dnHlLNPKOzwhBVMOYyUd/zgoavSpw9YMrNP/DreuTAX
-	DyhsPUH1keAPQkTQTvXxAWTbkkRYn0WHeObU6a6zH56JX0Gq6wDm0YNNjUkmDk7efVLuzjkNItaJu
-	mNmgbl9IaghOl4qBhjfXKBgpzuAd6aBsh0oLdwFjfliUu3qvS9CrDfrc5DK/T9vDMELtSDo/ozTPp
-	OLGCybSxfI6LnORs13muCb4Zm34qtIxO6nk9+PSdFCiG5wHzagO/JHc4ila9QDbfVHU/r+Vchjzii
-	zj9R78Ig==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=oZx0OuUKUc0dBSWHMmkZJf76LNudilRN4lNfCv6pOS0=; b=Y8hbZQDXmFvF0CTbV6xCeq8bzV
+	dRPwrLi7GSik61/IJg9+VDefSsynrOoT8kLjPPA29OQpjfcff5Gxgyy2QEsmu3Z3JbwembdU4XZs9
+	UssAHC4aRbZCERwl3UPYJsChv3NrdFLPwS45vG1ehfRXdKCJZo1+cq/VdzAhU6M0L0Wr8CZohHQPf
+	iXDOj0hQx/h/MBwNu0kI5JfG28E3z0i6kKTQehSpucwfpEATmXI2t99D/A1f2dImqxjJ3o5GoVH01
+	CbB42e6fE3Y8a6cDsRF0+8A2b1toAxBRC0GDVV+xkiqnvjJUYw+Koe7TPBsq7v/RvKnFS07lC+N8c
+	oJxX2Agw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxp73-00000001lo2-2KPU;
-	Sun, 14 Sep 2025 15:58:01 +0000
-Received: from out-184.mta0.migadu.com ([91.218.175.184])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uxp6y-00000001lhO-3RZt
-	for linux-um@lists.infradead.org;
+	id 1uxp71-00000001lmM-3Vjh;
 	Sun, 14 Sep 2025 15:57:59 +0000
+Received: from out-183.mta0.migadu.com ([2001:41d0:1004:224b::b7])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uxp6y-00000001lgo-1JAz
+	for linux-um@lists.infradead.org;
+	Sun, 14 Sep 2025 15:57:58 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757865463;
+	t=1757865460;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QSESnP/sa4r5ORTRPvhvwWnuR1/omMMQhE1G5EL1OGY=;
-	b=eRBRmLgz90KDAPM3nHVnlptGr/DOz3C2oljh5urH05dvikN1YhhfoxdXGJQpTC9wpTutzF
-	kAOaaloPs6nb2yJZN3q+Tc0w+5oi9P5+nhVDMQHAsA2m3mBXHWHj2GRDovUPzkGdjqSW0l
-	YI/GRjpLLR3rDm6qYCL84dDKvQW7B/8=
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oZx0OuUKUc0dBSWHMmkZJf76LNudilRN4lNfCv6pOS0=;
+	b=YF42nSy7QSo4QeKLpOwwHEiN5aSH6qGid/Xzc/YNKaTVISQYWz4E3wQ3RQtYjYf9ZxpPJQ
+	mBkk1vwHeDfOvUeAd780czfDVRlFBYFqAhilna8K6GnFSBQnD7tTCjBH+A6r80yhuwINCP
+	my+7HjOA+gVDnGZF8IIY8FoWJWJcgvA=
 From: Tiwei Bie <tiwei.bie@linux.dev>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -48,17 +47,15 @@ Cc: linux-um@lists.infradead.org,
 	arnd@arndb.de,
 	tiwei.btw@antgroup.com,
 	tiwei.bie@linux.dev
-Subject: [PATCH v3 1/7] um: Turn signals_* into thread-local variables
-Date: Sun, 14 Sep 2025 23:56:52 +0800
-Message-Id: <20250914155658.1028790-2-tiwei.bie@linux.dev>
-In-Reply-To: <20250914155658.1028790-1-tiwei.bie@linux.dev>
-References: <20250914155658.1028790-1-tiwei.bie@linux.dev>
+Subject: [PATCH v3 0/7] um: Add SMP support
+Date: Sun, 14 Sep 2025 23:56:51 +0800
+Message-Id: <20250914155658.1028790-1-tiwei.bie@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250914_085757_004041_DA5F7313 
-X-CRM114-Status: GOOD (  11.31  )
+X-CRM114-CacheID: sfid-20250914_085756_840893_47F3AD92 
+X-CRM114-Status: GOOD (  14.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,121 +72,112 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Turn signals_enabled, signals_pending and signals_active into
-thread-local variables. This enables us to control and track
-signals independently on each CPU thread. This is a preparation
-for adding SMP support.
+This series adds initial symmetric multi-processing (SMP) support
+to UML. With this support, it is now possible for users to tell
+UML to start multiple virtual CPUs, each represented as a separate
+host thread.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/include/asm/irqflags.h   |  4 ++--
- arch/um/include/shared/longjmp.h |  3 +--
- arch/um/include/shared/os.h      |  1 +
- arch/um/kernel/ksyms.c           |  2 +-
- arch/um/os-Linux/signal.c        | 11 ++++++++---
- 5 files changed, 13 insertions(+), 8 deletions(-)
+In UML, kthreads and normal threads (when running in kernel mode)
+can be scheduled and executed simultaneously on different virtual
+CPUs. However, the userspace code of normal threads currently still
+runs within their respective single-threaded stubs.
 
-diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/asm/irqflags.h
-index 1e69ef5bc35e..31e49e0894c5 100644
---- a/arch/um/include/asm/irqflags.h
-+++ b/arch/um/include/asm/irqflags.h
-@@ -2,7 +2,7 @@
- #ifndef __UM_IRQFLAGS_H
- #define __UM_IRQFLAGS_H
- 
--extern int signals_enabled;
-+int um_get_signals(void);
- int um_set_signals(int enable);
- void block_signals(void);
- void unblock_signals(void);
-@@ -10,7 +10,7 @@ void unblock_signals(void);
- #define arch_local_save_flags arch_local_save_flags
- static inline unsigned long arch_local_save_flags(void)
- {
--	return signals_enabled;
-+	return um_get_signals();
- }
- 
- #define arch_local_irq_restore arch_local_irq_restore
-diff --git a/arch/um/include/shared/longjmp.h b/arch/um/include/shared/longjmp.h
-index 8863319039f3..c53e43d980c8 100644
---- a/arch/um/include/shared/longjmp.h
-+++ b/arch/um/include/shared/longjmp.h
-@@ -5,7 +5,6 @@
- #include <sysdep/archsetjmp.h>
- #include <os.h>
- 
--extern int signals_enabled;
- extern int setjmp(jmp_buf);
- extern void longjmp(jmp_buf, int);
- 
-@@ -15,7 +14,7 @@ extern void longjmp(jmp_buf, int);
- 
- #define UML_SETJMP(buf) ({				\
- 	int n, enable;					\
--	enable = *(volatile int *)&signals_enabled;	\
-+	enable = um_get_signals();			\
- 	n = setjmp(*buf);				\
- 	if(n != 0)					\
- 		um_set_signals_trace(enable);		\
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index b35cc8ce333b..324d4eed3385 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -243,6 +243,7 @@ extern void send_sigio_to_self(void);
- extern int change_sig(int signal, int on);
- extern void block_signals(void);
- extern void unblock_signals(void);
-+extern int um_get_signals(void);
- extern int um_set_signals(int enable);
- extern int um_set_signals_trace(int enable);
- extern void deliver_alarm(void);
-diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
-index f2fb77da08cf..96314c31e61c 100644
---- a/arch/um/kernel/ksyms.c
-+++ b/arch/um/kernel/ksyms.c
-@@ -6,8 +6,8 @@
- #include <linux/module.h>
- #include <os.h>
- 
-+EXPORT_SYMBOL(um_get_signals);
- EXPORT_SYMBOL(um_set_signals);
--EXPORT_SYMBOL(signals_enabled);
- 
- EXPORT_SYMBOL(os_stat_fd);
- EXPORT_SYMBOL(os_stat_file);
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 11f07f498270..58da8c6ece98 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -68,12 +68,12 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- #define SIGCHLD_BIT 2
- #define SIGCHLD_MASK (1 << SIGCHLD_BIT)
- 
--int signals_enabled;
-+static __thread int signals_enabled;
- #if IS_ENABLED(CONFIG_UML_TIME_TRAVEL_SUPPORT)
- static int signals_blocked, signals_blocked_pending;
- #endif
--static unsigned int signals_pending;
--static unsigned int signals_active = 0;
-+static __thread unsigned int signals_pending;
-+static __thread unsigned int signals_active;
- 
- static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- {
-@@ -342,6 +342,11 @@ void unblock_signals(void)
- 	}
- }
- 
-+int um_get_signals(void)
-+{
-+	return signals_enabled;
-+}
-+
- int um_set_signals(int enable)
- {
- 	int ret;
+So SMP within the kernel is supported. SMP across different processes
+in userspace is also supported. Currently, the limitation is that
+multi-threading within the same process does not yet support true SMP
+in userspace, because it would require converting the stub into a
+multi-threaded implementation, which is not covered in this series.
+
+Extending the stub to support true SMP in userspace within the same
+process could be done later and requires careful design. It may be
+better to handle it in a follow-up series.
+
+Here are some steps to try out SMP support in UML:
+
+1. Build UML with CONFIG_SMP=y and, for example, CONFIG_NR_CPUS=8.
+
+2. Launch a UML instance with, for example, 8 virtual CPUs.
+
+ $ ./linux mem=16G ncpus=8 seccomp=on init=/bin/sh ubd0=$your_rootfs_image
+
+v3:
+- Fix need_resched based idle sleep; (Johannes)
+- Remove getcpu support from the vdso on UML/x86; (Johannes)
+- Describe 'cpu' parameter of os_timer_disable; (lkp@intel.com)
+- Misc fixes and cleanups;
+
+v2 (https://lore.kernel.org/all/20250810055136.897712-1-tiwei.bie@linux.dev/):
+- Implement IPI based on RT signal; (Johannes)
+- Fix raw_smp_processor_id() for non-SMP case; (Johannes)
+- Add sparse check for turnstile; (Johannes)
+- Implement spinlock in $SUBARCH;
+- Fix potential race on stub's siginfo;
+- Rewrite AP bring-up (e.g. switch to generic idle thread);
+- Misc fixes and cleanups;
+
+v1: https://lore.kernel.org/all/20250727062937.1369050-1-tiwei.bie@linux.dev/
+
+RFC: https://lore.kernel.org/all/20250713172536.404809-1-tiwei.bie@linux.dev/
+
+Tiwei Bie (7):
+  um: Turn signals_* into thread-local variables
+  um: Determine sleep based on need_resched()
+  um: Define timers on a per-CPU basis
+  um: Add initial SMP support
+  um: vdso: Remove getcpu support on x86
+  asm-generic: percpu: Add assembly guard
+  um: Enable SMP support on x86
+
+ .../core/generic-idle-thread/arch-support.txt |   2 +-
+ arch/um/Kconfig                               |  46 +++-
+ arch/um/include/asm/current.h                 |   5 +-
+ arch/um/include/asm/hardirq.h                 |  24 +-
+ arch/um/include/asm/irqflags.h                |   4 +-
+ arch/um/include/asm/mmu.h                     |  10 +
+ arch/um/include/asm/pgtable.h                 |   2 +
+ arch/um/include/asm/smp.h                     |  15 +-
+ arch/um/include/linux/smp-internal.h          |  17 ++
+ arch/um/include/linux/time-internal.h         |   3 +
+ arch/um/include/shared/kern_util.h            |   2 +
+ arch/um/include/shared/longjmp.h              |   3 +-
+ arch/um/include/shared/os.h                   |  24 +-
+ arch/um/include/shared/skas/mm_id.h           |   5 +
+ arch/um/include/shared/smp.h                  |  20 ++
+ arch/um/kernel/Makefile                       |   1 +
+ arch/um/kernel/irq.c                          |  27 +-
+ arch/um/kernel/ksyms.c                        |   2 +-
+ arch/um/kernel/mem.c                          |   2 +
+ arch/um/kernel/process.c                      |  17 +-
+ arch/um/kernel/skas/mmu.c                     |  33 ++-
+ arch/um/kernel/skas/process.c                 |   7 +-
+ arch/um/kernel/smp.c                          | 241 ++++++++++++++++++
+ arch/um/kernel/time.c                         |  58 +++--
+ arch/um/kernel/tlb.c                          |   5 +-
+ arch/um/kernel/trap.c                         |   2 +-
+ arch/um/kernel/um_arch.c                      |  25 +-
+ arch/um/os-Linux/Makefile                     |   4 +-
+ arch/um/os-Linux/internal.h                   |  13 +
+ arch/um/os-Linux/main.c                       |   5 +-
+ arch/um/os-Linux/process.c                    |  20 ++
+ arch/um/os-Linux/signal.c                     |  46 +++-
+ arch/um/os-Linux/skas/process.c               |  22 +-
+ arch/um/os-Linux/smp.c                        | 148 +++++++++++
+ arch/um/os-Linux/start_up.c                   |   4 +
+ arch/um/os-Linux/time.c                       |  78 ++++--
+ arch/x86/um/Kconfig                           |   3 +
+ arch/x86/um/asm/spinlock.h                    |   8 +
+ arch/x86/um/vdso/um_vdso.c                    |  20 --
+ arch/x86/um/vdso/vdso.lds.S                   |   2 -
+ include/asm-generic/percpu.h                  |   3 +
+ 41 files changed, 870 insertions(+), 108 deletions(-)
+ create mode 100644 arch/um/include/linux/smp-internal.h
+ create mode 100644 arch/um/include/shared/smp.h
+ create mode 100644 arch/um/kernel/smp.c
+ create mode 100644 arch/um/os-Linux/smp.c
+ create mode 100644 arch/x86/um/asm/spinlock.h
+
+
+base-commit: e66ae377fe219c98d3d5b8a0d35da4413a5390ca
 -- 
 2.34.1
 
