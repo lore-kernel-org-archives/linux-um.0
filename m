@@ -4,132 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D3C5CAC597
-	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 16:44:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFB9CAC597
+	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 18:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xA0gszu8fOIEF8+fZ/zdihDvOFxt7L1IOq6Jl8u2kgw=; b=Tc0m+AcUyGOikDxA6ylrFLjsk6
-	LEur3gEIe749ElGYY91klVubvus5WIPwFxMQzERiqkcxFPbg6MEHNXTp3am88e18O0F9dSULEhV/x
-	qJYIdzxgxfF6dYffDIh138nLgW9wzJiwQYP9M59YVgMOaMXTCcuzExUv/WGY/CvQC1vXeyUzTvR8U
-	P29NDAus5OIHfskeqoOP2wBzeNnPHy17MfMSwfdA9wVdg/HH3vhDboZ2uDmyreq1FcZ0CoqZXSrcq
-	CP1k20AKIb/sCGKGdryINlGL4NlOwuEomZUN0BjHNbWNSL/LlO0ua9kSO+N/EYYaHK+HOuzFDzriL
-	alAqkK7A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UNSXkkVhuHJlFNtXimgTWN2ssSCSJ/yVmF41qtJieAc=; b=b1TwuSELNd5RQ96qUDRnwr54PY
+	5/PjyMlOJP/Jg49wtNy9TLnkq6sp1XhWtDTRGJYBbuMemV4+JKsQqIOg3U9UfDGCb0BrgCFu6Y1uQ
+	5JpK13A1TXyLy6d8Btj4rkN7J1dobS74xB6w9VBpgkvYsBwH+97Ms4e3Ms1VEhVTRpRMqmWu2tIuI
+	EYqUoROZntDi5W9xMJ17vsb6LstYcZJydxPfjHy1sWPvMr0BPTemuKGPRyUAO1lwFaeZ12oI46Bzx
+	/Qx+QeJPtST+WxA8dkwr0eRil6PRZC94mE5bZU2SH6F/jNa2vz8vm9Hvf7l9mD8DdFgPrywZ+Qf+Z
+	2SfBSdaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uyCJB-000000059N9-3V2a;
-	Mon, 15 Sep 2025 16:44:05 +0000
-Received: from dog.birch.relay.mailchannels.net ([23.83.209.48])
+	id 1uyE1o-00000005Q3l-47Os;
+	Mon, 15 Sep 2025 18:34:16 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uyCJ7-000000059MH-42XT;
-	Mon, 15 Sep 2025 16:44:03 +0000
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 39E08702EA9;
-	Mon, 15 Sep 2025 16:43:58 +0000 (UTC)
-Received: from pdx1-sub0-mail-a263.dreamhost.com (100-107-6-72.trex-nlb.outbound.svc.cluster.local [100.107.6.72])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 9BB55702282;
-	Mon, 15 Sep 2025 16:43:54 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1757954637; a=rsa-sha256;
-	cv=none;
-	b=jcH1teqBLlSbjLGm8wSnPehjkoxnqnKDUpG0VLOzFQvMVhZ2RDdFx48JVTnsWir31ckqMu
-	EvHw7ndPjn6x3ejP/grrUuf0A3eh0N2g0queP5YloUWZd31ELnY6AwtaV3MGseURoNdaoS
-	zscSVSlE1syzCOnfqWMXHqv2BNZPfKgMjyC2VEzAcakw89VkuKuBaP90ntArsIib7mZKX5
-	ZgdyEESnQCqTf94vRuZObuGhTP1RPfIX0PnGy3kQhlP5kUt/Dz9EbRDsiobBB3oTpkdYWy
-	k6PF9vasGxEY9B6Kc77KSSvLrFmYIRfBHJgN7n0ZqoQA6jkN51HIOvnq2TpRMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1757954637;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=xA0gszu8fOIEF8+fZ/zdihDvOFxt7L1IOq6Jl8u2kgw=;
-	b=uf5JurJxL6zPD5ygwIBxiT6IG/NGQSMFBfI/j25Q+JK2yjF3vO/ZeFUzkivSugs95eaoMg
-	59qSqcFbNTSjbKJMujtP6awqbU503n4OV/R0ncaq21v7J9x5Rmz4NG64ypHTRA39FK+kIQ
-	QcvIWdAN8US3InpTGJ0E/js2x9iRNDG6I4ylgwOyesBRTyLg247F0Kqo1EFdrR+ljEh1Av
-	5GQCiDYAEUXavwumWE/vBnelmY4Gbj+BC4uBSlh8dneVcfD4sq5ftE6dv/8SS57HKfdNIL
-	CE1mKhd2skglApswBp3iKe06w5MtCJr2cExHZcQU+hkmm5PzcKoApEbN8wR0GA==
-ARC-Authentication-Results: i=1;
-	rspamd-7d6d7bb5c5-768t4;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=rob@landley.net
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|rob@landley.net
-X-MailChannels-Auth-Id: dreamhost
-X-Unite-White: 537c80b115ac1c1b_1757954638045_367269675
-X-MC-Loop-Signature: 1757954638045:1180864403
-X-MC-Ingress-Time: 1757954638045
-Received: from pdx1-sub0-mail-a263.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.107.6.72 (trex/7.1.3);
-	Mon, 15 Sep 2025 16:43:58 +0000
-Received: from [192.168.88.7] (unknown [209.81.127.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: rob@landley.net)
-	by pdx1-sub0-mail-a263.dreamhost.com (Postfix) with ESMTPSA id 4cQW7q36Pxz87;
-	Mon, 15 Sep 2025 09:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=landley.net;
-	s=dreamhost; t=1757954634;
-	bh=xA0gszu8fOIEF8+fZ/zdihDvOFxt7L1IOq6Jl8u2kgw=;
-	h=Date:Subject:To:Cc:From:Content-Type:Content-Transfer-Encoding;
-	b=hHM4pYd/5trdTXN8EQrQ00lNAioPSBHN1EqLeHX8tyv2t598Ei1gLYc67SRexxr0o
-	 V0b5BOT6HHaq8Ssq9in/lkr4tC1sG2QaTTQae3Lbu/rnfHom969Ad4mHyQ7NqbQYcw
-	 gP53fXuyiZlBDvddyeoS0qzObAO9y3gkmXtrQOaXHNUfK5TwQ+L96ToYgoS+Gu35CI
-	 V1YXP+0R1LGjVdii8SPZYWnlquLSvuDhcO4PELQxHEyOVux+Xbp+BpIruEIgRvA5Qu
-	 KHe36UtOS8E3jxHb8nrG1IU4Gx6FlURDKqDa9h0q4ahxoeXsq8J5/itWfZ6J5I+Smp
-	 owTGtnU7EFjUg==
-Message-ID: <0342fbda-9901-4293-afa7-ba6085eb1688@landley.net>
-Date: Mon, 15 Sep 2025 11:43:50 -0500
+	id 1uyE1m-00000005Q3J-3hjS
+	for linux-um@lists.infradead.org;
+	Mon, 15 Sep 2025 18:34:16 +0000
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-26060bcc5c8so24668115ad.1
+        for <linux-um@lists.infradead.org>; Mon, 15 Sep 2025 11:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1757961254; x=1758566054; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UNSXkkVhuHJlFNtXimgTWN2ssSCSJ/yVmF41qtJieAc=;
+        b=ZCddlYZRDEMMTDJ8JkQAtTyGhU0hQQGG7la2RjGU7Pfrb6AfvOHmrfIiL9xwY1q24C
+         bUl3mTklOuqF6UyONRqJZWuXfTfV+1XSmVYUJsskjHIaid/3oyFLxcF2ZS6aJB5GlLT+
+         /GA6zMMg02DvBo7kd7FndxrTnYJq7jXK2DqQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757961254; x=1758566054;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UNSXkkVhuHJlFNtXimgTWN2ssSCSJ/yVmF41qtJieAc=;
+        b=QxYreqhV89mMAWGEjZLF5+/Y1T3/u+Ds4r3qjh7kAtKcJ6B7O5HxRIGTDWJLB7Rz/d
+         Y5swTLdE6oAj4TOG+X9ZhPpnUQL1HrOzGT7h4EMzu4jfZhlg0nkceDQxWFytSoVcHNb3
+         MJKg5tmKuAzisWyfY365XroL61Pl2ljf6PUZ5d3GqusRiZe9vC9JdQjg3ct9YF3z6U5P
+         tbBNdL/vBnTOfD8jvIMjebaZJsi82FAWOVXfYFi56EYxEBS/UVS13hRUXX8qZknPOkqB
+         FlMfllUnmeI3z+rvdxZz5h0TwJGILbXP4Fq3w4GqOj5Tes0Sgcz9By3/RpXkdFhTHjAx
+         ACEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVTQGLjqLUyUn+iRweVL2/V01fHq811xS6tjRU1YUH1WMUjrZvM/tQPJ7Rh5jXYDRonUjMf+WpTQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwF51uduZCJ4kk6pGrV/RK47hB+7rr2Gf6KFEhLb5GWX7JfiPFN
+	3YBZuzQBPpFY713SoDDQ3Q1LsXGvGWcoSKDWKYJ1h6YaO1WLxKVUlUqKVW/fLIAqyQ==
+X-Gm-Gg: ASbGncsJVvqlY43JLswBZwJWY/MUw8goWzelo5m9gcsCzycLc53F3BGXY2x/P9K8R0q
+	oBuB9ftzJ1XQrIe1hCYZ91x/WOVE0Q5O+XC6AhAzyncYRNLL7JFBoPQOqJnmJpcfavwRntmAVWA
+	XD419qCwxuyIO3wS81WkKmF8xIwc/2BhLw9cEPhkmCcq3OTt/MZhOA1ECzVxQdb1WCDGh6qYK6l
+	YgUJtbK/0EUWWg+moA2K4hQ4YnlwDFVcM+NZjGVrPEoHBnBggh8GqGCC61D95U+1OsXBX0HmNuD
+	ZCdUfDnK7ZpILaH7/sF8nVaRrqsZcOAaSTCTr/WuZh0SCPzU/dkEI4XQYg+BtcYU0QWMGB24bkI
+	L7wTqEWCS6/oj3vgYW3zmlP5WbZZoHutT3FOzzlqhujGcsSsMXbbfS5RRu2fd
+X-Google-Smtp-Source: AGHT+IH+aA/qD9/tWA4T9bKeTNV4qwrmPWyIWt6h2dj375FkW7TVjYU5fI9lcYTNhfQ0zBY5pwIDPA==
+X-Received: by 2002:a17:902:ebc9:b0:24b:4a9a:703a with SMTP id d9443c01a7336-25d24da7536mr207524775ad.17.1757961253707;
+        Mon, 15 Sep 2025 11:34:13 -0700 (PDT)
+Received: from localhost ([2a00:79e0:2e14:7:fd49:49b1:16e7:2c97])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-26175efc667sm75235655ad.112.2025.09.15.11.34.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Sep 2025 11:34:12 -0700 (PDT)
+Date: Mon, 15 Sep 2025 11:34:10 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Daniel Gomez <da.gomez@kernel.org>, linux-pci@vger.kernel.org,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Richard Weinberger <richard@nod.at>, Wei Liu <wei.liu@kernel.org>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	kunit-dev@googlegroups.com,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	linux-um@lists.infradead.org,
+	Manivannan Sadhasivam <mani@kernel.org>
+Subject: Re: [PATCH 1/4] PCI: Support FIXUP quirks in modules
+Message-ID: <aMhcIsO3KmthtrIL@google.com>
+References: <20250912230208.967129-1-briannorris@chromium.org>
+ <20250912230208.967129-2-briannorris@chromium.org>
+ <8e75d6cc3847899ba8d6a0cbd0ef3ac57eabf009.camel@sipsolutions.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/62] initrd: remove classic initrd support
-To: Askar Safin <safinaskar@zohomail.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>,
- Alexander Graf <graf@amazon.com>, Lennart Poettering <mzxreary@0pointer.de>,
- linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, x86@kernel.org, Ingo Molnar
- <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org,
- linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
- Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>,
- patches@lists.linux.dev
-References: <20250912223937.3735076-1-safinaskar@zohomail.com>
-Content-Language: en-US
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <20250912223937.3735076-1-safinaskar@zohomail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e75d6cc3847899ba8d6a0cbd0ef3ac57eabf009.camel@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_094402_316436_5DFAA7A6 
-X-CRM114-Status: GOOD (  46.16  )
+X-CRM114-CacheID: sfid-20250915_113414_957743_30DA351F 
+X-CRM114-Status: GOOD (  41.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,309 +110,105 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 9/12/25 17:38, Askar Safin wrote:
-> Intro
-> ====
-> This patchset removes classic initrd (initial RAM disk) support,
-> which was deprecated in 2020.
+Hi Johannes,
 
-Still useful for embedded systems that can memory map flash, but it's 
-getting harder to find embedded developers who consider new kernels an 
-improvement over older ones...
-
-> Initramfs still stays, and RAM disk itself (brd) still stays, too.
-
-While you're at it, could you fix static/builtin initramfs so PID 1 has 
-a valid stdin/stdout/stderr?
-
-A static initramfs won't create /dev/console if the embedded initramfs 
-image doesn't contain it, which a non-root build can't mknod, so the 
-kernel plumbing won't see it dev in the directory we point it at unless 
-we build with root access. This means the open("/dev/console") fails, so 
-init starts with no error reporting and we have to get far enough to 
-mount our own devtmpfs or similar and open our own stdout/stderr before 
-we can see any error output from init, which is kinda brittle.
-
-I posted various patches to make CONFIG_DEVTMPFS_MOUNT work for initmpfs 
-repeatedly since 2017, which also addressed it, but the kernel 
-community's been hermetically sealed against outside intrusion for a 
-while now...
-
-https://lkml.iu.edu/hypermail/linux/kernel/2005.1/09399.html
-
-https://lkml.iu.edu/2302.2/05597.html
-
-> init/do_mounts* and init/*initramfs* are listed in VFS entry in
-> MAINTAINERS, so I think this patchset should go through VFS tree.
-> This patchset touchs every subdirectory in arch/, so I tested it
-> on 8 (!!!) archs in Qemu (see details below).
-
-Oh hey, somebody using mkroot. Cool. :)
-
-My current "passes basic automated smoketests" list for 6.16 is:
-
-aarch64 armv4l armv5l armv7l i486 i686 m68k mips64 mipsel mips powerpc 
-powerpc64le powerpc64 riscv32 riscv64 s390x sh4 x86_64
-
-I'm assuming that's your 8: arm, x86, m68k, mips, ppc, riscv, s390x, 
-superh. (The variants are mostly 32/64 bit and bit/little endian, couple 
-architecture generations in there. The old ones go out of patent first, 
-you can always tell patents are about to expire and get generic clones 
-when corporate shills start insisting that support for something REALLY 
-NEEDS TO GO AWAY RIGHT NOW...)
-
-The or1k, microblaze, and sh4eb targets mostly work: sh4eb has broken 
-eithernet (never tracked down whether it's kernel or qemu that's wrong I 
-just know they disagree), or1k doesn't know how to exit ala 
-https://lists.gnu.org/archive/html/qemu-devel/2024-11/msg04522.html and 
-microblaze never wired up -hda to their hard drive emulation 
-https://lists.nongnu.org/archive/html/qemu-devel/2025-01/msg01149.html
-but I haven't had the spoons to argue with IBM Hat developers about 
-procedure compliance auditing.
-
-I need to track down a decent qemu emulation for armv7m, last time I 
-tried with vanilla was https://landley.net/notes-2023.html#23-02-2023 
-which was not promising, I downloaded a pic32 qemu fork last week, but 
-haven't had the spoons to follow up on that either. Or to ship a new 
-toybox/mkroot release: I've had 6.16 kernel patches since the week it 
-came out, unbreaking powerpc and adding fdpic support to sh4-mmu, but 
-hobbyist friendly this community ain't. Sigh, I should get back on the 
-(beating a dead) horse...
-
-I had hexagon userspace working for a while ("qemu-hexagon ls -l") but 
-no kernel for it: Taylor Simpson said he was going to post a 
-qemu-system-hexagon patchset with a comet board emulation, but that 
-architecture has no gcc support (there was a gcc fork on code aurora but 
-they abandoned it when the FSF went gplv3) so it needs an llvm-only 
-toolchain build with a non-vanilla musl libc fork... Honestly the 
-problem is compiler-rt sucks rocks: I should cycle back around to 
-https://landley.net/notes-2021.html#28-07-2021 but just haven't.
-
-(Although part of the "Just haven't" is that I posted a patch to lkml 
-making generic $CROSS_COMPILE prefixes automatically work whether your 
-toolchain was gcc or llvm, and the response was literally "we decided to 
-manually specify LLVM= on the command line so you must always do that 
-and we're refusing your two line fix to NOT need to do that". No really: 
-https://lkml.iu.edu/2302.2/08170.html
-
-> Warning: this patchset renames CONFIG_BLK_DEV_INITRD (!!!) to CONFIG_INITRAMFS
-> and CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_* (for example,
-> CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP).
-> If you still use initrd, see below for workaround.
-
-Which will break existing configs for what benefit?
-
-I'm not convinced the churn improves matters. Presumably the kernel 
-command line paremeter is still rdinit= and grub still uses the "initrd" 
-command to load an external cpio.gz.
-
-But I bisect to find breakage like that every release so I assume the 
-other embedded linux developers... are mostly shipping 10+ year old 
-kernels that use half the memory of today's.
-
-> Details
-> ====
-> I not only removed initrd, I also removed a lot of code, which
-> became dead, including a lot of code in arch/.
+On Mon, Sep 15, 2025 at 08:33:08AM +0200, Johannes Berg wrote:
+> On Fri, 2025-09-12 at 15:59 -0700, Brian Norris wrote:
+> > The PCI framework supports "quirks" for PCI devices via several
+> > DECLARE_PCI_FIXUP_*() macros. These macros allow arch or driver code to
+> > match device IDs to provide customizations or workarounds for broken
+> > devices.
+> > 
+> > This mechanism is generally used in code that can only be built into the
+> > kernel, but there are a few occasions where this mechanism is used in
+> > drivers that can be modules. For example, see commit 574f29036fce ("PCI:
+> > iproc: Apply quirk_paxc_bridge() for module as well as built-in").
+> > 
+> > The PCI fixup mechanism only works for built-in code, however, because
+> > pci_fixup_device() only scans the ".pci_fixup_*" linker sections found
+> > in the main kernel; it never touches modules.
+> > 
+> > Extend the fixup approach to modules.
 > 
-> Still I think the only two architectures I touched in non-trivial
-> way are sh and 32-bit arm.
-> 
-> Also I renamed some files, functions and variables (which became misnomers) to proper names,
-> moved some code around, removed a lot of mentions of initrd
-> in code and comments. Also I cleaned up some docs.
+> This _feels_ a bit odd to me - what if you reload a module, should the
+> fixup be done twice? Right now this was not possible in a module, which
+> is a bit of a gotcha, but at least that's only one for developers, not
+> for users (unless someone messes up and puts it into modular code, as in
+> the example you gave.)
 
-Now that lkml.iu.edu is back up (yay!) all the links in 
-ramfs-rootfs-initramfs.txt can theoretically be fixed just by switching 
-the domain name.
+My assumption was that FIXUPs in modules are only legitimate if they
+apply to a dependency chain that involves the module they are built
+into. So for example, the fixup could apply to a bridge that is
+supported only by the module (driver) in question; or it could apply
+only to devices that sit under the controller in question [1].
 
-> For example, I renamed the following global variables:
-> 
-> __initramfs_start
-> __initramfs_size
+Everything I see that could potentially be in a module works like this
+AFAICT.
 
-That already said initramfs, and you renamed it.
+To answer your question: no, the fixup should not be done twice, unless
+the device is removed and recreated. More below.
 
-> phys_initrd_start
-> phys_initrd_size
-> initrd_start
-> initrd_end
+[1] The quirks in drivers/pci/controller/dwc/pci-keystone.c look like
+this. (Side note: pci-keystone.c cannot be built as a module today.)
 
-Which is data delivered through grub's "initrd" command. Here's how I've 
-been explaining it to people for years:
+> Although, come to think of it, you don't even apply the fixup when the
+> module is loaded, so what I just wrote isn't really true. That almost
+> seems like an oversight though, now the module has to be loaded before
+> the PCI device is enumerated, which is unlikely to happen in practice?
+> But then we get the next gotcha - the device is already enumerated, so
+> the fixups cannot be applied at the various enumeration stages, and
+> you're back to having to load the module before PCI enumeration, which
+> could be tricky, or somehow forcing re-enumeration of a given device
+> from userspace, but then you're firmly in "gotcha for the user"
+> territory again ...
 
-1) initrd is the external blob from the bootloader's initrd= option.
+With my assumption above, none of this would really be needed. The
+relevant device(s) will only exist after the module is loaded, and they
+will go away when the module is gone.
 
-2) initramfs is the extractor plumbing, _init code that gets discarded.
+Or am I misreading your problem statements?
 
-3) rootfs is (for some reason) the name of the mounted filesystem in 
-/proc/mounts (because letting it say "ramfs" or "tmpfs" like normal in 
-/proc/mounts would be consistent and immediately understandable, so they 
-couldn't have that).
+> I don't really have any skin in this game, but overall I'd probably
+> argue it's better to occasionally have to fix things such as in the
+> commit you point out but have a predictable system, than apply things
+> from modules.
 
-(No I don't know why it's called rootfs. Having things like df not show 
-overmounted filesystems isn't special case logic, why...? The argument 
-to special case this because you can't unmount it is like saying PID 1 
-shouldn't have a number because it can't exit. I would happily call the 
-whole thing initramfs... but it's already not.)
+FWIW, I believe some folks are working on making *more* controller
+drivers modular. So this problem will bite more people. (Specifically, I
+believe Manivannan was working on
+drivers/pci/controller/dwc/pcie-qcom.c, and it has plenty of FIXUPs.)
 
-> to:
-> 
-> __builtin_initramfs_start
-> __builtin_initramfs_size
-> phys_external_initramfs_start
-> phys_external_initramfs_size
-> virt_external_initramfs_start
-> virt_external_initramfs_end
+I also don't think it makes things much less predictable, as long as
+developers abide by my above assumption. I think that's a perfectly
+reasonable assumption (it's not so different than, say,
+MODULE_DEVICE_TABLE), but I could perhaps be convinced otherwise.
 
-Do you believe people will understand what the slightly longer names are 
-without looking them up?
+> Perhaps it'd be better to extend the section checking infrastructure to
+> catch and error out on these sections in modules instead, so we catch it
+> at build time, rather than finding things missing at runtime?
 
-I'm all for removing obsolete code, but a partial cleanup that still 
-leaves various sharp edges around isn't necessarily a net improvement. 
-Did you remove the NFS mount code from init/do_mounts.c? Part of the 
-initramfs justification back in 2005 was "you can have a tiny initramfs 
-set up our root filesystem so most of the init special casing can go"... 
-and then they added CONFIG_DEVTMPFS_MOUNT but made it ONLY apply to the 
-fallback root after the system has decided NOT to stay on rootfs, and 
-ignored my patches to at least make it consistent.
+Maybe I'm missing something here, but it seems like it'd be pretty easy
+to do something like:
 
-The one config symbol that really seems to bite people in this area is 
-BLK_DEV_INITRD because a common thing people running from initramfs want 
-to do is yank the block layer entirely (CONFIG_BLOCK=n) and use 
-initramfs instead, and needing to enable CONFIG_BLK_DEV_INITRD while
+#ifdef MODULE
+#define DECLARE_PCI_FIXUP_SECTION...) BUILD_BUG()
+#else
+... real definitions ...
+#endif
 
-And the INSANE part is they generally want a static initrd to do it so 
-they're not using the external loader, but Kconfig has INITRAMFS_SOURCE 
-under CONFIG_BLK_DEV_INITRD and it's a mess. Renaming THAT symbol would 
-be good.
+I'd prefer not doing this though, if we can help it, since I believe
+(a) FIXUPs are useful in perfectly reasonable ways for controller
+    drivers and
+(b) controller drivers can potentially be modules (yes, there are some
+    pitfalls besides $subject).
 
-But then, CONFIG_BLOCK is hidden under CONFIG_EXPERT which selects 
-DEBUG_KERNEL (INCREASING KERNEL SIZE!!!) and thus everybody who does 
-this patches the kconfig plumbing to be less stupid anyway. So the 
-problem isn't JUST renaming the symbol...
+> And yeah, now I've totally ignored the kunit angle, but ... not sure how
+> to combine the two requirements if they are, as I think, conflicting.
 
-(Oh CONFIG_EXPERT is SO STUPID. It's got a menu under it, but 
-CONFIG_BLOCK isn't in that menu, it's at the top of menuconfig between 
-loadable module support and executable file formats, just invisible 
-unless you go down into a menu and switch on a setting and then back out 
-to go find it. WHY WOULD YOU DO THAT?)
+Right, either we support FIXUPs in modules, or we should outlaw them.
 
-> New names precisely capture meaning of these variables.
+For kunit: we could still add tests, but just force them to be built-in.
+It wouldn't be the first kernel subsystem to need that.
 
-To you. I'm not entirely sure what virt_external means. (Yes I could go 
-read the code. No I don't want to. I EXPECT to need context and 
-refreshing stuff, but having it change out from under me since the LAST 
-time I did that is annoying when it's "same thing, new name, because".)
-
-It makes more sense to YOU because you changed it to smell like you. 
-Meanwhile 35 years of installed base expertise in other people's heads 
-has been discarded and developed version skew for anyone maintaining an 
-existing system. (That's not a "never do this", that's a "be aware 
-humans consistently have the wrong weightings in our heads for this".)
-
-Personally I usually have to look it up either way. And am spending more 
-and more of my time poking at older kernels rather because newer stuff 
-has either removed support for things I need or grown dependencies. (And 
-because there's 20 years of installed base still in various stages of 
-use, I'm personally likely to spend more time looking at the old names 
-than the new ones.)
-
-> This will break all configs out there (update your configs!).
-> Still I think this is okay,
-
-Because you don't have to clean up after it.
-
-> because config names never were part of stable API.
-
-I can forward everyone who asks me questions to you, or just agree when 
-they tell me it's yet another reason not to upgrade.
-
-> Other user-visible changes:
-> 
-> - Removed kernel command line parameters "load_ramdisk" and
-> "prompt_ramdisk", which did nothing and were deprecated
-
-Sure.
-
-> - Removed kernel command line parameter "ramdisk_start",
-> which was used for initrd only (not for initramfs)
-
-Some bootloaders appended that to the kernel command line to specify 
-where in memory they've loaded the initrd image, which could be a 
-cpio.gz once upon a time. No idea what regressions happened since though.
-
-(Last new bootloader I was involved with that had to make it work used 
-some horrible hack editing a dtb at a fixed offset, like the old "rdev" 
-trick but more brittle. Because "device tree better" than human readable 
-textual mechanism. Fixing ramdisk_start to work right sounded like a 
-more sane approach to me, but...)
-
-> I tested my patchset on many architectures in Qemu using my Rust
-> program, heavily based on mkroot [1].
-
-You rewrote a 400 line bash script in rust.
-
-Yeah, that's a rust developer. (And it smells like you now...)
-
-> I used the following cross-compilers:
-> 
-> aarch64-linux-musleabi
-> armv4l-linux-musleabihf
-> armv5l-linux-musleabihf
-> armv7l-linux-musleabihf
-> i486-linux-musl
-> i686-linux-musl
-> mips-linux-musl
-> mips64-linux-musl
-> mipsel-linux-musl
-> powerpc-linux-musl
-> powerpc64-linux-musl
-> powerpc64le-linux-musl
-> riscv32-linux-musl
-> riscv64-linux-musl
-> s390x-linux-musl
-> sh4-linux-musl
-> sh4eb-linux-musl
-> x86_64-linux-musl
-
-or1k and microblaze work, they just don't pass the full smoketest for 
-reasons that shouldn't affect initramfs testing.
-
-I'm still waiting for Rich to ship the next musl release to do new 
-toolchains...
-
-https://www.openwall.com/lists/musl/2025/08/04/1
-
-> Workaround
-> ====
-> If "retain_initrd" is passed to kernel, then initramfs/initrd,
-> passed by bootloader, is retained and becomes available after boot
-> as read-only magic file /sys/firmware/initrd [3].
-
-Common use case for eg romfs is memory mapped flash or rom, so the 
-address range in question isn't actually ram anyway. Mostly on mmu 
-systems you just don't want the mapping to go away, so the kernel can 
-still reach out and read it.
-
-> This is even better than classic initrd, because:
-> - You can use fs not supported by classic initrd, for example erofs
-
-Network block device was the most recent one I saw used, but it had a 
-tiny initramfs to set up and switch_root into it...
-
-(Network block device != network filesystem. I have a todo item to 
-integrate nbd-server into mkroot/testroot.sh but "-hda works" is one of 
-the things it's testing...)
-
-> - One copy is involved (from /sys/firmware/initrd to some file in /)
-> as opposed to two when using classic initrd
-
-Embedded developers have always been reaching out and using mappable 
-flash directly. Vitaly Wool's ELC talk in 2015 (about running Linux in 
-256k of sram, yes one quarter of one megabyte) described the process:
-
-https://elinux.org/images/9/90/Linux_for_Microcontrollers-_From_Marginal_to_Mainstream.pdf
-
-Rob
+Brian
 
