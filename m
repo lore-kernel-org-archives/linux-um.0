@@ -4,44 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 190BCCAC58E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 289CCCA101F
 	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 07:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JY7XXxDvbM6ze0ff4yyO/d8yJdh8zCwsbDmZYeFp3+Y=; b=hFAJFzfN2xjTL8LadiO9XYNhop
-	Y/m4hqrw3RMpD85lCfpUSeZZU4kKSyjIq2c5EKX5dMHZ998aUYpISlhFOzaoEvF5xKvMfUGh6RhBu
-	t5bwLz+1nq6myCYdshGY8u0n2tThOzfy/HWyJZzBi8F6hQoPysn6uULLoK5V8iUuOhtz9L/gifnUD
-	IOKDz2DBLTMOyfqnzPkJdJSx80CK+l/yOK+krl6VTyRaxPnkJ6ADLfbiqxKx5/Nxu5XZFz82XKOge
-	opuA9FrsXRexA99FNaeyCOqjTXsYtG1T1/KWg1uRWeIlMcEBguoYiS7EQBR5G1VXey7X9QKyKHuWy
-	w+5i2qBw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=x19kbUYL2Cg9MV223qYaCq31NCabilripCrs7bHYZWA=; b=VbLL28WIDaeIRbelYZ1p310r/P
+	QhMNGwYAcobugxs3zUuWeGWnZ34a3/YKG6hi2bN1Pt8EvGttlbPPAIDTxlfPWdNDUr8w0C2Ekicr8
+	scZFQFSKf2ifB0gG3QiZRVZIhZosTasdfqjlVmua6Jb6BXNs19LqbKJ2/vZdNxOzlRT5bjBsHfDRM
+	u7YYSZVrYTTM+Dr5FGcGtuNIZGqC9epckN97r7DFbPmM2KAqOK7y01vE9YnqmYxEeL+c8wByFL94u
+	acbNXbsoQEyIODIgehvGL2fSFnR0qPais9Ay/4xls5w/c7CS8N51Wxx9NPfKqaZUCSwxTMSU0zrU+
+	E5BHqf4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy3XL-000000031j7-2T2A;
+	id 1uy3XL-000000031jW-3Zvx;
 	Mon, 15 Sep 2025 07:22:07 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy3XI-000000031hd-3tOv
+	id 1uy3XI-000000031hY-3png
 	for linux-um@lists.infradead.org;
-	Mon, 15 Sep 2025 07:22:05 +0000
+	Mon, 15 Sep 2025 07:22:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=JY7XXxDvbM6ze0ff4yyO/d8yJdh8zCwsbDmZYeFp3+Y=;
-	t=1757920924; x=1759130524; b=Od3S6pPW9cppUBgU/LqXHsuXqWb47P/Gui/8N0w4JUSfq29
-	7KktVuZ8V09NZ/RGgi2Um/txd68xHI8odZJ6tHxNAa6WxY3KN6jmD4gSOtB+I834XjUouVrPAPlvi
-	kmGKqbMlK8Bq4f1AYLOSV7SDMQw1S4TEMSKuFMnF/+PT4nzZZW/VC4uMHg0/vLc/aKXPyauEyfUmD
-	cEZfWChDfLls2rtzB42lRsNVdLG8qIRFxgu92Rfsil4LskhcGKoTg0evRJYdy9UIpDO2OP9n1lWY9
-	jh7tQDU1h5Dnf9z5gATpirvPBGRfp0wltmCJZtOf1WHKg1/oghAy9QyDO9tWQtOg==;
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=x19kbUYL2Cg9MV223qYaCq31NCabilripCrs7bHYZWA=; t=1757920924; x=1759130524; 
+	b=aFWdyqAkF8rSnhzMNpYiNQ8vjDhG6jD8MoBO5t7YtgcPtTCGuw5ZrJVzW9/yWxgMjtUU5ENWRqs
+	U5QCjt2DT8dY1691tWgsf7wMAEhS3A+XpuRIKjumKb3cRApsOSLldptTuoKwSkllSPdtkmOe/IB3B
+	k4F8U5OuRsEt1N6USLuZvBfqq3O74bgg2z/xVM0Yx/dW8z7hBmAHG+7jV+yS2XXY8zU5tfqCWhqbX
+	dGE/5vsdeYTRimx9aQ1+tYCT2tC32Jo0+WvLw4rSEn4Oiy77yrF11mMt8aadeEHYyiAvh9u/CW7Mm
+	X6ebzQNmRHzZ7NWYisesOYmBelAbKi30ln9A==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uy3XE-00000005w6o-06Px;
-	Mon, 15 Sep 2025 09:22:00 +0200
+	id 1uy3XC-00000005w6o-3hKR;
+	Mon, 15 Sep 2025 09:21:59 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org,
 	Willy Tarreau <w@1wt.eu>,
@@ -51,18 +52,15 @@ To: linux-um@lists.infradead.org,
 Cc: linux-kernel@vger.kernel.org,
 	Tiwei Bie <tiwei.btw@antgroup.com>,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 1/9] tools compiler.h: fix __used definition
-Date: Mon, 15 Sep 2025 09:11:07 +0200
-Message-ID: <20250915071115.1429196-2-benjamin@sipsolutions.net>
+Subject: [PATCH 0/9] Start porting UML to nolibc
+Date: Mon, 15 Sep 2025 09:11:06 +0200
+Message-ID: <20250915071115.1429196-1-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250915071115.1429196-1-benjamin@sipsolutions.net>
-References: <20250915071115.1429196-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_002204_961063_6FCA6D6D 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250915_002204_952155_BCA74EC3 
+X-CRM114-Status: GOOD (  14.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,28 +77,78 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-The define mapped to __attribute__((__unused__)) instead of using
-__used__.
+For a while now, we have discussed that it may be better to avoid using
+libc inside UML as it may be interfering in unexpected ways with kernel
+functionality. A major point of concern is that there is no guarantee
+that the libc is not using any address space that may conflict with
+kernel addresses.
 
-Fixes: e58e871becec ("tools/lib/lockdep: Remove private kernel headers")
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- tools/include/linux/compiler.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset is an attempt to start a nolibc port of UML. The goal is
+to port UML to use nolibc in smaller chunks to make the switch more
+manageable.
 
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 33411ca0cc90..b2c40621d441 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -127,7 +127,7 @@
- #endif
- 
- #ifndef __used
--# define __used		__attribute__((__unused__))
-+# define __used		__attribute__((__used__))
- #endif
- 
- #ifndef __packed
+There are three parts to this patchset:
+ * Two patches to use tools/include headers instead of kernel headers
+   for userspace files.
+ * A few nolibc fixes and a new NOLIBC_NO_STARTCODE compile flag for it
+ * Finally nolibc build support for UML and switching two files
+
+The first two parts could be merged independently. The last step to use
+nolibc inside UML obviously depends on the first two.
+
+Benjamin
+
+Benjamin Berg (9):
+  tools compiler.h: fix __used definition
+  um: use tools/include for user files
+  tools/nolibc/stdio: remove perror if NOLIBC_IGNORE_ERRNO is set
+  tools/nolibc/dirent: avoid errno in readdir_r
+  tools/nolibc: use __fallthrough__ rather than fallthrough
+  tools/nolibc: add option to disable startup code
+  um: add infrastructure to build files using nolibc
+  um: use nolibc for the --showconfig implementation
+  um: switch ptrace FP register access to nolibc
+
+ arch/um/Makefile                              | 32 ++++++++++++++++---
+ .../um/include/shared/generated/asm-offsets.h |  1 +
+ .../include/shared/generated/user_constants.h |  1 +
+ arch/um/include/shared/init.h                 |  2 +-
+ arch/um/include/shared/os.h                   |  2 ++
+ arch/um/include/shared/user.h                 |  5 ---
+ arch/um/kernel/Makefile                       |  2 +-
+ arch/um/kernel/skas/stub.c                    |  1 +
+ arch/um/kernel/skas/stub_exe.c                |  4 +--
+ arch/um/os-Linux/skas/process.c               |  6 ++--
+ arch/um/os-Linux/start_up.c                   |  4 +--
+ arch/um/scripts/Makefile.rules                | 10 ++++--
+ arch/x86/um/Makefile                          |  6 ++--
+ arch/x86/um/os-Linux/Makefile                 |  5 ++-
+ arch/x86/um/os-Linux/registers.c              | 22 +++++--------
+ arch/x86/um/user-offsets.c                    |  1 -
+ tools/include/linux/compiler.h                |  2 +-
+ tools/include/nolibc/arch-arm.h               |  2 ++
+ tools/include/nolibc/arch-arm64.h             |  2 ++
+ tools/include/nolibc/arch-loongarch.h         |  2 ++
+ tools/include/nolibc/arch-m68k.h              |  2 ++
+ tools/include/nolibc/arch-mips.h              |  2 ++
+ tools/include/nolibc/arch-powerpc.h           |  2 ++
+ tools/include/nolibc/arch-riscv.h             |  2 ++
+ tools/include/nolibc/arch-s390.h              |  2 ++
+ tools/include/nolibc/arch-sh.h                |  2 ++
+ tools/include/nolibc/arch-sparc.h             |  2 ++
+ tools/include/nolibc/arch-x86.h               |  4 +++
+ tools/include/nolibc/compiler.h               |  4 +--
+ tools/include/nolibc/crt.h                    |  3 ++
+ tools/include/nolibc/dirent.h                 |  6 ++--
+ tools/include/nolibc/stackprotector.h         |  2 ++
+ tools/include/nolibc/stdio.h                  |  2 ++
+ tools/include/nolibc/stdlib.h                 |  2 ++
+ tools/include/nolibc/sys.h                    |  3 +-
+ tools/include/nolibc/sys/auxv.h               |  3 ++
+ 36 files changed, 108 insertions(+), 47 deletions(-)
+ create mode 120000 arch/um/include/shared/generated/asm-offsets.h
+ create mode 120000 arch/um/include/shared/generated/user_constants.h
+
 -- 
 2.51.0
 
