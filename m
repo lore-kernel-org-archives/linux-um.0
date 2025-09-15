@@ -4,143 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C796CAC597
-	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 09:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45AB9CAC597
+	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 10:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=; b=JXc1dak76fQajJMd+kdGwwHVw4
-	LLklWF/C/YuZF3kzQF6koIBr20/3O8FJuiXTtVXMHuKOW0yyzjAotc5c9MllK+F/XbhkeVSlhwB0G
-	C8fiyGOFm9IlO+19vsOEN6LOqjlJ5qEaf4vfGjHrlSyLLMHnIuqgAvu7WJvys6fk/HLLAda5bTu5o
-	gjPMonoxSgKP8zAc7PkQW3VzC/z3BWiSz0w3EYJaqw3a0E0gjotL4dX2qi119p1JGGBr8wJNO4UbV
-	slqtJA9CvdyxxTElFMRS0oyqCw4kJW+G9145rkNhhZHDeldPEAq9Ih9L/rCzOTQVq1GhZ2XgplUQ+
-	etOT2kMg==;
+	bh=qjp4s9xZQymNxiWaKlAFLgVGn+1Lv/NvW2L6+EuPWwA=; b=NQ+EYVHR7Q5a30uDnclSNmqpGx
+	Oe/op157q/bmtrPeffwFCL6vygydPze4rdQzzH8zwNcYcpwPUJjEZ0v+DSVULKe7ai6lQaUJEfvZF
+	jPPxcJOH9LwQ/eiPG0asd3zIIpBjYz2OKDPqUeYo/mzwiIBWycUh/UKavMCJ/Myv4aRDnhbSjshQg
+	rLHipuGpBRpzdMtf2u3AQ6Ae8sXVXmyD3NZGjpUqD78x4NlTbo4hhsNB6JgzchgX+NW3Xoxgi6Nk0
+	dzQA24IJd94/SXiZINVstZjbKcLM4HNk4E8PtE2Zi6aN60SLettRSH7zvlLC+5GU9qIb0sgqJU6K6
+	oxmkTPBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy5NB-00000003QWJ-2ZxT;
-	Mon, 15 Sep 2025 09:19:45 +0000
-Received: from smtp-out1.suse.de ([195.135.223.130])
+	id 1uy6dJ-00000003jOE-4120;
+	Mon, 15 Sep 2025 10:40:29 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy5N8-00000003QU3-24kt
+	id 1uy6dI-00000003jMf-1j1a
+	for linux-um@bombadil.infradead.org;
+	Mon, 15 Sep 2025 10:40:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=qjp4s9xZQymNxiWaKlAFLgVGn+1Lv/NvW2L6+EuPWwA=; b=S7P1Hh+L/nyMVQEtz/7iwCbKFW
+	GC2bVOljbYnxOp1PAtFCAtO/j/hIb2O0DCcsNmGEmLkKKnnyUtHv89akpOf0qk/Jnl6/NJjL0ooMP
+	urkqncfjzNKbAqssr5u07Vqf27SVhvzcwY2Ar9eIMlQQNpqF1J2cK+IGItVWAIZj4v8zF7jwy7Xx8
+	cNHs2hEh5KaitCbl4bVykL31Q0cCQB26qV3dN8qDUxdqzmsIMF0E1t5CfodGFM9LvnDJBASFir2mJ
+	4yk5wKGR3k6un1Poj4AQQXzlinWsnqDXTq4E0Ddei7QPFSwd+xnaE4v1L0JJrUnqMRYxkl2RomsQW
+	3u7oAE/Q==;
+Received: from mgamail.intel.com ([198.175.65.19])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uy6dE-00000006w5k-3Anw
 	for linux-um@lists.infradead.org;
-	Mon, 15 Sep 2025 09:19:44 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EA1BB33712;
-	Mon, 15 Sep 2025 09:19:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757927979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
-	b=y6rhBH2yIHqcEhWvW3OK/M1MGL07yB+6JMwC6X/CknVE5ua038lWDkVtBxXcMW2YiW0/gB
-	rSMv7hNa/JVKJWM7hARJEEPpYWbHOSmUMRbz8f4sVhqeny14kYvL5lcca9exMU9JyNeq6n
-	Pyq6WFF1sN1B85usXfvLUNO8krTzzDE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757927979;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
-	b=SJvrSjvI7wBdkhoQj3MZ4ZBU7tX1b1mGqMmsm9Le3rr8bw1HFENqVr83A7BDG7tAfD/H3I
-	rh7jnWIRJSAAW1Cg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1757927978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
-	b=dMec5VwZSk27WNcuKLsJWYANLg5lWjboI6lQZXChre5tGBQy9LfQiob4gACGMYnIEyj7wt
-	of5w1OHw8GaX5rzloEDHnRzUEa9We+whyL+vVkIgzkYI4qkYUE0EW8OsHCuSl7kqKZApPI
-	R62vbkO0euBFSVizbuH5OjHtbfjlT3s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1757927978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
-	b=NOo6WaFMZo/gSs0Cn6FVxnoIe/rbPumE4+eUSjak33WwfmR1YoYCMva3UzVfmUFBWfq4S4
-	cDjh2ACDImG9O8DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5CE31398D;
-	Mon, 15 Sep 2025 09:19:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FQ3QMyrax2hoeQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 15 Sep 2025 09:19:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 74FF7A0A2B; Mon, 15 Sep 2025 11:19:38 +0200 (CEST)
-Date: Mon, 15 Sep 2025 11:19:38 +0200
-From: Jan Kara <jack@suse.cz>
-To: Askar Safin <safinaskar@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
-	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
-	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
-	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
-	x86@kernel.org, Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, 
-	initramfs@vger.kernel.org, linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>, 
-	linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org, 
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-Subject: Re: [PATCH RESEND 13/62] ext2: remove ext2_image_size and associated
- code
-Message-ID: <5xr5efvf4dhy43fchbvfsxspzgde5bxezhszdgqcya4eqrocgy@lqqkaq5wok6a>
-References: <20250913003842.41944-1-safinaskar@gmail.com>
- <20250913003842.41944-14-safinaskar@gmail.com>
+	Mon, 15 Sep 2025 10:40:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757932825; x=1789468825;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Nzk/WGSFbYXU/3XfPyxSdJhM2+qxUftU2FcBdAr8OJY=;
+  b=BewIyd4znwv6WQYjrZkrFAreZJnu4qbBSI8fo3iw+7mip8P2Kq4hVauS
+   k5Lvd/gpbhQbNDNpZ2jCBVyVpQumuS3YYkDSm+1+ZyobtE34oERPkv7D4
+   UTI7Qt+aZeAaolVISsHusaXhsNCmVoI9XoOdR8LgZ7k5PqfMI9CJUYaH/
+   12btbX7KedSnea9VTUKloycOyMEC8B2+pdEWgF9/s2lDmlnqm9D3+wmB1
+   aT/L4SsabdFWsdi2jzoyhcLg3IIHonQ++p3i7Ie5sF6pSA0fSLN27gJcu
+   oQ8KmnZyhJjv50dbj3g5IOHHGkTPkEn8AzZYE2RNav85qqLriNepW/bHh
+   A==;
+X-CSE-ConnectionGUID: tcvI4txYT529ZhFexbti+w==
+X-CSE-MsgGUID: J3q/qEx2RM6dE3469swAEA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11553"; a="60051248"
+X-IronPort-AV: E=Sophos;i="6.18,266,1751266800"; 
+   d="scan'208";a="60051248"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2025 03:40:20 -0700
+X-CSE-ConnectionGUID: 8iJJl0gJQhq5nxP18SkwKw==
+X-CSE-MsgGUID: zy0r3AIKSySNYAJ2rb6mUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,265,1751266800"; 
+   d="scan'208";a="173881637"
+Received: from lkp-server01.sh.intel.com (HELO 5b01dd97f97c) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 15 Sep 2025 03:40:17 -0700
+Received: from kbuild by 5b01dd97f97c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uy6d4-00008h-1O;
+	Mon, 15 Sep 2025 10:40:14 +0000
+Date: Mon, 15 Sep 2025 18:40:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org,
+	Willy Tarreau <w@1wt.eu>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	linux-kselftest@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Tiwei Bie <tiwei.btw@antgroup.com>,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: Re: [PATCH 2/9] um: use tools/include for user files
+Message-ID: <202509151828.S0qPk6Du-lkp@intel.com>
+References: <20250915071115.1429196-3-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250913003842.41944-14-safinaskar@gmail.com>
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,linuxfoundation.org,kernel.org,zeniv.linux.org.uk,suse.cz,lst.de,kernel.dk,gmail.com,cyphar.com,linutronix.de,cyberus-technology.de,linux.alibaba.com,redhat.com,amazon.com,landley.net,0pointer.de,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,lists.ozlabs.org,mit.edu,monstr.eu,linux.dev,linux.ibm.com];
-	R_RATELIMIT(0.00)[to_ip_from(RLbyy5b47ky7xssyr143sji8pp)];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[55];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+In-Reply-To: <20250915071115.1429196-3-benjamin@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_021942_674919_DF690E7F 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20250915_114025_239421_A8FBDC5D 
+X-CRM114-Status: GOOD (  10.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,68 +107,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat 13-09-25 00:37:52, Askar Safin wrote:
-> It is not used anymore
-> 
-> Signed-off-by: Askar Safin <safinaskar@gmail.com>
+Hi Benjamin,
 
-Looks good.
+kernel test robot noticed the following build errors:
 
-Acked-by: Jan Kara <jack@suse.cz>
+[auto build test ERROR on uml/next]
+[also build test ERROR on uml/fixes linus/master v6.17-rc6 next-20250912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-								Honza
+url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Berg/tools-compiler-h-fix-__used-definition/20250915-152550
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux next
+patch link:    https://lore.kernel.org/r/20250915071115.1429196-3-benjamin%40sipsolutions.net
+patch subject: [PATCH 2/9] um: use tools/include for user files
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20250915/202509151828.S0qPk6Du-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 65ad21d730d25789454d18e811f8ff5db79cb5d4)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250915/202509151828.S0qPk6Du-lkp@intel.com/reproduce)
 
-> ---
->  fs/ext2/ext2.h          |  9 ---------
->  include/linux/ext2_fs.h | 13 -------------
->  2 files changed, 22 deletions(-)
-> 
-> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-> index cf97b76e9fd3..d623a14040d9 100644
-> --- a/fs/ext2/ext2.h
-> +++ b/fs/ext2/ext2.h
-> @@ -608,15 +608,6 @@ struct ext2_dir_entry_2 {
->  					 ~EXT2_DIR_ROUND)
->  #define EXT2_MAX_REC_LEN		((1<<16)-1)
->  
-> -static inline void verify_offsets(void)
-> -{
-> -#define A(x,y) BUILD_BUG_ON(x != offsetof(struct ext2_super_block, y));
-> -	A(EXT2_SB_MAGIC_OFFSET, s_magic);
-> -	A(EXT2_SB_BLOCKS_OFFSET, s_blocks_count);
-> -	A(EXT2_SB_BSIZE_OFFSET, s_log_block_size);
-> -#undef A
-> -}
-> -
->  /*
->   * ext2 mount options
->   */
-> diff --git a/include/linux/ext2_fs.h b/include/linux/ext2_fs.h
-> index 1fef88569037..e5ebe6cdf06c 100644
-> --- a/include/linux/ext2_fs.h
-> +++ b/include/linux/ext2_fs.h
-> @@ -27,17 +27,4 @@
->   */
->  #define EXT2_LINK_MAX		32000
->  
-> -#define EXT2_SB_MAGIC_OFFSET	0x38
-> -#define EXT2_SB_BLOCKS_OFFSET	0x04
-> -#define EXT2_SB_BSIZE_OFFSET	0x18
-> -
-> -static inline u64 ext2_image_size(void *ext2_sb)
-> -{
-> -	__u8 *p = ext2_sb;
-> -	if (*(__le16 *)(p + EXT2_SB_MAGIC_OFFSET) != cpu_to_le16(EXT2_SUPER_MAGIC))
-> -		return 0;
-> -	return (u64)le32_to_cpup((__le32 *)(p + EXT2_SB_BLOCKS_OFFSET)) <<
-> -		le32_to_cpup((__le32 *)(p + EXT2_SB_BSIZE_OFFSET));
-> -}
-> -
->  #endif	/* _LINUX_EXT2_FS_H */
-> -- 
-> 2.47.2
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202509151828.S0qPk6Du-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> <built-in>:3:10: fatal error: 'include/generated/autoconf.h' file not found
+       3 | #include "include/generated/autoconf.h"
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 error generated.
+   make[3]: *** [scripts/Makefile.build:182: arch/x86/um/user-offsets.s] Error 1
+   make[3]: Target 'include/generated/user_constants.h' not remade because of errors.
+   make[2]: *** [arch/um/Makefile:121: archprepare] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:248: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:248: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
