@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACBA9CAC597
-	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 08:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A37CAC597
+	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 08:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BmMtzvOy0lkutdodbVtIfceip29pwfg3QaxTwlFDMF0=; b=tGfY04zUd7Z7zeVFohvICssILF
-	mghBAOrmay2yGkNj0ChNJXy4ncazypxnF5XWU5fNnbM0FvmyGtIoUevgkULzb/oAssORhVuwanPFT
-	tAqbU9QqJMF5bXuvSXGb/QyukAZ6W3IIBJwJIHOWz9qGGocH4hlxHjsWWV7oM3suhM6srLfOK7utZ
-	o50DpwyTsK64fLpPKvjHcR5fJMgjMoKt/Ttv7OQgMlnbdOawS6HwePC3JHwr8V/9NBcP54ssMEyw5
-	xwgTWDyhQnhG2s9YouQTSWf1uVk8h3Lt3oK2OgvCJ5wSWaczZO604V5jfl+oCimOoIZJBAQrVNi3U
-	vZ6jaOUg==;
+	bh=Tdr7PfvvANdPCYapCwL/gPQGa+J0cyBC8r6mzCPaNcU=; b=g/L38HhEonCwONpfTY0E/7GA3D
+	C9IKeE4oY6bwhXayy3hcvxoDfsIaqPk6GGlwb145sItqPPgkaLgbPXMglw1alJ/aKfQkiIZ/VstVU
+	w8YgY66ILBT5V0Ad2/Iv5Yz/Y2Z16jauShOfhDP6Xh843+hyFyrYyyYeyeIoWuEz43dzp/h7qq3BO
+	wdw/VZjzXYdhU6giR8RTugKHfGhfLLOg8PcEbd33VVjENtTtjHqziQeSUDBT0xhAj1eHcf93BEvp6
+	eiMkf0ocug+/pctFI97vh7rOfnHrwAfDDyGVu8XBEhmKXfJqa2u9pZGbQ7mMlz0DAfhPuWT6xcieB
+	NQRGNiEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy4py-00000003Gqm-0lqn;
-	Mon, 15 Sep 2025 08:45:26 +0000
-Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
+	id 1uy4uk-00000003HW0-2cHC;
+	Mon, 15 Sep 2025 08:50:22 +0000
+Received: from todd.t-8ch.de ([159.69.126.157])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy4pv-00000003Gq8-2zly
+	id 1uy4ui-00000003HUo-0vEP
 	for linux-um@lists.infradead.org;
-	Mon, 15 Sep 2025 08:45:25 +0000
+	Mon, 15 Sep 2025 08:50:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1757925920;
-	bh=OwQvqJhcj6BAWEZyrl7CaKqNbJZO3h3KE9AB37M7yyA=;
+	s=mail; t=1757926217;
+	bh=8Abhke+wAvVYQkvLFpimTgcFAOpAqB5J5c1BWvnj6sk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cRRdwmmjba3LR4S3DYxn9cDv3cY9lET+O4RhVdJSs8Mgo74IeDwY9o5AnNrRzsPvb
-	 aCEQk22aLUC3J0X0pdQdC85bLJJfVlrAHfJEf4SAGpYPnRcGQuVglBCdqAQPl46VGh
-	 jyU0T+d+oUqO5KUeTubCg72fwyzGNpQmFHWHqSco=
-Date: Mon, 15 Sep 2025 10:45:20 +0200
+	b=rBMdOFgFALT5WBUoAQ3UCud5d0XBSQHOm5o/wLr6dqavwRynzE/b8lWzZJtGaBEW9
+	 5cnjmGg7XyPtoDgqeOxq7odOl+cH7/3jWrloetMLDKPtisbhntuPKPnvsjiLR5GztA
+	 YlI7LMu/EBnU+uOJG/sfCyyM261B2xHyAkJypUF8=
+Date: Mon, 15 Sep 2025 10:50:17 +0200
 From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
 To: Benjamin Berg <benjamin@sipsolutions.net>
 Cc: linux-um@lists.infradead.org, Willy Tarreau <w@1wt.eu>, 
 	linux-kselftest@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>, 
 	linux-kernel@vger.kernel.org, Tiwei Bie <tiwei.btw@antgroup.com>, 
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [PATCH 4/9] tools/nolibc/dirent: avoid errno in readdir_r
-Message-ID: <97fd7c74-bfb5-4ff1-9698-e60d7b3c9a11@t-8ch.de>
+Subject: Re: [PATCH 5/9] tools/nolibc: use __fallthrough__ rather than
+ fallthrough
+Message-ID: <6fff1ac0-2868-4377-b8a3-c10fe1a4c1f5@t-8ch.de>
 References: <20250915071115.1429196-1-benjamin@sipsolutions.net>
- <20250915071115.1429196-5-benjamin@sipsolutions.net>
+ <20250915071115.1429196-6-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250915071115.1429196-5-benjamin@sipsolutions.net>
+In-Reply-To: <20250915071115.1429196-6-benjamin@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_014523_898264_688CEE5C 
-X-CRM114-Status: GOOD (  16.82  )
+X-CRM114-CacheID: sfid-20250915_015020_423765_323F07AA 
+X-CRM114-Status: GOOD (  13.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,38 +68,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025-09-15 09:11:10+0200, Benjamin Berg wrote:
+On 2025-09-15 09:11:11+0200, Benjamin Berg wrote:
 > From: Benjamin Berg <benjamin.berg@intel.com>
 > 
-> Using errno is not possible when NOLIBC_IGNORE_ERRNO is set. Use
-> sys_lseek instead of lseek as that avoids using errno.
-> 
-> Fixes: 665fa8dea90d ("tools/nolibc: add support for directory access")
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> Use the version of the attribute with underscores to avoid issues if
+> fallthrough has been defined by another header file already.
+
+Not a really big fan, but as the underscore variant is documented there
+shouldn't be an issue.
 
 Acked-by: Thomas Weißschuh <linux@weissschuh.net>
 
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 > ---
->  tools/include/nolibc/dirent.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  tools/include/nolibc/compiler.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/include/nolibc/dirent.h b/tools/include/nolibc/dirent.h
-> index 758b95c48e7a..61a122a60327 100644
-> --- a/tools/include/nolibc/dirent.h
-> +++ b/tools/include/nolibc/dirent.h
-> @@ -86,9 +86,9 @@ int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result)
->  	 * readdir() can only return one entry at a time.
->  	 * Make sure the non-returned ones are not skipped.
->  	 */
-> -	ret = lseek(fd, ldir->d_off, SEEK_SET);
-> -	if (ret == -1)
-> -		return errno;
-> +	ret = sys_lseek(fd, ldir->d_off, SEEK_SET);
-> +	if (ret < 0)
-> +		return -ret;
+> diff --git a/tools/include/nolibc/compiler.h b/tools/include/nolibc/compiler.h
+> index 369cfb5a0e78..87090bbc53e0 100644
+> --- a/tools/include/nolibc/compiler.h
+> +++ b/tools/include/nolibc/compiler.h
+> @@ -41,8 +41,8 @@
+>  #  define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
+>  #endif /* __nolibc_has_attribute(no_stack_protector) */
 >  
->  	entry->d_ino = ldir->d_ino;
->  	/* the destination should always be big enough */
+> -#if __nolibc_has_attribute(fallthrough)
+> -#  define __nolibc_fallthrough do { } while (0); __attribute__((fallthrough))
+> +#if __nolibc_has_attribute(__fallthrough__)
+> +#  define __nolibc_fallthrough do { } while (0); __attribute__((__fallthrough__))
+>  #else
+>  #  define __nolibc_fallthrough do { } while (0)
+>  #endif /* __nolibc_has_attribute(fallthrough) */
 > -- 
 > 2.51.0
 > 
