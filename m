@@ -4,54 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EC55CAC58E
-	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 09:07:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C796CAC597
+	for <linux-um@archiver.kernel.org>; Mon, 15 Sep 2025 09:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uuiFwFdUmEb3KyaK4LSgIK/XQJhQ26QYeUh+dIW+CTE=; b=oCJuiejYO5KW+O1V4G28zlI667
-	drimRAT9huImBlCUaye029rGAiqE5okZY1kvvEgXmSflbJWcIAXI4Z4EDVL4gpH55ILRNuRhdOYXH
-	qz6kUKVQBKD0bY8UDNmeuQ9J/Juwj1albuWTy6KIM2aR/rJVglwofkLOkJciJK66k8d3MY/sCJa2j
-	oOGQShDBpK/7+snlKdprNMy++YMY/zZlnne3YcDFgXxGOaHYnZTO0eFdKFIpzhpXCQjerOVss7Yyd
-	4cyNM+X15h0w0+FztzCzfIdT1WRTJdK1BAnyLYfKLZr49jOM0kwNu8Z5XClzBvgElrAGcfKj0lplx
-	rivCULCw==;
+	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=; b=JXc1dak76fQajJMd+kdGwwHVw4
+	LLklWF/C/YuZF3kzQF6koIBr20/3O8FJuiXTtVXMHuKOW0yyzjAotc5c9MllK+F/XbhkeVSlhwB0G
+	C8fiyGOFm9IlO+19vsOEN6LOqjlJ5qEaf4vfGjHrlSyLLMHnIuqgAvu7WJvys6fk/HLLAda5bTu5o
+	gjPMonoxSgKP8zAc7PkQW3VzC/z3BWiSz0w3EYJaqw3a0E0gjotL4dX2qi119p1JGGBr8wJNO4UbV
+	slqtJA9CvdyxxTElFMRS0oyqCw4kJW+G9145rkNhhZHDeldPEAq9Ih9L/rCzOTQVq1GhZ2XgplUQ+
+	etOT2kMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy5Bj-00000003NFm-3hqM;
-	Mon, 15 Sep 2025 09:07:55 +0000
-Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
+	id 1uy5NB-00000003QWJ-2ZxT;
+	Mon, 15 Sep 2025 09:19:45 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uy5Bh-00000003NFM-3V1R
+	id 1uy5N8-00000003QU3-24kt
 	for linux-um@lists.infradead.org;
-	Mon, 15 Sep 2025 09:07:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1757927271;
-	bh=4yuYGuUCG9ZnWQ/ykpURTCRtVPfeMJh0JSqCuvBp7Jg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YF9Gvzw1617gAlI8HLr3bJP6ANZID1fqEojln0udCjl7467q7pSw5zRbQImSH4vfK
-	 Je+2cwfLzNkXwZXT/ZeC6bqG4z5nVsZUYlKzPfmrdXsAvCJBPshS3yvJeM8i75jbGH
-	 zsHsfMMe0Y7HkyAQkM0zDWM5jnsSL4mxjEZonTMA=
-Date: Mon, 15 Sep 2025 11:07:51 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, Willy Tarreau <w@1wt.eu>, 
-	linux-kselftest@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>, 
-	linux-kernel@vger.kernel.org, Tiwei Bie <tiwei.btw@antgroup.com>, 
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [PATCH 9/9] um: switch ptrace FP register access to nolibc
-Message-ID: <5502ceaf-0b40-4961-b9ba-0c5e63498778@t-8ch.de>
-References: <20250915071115.1429196-1-benjamin@sipsolutions.net>
- <20250915071115.1429196-10-benjamin@sipsolutions.net>
+	Mon, 15 Sep 2025 09:19:44 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EA1BB33712;
+	Mon, 15 Sep 2025 09:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757927979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
+	b=y6rhBH2yIHqcEhWvW3OK/M1MGL07yB+6JMwC6X/CknVE5ua038lWDkVtBxXcMW2YiW0/gB
+	rSMv7hNa/JVKJWM7hARJEEPpYWbHOSmUMRbz8f4sVhqeny14kYvL5lcca9exMU9JyNeq6n
+	Pyq6WFF1sN1B85usXfvLUNO8krTzzDE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757927979;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
+	b=SJvrSjvI7wBdkhoQj3MZ4ZBU7tX1b1mGqMmsm9Le3rr8bw1HFENqVr83A7BDG7tAfD/H3I
+	rh7jnWIRJSAAW1Cg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1757927978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
+	b=dMec5VwZSk27WNcuKLsJWYANLg5lWjboI6lQZXChre5tGBQy9LfQiob4gACGMYnIEyj7wt
+	of5w1OHw8GaX5rzloEDHnRzUEa9We+whyL+vVkIgzkYI4qkYUE0EW8OsHCuSl7kqKZApPI
+	R62vbkO0euBFSVizbuH5OjHtbfjlT3s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1757927978;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PhWypHhs76OUhW0wRhEmCSwbci4KHZ6s4gw5WflTcZE=;
+	b=NOo6WaFMZo/gSs0Cn6FVxnoIe/rbPumE4+eUSjak33WwfmR1YoYCMva3UzVfmUFBWfq4S4
+	cDjh2ACDImG9O8DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5CE31398D;
+	Mon, 15 Sep 2025 09:19:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FQ3QMyrax2hoeQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 15 Sep 2025 09:19:38 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 74FF7A0A2B; Mon, 15 Sep 2025 11:19:38 +0200 (CEST)
+Date: Mon, 15 Sep 2025 11:19:38 +0200
+From: Jan Kara <jack@suse.cz>
+To: Askar Safin <safinaskar@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
+	x86@kernel.org, Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, 
+	initramfs@vger.kernel.org, linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>, 
+	linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org, 
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+Subject: Re: [PATCH RESEND 13/62] ext2: remove ext2_image_size and associated
+ code
+Message-ID: <5xr5efvf4dhy43fchbvfsxspzgde5bxezhszdgqcya4eqrocgy@lqqkaq5wok6a>
+References: <20250913003842.41944-1-safinaskar@gmail.com>
+ <20250913003842.41944-14-safinaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250915071115.1429196-10-benjamin@sipsolutions.net>
+In-Reply-To: <20250913003842.41944-14-safinaskar@gmail.com>
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,linuxfoundation.org,kernel.org,zeniv.linux.org.uk,suse.cz,lst.de,kernel.dk,gmail.com,cyphar.com,linutronix.de,cyberus-technology.de,linux.alibaba.com,redhat.com,amazon.com,landley.net,0pointer.de,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,lists.ozlabs.org,mit.edu,monstr.eu,linux.dev,linux.ibm.com];
+	R_RATELIMIT(0.00)[to_ip_from(RLbyy5b47ky7xssyr143sji8pp)];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[55];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_020754_046246_248CE12B 
-X-CRM114-Status: GOOD (  17.46  )
+X-CRM114-CacheID: sfid-20250915_021942_674919_DF690E7F 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,80 +155,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025-09-15 09:11:15+0200, Benjamin Berg wrote:
-> From: Benjamin Berg <benjamin.berg@intel.com>
+On Sat 13-09-25 00:37:52, Askar Safin wrote:
+> It is not used anymore
 > 
-> The registers.c file only contain the routines for floating point
-> register access in ptrace mode and initial size detection. The file can
-> be moved over to nolibc by replacing the ptrace libc call with a simple
-> wrapper that does a direct syscall.
-> 
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> Signed-off-by: Askar Safin <safinaskar@gmail.com>
+
+Looks good.
+
+Acked-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  arch/x86/um/os-Linux/Makefile    |  5 ++++-
->  arch/x86/um/os-Linux/registers.c | 22 ++++++++--------------
->  2 files changed, 12 insertions(+), 15 deletions(-)
+>  fs/ext2/ext2.h          |  9 ---------
+>  include/linux/ext2_fs.h | 13 -------------
+>  2 files changed, 22 deletions(-)
 > 
-> diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
-> index 77a308aaa5ec..d37320430822 100644
-> --- a/arch/x86/um/os-Linux/Makefile
-> +++ b/arch/x86/um/os-Linux/Makefile
-> @@ -3,10 +3,13 @@
->  # Licensed under the GPL
->  #
+> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+> index cf97b76e9fd3..d623a14040d9 100644
+> --- a/fs/ext2/ext2.h
+> +++ b/fs/ext2/ext2.h
+> @@ -608,15 +608,6 @@ struct ext2_dir_entry_2 {
+>  					 ~EXT2_DIR_ROUND)
+>  #define EXT2_MAX_REC_LEN		((1<<16)-1)
 >  
-> -obj-y = registers.o mcontext.o
-> +obj-y = mcontext.o
+> -static inline void verify_offsets(void)
+> -{
+> -#define A(x,y) BUILD_BUG_ON(x != offsetof(struct ext2_super_block, y));
+> -	A(EXT2_SB_MAGIC_OFFSET, s_magic);
+> -	A(EXT2_SB_BLOCKS_OFFSET, s_blocks_count);
+> -	A(EXT2_SB_BSIZE_OFFSET, s_log_block_size);
+> -#undef A
+> -}
+> -
+>  /*
+>   * ext2 mount options
+>   */
+> diff --git a/include/linux/ext2_fs.h b/include/linux/ext2_fs.h
+> index 1fef88569037..e5ebe6cdf06c 100644
+> --- a/include/linux/ext2_fs.h
+> +++ b/include/linux/ext2_fs.h
+> @@ -27,17 +27,4 @@
+>   */
+>  #define EXT2_LINK_MAX		32000
 >  
->  obj-$(CONFIG_X86_32) += tls.o
->  
->  USER_OBJS := $(obj-y)
->  
-> +obj-y += registers.o
-> +NOLIBC_OBJS := registers.o
-> +
->  include $(srctree)/arch/um/scripts/Makefile.rules
-> diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
-> index eb1cdadc8a61..55bce0d3f5d2 100644
-> --- a/arch/x86/um/os-Linux/registers.c
-> +++ b/arch/x86/um/os-Linux/registers.c
-> @@ -6,18 +6,20 @@
->  
->  #include <errno.h>
-
-Given that you are explicitly disabling errno support for nolibc, is
-this include necessary?
-
->  #include <stdlib.h>
-> -#include <sys/ptrace.h>
-> +#include <linux/ptrace.h>
->  #ifdef __i386__
->  #include <sys/user.h>
->  #endif
->  #include <longjmp.h>
->  #include <sysdep/ptrace_user.h>
-> -#include <sys/uio.h>
-> +#include <linux/uio.h>
-
-It looks fairly trivial to add sys/uio.h to nolibc.
-Only 'struct iovec' (already provided by the UAPI) and readv()/writev()
-are necessary.
-
->  #include <asm/sigcontext.h>
->  #include <linux/elf.h>
->  #include <registers.h>
->  #include <sys/mman.h>
->  
-> +#define my_ptrace(...) my_syscall4(__NR_ptrace, __VA_ARGS__)
-
-Why not add sys/ptrace.h to nolibc and then use sys_ptrace()?
-In general I'm not a fan of the my_syscall() naming scheme and would
-like to change this in nolibc itself, so having fewer external users
-would be nice.
-
-> +
->  static unsigned long ptrace_regset;
->  unsigned long host_fp_size;
-
-(...)
+> -#define EXT2_SB_MAGIC_OFFSET	0x38
+> -#define EXT2_SB_BLOCKS_OFFSET	0x04
+> -#define EXT2_SB_BSIZE_OFFSET	0x18
+> -
+> -static inline u64 ext2_image_size(void *ext2_sb)
+> -{
+> -	__u8 *p = ext2_sb;
+> -	if (*(__le16 *)(p + EXT2_SB_MAGIC_OFFSET) != cpu_to_le16(EXT2_SUPER_MAGIC))
+> -		return 0;
+> -	return (u64)le32_to_cpup((__le32 *)(p + EXT2_SB_BLOCKS_OFFSET)) <<
+> -		le32_to_cpup((__le32 *)(p + EXT2_SB_BSIZE_OFFSET));
+> -}
+> -
+>  #endif	/* _LINUX_EXT2_FS_H */
+> -- 
+> 2.47.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
