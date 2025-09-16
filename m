@@ -4,86 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1089DCAC597
-	for <linux-um@archiver.kernel.org>; Tue, 16 Sep 2025 01:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46F86CAC597
+	for <linux-um@archiver.kernel.org>; Tue, 16 Sep 2025 01:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=d4rwn8y0vRJNvu8C079VdIgUQlj+kBjL5HuZ7smgp/E=; b=XkQGBsWat+XTUyv//h/dxk+u0y
-	6podhynrJfmxP8Hsmw4CbMCVpTSimZ0bu2u2igBE3zKZbLzdLouotrkSmLkqqEUuRs6eGwtEl4mtK
-	zGFggK5pLLEC3J0YjC8hLOMasa8CFQIOkMoplbL6yI64BrfWfuHeyY3BJuNQaXeqi935AT/eprnvj
-	2CEEr/B41D5otxIBH7NUO/ekGKuLZKrnaUoKbmIJElF/9fScJyt5jZRPCiXmnT3GwwadWloyABDEG
-	ZpaQdtH0Ley4pYtZBSf4NO2MeEIzTDfjUOqLYKdPxroqN6cTZgkb1ev+TL40H/3rt+oQlsnaxTaos
-	Opre0daQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UM/63QbNRNL2CWSzKhJPtVEvJogEqqs3VcsifJT7nZg=; b=GAtgsQxdQ9YOZ6bZ2zE9otL1Xx
+	EVcvjhefk4PGg/EWpCBRDmAQId0b2ep4qaJAUxLZnQt5jNUlSAsOWUQmcVWi4nn/X70BRhGz7pUV2
+	Ezlwm2dWCc4KNZ2xKsyUJofWdTRtc8HbzxYcQrcYlJ8nchgwDMteiwkwsG/W77XX47mnhNv5xcQRQ
+	ltzd0QKxlEILcO699K0MTN84Ndjmpnl/GNyOrk+i1bOhIU97EJFm3lis8sLNXZnNSzIOxFU7zGO0R
+	vq0PrzmiHNhwVScF4gb3vGIPXNJXjEQb6wSj+Ce0mXa3DtIwJ2LWI9jZpGLZFYw129Bke0u7o1cEj
+	MDSh2ijA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uyK8O-000000067Dg-0k8H;
-	Tue, 16 Sep 2025 01:05:28 +0000
-Received: from mail-yb1-xb2b.google.com ([2607:f8b0:4864:20::b2b])
+	id 1uyKoT-00000006C1O-3eAD;
+	Tue, 16 Sep 2025 01:48:57 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uyK8L-000000067BL-1aAy
+	id 1uyKoR-00000006C0J-1PSH
 	for linux-um@lists.infradead.org;
-	Tue, 16 Sep 2025 01:05:26 +0000
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-ea3f9e9f782so2366173276.1
-        for <linux-um@lists.infradead.org>; Mon, 15 Sep 2025 18:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757984724; x=1758589524; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d4rwn8y0vRJNvu8C079VdIgUQlj+kBjL5HuZ7smgp/E=;
-        b=aT2vcyNK+8b9Z6sFaw7lJiZGASnH0agFEdUyn4XBleVj9J8VpDihbfmzkTa7WBCniM
-         Fvl6ocq8wrSTgLaGbGHVXSAc0z3nJX42HLZQIE0Sbvbu9+rorF/NG2ZQj+Pz1EO5rAWk
-         xV1tMU/Xl46ioqDzTEfvluOm2y52VA2V6g8o3rIYgYqQZD1zPrOAlqAQ+nad7azsbkl9
-         3SXTDcwhi/odNYBYfbYIv2EqR3kn/5rfwaYlwLS7iKx9vYndm72Cgjhx0Eo9w6Lhnlxn
-         Yj0cmYSkAVEJTuWgo2rGedu4jCjHhoqR6b7RR12fJkeSwjQ2QOJZCVYdHfm+1vla/01M
-         L0DA==
+	Tue, 16 Sep 2025 01:48:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1757987333;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UM/63QbNRNL2CWSzKhJPtVEvJogEqqs3VcsifJT7nZg=;
+	b=JGzWjT6JFY44F9HuG73zfC+XVXSpyEZnpQCAqiavnVJaex4OmR07wPNEUXLEBK3aPPNASb
+	DTaTB1gZFE+DJer/o51vsb0HNic3DYvivGyJhMpU+pMvEA5BzK1/RIXnL5VmsY2pUK7A4X
+	JJbm37DGkbr6iy5wEYEwqu+Km41BUrY=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-157-mJ7RqxLVPQOSmVImEdk2Zw-1; Mon, 15 Sep 2025 21:48:51 -0400
+X-MC-Unique: mJ7RqxLVPQOSmVImEdk2Zw-1
+X-Mimecast-MFC-AGG-ID: mJ7RqxLVPQOSmVImEdk2Zw_1757987330
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-571c4a20e8aso1867397e87.3
+        for <linux-um@lists.infradead.org>; Mon, 15 Sep 2025 18:48:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757984724; x=1758589524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d4rwn8y0vRJNvu8C079VdIgUQlj+kBjL5HuZ7smgp/E=;
-        b=LQOGmpQlo3K7mMHsXYzUA8buQCs4iPiMH0IHPERh+RIJLfvZVrupmmACn26/n2s1IH
-         hD+GFS6cA7vDn+o8M00lu6n/LMtLkZqh1AOA4FpoCS0wklj0p8Ph63C/ps/LTV+qlpJA
-         bWcXjtOVM21qjVHzJp5TeNaAO4PiPpENKprPSnaZjnMPqo/GJzDNBKSHwkAjKoaa5ze0
-         ywdTW9llL0+lwsrJVKGSZpoaXy2uV4wYMequCTxWsqIddP+JWfKptUerDRfDGtbBSLV0
-         HwaNz+4CPSRSVU2oidC/XdDLUx6520YDH1zrAVJOjxpQMpbxN2Tk+SqIgIfLXHXj/HmI
-         C2eA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrsCr5LVJd8axp5A36xTpUBj4KCoxTEh2mzkXuxo+P6/ktcJkdnRJ1gTRDI+FI84SwdaWY9kFgKA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy6nY7FDlSubQSBqodYE9AMxK7w1haP+4ICtuDWeKzRTCiO1qiW
-	2yoDQ+mI/f9g2zT69a/IzkeEQVWZqYIqwee6LElOywZ+z9wlfwqAom3Yj5CS3O1XVJO6+K+o1Yo
-	2hLfCfRo8ikaqJ/dCMlhIIM3jjWEvTfQ=
-X-Gm-Gg: ASbGncvA/5STcSRHEFC6rIiaeELf5A/7c+Pk6yJFoCmYkkhIwQLwkTi55wVb4o7eLJg
-	wAyslJEa74Q1XrZ1sCq/TY9ZRrLjAN2VNx8XI7adpH7XIddfunU9qNw5IRY4jMkcPn8aVi+lhMd
-	6kM3p/48DlrYmu2Bp4/BuyS1l3l+04Eu7zVv4xlRXgiiis6bZEp+RODl05AwDAcp+mGymauoLP8
-	OtV7pX3ytNKR4K+zQ==
-X-Google-Smtp-Source: AGHT+IFaJEo1gVHkPCEaCD3vWYjtreYFiQ2WOrRU9CIpbMyg97OVJtr/v3uxdpG+fiXE68E0IfjXLuECnr1bsw09sPQ=
-X-Received: by 2002:a05:6902:2b02:b0:e98:9926:e5ca with SMTP id
- 3f1490d57ef6-ea3d9a6c911mr10729577276.36.1757984723469; Mon, 15 Sep 2025
- 18:05:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757987330; x=1758592130;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UM/63QbNRNL2CWSzKhJPtVEvJogEqqs3VcsifJT7nZg=;
+        b=OEaAr83OVUcKe0R9mVrky/Fderkc/P5td1UiOhP4fMhJY+qefWcHR1B+v0sL0oKMSL
+         9LMQ665KGwBHuD62slRclLeJhUqyiGXQdDmxmnwAIurForNObQlj0L4QwxBfJ21X/xfn
+         dCoGNHGpzd4RcZUF34Mo0x2q0DNBVANoJCv6ladHtOqxVznoBficWk2e/pgGTf38EGCk
+         DJ/CnbO2o/cGDfPkzcyJ1UaxsidYL9wcaYiswSim15Ygto7hD3aiTeGjdU/ZFr2pbFm6
+         Ehss+6x15xNZKu/nr8+5vQ6RgiRrrnr2LANfJyJcXlWhW5IaVFodNFLautnIU0TkDCee
+         y/DQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcvN4gCY3Q4h4onXbJS2Y44QaVaFLvmfQH1v/ntFVr3vukiTuDC+uWEKMGU6nglk6XKxcPBdwXnQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz7EuL/QwIPVh22kGYFq3wZ2XCYhX+9qMYsjwuIkKqlZNz5EJYK
+	b4WRz/UEUA9yiMu+YpbFzBy8AwjBSpwIuhFRHd8LWQTKfVB72Rpzfn4PQt+TH5Z8mrRZRv2meCm
+	GYeoh01fWPElswZmkY7RPK17tmyByDcf0WsN7Tr3/QNIVGsW53c3w35r7nSQNOhI68byRXrmHvm
+	MhorI7vCD5Q+gXvvG5cVx3Fe/mQbRMkfRdUiHygfEY
+X-Gm-Gg: ASbGncvISsfdBU+9NsRsT2LDfZsn+MPWD5N/E26dSf6/RlRVRpX7V1tYjFMUlhg+pjA
+	C6EGS/v/b+2L5wzDnnyxiKDhkJSRBn7Hg2Bg+ALiSAsGKSUz6pxu5/ADDJ9xetbWo8tBCe3i5yt
+	05nwieTQIa0errlraCP2LI2w==
+X-Received: by 2002:a05:6512:3f21:b0:563:d896:2d14 with SMTP id 2adb3069b0e04-5704f7a3535mr4252935e87.36.1757987330036;
+        Mon, 15 Sep 2025 18:48:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGi0qyrJSXhatUAjAN5GaSbgChEfkulnz/zBRoEI09ayrVbCpTRhDlFRFU2ScIQdlOHU/dANXpgiKsiuT/Fm5k=
+X-Received: by 2002:a05:6512:3f21:b0:563:d896:2d14 with SMTP id
+ 2adb3069b0e04-5704f7a3535mr4252904e87.36.1757987329545; Mon, 15 Sep 2025
+ 18:48:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250913003842.41944-1-safinaskar@gmail.com> <20250915-modebranche-marken-fc832a25e05d@brauner>
-In-Reply-To: <20250915-modebranche-marken-fc832a25e05d@brauner>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Tue, 16 Sep 2025 04:04:47 +0300
-X-Gm-Features: Ac12FXwuxsP2xoupllcCoDiRw8q2uuerrvP566PgC2Qr6qfMP36Zqdrto9P8zEU
-Message-ID: <CAPnZJGAjfpHZn_VzU3ry9ZV6OUS0RN2iWos153_oM_PhVbMgVg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-To: Christian Brauner <brauner@kernel.org>
+References: <20250912223937.3735076-1-safinaskar@zohomail.com>
+In-Reply-To: <20250912223937.3735076-1-safinaskar@zohomail.com>
+From: Dave Young <dyoung@redhat.com>
+Date: Tue, 16 Sep 2025 09:48:40 +0800
+X-Gm-Features: AS18NWBkCHbtMZDfiuZiXnfW8KzozFHrUJlGejiASEzNumvZVB8NmHoE7UrrQwg
+Message-ID: <CALu+AoRt5wEgx-=S263CReDf8FmLWwjs8dF9cX4_jFcMUkuujQ@mail.gmail.com>
+Subject: Re: [PATCH 00/62] initrd: remove classic initrd support
+To: Askar Safin <safinaskar@zohomail.com>
 Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
 	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
 	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Alexander Graf <graf@amazon.com>, 
-	Rob Landley <rob@landley.net>, Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
 	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
 	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
 	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
@@ -98,11 +104,14 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
 	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
 	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: RS3Lf2iFhHW0_s8JuUnsSZyEMHVg4XGDgyUJ1R_91q0_1757987330
+X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250915_180525_414305_F6F962DF 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20250915_184855_572952_C1BE5EE6 
+X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,22 +126,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 15, 2025 at 4:34=E2=80=AFPM Christian Brauner <brauner@kernel.o=
-rg> wrote:
-> Split it up into multiple patch series. Send a first series that
-> focusses only on removing the generic infrastructure keeping it as
-> contained as possible. Only do non-generic cleanups that are absolutely
-> essential for the removal. Then the cleanups can go in separate series
-> later.
+Hi,
 
-Ok, I will do this.
-I will send a minimal patchset with arch/ changes kept to absolute minimum
-or even absent. Nearly all of the changes will be in init/ and docs.
-Hopefully it will pass via the VFS tree.
+On Sat, 13 Sept 2025 at 06:42, Askar Safin <safinaskar@zohomail.com> wrote:
+>
+> Intro
+> ====
+> This patchset removes classic initrd (initial RAM disk) support,
+> which was deprecated in 2020.
+> Initramfs still stays, and RAM disk itself (brd) still stays, too.
 
-If it gets to kernel release, I will consider sending more patchsets.
+There is one initrd use case in my mind, it can be extended to co-work
+with overlayfs as a kernel built-in solution for initrd(compressed fs
+image)+overlayfs.   Currently we can use compressed fs images
+(squashfs or erofs) within initramfs,  and kernel loop mount together
+with overlayfs, this works fine but extra pre-mount phase is needed.
 
+Thanks
+Dave
 
---=20
-Askar Safin
 
