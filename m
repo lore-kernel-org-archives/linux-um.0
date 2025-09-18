@@ -4,99 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90CAECA1013
-	for <linux-um@archiver.kernel.org>; Thu, 18 Sep 2025 15:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FE8ACAC59A
+	for <linux-um@archiver.kernel.org>; Thu, 18 Sep 2025 16:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XUWQfxZZ308Qh0GEo031WQTVwmY2irHkVNeN0hT1npU=; b=HzfNhekhgK9++NIanFRIZdXfpO
-	Tn6Kfj6gE8jL69PfKW5SUqeJeEZ+Z1K5CyqOTmqb4eSeJUXk5y8ZO2NdLzCsTWJYu9niXOwxbEbbT
-	3LE+wXSKxhtKv94NZx0yEgeFiF1HXqfwNsTjo2H71Sy3avih+ZXwNZWwA0/QTxBxkaDWaeT1AJ8vl
-	3ugYfCK9nIdGCKUOWOJQ3/aXe0BFWjFxs5AZnUkjXXCd2oOO1DFH5VkSFr8v91jOtAhyEx66DRIDC
-	dn5JhxU2CWhSPGj/0HsVSmR1qQwJ+jlbQwtEBOJejqNsLYDCmTSu0vLbdhIKipJsvVF7GrklJCOOb
-	BGf3eaVw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FFWpj3DCETV3/+xAs2OoBuO38L7B2vn+mZ0q14cFyC4=; b=oxMufzpkrVcslHPJMHyMMTiwEP
+	SIAzcsCkXRWa10cvlX22cuwhQ+EHIxtpp75xnbfvFEWN0WgD9hqro/sxQP9vzRO1PU7hDZbbwuqGn
+	W1pDJjcp7etzCRdiIFnhN7FrXRPkmyYKzIAWaTwChayEeM0jP6rMYhbA+a0PzASV5/l3m46XHaU0B
+	C23Lqvff6A/44B7qA9gprzQSavbL+yDbU2GCvWwNqdNJTB18xgQsHU0FalK9qxiDeOmaEUxKYODac
+	H/o0TfgZPzCsOg8iaIv9J4UtBwRqRgu/MOCpxC27to5Nlcifcj+u2ek6AtjDtlfGEdnOCRCq60iW7
+	O5/nUc1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzGZu-00000000NdE-3c5I;
-	Thu, 18 Sep 2025 15:29:46 +0000
-Received: from smtp2-g21.free.fr ([2a01:e0c:1:1599::11])
+	id 1uzHr1-00000000h7n-0dDL;
+	Thu, 18 Sep 2025 16:51:31 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzGZq-00000000NbV-2oaz;
-	Thu, 18 Sep 2025 15:29:44 +0000
-Received: from daria.iliad.local (unknown [213.36.7.13])
-	by smtp2-g21.free.fr (Postfix) with ESMTP id 179252003FC;
-	Thu, 18 Sep 2025 17:28:31 +0200 (CEST)
-From: Nicolas Schichan <nschichan@freebox.fr>
-To: safinaskar@gmail.com
-Cc: akpm@linux-foundation.org,
-	andy.shevchenko@gmail.com,
-	axboe@kernel.dk,
-	brauner@kernel.org,
-	cyphar@cyphar.com,
-	devicetree@vger.kernel.org,
-	ecurtin@redhat.com,
-	email2tema@gmail.com,
-	graf@amazon.com,
-	gregkh@linuxfoundation.org,
-	hca@linux.ibm.com,
-	hch@lst.de,
-	hsiangkao@linux.alibaba.com,
-	initramfs@vger.kernel.org,
-	jack@suse.cz,
-	julian.stecklina@cyberus-technology.de,
-	kees@kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-api@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-block@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev,
-	mcgrof@kernel.org,
-	mingo@redhat.com,
-	monstr@monstr.eu,
-	mzxreary@0pointer.de,
-	patches@lists.linux.dev,
-	rob@landley.net,
-	sparclinux@vger.kernel.org,
-	thomas.weissschuh@linutronix.de,
-	thorsten.blum@linux.dev,
-	torvalds@linux-foundation.org,
-	tytso@mit.edu,
-	viro@zeniv.linux.org.uk,
-	x86@kernel.org,
-	nschichan@freebox.fr
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-Date: Thu, 18 Sep 2025 17:28:30 +0200
-Message-Id: <20250918152830.438554-1-nschichan@freebox.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
-References: <20250913003842.41944-1-safinaskar@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250918_082942_851206_A95B5688 
-X-CRM114-Status: GOOD (  10.05  )
+	id 1uzHqz-00000000h6y-3h3U
+	for linux-um@lists.infradead.org;
+	Thu, 18 Sep 2025 16:51:29 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 42CFC60207;
+	Thu, 18 Sep 2025 16:51:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3747C4CEE7;
+	Thu, 18 Sep 2025 16:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758214288;
+	bh=yp8L8OFoCDjm8nPw/36nCqPVec7FhsvIlFISIRupVi0=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=YWyxlZiDde0/WKvsoDHkks4vgiC64/y67EDOEob0lVOZUwfVgwvc22FfsCu4tNuWW
+	 wiHuqk/TsC118dTi8jYUh5NBNDiNyMWbmvZutKLMkazz7QttADafyhMYTxvFZ4I0Hj
+	 c59hV8e+x+J7cGGxfszp1jm0ikRG3fhv9iVhcrJCm6jbGVqyCSQRpxBi4E+0I6sz8C
+	 /MDfMeE7YaxYj8d5ULIv9Pz4HWRlmlqW9s8YSTpVxa47Hh38C/VwmMCYokauxKeO6X
+	 8TvrWXC4I0gPji5G9MNCKY+n8jiVYprVyJEoy3Uq+O8BHaaVNINYocdP1oXrVx0IcA
+	 E6nvYxxON3Ugg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33CCE39D0C20;
+	Thu, 18 Sep 2025 16:51:30 +0000 (UTC)
+Subject: Re: [GIT PULL] uml-for-6.17-rc7
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250918082219.6652-3-johannes@sipsolutions.net>
+References: <20250918082219.6652-3-johannes@sipsolutions.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250918082219.6652-3-johannes@sipsolutions.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-6.17-rc7
+X-PR-Tracked-Commit-Id: df447a3b4a4b961c9979b4b3ffb74317394b9b40
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f03e578c8afe514c82ec9bd9af548b8fe08694e5
+Message-Id: <175821428869.2499383.4059485629785074863.pr-tracker-bot@kernel.org>
+Date: Thu, 18 Sep 2025 16:51:28 +0000
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,48 +74,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hello,
+The pull request you sent on Thu, 18 Sep 2025 10:20:47 +0200:
 
-> Intro
-> ====
-> This patchset removes classic initrd (initial RAM disk) support,
-> which was deprecated in 2020.
+> https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-6.17-rc7
 
-This serie came a bit as a surprise, because even though the message
-notifying of the initrd deprecation was added in July 2020, the message
-was never displayed on our kernels.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f03e578c8afe514c82ec9bd9af548b8fe08694e5
 
-When booting with root=/dev/ram0 in the kernel commandline,
-handle_initrd() where the deprecation message resides is never called,
-which is rather unfortunate (init/do_mounts_initrd.c):
-
-	if (rd_load_image("/initrd.image") && ROOT_DEV != Root_RAM0) {
-		init_unlink("/initrd.image");
-		handle_initrd(root_device_name); // shows the deprecation msg
-		return true;
-	}
-
-It is likely we are not the alone booting with that particular
-configuration, so other people are probably going to be surprised when
-initrd support is removed, because they never saw the deprecation
-message.
-
-We do depend on initrd support a lot on our embedded platforms (more
-than a million devices with a yearlyish upgrade to the latest
-kernel). If it eventually becomes removed this is going to impact us.
-
-We use an initrd squashfs4 image, because coming from a time where
-embedded flash devices were fragile, we avoid having the root
-filesystem directly mounted (even when read only) on the flash
-block/mtd device, and have the bootloader load the root filesystem as
-an initrd.
-
-We use a squashfs4 because we can mount it and keep it compressed. The
-kernel would decompress data on demand in the page cache, and evict it
-as needed.
-
-Regards,
+Thank you!
 
 -- 
-Nicolas Schichan
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
