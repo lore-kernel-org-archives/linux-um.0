@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A64CAC5A9
-	for <linux-um@archiver.kernel.org>; Thu, 18 Sep 2025 07:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF9CFCAC5A8
+	for <linux-um@archiver.kernel.org>; Thu, 18 Sep 2025 07:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=V2ZhXR0YE7Nfxy83gEc2kisuCO87If9KaW5qC95ko0I=; b=bOw2ncgJr5EfTx+i3M+22DFnMI
-	h2gDevOCuDpH9yTNTx5pPzy99600GoorfWmxWbagjLZEKJJMWGdeOka2589RErXlT0K1kWLKDQpR3
-	QCu6666acwtWjSOQ6n+/Qt14lxiTaGHpS5Q0iIrOW7+RchdHwZpBNYTmQK+7GirsYgwFusDVpZNnV
-	PTCPbiGpFFZz3245QctFL289GEL6ZwvR0W43/UduuyEovprqPjNylY9wfMK6XP9W18kw0aBP7pbPH
-	BRHXJbaxfmBYIQfdbjva4BkEDjpOSdOG9huIg2pUI0/1OSVkWNfs6oR0C6kAWfxkGnog4875WySRm
-	vHzjqm9Q==;
+	bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=; b=RfRIuR6RSQAReS2Q+O7yxxgA+P
+	cLb0EbSP+OBxAh3krqTIvqzcYTP5CgvR0CNFYQdHp/pkfJNPIhcTGdayTaMknZo1owwdUW1eqotjJ
+	N0NWR8eYBwKVfHsPmTV49bEtwUZ0QZGGNvLd/CKTx4H5VIUdfXI1stROC03vJQYvcswrLnakHDNTl
+	DlyxMRA8LYHW2DCWvKRsajjfRq7RSVzeLTUT1HgohnsIe2BzsP2pGK/Dq7zREgQhiwU9cuqWZcKKG
+	kl3d9YOhz4s8U/JPSI3sJSXLhtASVYVqB+VBBgc34JitsMg9sx1sTVhUZWt2gt8Lj/6gPXEgw1DMG
+	8wLQ6FpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uz9Eo-0000000GZCN-0oU2;
-	Thu, 18 Sep 2025 07:39:30 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1uz9Eq-0000000GZEs-2xZd;
+	Thu, 18 Sep 2025 07:39:32 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uz9El-0000000GZ9C-2Xck
+	id 1uz9Em-0000000GZA3-3grw
 	for linux-um@lists.infradead.org;
-	Thu, 18 Sep 2025 07:39:28 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-b54dc768f11so444239a12.0
-        for <linux-um@lists.infradead.org>; Thu, 18 Sep 2025 00:39:27 -0700 (PDT)
+	Thu, 18 Sep 2025 07:39:30 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-25669596921so6700565ad.1
+        for <linux-um@lists.infradead.org>; Thu, 18 Sep 2025 00:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758181167; x=1758785967; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1758181168; x=1758785968; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V2ZhXR0YE7Nfxy83gEc2kisuCO87If9KaW5qC95ko0I=;
-        b=PQYo/YFRPx0uPhufXoOPq4bcccI7vDmg7HvNSZJSQZkFfeFvItwh/sdO4xuazeTL8v
-         veTbXOJMLcCFeaqQMdIo2ynT+cFrwtM7cWhiu4oR3nt5rU2VLxyx4kc7HxaCIbdafb/V
-         Ge25YAl79ADEEsQzTPDrYV3YhG7VG6aiYc9N005QaxVWezd+u+Z60tTwOr5RO36bg7VM
-         oRuQMkbJz27q7WE8L9G/MgRgul9CXWAFrP5LEKhtYXu2ZvLA7Nrp1PvgkjsxDOzGBsKt
-         odObzugzToebBz55RoaJapRiEwQNE6RrPWE18ntzIOo4LvqtgmlZMV0UP+G8EBHUxQ5j
-         I5yA==
+        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
+        b=AyB8x2PJ7RmbkUvtNxuvH/8i8EomKU14aeb3N7XtRlnvAw2ZppsJJkzU5LWyiRRg/M
+         RtYcWN/+s3biQ4k97jKIZTA+PN3mX/gUj+tEJW9fX6i7t0VZpvp55VdEwaytjsS5e66u
+         NAAeyveBXiZVVB6ENWhxXUJvVIOV0opW1qAdB2xN3y3y28nyg1mq7D8gbJx38mjJj8pR
+         HlShXf1w5hdAVxTMTet6/v7gXsEP4JsgJDEZ73szpBfHtTQXHx/fEiFJvZAAMfgKroS9
+         AhDxntjdBes9BpBJAr8khaods7JbmiFwnrJXVDbHhnJYE+/hjlZjKxeW+wLqbf6EUxwA
+         pwrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758181167; x=1758785967;
+        d=1e100.net; s=20230601; t=1758181168; x=1758785968;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V2ZhXR0YE7Nfxy83gEc2kisuCO87If9KaW5qC95ko0I=;
-        b=RdJng5Op8FdKjzznU0diN39TfWOoW0KerEGqXEFirijvtkygOHd7Za7Vlb6bP7hzks
-         m1vRxVDM2pAfJsoDwGnmhJfkvemFq+mZVtx04heK9T90eQHtNz9SsV63sdrt3EF0flHu
-         kvcI1qfjQ1HN9B+hWl/hO0ZFfClPAtC6dIF4N/WIEH01Cjx6Kitt9UhuYKAhNdSRE5le
-         HWfHBjFO3qmb43WRfhYTIaR6hHKz8e+PCJ8pZmx0nJDNG0xHpRKI2lMA1094YS5eZBQ7
-         vTJkkmE10CA4y4nT1U6bfJMDVYEcmvkcHrhLFrOlZupefsH89JdvZLZ5WCs7WzoJbftQ
-         33CQ==
-X-Gm-Message-State: AOJu0YzyjwrC2ibVIIpbMiHmk2rLVY/N8XjIMuCxs/GoXfLiHRbU/5Su
-	/rQwhMz/jiIIGyn5ISp6H+WUKfAEY2juKgOxPWKyjwMWnxmWBbMBRDWJ
-X-Gm-Gg: ASbGnctpYJFxIykTsrLWNNuTC1ErDxdB5v287XqN4WImzM5NTUOlA/sK91Xfjbf8Y50
-	EqzAYtyP9wy/2giwC+Vbe5NUIOxcWmfVXJWlmOATDueKsJZGsc8xjG/N1vZkUtwcDXRaz30XiL8
-	9Wo2f+MyvF7c0W7zZRkkDoY5ZTuCNdm5g/44Y23LxSbaLPn6k64myoFbxUkgo/4Z8URgreMAqnS
-	TB1IQDnqYM7K17SMlLJbSE1WfiXOPqcGdQ2vROk9xijPuaHDeTksR+eHydVH5J4X2ZC8+BiWQ2C
-	NyQ+YHBpG7tJ2LWNG60r70iRA4oVwm6HXMkd7mJmBrMbeGvzRcacdqqeDfownM/NHyKmZw9Pnv6
-	F8nm5L0+w8LyhJkPOcPqv4Xzq3bZcVTCCKsJdTUgQAmLcop50yIEtA44dvsdf7QC+kUga33ktPP
-	prDPRVqF6RnkY=
-X-Google-Smtp-Source: AGHT+IHjSWiyqEzb5MNMMYKGgtg1QZjldXLgQ13c89UclmrpwhpwSkHln8AQ8xL2QwO/QKq/4gg/ng==
-X-Received: by 2002:a17:903:1a2d:b0:267:b6f9:2ce with SMTP id d9443c01a7336-268138fe357mr58795445ad.41.1758181166670;
-        Thu, 18 Sep 2025 00:39:26 -0700 (PDT)
+        bh=0G7VVQnGQtrb3sGnx5GNm2Y3zP47y1QHGJfHFp/BsUc=;
+        b=Ro3tjbkcLHQgoI+rXvlo7AF4u99+WIXDLJPE4QdsOB9Oa/EH9o8w13ldBkjscxrvAf
+         r4kdIYnTH+qzxc3kfnknMasBPP4ywmDIrKrqy5CZ/k0ng5uyHai6eUfm9tnARUq2IrrU
+         Bs6h1D7ukhlp8VUJYAHv9avAdpZtoECIjH6jPQdgsHGatEPQSPxKNsMp1ZyAqvzSPI48
+         H5K5doKivZlrG+KDMOr+Xhue4bKfIavhZBVsMKeuD/l9oFi5uxE4A8e7ls0byr5mqSER
+         lZZxzcC3BI+SEB6OSL4sxLTmyEauMNhu96fgs6qwh1lkvdV5dIuskAJX9pcmYE9KcQPf
+         SNsw==
+X-Gm-Message-State: AOJu0YxV984DJYjqL6IcTFAkEOIhJH2isXK1pr7acYAhvT0GrSIiBVqn
+	xev0I7Cispe3PSN6cLoM+HNraVCTbva5UH9aullC03XXBeISom4drLwS
+X-Gm-Gg: ASbGncvyyjmUj3boXkbG8xrOkfjrcT+bvWtzYuDkjRPAmqXYnL0KH3+8c5ip4S7GVL4
+	jU3wqfJs/Q4N8IzD0/u8RiYlOudbzW/vMLaI1apVQFnekKzw/4Ulz+I6KawYnliI7PCImX8br8F
+	SJCQOoe+/3KLBE3DEmBwQKegUkpR6qDvoTx6NsduEnBNZgfHU8HfQ83p7pp/DywQnzJ1pYNdcqo
+	SQ9gkwBn+XvVnihJAMwXiPZcpcNd/i5Q0nuoIytalUDKOfN8YihZoOnD0qParacvZLPKBrlt8CK
+	Mf0XpgQjoOfTupkVmaBYATPbd4MMKaZvQxJoTlh4QGzxo9sTO/nZOVhW2cl7/+3ZV0sM6qInl7r
+	QBhV61LioLbqelkHAfeJOqo7XmqPxkFsTLPMKZQaEROB/um5H+DGf2bDveb00SsbBfkzEOC0+0P
+	+s250GAaSNOiqayXDh6ZpFiA==
+X-Google-Smtp-Source: AGHT+IHNzuZzI3jPq8s+w/v0EJThDoVKmlAiVRMnAVUhLpF0S4fB/x53BdW1cn1NajqHcqRK1lVQ1g==
+X-Received: by 2002:a17:902:e807:b0:248:811e:f86c with SMTP id d9443c01a7336-268138fdf0bmr60148035ad.34.1758181167976;
+        Thu, 18 Sep 2025 00:39:27 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802e079esm16857425ad.91.2025.09.18.00.39.25
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-269802dfcfasm16349805ad.73.2025.09.18.00.39.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Sep 2025 00:39:25 -0700 (PDT)
+        Thu, 18 Sep 2025 00:39:26 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 325C51062108; Thu, 18 Sep 2025 16:39:24 +0900 (JST)
+	id 78363106210A; Thu, 18 Sep 2025 16:39:25 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v11 07/13] um: nommu: configure fs register on host syscall invocation
-Date: Thu, 18 Sep 2025 16:39:02 +0900
-Message-ID: <b847aabd15cc929781c6f2939706616778a36d5b.1758181109.git.thehajime@gmail.com>
+Subject: [PATCH RESEND v11 08/13] x86/um/vdso: nommu: vdso memory update
+Date: Thu, 18 Sep 2025 16:39:03 +0900
+Message-ID: <0f3c31aab253b7a76f96ba758150442d72b52ee4.1758181109.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1758181109.git.thehajime@gmail.com>
 References: <cover.1758181109.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250918_003927_661125_7A2FB77A 
-X-CRM114-Status: GOOD (  21.95  )
+X-CRM114-CacheID: sfid-20250918_003928_926675_07981271 
+X-CRM114-Status: GOOD (  14.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,274 +102,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-As userspace on UML/!MMU also need to configure %fs register when it is
-running to correctly access thread structure, host syscalls implemented
-in os-Linux drivers may be puzzled when they are called.  Thus it has to
-configure %fs register via arch_prctl(SET_FS) on every host syscalls.
+On !MMU mode, the address of vdso is accessible from userspace.  This
+commit implements the entry point by pointing a block of page address.
+
+This commit also add memory permission configuration of vdso page to be
+executable.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/include/shared/os.h       |  6 +++
- arch/um/os-Linux/process.c        |  6 +++
- arch/um/os-Linux/start_up.c       | 21 +++++++++
- arch/x86/um/nommu/do_syscall_64.c | 37 ++++++++++++++++
- arch/x86/um/nommu/syscalls_64.c   | 71 +++++++++++++++++++++++++++++++
- 5 files changed, 141 insertions(+)
+ arch/x86/um/vdso/vma.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 1251f08e26d0..7c6a8bc0447c 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -189,6 +189,7 @@ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
- extern void get_host_cpu_features(
- 	void (*flags_helper_func)(char *line),
- 	void (*cache_helper_func)(char *line));
-+extern int host_has_fsgsbase;
+diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
+index dc8dfb2abd80..1c8c39f87681 100644
+--- a/arch/x86/um/vdso/vma.c
++++ b/arch/x86/um/vdso/vma.c
+@@ -9,6 +9,7 @@
+ #include <asm/page.h>
+ #include <asm/elf.h>
+ #include <linux/init.h>
++#include <os.h>
  
- /* mem.c */
- extern int create_mem_file(unsigned long long len);
-@@ -213,6 +214,11 @@ extern int os_protect_memory(void *addr, unsigned long len,
- extern int os_unmap_memory(void *addr, int len);
- extern int os_drop_memory(void *addr, int length);
- extern int can_drop_memory(void);
-+extern int os_arch_prctl(int pid, int option, unsigned long *arg);
-+#ifndef CONFIG_MMU
-+extern long long host_fs;
+ static unsigned int __read_mostly vdso_enabled = 1;
+ unsigned long um_vdso_addr;
+@@ -21,14 +22,24 @@ static int __init init_vdso(void)
+ {
+ 	BUG_ON(vdso_end - vdso_start > PAGE_SIZE);
+ 
+-	um_vdso_addr = task_size - PAGE_SIZE;
+-
+ 	um_vdso = alloc_page(GFP_KERNEL);
+ 	if (!um_vdso)
+ 		goto oom;
+ 
+ 	copy_page(page_address(um_vdso), vdso_start);
+ 
++#ifdef CONFIG_MMU
++	um_vdso_addr = task_size - PAGE_SIZE;
++#else
++	/* this is fine with NOMMU as everything is accessible */
++	um_vdso_addr = (unsigned long)page_address(um_vdso);
++	os_protect_memory((void *)um_vdso_addr, vdso_end - vdso_start, 1, 0, 1);
 +#endif
 +
++	pr_info("vdso_start=%lx um_vdso_addr=%lx pg_um_vdso=%lx",
++	       (unsigned long)vdso_start, um_vdso_addr,
++	       (unsigned long)page_address(um_vdso));
++
+ 	return 0;
  
- void os_set_pdeathsig(void);
- 
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index bc598e661ec6..0a1d078dce19 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -16,6 +16,7 @@
- #include <sys/prctl.h>
- #include <sys/wait.h>
- #include <asm/unistd.h>
-+#include <sys/syscall.h>   /* For SYS_xxx definitions */
- #include <linux/threads.h>
- #include <init.h>
- #include <longjmp.h>
-@@ -177,6 +178,11 @@ int __init can_drop_memory(void)
- 	return ok;
+ oom:
+@@ -39,6 +50,7 @@ static int __init init_vdso(void)
  }
+ subsys_initcall(init_vdso);
  
-+int os_arch_prctl(int pid, int option, unsigned long *arg2)
-+{
-+	return syscall(SYS_arch_prctl, option, arg2);
-+}
-+
- void init_new_thread_signals(void)
++#ifdef CONFIG_MMU
+ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  {
- 	set_handler(SIGSEGV);
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 4e1f05360c49..55dd92bd2a0b 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -20,6 +20,8 @@
- #include <sys/resource.h>
- #include <asm/ldt.h>
- #include <asm/unistd.h>
-+#include <sys/auxv.h>
-+#include <asm/hwcap2.h>
- #include <init.h>
- #include <os.h>
- #include <kern_util.h>
-@@ -36,6 +38,8 @@
- #include <skas.h>
- #include "internal.h"
+ 	struct vm_area_struct *vma;
+@@ -63,3 +75,4 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  
-+int host_has_fsgsbase;
-+
- static void ptrace_child(void)
- {
- 	int ret;
-@@ -459,6 +463,20 @@ __uml_setup("seccomp=", uml_seccomp_config,
- "    This is insecure and should only be used with a trusted userspace\n\n"
- );
- 
-+static void __init check_fsgsbase(void)
-+{
-+	unsigned long auxv = getauxval(AT_HWCAP2);
-+
-+	os_info("Checking FSGSBASE instructions...");
-+	if (auxv & HWCAP2_FSGSBASE) {
-+		host_has_fsgsbase = 1;
-+		os_info("OK\n");
-+	} else {
-+		host_has_fsgsbase = 0;
-+		os_info("disabled\n");
-+	}
-+}
-+
- void __init os_early_checks(void)
- {
- 	int pid;
-@@ -484,6 +502,9 @@ void __init os_early_checks(void)
- 	using_seccomp = 0;
- 	check_ptrace();
- 
-+	/* probe fsgsbase instruction */
-+	check_fsgsbase();
-+
- 	pid = start_ptraced_child();
- 	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
-diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_syscall_64.c
-index 292d7c578622..9bc630995df9 100644
---- a/arch/x86/um/nommu/do_syscall_64.c
-+++ b/arch/x86/um/nommu/do_syscall_64.c
-@@ -2,10 +2,38 @@
- 
- #include <linux/kernel.h>
- #include <linux/ptrace.h>
-+#include <asm/fsgsbase.h>
-+#include <asm/prctl.h>
- #include <kern_util.h>
- #include <asm/syscall.h>
- #include <os.h>
- 
-+static int os_x86_arch_prctl(int pid, int option, unsigned long *arg2)
-+{
-+	if (!host_has_fsgsbase)
-+		return os_arch_prctl(pid, option, arg2);
-+
-+	switch (option) {
-+	case ARCH_SET_FS:
-+		wrfsbase(*arg2);
-+		break;
-+	case ARCH_SET_GS:
-+		wrgsbase(*arg2);
-+		break;
-+	case ARCH_GET_FS:
-+		*arg2 = rdfsbase();
-+		break;
-+	case ARCH_GET_GS:
-+		*arg2 = rdgsbase();
-+		break;
-+	default:
-+		pr_warn("%s: unsupported option: 0x%x", __func__, option);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- __visible void do_syscall_64(struct pt_regs *regs)
- {
- 	int syscall;
-@@ -13,6 +41,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
- 	syscall = PT_SYSCALL_NR(regs->regs.gp);
- 	UPT_SYSCALL_NR(&regs->regs) = syscall;
- 
-+	/* set fs register to the original host one */
-+	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
-+
- 	if (likely(syscall < NR_syscalls)) {
- 		unsigned long ret;
- 
-@@ -29,4 +60,10 @@ __visible void do_syscall_64(struct pt_regs *regs)
- 
- 	/* handle tasks and signals at the end */
- 	interrupt_end();
-+
-+	/* restore back fs register to userspace configured one */
-+	os_x86_arch_prctl(0, ARCH_SET_FS,
-+		      (void *)(current->thread.regs.regs.gp[FS_BASE
-+						     / sizeof(unsigned long)]));
-+
+ 	return IS_ERR(vma) ? PTR_ERR(vma) : 0;
  }
-diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls_64.c
-index d56027ebc651..19d23686fc5b 100644
---- a/arch/x86/um/nommu/syscalls_64.c
-+++ b/arch/x86/um/nommu/syscalls_64.c
-@@ -13,8 +13,70 @@
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <registers.h>
- #include <os.h>
-+#include <asm/thread_info.h>
-+#include <asm/mman.h>
- #include "syscalls.h"
- 
-+/*
-+ * The guest libc can change FS, which confuses the host libc.
-+ * In fact, changing FS directly is not supported (check
-+ * man arch_prctl). So, whenever we make a host syscall,
-+ * we should be changing FS to the original FS (not the
-+ * one set by the guest libc). This original FS is stored
-+ * in host_fs.
-+ */
-+long long host_fs = -1;
-+
-+long arch_prctl(struct task_struct *task, int option,
-+		unsigned long __user *arg2)
-+{
-+	long ret = -EINVAL;
-+	unsigned long *ptr = arg2, tmp;
-+
-+	switch (option) {
-+	case ARCH_SET_FS:
-+		if (host_fs == -1)
-+			os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
-+		ret = 0;
-+		break;
-+	case ARCH_SET_GS:
-+		ret = 0;
-+		break;
-+	case ARCH_GET_FS:
-+	case ARCH_GET_GS:
-+		ptr = &tmp;
-+		break;
-+	}
-+
-+	ret = os_arch_prctl(0, option, ptr);
-+	if (ret)
-+		return ret;
-+
-+	switch (option) {
-+	case ARCH_SET_FS:
-+		current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =
-+			(unsigned long) arg2;
-+		break;
-+	case ARCH_SET_GS:
-+		current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)] =
-+			(unsigned long) arg2;
-+		break;
-+	case ARCH_GET_FS:
-+		ret = put_user(current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)], arg2);
-+		break;
-+	case ARCH_GET_GS:
-+		ret = put_user(current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)], arg2);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
-+{
-+	return arch_prctl(current, option, (unsigned long __user *) arg2);
-+}
-+
- void arch_set_stack_to_current(void)
- {
- 	current_top_of_stack = task_top_of_stack(current);
-@@ -48,3 +110,12 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
- 
- 	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
- }
-+
-+static int __init um_nommu_setup_hostfs(void)
-+{
-+	/* initialize the host_fs value at boottime */
-+	os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
-+
-+	return 0;
-+}
-+arch_initcall(um_nommu_setup_hostfs);
++#endif
 -- 
 2.43.0
 
