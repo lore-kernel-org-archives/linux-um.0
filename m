@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88AF2CCD18B
-	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C4EFCCD18D
+	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M14+Hrw3+0xfvL7LtAKdftp5KA5xdtXGebEkX3FEMMU=; b=Ror1U6lt/MBHOL96C0lMPH0T4L
-	secwNZ44abL0Xj+rvyOvZu+xp/QANXfFbsgUrB90brwxuGBla45qccpsd/5gdW3TmKGksYoUTSA9M
-	VHIRW4Lx9IUtgQrlyNjdIPdOue536cqOH4Sdmjdqy7m3yy55ayOsv7ztR7EuObzMAUptW1iFR6pFO
-	YaHvhNw4eTEheJC7ieJssw2xIdLOAMyge2UcR5NTIoWUXez3CO1o7F/s9IR5KG8dd+mNkufROdKK8
-	1YtrJKDEjySQlpUEGrwKP+ODbi04ndvTK++BjyjzRv2o5NwjXdPjFhy4BcmXkQ/8UhpVdA+PCg8Os
-	epY4Kdbw==;
+	bh=GIzXOOEvZKeS6UuNgkU2k1mesw4I+NOSJCqENQl3gzM=; b=ZBbaGE7jjOQSeoDBxDar8NuYDH
+	B7d9/KBldRHfMs/QVO7pV7ZUtqYLPLJ5EgDeccpusMOca1By6hl0gtHpvJNyKT6J2GQYy5Vq8KRro
+	rsVOB8HZlgwR9zh5XhI04Ye8tjkIvuXopzEexUGrp8583WaLEFVqLO3jlUNspwEWKFDjqvSEbKj05
+	1nEsO+7VQzS/GLkgtD7tmci6PpLkb9QR8vFQewcj4LHCEmscorKBLWX9OL9suOgAxxCID5TnYc7yi
+	cAlR2XL0XmAzrwyXo7vH476Hes9UijnrZXy82Ju1kjWiUW5GQXon1dt5Rve8CTR2CVMuHmY7jl98/
+	p6pRvmEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k8o-0000000HZ7n-1DAa;
-	Mon, 06 Oct 2025 12:16:34 +0000
-Received: from fra-out-013.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([63.178.132.221])
+	id 1v5k8p-0000000HZAZ-2NUe;
+	Mon, 06 Oct 2025 12:16:35 +0000
+Received: from fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([35.158.23.94])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzYHU-00000002Y8z-1boU;
-	Fri, 19 Sep 2025 10:23:58 +0000
+	id 1uzYJW-00000002Yhk-3kyn;
+	Fri, 19 Sep 2025 10:26:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758277436; x=1789813436;
+  t=1758277562; x=1789813562;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=M14+Hrw3+0xfvL7LtAKdftp5KA5xdtXGebEkX3FEMMU=;
-  b=I7IK1GuIaLy5MfL08Rg4bsPusBnI7vCH5eff5CsKrPXxLWLVerKbjHT/
-   /SJYFxf01aaa4Wj1NxTdNHtQnc033S4krdMhmqhzCxwqu6yWl9xHvKH2x
-   OMN/rzDUTqG/UiONJq9vC7msrQHjXNXGDwu0jQA9SfNcsQcv1WooEeyhe
-   V5931TVzJAUziWWsMSak2h1OwPQYG4vorp5HsESevA1HMdjcqIj6h0sbw
-   qM+7wT8NItEhgMsInt3DT6A+Y6zYbmATruHhzm+t3JGh9QA5DL8CKWoU5
-   ONNpXHLFfh4S+S8a4NTeVFU/jxcnhWTxKddYXKX7TBWYCiJ/6xUDh9iNP
-   Q==;
-X-CSE-ConnectionGUID: tVddmQdzSSWtL5CWETEbBg==
-X-CSE-MsgGUID: BwlTxSfMRb+QOlcWG8kkaQ==
+  bh=GIzXOOEvZKeS6UuNgkU2k1mesw4I+NOSJCqENQl3gzM=;
+  b=dTSW2+azVKtkDe8atMGZl8SI7ZPWKVXluVH1aHZTKCWPcBsZmoGZo5W3
+   UDOfJyy/zNgai8SILqQqlt+6Ydk4JmN2He6p8rv4VKyrl1mFpvicz7yUt
+   hF/ZGMTk03iu9T3pwEKN1QThsHs6KzTGMktsiBVb2Ce6vTXhnsz48nEVN
+   FhftbCOAHZwfEanwW47idY5ssAy6SJWSFHXX5bHsY1qi2Vm1ELSr0FQvA
+   3yLWcQtOKzI7No+RVcaoWqvBNw4x95J488z34k0wU0C5mH3xV7Ynkbv24
+   A0R/24zw6UxfyZnSw4LfNCy1vqJTOJ375tY8T2OOkw3WzL43VLZNWAvRu
+   A==;
+X-CSE-ConnectionGUID: GnJYQOCURXS5tKMGKz6qeg==
+X-CSE-MsgGUID: f+VeJMC+ReCYjCS4f1VH5g==
 X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
-   d="scan'208";a="2264307"
+   d="scan'208";a="2371869"
 Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
-  by internal-fra-out-013.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:23:54 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [54.240.197.225:6079]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.0.240:2525] with esmtp (Farcaster)
- id adafa649-7e2b-48cb-b9f9-f9d8c19f03d6; Fri, 19 Sep 2025 10:23:53 +0000 (UTC)
-X-Farcaster-Flow-ID: adafa649-7e2b-48cb-b9f9-f9d8c19f03d6
+  by internal-fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:26:00 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:7660]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.47.2:2525] with esmtp (Farcaster)
+ id 717db8ea-17d3-48fa-ae30-17dc6560dc2f; Fri, 19 Sep 2025 10:26:00 +0000 (UTC)
+X-Farcaster-Flow-ID: 717db8ea-17d3-48fa-ae30-17dc6560dc2f
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ EX19MTAEUA001.ant.amazon.com (10.252.50.192) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 19 Sep 2025 10:23:50 +0000
+ Fri, 19 Sep 2025 10:25:59 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
- 10:23:22 +0000
+ 10:25:30 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -104,11 +104,12 @@ To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<stable@vger.kernel.org>
-CC: <jonnyc@amazon.com>, Christoph Hellwig <hch@infradead.org>, Linus Torvalds
-	<torvalds@linux-foundation.org>
-Subject: [PATCH 10/27 5.10.y] minmax: allow comparisons of 'int' against 'unsigned char/short'
-Date: Fri, 19 Sep 2025 10:17:10 +0000
-Message-ID: <20250919101727.16152-11-farbere@amazon.com>
+CC: <jonnyc@amazon.com>, Linus Torvalds <torvalds@linux-foundation.org>,
+	"David Laight" <David.Laight@aculab.com>, Lorenzo Stoakes
+	<lorenzo.stoakes@oracle.com>
+Subject: [PATCH 14/27 5.10.y] minmax: simplify and clarify min_t()/max_t() implementation
+Date: Fri, 19 Sep 2025 10:17:14 +0000
+Message-ID: <20250919101727.16152-15-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 References: <20250919101727.16152-1-farbere@amazon.com>
@@ -116,11 +117,12 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [172.19.116.181]
-X-ClientProxiedBy: EX19D032UWA003.ant.amazon.com (10.13.139.37) To
+X-ClientProxiedBy: EX19D035UWB004.ant.amazon.com (10.13.138.104) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_032356_716854_BF3B5D54 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20250919_032603_229617_E2CFF986 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:26 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,42 +138,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: David Laight <David.Laight@ACULAB.COM>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 4ead534fba42fc4fd41163297528d2aa731cd121 ]
+[ Upstream commit 017fa3e89187848fd056af757769c9e66ac3e93d ]
 
-Since 'unsigned char/short' get promoted to 'signed int' it is safe to
-compare them against an 'int' value.
+This simplifies the min_t() and max_t() macros by no longer making them
+work in the context of a C constant expression.
 
-Link: https://lkml.kernel.org/r/8732ef5f809c47c28a7be47c938b28d4@AcuMS.aculab.com
-Signed-off-by: David Laight <david.laight@aculab.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+That means that you can no longer use them for static initializers or
+for array sizes in type definitions, but there were only a couple of
+such uses, and all of them were converted (famous last words) to use
+MIN_T/MAX_T instead.
+
+Cc: David Laight <David.Laight@aculab.com>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/minmax.h | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c0e738eacefa..842c1db62ffe 100644
+index a7ef65f78933..9c2848abc804 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -26,8 +26,9 @@
- 	__builtin_choose_expr(__is_constexpr(is_signed_type(typeof(x))),	\
- 		is_signed_type(typeof(x)), 0)
+@@ -45,17 +45,20 @@
  
--#define __types_ok(x, y) \
--	(__is_signed(x) == __is_signed(y))
-+#define __types_ok(x, y) 			\
-+	(__is_signed(x) == __is_signed(y) ||	\
-+		__is_signed((x) + 0) == __is_signed((y) + 0))
+ #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
  
- #define __cmp_op_min <
- #define __cmp_op_max >
+-#define __cmp_once(op, x, y, unique_x, unique_y) ({	\
+-	typeof(x) unique_x = (x);			\
+-	typeof(y) unique_y = (y);			\
++#define __cmp_once_unique(op, type, x, y, ux, uy) \
++	({ type ux = (x); type uy = (y); __cmp(op, ux, uy); })
++
++#define __cmp_once(op, type, x, y) \
++	__cmp_once_unique(op, type, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
++
++#define __careful_cmp_once(op, x, y) ({			\
+ 	static_assert(__types_ok(x, y),			\
+ 		#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
+-	__cmp(op, unique_x, unique_y); })
++	__cmp_once(op, __auto_type, x, y); })
+ 
+ #define __careful_cmp(op, x, y)					\
+ 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
+-		__cmp(op, x, y),				\
+-		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
++		__cmp(op, x, y), __careful_cmp_once(op, x, y))
+ 
+ #define __clamp(val, lo, hi)	\
+ 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+@@ -158,7 +161,7 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define min_t(type, x, y)	__careful_cmp(min, (type)(x), (type)(y))
++#define min_t(type, x, y) __cmp_once(min, type, x, y)
+ 
+ /**
+  * max_t - return maximum of two values, using the specified type
+@@ -166,7 +169,7 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
++#define max_t(type, x, y) __cmp_once(max, type, x, y)
+ 
+ /*
+  * Do not check the array parameter using __must_be_array().
 -- 
 2.47.3
 
