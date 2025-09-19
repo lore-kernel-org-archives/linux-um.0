@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B345CAC5AC
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87357CAC5AD
 	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=I1cm2is+Xgw+x+T3m8uuoGo4E722CtwyukEZGpVjsa4=; b=UN0+tTP4IcH+09owMOov1BBc2N
-	R43AhUh1u/0fmmMnOyopk+euqFPJOnhmlgr1f5WN9FFIyvi29unJmQXw3ldw2QVjuS1irFN9gFLOo
-	gr7jubZReJya9oWvFXsl6SMRFDHRgeGX/Hi3IsxCoiBvok1Wteqt4V1M2Vt6SPBnLciJjmFR/lOPa
-	q43N18pbiXs/DtQwtcw9icJOjUso8a31U7VUmTm8ga9ZANlLe0iMh4tESnfI8ljxQzEJhFPWFt8Tb
-	HU4/DM9oLG5IZNI+9vYRJK2sllqxZAxcZI2VzCsbmvuDf9WQf/r7+voWTHEbqIAtptq5RAYSao1E0
-	hI7+R2Mg==;
+	bh=Wzmf8ozQSXaIG/+ku6O06QBDiFnQHnI35uzHRTGApx4=; b=LhAir5vkiK93Oq+eaMD7q/wt22
+	5GIv+bk2mmPbqk22zMY4i86W8xmG0wzn0wd43UA0oIshfu9r23VFOTkYTPKEJV3WI+sJy5v9uOObj
+	2Jv93kKh6NVR+ALu6HJWlJ3OLxydtOlztTql7bAwAXDOjS04b66fN41YMf415kbMuZj5JRkHzfc2t
+	85f7A9GPht0hOtuuGyF3TfYuf2yz5cz3nKo139fea+KdKuKqyXaufkaYYQIbKTBJI6iRnENhHGFbO
+	a87CJ2v4pN2EmWDztrjtsLLPw7HVlo06n6sINXjxueHWk/OvEq0iVrBht+TBkCSif7tk+MQscBySj
+	1HUTPlKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9e-00000003MFc-3y0x;
-	Fri, 19 Sep 2025 15:36:10 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uzd9f-00000003MG1-105h;
+	Fri, 19 Sep 2025 15:36:11 +0000
+Received: from s3.sipsolutions.net ([168.119.38.16] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9b-00000003MCH-48PH
+	id 1uzd9b-00000003MBJ-22gY
 	for linux-um@lists.infradead.org;
 	Fri, 19 Sep 2025 15:36:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:Content-Type:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=I1cm2is+Xgw+x+T3m8uuoGo4E722CtwyukEZGpVjsa4=;
-	t=1758296167; x=1759505767; b=TJ65o6dbsp4D9czSBh4D2YKGyEsXcmRjoiCy0CN3MejLGWx
-	v8gnRi13fBztYIhpyk7FmdW/glsHx+DHMfq0p3owTcpJ6ssltv8V7sBf9+DEBBDUXb5cC4CbjrUSt
-	SnwjHr5MpM9R7coXW7mAoO05bGnUzTQG1+SYzpHUArbk1Inn45k0u+lzBqO0nHe275wcjqYI3iIPQ
-	XfR7AVFs+gcrwKkIJ+1cFx9/hmmNW8q/ZXdUXhXV1+4wFSlhkek4osUj3zL967VHhDXrIMh9EdeDb
-	qzn7ECKACaYw3bDrTTI/U9KO7BiMDvxjiVJhKIjIAq5XMcI+0F94i8A9BCzKIx3A==;
+	Resent-Cc:Resent-Message-ID; bh=Wzmf8ozQSXaIG/+ku6O06QBDiFnQHnI35uzHRTGApx4=;
+	t=1758296167; x=1759505767; b=Bn7yr6WXMzv4W6iEFHWC4z16M6HR+yHNvRb6FQTvMCUFNC2
+	Yamly5mty4+1ZSq6ouky6NTLMMUenHDcl5EqLnfNx4RoLcLfclu8avXXthuZ7tEwhdMLi4zD4Af+D
+	zE7D2MNF/ePa0wqPReNKKln5dZ1gNgEAhGEw8cfp9sA6Fu9gDWrWkg/TXdE68YjBVcMdLJPJQDXIy
+	k3r0nfvmmtsOol3NobwEA63q3Qac4jGnozTwQHTPmjboIahbiPfYsQ5ZYRgesjlkZdtOnTWrSXlc0
+	HygO3uyyaU28usRvWdH4zYaP7x/7bpavAm8JDAWvdgBkPYUThDKkKeavayhaniAQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uzd9Z-0000000G6O6-2S7E;
-	Fri, 19 Sep 2025 17:36:05 +0200
+	id 1uzd9V-0000000G6O6-1ALo;
+	Fri, 19 Sep 2025 17:36:01 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org,
 	Willy Tarreau <w@1wt.eu>,
@@ -50,9 +50,9 @@ To: linux-um@lists.infradead.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: linux-kernel@vger.kernel.org,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2 05/11] tools/nolibc: use __fallthrough__ rather than fallthrough
-Date: Fri, 19 Sep 2025 17:34:14 +0200
-Message-ID: <20250919153420.727385-6-benjamin@sipsolutions.net>
+Subject: [PATCH v2 03/11] tools/nolibc/stdio: remove perror if NOLIBC_IGNORE_ERRNO is set
+Date: Fri, 19 Sep 2025 17:34:12 +0200
+Message-ID: <20250919153420.727385-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250919153420.727385-1-benjamin@sipsolutions.net>
 References: <20250919153420.727385-1-benjamin@sipsolutions.net>
@@ -61,8 +61,9 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_083608_022899_C16BA555 
-X-CRM114-Status: GOOD (  10.46  )
+X-CRM114-CacheID: sfid-20250919_083607_523837_FF281A6B 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,30 +80,34 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-Use the version of the attribute with underscores to avoid issues if
-fallthrough has been defined by another header file already.
+There is no errno variable when NOLIBC_IGNORE_ERRNO is defined. As such,
+the perror function does not make any sense then and cannot compile.
 
+Fixes: acab7bcdb1bc ("tools/nolibc/stdio: add perror() to report the errno value")
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 Acked-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- tools/include/nolibc/compiler.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/include/nolibc/stdio.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/include/nolibc/compiler.h b/tools/include/nolibc/compiler.h
-index 369cfb5a0e78..87090bbc53e0 100644
---- a/tools/include/nolibc/compiler.h
-+++ b/tools/include/nolibc/compiler.h
-@@ -41,8 +41,8 @@
- #  define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
- #endif /* __nolibc_has_attribute(no_stack_protector) */
+diff --git a/tools/include/nolibc/stdio.h b/tools/include/nolibc/stdio.h
+index 7630234408c5..c512159b8374 100644
+--- a/tools/include/nolibc/stdio.h
++++ b/tools/include/nolibc/stdio.h
+@@ -597,11 +597,13 @@ int sscanf(const char *str, const char *format, ...)
+ 	return ret;
+ }
  
--#if __nolibc_has_attribute(fallthrough)
--#  define __nolibc_fallthrough do { } while (0); __attribute__((fallthrough))
-+#if __nolibc_has_attribute(__fallthrough__)
-+#  define __nolibc_fallthrough do { } while (0); __attribute__((__fallthrough__))
- #else
- #  define __nolibc_fallthrough do { } while (0)
- #endif /* __nolibc_has_attribute(fallthrough) */
++#ifndef NOLIBC_IGNORE_ERRNO
+ static __attribute__((unused))
+ void perror(const char *msg)
+ {
+ 	fprintf(stderr, "%s%serrno=%d\n", (msg && *msg) ? msg : "", (msg && *msg) ? ": " : "", errno);
+ }
++#endif
+ 
+ static __attribute__((unused))
+ int setvbuf(FILE *stream __attribute__((unused)),
 -- 
 2.51.0
 
