@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B7B7CCD184
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B913ACCA471
 	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,53 +12,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=U4cCFbpHvYq8yWCMIbT6T5sZXi6GGX+iNVIOVWCWFxY=; b=5BYlIsNMSYhkXDRvQwvuWYJtL8
-	zBcA8C1cZl4dTDbDjeoeP/D1+L1saRuzSQkQRwFXpTfE381fo8+n0J0I/mdzUcbXrb1TsIlg4z9WH
-	7/MrrV3Th/Z03ocbpkchRi7yLaGEbEw4nO9vuaHQhuDk+yjeNZwPZp9MH2XIaE+90jlLkJMKVAliN
-	fxXVlXPacg26d8gN42hOAxLFh/LkmI9Uy2yccSjDZr0gkG5n2ER28j1Tgw54DhsOs+83Y8hSBySij
-	kXcH5goyAp4Q60cwz0X9r8Iq/z0C0zNwOM9BStCQ6IT2FFGwi6B4UVAd70nhoBKh86zlJpCd5YlvE
-	WRZwVtkQ==;
+	bh=eLjmOO9Imra/tK5RPFIsLXDdpmNXUJwWiKD0++d4PGI=; b=oWxMks4omygnU0DOKweFcOnPnL
+	qXFXZ5XE0MwMsY/zyeMd3T4B2XcTTol3TgkE6S33YKjOnmTEG7PffJAWUOvchzPss3WsayfOHtnCH
+	ateXBBus0n2/fDSrIfDvGC9qID3HDoYRBhWRPqfa6pTgIFEsiZ0NBIuZ4/p8glEwp8cr9GbHlZjX/
+	QZ2D68XPaIyTB0D7pHzSvkd8AfgRutAKVrwL3e+ItRaWpVh8Lw3x1+T1TNMCrFFv+byPuS7nryQ1p
+	jafRqOGGACi3LthbaO2/Ox3h44NL6zApTDrvJNyH3jtGkaIoPVoDLVoC8+Vf6TcazUxkQH2+ua7xF
+	CrxcOqYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k8x-0000000HZPs-3abg;
-	Mon, 06 Oct 2025 12:16:43 +0000
-Received: from fra-out-007.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.75.33.185])
+	id 1v5k8y-0000000HZQR-3HfU;
+	Mon, 06 Oct 2025 12:16:44 +0000
+Received: from fra-out-009.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.64.237.68])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzYPN-00000002aKK-4AO7
+	id 1uzYPo-00000002aTE-3acy
 	for linux-um@lists.infradead.org;
-	Fri, 19 Sep 2025 10:32:07 +0000
+	Fri, 19 Sep 2025 10:32:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758277926; x=1789813926;
+  t=1758277952; x=1789813952;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=U4cCFbpHvYq8yWCMIbT6T5sZXi6GGX+iNVIOVWCWFxY=;
-  b=txb0j/+emXM1iklA7hvVh+qt5Asrux+/HAWSIQ0CoxdXJg2XTKYBD+WM
-   AiIQsi2V8WF6E56X/Msbm7n311hGQG8yqcAmg7/5vUprEp/UfuzMiVp9B
-   SsLlqBubUIjAcSkaBUKzWf5OLoxf5hcBuU3/tJSscSgd1zuXL9r9HDVOf
-   sgQma2qVoNWroywk5CSh/OzJvr8lWkoTkPiqpYwB5i7+HAJw+DpFcFXW4
-   sBo4ZFNjQreus8g5pzDA9DfZ+no8oZFUPJrhePmewKUp582NY1daW2lpQ
-   9WEu5fPmgt8O0ANHoJa6V9dy8cl/vuCRl9wgxLyxaaYHKHNgHvmGSixt/
+  bh=eLjmOO9Imra/tK5RPFIsLXDdpmNXUJwWiKD0++d4PGI=;
+  b=hwJhngjPQomwsUHHvllXDP51nndkhJ49cPaaErxtR1ht7igG5zfqOKw+
+   FuXd7V54dELgBZTTrVuEBJb7CpetWANu4Oy43nrLNpa4X3PO4Gz6oXVAs
+   sk7hiNNQVLKTQ18mtrXeIOSx1x8H/qLUNJlt3bK3M154rc6Li6q8esQVq
+   waPrbAesR+YOyUvPHx14PI4Voy5ZLj3Mxz2WK+SyHWGnoXMB51x5OHl8U
+   3TI49BNymHlhrAFLfvC1zmEW10Tkmg+1M0ic79sNOnj8n3QDOfHzzobAt
+   4NQQU57RxLlPzR3y6nCrANPc3zsqV4uMAY9ERwO5SVMODHZMnKG0umAYt
    w==;
-X-CSE-ConnectionGUID: quwTzkzJROGYhcrM+53Few==
-X-CSE-MsgGUID: 1EL6kEutQc+IuqNFDpLwLQ==
+X-CSE-ConnectionGUID: vdA2C0QkSVWjh2y4pmmbHQ==
+X-CSE-MsgGUID: VWm2OCqVTx+ZhWd1vE2i8A==
 X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
-   d="scan'208";a="2371334"
-Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-007.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:32:01 +0000
-Received: from EX19MTAEUB001.ant.amazon.com [54.240.197.234:5712]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.30.197:2525] with esmtp (Farcaster)
- id be283435-235b-4e3d-b812-a92e660027ab; Fri, 19 Sep 2025 10:32:01 +0000 (UTC)
-X-Farcaster-Flow-ID: be283435-235b-4e3d-b812-a92e660027ab
+   d="scan'208";a="2268151"
+Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
+  by internal-fra-out-009.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:32:31 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [54.240.197.234:12485]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.47.2:2525] with esmtp (Farcaster)
+ id 0bda78a6-26df-4d94-af87-ffa8e1eddac5; Fri, 19 Sep 2025 10:32:30 +0000 (UTC)
+X-Farcaster-Flow-ID: 0bda78a6-26df-4d94-af87-ffa8e1eddac5
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
  EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 19 Sep 2025 10:32:00 +0000
+ Fri, 19 Sep 2025 10:32:30 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
- 10:31:31 +0000
+ 10:32:00 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -109,9 +109,9 @@ CC: <jonnyc@amazon.com>, Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig
 	<hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, Jens Axboe
 	<axboe@kernel.dk>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Mateusz
  Guzik" <mjguzik@gmail.com>, Pedro Falcato <pedro.falcato@gmail.com>
-Subject: [PATCH 24/27 5.10.y] minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
-Date: Fri, 19 Sep 2025 10:17:24 +0000
-Message-ID: <20250919101727.16152-25-farbere@amazon.com>
+Subject: [PATCH 25/27 5.10.y] minmax.h: move all the clamp() definitions after the min/max() ones
+Date: Fri, 19 Sep 2025 10:17:25 +0000
+Message-ID: <20250919101727.16152-26-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 References: <20250919101727.16152-1-farbere@amazon.com>
@@ -122,8 +122,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D038UWC002.ant.amazon.com (10.13.139.238) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_033206_320823_8F056889 
-X-CRM114-Status: GOOD (  10.58  )
+X-CRM114-CacheID: sfid-20250919_033233_194250_B41F5790 
+X-CRM114-Status: GOOD (  17.48  )
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:27 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -141,13 +141,13 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit a5743f32baec4728711bbc01d6ac2b33d4c67040 ]
+[ Upstream commit c3939872ee4a6b8bdcd0e813c66823b31e6e26f7 ]
 
-Use BUILD_BUG_ON_MSG(statically_true(ulo > uhi), ...) for the sanity check
-of the bounds in clamp().  Gives better error coverage and one less
-expansion of the arguments.
+At some point the definitions for clamp() got added in the middle of the
+ones for min() and max().  Re-order the definitions so they are more
+sensibly grouped.
 
-Link: https://lkml.kernel.org/r/34d53778977747f19cce2abb287bb3e6@AcuMS.aculab.com
+Link: https://lkml.kernel.org/r/8bb285818e4846469121c8abc3dfb6e2@AcuMS.aculab.com
 Signed-off-by: David Laight <david.laight@aculab.com>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Arnd Bergmann <arnd@kernel.org>
@@ -162,23 +162,162 @@ Cc: Pedro Falcato <pedro.falcato@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/minmax.h | 109 +++++++++++++++++++----------------------
+ 1 file changed, 51 insertions(+), 58 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 6f7ea669d305..91aa1b90c1bb 100644
+index 91aa1b90c1bb..75fb7a6ad4c6 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -106,8 +106,7 @@
- 	__auto_type uval = (val);						\
- 	__auto_type ulo = (lo);							\
- 	__auto_type uhi = (hi);							\
--	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
--			(lo) <= (hi), true),					\
+@@ -99,22 +99,6 @@
+ #define __careful_cmp(op, x, y) \
+ 	__careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
+ 
+-#define __clamp(val, lo, hi)	\
+-	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+-
+-#define __clamp_once(val, lo, hi, uval, ulo, uhi) ({				\
+-	__auto_type uval = (val);						\
+-	__auto_type ulo = (lo);							\
+-	__auto_type uhi = (hi);							\
+-	BUILD_BUG_ON_MSG(statically_true(ulo > uhi),				\
+-		"clamp() low limit " #lo " greater than high limit " #hi);	\
+-	BUILD_BUG_ON_MSG(!__types_ok3(uval, ulo, uhi),				\
+-		"clamp("#val", "#lo", "#hi") signedness error");		\
+-	__clamp(uval, ulo, uhi); })
+-
+-#define __careful_clamp(val, lo, hi) \
+-	__clamp_once(val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
+-
+ /**
+  * min - return minimum of two values of the same or compatible types
+  * @x: first value
+@@ -170,6 +154,22 @@
+ #define max3(x, y, z) \
+ 	__careful_op3(max, x, y, z, __UNIQUE_ID(x_), __UNIQUE_ID(y_), __UNIQUE_ID(z_))
+ 
++/**
++ * min_t - return minimum of two values, using the specified type
++ * @type: data type to use
++ * @x: first value
++ * @y: second value
++ */
++#define min_t(type, x, y) __cmp_once(min, type, x, y)
++
++/**
++ * max_t - return maximum of two values, using the specified type
++ * @type: data type to use
++ * @x: first value
++ * @y: second value
++ */
++#define max_t(type, x, y) __cmp_once(max, type, x, y)
++
+ /**
+  * min_not_zero - return the minimum that is _not_ zero, unless both are zero
+  * @x: value1
+@@ -180,6 +180,22 @@
+ 	typeof(y) __y = (y);			\
+ 	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
+ 
++#define __clamp(val, lo, hi)	\
++	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
++
++#define __clamp_once(val, lo, hi, uval, ulo, uhi) ({				\
++	__auto_type uval = (val);						\
++	__auto_type ulo = (lo);							\
++	__auto_type uhi = (hi);							\
 +	BUILD_BUG_ON_MSG(statically_true(ulo > uhi),				\
- 		"clamp() low limit " #lo " greater than high limit " #hi);	\
- 	BUILD_BUG_ON_MSG(!__types_ok3(uval, ulo, uhi),				\
- 		"clamp("#val", "#lo", "#hi") signedness error");		\
++		"clamp() low limit " #lo " greater than high limit " #hi);	\
++	BUILD_BUG_ON_MSG(!__types_ok3(uval, ulo, uhi),				\
++		"clamp("#val", "#lo", "#hi") signedness error");		\
++	__clamp(uval, ulo, uhi); })
++
++#define __careful_clamp(val, lo, hi) \
++	__clamp_once(val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
++
+ /**
+  * clamp - return a value clamped to a given range with strict typechecking
+  * @val: current value
+@@ -191,28 +207,30 @@
+  */
+ #define clamp(val, lo, hi) __careful_clamp(val, lo, hi)
+ 
+-/*
+- * ..and if you can't take the strict
+- * types, you can specify one yourself.
+- *
+- * Or not use min/max/clamp at all, of course.
+- */
+-
+ /**
+- * min_t - return minimum of two values, using the specified type
+- * @type: data type to use
+- * @x: first value
+- * @y: second value
++ * clamp_t - return a value clamped to a given range using a given type
++ * @type: the type of variable to use
++ * @val: current value
++ * @lo: minimum allowable value
++ * @hi: maximum allowable value
++ *
++ * This macro does no typechecking and uses temporary variables of type
++ * @type to make all the comparisons.
+  */
+-#define min_t(type, x, y) __cmp_once(min, type, x, y)
++#define clamp_t(type, val, lo, hi) __careful_clamp((type)(val), (type)(lo), (type)(hi))
+ 
+ /**
+- * max_t - return maximum of two values, using the specified type
+- * @type: data type to use
+- * @x: first value
+- * @y: second value
++ * clamp_val - return a value clamped to a given range using val's type
++ * @val: current value
++ * @lo: minimum allowable value
++ * @hi: maximum allowable value
++ *
++ * This macro does no typechecking and uses temporary variables of whatever
++ * type the input argument @val is.  This is useful when @val is an unsigned
++ * type and @lo and @hi are literals that will otherwise be assigned a signed
++ * integer type.
+  */
+-#define max_t(type, x, y) __cmp_once(max, type, x, y)
++#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
+ 
+ /*
+  * Do not check the array parameter using __must_be_array().
+@@ -257,31 +275,6 @@
+  */
+ #define max_array(array, len) __minmax_array(max, array, len)
+ 
+-/**
+- * clamp_t - return a value clamped to a given range using a given type
+- * @type: the type of variable to use
+- * @val: current value
+- * @lo: minimum allowable value
+- * @hi: maximum allowable value
+- *
+- * This macro does no typechecking and uses temporary variables of type
+- * @type to make all the comparisons.
+- */
+-#define clamp_t(type, val, lo, hi) __careful_clamp((type)(val), (type)(lo), (type)(hi))
+-
+-/**
+- * clamp_val - return a value clamped to a given range using val's type
+- * @val: current value
+- * @lo: minimum allowable value
+- * @hi: maximum allowable value
+- *
+- * This macro does no typechecking and uses temporary variables of whatever
+- * type the input argument @val is.  This is useful when @val is an unsigned
+- * type and @lo and @hi are literals that will otherwise be assigned a signed
+- * integer type.
+- */
+-#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
+-
+ static inline bool in_range64(u64 val, u64 start, u64 len)
+ {
+ 	return (val - start) < len;
 -- 
 2.47.3
 
