@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08CEBCCD187
-	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B959CCD18A
+	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jAlxXvtF6wZ1RF0/zktk6f5ZtKHAgPghtBG8hJeCJz4=; b=MhQG0Qwv8X1DjySfqGPT2ae0vd
-	5v4cHsgP7X4Ve5OS+9YrmqtoGGIYNVe9X7KGq6POxGaaG4d9dDxyZnrUtU67BAElqMW5tRClaANuh
-	39tcZ4Y6nzJDQdlqKz+cC3ZUHAZZ69I9Lh+1bwS72Y1jhFoLfH4nC8f6upNZsy9K1ek2R3FzazYVh
-	l4wGbsBj2/E3fovuFP8hqzuTDwuEQ96QQmXPZNWU5R50MpYUM0PEfphxoLgUMkkKriqhlD62UfeQd
-	a3JsqmYEh0jSNS9gUISJI8u27Qosu7/v0eLKrOAkGgHRuo5m8hRWGWUfjkf5m8j5eNo33XQj1hNoa
-	lnug+yGQ==;
+	bh=QbgnO9UxPmlnTs9ErmugBQ9uOmZYt7P0wc2omnh3GaU=; b=Dwi84WegE0eg8WtSjs6wr6YUPo
+	j/v5bw3Bw9bF6aNlay8TMRH6SHRwSxd7wwAtKoO0syoGCFJNod6eEP92l06WqFF8KDMGp/Sl/wBVO
+	xfzgYPG+zJAvwJpyq2gz2wcbsAL+iwl4Ml+8LVa4K+tAls7kw8EC5NoaWJ6SdUAOaQ6v/cKbFpP0u
+	g3QuSs47a1ZD/KKzUgVqtZTMPnL/EUQMJKLrxBbiE05xG4B+ygnH9gkCGg4UCV1xHG4fB4Oq4Fr2Q
+	xIEeRfb+uF9DwamywzYgFEJZESPNmrQJNwMBARPfbg36FttHxMUrsyO4LLW6Wq/EFwU1U8jknj/Gi
+	yARtHpig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k8m-0000000HZ58-3K0M;
-	Mon, 06 Oct 2025 12:16:32 +0000
-Received: from fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.72.182.33])
+	id 1v5k8n-0000000HZ7S-44yb;
+	Mon, 06 Oct 2025 12:16:33 +0000
+Received: from fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([18.156.205.64])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzYEn-00000002XG1-3lyz;
-	Fri, 19 Sep 2025 10:21:12 +0000
+	id 1uzYGy-00000002XxX-44uD;
+	Fri, 19 Sep 2025 10:23:27 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758277270; x=1789813270;
+  t=1758277405; x=1789813405;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jAlxXvtF6wZ1RF0/zktk6f5ZtKHAgPghtBG8hJeCJz4=;
-  b=bjd6QN7zLSGvhiE/3c2i+xSKGXhUDyhL3UNnyeEd1C6QAXzSUATTE54L
-   uh3/JWHVIgGez06WkTGhHgGLzpwyGTPtkgVPNI51rjQZGjLM4Hm4Beo8S
-   uUZsZwH8zrMYwzUxzzAzCI/+Wpg5olG7bNVwQvQc5e2xV7D9WU2nccODY
-   XgAhzDEqXp3Y6pSgGwTfn3ne/ypCJ7a1v1zMrbkcnuwKxPMRDRXhU/O76
-   T8trv6PxQTdKTYDJoE2zVdsqvdbihzqVrNEOW1G4NFZ4Dd5KkoaLg46LE
-   qM5Zfu18KU6SttHCpnVfSNw0tFNcz0+WWAbypSsdvACVpTizWcSLLYnYZ
+  bh=QbgnO9UxPmlnTs9ErmugBQ9uOmZYt7P0wc2omnh3GaU=;
+  b=sumI3pChfVrDH3ZdqFSUK9qjC02AqfimKUNR3E2lYfPKOzyFtHGXaxRA
+   pFafOAiuy3UFVfsI4+2+ov2ZmF8O6gKMdhU/YI1+wolf0KyUhniGFdjUU
+   mBxUjG2hBTxghT4/wokiZ7r9bk8zuPyW75bNThlW/uRuneM53G4Nq82UA
+   0GyXKIUZZbi+grIIuZGLoZEJ87UJYouxnU4WBBFd3CMyrsVt6DOUUUw5I
+   sN5x+rkeeMfqfdks6FWRgxDNfAPqasT7YOiUJVn/+z8/w/Hw8GzigNW+x
+   Ek85OYaDA86eA9PB8k3KQ4708LYhBwFqrkSlmt6QRxQMGP6YIQSH36nT4
    g==;
-X-CSE-ConnectionGUID: Xk2rTTfFQEKfM7PvxCYyfg==
-X-CSE-MsgGUID: mUY6ldt3Qa+FMoyGEPvF1Q==
+X-CSE-ConnectionGUID: OutPLXF4RFS9rYyx9RS6zQ==
+X-CSE-MsgGUID: 1bnrBmIhRfW8Z/7FfFsPpg==
 X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
-   d="scan'208";a="2365643"
+   d="scan'208";a="2368465"
 Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:21:07 +0000
-Received: from EX19MTAEUC002.ant.amazon.com [54.240.197.228:21528]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.23.64:2525] with esmtp (Farcaster)
- id 11e7158b-2694-464a-90a7-6c9e9f1a2abf; Fri, 19 Sep 2025 10:21:07 +0000 (UTC)
-X-Farcaster-Flow-ID: 11e7158b-2694-464a-90a7-6c9e9f1a2abf
+  by internal-fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:23:22 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:22862]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.0.240:2525] with esmtp (Farcaster)
+ id 78751fb8-59af-471c-be39-cbaca798d4b0; Fri, 19 Sep 2025 10:23:22 +0000 (UTC)
+X-Farcaster-Flow-ID: 78751fb8-59af-471c-be39-cbaca798d4b0
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
+ EX19MTAEUA001.ant.amazon.com (10.252.50.192) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 19 Sep 2025 10:21:00 +0000
+ Fri, 19 Sep 2025 10:23:22 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
- 10:20:32 +0000
+ 10:22:53 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -104,11 +104,11 @@ To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<stable@vger.kernel.org>
-CC: <jonnyc@amazon.com>, Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 05/27 5.10.y] minmax: Introduce {min,max}_array()
-Date: Fri, 19 Sep 2025 10:17:05 +0000
-Message-ID: <20250919101727.16152-6-farbere@amazon.com>
+CC: <jonnyc@amazon.com>, Christoph Hellwig <hch@infradead.org>, Linus Torvalds
+	<torvalds@linux-foundation.org>
+Subject: [PATCH 09/27 5.10.y] minmax: fix indentation of __cmp_once() and __clamp_once()
+Date: Fri, 19 Sep 2025 10:17:09 +0000
+Message-ID: <20250919101727.16152-10-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 References: <20250919101727.16152-1-farbere@amazon.com>
@@ -116,11 +116,12 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [172.19.116.181]
-X-ClientProxiedBy: EX19D045UWA004.ant.amazon.com (10.13.139.91) To
+X-ClientProxiedBy: EX19D032UWA003.ant.amazon.com (10.13.139.37) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_032110_482726_386EDC7C 
-X-CRM114-Status: GOOD (  12.11  )
+X-CRM114-CacheID: sfid-20250919_032325_308203_D32C5797 
+X-CRM114-Status: UNSURE (   9.41  )
+X-CRM114-Notice: Please train this message.
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:26 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,98 +137,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Herve Codina <herve.codina@bootlin.com>
+From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit c952c748c7a983a8bda9112984e6f2c1f6e441a5 ]
+[ Upstream commit f4b84b2ff851f01d0fac619eadef47eb41648534 ]
 
-Introduce min_array() (resp max_array()) in order to get the
-minimal (resp maximum) of values present in an array.
+Remove the extra indentation and align continuation markers.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Link: https://lore.kernel.org/r/20230623085830.749991-8-herve.codina@bootlin.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lkml.kernel.org/r/bed41317a05c498ea0209eafbcab45a5@AcuMS.aculab.com
+Signed-off-by: David Laight <david.laight@aculab.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 64 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+ include/linux/minmax.h | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 7affadcb2a29..0e89c78810f6 100644
+index 8718fd71a793..c0e738eacefa 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -151,6 +151,70 @@
-  */
- #define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
+@@ -35,11 +35,11 @@
+ #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
  
-+/*
-+ * Remove a const qualifier from integer types
-+ * _Generic(foo, type-name: association, ..., default: association) performs a
-+ * comparison against the foo type (not the qualified type).
-+ * Do not use the const keyword in the type-name as it will not match the
-+ * unqualified type of foo.
-+ */
-+#define __unconst_integer_type_cases(type)	\
-+	unsigned type:  (unsigned type)0,	\
-+	signed type:    (signed type)0
-+
-+#define __unconst_integer_typeof(x) typeof(			\
-+	_Generic((x),						\
-+		char: (char)0,					\
-+		__unconst_integer_type_cases(char),		\
-+		__unconst_integer_type_cases(short),		\
-+		__unconst_integer_type_cases(int),		\
-+		__unconst_integer_type_cases(long),		\
-+		__unconst_integer_type_cases(long long),	\
-+		default: (x)))
-+
-+/*
-+ * Do not check the array parameter using __must_be_array().
-+ * In the following legit use-case where the "array" passed is a simple pointer,
-+ * __must_be_array() will return a failure.
-+ * --- 8< ---
-+ * int *buff
-+ * ...
-+ * min = min_array(buff, nb_items);
-+ * --- 8< ---
-+ *
-+ * The first typeof(&(array)[0]) is needed in order to support arrays of both
-+ * 'int *buff' and 'int buff[N]' types.
-+ *
-+ * The array can be an array of const items.
-+ * typeof() keeps the const qualifier. Use __unconst_integer_typeof() in order
-+ * to discard the const qualifier for the __element variable.
-+ */
-+#define __minmax_array(op, array, len) ({				\
-+	typeof(&(array)[0]) __array = (array);				\
-+	typeof(len) __len = (len);					\
-+	__unconst_integer_typeof(__array[0]) __element = __array[--__len]; \
-+	while (__len--)							\
-+		__element = op(__element, __array[__len]);		\
-+	__element; })
-+
-+/**
-+ * min_array - return minimum of values present in an array
-+ * @array: array
-+ * @len: array length
-+ *
-+ * Note that @len must not be zero (empty array).
-+ */
-+#define min_array(array, len) __minmax_array(min, array, len)
-+
-+/**
-+ * max_array - return maximum of values present in an array
-+ * @array: array
-+ * @len: array length
-+ *
-+ * Note that @len must not be zero (empty array).
-+ */
-+#define max_array(array, len) __minmax_array(max, array, len)
-+
- /**
-  * clamp_t - return a value clamped to a given range using a given type
-  * @type: the type of variable to use
+ #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
+-		typeof(x) unique_x = (x);		\
+-		typeof(y) unique_y = (y);		\
+-		static_assert(__types_ok(x, y),		\
+-			#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
+-		__cmp(op, unique_x, unique_y); })
++	typeof(x) unique_x = (x);			\
++	typeof(y) unique_y = (y);			\
++	static_assert(__types_ok(x, y),			\
++		#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
++	__cmp(op, unique_x, unique_y); })
+ 
+ #define __careful_cmp(op, x, y)					\
+ 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
+@@ -49,16 +49,16 @@
+ #define __clamp(val, lo, hi)	\
+ 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+ 
+-#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({	\
+-		typeof(val) unique_val = (val);				\
+-		typeof(lo) unique_lo = (lo);				\
+-		typeof(hi) unique_hi = (hi);				\
+-		static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
+-				(lo) <= (hi), true),					\
+-			"clamp() low limit " #lo " greater than high limit " #hi);	\
+-		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
+-		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
+-		__clamp(unique_val, unique_lo, unique_hi); })
++#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
++	typeof(val) unique_val = (val);						\
++	typeof(lo) unique_lo = (lo);						\
++	typeof(hi) unique_hi = (hi);						\
++	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
++			(lo) <= (hi), true),					\
++		"clamp() low limit " #lo " greater than high limit " #hi);	\
++	static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
++	static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
++	__clamp(unique_val, unique_lo, unique_hi); })
+ 
+ #define __careful_clamp(val, lo, hi) ({					\
+ 	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
 -- 
 2.47.3
 
