@@ -4,102 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E85CCAC59A
-	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6B4BCAC592
+	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EztjVQ+y07YMfegmHOd0VyK62XkODMWu0LdNE29WAS0=; b=M8rGIUQI2DlIrAmkds42H/ZBMk
-	qFlqISw9rxjJqXPKXFp74KjtiGzMtkNypV/2E+TXLAGQmyCfoLaJfWaxTAI4FFKIAJQellV/8yPfF
-	DXlqD1svYiEMPJF5AqlHwbo0L+HnEq0Jilvd//8g+JcnIL5pzpgsGnnWPXHxQD2OdQ8aouqxsZ9Kg
-	J6FLPF6218XvvIbiTrd2oMd2bmyNsvdleaW/SSPQrBsOUQSKmLsggCabsC6dgaRuHaSoxJIwfhPTX
-	S4ooq+H+oY5ksscHo2n/ba/G4KD9Il3gH9V7nTCstejJgnGMVBJRI4RymuzN/kCvkg9G1M/YcibaQ
-	Pr8CAstw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=2kkh21e/IwlRCoBO9MaQ5jF2MRbtUk5+kD17PYi26nM=; b=KAUEgVtCPMEO++9gtJrVjtepAK
+	T0J1YKtRYSetOGhEpm04Ki6q7ivz4GooUT2NDFgJsKHA07M9dNDzEOZHpxZTsfaCWqI5/HhLL73Rr
+	z2N9QYnG75o+UX5fzTkqXNd7ST/5FTAAruy+l5rNdCCHcxBysiWC8KS8aTdiQQ88RQlub2UGp6nYt
+	UNdLqCxBl/m1/2tOrwCE2rJeykDNDysTjz1rImzLTst6Y0/QdrjEldwa0RMC1w/7FB7g+3Bfzn8Ou
+	1ahz25eV5oGjFVbFjiewTMbyUpysq8mwZ6Bfq7RST8//MBxhasd29oGcf+qZgCAJ8HxlqNqymF9MJ
+	rweH7qXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzcyw-00000003JrL-0fTr;
-	Fri, 19 Sep 2025 15:25:06 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1uzd9d-00000003ME5-3dgN;
+	Fri, 19 Sep 2025 15:36:09 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzcyr-00000003Jnm-3avQ
+	id 1uzd9Z-00000003MAZ-1GSY
 	for linux-um@lists.infradead.org;
-	Fri, 19 Sep 2025 15:25:04 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-57afc648b7dso342237e87.2
-        for <linux-um@lists.infradead.org>; Fri, 19 Sep 2025 08:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1758295500; x=1758900300; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EztjVQ+y07YMfegmHOd0VyK62XkODMWu0LdNE29WAS0=;
-        b=NbSD8ygVh1J2tomNUA3TgTcMH63tc/J+6L8BwNLeNgwwUPAwJ4IhZf2Wdex1C/G3b0
-         IIjd1ZPIICt526PzMeBs/UBWYsttJAxkX2RLlWpfvWMyyJFh4rAR+PmcyWLp+uS61ZKP
-         tHFRseVgoiFiV0qE80Zph9YhsRIk7ZO7d68cnKFI9tfsdVaDFbyIG8LJYGJUtDl70pFz
-         kitwZoxjIO75jKkBI43I68KXy11BYVWu+TA5XTk0Ixfw+6DbihlN6/NdxMAcBLGGP0KW
-         K5zi3gskbI1eet+JAqeeYQFetxBEYf22jGx/kAri3UUJgwnXwy5KXepOoDYHbq/iHwfB
-         I5fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758295500; x=1758900300;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EztjVQ+y07YMfegmHOd0VyK62XkODMWu0LdNE29WAS0=;
-        b=a2lYwE2CXqMmhzTKKY20WXhw12TicqLZrakBJAczSGDDyLFPysSwh041y1SX+2LkA5
-         j4b5X6A1e7mbs2AYIJIRlb9Yzd1nmp0kuFnLB9rRbfrN274AmbXViWw3nWFENsOpQPUH
-         akgyAtfEa5jj78oObwvCo3lL8fvGvuq6vZaNf2DfH2Zolc7o8s4legb1rZfDLU42YjmO
-         8M2H366Rdfv7y1z/cC+zoBpnGXQoUh4E99kUZOGUfOOf1YrcY2ZGBbIqHjazIp7gvxoV
-         ABCEfsdPSFhZiQnCANQoloWTrH+E2F86zvkSdPfy7VO/BJyPzMeOLzq5BPkziJ0mimmX
-         bxog==
-X-Forwarded-Encrypted: i=1; AJvYcCXbKiscqqHPzse2s0hBHOKgyJ37gE+lKanRgQeQvIehf/+BZmU0dakAXqg8C0xlsFq3rhAKkkMgRw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz1npe6+GUdBxSZxfnjiT4WV1zLgkurl+JYmk5vLf9D3SVrvK9j
-	nc4tKnrY4fT2JWu4KAAjw0QOY5Ed2BTXtbKu+35wiLeVW83nZLIhlpTpRH/beq8RuVU9pOPGRHn
-	ACAVIMZxWNpNjC0FN06mEAcTY7c8pdlpUcI3tnJ6ODw==
-X-Gm-Gg: ASbGncvfJVVfGL3lJdhbdDqFink3QGgf05BSnDa0aIFZ0tu1eY5TddOneRhwGkpEINf
-	/D0xwhPlYwAPQ7FCGHzthbgELOz59RjawlaFSfw2tWTJ1FLXbWNQHuDO2JfKi8B602GH5EU8ve9
-	/duS6BfaYMnT8O6re8fNZVEOr2Xgz6IuVY87rSb/tRq/8q47fhNn0JvmbQ1uN7iwCB4H7KuzlPS
-	xwnButifOAcFjw=
-X-Google-Smtp-Source: AGHT+IHin4gQus9SrkFEog2pTedfunr2Ers950l0f82oxrEtfjemfexmsAorW/Dsqdjvay/GpFMt6pfW/hwC+qBHF14=
-X-Received: by 2002:a05:6512:2c0b:b0:571:b70b:7dbf with SMTP id
- 2adb3069b0e04-579e2507c81mr1455897e87.17.1758295499599; Fri, 19 Sep 2025
- 08:24:59 -0700 (PDT)
+	Fri, 19 Sep 2025 15:36:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=2kkh21e/IwlRCoBO9MaQ5jF2MRbtUk5+kD17PYi26nM=; t=1758296165; x=1759505765; 
+	b=icRMPzI0kQIXt2kc8Qz2xm4IevFKA7HmB4lEStpqe3txw9zg+ctwSptgYukVtdEmmyRIbm1ot2/
+	Ga5IUaqtxRvZY8eOSea0wwGCFLZ73FMfhJf0pF9HH/tVszoLCrwOtAs/FM19A//ai3liHX/hv+l60
+	39DTV4Jyr4uAY6nFdNfoN9ieVNbWXeOTAjFzQ5KET+Ax4TfpAmy8HYeEjTLN3Zwxj7evb8a4+XD7D
+	8vWFtlhgC0qeyi0MajI+mrXLbSja2+yg4WofGzw0281WNxxXcIXvL2lh5hwDM8bey24kXPQ6RNPcU
+	tbFd+fLadpEsjJ+dpt4Eip5OusE8SVVyIEgQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1uzd9S-0000000G6O6-33lI;
+	Fri, 19 Sep 2025 17:35:58 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org,
+	Willy Tarreau <w@1wt.eu>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	linux-kselftest@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH v2 00/11] Start porting UML to nolibc
+Date: Fri, 19 Sep 2025 17:34:09 +0200
+Message-ID: <20250919153420.727385-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
-References: <20250918152830.438554-1-nschichan@freebox.fr> <20250918195806.6337-1-safinaskar@gmail.com>
-In-Reply-To: <20250918195806.6337-1-safinaskar@gmail.com>
-From: Nicolas Schichan <nschichan@freebox.fr>
-Date: Fri, 19 Sep 2025 17:24:48 +0200
-X-Gm-Features: AS18NWBwMqIXE_dMXDlT0ngUIReSbekPPTszWv5gIfg03bAEg3Id33JL3Yqjedw
-Message-ID: <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-To: Askar Safin <safinaskar@gmail.com>
-Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
-	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
-	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
-	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
-	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
-	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
-	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
-	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
-	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_082502_019710_E93CE1E1 
-X-CRM114-Status: GOOD (  14.97  )
+X-CRM114-CacheID: sfid-20250919_083605_365439_ABCD144F 
+X-CRM114-Status: GOOD (  16.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,41 +76,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hello,
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-> > When booting with root=/dev/ram0 in the kernel commandline,
-> > handle_initrd() where the deprecation message resides is never called,
-> > which is rather unfortunate (init/do_mounts_initrd.c):
+This patchset is an attempt to start a nolibc port of UML. The goal is
+to port UML to use nolibc in smaller chunks to make the switch more
+manageable.
 
-> Yes, this is unfortunate.
->
-> I personally still think that initrd should be removed.
+There are three parts to this patchset:
+ * Two patches to use tools/include headers instead of kernel headers
+   for userspace files.
+ * A few nolibc fixes and a new NOLIBC_NO_STARTCODE compile flag for it
+ * Finally nolibc build support for UML and switching two files while
+   adding the appropriate support in nolibc itself.
 
-Considering that the deprecation message didn't get displayed in some
-configurations, maybe it's a bit early at the very least.
+v1 of this patchset was
+  https://lore.kernel.org/all/20250915071115.1429196-1-benjamin@sipsolutions.net/
 
-> I suggest using workaround I described in cover letter.
+Changes in v2:
+- add sys/uio.h and sys/ptrace.h to nolibc
+- Use NOLIBC_NO_RUNTIME to disable nolibc startup code
+- Fix out-of-tree build
+- various small improvements and cleanups
 
-I'm not too keen on having an initramfs just to loop-mount
-/sys/firmware/initrd, after all current kernels are able to handle the
-use case just fine.
+Should the nolibc changes be merged separately or could everything go
+through the same branch?
 
-It looks like there is a lot of code calling into specific filesystems
-so that the initrd code can guess the size of the file system before
-copying into /dev/ram0, and I believe this is what causes the main
-gripe against initrd today. What is wrong with just copying
-/initrd.image using its actual size into /dev/ram0 instead of guessing
-it with the help of filesystem specific code ?
+Also, what about tools/include/linux/compiler.h? It seems that was added
+for the tracing code, but it is not clear to me who might ACK that fix.
 
-> Also, for unknown reasons I didn't get your letter in my inbox.
-> (Not even in spam folder.) I ocasionally found it on lore.kernel.org .
+Benjamin
 
-Sorry about that, When I used git-send-email yesterday to reply, the
-SMTP server I used wasn't authenticated to google, so all gmail
-recipients were dropped. Hopefully this work better today.
+Benjamin Berg (11):
+  tools compiler.h: fix __used definition
+  um: use tools/include for user files
+  tools/nolibc/stdio: remove perror if NOLIBC_IGNORE_ERRNO is set
+  tools/nolibc/dirent: avoid errno in readdir_r
+  tools/nolibc: use __fallthrough__ rather than fallthrough
+  tools/nolibc: add option to disable runtime
+  um: add infrastructure to build files using nolibc
+  um: use nolibc for the --showconfig implementation
+  tools/nolibc: add uio.h with readv and writev
+  tools/nolibc: add ptrace support
+  um: switch ptrace FP register access to nolibc
 
-Regards,
+ arch/um/Makefile                             | 38 +++++++++++---
+ arch/um/include/shared/init.h                |  2 +-
+ arch/um/include/shared/os.h                  |  2 +
+ arch/um/include/shared/user.h                |  6 ---
+ arch/um/kernel/Makefile                      |  2 +-
+ arch/um/kernel/skas/stub.c                   |  1 +
+ arch/um/kernel/skas/stub_exe.c               |  4 +-
+ arch/um/os-Linux/skas/process.c              |  6 +--
+ arch/um/os-Linux/start_up.c                  |  4 +-
+ arch/um/scripts/Makefile.rules               | 10 +++-
+ arch/x86/um/Makefile                         |  6 ++-
+ arch/x86/um/os-Linux/Makefile                |  5 +-
+ arch/x86/um/os-Linux/registers.c             | 16 ++----
+ arch/x86/um/user-offsets.c                   |  1 -
+ tools/include/linux/compiler.h               |  2 +-
+ tools/include/nolibc/Makefile                |  2 +
+ tools/include/nolibc/arch-arm.h              |  2 +
+ tools/include/nolibc/arch-arm64.h            |  2 +
+ tools/include/nolibc/arch-loongarch.h        |  2 +
+ tools/include/nolibc/arch-m68k.h             |  2 +
+ tools/include/nolibc/arch-mips.h             |  2 +
+ tools/include/nolibc/arch-powerpc.h          |  2 +
+ tools/include/nolibc/arch-riscv.h            |  2 +
+ tools/include/nolibc/arch-s390.h             |  2 +
+ tools/include/nolibc/arch-sh.h               |  2 +
+ tools/include/nolibc/arch-sparc.h            |  2 +
+ tools/include/nolibc/arch-x86.h              |  4 ++
+ tools/include/nolibc/compiler.h              |  4 +-
+ tools/include/nolibc/crt.h                   |  3 ++
+ tools/include/nolibc/dirent.h                |  6 +--
+ tools/include/nolibc/nolibc.h                |  2 +
+ tools/include/nolibc/stackprotector.h        |  2 +
+ tools/include/nolibc/stdio.h                 |  2 +
+ tools/include/nolibc/stdlib.h                |  2 +
+ tools/include/nolibc/sys.h                   |  3 +-
+ tools/include/nolibc/sys/auxv.h              |  3 ++
+ tools/include/nolibc/sys/ptrace.h            | 52 ++++++++++++++++++++
+ tools/include/nolibc/sys/uio.h               | 49 ++++++++++++++++++
+ tools/testing/selftests/nolibc/nolibc-test.c | 11 +++++
+ 39 files changed, 222 insertions(+), 48 deletions(-)
+ create mode 100644 tools/include/nolibc/sys/ptrace.h
+ create mode 100644 tools/include/nolibc/sys/uio.h
 
 -- 
-Nicolas Schichan
+2.51.0
+
 
