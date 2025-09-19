@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74B7DCCA476
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 015AECAC5B8
 	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,53 +12,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0AzpApDbX8CFEbC2P7WHNPH2gra+XDIh1eSQ6GUhJZw=; b=gui58Snb2Pwug2OKkjVDN5Rr1a
-	b0aYXe+EsoaXeqWaZ+azKEs42GBDgEhhC/dBQZR58FnXzjaTYTmNzq77B2vSFmpr1f+3iyJjAc3U8
-	6OkYo/WnZHuPHVE8zIRetSQaYCrMIlTYW2WN4F/KEc50dCSge/6TeUZK1StJhWJJ5g7GB+nfxIOvO
-	XVxg2GyUtK9wru1ycX9OzAnwEhlogX+0Lol8NSNxRe5Xncn3oNbkHyUKKEQn2nWX7TghhFwk3SUau
-	JPNOGX0gFdoEY0aZ17G7OSDYfbNdoSr7VEK9Ln+EZR4UbzbaainbSrP0naP5PfMd6c+JypRA5oti5
-	IbeY5SJQ==;
+	bh=FhepguEQ0VZAS3etCeAAj5D/xXUqupnQ1wf0VPifqWY=; b=CmQ0qh5Lv7veInwfqmCMQwGsO5
+	BxxYsMtj5j9F4l9vj+neqWP306q85WEuaxz+aobDhkbfX5K0FCiVXdUHvEvU9cAG2E1Ks8+S3JWbn
+	cXqRFM2u12oaFFLzmT7XJOVTLMLvKAtMP9DwBowfV5Mk1ZXA6jEBE5w0iMUEiNiYDaB7WbVevuuzs
+	ip9ss1rSbyArI9SOGIGF25/OHMsrsej65B3i+ju4rlIkkmBvOS9VDQNkuu6pX7M9AbHhASoPqQ+jM
+	L3SzmSIBUhuYvo3MxkA27R+QUb+XPNM0toyqx8MsmI5zQ/4KcTSLEu+eEpN4qrRhIHjDBb//sGsE1
+	M9N3rYeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k8w-0000000HZNs-2Hkm;
-	Mon, 06 Oct 2025 12:16:42 +0000
-Received: from fra-out-015.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([18.158.153.154])
+	id 1v5k8x-0000000HZP4-1h9K;
+	Mon, 06 Oct 2025 12:16:43 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzYOK-00000002a4n-2j26
+	id 1uzYP2-00000002aHl-2yQZ
+	for linux-um@bombadil.infradead.org;
+	Fri, 19 Sep 2025 10:31:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=FhepguEQ0VZAS3etCeAAj5D/xXUqupnQ1wf0VPifqWY=; b=GYka/vMTqHLJKLgz/R73mX670b
+	q5FYtJv4XW/OTEIC3ZAdVWnsKYQnoy5fGCye/8MgtYmnxvEelZfOUBQlq+O3U1txAFjVcDEiCKyXU
+	Zb4c1tZDESj92T8Xx3Zp1BFJokiM6vfgC3DVIi7f8TN9lKSn0L2cFjXc7ynzksXnKBbtdf3mNGAPQ
+	ohV5unpHEMkhsyezL10eXVJSBQ2sDu+GlAQJCaFxUod3AmSpOFpMEiDmtsMbftOqYWLsnNC4q/frw
+	Y9JvO5iJG4spPm5S/IqWRUNS6eunKdPU6MKjQBtY5R1NqrQEk2romryycQMmH5sG9It53KxL5DZ2/
+	TzaOOTrg==;
+Received: from fra-out-006.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([18.197.217.180])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uzYOz-00000007pJt-1nRR
 	for linux-um@lists.infradead.org;
-	Fri, 19 Sep 2025 10:31:02 +0000
+	Fri, 19 Sep 2025 10:31:43 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758277860; x=1789813860;
+  t=1758277901; x=1789813901;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0AzpApDbX8CFEbC2P7WHNPH2gra+XDIh1eSQ6GUhJZw=;
-  b=kuQ4pejFDhpOwF1yQyxXV+YLrMgLs4pMzVdyPWwgyTNpDXG+XVHG8yGB
-   v7QWbaLFKqQQD8X9fLAbOR49t+0EL4to0oO0cZ+RAQmz29gHQyCZVSePD
-   WN0vDZpD5/SjQoGnuB/+2kmeUs+dfj3ibg405IC53gL/aP6YejbhdWgjx
-   +mb0nr5h/G1dG5hQOLf6W69Na+hKRQjeNVBKaQdii9z6AQwp8EqQXAJA4
-   jWcpfqfw7azTgvNSoLsJJyU1pF8SEOCPaWiQWBDWpmi+VVVbgT4SuBqNB
-   FMrc7SBCmj+uYdbXCVw62P13Ei1cRKsMzhd3bm01XkhWiwAanIM4WhCtr
-   A==;
-X-CSE-ConnectionGUID: 84db8Rn2REO41Gd+36dyqw==
-X-CSE-MsgGUID: 5haEWmmnR/a9oLzBFFYksg==
+  bh=FhepguEQ0VZAS3etCeAAj5D/xXUqupnQ1wf0VPifqWY=;
+  b=SuYs8fCtOl80QrzSx83TjapQ1vTY/2ost+bGfTY5YtTeJf8vlGH5YUQx
+   zC77Ew4vKvhiIi4Z3bH9Lz3b0KfuSoEsSvzKsspPeci/U28DBfVQiQdwK
+   XF3ZsX+hqYTA766nIb02jDgWtYo8jVtezHo/QHbp1G6y8oZwFr9K9PXGo
+   xKzq5Oqw6dl2rNdiX8z4ssTZ/cmX2ui6iAz7+zvKsyrtn4R4SYaQjptT2
+   rM14PeNCCZMdbXhclPNVVk8PEm2Paxac47PRx9t5EbbHDbwv266tb5yej
+   ko5A8lYxG50dA+gVUABy3nTjTxkCs7RRXE/wI2bLW1oxphUJQQZc0TJxZ
+   g==;
+X-CSE-ConnectionGUID: 8Pp/EmR4RQygikMBQFhZlQ==
+X-CSE-MsgGUID: WuVtpOtuTJ2jmO13teAdLA==
 X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
-   d="scan'208";a="2256665"
-Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
-  by internal-fra-out-015.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:30:58 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.224:10146]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.1.3:2525] with esmtp (Farcaster)
- id 11fa9bd4-f8b9-455d-948e-95865f7b3639; Fri, 19 Sep 2025 10:30:58 +0000 (UTC)
-X-Farcaster-Flow-ID: 11fa9bd4-f8b9-455d-948e-95865f7b3639
+   d="scan'208";a="2370054"
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-006.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:31:40 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [54.240.197.226:18808]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.23.64:2525] with esmtp (Farcaster)
+ id d47f6ac5-bc7f-4413-97d7-06064cc021cf; Fri, 19 Sep 2025 10:31:39 +0000 (UTC)
+X-Farcaster-Flow-ID: d47f6ac5-bc7f-4413-97d7-06064cc021cf
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
+ EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 19 Sep 2025 10:30:47 +0000
+ Fri, 19 Sep 2025 10:31:17 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
- 10:30:18 +0000
+ 10:30:47 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -109,9 +124,9 @@ CC: <jonnyc@amazon.com>, Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig
 	<hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, Jens Axboe
 	<axboe@kernel.dk>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Mateusz
  Guzik" <mjguzik@gmail.com>, Pedro Falcato <pedro.falcato@gmail.com>
-Subject: [PATCH 22/27 5.10.y] minmax.h: update some comments
-Date: Fri, 19 Sep 2025 10:17:22 +0000
-Message-ID: <20250919101727.16152-23-farbere@amazon.com>
+Subject: [PATCH 23/27 5.10.y] minmax.h: reduce the #define expansion of min(), max() and clamp()
+Date: Fri, 19 Sep 2025 10:17:23 +0000
+Message-ID: <20250919101727.16152-24-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 References: <20250919101727.16152-1-farbere@amazon.com>
@@ -122,8 +137,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D038UWC001.ant.amazon.com (10.13.139.213) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_033100_975338_921EE532 
-X-CRM114-Status: GOOD (  23.01  )
+X-CRM114-CacheID: sfid-20250919_113141_739836_2B414F56 
+X-CRM114-Status: GOOD (  13.03  )
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:27 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -141,16 +156,15 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit 10666e99204818ef45c702469488353b5bb09ec7 ]
+[ Upstream commit b280bb27a9f7c91ddab730e1ad91a9c18a051f41 ]
 
-- Change three to several.
-- Remove the comment about retaining constant expressions, no longer true.
-- Realign to nearer 80 columns and break on major punctiation.
-- Add a leading comment to the block before __signed_type() and __is_nonneg()
-  Otherwise the block explaining the cast is a bit 'floating'.
-  Reword the rest of that comment to improve readability.
+Since the test for signed values being non-negative only relies on
+__builtion_constant_p() (not is_constexpr()) it can use the 'ux' variable
+instead of the caller supplied expression.  This means that the #define
+parameters are only expanded twice.  Once in the code and once quoted in
+the error message.
 
-Link: https://lkml.kernel.org/r/85b050c81c1d4076aeb91a6cded45fee@AcuMS.aculab.com
+Link: https://lkml.kernel.org/r/051afc171806425da991908ed8688a98@AcuMS.aculab.com
 Signed-off-by: David Laight <david.laight@aculab.com>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Arnd Bergmann <arnd@kernel.org>
@@ -165,97 +179,74 @@ Cc: Pedro Falcato <pedro.falcato@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 53 +++++++++++++++++++-----------------------
- 1 file changed, 24 insertions(+), 29 deletions(-)
+ include/linux/minmax.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 51b0d988e322..24e4b372649a 100644
+index 24e4b372649a..6f7ea669d305 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -8,13 +8,10 @@
- #include <linux/types.h>
+@@ -46,10 +46,10 @@
+  * comparison, and these expressions only need to be careful to not cause
+  * warnings for pointer use.
+  */
+-#define __signed_type_use(x, ux) (2 + __is_nonneg(x, ux))
+-#define __unsigned_type_use(x, ux) (1 + 2 * (sizeof(ux) < 4))
+-#define __sign_use(x, ux) (is_signed_type(typeof(ux)) ? \
+-	__signed_type_use(x, ux) : __unsigned_type_use(x, ux))
++#define __signed_type_use(ux) (2 + __is_nonneg(ux))
++#define __unsigned_type_use(ux) (1 + 2 * (sizeof(ux) < 4))
++#define __sign_use(ux) (is_signed_type(typeof(ux)) ? \
++	__signed_type_use(ux) : __unsigned_type_use(ux))
  
  /*
-- * min()/max()/clamp() macros must accomplish three things:
-+ * min()/max()/clamp() macros must accomplish several things:
-  *
-  * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - Retain result as a constant expressions when called with only
-- *   constant expressions (to avoid tripping VLA warnings in stack
-- *   allocation usage).
-  * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-  * - Unsigned char/short are always promoted to signed int and can be
-@@ -31,25 +28,23 @@
-  *   bit #0 set if ok for unsigned comparisons
-  *   bit #1 set if ok for signed comparisons
-  *
-- * In particular, statically non-negative signed integer
-- * expressions are ok for both.
-+ * In particular, statically non-negative signed integer expressions
-+ * are ok for both.
-  *
-- * NOTE! Unsigned types smaller than 'int' are implicitly
-- * converted to 'int' in expressions, and are accepted for
-- * signed conversions for now. This is debatable.
-+ * NOTE! Unsigned types smaller than 'int' are implicitly converted to 'int'
-+ * in expressions, and are accepted for signed conversions for now.
-+ * This is debatable.
-  *
-- * Note that 'x' is the original expression, and 'ux' is
-- * the unique variable that contains the value.
-+ * Note that 'x' is the original expression, and 'ux' is the unique variable
-+ * that contains the value.
-  *
-- * We use 'ux' for pure type checking, and 'x' for when
-- * we need to look at the value (but without evaluating
-- * it for side effects! Careful to only ever evaluate it
-- * with sizeof() or __builtin_constant_p() etc).
-+ * We use 'ux' for pure type checking, and 'x' for when we need to look at the
-+ * value (but without evaluating it for side effects!
-+ * Careful to only ever evaluate it with sizeof() or __builtin_constant_p() etc).
-  *
-- * Pointers end up being checked by the normal C type
-- * rules at the actual comparison, and these expressions
-- * only need to be careful to not cause warnings for
-- * pointer use.
-+ * Pointers end up being checked by the normal C type rules at the actual
-+ * comparison, and these expressions only need to be careful to not cause
-+ * warnings for pointer use.
-  */
- #define __signed_type_use(x, ux) (2 + __is_nonneg(x, ux))
- #define __unsigned_type_use(x, ux) (1 + 2 * (sizeof(ux) < 4))
-@@ -57,19 +52,19 @@
- 	__signed_type_use(x, ux) : __unsigned_type_use(x, ux))
+  * Check whether a signed value is always non-negative.
+@@ -71,13 +71,13 @@
+ #else
+   #define __signed_type(ux) typeof(__builtin_choose_expr(sizeof(ux) > 4, 1LL, 1L))
+ #endif
+-#define __is_nonneg(x, ux) statically_true((__signed_type(ux))(x) >= 0)
++#define __is_nonneg(ux) statically_true((__signed_type(ux))(ux) >= 0)
  
- /*
-- * To avoid warnings about casting pointers to integers
-- * of different sizes, we need that special sign type.
-+ * Check whether a signed value is always non-negative.
-  *
-- * On 64-bit we can just always use 'long', since any
-- * integer or pointer type can just be cast to that.
-+ * A cast is needed to avoid any warnings from values that aren't signed
-+ * integer types (in which case the result doesn't matter).
-  *
-- * This does not work for 128-bit signed integers since
-- * the cast would truncate them, but we do not use s128
-- * types in the kernel (we do use 'u128', but they will
-- * be handled by the !is_signed_type() case).
-+ * On 64-bit any integer or pointer type can safely be cast to 'long'.
-+ * But on 32-bit we need to avoid warnings about casting pointers to integers
-+ * of different sizes without truncating 64-bit values so 'long' or 'long long'
-+ * must be used depending on the size of the value.
-  *
-- * NOTE! The cast is there only to avoid any warnings
-- * from when values that aren't signed integer types.
-+ * This does not work for 128-bit signed integers since the cast would truncate
-+ * them, but we do not use s128 types in the kernel (we do use 'u128',
-+ * but they are handled by the !is_signed_type() case).
-  */
- #ifdef CONFIG_64BIT
-   #define __signed_type(ux) long
+-#define __types_ok(x, y, ux, uy) \
+-	(__sign_use(x, ux) & __sign_use(y, uy))
++#define __types_ok(ux, uy) \
++	(__sign_use(ux) & __sign_use(uy))
+ 
+-#define __types_ok3(x, y, z, ux, uy, uz) \
+-	(__sign_use(x, ux) & __sign_use(y, uy) & __sign_use(z, uz))
++#define __types_ok3(ux, uy, uz) \
++	(__sign_use(ux) & __sign_use(uy) & __sign_use(uz))
+ 
+ #define __cmp_op_min <
+ #define __cmp_op_max >
+@@ -92,7 +92,7 @@
+ 
+ #define __careful_cmp_once(op, x, y, ux, uy) ({		\
+ 	__auto_type ux = (x); __auto_type uy = (y);	\
+-	BUILD_BUG_ON_MSG(!__types_ok(x, y, ux, uy),	\
++	BUILD_BUG_ON_MSG(!__types_ok(ux, uy),		\
+ 		#op"("#x", "#y") signedness error");	\
+ 	__cmp(op, ux, uy); })
+ 
+@@ -109,7 +109,7 @@
+ 	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
+ 			(lo) <= (hi), true),					\
+ 		"clamp() low limit " #lo " greater than high limit " #hi);	\
+-	BUILD_BUG_ON_MSG(!__types_ok3(val, lo, hi, uval, ulo, uhi),		\
++	BUILD_BUG_ON_MSG(!__types_ok3(uval, ulo, uhi),				\
+ 		"clamp("#val", "#lo", "#hi") signedness error");		\
+ 	__clamp(uval, ulo, uhi); })
+ 
+@@ -149,7 +149,7 @@
+ 
+ #define __careful_op3(op, x, y, z, ux, uy, uz) ({			\
+ 	__auto_type ux = (x); __auto_type uy = (y);__auto_type uz = (z);\
+-	BUILD_BUG_ON_MSG(!__types_ok3(x, y, z, ux, uy, uz),		\
++	BUILD_BUG_ON_MSG(!__types_ok3(ux, uy, uz),			\
+ 		#op"3("#x", "#y", "#z") signedness error");		\
+ 	__cmp(op, ux, __cmp(op, uy, uz)); })
+ 
 -- 
 2.47.3
 
