@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A3B6CCD184
-	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F68DCCA471
+	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fgKTaT7jj0zRx6jbQ7DJOMsaZramokk9q66dhz8aLl4=; b=hvH1lEgtitiOXX2hKaQ8JTpTDK
-	M9tqaE/Ub3wWyFzSq/c/Ly7sFcgCRrE5DAui6T4Q9HAcyUSaJDA/Ah12hwOoZvhSJ2juEUUXRozSz
-	MOymsNinHg7gX6cn5ro+EFKTjKbdCzDK3BBLQzLTe2PGai2PZyt+jSITqdh5rNYFeiUMpkMwCbwWD
-	b0IwDQheyFpvP0rLxOg5AtHoRngo2McfV/5jIDGJZxHbyA3v75UaBgOxsNFfb+/zxeOMcTC67BTXo
-	hVlRY2EL3CEfmUMaZmRZ+ma4t5kbss2TQ1PEMRox6DS8IjMR5CeR1ri/Vm2W3V2FLpKKvtF6z/KAP
-	u+F6Mt4A==;
+	bh=OdmfzjzF46YfqPKnSMGZyjhQcZN9I6u6dSg4k1vq8LU=; b=gcCnHGxy8I9K5IzURuXCzC54Sp
+	nhMkgea8+OmMJnQ+X3ah2oPu/02N3D9+HRL3SM36QbEMFAI6Yu1DWOAG+TOuw77TyGe7fsYwqLNi1
+	6iQfVcFe0zYOxyZgNJJhDFoV/E+cXgEEURCVyL8glZPR4F3vaO0tIYwikdpukIBc3wMEzNtJrax6F
+	InU2bc1giuZaJLqkm4uEDjG5L1ylc/p6ofVUJDMPXLNgbwxNRPHqDc8glhMS5JyjqugsK+36Fwd/e
+	LL/iH09x8SDH+tou3HcOFY81EdF2dK5lqBhKHJ4Y3AzvS8lm6veGpcV5JzQzqc026HkXMQhYFIH/F
+	cntvPSkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k8u-0000000HZKl-2h6v;
-	Mon, 06 Oct 2025 12:16:40 +0000
-Received: from fra-out-012.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([52.57.120.243])
+	id 1v5k8v-0000000HZMS-3do2;
+	Mon, 06 Oct 2025 12:16:41 +0000
+Received: from fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.74.81.189])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzYMx-00000002Zj9-48cC;
-	Fri, 19 Sep 2025 10:29:37 +0000
+	id 1uzYNh-00000002ZuB-1MTo
+	for linux-um@lists.infradead.org;
+	Fri, 19 Sep 2025 10:30:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1758277776; x=1789813776;
+  t=1758277821; x=1789813821;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fgKTaT7jj0zRx6jbQ7DJOMsaZramokk9q66dhz8aLl4=;
-  b=O1GN3bqWn6dq8RzCLs1wMk/HITq0HhustKMZVejNMyDPOkmDI0RyrG/g
-   Y41ulRN4WQvc/GWFYlBGj5pPMKXjZLy6lVPjeT+atDhGp/cwX0L0BtK8j
-   Shvg9EoRFhKYGfpJs6bMZOS3pSpVmsfA9ZVjtEKcgcard4M0eo5cbc3H0
-   6SDRj1v295v4vP1irxrDgjne+ZSiCqZsfxhGtknKTQ67fl+HBAyV6q8DK
-   VTSobv+xZ9qEGxe+v6BJvSrcD5BwFS3Qd7mX5bpmYryUaNxw2E2bsYn8w
-   sGoERv/qUZ4E+5s8iqXZnAStXqPFmsSAnrDDAIsUN9Z67sJ4y9PJXkcxE
-   w==;
-X-CSE-ConnectionGUID: OjZjXa4JQcemmsnIdPARUg==
-X-CSE-MsgGUID: a+Ztu1+hSh2rbgMxfE/xQQ==
+  bh=OdmfzjzF46YfqPKnSMGZyjhQcZN9I6u6dSg4k1vq8LU=;
+  b=OpfwvAA3SVVwId6ienOttCtFWxcIK4Vz/ABDggHdPaFkDANTmTaOXTNg
+   uPFJI8A7SExSX6i00TBLV2MhSTzPxeE0crJdRf8jmZ52CmOlHeIySp4vI
+   4kpvMFJGctyNbDbXp3Kh1M8I4v13yAkz5R+KRC1/6H1HFJu2zzMU6Zuea
+   bl9/AMWqpQvauTgHXdYmDmrvQRAaxNaRssGcuMp2lT9afMr/+E29Q0a2t
+   eTCh6nMkzQwtUjRHQ5kTgTVLfxNQ2iO0QbKTw7ktXkOW0T4y2L6qHbWFc
+   qP7X6bbY3m33SzbYcqqnbxn3BrQytQ0Lyr5qN5lZD14ABEGxH4IVYjqWr
+   Q==;
+X-CSE-ConnectionGUID: xQ9t9LUTTciZfuTekGyqww==
+X-CSE-MsgGUID: e8DOXKTASOKOk2sit3Enug==
 X-IronPort-AV: E=Sophos;i="6.18,277,1751241600"; 
-   d="scan'208";a="2267164"
-Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-012.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:29:23 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [54.240.197.232:2551]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.30.197:2525] with esmtp (Farcaster)
- id e3f5af5d-9ec9-4a33-a742-cfa4bb342f2f; Fri, 19 Sep 2025 10:29:23 +0000 (UTC)
-X-Farcaster-Flow-ID: e3f5af5d-9ec9-4a33-a742-cfa4bb342f2f
+   d="scan'208";a="2367886"
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2025 10:30:19 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.224:17295]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.47.2:2525] with esmtp (Farcaster)
+ id 55de2836-92c1-4f5f-b400-1a6b812231c2; Fri, 19 Sep 2025 10:30:19 +0000 (UTC)
+X-Farcaster-Flow-ID: 55de2836-92c1-4f5f-b400-1a6b812231c2
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 19 Sep 2025 10:29:22 +0000
+ Fri, 19 Sep 2025 10:30:18 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 19 Sep 2025
- 10:28:54 +0000
+ 10:29:48 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -104,11 +105,13 @@ To: <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<stable@vger.kernel.org>
-CC: <jonnyc@amazon.com>, Linus Torvalds <torvalds@linux-foundation.org>,
-	"David Laight" <David.Laight@aculab.com>, Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 20/27 5.10.y] minmax: fix up min3() and max3() too
-Date: Fri, 19 Sep 2025 10:17:20 +0000
-Message-ID: <20250919101727.16152-21-farbere@amazon.com>
+CC: <jonnyc@amazon.com>, Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig
+	<hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, Jens Axboe
+	<axboe@kernel.dk>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Mateusz
+ Guzik" <mjguzik@gmail.com>, Pedro Falcato <pedro.falcato@gmail.com>
+Subject: [PATCH 21/27 5.10.y] minmax.h: add whitespace around operators and after commas
+Date: Fri, 19 Sep 2025 10:17:21 +0000
+Message-ID: <20250919101727.16152-22-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20250919101727.16152-1-farbere@amazon.com>
 References: <20250919101727.16152-1-farbere@amazon.com>
@@ -116,11 +119,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [172.19.116.181]
-X-ClientProxiedBy: EX19D042UWA002.ant.amazon.com (10.13.139.17) To
+X-ClientProxiedBy: EX19D038UWC001.ant.amazon.com (10.13.139.213) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_032936_314791_051E3131 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20250919_033021_650583_E0851157 
+X-CRM114-Status: GOOD (  12.18  )
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:26 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,78 +139,117 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit 21b136cc63d2a9ddd60d4699552b69c214b32964 ]
+[ Upstream commit 71ee9b16251ea4bf7c1fe222517c82bdb3220acc ]
 
-David Laight pointed out that we should deal with the min3() and max3()
-mess too, which still does excessive expansion.
+Patch series "minmax.h: Cleanups and minor optimisations".
 
-And our current macros are actually rather broken.
+Some tidyups and minor changes to minmax.h.
 
-In particular, the macros did this:
+This patch (of 7):
 
-  #define min3(x, y, z) min((typeof(x))min(x, y), z)
-  #define max3(x, y, z) max((typeof(x))max(x, y), z)
-
-and that not only is a nested expansion of possibly very complex
-arguments with all that involves, the typing with that "typeof()" cast
-is completely wrong.
-
-For example, imagine what happens in max3() if 'x' happens to be a
-'unsigned char', but 'y' and 'z' are 'unsigned long'.  The types are
-compatible, and there's no warning - but the result is just random
-garbage.
-
-No, I don't think we've ever hit that issue in practice, but since we
-now have sane infrastructure for doing this right, let's just use it.
-It fixes any excessive expansion, and also avoids these kinds of broken
-type issues.
-
-Requested-by: David Laight <David.Laight@aculab.com>
-Acked-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lkml.kernel.org/r/c50365d214e04f9ba256d417c8bebbc0@AcuMS.aculab.com
+Link: https://lkml.kernel.org/r/f04b2e1310244f62826267346fde0553@AcuMS.aculab.com
+Signed-off-by: David Laight <david.laight@aculab.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Cc: Mateusz Guzik <mjguzik@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Pedro Falcato <pedro.falcato@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/linux/minmax.h | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 41da6f85a407..98008dd92153 100644
+index 98008dd92153..51b0d988e322 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -152,13 +152,20 @@
- #define umax(x, y)	\
- 	__careful_cmp(max, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
- 
-+#define __careful_op3(op, x, y, z, ux, uy, uz) ({			\
-+	__auto_type ux = (x); __auto_type uy = (y);__auto_type uz = (z);\
-+	BUILD_BUG_ON_MSG(!__types_ok3(x,y,z,ux,uy,uz),			\
-+		#op"3("#x", "#y", "#z") signedness error");		\
-+	__cmp(op, ux, __cmp(op, uy, uz)); })
-+
- /**
-  * min3 - return minimum of three values
-  * @x: first value
-  * @y: second value
-  * @z: third value
+@@ -51,10 +51,10 @@
+  * only need to be careful to not cause warnings for
+  * pointer use.
   */
--#define min3(x, y, z) min((typeof(x))min(x, y), z)
-+#define min3(x, y, z) \
-+	__careful_op3(min, x, y, z, __UNIQUE_ID(x_), __UNIQUE_ID(y_), __UNIQUE_ID(z_))
+-#define __signed_type_use(x,ux) (2+__is_nonneg(x,ux))
+-#define __unsigned_type_use(x,ux) (1+2*(sizeof(ux)<4))
+-#define __sign_use(x,ux) (is_signed_type(typeof(ux))? \
+-	__signed_type_use(x,ux):__unsigned_type_use(x,ux))
++#define __signed_type_use(x, ux) (2 + __is_nonneg(x, ux))
++#define __unsigned_type_use(x, ux) (1 + 2 * (sizeof(ux) < 4))
++#define __sign_use(x, ux) (is_signed_type(typeof(ux)) ? \
++	__signed_type_use(x, ux) : __unsigned_type_use(x, ux))
  
- /**
-  * max3 - return maximum of three values
-@@ -166,7 +173,8 @@
-  * @y: second value
-  * @z: third value
+ /*
+  * To avoid warnings about casting pointers to integers
+@@ -74,15 +74,15 @@
+ #ifdef CONFIG_64BIT
+   #define __signed_type(ux) long
+ #else
+-  #define __signed_type(ux) typeof(__builtin_choose_expr(sizeof(ux)>4,1LL,1L))
++  #define __signed_type(ux) typeof(__builtin_choose_expr(sizeof(ux) > 4, 1LL, 1L))
+ #endif
+-#define __is_nonneg(x,ux) statically_true((__signed_type(ux))(x)>=0)
++#define __is_nonneg(x, ux) statically_true((__signed_type(ux))(x) >= 0)
+ 
+-#define __types_ok(x,y,ux,uy) \
+-	(__sign_use(x,ux) & __sign_use(y,uy))
++#define __types_ok(x, y, ux, uy) \
++	(__sign_use(x, ux) & __sign_use(y, uy))
+ 
+-#define __types_ok3(x,y,z,ux,uy,uz) \
+-	(__sign_use(x,ux) & __sign_use(y,uy) & __sign_use(z,uz))
++#define __types_ok3(x, y, z, ux, uy, uz) \
++	(__sign_use(x, ux) & __sign_use(y, uy) & __sign_use(z, uz))
+ 
+ #define __cmp_op_min <
+ #define __cmp_op_max >
+@@ -97,7 +97,7 @@
+ 
+ #define __careful_cmp_once(op, x, y, ux, uy) ({		\
+ 	__auto_type ux = (x); __auto_type uy = (y);	\
+-	BUILD_BUG_ON_MSG(!__types_ok(x,y,ux,uy),	\
++	BUILD_BUG_ON_MSG(!__types_ok(x, y, ux, uy),	\
+ 		#op"("#x", "#y") signedness error");	\
+ 	__cmp(op, ux, uy); })
+ 
+@@ -114,7 +114,7 @@
+ 	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
+ 			(lo) <= (hi), true),					\
+ 		"clamp() low limit " #lo " greater than high limit " #hi);	\
+-	BUILD_BUG_ON_MSG(!__types_ok3(val,lo,hi,uval,ulo,uhi),			\
++	BUILD_BUG_ON_MSG(!__types_ok3(val, lo, hi, uval, ulo, uhi),		\
+ 		"clamp("#val", "#lo", "#hi") signedness error");		\
+ 	__clamp(uval, ulo, uhi); })
+ 
+@@ -154,7 +154,7 @@
+ 
+ #define __careful_op3(op, x, y, z, ux, uy, uz) ({			\
+ 	__auto_type ux = (x); __auto_type uy = (y);__auto_type uz = (z);\
+-	BUILD_BUG_ON_MSG(!__types_ok3(x,y,z,ux,uy,uz),			\
++	BUILD_BUG_ON_MSG(!__types_ok3(x, y, z, ux, uy, uz),		\
+ 		#op"3("#x", "#y", "#z") signedness error");		\
+ 	__cmp(op, ux, __cmp(op, uy, uz)); })
+ 
+@@ -326,9 +326,9 @@ static inline bool in_range32(u32 val, u32 start, u32 len)
+  * Use these carefully: no type checking, and uses the arguments
+  * multiple times. Use for obvious constants only.
   */
--#define max3(x, y, z) max((typeof(x))max(x, y), z)
-+#define max3(x, y, z) \
-+	__careful_op3(max, x, y, z, __UNIQUE_ID(x_), __UNIQUE_ID(y_), __UNIQUE_ID(z_))
+-#define MIN(a,b) __cmp(min,a,b)
+-#define MAX(a,b) __cmp(max,a,b)
+-#define MIN_T(type,a,b) __cmp(min,(type)(a),(type)(b))
+-#define MAX_T(type,a,b) __cmp(max,(type)(a),(type)(b))
++#define MIN(a, b) __cmp(min, a, b)
++#define MAX(a, b) __cmp(max, a, b)
++#define MIN_T(type, a, b) __cmp(min, (type)(a), (type)(b))
++#define MAX_T(type, a, b) __cmp(max, (type)(a), (type)(b))
  
- /**
-  * min_not_zero - return the minimum that is _not_ zero, unless both are zero
+ #endif	/* _LINUX_MINMAX_H */
 -- 
 2.47.3
 
