@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88E7CAC5A8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DBBBCAC5AB
 	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=w0zvkyHycNf62ji7JboPNe59KMTBMZPeiYVTw++Mcio=; b=OmTlFa0Dh3G0vxCU0tzi8KirOF
-	LL4+4TlHN1CXLSfUyd4XdwojETNzL5efw6H0CYlSQVIuYp+gkCpp/pcx/Yto2u4Wf8yExUgFVUqCV
-	8y2y7Thu+WiTIhlGMqed2JZREy2hgFpZHeDM0XhEdAjq2Pl9Tz6L9ylUV+zPufxiSwsUW21nhddnx
-	1f9ZlIimON8vQnoVqnBS+gXvpMiCLKrYTae+wsfn4S3QPOGX2ayb2H3Znqu/kzlu0CYDtQ1hs+or2
-	2uAqggsO8TpDWSJeHv3/n59AFGgSYRY15y6dMiaiqO4rjHDbcNIZ0fhrE5sRxT7YDUrjnP9wG/Cwn
-	9pyN7jjg==;
+	bh=z10b0FVwCq0i5SVTTgonk/hnK8AmJrJFJmxu+fzz9NI=; b=rPXqPZYmY/72cd6wiXyPu1h1bW
+	uAzBx+sdk0bIv+AekiGvUtb2xjy3nWRxd0nJ6m3SYd5RM4NsAVw+6ssdxKsYlax/QncxYFBS9u6/o
+	aS+zv5h5nanIk8M+iojZ5JlmlfVCF2ehq943Fyuqj09zz3jxN/IHnYqBapBYOlJLKVB87gTyKbORm
+	WSBz3U2nbmS5iSAv6fyg94Mj/PsmU8Q58qgEBa+l4yLLkXkJnC4p/LeH4BfiMCQTw0/vxpASqP76r
+	dUHypy84KCbza1lkn4670rBW7jKDvt68nJZtbkYDBfzVC6vafqF+789hgVd/ziVRoEXDtuKXqXnlp
+	10L0sRLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9e-00000003MEo-1iqg;
+	id 1uzd9e-00000003MF8-2o53;
 	Fri, 19 Sep 2025 15:36:10 +0000
-Received: from s3.sipsolutions.net ([168.119.38.16] helo=sipsolutions.net)
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9a-00000003MAt-0OGw
+	id 1uzd9b-00000003MCC-2iHi
 	for linux-um@lists.infradead.org;
 	Fri, 19 Sep 2025 15:36:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:Content-Type:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=w0zvkyHycNf62ji7JboPNe59KMTBMZPeiYVTw++Mcio=;
-	t=1758296165; x=1759505765; b=U45vhkUOS9KFhvRfbZQFvclhSoTwFEOEN534bCbKGj79ECz
-	ytdlcbe6ul0yjvD9eu9cvGqTkW/fy7MbtNCRGmzBIBXVPGPO2YgXaVjSroiPuZT4vN+cvfXLShF2j
-	8ipvYMdfmbyhie481AnXE1f4Pf2a+udRjOYs3XdRFYewW9iSgJhF8N7kOvzccbxqPCr0RZfTEFfeU
-	VwmjqTK2PUt4FrxdHbJNS+tmf7e3xWtNFwL+NX3VaGXICwFlh4u27iNMeT0iszLS2ZhbnGVR0ViCf
-	50Tj9vgC9MbTY7Lg9ubZrDqiuKkiomLjaGIyFyZdOCs1MQO1eN5N/znffFna1Qpw==;
+	Resent-Cc:Resent-Message-ID; bh=z10b0FVwCq0i5SVTTgonk/hnK8AmJrJFJmxu+fzz9NI=;
+	t=1758296167; x=1759505767; b=uZ08VsNPIfqORymjADXtWf+BvNxxC2RPMb32Nilljwg30nt
+	NlaTHAp8GW8min9esyV1OAfSpqgfXbq1R42zt1M29RlKPCukoDq3zXLwsl1mUrGr3MGxG9pJ2skXU
+	dZCddjrFIUnpqIFQF3QBZVoJvWOZsM5ANsMr/3meKiSqoCcGb9yJduXNb4bDbX5Sb/KwKTIvYotPX
+	pohaIeBCJOga308GV57Bqc0Tg7OClsyZII1F3ISCUOqVR6gsrFo0cpfHLpolo8c+i+zvJwdBXs5Eg
+	w5UL4dGsNyhl2OutpHEkyUOwlTgrVLRMtXK5uP9qdPZoxi0ZZZJDgsqzy1DIqVHA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uzd9T-0000000G6O6-2i20;
-	Fri, 19 Sep 2025 17:35:59 +0200
+	id 1uzd9W-0000000G6O6-3qcL;
+	Fri, 19 Sep 2025 17:36:04 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org,
 	Willy Tarreau <w@1wt.eu>,
@@ -50,9 +50,9 @@ To: linux-um@lists.infradead.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: linux-kernel@vger.kernel.org,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2 01/11] tools compiler.h: fix __used definition
-Date: Fri, 19 Sep 2025 17:34:10 +0200
-Message-ID: <20250919153420.727385-2-benjamin@sipsolutions.net>
+Subject: [PATCH v2 04/11] tools/nolibc/dirent: avoid errno in readdir_r
+Date: Fri, 19 Sep 2025 17:34:13 +0200
+Message-ID: <20250919153420.727385-5-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250919153420.727385-1-benjamin@sipsolutions.net>
 References: <20250919153420.727385-1-benjamin@sipsolutions.net>
@@ -61,9 +61,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_083606_129865_B60733D1 
-X-CRM114-Status: UNSURE (   9.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250919_083607_685183_0DFA9CB4 
+X-CRM114-Status: GOOD (  11.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,31 +79,33 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-The define mapped to __attribute__((__unused__)) instead of using
-__used__. Having the wrong definition here may result in the linker
-incorrectly removing the symbol. Also, this now matches the definition
-in include/linux/compiler_attributes.h.
+Using errno is not possible when NOLIBC_IGNORE_ERRNO is set. Use
+sys_lseek instead of lseek as that avoids using errno.
 
-Fixes: e58e871becec ("tools/lib/lockdep: Remove private kernel headers")
+Fixes: 665fa8dea90d ("tools/nolibc: add support for directory access")
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Acked-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- tools/include/linux/compiler.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/include/nolibc/dirent.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 33411ca0cc90..b2c40621d441 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -127,7 +127,7 @@
- #endif
+diff --git a/tools/include/nolibc/dirent.h b/tools/include/nolibc/dirent.h
+index 758b95c48e7a..61a122a60327 100644
+--- a/tools/include/nolibc/dirent.h
++++ b/tools/include/nolibc/dirent.h
+@@ -86,9 +86,9 @@ int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result)
+ 	 * readdir() can only return one entry at a time.
+ 	 * Make sure the non-returned ones are not skipped.
+ 	 */
+-	ret = lseek(fd, ldir->d_off, SEEK_SET);
+-	if (ret == -1)
+-		return errno;
++	ret = sys_lseek(fd, ldir->d_off, SEEK_SET);
++	if (ret < 0)
++		return -ret;
  
- #ifndef __used
--# define __used		__attribute__((__unused__))
-+# define __used		__attribute__((__used__))
- #endif
- 
- #ifndef __packed
+ 	entry->d_ino = ldir->d_ino;
+ 	/* the destination should always be big enough */
 -- 
 2.51.0
 
