@@ -4,44 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52111CAC5AA
-	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9722CAC59A
+	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 15:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RXl6ubRbFlom4y2e4H1GJqpLZi638eTvTDwJgOCQyw8=; b=u9KNr+/BaT+I/VeDfOMtBjgD58
-	f6ongcORQWMn/kOeteZs2bS7BrOwt1ENU7YuPv5/uYgVksLPJ3iFodNIoNVMmE3MtL6GdBQRE8DZ7
-	W5YuLD9n7J9KrsazBw9rL1hEy72ZmYqVlQoalX+sE0B5tGFz0RnYSKqrtl6UcCttMiBzyGD9D36g0
-	fHr958OJrDPAayxIOOknZjaz3iOZ78QpX2dNcxaA4gc9TeviTreksYNPtzRPh20niVWTBayhqAY30
-	Vt0kdqwqU3IJiUp5ufKgUiCG2VRctBizWYnboWh5+/rcEh5wnj7VZIawWNOULP3zn7HoFn77E6tzN
-	kTJAdA1A==;
+	bh=xO+mVCdWx08eTZ/4OCDNFnsQTwYMKX45MEVddt3khI4=; b=jveijKhQ87aBQuJsIss7OY0Okr
+	30loVDA3rBia041mt6xC79cIf6wQBFe+KxkB3bsZ8g/hVWKVL9BNs/RofUVfx/42uMjTuLNZ8FLcQ
+	vfJOPVwq1t18euJJuniupU1tNeBgBdq2rvR97yduvAuiU+hynOgB2/BJV2sYnuQ3RiJfry3k8xNb0
+	L1L4czJR4rCNGcAREt7fm3ej40R8bvwb45jJibw+xxVImEKRitSgqka7sYHZJ/rUboS38OphPk1Nz
+	LmS83JOobE8Go47wvpZVeWwnhQSMHZbN2PfG//7mRHLUnJRGC4Q+npSqDOJV00k9NTY9o83eX9TOp
+	EgGSsdvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9l-00000003MOR-0EsC;
-	Fri, 19 Sep 2025 15:36:17 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1uzd9n-00000003MR6-2adL;
+	Fri, 19 Sep 2025 15:36:19 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzd9h-00000003MHI-1F2N
+	id 1uzd9l-00000003MOD-2nq8
+	for linux-um@bombadil.infradead.org;
+	Fri, 19 Sep 2025 15:36:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=xO+mVCdWx08eTZ/4OCDNFnsQTwYMKX45MEVddt3khI4=; b=YaC/5xouyKV8EvadZkiS80mBBb
+	RIkzk18XAr/yaNsnW3EgLTHq2NsGR9ogOP1AMXa3jRAb/DFAgLqOyc98IXBQgSkteaNTvEjYgTsF3
+	35ahhlAwPRW/26wR5I1DooNntjTsfT2AcqYrdcXzLFkg/s/qv/4pEN0S3DkIIVPCO/IrbkcUhOSWA
+	ZmLMRxfalpxoHcoeiMzlTrKIiQKDjmABRJlhD3MukNl5lZVBFBlZDJZFJrrzSHlnu0rKHpjZDLCxI
+	H5akdvjS861hBn3uRGZTpklxE5Mdz6+mRdKsqScgC5wsfY3SO/6ftGyfDDqbyfHMIHorj8lFF6AmH
+	jZbDjRtA==;
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uzd9i-00000007rlN-2x6h
 	for linux-um@lists.infradead.org;
-	Fri, 19 Sep 2025 15:36:15 +0000
+	Fri, 19 Sep 2025 15:36:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=RXl6ubRbFlom4y2e4H1GJqpLZi638eTvTDwJgOCQyw8=;
-	t=1758296173; x=1759505773; b=wbwLShnb+KLeFJU8uzk+i5H3+mXPOjkcTBr7Is4xOkgK8Gn
-	0izvPupVFkXHstQ9nzGWmj6EPmwmuL79Oe4ze2MYF/AAN+HfAKZrN+HwFUAmAWEU+90gkH3bWTVVk
-	4w7RbVW6V92elnttD6t6Fx94E++kwhp+9DhLwBJt5kyy/MXzxHGrTlESvUIDPNTv42eNGDoRBYB2l
-	bLu3kLMp8N5uEBZ8eFHd9DG+nvy/VGeLDgzB2YQmnfg7SFuARHNx/H8KqoNVn7jqpGlbuJUydAFHD
-	bSRmwj74KKFxQPpzXAkT9Z3NtCgTyauVP8a3EKx6VMq+SNU1HYW26ZdUrCxc+oyw==;
+	Resent-Cc:Resent-Message-ID; bh=xO+mVCdWx08eTZ/4OCDNFnsQTwYMKX45MEVddt3khI4=;
+	t=1758296174; x=1759505774; b=nr8KFTL6KG0NeSaaA1RjVcpylPXty7+k3VmYftrA3yC1X8C
+	x8GYuafkTmTzPnXOSfx2ZdI4VQnttiqRGmfO3hnC6PnF1432GJWyWpqihB938Uhzw+yJH2NwIPFSs
+	67/UD+9Rf15wYOHnqZTprcXrKe8TIindg2eVP/vRIrgRiIVob7Vw2+zaW3NlAVCZWa0NUi+7FSrAo
+	61vvV6EzO5CzEkBi0ZfDRcpZT3xa1CvcYlCAsK5MfdH26BQFak45lyw7r+T67uo3RUnmmNVC7xDVe
+	EwcYqNeIeYNWBUfpPjRmkU/Bi9CBNe/CjmcXEw1NMN+9uRFRTm9BbhE6sfwCqdew==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1uzd9f-0000000G6O6-0Sob;
-	Fri, 19 Sep 2025 17:36:11 +0200
+	id 1uzd9f-0000000G6O6-44uB;
+	Fri, 19 Sep 2025 17:36:12 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org,
 	Willy Tarreau <w@1wt.eu>,
@@ -50,17 +65,17 @@ To: linux-um@lists.infradead.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: linux-kernel@vger.kernel.org,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2 10/11] tools/nolibc: add ptrace support
-Date: Fri, 19 Sep 2025 17:34:19 +0200
-Message-ID: <20250919153420.727385-11-benjamin@sipsolutions.net>
+Subject: [PATCH v2 11/11] um: switch ptrace FP register access to nolibc
+Date: Fri, 19 Sep 2025 17:34:20 +0200
+Message-ID: <20250919153420.727385-12-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20250919153420.727385-1-benjamin@sipsolutions.net>
 References: <20250919153420.727385-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_083613_365297_F18611F8 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20250919_163614_957001_2A851413 
+X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,119 +92,88 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-Add ptrace support, as it will be useful in UML.
+The registers.c file only contains the routines for floating point
+register access in ptrace mode and initial size detection. After the
+addition of sys/uio.h and sys/ptrace.h to nolibc it can be moved to use
+it by using the sys_ptrace() wrapper.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- tools/include/nolibc/Makefile                |  1 +
- tools/include/nolibc/nolibc.h                |  1 +
- tools/include/nolibc/sys/ptrace.h            | 52 ++++++++++++++++++++
- tools/testing/selftests/nolibc/nolibc-test.c |  2 +
- 4 files changed, 56 insertions(+)
- create mode 100644 tools/include/nolibc/sys/ptrace.h
 
-diff --git a/tools/include/nolibc/Makefile b/tools/include/nolibc/Makefile
-index 9bbbba32dac6..8e0cac3ac522 100644
---- a/tools/include/nolibc/Makefile
-+++ b/tools/include/nolibc/Makefile
-@@ -53,6 +53,7 @@ all_files := \
- 		sys/mman.h \
- 		sys/mount.h \
- 		sys/prctl.h \
-+		sys/ptrace.h \
- 		sys/random.h \
- 		sys/reboot.h \
- 		sys/resource.h \
-diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index b4bc1c9b883d..590eef545ca6 100644
---- a/tools/include/nolibc/nolibc.h
-+++ b/tools/include/nolibc/nolibc.h
-@@ -101,6 +101,7 @@
- #include "sys/mman.h"
- #include "sys/mount.h"
- #include "sys/prctl.h"
-+#include "sys/ptrace.h"
- #include "sys/random.h"
- #include "sys/reboot.h"
- #include "sys/resource.h"
-diff --git a/tools/include/nolibc/sys/ptrace.h b/tools/include/nolibc/sys/ptrace.h
-new file mode 100644
-index 000000000000..3119abdeeecb
---- /dev/null
-+++ b/tools/include/nolibc/sys/ptrace.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-+/*
-+ * ptrace for NOLIBC
-+ * Copyright (C) 2017-2021 Willy Tarreau <w@1wt.eu>
-+ * Copyright (C) 2025 Intel Corporation
-+ */
+---
+v2:
+- Use new sys_ptrace from nolibc
+---
+ arch/x86/um/os-Linux/Makefile    |  5 ++++-
+ arch/x86/um/os-Linux/registers.c | 16 ++++------------
+ 2 files changed, 8 insertions(+), 13 deletions(-)
+
+diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
+index 77a308aaa5ec..d37320430822 100644
+--- a/arch/x86/um/os-Linux/Makefile
++++ b/arch/x86/um/os-Linux/Makefile
+@@ -3,10 +3,13 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-y = registers.o mcontext.o
++obj-y = mcontext.o
+ 
+ obj-$(CONFIG_X86_32) += tls.o
+ 
+ USER_OBJS := $(obj-y)
+ 
++obj-y += registers.o
++NOLIBC_OBJS := registers.o
 +
-+/* make sure to include all global symbols */
-+#include "../nolibc.h"
-+
-+#ifndef _NOLIBC_SYS_PTRACE_H
-+#define _NOLIBC_SYS_PTRACE_H
-+
-+#include "../sys.h"
-+#include "uio.h"
-+
-+
-+#include <linux/ptrace.h>
-+
-+/*
-+ * long ptrace(int op, pid_t pid, void *addr, void *data);
-+ *
-+ * However, addr may also be an integer in some cases.
-+ */
-+static __attribute__((unused))
-+long sys_vptrace(int op, pid_t pid, va_list args)
-+{
-+	return my_syscall4(__NR_ptrace, op, pid,
-+			   va_arg(args, void *), va_arg(args, void *));
-+}
-+
-+static __attribute__((unused))
-+ssize_t sys_ptrace(int op, pid_t pid, ...)
-+{
-+	va_list args;
-+
-+	va_start(args, pid);
-+	return sys_vptrace(op, pid, args);
-+	va_end(args);
-+}
-+
-+static __attribute__((unused))
-+ssize_t ptrace(int op, pid_t pid, ...)
-+{
-+	va_list args;
-+
-+	va_start(args, pid);
-+	return __sysret(sys_vptrace(op, pid, args));
-+	va_end(args);
-+}
-+
-+#endif /* _NOLIBC_SYS_PTRACE_H */
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 1907128bc3f6..4c1b9ee32b7d 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -17,6 +17,7 @@
- #include <sys/mman.h>
- #include <sys/mount.h>
- #include <sys/prctl.h>
-+#include <sys/ptrace.h>
- #include <sys/random.h>
- #include <sys/reboot.h>
- #include <sys/resource.h>
-@@ -1404,6 +1405,7 @@ int run_syscall(int min, int max)
- 		CASE_TEST(readv_zero);        EXPECT_SYSZR(1, readv(1, NULL, 0)); break;
- 		CASE_TEST(writev_badf);       EXPECT_SYSER(1, writev(-1, &iov_one, 1), -1, EBADF); break;
- 		CASE_TEST(writev_zero);       EXPECT_SYSZR(1, writev(1, NULL, 0)); break;
-+		CASE_TEST(ptrace);            EXPECT_SYSER(1, ptrace(PTRACE_CONT, getpid(), NULL, NULL), -1, ESRCH); break;
- 		CASE_TEST(syscall_noargs);    EXPECT_SYSEQ(1, syscall(__NR_getpid), getpid()); break;
- 		CASE_TEST(syscall_args);      EXPECT_SYSER(1, syscall(__NR_statx, 0, NULL, 0, 0, NULL), -1, EFAULT); break;
- 		CASE_TEST(namespace);         EXPECT_SYSZR(euid0 && proc, test_namespace()); break;
+ include $(srctree)/arch/um/scripts/Makefile.rules
+diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
+index eb1cdadc8a61..e570e29c3d73 100644
+--- a/arch/x86/um/os-Linux/registers.c
++++ b/arch/x86/um/os-Linux/registers.c
+@@ -28,9 +28,7 @@ int get_fp_registers(int pid, unsigned long *regs)
+ 		.iov_len = host_fp_size,
+ 	};
+ 
+-	if (ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov) < 0)
+-		return -errno;
+-	return 0;
++	return sys_ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
+ }
+ 
+ int put_fp_registers(int pid, unsigned long *regs)
+@@ -40,9 +38,7 @@ int put_fp_registers(int pid, unsigned long *regs)
+ 		.iov_len = host_fp_size,
+ 	};
+ 
+-	if (ptrace(PTRACE_SETREGSET, pid, ptrace_regset, &iov) < 0)
+-		return -errno;
+-	return 0;
++	return sys_ptrace(PTRACE_SETREGSET, pid, ptrace_regset, &iov);
+ }
+ 
+ int arch_init_registers(int pid)
+@@ -60,9 +56,7 @@ int arch_init_registers(int pid)
+ 
+ 	/* GDB has x86_xsave_length, which uses x86_cpuid_count */
+ 	ptrace_regset = NT_X86_XSTATE;
+-	ret = ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
+-	if (ret)
+-		ret = -errno;
++	ret = sys_ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
+ 
+ 	if (ret == -ENODEV) {
+ #ifdef CONFIG_X86_32
+@@ -71,9 +65,7 @@ int arch_init_registers(int pid)
+ 		ptrace_regset = NT_PRFPREG;
+ #endif
+ 		iov.iov_len = 2 * 1024 * 1024;
+-		ret = ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
+-		if (ret)
+-			ret = -errno;
++		ret = sys_ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
+ 	}
+ 
+ 	munmap(iov.iov_base, 2 * 1024 * 1024);
 -- 
 2.51.0
 
