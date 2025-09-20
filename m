@@ -4,93 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94E4BCAC59A
-	for <linux-um@archiver.kernel.org>; Fri, 19 Sep 2025 23:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37A83CAC5A0
+	for <linux-um@archiver.kernel.org>; Sat, 20 Sep 2025 03:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XM6G+Tnflz7sZdGSI4xVWIr0TRe/kf+B7MZhs/o8MZU=; b=L0PWDAHI9H3XpO2IuKWyraESCd
-	9IWcQQKy21Hjf8RAYkojnCcpEsXaNXej996CYvOhSy/mmnudqMZHNV/FdBepNoL+anUSt/LKRWWCT
-	NYo86HLGWVKTr3eOtF7jliUVnLrSe/Wg4qJf8GGu1omUqByocImbt6BJVAXQqusaC/Qgg4s7wcFrE
-	uNFPpNmWzDTWlPHsqCv23O+HYO+wE6AfOZDehTTlHK1ufCbiCifRfcvDTiESAnI8d0H7RpiGy4wJ+
-	eTdUugXosDse540hz15ga+em9dyR7A08/e4pCcAOxCn9lQAcbYapaTHQewyHDbZbfCzz8yesUsb/F
-	U5j0CK/g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=wLR5A4WVJygISPHG42IIvYb+LPD25B9I3WH7jC2e5xU=; b=m1bXXMO0K1o9jTVmQagOVH+iVx
+	u1cnqAFqfe7R2szMLEG99vdAeHJMEaokxI5ol6e+5jVNR9G83e4ALnGCFY6tL2Iev6O/JIOZXL9Dt
+	HcnVne6ICPkYzexZXfqDPgf1UmokwGF3qpBQdwCbSKvw99opX9+YOE7UMz+TDloyeL5ow9M+igpGE
+	WXJmSaPFUSBrT380BMNf5l/o1W+W9/9Km9GdaApLrpq6jVib7Gy7I0IylUzyqaJ3NF/QUmMPSqUyC
+	wZtXRXvOTM7W6+OHERppbsaRlNrFvGj4vbOwdMBaDr/Uipf52qUQ3YPPpGBP0+HiFtsyaQC4v7gtg
+	bIvoc4mA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzko1-00000004LMI-2xlB;
-	Fri, 19 Sep 2025 23:46:21 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1uzohH-00000004gck-1drc;
+	Sat, 20 Sep 2025 03:55:39 +0000
+Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uzknz-00000004LLp-3O6n
+	id 1uzohD-00000004gae-3p6U
 	for linux-um@lists.infradead.org;
-	Fri, 19 Sep 2025 23:46:21 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-7761bca481dso2243245b3a.1
-        for <linux-um@lists.infradead.org>; Fri, 19 Sep 2025 16:46:19 -0700 (PDT)
+	Sat, 20 Sep 2025 03:55:38 +0000
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-ea5bc345eddso2257562276.1
+        for <linux-um@lists.infradead.org>; Fri, 19 Sep 2025 20:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758325579; x=1758930379; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XM6G+Tnflz7sZdGSI4xVWIr0TRe/kf+B7MZhs/o8MZU=;
-        b=QKNel5TC3g5nlhoUnEkB+/OuTnEOXm16lGkKxdRZKSjD4CypDlqCx+hwUERbUixIGa
-         95m4H0M9dnEYgBZqzdS247iFPaf1OoJAkC4f7ygMco9enZ8ZI0yWpskK6kLsUPjfhP1j
-         srTOyn874RWQSrq9UOyy3MEUci0A3XrgyWAa3NJJQniFLOGCGPLj+hm7D9lB4wBG6Wjr
-         +wGi1gj9+IPBeJ1drtTxVHSeezS715s5WfvRnt7j3cdAyjDxEv7yoxRQog6vt07NxhhL
-         lccjhCd+I7xXtRbQ90ptgiqN2cjxck9dUhjeqMb2mR+zo84Io9u0F/15Ieer5/1kSMHd
-         kKuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758325579; x=1758930379;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1758340534; x=1758945334; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XM6G+Tnflz7sZdGSI4xVWIr0TRe/kf+B7MZhs/o8MZU=;
-        b=u/ogiQx23znb52aWxephTS3hknhEz0HGzX+onzzH75Ooc0NLTZGLBni6UYL1Jsbhip
-         T0PboEQyGw3ifQXq8EUhTEm/4YbERgz5NNKNefoBqkogr887VZL47MBn46A4YA0fQj4z
-         DpAUNBss+OxNdpEIAI1t9qlRfnWwRPWhuc+EHbOH7P2gNsTyBU42B4JR4qOcFRDLni0K
-         /UKoCoUvGNPHox1Y5vev1dKZl+Iy4w/0PqSgA1mmD74lFSgMI44+YgsY0OswBXqUgG8w
-         sfpechqarklGInxRurJVGabh9DGgxuIE1a/asKyDJciRuzLznDR4TnPRocLBdwoTkojG
-         NIhg==
-X-Gm-Message-State: AOJu0Yx6v322IX0QdyGW1lpMG+01RKnuIil6BbSXFJEaSlOLXBaF3WN8
-	fpL55vFvzrz8P3quNaiH6/7Pq/GkRB38gQxAnOhZQzcCoo5VmfWyoyGp
-X-Gm-Gg: ASbGnctyae1++IbVBlSZWGPq68WJbCr1YhUIej8kI9nnM9gFFYBC2ANZ+6ykQhkedBt
-	Q483JkQxh7kZgTyJ/tEoBlXU+u7H4NE0qFb1FJtAyqfHn0zyuhYWejKkpkbVSVMpDF2k2TEvsfS
-	4ETSqgMugT5uH7LSgw5sbaZ/gfBr0IJsvATS85227eHk/0fS2TngbFT9sMorrJVK/iCf0vcZHgt
-	82e8KMrbq7tf3G1dzXH/qoJTbsONOktCocZoXTiI+8iuRi/mY2b0qENO1qjZzUMHrMr6odl8Z+3
-	gRUeWPrYqplBYm/Wcg/03l5SIWjYWcwtaica26ulSkXhY0nfT5vk0Ga90ewr7yVfEDQX4DHfwOx
-	YXAVRYs8QQJ6UKn/baTRTVKu/au08Qe9xNYgm7CURYN6KHu0MHQZdachDwxwxbuH9FKmdSHW4U9
-	13JSfMNIBL
-X-Google-Smtp-Source: AGHT+IHTGzVIJIJcoTXCreng0sRNp1AId04yLbL+ZcNgHnLi02tUhTStytUkT5LQWEaFUur4vICTog==
-X-Received: by 2002:a05:6a00:3e1f:b0:772:101f:5e46 with SMTP id d2e1a72fcca58-77e4d223acbmr6416198b3a.12.1758325578758;
-        Fri, 19 Sep 2025 16:46:18 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-77f0ef2db80sm1846205b3a.24.2025.09.19.16.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Sep 2025 16:46:17 -0700 (PDT)
-Date: Sat, 20 Sep 2025 08:46:14 +0900
-Message-ID: <m25xde80qh.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v11 10/13] um: nommu: a work around for MMU dependency to PCI driver
-In-Reply-To: <da39f51b76cca54e5304064f7e34a8863442605d.camel@sipsolutions.net>
-References: <cover.1758181109.git.thehajime@gmail.com>
-	<4a9dde10c586883d20a8201ca7d76e6d7d52eaf4.1758181109.git.thehajime@gmail.com>
-	<a58620ecefa207e141a435c36492647c3d5bd3df.camel@sipsolutions.net>
-	<m28qib8g1r.wl-thehajime@gmail.com>
-	<6b1abe384237c8129e8043ecdfdad77758d2fd2f.camel@sipsolutions.net>
-	<m27bxu949d.wl-thehajime@gmail.com>
-	<da39f51b76cca54e5304064f7e34a8863442605d.camel@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        bh=wLR5A4WVJygISPHG42IIvYb+LPD25B9I3WH7jC2e5xU=;
+        b=LOBZL0WJkbfdvSEIhDYYVJqbnDIy5O/FGjT8qeBG6cFhsDNoXlkGLLCTUHFXB2U1i1
+         2h0CbS1ZWGzYFdwusgU+QOfCfqkJpY00odG9uXpOQ7yh6YAylJsVmwi0rTcxxT48h0cV
+         6royviXFGGZ/eIgxCV/otVVM3cQ1XwVyQmYObEOLpjnnCiyHR9UaYx778o4JDFZE9mgr
+         CxRjom846231CMq8OssPqFVxTzgJFtlBluWwB1kaVwNU019p0upJ+dN0C14lSfRIy+Uh
+         cFa7HAUKfRAiIv1UgnKZMbdhBH9m2I8lsCSxNISo+KTZiHNfTTCxHEze37Fb4pccFHGP
+         HMsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758340534; x=1758945334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wLR5A4WVJygISPHG42IIvYb+LPD25B9I3WH7jC2e5xU=;
+        b=cQbQT6mQIisrh6hsUCPc47epjQn+gc+mwORyFECm+pQ+kAEZY+CKaVcjPoi0Sv7Xfu
+         DWpXgRgCk53EKFrSRJU+eUJJd8LEkaYkDvnIUVJV6y4D4KSTZLjhvUgoAtOS1QrmWbjE
+         koLZ1SQeciCr0fXOSFkR0rBvwc6YmiOw6WV2I8QWmfoz7kKflV6qaRoOWa9ejUJpG3KS
+         CCYtIAtTiyAvTNdUTifYGwAyB1AQLfjOC4+vCjqCBX8j8H9uiObNNMtnK3eBZTbwMDqh
+         Vs79SdyTRjc5L5niJKgO2uPNqtLxJUkvlV5VelfC5RP8tixkbChoDJTQTo7Wyeglf2l3
+         cK5g==
+X-Forwarded-Encrypted: i=1; AJvYcCWkPtzvL7hF1AaFk42FEjRWey8gKgvRbV54dUGSzVQneJ5noHzXZeb73D1LFJQj+BtFHCX/Xqnnxw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzJ9A/BBgLxTC+xkRUQwuNzz3vTDMLMTq1XBw7REBCqf8LFWKl9
+	LCTSXY0Ebqw8y1hOrqbvzzXfHU2XbTxGWVhh+DpBN0bQ2LRdhb1123hKLHG0FdQCjdr0FbeaV4+
+	1PCuq0c5uZZLDobFV9ppMFjnuTMWaai4=
+X-Gm-Gg: ASbGncucn1dRUb+wN7GR/6QoRUX10LDbLU0jz+NNfuZ2KF4Jb/iAvo/lL/53klpFpva
+	wle5g6eQ9GMCEF0rfsGHB3zqRR8eI0ipDbSTjk3rhcMDEUeMtPOLr9TPpEP3UzLOxVElhszTOK5
+	iJc7cMDWXF6Rm5ZmAi1QKElNrn5T1Ubd/oeOdkTlcvRGK9N59zHJJ7nAFQH+YQUb0+u3R5OgunI
+	eFJ428=
+X-Google-Smtp-Source: AGHT+IH7cxRQcDAWrx6iopGK0fgAvvotX/SwRt/T/KElvH4XQULrd96czgOrVv1CSvA0vDpbRNCMKcVlhfdowxEBryU=
+X-Received: by 2002:a53:b3c5:0:b0:622:4818:ce38 with SMTP id
+ 956f58d0204a3-6347f610c7emr3546092d50.37.1758340534336; Fri, 19 Sep 2025
+ 20:55:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20250918152830.438554-1-nschichan@freebox.fr> <20250918195806.6337-1-safinaskar@gmail.com>
+ <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com>
+In-Reply-To: <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Sat, 20 Sep 2025 06:54:58 +0300
+X-Gm-Features: AS18NWCqg0xtU5KiNe17DWjmiPCEbBI_FSj5NCOyDGZFj_7oFaRqSu7O_vUKCrA
+Message-ID: <CAPnZJGDwETQVVURezSRxZB8ZAwBETQ5fwbXyeMpfDLuLW4rVdg@mail.gmail.com>
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+To: Nicolas Schichan <nschichan@freebox.fr>
+Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
+	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
+	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
+	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
+	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
+	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
+	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
+	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
+	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
+	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
+	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250919_164619_853579_229F1209 
-X-CRM114-Status: GOOD (  38.95  )
+X-CRM114-CacheID: sfid-20250919_205535_985178_14F6B1F9 
+X-CRM114-Status: UNSURE (   7.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,159 +118,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Fri, Sep 19, 2025 at 6:25=E2=80=AFPM Nicolas Schichan <nschichan@freebox=
+.fr> wrote:
+> Considering that the deprecation message didn't get displayed in some
+> configurations, maybe it's a bit early at the very least.
 
-thanks Johannes, I think I got a clearer view than before.
+I changed my opinion.
+Breaking users, who did not see a deprecation message at all,
+is unfair.
+I will send a patchset soon, which will remove initrd codepath,
+which currently contains deprecation notice. And I will put
+deprecation notice to
+other codepath.
 
-I guess Kconfig does the right thing.
-And Kunit does the right too but an additional job which Kunit does
-prevents run tests w/ !MMU.
+Then in September 2026 I will fully remove initrd.
 
-> >  CONIFG_MMU=n
-> > 
-> > via --kconfig_add CONFIG_MMU=n.
-> 
-> Sure. But that should disable CONFIG_UML_PCI_OVER_VIRTIO, and it doesn't
-> now.
+> SMTP server I used wasn't authenticated to google, so all gmail
+> recipients were dropped. Hopefully this work better today.
 
-Kconfig (via kunit.py config) disables CONFIG_UML_PCI_OVER_VIRTIO
-correctly.
+Yes, this time I got your email
 
-But after that, Kunit does the additional job, validate_config() (in
-kunit_kernel.py), which checks the configs (arch_uml.config +
---kconfig_add) is a subset of the final result of .config.
-
-When I applied a patch below:
-
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 6a0354ca032f..04025207a077 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -159,6 +159,7 @@ config UML_RTC
- 
- config UML_PCI
-        bool
-+       depends on MMU
-        select FORCE_PCI
-        select IRQ_MSI_LIB
-        select UML_IOMEM_EMULATION
-@@ -170,6 +171,7 @@ config UML_PCI_OVER_VIRTIO
-        bool "Enable PCI over VIRTIO device simulation"
-        # in theory, just VIRTIO is enough, but that causes recursion
-        depends on VIRTIO_UML
-+       depends on MMU
-        select UML_PCI
-
-and do
-  ./tools/testing/kunit/kunit.py config  --kconfig_add CONFIG_MMU=n
-
-the validation currently gives the following error:
-
- ERROR:root:Not all Kconfig options selected in kunitconfig were in the generated .config.
- This is probably due to unsatisfied dependencies.
- Missing: CONFIG_UML_PCI_OVER_VIRTIO=y
- Note: many Kconfig options aren't available on UML. You can try
- running on a different architecture with something like
- "--arch=x86_64".
-
-so, if I give an additional --kconfig_add CONFIG_UML_PCI_OVER_VIRTIO=n
-to the command line, the validation passes, because the configs
-(arch_uml.config + --kconfig_add) becomes the subset of the final
-result.
-
-what I can handle this would be either of them:
-
-1) use --kconfig_add CONFIG_UML_PCI_OVER_VIRTIO=n when using kunit w/
-  !MMU, and drop this patch from the series (no modification to the tree)
-2) prepare a different file for !MMU & ARCH=um testing (e.g.,
-  arch_uml_nommu.config), and add an option to kunit.py to switch MMU
-  or !MMU
-3) implement virtio-pci for !MMU and propose to remove the restriction
-  of CONFIG_PCI depends on CONFIG_MMU.
-
-2) will be removed when 3) is done so, I'm hesitating to propose a
-patch used by whole tree.
-
-so, I think 1) is (not the best but) a reasonable solution, with a
-note in nommu-uml specific document (i.e., [PATCH 12/13]).
-
-Let me know what you think.
-
--- Hajime
-
-On Fri, 19 Sep 2025 18:38:03 +0900,
-Johannes Berg wrote:
-> 
-> On Fri, 2025-09-19 at 18:32 +0900, Hajime Tazaki wrote:
-> > currently, drivers/pci/Kconfig (CONFIG_PCI) marks as depends on MMU,
-> 
-> Right.
-> 
-> > so we cannot select it when CONFIG_MMU=n.
-> 
-> Actually, I believe that's not true, I think it *can* select something
-> even if you override the 'depends on' it has, it just causes a warning
-> in Kconfig.
-> 
-> But I don't think PCI is even selected, UML_PCI is selected, and then
-> that selects PCI_MSI which should really only be reachable when PCI is
-> enabled, so this perhaps does nothing? Not sure ...
-> 
-> > but it's different with kunit when using them via kunit.py config,
-> 
-> It really isn't, you just don't see everything because kunit.py hides
-> the build from you.
-> 
-> > it first adds
-> > 
-> >  CONFIG_VIRTIO_UML=y
-> >  CONFIG_UML_PCI_OVER_VIRTIO=y
-> > 
-> > via tools/testing/kunit/configs/arch_uml.config, and then add
-> > 
-> >  CONIFG_MMU=n
-> > 
-> > via --kconfig_add CONFIG_MMU=n.
-> 
-> Sure. But that should disable CONFIG_UML_PCI_OVER_VIRTIO, and it doesn't
-> now.
-> 
-> > and then execute make ARCH=um olddefconfig, which in turn enables
-> > CONFIG_UML_PCI_OVER_VIRTIO.
-> 
-> Keeps it, let's say.
-> 
-> > if we append "--kconfig_add CONFIG_UML_PCI_OVER_VIRTIO=n" to kunit.py,
-> > it will overwrite the arch_uml.config.
-> 
-> Yeah but that being required doesn't make sense - the Kconfig should
-> express the correct dependencies.
-> 
-> > # I don't know how kunit handles those appended CONFIG entries, though..
-> 
-> It just puts them into the file and runs oldconfig, I guess?
-> 
-> > my goal is simple; to test !MMU code via kunit.
-> 
-> Sure.
-> 
-> > my original patch or the additional kconfig argument (--kconfig_add)
-> > satisfies this goal.
-> 
-> Sure. But both are the wrong solution, as I said, the Kconfig should
-> express the correct dependencies.
-> 
-> > > The problem is probably UML_PCI_OVER_VIRTIO selecting UML_PCI selecting
-> > > various PCI code, but nothing depends on PCI in the first place. Which
-> > > it should, then?
-> > 
-> > I don't understand the 'nothing depends on PCI...' part.  care to
-> > elaborate ?
-> 
-> See above, I think?
-> 
-> My gut feeling is that UML_PCI_OVER_VIRTIO should depend on PCI but I
-> don't know if that then doesn't end up in some kind of circular
-> dependency.
-> 
-> johannes
+--=20
+Askar Safin
 
