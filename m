@@ -4,62 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 110C5CAC5A8
-	for <linux-um@archiver.kernel.org>; Sun, 21 Sep 2025 08:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B433CAC5A7
+	for <linux-um@archiver.kernel.org>; Sun, 21 Sep 2025 16:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jLJuxKB/PPgDic7rB4z6F9PG20pfktyXJQHHD419PVM=; b=o3W/5lU//p2f2pZGS632gT7Qzc
-	qtxganGAXrkPrlRDsQuJhk9d29rFiNK4V397ais/OKw6lHr0KlXxfnsS1IYtDT/+tLOSSxp5COAEl
-	AcXsQUadnZJFf2KByEYWCEVSpnONKntOIeWk6v8yLGHq+vTkWdwFNWio19TZCHSGIgiL+36KXnTDF
-	cdBm8aRfhm3Ldk8jp4v1R1irVXY7nqBYmjVckpi7HXaoX94HZGq7bZCoLgPKI7yG4r/vMAq2VEnGK
-	P+gOBEPEbILjy1Gz4SXPvzBSOiCESUl7whwDQpjrBuYed1tqH6r2Ou8IGNO7VL5mkQIiAej/PFwzS
-	zF8K+gEQ==;
+	bh=ujQnDtMNTrIojLIUO6CgHCZwwWCdnuLWPN8HcVHzyQs=; b=HmvL6JfK4lN6bxULl/d1ras2zp
+	I6FKo/z4V/JJSlQkQ/34PCdMDBDv3/VIKp5e/LTWgjj5YJTGhmBIOOWR++oAuXJNJ8IezBPELGizx
+	3ih3tEmk4Uua7h1ELJAMgg3T3PmFJBFttMu/7FoOLzTLmr7HcdKMu/q9XvUIxhwRBS7k9jlovCORG
+	Z8y3dl15e/0xfoZTfzdzmGCbnsf5tOi4+4ZDUKCTBOkSiRLhwnZ33O3fW+kGMX/VogfjKCnVDJQYr
+	SVJlEPRVpXlC0qBwPcw6jODpmquwahbRb+Qfp+hgQBUUYDIeVY+olGcEvoIcFlsExh2zM89fsXDif
+	d6iqDwQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0FIW-000000074at-1H7C;
-	Sun, 21 Sep 2025 08:19:52 +0000
-Received: from mta1.formilux.org ([51.159.59.229])
+	id 1v0N4E-00000007npO-3r7q;
+	Sun, 21 Sep 2025 16:37:38 +0000
+Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v0FIT-000000074Zk-1cfV
+	id 1v0N4C-00000007nog-47Th
 	for linux-um@lists.infradead.org;
-	Sun, 21 Sep 2025 08:19:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=1wt.eu; s=mail;
-	t=1758442787; bh=jLJuxKB/PPgDic7rB4z6F9PG20pfktyXJQHHD419PVM=;
-	h=From:Message-ID:From;
-	b=uOjdlXkb4h5eCFeMT4fMig8ZEDmQ2dOZSazY6P5NlAnTrN9FOxideYmLGTYRW2zkX
-	 HqUSp8kuIjzAEOcJqcfvS0xm3JcgKN5wFqrs/b6SrgnPUCoSUHC8rUVubzXQ5nbelX
-	 Pmb8vlnIAWWRtT6gPbWLJgGYcFX/Xm/0jkFzeTD0=
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by mta1.formilux.org (Postfix) with ESMTP id 71BEDC072E;
-	Sun, 21 Sep 2025 10:19:47 +0200 (CEST)
-Received: (from willy@localhost)
-	by pcw.home.local (8.15.2/8.15.2/Submit) id 58L8Jlt9016845;
-	Sun, 21 Sep 2025 10:19:47 +0200
-Date: Sun, 21 Sep 2025 10:19:47 +0200
-From: Willy Tarreau <w@1wt.eu>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org, Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [PATCH v2 10/11] tools/nolibc: add ptrace support
-Message-ID: <20250921081947.GC16684@1wt.eu>
+	Sun, 21 Sep 2025 16:37:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1758472650;
+	bh=7JvBPeJoxKqTRyUBKzE8ehwiAfyw1+bPlIevTM3eY5I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Mb0PqSL91m8i4951Fstrdpubh9U1v1a53JdmQxCU9diI+Bskx+JxdPgSrrdpMg9ly
+	 72CIQue9FqDAWbtLzX58n0oHUC2PdnEyOGEj2oLsC/ui3ilnckEELVJBGz8ifkMg/n
+	 Wleb+z0eSgBEklXghZFaRgYzSo685DbgWwZTMhhM=
+Date: Sun, 21 Sep 2025 18:37:30 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Willy Tarreau <w@1wt.eu>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>, 
+	linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, linux-kernel@vger.kernel.org, 
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: Re: [PATCH v2 03/11] tools/nolibc/stdio: remove perror if
+ NOLIBC_IGNORE_ERRNO is set
+Message-ID: <c10503a9-5c63-44a8-9ea7-a7bf6c4ed3fb@t-8ch.de>
 References: <20250919153420.727385-1-benjamin@sipsolutions.net>
- <20250919153420.727385-11-benjamin@sipsolutions.net>
- <eced0e2b-8fb3-490f-bcbe-40a72e430db7@t-8ch.de>
+ <20250919153420.727385-4-benjamin@sipsolutions.net>
+ <20250921075511.GA16684@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <eced0e2b-8fb3-490f-bcbe-40a72e430db7@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20250921075511.GA16684@1wt.eu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250921_011949_709599_C51EE4BF 
-X-CRM114-Status: GOOD (  16.73  )
+X-CRM114-CacheID: sfid-20250921_093737_230192_8CB1CE43 
+X-CRM114-Status: GOOD (  21.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,43 +69,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Sep 20, 2025 at 11:27:19AM +0200, Thomas Weiﬂschuh wrote:
-> > +/*
-> > + * long ptrace(int op, pid_t pid, void *addr, void *data);
-> > + *
-> > + * However, addr may also be an integer in some cases.
+On 2025-09-21 09:55:11+0200, Willy Tarreau wrote:
+> Hi Benjamin,
 > 
-> This comment is a bit confusing. It reads like it can be an integer as
-> in 'int' datatype. But the kernel expects an integer compatible with
-> 'void *', so 'unsigned long'. I think we can drop the comment.
-
-Or if the point is to insist that void* is not strictly required, a
-comment might as well say "types for addr and data are ignored and
-will be cast to void*". But given that the man page indicates two
-void*, I think that callers are expected to cast ints to void* in
-any case, and if so maybe indeed not saying anything about it would
-be better.
-
-> > + */
-> > +static __attribute__((unused))
-> > +long sys_vptrace(int op, pid_t pid, va_list args)
-> > +{
-> > +	return my_syscall4(__NR_ptrace, op, pid,
-> > +			   va_arg(args, void *), va_arg(args, void *));
-> > +}
-> > +
-> > +static __attribute__((unused))
-> > +ssize_t sys_ptrace(int op, pid_t pid, ...)
+> On Fri, Sep 19, 2025 at 05:34:12PM +0200, Benjamin Berg wrote:
+> > From: Benjamin Berg <benjamin.berg@intel.com>
+> > 
+> > There is no errno variable when NOLIBC_IGNORE_ERRNO is defined. As such,
+> > the perror function does not make any sense then and cannot compile.
+> > 
+> > Fixes: acab7bcdb1bc ("tools/nolibc/stdio: add perror() to report the errno value")
+> > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> > Acked-by: Thomas Wei√üschuh <linux@weissschuh.net>
+> > ---
+> >  tools/include/nolibc/stdio.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/tools/include/nolibc/stdio.h b/tools/include/nolibc/stdio.h
+> > index 7630234408c5..c512159b8374 100644
+> > --- a/tools/include/nolibc/stdio.h
+> > +++ b/tools/include/nolibc/stdio.h
+> > @@ -597,11 +597,13 @@ int sscanf(const char *str, const char *format, ...)
+> >  	return ret;
+> >  }
+> >  
+> > +#ifndef NOLIBC_IGNORE_ERRNO
+> >  static __attribute__((unused))
+> >  void perror(const char *msg)
+> >  {
+> >  	fprintf(stderr, "%s%serrno=%d\n", (msg && *msg) ? msg : "", (msg && *msg) ? ": " : "", errno);
+> >  }
+> > +#endif
 > 
-> ptrace(2) does not document addr and data to be optional.
-> While it does acknowledge the fact that it is variadic on glibc,
-> users are still recommended to always supply all arguments.
-> I'd prefer to keep it simple and avoid the va_list.
+> Please instead place the ifndef inside the function so that code calling
+> perror() continues to build. The original goal of that macro was to
+> further shrink programs at the expense of losing error details. But we
+> should be able to continue to build working programs with that macro
+> defined. There's nothing hard set in stone regarding this but here it's
+> easy to preserve a working behavior by having something like this for
+> example:
+> 
+>   static __attribute__((unused))
+>   void perror(const char *msg)
+>   {
+>  +#ifdef NOLIBC_IGNORE_ERRNO
+>  + 	fprintf(stderr, "%s\n", (msg && *msg) ? msg : "unknown error");
+>  +#else
+>   	fprintf(stderr, "%s%serrno=%d\n", (msg && *msg) ? msg : "", (msg && *msg) ? ": " : "", errno);
+>  +#endif
+>   }
 
-The man indeed says they are *ignored*, not optional. I agree then that
-it would be better not doing simpler than the standard and have to roll
-back later. Let's just pass unused arguments to the system.
+For the plain `errno` variable and printf(%m) we don't have such
+fallbacks. With NOLIBC_IGNORE_ERRNO the compilation either fails or the
+results are undefined. Personally I prefer not defining perror() here.
 
-Thanks,
-Willy
+
+Thomas
 
