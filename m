@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58B06CAC5AC
-	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 16:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1BF6CAC5AC
+	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 17:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hM+wBS6oz+A94GcAbMmM728zYBYkAygS4m8GUSpi98M=; b=Fi49KpJecUMbsXhUA5itMBqOOE
-	mQfnVoojQBdpho7pEVxOU2cU9rApyB9RyO1ZI0U8zNZy3RWFbb+llni1LjOCTrRFjfGlW11mQTUmE
-	AJ0swa4lM7MASje8bfDghz0+4HUjCIr+5pgNHVilg+Szr2N52jcCuzbhom+eF+2AuBrZCYRYxZ4fk
-	rdwY+ahcEUC3UCBgFdNIjbXbjFYfOWNkMR/xr8wuR3lnzCA7pN2zXcBQpPyFgaIWN8a/H9gVvI7Id
-	eZqfASfxFVPGdrL1ryH1dQ5c8hHgVThwIzu7Si9uIbirN1YaEqcKOYTGnNHmv6p3+scqHVyLr5ZOX
-	E1+mnYUQ==;
+	bh=vjZeveKFzDPAEd4GCEqvLjhW0pC9krDO5tPa8N+ao6c=; b=4GWPfliQsOjJ7stDeHXPWHEvU7
+	SJRVuw2QcUsC1OmqnDlwOeM11XlOXUUXDx1tO1iFAog3tB4Wax9fwhrJwbidAiaGoIaNvHL48vrlv
+	Yhs4JoulX1pBE25EliKmOXW0WVMVhsRt532f0kGHKdhaHYuSquEdXTFlVB4Kk3gTLRRNRr7pAuEzL
+	9vRthyOtdi+IyCUodN4m2OIXxJXjzlTdD+FqjHockD+gmJXMV4D1acveabU9AyWh+6edan+iUd/AH
+	OO1WRSwWhraKHi0/4i/jbuCuJ+L5b/AsRybIeVjD59cG4YkfnhRpKVx6qgarxA7dizW3W8MC2WesY
+	ilC1xHRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v15lP-0000000EFMB-1Vlp;
-	Tue, 23 Sep 2025 16:21:11 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1v16aS-0000000EMVn-0BlN;
+	Tue, 23 Sep 2025 17:13:56 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v15lK-0000000EFJt-27Xt
+	id 1v16aP-0000000EMVM-3mkU
 	for linux-um@lists.infradead.org;
-	Tue, 23 Sep 2025 16:21:10 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7BE3043BE2;
-	Tue, 23 Sep 2025 16:21:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C9B7C4CEF5;
-	Tue, 23 Sep 2025 16:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758644465;
-	bh=qXVz/hDVPsuZNQA18ppIjdhpvEqnsfHeZE0v2amdRuM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VK2g3lz9szCECiQtGmt2X/Zi+uw6ZAgz8SmH6kPHKDyIVnmJOTI2XRa49z4z4BAI3
-	 H6v6QR2EoLEU0O6RqvzjhdUyGlXsvKjBXaYSotr6EFTSEcJwM2vrt8ymdgyA1sSufx
-	 LiXz0qKEgVBoNKR6YOYzky7sUe3LrcWGit4t6bOKGWVsdOM7COl2qdatHm6IRd5Azn
-	 4iGmR4y+wimk3HNOsdyC5q/WcfWtd56jwzk+PGefLZuQFZTOyyUf8x341vzzAMtioB
-	 vrgpmNS4I7U+5DyKMTPXtFZxMRdNuJs9EJLkTdwUFGP2JWOLr14rRW36xoKwmcrytv
-	 vM0HMkfQptj4w==
-Date: Tue, 23 Sep 2025 21:50:55 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Brian Norris <briannorris@chromium.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>, linux-pci@vger.kernel.org, 
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org, 
-	Johannes Berg <johannes@sipsolutions.net>, Sami Tolvanen <samitolvanen@google.com>, 
-	Richard Weinberger <richard@nod.at>, Wei Liu <wei.liu@kernel.org>, 
-	Brendan Higgins <brendan.higgins@linux.dev>, kunit-dev@googlegroups.com, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Subject: Re: [PATCH 0/4] PCI: Add support and tests for FIXUP quirks in
- modules
-Message-ID: <sb6o4y5ymss3ko73ruwsdgr2dnv2etbg6zq5muaw2vyhlm52bc@zl4uswmomakz>
-References: <20250912230208.967129-1-briannorris@chromium.org>
- <aMgZJgU7p57KC0DL@infradead.org>
- <aMhd4REssOE-AlYw@google.com>
- <aNGR0x185VGHxSde@infradead.org>
+	Tue, 23 Sep 2025 17:13:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=vjZeveKFzDPAEd4GCEqvLjhW0pC9krDO5tPa8N+ao6c=;
+	t=1758647633; x=1759857233; b=RULJAGCSQAMqNz76S9Mp0KlqA5LluL5pbV7RCuTA16h4b7A
+	JYlUNStKagrWDtluxE8zylLfwHCxJaZ/rS/vQbeixq2JusiNMH6OtxN1FAlbVne2+xv4i6E7/oDsl
+	BkqLOXa4uNhaPc1n3XBy7pZ3kjwHJbykpjT9IkDf51+L3gQECPOQFmHItCi38LHfi94XHATlv1K7I
+	6jzWAcAI8iAKZbyT9XXI1jmy2xAwx2IT5fKrDWj6dclFXoqD5qSVZ/JXSHRQphPfVindWf2dV45Ek
+	DgjIe9LDczrr7vwMFoxLNGwrhXt0PA1LdMlswrzqMWAmaYNe6Nkv2BJmeBA4jTMQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1v16aK-00000006pCz-1JN8;
+	Tue, 23 Sep 2025 19:13:48 +0200
+Message-ID: <23adb61e95275251e459513a03ab7d2bcf1f2e07.camel@sipsolutions.net>
+Subject: Re: [PATCH RESEND v11 10/13] um: nommu: a work around for MMU
+ dependency to PCI driver
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Hajime Tazaki
+	 <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, ricarkol@google.com,
+ Liam.Howlett@oracle.com, 	linux-kernel@vger.kernel.org, Arnd Bergmann
+ <arnd@arndb.de>
+Date: Tue, 23 Sep 2025 19:13:47 +0200
+In-Reply-To: <CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com> (sfid-20250923_174311_655140_04935269)
+References: <cover.1758181109.git.thehajime@gmail.com>
+	 <4a9dde10c586883d20a8201ca7d76e6d7d52eaf4.1758181109.git.thehajime@gmail.com>
+	 <a58620ecefa207e141a435c36492647c3d5bd3df.camel@sipsolutions.net>
+	 <m28qib8g1r.wl-thehajime@gmail.com>
+	 <6b1abe384237c8129e8043ecdfdad77758d2fd2f.camel@sipsolutions.net>
+	 <m27bxu949d.wl-thehajime@gmail.com>
+	 <CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com>
+	 (sfid-20250923_174311_655140_04935269)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aNGR0x185VGHxSde@infradead.org>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250923_092106_573242_34757F1B 
-X-CRM114-Status: GOOD (  12.30  )
+X-CRM114-CacheID: sfid-20250923_101353_966275_B5C2E78D 
+X-CRM114-Status: UNSURE (   8.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,31 +84,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 22, 2025 at 11:13:39AM -0700, Christoph Hellwig wrote:
-> On Mon, Sep 15, 2025 at 11:41:37AM -0700, Brian Norris wrote:
-> > I see fixups in controller drivers here:
-> > 
-> > drivers/pci/controller/dwc/pci-imx6.c
-> > drivers/pci/controller/dwc/pci-keystone.c
-> > drivers/pci/controller/dwc/pcie-qcom.c
-> > drivers/pci/controller/pci-loongson.c
-> > drivers/pci/controller/pci-tegra.c
-> > drivers/pci/controller/pcie-iproc-bcma.c
-> > drivers/pci/controller/pcie-iproc.c
-> > 
-> > Are any of those somehow wrong?
-> 
-> When did we allow modular
-> controller drivers anyway?  That feels like a somewhat bad idea, too.
-> 
+On Tue, 2025-09-23 at 17:42 +0200, Geert Uytterhoeven wrote:
+> >=20
+> > currently, drivers/pci/Kconfig (CONFIG_PCI) marks as depends on MMU,
+> > so we cannot select it when CONFIG_MMU=3Dn.
+>=20
+> That is a fairly recent change, see commit 8fe743b5eba0abfb ("PCI:
+> Add CONFIG_MMU dependency") in v6.16-rc1.  As this is not a "hard"
+> dependency, perhaps it should be reverted, iff you are willing to take
+> care of the casual breakage?
 
-Why not? We currently only restrict the controller drivers implementing the
-irqchip controller from being *removed* because of the IRQ disposal concern.
-Other than that, I don't see why kernel should restrict building them as
-modules.
+Why though? UML with PCI can't really be a functional thing, only a
+testing thing, and testing PCI on !MMU when that is actually impossible
+in non-simulation is pointless?
 
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+johannes
 
