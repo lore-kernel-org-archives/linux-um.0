@@ -4,92 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2836BCAC5B1
-	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 12:20:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21ACECAC5A7
+	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 12:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9lrO75zTIB09tgLetIxxFy4GEKHKMxFa4j3PxAaUeWY=; b=eP3iOUNIco2m/sktp5VScEohDk
-	HNxal1czvwc2wMWttofEoz3OPMEvN3Ht2XzSP4KIdowqQwo6rBN+rjU/ofSd8qRLtvaPZmCbdqY7r
-	kfO80yVtE0Aerm7+gMa/RdUIqh9KHpwEqNDKiVAPtHHH3uhOIyxJjhSZSgn3W7sLHWs3LVHP3uG9L
-	9wT7EWz5iDh5afPjg3IzAGO42h773YRsDFmdT8WM92kcOR2UqPnhfkRJuJkpsJfCrPvnB21tFHj1K
-	/nYveGrWLzLw1Z5dZSm9B84eiBifcjA8oWdYWJtxuYsSdsS/u9MxL4qOBnUYu7KXUbVY2SeB7kSS4
-	q5hQ6cVg==;
+	bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=; b=TwfZ6F9dNIPIyLBs0RSI/bZr/Q
+	b16bMM1q5gGLqKoXHdw3e7zvhScfEIgSwSMeB1A83PzuKEnMKIoYJtf5wbAhPxu61topL+f6SQfxQ
+	fnr1COzX++3TiqbHU9VL5LC19KCDpnFrAlDCxZ4T2lp9A2a8TEfCYuzZ0n1w76CID8iitaEeosBcV
+	phik4B0i/NR7AD4h75WpI4f9X5P7ZXc2L9xq8b30nUipxLAoyiPESLiErJuEVWq34Ab0ALVBJHuKw
+	ccjuluk2jJ8ZoHeUe2SxCHPdt7M6uwHbdtQ7TKkrjoY+kGF/NEFpFF7O8wNHxMwS2iIw0oOBbniDQ
+	XeiqkFgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v120f-0000000DIK7-1BMI;
-	Tue, 23 Sep 2025 12:20:41 +0000
-Received: from pegase2.c-s.fr ([93.17.235.10])
-	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v120a-0000000DIJ6-1REO;
-	Tue, 23 Sep 2025 12:20:38 +0000
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4cWJZD21rfz9sRh;
-	Tue, 23 Sep 2025 14:04:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id rzyAOZujeVZD; Tue, 23 Sep 2025 14:04:52 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4cWJZC1MpWz9sRr;
-	Tue, 23 Sep 2025 14:04:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 056928B769;
-	Tue, 23 Sep 2025 14:04:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id khEEBFZaaKXP; Tue, 23 Sep 2025 14:04:50 +0200 (CEST)
-Received: from [192.168.235.99] (unknown [192.168.235.99])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id E29D58B763;
-	Tue, 23 Sep 2025 14:04:45 +0200 (CEST)
-Message-ID: <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
-Date: Tue, 23 Sep 2025 14:04:45 +0200
+	id 1v12YW-0000000DNBV-1t8o;
+	Tue, 23 Sep 2025 12:55:40 +0000
+Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v12YU-0000000DN8U-147X
+	for linux-um@lists.infradead.org;
+	Tue, 23 Sep 2025 12:55:39 +0000
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso4284906f8f.1
+        for <linux-um@lists.infradead.org>; Tue, 23 Sep 2025 05:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1758632136; x=1759236936; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=;
+        b=gVVrO1sdnRtfnDQZwKs8YwnjpYLJscD/8GjQ7/bFzt2mT/1W9j2zEu8hWdByCxjRFX
+         uB2sqvZcXoIz1vs/rZIXQj9nKwQQBr4LBTYMxKo7MGpFkOgN+Nk+LgkowUzhLjR1q4X/
+         oCzQaNbSKA8NPd3a7Fr2+FyNOV0AWME32A2VZirNJjbBZehJZBUshNg/mLORgOaOJdLC
+         5Rveq0LyngL7UWPjY+D4IG6+LRGXZT8FV91ne1nQh4QYM5XYULi0ZXBwjXnARf5wgEB5
+         EvvlBK63YwN7AbdOBrShyiwJewIDUbN57TVq1LCDCegG89FZMM89Od9lkWWpqVVCvKZ0
+         cxWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758632136; x=1759236936;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=;
+        b=H2Xe3DIqt0aH4fq0x7uNrBsDkIuWxllfO6kt0o2y5RbWTsMHzqEGUt0R01hFwNHUUm
+         Vpuz5peImpJ1I9N3bVDvipag54/WCw0LO4e6n9agibHJpjeevR+upFoHwbflrJ3AyReb
+         qioo+wbfVD5HpgRE+hfwEEPtS/cQEbPhsVh/RWYaKlwghKDOktR0D8pdIs7P3beifila
+         G1Dl9bgyVd5W825OzURjAehSZ3+Y2WQEC2lUm1ixxbtyOcuKmblzkm6NhtKZqdqe4G3O
+         U2EHAkMPKbJG0cG2RIakCaI2S53RC5Z+xG72XsZTwXC8q0lHJflaZrowl+sD6+Cpjgdz
+         z7YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+A8Ryqf4DVjSmJchzs2ZspOT4XqyFbtMFspzECJVPVqPBuG6jUoz5bYbdoOzF4ErVX99xHQ8jnQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxfczqBW5zCP8v08/JGgHW/HTaJmUFzZ8KJrhY5mdR+I+v4rUDE
+	qddL+4fkivOgfbXhAJb/YpSLoQ/Gp+arhJbiHZ3qRe/4JuafVkTZYzx1vm/PkvlQZuc=
+X-Gm-Gg: ASbGncsd3s6F3Qc5Gaf7zxRZpBpdr3Lqpl5Swc3In4Mkuogo10/7BAmRr0MrS/QBdLg
+	TYdgiNP4gmUES77D6oKDS5TkUJCJ1XAw5a/pGRlp/YpewyCQ4B+Ho0lfzhSH9YRTpbpvEqj+JsI
+	kFF8hiusJnRQxOBE/CYSO1ZCwriFdNJOuKnErWE9nXNwP/uh5ig3MneUaNeZWpC6Po4PhERTZ0y
+	Ad/VKXOzd2ttXwJOFm6XjqR+OgKsPzuyCwlx7kpK2iWsvRslNA3iXyhVTVYCw6y4yjIW6jR/0JI
+	PzpwFi95U1WHhtOmWeP7Ua2TVmWDmz7E8ucWwAFUNWhxjDkx3V0H7SiiWpl6enFWu7l/rdZ7wkv
+	QqYGzkikpf4ruU8HYJ5gndpuTOd7iU0A+8uws/pEgBcI=
+X-Google-Smtp-Source: AGHT+IG0uyoZNs0i41rqkNkMaZFqouCej55fWirbDUl/J5m3XVuK1w9+Aykmm/3MDPy3vac3H7+Wyg==
+X-Received: by 2002:a05:6000:4025:b0:3e4:957d:d00 with SMTP id ffacd0b85a97d-405cb9a5225mr1756055f8f.58.1758632135758;
+        Tue, 23 Sep 2025 05:55:35 -0700 (PDT)
+Received: from [10.100.51.209] (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f5a286edsm273702715e9.16.2025.09.23.05.55.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Sep 2025 05:55:35 -0700 (PDT)
+Message-ID: <c84d6952-7977-47cd-8f09-6ea223217337@suse.com>
+Date: Tue, 23 Sep 2025 14:55:34 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>,
- Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>,
- Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
- Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org,
- initramfs@vger.kernel.org, linux-api@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
- linux-ext4@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
- devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
- Kees Cook <kees@kernel.org>, Thorsten Blum <thorsten.blum@linux.dev>,
- Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-References: <20250913003842.41944-1-safinaskar@gmail.com>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Language: fr-FR
-In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/4] PCI: Support FIXUP quirks in modules
+To: Brian Norris <briannorris@chromium.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Luis Chamberlain
+ <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ linux-pci@vger.kernel.org, David Gow <davidgow@google.com>,
+ Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Sami Tolvanen <samitolvanen@google.com>, Richard Weinberger
+ <richard@nod.at>, Wei Liu <wei.liu@kernel.org>,
+ Brendan Higgins <brendan.higgins@linux.dev>, kunit-dev@googlegroups.com,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+References: <20250912230208.967129-1-briannorris@chromium.org>
+ <20250912230208.967129-2-briannorris@chromium.org>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20250912230208.967129-2-briannorris@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250923_052036_723542_F68F93F8 
-X-CRM114-Status: GOOD (  41.64  )
+X-CRM114-CacheID: sfid-20250923_055538_350612_6EFBC045 
+X-CRM114-Status: GOOD (  27.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,652 +109,194 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 9/13/25 12:59 AM, Brian Norris wrote:
+> The PCI framework supports "quirks" for PCI devices via several
+> DECLARE_PCI_FIXUP_*() macros. These macros allow arch or driver code to
+> match device IDs to provide customizations or workarounds for broken
+> devices.
+> 
+> This mechanism is generally used in code that can only be built into the
+> kernel, but there are a few occasions where this mechanism is used in
+> drivers that can be modules. For example, see commit 574f29036fce ("PCI:
+> iproc: Apply quirk_paxc_bridge() for module as well as built-in").
+> 
+> The PCI fixup mechanism only works for built-in code, however, because
+> pci_fixup_device() only scans the ".pci_fixup_*" linker sections found
+> in the main kernel; it never touches modules.
+> 
+> Extend the fixup approach to modules.
+> 
+> I don't attempt to be clever here; the algorithm here scales with the
+> number of modules in the system.
+> 
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+> 
+>  drivers/pci/quirks.c   | 62 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/module.h | 18 ++++++++++++
+>  kernel/module/main.c   | 26 ++++++++++++++++++
+>  3 files changed, 106 insertions(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index d97335a40193..db5e0ac82ed7 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -207,6 +207,62 @@ extern struct pci_fixup __end_pci_fixups_suspend_late[];
+>  
+>  static bool pci_apply_fixup_final_quirks;
+>  
+> +struct pci_fixup_arg {
+> +	struct pci_dev *dev;
+> +	enum pci_fixup_pass pass;
+> +};
+> +
+> +static int pci_module_fixup(struct module *mod, void *parm)
+> +{
+> +	struct pci_fixup_arg *arg = parm;
+> +	void *start;
+> +	unsigned int size;
+> +
+> +	switch (arg->pass) {
+> +	case pci_fixup_early:
+> +		start = mod->pci_fixup_early;
+> +		size = mod->pci_fixup_early_size;
+> +		break;
+> +	case pci_fixup_header:
+> +		start = mod->pci_fixup_header;
+> +		size = mod->pci_fixup_header_size;
+> +		break;
+> +	case pci_fixup_final:
+> +		start = mod->pci_fixup_final;
+> +		size = mod->pci_fixup_final_size;
+> +		break;
+> +	case pci_fixup_enable:
+> +		start = mod->pci_fixup_enable;
+> +		size = mod->pci_fixup_enable_size;
+> +		break;
+> +	case pci_fixup_resume:
+> +		start = mod->pci_fixup_resume;
+> +		size = mod->pci_fixup_resume_size;
+> +		break;
+> +	case pci_fixup_suspend:
+> +		start = mod->pci_fixup_suspend;
+> +		size = mod->pci_fixup_suspend_size;
+> +		break;
+> +	case pci_fixup_resume_early:
+> +		start = mod->pci_fixup_resume_early;
+> +		size = mod->pci_fixup_resume_early_size;
+> +		break;
+> +	case pci_fixup_suspend_late:
+> +		start = mod->pci_fixup_suspend_late;
+> +		size = mod->pci_fixup_suspend_late_size;
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	if (!size)
+> +		return 0;
+> +
+> +	pci_do_fixups(arg->dev, start, start + size);
+> +
+> +	return 0;
+> +}
+> +
+>  void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev)
+>  {
+>  	struct pci_fixup *start, *end;
+> @@ -259,6 +315,12 @@ void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev)
+>  		return;
+>  	}
+>  	pci_do_fixups(dev, start, end);
+> +
+> +	struct pci_fixup_arg arg = {
+> +		.dev = dev,
+> +		.pass = pass,
+> +	};
+> +	module_for_each_mod(pci_module_fixup, &arg);
 
+The function module_for_each_mod() walks not only modules that are LIVE,
+but also those in the COMING and GOING states. This means that this code
+can potentially execute a PCI fixup from a module before its init
+function is invoked, and similarly, a fixup can be executed after the
+exit function has already run. Is this intentional?
 
-Le 13/09/2025 à 02:37, Askar Safin a écrit :
-> [Vous ne recevez pas souvent de courriers de safinaskar@gmail.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> Intro
-> ====
-> This patchset removes classic initrd (initial RAM disk) support,
-> which was deprecated in 2020.
-> Initramfs still stays, and RAM disk itself (brd) still stays, too.
-> init/do_mounts* and init/*initramfs* are listed in VFS entry in
-> MAINTAINERS, so I think this patchset should go through VFS tree.
-> This patchset touchs every subdirectory in arch/, so I tested it
-> on 8 (!!!) archs in Qemu (see details below).
-> Warning: this patchset renames CONFIG_BLK_DEV_INITRD (!!!) to CONFIG_INITRAMFS
-> and CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_* (for example,
-> CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP).
-> If you still use initrd, see below for workaround.
+>  }
+>  EXPORT_SYMBOL(pci_fixup_device);
+>  
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 3319a5269d28..7faa8987b9eb 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -539,6 +539,24 @@ struct module {
+>  	int num_kunit_suites;
+>  	struct kunit_suite **kunit_suites;
+>  #endif
+> +#ifdef CONFIG_PCI_QUIRKS
+> +	void *pci_fixup_early;
+> +	unsigned int pci_fixup_early_size;
+> +	void *pci_fixup_header;
+> +	unsigned int pci_fixup_header_size;
+> +	void *pci_fixup_final;
+> +	unsigned int pci_fixup_final_size;
+> +	void *pci_fixup_enable;
+> +	unsigned int pci_fixup_enable_size;
+> +	void *pci_fixup_resume;
+> +	unsigned int pci_fixup_resume_size;
+> +	void *pci_fixup_suspend;
+> +	unsigned int pci_fixup_suspend_size;
+> +	void *pci_fixup_resume_early;
+> +	unsigned int pci_fixup_resume_early_size;
+> +	void *pci_fixup_suspend_late;
+> +	unsigned int pci_fixup_suspend_late_size;
+> +#endif
+>  
+>  
+>  #ifdef CONFIG_LIVEPATCH
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index c66b26184936..50a80c875adc 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2702,6 +2702,32 @@ static int find_module_sections(struct module *mod, struct load_info *info)
+>  					      sizeof(*mod->kunit_init_suites),
+>  					      &mod->num_kunit_init_suites);
+>  #endif
+> +#ifdef CONFIG_PCI_QUIRKS
+> +	mod->pci_fixup_early = section_objs(info, ".pci_fixup_early",
+> +					    sizeof(*mod->pci_fixup_early),
+> +					    &mod->pci_fixup_early_size);
+> +	mod->pci_fixup_header = section_objs(info, ".pci_fixup_header",
+> +					     sizeof(*mod->pci_fixup_header),
+> +					     &mod->pci_fixup_header_size);
+> +	mod->pci_fixup_final = section_objs(info, ".pci_fixup_final",
+> +					    sizeof(*mod->pci_fixup_final),
+> +					    &mod->pci_fixup_final_size);
+> +	mod->pci_fixup_enable = section_objs(info, ".pci_fixup_enable",
+> +					     sizeof(*mod->pci_fixup_enable),
+> +					     &mod->pci_fixup_enable_size);
+> +	mod->pci_fixup_resume = section_objs(info, ".pci_fixup_resume",
+> +					     sizeof(*mod->pci_fixup_resume),
+> +					     &mod->pci_fixup_resume_size);
+> +	mod->pci_fixup_suspend = section_objs(info, ".pci_fixup_suspend",
+> +					      sizeof(*mod->pci_fixup_suspend),
+> +					      &mod->pci_fixup_suspend_size);
+> +	mod->pci_fixup_resume_early = section_objs(info, ".pci_fixup_resume_early",
+> +						   sizeof(*mod->pci_fixup_resume_early),
+> +						   &mod->pci_fixup_resume_early_size);
+> +	mod->pci_fixup_suspend_late = section_objs(info, ".pci_fixup_suspend_late",
+> +						   sizeof(*mod->pci_fixup_suspend_late),
+> +						   &mod->pci_fixup_suspend_late_size);
+> +#endif
+>  
+>  	mod->extable = section_objs(info, "__ex_table",
+>  				    sizeof(*mod->extable), &mod->num_exentries);
 
-Apologise if my question looks stupid, but I'm using QEMU for various 
-tests, and the way QEMU is started is something like:
+Nit: I suggest writing the object_size argument passed to section_objs()
+here directly as "1" instead of using sizeof(*mod->pci_fixup_...) =
+sizeof(void). This makes the style consistent with the other code in
+find_module_sections().
 
-qemu-system-ppc -kernel ./vmlinux -cpu g4 -M mac99 -initrd 
-./qemu/rootfs.cpio.gz
-
-I was therefore expecting (and fearing) it to fail with your series 
-applied, but surprisingly it still works.
-
-Therefore is it really initrd you are removing or just some corner case 
-? If it is really initrd, then how does QEMU still work with that 
--initrd parameter ?
-
-Thanks
-Christophe
-
-> 
-> Details
-> ====
-> I not only removed initrd, I also removed a lot of code, which
-> became dead, including a lot of code in arch/.
-> 
-> Still I think the only two architectures I touched in non-trivial
-> way are sh and 32-bit arm.
-> 
-> Also I renamed some files, functions and variables (which became misnomers) to proper names,
-> moved some code around, removed a lot of mentions of initrd
-> in code and comments. Also I cleaned up some docs.
-> 
-> For example, I renamed the following global variables:
-> 
-> __initramfs_start
-> __initramfs_size
-> phys_initrd_start
-> phys_initrd_size
-> initrd_start
-> initrd_end
-> 
-> to:
-> 
-> __builtin_initramfs_start
-> __builtin_initramfs_size
-> phys_external_initramfs_start
-> phys_external_initramfs_size
-> virt_external_initramfs_start
-> virt_external_initramfs_end
-> 
-> New names precisely capture meaning of these variables.
-> 
-> Also I renamed CONFIG_BLK_DEV_INITRD (which became total misnomer)
-> to CONFIG_INITRAMFS. And CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_*.
-> This will break all configs out there (update your configs!).
-> Still I think this is okay,
-> because config names never were part of stable API.
-> Still, I don't have strong opinion here, so I can drop these renamings
-> if needed.
-> 
-> Other user-visible changes:
-> 
-> - Removed kernel command line parameters "load_ramdisk" and
-> "prompt_ramdisk", which did nothing and were deprecated
-> - Removed kernel command line parameter "ramdisk_start",
-> which was used for initrd only (not for initramfs)
-> - Removed kernel command line parameter "noinitrd",
-> which was inconsistent: it controlled initrd only
-> (not initramfs), except for EFI boot, where it
-> controlled both initramfs and initrd. EFI users
-> still can disable initramfs simply by not passing it
-> - Removed kernel command line parameter "ramdisk_size",
-> which used for controlling ramdisk (brd), but only
-> in non-modular mode. Use brd.rd_size instead, it
-> always works
-> - Removed /proc/sys/kernel/real-root-dev . It was used
-> for initrd only
-> 
-> This patchset is based on v6.17-rc5.
-> 
-> Testing
-> ====
-> I tested my patchset on many architectures in Qemu using my Rust
-> program, heavily based on mkroot [1].
-> 
-> I used the following cross-compilers:
-> 
-> aarch64-linux-musleabi
-> armv4l-linux-musleabihf
-> armv5l-linux-musleabihf
-> armv7l-linux-musleabihf
-> i486-linux-musl
-> i686-linux-musl
-> mips-linux-musl
-> mips64-linux-musl
-> mipsel-linux-musl
-> powerpc-linux-musl
-> powerpc64-linux-musl
-> powerpc64le-linux-musl
-> riscv32-linux-musl
-> riscv64-linux-musl
-> s390x-linux-musl
-> sh4-linux-musl
-> sh4eb-linux-musl
-> x86_64-linux-musl
-> 
-> taken from this directory [2].
-> 
-> So, as you can see, there are 18 triplets, which correspond to 8 subdirs in arch/.
-> 
-> And note that this list contains two archs (arm and sh) touched in non-trivial way.
-> 
-> For every triplet I tested that:
-> - Initramfs still works (both builtin and external)
-> - Direct boot from disk still works
-> 
-> Workaround
-> ====
-> If "retain_initrd" is passed to kernel, then initramfs/initrd,
-> passed by bootloader, is retained and becomes available after boot
-> as read-only magic file /sys/firmware/initrd [3].
-> 
-> No copies are involved. I. e. /sys/firmware/initrd is simply
-> a reference to original blob passed by bootloader.
-> 
-> This works even if initrd/initramfs is not recognized by kernel
-> in any way, i. e. even if it is not valid cpio archive, nor
-> a fs image supported by classic initrd.
-> 
-> This works both with my patchset and without it.
-> 
-> This means that you can emulate classic initrd so:
-> link builtin initramfs to kernel. In /init in this initramfs
-> copy /sys/firmware/initrd to some file in / and loop-mount it.
-> 
-> This is even better than classic initrd, because:
-> - You can use fs not supported by classic initrd, for example erofs
-> - One copy is involved (from /sys/firmware/initrd to some file in /)
-> as opposed to two when using classic initrd
-> 
-> Still, I don't recommend using this workaround, because
-> I want everyone to migrate to proper modern initramfs.
-> But still you can use this workaround if you want.
-> 
-> Also: it is not possible to directly loop-mount
-> /sys/firmware/initrd . Theoretically kernel can be changed
-> to allow this (and/or to make it writable), but I think nobody needs this.
-> And I don't want to implement this.
-> 
-> P. S. When I sent this patchset first time, zoho mail banned me for
-> too much email. So I resend this using gmail. The only change is
-> email change, there are no other changes
-> 
-> [1] https://github.com/landley/toybox/tree/master/mkroot
-> [2] https://landley.net/toybox/downloads/binaries/toolchains/latest
-> [3] https://lore.kernel.org/all/20231207235654.16622-1-graf@amazon.com/
-> 
-> Askar Safin (62):
->    init: remove deprecated "load_ramdisk" command line parameter, which
->      does nothing
->    init: remove deprecated "prompt_ramdisk" command line parameter, which
->      does nothing
->    init: sh, sparc, x86: remove unused constants RAMDISK_PROMPT_FLAG and
->      RAMDISK_LOAD_FLAG
->    init: x86, arm, sh, sparc: remove variable rd_image_start, which
->      controls starting block number of initrd
->    init: remove "ramdisk_start" command line parameter, which controls
->      starting block number of initrd
->    arm: init: remove special logic for setting brd.rd_size
->    arm: init: remove ATAG_RAMDISK
->    arm: init: remove FLAG_RDLOAD and FLAG_RDPROMPT
->    arm: init: document rd_start (in param_struct) as obsolete
->    initrd: remove initrd (initial RAM disk) support
->    init, efi: remove "noinitrd" command line parameter
->    init: remove /proc/sys/kernel/real-root-dev
->    ext2: remove ext2_image_size and associated code
->    init: m68k, mips, powerpc, s390, sh: remove Root_RAM0
->    doc: modernize Documentation/admin-guide/blockdev/ramdisk.rst
->    brd: remove "ramdisk_size" command line parameter
->    doc: modernize Documentation/filesystems/ramfs-rootfs-initramfs.rst
->    doc: modernize
->      Documentation/driver-api/early-userspace/early_userspace_support.rst
->    init: remove mentions of "ramdisk=" command line parameter
->    doc: remove Documentation/power/swsusp-dmcrypt.rst
->    init: remove all mentions of root=/dev/ram*
->    doc: remove obsolete mentions of pivot_root
->    init: rename __initramfs_{start,size} to
->      __builtin_initramfs_{start,size}
->    init: remove wrong comment
->    init: rename phys_initrd_{start,size} to
->      phys_external_initramfs_{start,size}
->    init: move phys_external_initramfs_{start,size} to init/initramfs.c
->    init: alpha: remove "extern unsigned long initrd_start, initrd_end"
->    init: alpha, arc, arm, arm64, csky, m68k, microblaze, mips, nios2,
->      openrisc, parisc, powerpc, s390, sh, sparc, um, x86, xtensa: rename
->      initrd_{start,end} to virt_external_initramfs_{start,end}
->    init: move virt_external_initramfs_{start,end} to init/initramfs.c
->    doc: remove documentation for block device 4 0
->    init: rename initrd_below_start_ok to initramfs_below_start_ok
->    init: move initramfs_below_start_ok to init/initramfs.c
->    init: remove init/do_mounts_initrd.c
->    init: inline create_dev into the only caller
->    init: make mount_root_generic static
->    init: make mount_root static
->    init: remove root_mountflags from init/do_mounts.h
->    init: remove most headers from init/do_mounts.h
->    init: make console_on_rootfs static
->    init: rename free_initrd_mem to free_initramfs_mem
->    init: rename reserve_initrd_mem to reserve_initramfs_mem
->    init: rename <linux/initrd.h> to <linux/initramfs.h>
->    setsid: inline ksys_setsid into the only caller
->    doc: kernel-parameters: remove [RAM] from reserve_mem=
->    doc: kernel-parameters: replace [RAM] with [INITRAMFS]
->    init: edit docs for initramfs-related configs
->    init: fix typo: virtul => virtual
->    init: fix comment
->    init: rename ramdisk_execute_command to initramfs_execute_command
->    init: rename ramdisk_command_access to initramfs_command_access
->    init: rename get_boot_config_from_initrd to
->      get_boot_config_from_initramfs
->    init: rename do_retain_initrd to retain_initramfs
->    init: rename kexec_free_initrd to kexec_free_initramfs
->    init: arm, x86: deal with some references to initrd
->    init: rename CONFIG_BLK_DEV_INITRD to CONFIG_INITRAMFS
->    init: rename CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP
->    init: rename CONFIG_RD_BZIP2 to CONFIG_INITRAMFS_DECOMPRESS_BZIP2
->    init: rename CONFIG_RD_LZMA to CONFIG_INITRAMFS_DECOMPRESS_LZMA
->    init: rename CONFIG_RD_XZ to CONFIG_INITRAMFS_DECOMPRESS_XZ
->    init: rename CONFIG_RD_LZO to CONFIG_INITRAMFS_DECOMPRESS_LZO
->    init: rename CONFIG_RD_LZ4 to CONFIG_INITRAMFS_DECOMPRESS_LZ4
->    init: rename CONFIG_RD_ZSTD to CONFIG_INITRAMFS_DECOMPRESS_ZSTD
-> 
->   .../admin-guide/blockdev/ramdisk.rst          | 104 +----
->   .../admin-guide/device-mapper/dm-init.rst     |   4 +-
->   Documentation/admin-guide/devices.txt         |  12 -
->   Documentation/admin-guide/index.rst           |   1 -
->   Documentation/admin-guide/initrd.rst          | 383 ------------------
->   .../admin-guide/kernel-parameters.rst         |   4 +-
->   .../admin-guide/kernel-parameters.txt         |  38 +-
->   Documentation/admin-guide/nfs/nfsroot.rst     |   4 +-
->   Documentation/admin-guide/sysctl/kernel.rst   |   6 -
->   Documentation/arch/arm/ixp4xx.rst             |   4 +-
->   Documentation/arch/arm/setup.rst              |   6 +-
->   Documentation/arch/m68k/kernel-options.rst    |  29 +-
->   Documentation/arch/x86/boot.rst               |   4 +-
->   .../early_userspace_support.rst               |  18 +-
->   .../filesystems/ramfs-rootfs-initramfs.rst    |  20 +-
->   Documentation/power/index.rst                 |   1 -
->   Documentation/power/swsusp-dmcrypt.rst        | 140 -------
->   Documentation/security/ipe.rst                |   2 +-
->   .../translations/zh_CN/power/index.rst        |   1 -
->   arch/alpha/kernel/core_irongate.c             |  12 +-
->   arch/alpha/kernel/proto.h                     |   2 +-
->   arch/alpha/kernel/setup.c                     |  32 +-
->   arch/arc/configs/axs101_defconfig             |   2 +-
->   arch/arc/configs/axs103_defconfig             |   2 +-
->   arch/arc/configs/axs103_smp_defconfig         |   2 +-
->   arch/arc/configs/haps_hs_defconfig            |   2 +-
->   arch/arc/configs/haps_hs_smp_defconfig        |   2 +-
->   arch/arc/configs/hsdk_defconfig               |   2 +-
->   arch/arc/configs/nsim_700_defconfig           |   2 +-
->   arch/arc/configs/nsimosci_defconfig           |   2 +-
->   arch/arc/configs/nsimosci_hs_defconfig        |   2 +-
->   arch/arc/configs/nsimosci_hs_smp_defconfig    |   2 +-
->   arch/arc/configs/tb10x_defconfig              |   4 +-
->   arch/arc/configs/vdk_hs38_defconfig           |   2 +-
->   arch/arc/configs/vdk_hs38_smp_defconfig       |   2 +-
->   arch/arc/mm/init.c                            |  14 +-
->   arch/arm/Kconfig                              |   2 +-
->   arch/arm/boot/dts/arm/integratorap.dts        |   2 +-
->   arch/arm/boot/dts/arm/integratorcp.dts        |   2 +-
->   .../dts/aspeed/aspeed-bmc-facebook-cmm.dts    |   2 +-
->   .../aspeed/aspeed-bmc-facebook-galaxy100.dts  |   2 +-
->   .../aspeed/aspeed-bmc-facebook-minipack.dts   |   2 +-
->   .../aspeed/aspeed-bmc-facebook-wedge100.dts   |   2 +-
->   .../aspeed/aspeed-bmc-facebook-wedge40.dts    |   2 +-
->   .../dts/aspeed/aspeed-bmc-facebook-yamp.dts   |   2 +-
->   .../ast2600-facebook-netbmc-common.dtsi       |   2 +-
->   arch/arm/boot/dts/hisilicon/hi3620-hi4511.dts |   2 +-
->   .../ixp/intel-ixp42x-welltech-epbx100.dts     |   2 +-
->   arch/arm/boot/dts/nspire/nspire-classic.dtsi  |   2 +-
->   arch/arm/boot/dts/nspire/nspire-cx.dts        |   2 +-
->   .../boot/dts/samsung/exynos4210-origen.dts    |   2 +-
->   .../boot/dts/samsung/exynos4210-smdkv310.dts  |   2 +-
->   .../boot/dts/samsung/exynos4412-smdk4412.dts  |   2 +-
->   .../boot/dts/samsung/exynos5250-smdk5250.dts  |   2 +-
->   arch/arm/boot/dts/st/ste-nomadik-nhk15.dts    |   2 +-
->   arch/arm/boot/dts/st/ste-nomadik-s8815.dts    |   2 +-
->   arch/arm/boot/dts/st/stm32429i-eval.dts       |   2 +-
->   arch/arm/boot/dts/st/stm32746g-eval.dts       |   2 +-
->   arch/arm/boot/dts/st/stm32f429-disco.dts      |   2 +-
->   arch/arm/boot/dts/st/stm32f469-disco.dts      |   2 +-
->   arch/arm/boot/dts/st/stm32f746-disco.dts      |   2 +-
->   arch/arm/boot/dts/st/stm32f769-disco.dts      |   2 +-
->   arch/arm/boot/dts/st/stm32h743i-disco.dts     |   2 +-
->   arch/arm/boot/dts/st/stm32h743i-eval.dts      |   2 +-
->   arch/arm/boot/dts/st/stm32h747i-disco.dts     |   2 +-
->   arch/arm/boot/dts/st/stm32h750i-art-pi.dts    |   2 +-
->   arch/arm/configs/aspeed_g4_defconfig          |   8 +-
->   arch/arm/configs/aspeed_g5_defconfig          |   8 +-
->   arch/arm/configs/assabet_defconfig            |   4 +-
->   arch/arm/configs/at91_dt_defconfig            |   4 +-
->   arch/arm/configs/axm55xx_defconfig            |   2 +-
->   arch/arm/configs/bcm2835_defconfig            |   2 +-
->   arch/arm/configs/clps711x_defconfig           |   4 +-
->   arch/arm/configs/collie_defconfig             |   4 +-
->   arch/arm/configs/davinci_all_defconfig        |   2 +-
->   arch/arm/configs/exynos_defconfig             |   4 +-
->   arch/arm/configs/footbridge_defconfig         |   2 +-
->   arch/arm/configs/gemini_defconfig             |   2 +-
->   arch/arm/configs/h3600_defconfig              |   2 +-
->   arch/arm/configs/hisi_defconfig               |   4 +-
->   arch/arm/configs/imx_v4_v5_defconfig          |   2 +-
->   arch/arm/configs/imx_v6_v7_defconfig          |   4 +-
->   arch/arm/configs/integrator_defconfig         |   2 +-
->   arch/arm/configs/ixp4xx_defconfig             |   2 +-
->   arch/arm/configs/keystone_defconfig           |   2 +-
->   arch/arm/configs/lpc18xx_defconfig            |  12 +-
->   arch/arm/configs/lpc32xx_defconfig            |   4 +-
->   arch/arm/configs/milbeaut_m10v_defconfig      |   2 +-
->   arch/arm/configs/multi_v4t_defconfig          |   2 +-
->   arch/arm/configs/multi_v5_defconfig           |   2 +-
->   arch/arm/configs/multi_v7_defconfig           |   2 +-
->   arch/arm/configs/mvebu_v7_defconfig           |   2 +-
->   arch/arm/configs/mxs_defconfig                |   2 +-
->   arch/arm/configs/neponset_defconfig           |   4 +-
->   arch/arm/configs/nhk8815_defconfig            |   2 +-
->   arch/arm/configs/omap1_defconfig              |   2 +-
->   arch/arm/configs/omap2plus_defconfig          |   2 +-
->   arch/arm/configs/pxa910_defconfig             |   2 +-
->   arch/arm/configs/pxa_defconfig                |   4 +-
->   arch/arm/configs/qcom_defconfig               |   2 +-
->   arch/arm/configs/rpc_defconfig                |   2 +-
->   arch/arm/configs/s3c6400_defconfig            |   4 +-
->   arch/arm/configs/s5pv210_defconfig            |   4 +-
->   arch/arm/configs/sama5_defconfig              |   4 +-
->   arch/arm/configs/sama7_defconfig              |   2 +-
->   arch/arm/configs/shmobile_defconfig           |   2 +-
->   arch/arm/configs/socfpga_defconfig            |   2 +-
->   arch/arm/configs/sp7021_defconfig             |  12 +-
->   arch/arm/configs/spear13xx_defconfig          |   2 +-
->   arch/arm/configs/spear3xx_defconfig           |   2 +-
->   arch/arm/configs/spear6xx_defconfig           |   2 +-
->   arch/arm/configs/spitz_defconfig              |   2 +-
->   arch/arm/configs/stm32_defconfig              |   2 +-
->   arch/arm/configs/sunxi_defconfig              |   2 +-
->   arch/arm/configs/tegra_defconfig              |   2 +-
->   arch/arm/configs/u8500_defconfig              |   4 +-
->   arch/arm/configs/versatile_defconfig          |   2 +-
->   arch/arm/configs/vexpress_defconfig           |   2 +-
->   arch/arm/configs/vf610m4_defconfig            |  10 +-
->   arch/arm/configs/vt8500_v6_v7_defconfig       |   2 +-
->   arch/arm/configs/wpcm450_defconfig            |   2 +-
->   arch/arm/include/uapi/asm/setup.h             |  10 -
->   arch/arm/kernel/atags_compat.c                |  10 -
->   arch/arm/kernel/atags_parse.c                 |  16 +-
->   arch/arm/kernel/setup.c                       |   2 +-
->   arch/arm/mm/init.c                            |  24 +-
->   arch/arm64/configs/defconfig                  |   2 +-
->   arch/arm64/kernel/setup.c                     |   2 +-
->   arch/arm64/mm/init.c                          |  17 +-
->   arch/csky/kernel/setup.c                      |  24 +-
->   arch/csky/mm/init.c                           |   2 +-
->   arch/hexagon/configs/comet_defconfig          |   2 +-
->   arch/loongarch/configs/loongson3_defconfig    |   2 +-
->   arch/loongarch/kernel/mem.c                   |   2 +-
->   arch/loongarch/kernel/setup.c                 |   4 +-
->   arch/m68k/configs/amiga_defconfig             |   2 +-
->   arch/m68k/configs/apollo_defconfig            |   2 +-
->   arch/m68k/configs/atari_defconfig             |   2 +-
->   arch/m68k/configs/bvme6000_defconfig          |   2 +-
->   arch/m68k/configs/hp300_defconfig             |   2 +-
->   arch/m68k/configs/mac_defconfig               |   2 +-
->   arch/m68k/configs/multi_defconfig             |   2 +-
->   arch/m68k/configs/mvme147_defconfig           |   2 +-
->   arch/m68k/configs/mvme16x_defconfig           |   2 +-
->   arch/m68k/configs/q40_defconfig               |   2 +-
->   arch/m68k/configs/stmark2_defconfig           |   2 +-
->   arch/m68k/configs/sun3_defconfig              |   2 +-
->   arch/m68k/configs/sun3x_defconfig             |   2 +-
->   arch/m68k/kernel/setup_mm.c                   |  12 +-
->   arch/m68k/kernel/setup_no.c                   |  12 +-
->   arch/m68k/kernel/uboot.c                      |  17 +-
->   arch/microblaze/kernel/cpu/mb.c               |   2 +-
->   arch/microblaze/kernel/setup.c                |   2 +-
->   arch/microblaze/mm/init.c                     |  12 +-
->   arch/mips/ath79/prom.c                        |  12 +-
->   arch/mips/configs/ath25_defconfig             |  12 +-
->   arch/mips/configs/ath79_defconfig             |   4 +-
->   arch/mips/configs/bcm47xx_defconfig           |   2 +-
->   arch/mips/configs/bigsur_defconfig            |   2 +-
->   arch/mips/configs/bmips_be_defconfig          |   2 +-
->   arch/mips/configs/bmips_stb_defconfig         |  14 +-
->   arch/mips/configs/cavium_octeon_defconfig     |   2 +-
->   arch/mips/configs/eyeq5_defconfig             |   2 +-
->   arch/mips/configs/eyeq6_defconfig             |   2 +-
->   arch/mips/configs/generic_defconfig           |   2 +-
->   arch/mips/configs/gpr_defconfig               |   2 +-
->   arch/mips/configs/lemote2f_defconfig          |   2 +-
->   arch/mips/configs/loongson2k_defconfig        |   2 +-
->   arch/mips/configs/loongson3_defconfig         |   2 +-
->   arch/mips/configs/malta_defconfig             |   2 +-
->   arch/mips/configs/mtx1_defconfig              |   2 +-
->   arch/mips/configs/rb532_defconfig             |   2 +-
->   arch/mips/configs/rbtx49xx_defconfig          |   2 +-
->   arch/mips/configs/rt305x_defconfig            |   4 +-
->   arch/mips/configs/sb1250_swarm_defconfig      |   2 +-
->   arch/mips/configs/xway_defconfig              |   4 +-
->   arch/mips/kernel/setup.c                      |  53 ++-
->   arch/mips/mm/init.c                           |   2 +-
->   arch/mips/sibyte/common/cfe.c                 |  36 +-
->   arch/mips/sibyte/swarm/setup.c                |   2 +-
->   arch/nios2/kernel/setup.c                     |  20 +-
->   arch/openrisc/configs/or1klitex_defconfig     |   2 +-
->   arch/openrisc/configs/or1ksim_defconfig       |   4 +-
->   arch/openrisc/configs/simple_smp_defconfig    |  14 +-
->   arch/openrisc/configs/virt_defconfig          |   2 +-
->   arch/openrisc/kernel/setup.c                  |  24 +-
->   arch/openrisc/kernel/vmlinux.h                |   2 +-
->   arch/parisc/boot/compressed/misc.c            |   2 +-
->   arch/parisc/configs/generic-32bit_defconfig   |   2 +-
->   arch/parisc/configs/generic-64bit_defconfig   |   2 +-
->   arch/parisc/defpalo.conf                      |   2 +-
->   arch/parisc/kernel/pdt.c                      |   6 +-
->   arch/parisc/kernel/setup.c                    |   8 +-
->   arch/parisc/mm/init.c                         |  32 +-
->   arch/powerpc/configs/44x/akebono_defconfig    |   2 +-
->   arch/powerpc/configs/44x/arches_defconfig     |   2 +-
->   arch/powerpc/configs/44x/bamboo_defconfig     |   2 +-
->   arch/powerpc/configs/44x/bluestone_defconfig  |   2 +-
->   .../powerpc/configs/44x/canyonlands_defconfig |   2 +-
->   arch/powerpc/configs/44x/ebony_defconfig      |   2 +-
->   arch/powerpc/configs/44x/eiger_defconfig      |   2 +-
->   arch/powerpc/configs/44x/fsp2_defconfig       |  10 +-
->   arch/powerpc/configs/44x/icon_defconfig       |   2 +-
->   arch/powerpc/configs/44x/iss476-smp_defconfig |   2 +-
->   arch/powerpc/configs/44x/katmai_defconfig     |   2 +-
->   arch/powerpc/configs/44x/rainier_defconfig    |   2 +-
->   arch/powerpc/configs/44x/redwood_defconfig    |   2 +-
->   arch/powerpc/configs/44x/sam440ep_defconfig   |   2 +-
->   arch/powerpc/configs/44x/sequoia_defconfig    |   2 +-
->   arch/powerpc/configs/44x/taishan_defconfig    |   2 +-
->   arch/powerpc/configs/44x/warp_defconfig       |   2 +-
->   arch/powerpc/configs/52xx/cm5200_defconfig    |   2 +-
->   arch/powerpc/configs/52xx/lite5200b_defconfig |   2 +-
->   arch/powerpc/configs/52xx/motionpro_defconfig |   2 +-
->   arch/powerpc/configs/52xx/tqm5200_defconfig   |   2 +-
->   arch/powerpc/configs/83xx/asp8347_defconfig   |   2 +-
->   .../configs/83xx/mpc8313_rdb_defconfig        |   2 +-
->   .../configs/83xx/mpc8315_rdb_defconfig        |   2 +-
->   .../configs/83xx/mpc832x_rdb_defconfig        |   2 +-
->   .../configs/83xx/mpc834x_itx_defconfig        |   2 +-
->   .../configs/83xx/mpc834x_itxgp_defconfig      |   2 +-
->   .../configs/83xx/mpc836x_rdk_defconfig        |   2 +-
->   .../configs/83xx/mpc837x_rdb_defconfig        |   2 +-
->   arch/powerpc/configs/85xx/ge_imp3a_defconfig  |   2 +-
->   arch/powerpc/configs/85xx/ksi8560_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/socrates_defconfig  |   2 +-
->   arch/powerpc/configs/85xx/stx_gp3_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/tqm8540_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/tqm8541_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/tqm8548_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/tqm8555_defconfig   |   2 +-
->   arch/powerpc/configs/85xx/tqm8560_defconfig   |   2 +-
->   .../configs/85xx/xes_mpc85xx_defconfig        |   2 +-
->   arch/powerpc/configs/amigaone_defconfig       |   2 +-
->   arch/powerpc/configs/cell_defconfig           |   2 +-
->   arch/powerpc/configs/chrp32_defconfig         |   2 +-
->   arch/powerpc/configs/fsl-emb-nonhw.config     |   2 +-
->   arch/powerpc/configs/g5_defconfig             |   2 +-
->   arch/powerpc/configs/gamecube_defconfig       |   2 +-
->   arch/powerpc/configs/holly_defconfig          |   2 +-
->   arch/powerpc/configs/linkstation_defconfig    |   2 +-
->   arch/powerpc/configs/mgcoge_defconfig         |   4 +-
->   arch/powerpc/configs/microwatt_defconfig      |   2 +-
->   arch/powerpc/configs/mpc512x_defconfig        |   2 +-
->   arch/powerpc/configs/mpc5200_defconfig        |   2 +-
->   arch/powerpc/configs/mpc83xx_defconfig        |   2 +-
->   arch/powerpc/configs/pasemi_defconfig         |   2 +-
->   arch/powerpc/configs/pmac32_defconfig         |   2 +-
->   arch/powerpc/configs/powernv_defconfig        |   2 +-
->   arch/powerpc/configs/ppc44x_defconfig         |   2 +-
->   arch/powerpc/configs/ppc64_defconfig          |   2 +-
->   arch/powerpc/configs/ppc64e_defconfig         |   2 +-
->   arch/powerpc/configs/ppc6xx_defconfig         |   2 +-
->   arch/powerpc/configs/ps3_defconfig            |   2 +-
->   arch/powerpc/configs/skiroot_defconfig        |  12 +-
->   arch/powerpc/configs/wii_defconfig            |   2 +-
->   arch/powerpc/kernel/prom.c                    |  22 +-
->   arch/powerpc/kernel/prom_init.c               |   6 +-
->   arch/powerpc/kernel/setup-common.c            |  25 +-
->   arch/powerpc/kernel/setup_32.c                |   2 +-
->   arch/powerpc/kernel/setup_64.c                |   2 +-
->   arch/powerpc/mm/init_32.c                     |   2 +-
->   arch/powerpc/platforms/52xx/lite5200.c        |   2 +-
->   arch/powerpc/platforms/83xx/km83xx.c          |   2 +-
->   arch/powerpc/platforms/85xx/mpc85xx_mds.c     |   2 +-
->   arch/powerpc/platforms/chrp/setup.c           |   2 +-
->   .../platforms/embedded6xx/linkstation.c       |   2 +-
->   .../platforms/embedded6xx/storcenter.c        |   2 +-
->   arch/powerpc/platforms/powermac/setup.c       |   8 +-
->   arch/riscv/configs/defconfig                  |   2 +-
->   arch/riscv/configs/nommu_k210_defconfig       |  16 +-
->   arch/riscv/configs/nommu_virt_defconfig       |  12 +-
->   arch/riscv/mm/init.c                          |   4 +-
->   arch/s390/boot/ipl_parm.c                     |   2 +-
->   arch/s390/boot/startup.c                      |   4 +-
->   arch/s390/configs/zfcpdump_defconfig          |   2 +-
->   arch/s390/kernel/setup.c                      |  10 +-
->   arch/s390/mm/init.c                           |   2 +-
->   arch/sh/configs/apsh4a3a_defconfig            |   2 +-
->   arch/sh/configs/apsh4ad0a_defconfig           |   2 +-
->   arch/sh/configs/ecovec24-romimage_defconfig   |   2 +-
->   arch/sh/configs/edosk7760_defconfig           |   2 +-
->   arch/sh/configs/kfr2r09-romimage_defconfig    |   2 +-
->   arch/sh/configs/kfr2r09_defconfig             |   2 +-
->   arch/sh/configs/magicpanelr2_defconfig        |   2 +-
->   arch/sh/configs/migor_defconfig               |   2 +-
->   arch/sh/configs/rsk7201_defconfig             |   2 +-
->   arch/sh/configs/rsk7203_defconfig             |   2 +-
->   arch/sh/configs/sdk7786_defconfig             |   8 +-
->   arch/sh/configs/se7206_defconfig              |   2 +-
->   arch/sh/configs/se7705_defconfig              |   2 +-
->   arch/sh/configs/se7722_defconfig              |   2 +-
->   arch/sh/configs/se7751_defconfig              |   2 +-
->   arch/sh/configs/secureedge5410_defconfig      |   2 +-
->   arch/sh/configs/sh03_defconfig                |   2 +-
->   arch/sh/configs/sh7757lcr_defconfig           |   2 +-
->   arch/sh/configs/titan_defconfig               |   2 +-
->   arch/sh/configs/ul2_defconfig                 |   2 +-
->   arch/sh/configs/urquell_defconfig             |   2 +-
->   arch/sh/include/asm/setup.h                   |   1 -
->   arch/sh/kernel/head_32.S                      |   2 +-
->   arch/sh/kernel/setup.c                        |  27 +-
->   arch/sparc/boot/piggyback.c                   |   4 +-
->   arch/sparc/configs/sparc32_defconfig          |   2 +-
->   arch/sparc/configs/sparc64_defconfig          |   2 +-
->   arch/sparc/kernel/head_32.S                   |   4 +-
->   arch/sparc/kernel/head_64.S                   |   6 +-
->   arch/sparc/kernel/setup_32.c                  |   9 +-
->   arch/sparc/kernel/setup_64.c                  |   9 +-
->   arch/sparc/mm/init_32.c                       |  22 +-
->   arch/sparc/mm/init_64.c                       |  20 +-
->   arch/um/kernel/Makefile                       |   2 +-
->   arch/um/kernel/initrd.c                       |   6 +-
->   arch/x86/Kconfig                              |   2 +-
->   arch/x86/boot/header.S                        |   2 +-
->   arch/x86/boot/startup/sme.c                   |   2 +-
->   arch/x86/configs/i386_defconfig               |   2 +-
->   arch/x86/configs/x86_64_defconfig             |   2 +-
->   arch/x86/include/uapi/asm/bootparam.h         |   7 +-
->   arch/x86/kernel/cpu/microcode/amd.c           |   2 +-
->   arch/x86/kernel/cpu/microcode/core.c          |  12 +-
->   arch/x86/kernel/cpu/microcode/intel.c         |   2 +-
->   arch/x86/kernel/cpu/microcode/internal.h      |   2 +-
->   arch/x86/kernel/devicetree.c                  |   2 +-
->   arch/x86/kernel/setup.c                       |  39 +-
->   arch/x86/mm/init.c                            |   8 +-
->   arch/x86/mm/init_32.c                         |   2 +-
->   arch/x86/mm/init_64.c                         |   2 +-
->   arch/x86/tools/relocs.c                       |   2 +-
->   arch/xtensa/Kconfig                           |   2 +-
->   arch/xtensa/boot/dts/csp.dts                  |   2 +-
->   arch/xtensa/configs/audio_kc705_defconfig     |   2 +-
->   arch/xtensa/configs/cadence_csp_defconfig     |  12 +-
->   arch/xtensa/configs/generic_kc705_defconfig   |   2 +-
->   arch/xtensa/configs/nommu_kc705_defconfig     |  12 +-
->   arch/xtensa/configs/smp_lx200_defconfig       |   2 +-
->   arch/xtensa/configs/virt_defconfig            |   2 +-
->   arch/xtensa/configs/xip_kc705_defconfig       |   2 +-
->   arch/xtensa/kernel/setup.c                    |  26 +-
->   drivers/acpi/Kconfig                          |   2 +-
->   drivers/acpi/tables.c                         |  10 +-
->   drivers/base/firmware_loader/main.c           |   2 +-
->   drivers/block/Kconfig                         |   8 +-
->   drivers/block/brd.c                           |  20 +-
->   drivers/firmware/efi/efi.c                    |  10 +-
->   .../firmware/efi/libstub/efi-stub-helper.c    |   5 +-
->   drivers/gpu/drm/ci/arm.config                 |   2 +-
->   drivers/gpu/drm/ci/arm64.config               |   2 +-
->   drivers/gpu/drm/ci/x86_64.config              |   2 +-
->   drivers/of/fdt.c                              |  18 +-
->   fs/ext2/ext2.h                                |   9 -
->   fs/init.c                                     |  14 -
->   include/asm-generic/vmlinux.lds.h             |   8 +-
->   include/linux/ext2_fs.h                       |  13 -
->   include/linux/init_syscalls.h                 |   1 -
->   include/linux/initramfs.h                     |  26 ++
->   include/linux/initrd.h                        |  37 --
->   include/linux/root_dev.h                      |   1 -
->   include/linux/syscalls.h                      |   1 -
->   include/uapi/linux/sysctl.h                   |   1 -
->   init/.kunitconfig                             |   2 +-
->   init/Kconfig                                  |  28 +-
->   init/Makefile                                 |   6 +-
->   init/do_mounts.c                              |  28 +-
->   init/do_mounts.h                              |  42 --
->   init/do_mounts_initrd.c                       | 154 -------
->   init/do_mounts_rd.c                           | 334 ---------------
->   init/initramfs.c                              | 152 ++++---
->   init/main.c                                   |  66 +--
->   kernel/sys.c                                  |   7 +-
->   kernel/sysctl.c                               |   2 +-
->   kernel/umh.c                                  |   2 +-
->   scripts/package/builddeb                      |   2 +-
->   .../ktest/examples/bootconfigs/tracing.bconf  |   3 -
->   tools/testing/selftests/bpf/config.aarch64    |   2 +-
->   tools/testing/selftests/bpf/config.ppc64el    |   2 +-
->   tools/testing/selftests/bpf/config.riscv64    |   2 +-
->   tools/testing/selftests/bpf/config.s390x      |   2 +-
->   tools/testing/selftests/kho/vmtest.sh         |   2 +-
->   .../testing/selftests/nolibc/Makefile.nolibc  |   4 +-
->   tools/testing/selftests/vsock/config          |   2 +-
->   .../selftests/wireguard/qemu/kernel.config    |   2 +-
->   usr/Kconfig                                   |  70 ++--
->   usr/Makefile                                  |   2 +-
->   usr/initramfs_data.S                          |   4 +-
->   385 files changed, 969 insertions(+), 2346 deletions(-)
->   delete mode 100644 Documentation/admin-guide/initrd.rst
->   delete mode 100644 Documentation/power/swsusp-dmcrypt.rst
->   create mode 100644 include/linux/initramfs.h
->   delete mode 100644 include/linux/initrd.h
->   delete mode 100644 init/do_mounts_initrd.c
->   delete mode 100644 init/do_mounts_rd.c
-> 
-> 
-> base-commit: 76eeb9b8de9880ca38696b2fb56ac45ac0a25c6c
-> --
-> 2.47.2
-> 
-> 
-
+-- 
+Thanks,
+Petr
 
