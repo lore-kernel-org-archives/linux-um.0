@@ -4,97 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21ACECAC5A7
-	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 12:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91C3BCAC5AC
+	for <linux-um@archiver.kernel.org>; Tue, 23 Sep 2025 15:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=; b=TwfZ6F9dNIPIyLBs0RSI/bZr/Q
-	b16bMM1q5gGLqKoXHdw3e7zvhScfEIgSwSMeB1A83PzuKEnMKIoYJtf5wbAhPxu61topL+f6SQfxQ
-	fnr1COzX++3TiqbHU9VL5LC19KCDpnFrAlDCxZ4T2lp9A2a8TEfCYuzZ0n1w76CID8iitaEeosBcV
-	phik4B0i/NR7AD4h75WpI4f9X5P7ZXc2L9xq8b30nUipxLAoyiPESLiErJuEVWq34Ab0ALVBJHuKw
-	ccjuluk2jJ8ZoHeUe2SxCHPdt7M6uwHbdtQ7TKkrjoY+kGF/NEFpFF7O8wNHxMwS2iIw0oOBbniDQ
-	XeiqkFgQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=r122gbb6KUA5XSddGivsEIWOLIrHYjHok4r9kMcR3qk=; b=fHxL+EjO9c2Y+MzXDEiO5R6CAn
+	NSqYm+J2iZhCDjbvrRdM63EXH48MZo5434+T58zrPJlKBKQHdt4eZ8JO/8VXcMTtpv3fZPtK6w857
+	SF6qlMrM1TUx5QEFOJahObJ12UiDHhlGSuCPz2AK2bKuFPqo+MWs56g2NK0F/RSSkhgDHHvuJqUND
+	Wr70I1sOFb7XWXwGCXExFtSWnvHCfCoqRpGEPe+b1PIr7OSP1APdzZWxwwErfrKRSeu5MPQCEe7VH
+	TX6WNmiKc4HAXs37FK74RX4n1KVQQbjyKu72+/JFakquLbx8g8F8hZ6P4E4Slv6Yvi1XdOcoJEjIM
+	oyXarx0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v12YW-0000000DNBV-1t8o;
-	Tue, 23 Sep 2025 12:55:40 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1v15Ae-0000000E7Do-33VM;
+	Tue, 23 Sep 2025 15:43:12 +0000
+Received: from mail-vs1-f52.google.com ([209.85.217.52])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v12YU-0000000DN8U-147X
+	id 1v15Ac-0000000E7Cy-1f71
 	for linux-um@lists.infradead.org;
-	Tue, 23 Sep 2025 12:55:39 +0000
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso4284906f8f.1
-        for <linux-um@lists.infradead.org>; Tue, 23 Sep 2025 05:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1758632136; x=1759236936; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=;
-        b=gVVrO1sdnRtfnDQZwKs8YwnjpYLJscD/8GjQ7/bFzt2mT/1W9j2zEu8hWdByCxjRFX
-         uB2sqvZcXoIz1vs/rZIXQj9nKwQQBr4LBTYMxKo7MGpFkOgN+Nk+LgkowUzhLjR1q4X/
-         oCzQaNbSKA8NPd3a7Fr2+FyNOV0AWME32A2VZirNJjbBZehJZBUshNg/mLORgOaOJdLC
-         5Rveq0LyngL7UWPjY+D4IG6+LRGXZT8FV91ne1nQh4QYM5XYULi0ZXBwjXnARf5wgEB5
-         EvvlBK63YwN7AbdOBrShyiwJewIDUbN57TVq1LCDCegG89FZMM89Od9lkWWpqVVCvKZ0
-         cxWg==
+	Tue, 23 Sep 2025 15:43:11 +0000
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-557a2ba1e65so5211673137.2
+        for <linux-um@lists.infradead.org>; Tue, 23 Sep 2025 08:43:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758632136; x=1759236936;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xaIg4jDl9jFZTYzzE1kP2lbNTLyhNR0UhkVfuAOFPbU=;
-        b=H2Xe3DIqt0aH4fq0x7uNrBsDkIuWxllfO6kt0o2y5RbWTsMHzqEGUt0R01hFwNHUUm
-         Vpuz5peImpJ1I9N3bVDvipag54/WCw0LO4e6n9agibHJpjeevR+upFoHwbflrJ3AyReb
-         qioo+wbfVD5HpgRE+hfwEEPtS/cQEbPhsVh/RWYaKlwghKDOktR0D8pdIs7P3beifila
-         G1Dl9bgyVd5W825OzURjAehSZ3+Y2WQEC2lUm1ixxbtyOcuKmblzkm6NhtKZqdqe4G3O
-         U2EHAkMPKbJG0cG2RIakCaI2S53RC5Z+xG72XsZTwXC8q0lHJflaZrowl+sD6+Cpjgdz
-         z7YQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+A8Ryqf4DVjSmJchzs2ZspOT4XqyFbtMFspzECJVPVqPBuG6jUoz5bYbdoOzF4ErVX99xHQ8jnQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxfczqBW5zCP8v08/JGgHW/HTaJmUFzZ8KJrhY5mdR+I+v4rUDE
-	qddL+4fkivOgfbXhAJb/YpSLoQ/Gp+arhJbiHZ3qRe/4JuafVkTZYzx1vm/PkvlQZuc=
-X-Gm-Gg: ASbGncsd3s6F3Qc5Gaf7zxRZpBpdr3Lqpl5Swc3In4Mkuogo10/7BAmRr0MrS/QBdLg
-	TYdgiNP4gmUES77D6oKDS5TkUJCJ1XAw5a/pGRlp/YpewyCQ4B+Ho0lfzhSH9YRTpbpvEqj+JsI
-	kFF8hiusJnRQxOBE/CYSO1ZCwriFdNJOuKnErWE9nXNwP/uh5ig3MneUaNeZWpC6Po4PhERTZ0y
-	Ad/VKXOzd2ttXwJOFm6XjqR+OgKsPzuyCwlx7kpK2iWsvRslNA3iXyhVTVYCw6y4yjIW6jR/0JI
-	PzpwFi95U1WHhtOmWeP7Ua2TVmWDmz7E8ucWwAFUNWhxjDkx3V0H7SiiWpl6enFWu7l/rdZ7wkv
-	QqYGzkikpf4ruU8HYJ5gndpuTOd7iU0A+8uws/pEgBcI=
-X-Google-Smtp-Source: AGHT+IG0uyoZNs0i41rqkNkMaZFqouCej55fWirbDUl/J5m3XVuK1w9+Aykmm/3MDPy3vac3H7+Wyg==
-X-Received: by 2002:a05:6000:4025:b0:3e4:957d:d00 with SMTP id ffacd0b85a97d-405cb9a5225mr1756055f8f.58.1758632135758;
-        Tue, 23 Sep 2025 05:55:35 -0700 (PDT)
-Received: from [10.100.51.209] (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-464f5a286edsm273702715e9.16.2025.09.23.05.55.35
+        d=1e100.net; s=20230601; t=1758642188; x=1759246988;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r122gbb6KUA5XSddGivsEIWOLIrHYjHok4r9kMcR3qk=;
+        b=scoiMi8N+nv8/1+amrVlCW/uQUwpbgO7JDm9rR4wozs1HmpTjcB0gvAwmGLFD4b9oD
+         k+2apjgY4nRgaFXATICwFr/lmGIAsycxTXVvg++QW+6iWC93WZiGSpCKGlS6TIU97CgD
+         NWL7PjUq+nV+e1K8LdzH2gjuMtoJjANMHgxzneYnQDeVtl66ZvbYVroMXyNfrLVslOVt
+         7JaqUjzccBQFLCwmX2xisc9dzkLAnptoKDgUf2WrGIKO/GwsvgFJAs6gRN2fhnd/FKwz
+         S+517Kq5zoKI14ENRBOJQSzgUsl/AFpkA2gWsbDdBV/xvZ2b0QGwydJfR9m8oRq2cn1C
+         RY+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXEJTCRmMzJe6NwviexLuwQsBE7gP3E2KVT9SAvnp4PcWyZJCd/aALEWwpEwJIcTeJzX5bKFR7IGw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxHArfshgSJAbk3gfgv/5cpI57kbwVvDOt2F7mB2fuvC5hvaeNM
+	P6WH1iXbqcgkz/0nsNUXY/cExZoGESEEq9VZpMFn07z+AdCQJMZV85jm11nhkR7o
+X-Gm-Gg: ASbGnctmGP401qPJIg8g8wJHJgNO66xzUbhw4iGbvf7k9KKlS1C+KVPEy+YzJGN+VCU
+	hNeeM3vmpXcHozCNkp9Vc8No7PsIppF4ynqeH654+uocV6J8FQNIi8gn9VqYH+9AuP0laOnLIAT
+	GrIdqLm/HKuAaIkjvEbYtdraEGPKUdVfeBghKkryb0FpiJd6c69TbN5FfjxmvL8uLUo/aMDqfgV
+	xuzbUC74bq6xwfAnWHHehVuz+Ea2bJhq7nPEfDF5YVsRBCIQUh0FrOJ4LE9XJfKHWCUyhUCT/FL
+	IgvKxJG79rU2ZuqWN1AL8kYXdOTyQh3bsBqJ5mkZ0qXe/LVx5smjd2tHHO0qWa82/n2Hk6EzKd8
+	4EZVukkmfwpTGsLfj0LJFjz54iJ7MnIM9qXN8/U2SwC8ew3khoHbuSqgCoNaF
+X-Google-Smtp-Source: AGHT+IGt6UZLmKTDLci0Z03+zoiZeG3KuXtHbFx2ubIu7hyWv1u3iZWLBewMcb/FiQZwyfeECtSqjw==
+X-Received: by 2002:a05:6102:2ace:b0:526:db01:5fb2 with SMTP id ada2fe7eead31-5a57c453befmr1193819137.30.1758642187660;
+        Tue, 23 Sep 2025 08:43:07 -0700 (PDT)
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-592500edcd3sm2955556137.15.2025.09.23.08.43.07
+        for <linux-um@lists.infradead.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Sep 2025 05:55:35 -0700 (PDT)
-Message-ID: <c84d6952-7977-47cd-8f09-6ea223217337@suse.com>
-Date: Tue, 23 Sep 2025 14:55:34 +0200
+        Tue, 23 Sep 2025 08:43:07 -0700 (PDT)
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-55ae619545fso3670457137.0
+        for <linux-um@lists.infradead.org>; Tue, 23 Sep 2025 08:43:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWo7szjYdEa6JXts4mgZOme7Hdza+Hm8QsE2AUP86k6y7F8AmDd+UMFbo59KaZScB1wrb6YDov9RA==@lists.infradead.org
+X-Received: by 2002:a05:6102:32c1:b0:5a3:eb34:6105 with SMTP id
+ ada2fe7eead31-5a57b993f3fmr1081977137.26.1758642186984; Tue, 23 Sep 2025
+ 08:43:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] PCI: Support FIXUP quirks in modules
-To: Brian Norris <briannorris@chromium.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Luis Chamberlain
- <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
- linux-pci@vger.kernel.org, David Gow <davidgow@google.com>,
- Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
- Johannes Berg <johannes@sipsolutions.net>,
- Sami Tolvanen <samitolvanen@google.com>, Richard Weinberger
- <richard@nod.at>, Wei Liu <wei.liu@kernel.org>,
- Brendan Higgins <brendan.higgins@linux.dev>, kunit-dev@googlegroups.com,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-References: <20250912230208.967129-1-briannorris@chromium.org>
- <20250912230208.967129-2-briannorris@chromium.org>
-Content-Language: en-US
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20250912230208.967129-2-briannorris@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <cover.1758181109.git.thehajime@gmail.com> <4a9dde10c586883d20a8201ca7d76e6d7d52eaf4.1758181109.git.thehajime@gmail.com>
+ <a58620ecefa207e141a435c36492647c3d5bd3df.camel@sipsolutions.net>
+ <m28qib8g1r.wl-thehajime@gmail.com> <6b1abe384237c8129e8043ecdfdad77758d2fd2f.camel@sipsolutions.net>
+ <m27bxu949d.wl-thehajime@gmail.com>
+In-Reply-To: <m27bxu949d.wl-thehajime@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Sep 2025 17:42:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com>
+X-Gm-Features: AS18NWDvUQG0XS9HQf9KIlOsuvRaqQEDSSkgXS1FNduECZbOVkvTaW7-DLJb-WQ
+Message-ID: <CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com>
+Subject: Re: [PATCH RESEND v11 10/13] um: nommu: a work around for MMU
+ dependency to PCI driver
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, 
+	ricarkol@google.com, Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250923_055538_350612_6EFBC045 
-X-CRM114-Status: GOOD (  27.20  )
+X-CRM114-CacheID: sfid-20250923_084310_443180_D584801D 
+X-CRM114-Status: GOOD (  34.46  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,194 +99,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 9/13/25 12:59 AM, Brian Norris wrote:
-> The PCI framework supports "quirks" for PCI devices via several
-> DECLARE_PCI_FIXUP_*() macros. These macros allow arch or driver code to
-> match device IDs to provide customizations or workarounds for broken
-> devices.
-> 
-> This mechanism is generally used in code that can only be built into the
-> kernel, but there are a few occasions where this mechanism is used in
-> drivers that can be modules. For example, see commit 574f29036fce ("PCI:
-> iproc: Apply quirk_paxc_bridge() for module as well as built-in").
-> 
-> The PCI fixup mechanism only works for built-in code, however, because
-> pci_fixup_device() only scans the ".pci_fixup_*" linker sections found
-> in the main kernel; it never touches modules.
-> 
-> Extend the fixup approach to modules.
-> 
-> I don't attempt to be clever here; the algorithm here scales with the
-> number of modules in the system.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
-> ---
-> 
->  drivers/pci/quirks.c   | 62 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/module.h | 18 ++++++++++++
->  kernel/module/main.c   | 26 ++++++++++++++++++
->  3 files changed, 106 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index d97335a40193..db5e0ac82ed7 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -207,6 +207,62 @@ extern struct pci_fixup __end_pci_fixups_suspend_late[];
->  
->  static bool pci_apply_fixup_final_quirks;
->  
-> +struct pci_fixup_arg {
-> +	struct pci_dev *dev;
-> +	enum pci_fixup_pass pass;
-> +};
-> +
-> +static int pci_module_fixup(struct module *mod, void *parm)
-> +{
-> +	struct pci_fixup_arg *arg = parm;
-> +	void *start;
-> +	unsigned int size;
-> +
-> +	switch (arg->pass) {
-> +	case pci_fixup_early:
-> +		start = mod->pci_fixup_early;
-> +		size = mod->pci_fixup_early_size;
-> +		break;
-> +	case pci_fixup_header:
-> +		start = mod->pci_fixup_header;
-> +		size = mod->pci_fixup_header_size;
-> +		break;
-> +	case pci_fixup_final:
-> +		start = mod->pci_fixup_final;
-> +		size = mod->pci_fixup_final_size;
-> +		break;
-> +	case pci_fixup_enable:
-> +		start = mod->pci_fixup_enable;
-> +		size = mod->pci_fixup_enable_size;
-> +		break;
-> +	case pci_fixup_resume:
-> +		start = mod->pci_fixup_resume;
-> +		size = mod->pci_fixup_resume_size;
-> +		break;
-> +	case pci_fixup_suspend:
-> +		start = mod->pci_fixup_suspend;
-> +		size = mod->pci_fixup_suspend_size;
-> +		break;
-> +	case pci_fixup_resume_early:
-> +		start = mod->pci_fixup_resume_early;
-> +		size = mod->pci_fixup_resume_early_size;
-> +		break;
-> +	case pci_fixup_suspend_late:
-> +		start = mod->pci_fixup_suspend_late;
-> +		size = mod->pci_fixup_suspend_late_size;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	if (!size)
-> +		return 0;
-> +
-> +	pci_do_fixups(arg->dev, start, start + size);
-> +
-> +	return 0;
-> +}
-> +
->  void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev)
->  {
->  	struct pci_fixup *start, *end;
-> @@ -259,6 +315,12 @@ void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev)
->  		return;
->  	}
->  	pci_do_fixups(dev, start, end);
-> +
-> +	struct pci_fixup_arg arg = {
-> +		.dev = dev,
-> +		.pass = pass,
-> +	};
-> +	module_for_each_mod(pci_module_fixup, &arg);
+Hi Tazaki-san,
 
-The function module_for_each_mod() walks not only modules that are LIVE,
-but also those in the COMING and GOING states. This means that this code
-can potentially execute a PCI fixup from a module before its init
-function is invoked, and similarly, a fixup can be executed after the
-exit function has already run. Is this intentional?
+CC arnd
 
->  }
->  EXPORT_SYMBOL(pci_fixup_device);
->  
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 3319a5269d28..7faa8987b9eb 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -539,6 +539,24 @@ struct module {
->  	int num_kunit_suites;
->  	struct kunit_suite **kunit_suites;
->  #endif
-> +#ifdef CONFIG_PCI_QUIRKS
-> +	void *pci_fixup_early;
-> +	unsigned int pci_fixup_early_size;
-> +	void *pci_fixup_header;
-> +	unsigned int pci_fixup_header_size;
-> +	void *pci_fixup_final;
-> +	unsigned int pci_fixup_final_size;
-> +	void *pci_fixup_enable;
-> +	unsigned int pci_fixup_enable_size;
-> +	void *pci_fixup_resume;
-> +	unsigned int pci_fixup_resume_size;
-> +	void *pci_fixup_suspend;
-> +	unsigned int pci_fixup_suspend_size;
-> +	void *pci_fixup_resume_early;
-> +	unsigned int pci_fixup_resume_early_size;
-> +	void *pci_fixup_suspend_late;
-> +	unsigned int pci_fixup_suspend_late_size;
-> +#endif
->  
->  
->  #ifdef CONFIG_LIVEPATCH
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index c66b26184936..50a80c875adc 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -2702,6 +2702,32 @@ static int find_module_sections(struct module *mod, struct load_info *info)
->  					      sizeof(*mod->kunit_init_suites),
->  					      &mod->num_kunit_init_suites);
->  #endif
-> +#ifdef CONFIG_PCI_QUIRKS
-> +	mod->pci_fixup_early = section_objs(info, ".pci_fixup_early",
-> +					    sizeof(*mod->pci_fixup_early),
-> +					    &mod->pci_fixup_early_size);
-> +	mod->pci_fixup_header = section_objs(info, ".pci_fixup_header",
-> +					     sizeof(*mod->pci_fixup_header),
-> +					     &mod->pci_fixup_header_size);
-> +	mod->pci_fixup_final = section_objs(info, ".pci_fixup_final",
-> +					    sizeof(*mod->pci_fixup_final),
-> +					    &mod->pci_fixup_final_size);
-> +	mod->pci_fixup_enable = section_objs(info, ".pci_fixup_enable",
-> +					     sizeof(*mod->pci_fixup_enable),
-> +					     &mod->pci_fixup_enable_size);
-> +	mod->pci_fixup_resume = section_objs(info, ".pci_fixup_resume",
-> +					     sizeof(*mod->pci_fixup_resume),
-> +					     &mod->pci_fixup_resume_size);
-> +	mod->pci_fixup_suspend = section_objs(info, ".pci_fixup_suspend",
-> +					      sizeof(*mod->pci_fixup_suspend),
-> +					      &mod->pci_fixup_suspend_size);
-> +	mod->pci_fixup_resume_early = section_objs(info, ".pci_fixup_resume_early",
-> +						   sizeof(*mod->pci_fixup_resume_early),
-> +						   &mod->pci_fixup_resume_early_size);
-> +	mod->pci_fixup_suspend_late = section_objs(info, ".pci_fixup_suspend_late",
-> +						   sizeof(*mod->pci_fixup_suspend_late),
-> +						   &mod->pci_fixup_suspend_late_size);
-> +#endif
->  
->  	mod->extable = section_objs(info, "__ex_table",
->  				    sizeof(*mod->extable), &mod->num_exentries);
+On Fri, 19 Sept 2025 at 11:32, Hajime Tazaki <thehajime@gmail.com> wrote:
+> On Fri, 19 Sep 2025 16:24:07 +0900,
+> Johannes Berg wrote:
+> > On Fri, 2025-09-19 at 09:03 +0900, Hajime Tazaki wrote:
+> > > > This doesn't make a lot of sense to me. Why would we even want to build
+> > > > PCI on NOMMU-UML if PCI in general is dependent on MMU now?
+> > > >
+> > > > It's not like ARCH=um with PCI and NOMMU has any value even for testing
+> > > > if such a configuration cannot exist in reality?
+> > >
+> > > totally understand your point.
+> > >
+> > > now I see that we don't have to have this work around by using
+> > > --kconfig_add option to kunit.py.
+> > >
+> > > # like --kconfig_add CONFIG_UML_PCI_OVER_VIRTIO=n (in addition to
+> > >   --kconfig_add CONFIG_MMU=n).
+> >
+> > That's not what I mean. I think it should be made impossible to build
+> > the broken code.
+>
+> okay.
+> # I think now I lost the point...
+>
+> currently, drivers/pci/Kconfig (CONFIG_PCI) marks as depends on MMU,
+> so we cannot select it when CONFIG_MMU=n.
 
-Nit: I suggest writing the object_size argument passed to section_objs()
-here directly as "1" instead of using sizeof(*mod->pci_fixup_...) =
-sizeof(void). This makes the style consistent with the other code in
-find_module_sections().
+That is a fairly recent change, see commit 8fe743b5eba0abfb ("PCI:
+Add CONFIG_MMU dependency") in v6.16-rc1.  As this is not a "hard"
+dependency, perhaps it should be reverted, iff you are willing to take
+care of the casual breakage?
+
+>
+> but it's different with kunit when using them via kunit.py config,
+>
+> it first adds
+>
+>  CONFIG_VIRTIO_UML=y
+>  CONFIG_UML_PCI_OVER_VIRTIO=y
+>
+> via tools/testing/kunit/configs/arch_uml.config, and then add
+>
+>  CONIFG_MMU=n
+>
+> via --kconfig_add CONFIG_MMU=n.
+>
+> and then execute make ARCH=um olddefconfig, which in turn enables
+> CONFIG_UML_PCI_OVER_VIRTIO.
+>
+> if we append "--kconfig_add CONFIG_UML_PCI_OVER_VIRTIO=n" to kunit.py,
+> it will overwrite the arch_uml.config.
+>
+> # I don't know how kunit handles those appended CONFIG entries, though..
+>
+> my goal is simple; to test !MMU code via kunit.
+> my original patch or the additional kconfig argument (--kconfig_add)
+> satisfies this goal.
+>
+> > The problem is probably UML_PCI_OVER_VIRTIO selecting UML_PCI selecting
+> > various PCI code, but nothing depends on PCI in the first place. Which
+> > it should, then?
+>
+> I don't understand the 'nothing depends on PCI...' part.  care to
+> elaborate ?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
-Petr
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
