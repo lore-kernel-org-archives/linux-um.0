@@ -4,136 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56DFBCAC5B6
-	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 19:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9FBCCAC5AE
+	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 23:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2+5k4o1pMixQXt5VsjL/MYZwcVCEyggOqRD9o8b/qSc=; b=e5hN/1mpOs8gFIjPvj8RxEwkLF
-	GuheDwBcKGhzikd5h8NtHdEd5FfvU8E8UMvxxIsJysWWlZF1cDFkXVRI2xGOTgaoWXXyOE3olj6+9
-	qLkjqBjF4D1Aqdym1TkoVKAlVr+itNE6zHAskZbx+xUzV9jAh7b7/+smSuSDRTgJoIbjNBKw0D2O1
-	rbMMw4Gz45FzGHnS8zATEZ0U6OXVMwNyTh0QUDkU/10Ev82oIWRd426ORcr1GoLHrWfI4XYVcZfFP
-	tOHxuTXOkbVopAq7rPUO17TEL5c9Yh+RvB2cPZakE9eIlQy9OM9QAa98J7vt4hhxpCjdfFK1PD9kw
-	5wtjKh1g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ZJ1sgli7ptqR62/CrqjdmqyeswCTgFuJHQ9m7NV2USY=; b=bSygagggmhSEm57MaF4mFD/9rN
+	97flp8pEWeGfy+dyyq1vZv1maGXfE208F1Ds34nIR/BLrSPJxmGgAWIhPQCDaGfprRuTg0n/m6Ccv
+	9DkdpZHfvxofCRbEmuFvmk02CpMkT8FuwHaghsdmd0KYqAUHoS4AVY449jPguhvfF+q5XgA3KeZrg
+	HM+Jod9NxjHHFnVmKRdij4XVfZFts2nKXF5WAl/zZSWKqkIfXBccStWiYyHIBbT+jozHb7EJKj59Y
+	wMVAAGxh7GzKjSnINg51ydGbSFJbYbEDYsR1Kwy7pFDGuL8PblbAXgtEhWOr4B9NfP3xSSjc6gz20
+	EBE3quuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1V2y-000000030s3-2lZu;
-	Wed, 24 Sep 2025 19:21:00 +0000
-Received: from silver.cherry.relay.mailchannels.net ([23.83.223.166])
+	id 1v1YtG-00000004g1q-2uP4;
+	Wed, 24 Sep 2025 23:27:14 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1V2u-000000030ps-3Gzz;
-	Wed, 24 Sep 2025 19:20:58 +0000
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id D68F56C2CDF;
-	Wed, 24 Sep 2025 19:20:52 +0000 (UTC)
-Received: from pdx1-sub0-mail-a233.dreamhost.com (trex-blue-5.trex.outbound.svc.cluster.local [100.108.153.55])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 4D82F6C092A;
-	Wed, 24 Sep 2025 19:20:51 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1758741652; a=rsa-sha256;
-	cv=none;
-	b=FIelBRpKbw4XRCXREIY6GrcomZxyh5mPLsvXc2d6FGp/peq6EwuUT5C41+2LA0F+ggX9yV
-	8sDI+KYqBxmckQrPVNV7rWra63fWqq+o5yLlx5MZRnuTdHQZEQgAmgblFxuGyjaNVrHFDk
-	wPn+M2/WQfSpmZ0IkQEEN3MHnMtbF5yhytJwedRo1ogyg8SQR/ZRrsw9DI3lHGj/2mLKAm
-	dj8jGFwnS4OjNKQjH2R6mDLZ7tlU8MommvaAha7o+UWIylY5K2nv2k5iepHunaoM660neK
-	8apwlyJbofcRsA4DvFw4pkrtRAv7P9DWllpqqR+qR+EGkoSllD3i7IkmAH8Mog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1758741652;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=2+5k4o1pMixQXt5VsjL/MYZwcVCEyggOqRD9o8b/qSc=;
-	b=ChRw8wSjyogd2do/v/H6TxZGH/WsiQerw/hid5S8KViit0lwA1gMH0+6UMTmJNQMMIezrz
-	gsCOkeBMJedUyPmRdN0+x/Ibzn4kOtJ+sG57y0ioHbgMKfWThGzPdrmcr4dMMVSyyUw2rk
-	dVBBOmfhJTtYNtYRTDWhwp+mpqmWhEqvL9C8FrlKqiY59ItiMJEd3l6YkcBc//9Lzk6+Fh
-	mvjXUWAyzYxp+VnxExIXavdSHQcTxa/FAQIzz9fgRHT07mtFGrsyWRfq7ZmdI4pGoAxOfN
-	0MoQjrfyn0a4j6aLMBwkDQq4B0YTsphgd54S7yxIuOYwH85l63FNfS25ErSZgQ==
-ARC-Authentication-Results: i=1;
-	rspamd-55b8bfbc7f-nnn52;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=rob@landley.net
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|rob@landley.net
-X-MailChannels-Auth-Id: dreamhost
-X-Callous-Spill: 350181bf214e86d3_1758741652308_3044232165
-X-MC-Loop-Signature: 1758741652308:255498347
-X-MC-Ingress-Time: 1758741652308
-Received: from pdx1-sub0-mail-a233.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.108.153.55 (trex/7.1.3);
-	Wed, 24 Sep 2025 19:20:52 +0000
-Received: from [192.168.88.7] (unknown [209.81.127.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: rob@landley.net)
-	by pdx1-sub0-mail-a233.dreamhost.com (Postfix) with ESMTPSA id 4cX6Bm0dnXzJl;
-	Wed, 24 Sep 2025 12:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=landley.net;
-	s=dreamhost; t=1758741651;
-	bh=2+5k4o1pMixQXt5VsjL/MYZwcVCEyggOqRD9o8b/qSc=;
-	h=Date:Subject:To:Cc:From:Content-Type:Content-Transfer-Encoding;
-	b=qP7ktGKps9suFLn+SvwXNJfmXIq5m7DqxjIn++FPW06rQGLdyFrasnCUUBtJnzZ2L
-	 032Pr1ux0M59Obr3XwUHOtHtLFaEBxNmmkXxqPxYnCt1Q6ZqoWdAD9Q0W04+4gmjQl
-	 ds3vnt+/qY5ti8rpHJ46bodAbnhitDUyLxlQ0tRxKsiwmL7TThWSclVniorsogf6MJ
-	 gohNW1AXGJyGgriupkN0gkhVYK+ork7/6bPtZBHhvaB43HB07jP863XLDHcc31YH0+
-	 wfQhtcquMUPSEA+sEb7jFLcwMpbQdjW0Rd1EFegx855pG/OiLXxmVQR1JAWLIYES88
-	 kVFfZokS8hZqg==
-Message-ID: <de56cabd-05a9-4528-8150-9ad97209640e@landley.net>
-Date: Wed, 24 Sep 2025 14:20:47 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-To: Alexander Patrakov <patrakov@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Linus Torvalds
- <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>,
- Alexander Graf <graf@amazon.com>, Lennart Poettering <mzxreary@0pointer.de>,
- linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, x86@kernel.org, Ingo Molnar
- <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org,
- linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
- Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>,
- patches@lists.linux.dev
-References: <20250913003842.41944-1-safinaskar@gmail.com>
- <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
- <CAN_LGv3Opj9RW0atfXODy-Epn++5mt_DLEi-ewxR9Me5x46Bkg@mail.gmail.com>
-Content-Language: en-US
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <CAN_LGv3Opj9RW0atfXODy-Epn++5mt_DLEi-ewxR9Me5x46Bkg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1v1YtE-00000004g18-2Gs2
+	for linux-um@lists.infradead.org;
+	Wed, 24 Sep 2025 23:27:14 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-271d1305ad7so5844975ad.2
+        for <linux-um@lists.infradead.org>; Wed, 24 Sep 2025 16:27:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758756432; x=1759361232; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJ1sgli7ptqR62/CrqjdmqyeswCTgFuJHQ9m7NV2USY=;
+        b=DAG0IUcyX/4VR5gAT6z5eHRwuJp0TQ3VGRCov8czmfGQSBKvaZw9AKVgc6O4prD2SE
+         ZU7qiKidd4BbS3LAkSpm52KIN6oXtyBgzrCnHpOJFjYoxZOYpy+BPjcpN6J8DK63Lrig
+         lVn3uxD0NXXXh+eztDMjoLNLbk1mrk6z98ph3AMbhygHM49blpLQhOvd/qxfTDeQM16i
+         lpYv9qXeo8I5Bbfh87J/Rn3v5gTAygAxCT0rfWFNWnjGSo3UpROmXpWFx3PJTEv+6rUm
+         ieLNNQMtUZczpSLuYCiuCI4VokIPRrV1M6bb+VoR4OeuUmq7fcSlxtOkmPV4iEgRXj6M
+         zzag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758756432; x=1759361232;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZJ1sgli7ptqR62/CrqjdmqyeswCTgFuJHQ9m7NV2USY=;
+        b=rFyXdCU9WSoVorryJYg/DT9WGteli7WAurmFfUZlF/BgAdUi2fZITyq/9zPOXa1Sso
+         t2aNIRaBqGjwmYO5wh3bhyqBfo6CFKwbjLeV+4LC9PpntjfHLyIS2psmWeabdJFgzy4B
+         ZPSRYaJhqOnsDfQ44A4Gr55ZXuEzzyKa+P4HkKWM47v+4PmIcxK0HETqdsH50lcejngS
+         gC0W+oFEHxNMBcE9+nDHL/PtRacujwtL5IHvItrdZccdMvaW4o8fLf77xQ3GqiKgKtui
+         YsEfSQYSWGxgx9M40QUJTCU4SQwgO8Hns5k2s027xjES4iLA0NGwGumg+UfxLtFdyB39
+         hCWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxn5860YGAmO1DwLTDKUXRPD4bp3Lhlu0AZaOZQvX1ibW9V8YpdEkhhwmOKrxYQ0vvb6eZYTE7DA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxcB9d0famiXPpT4Sth+NLada0wgjuObpHcQupai1y8ngFy+lFG
+	oIfK4WUtzqtpxBOyfbL8HzaxB0rk30mE/FRcvDat7AuhBhHkUeg3QW7z
+X-Gm-Gg: ASbGncuBWM/gx0+CczehyXWxX3e84jRlE7+hVaNoyDNrGkFFIDolEylZrmCqL3EM3vR
+	rh5dygapH0likr5/CecJM8dT+nb3PvGHbDAzV0sNlp5TezfOvL3EdbxqxJVW2JT96nydyzLS99/
+	pCDiecGDSDE9WLalg5uY5HPPXm3Jf2Tcwb5xTBuksWW07Td9dpVP2e8dKvHSXn3BBUBehveGnda
+	Y4+YqQ+7MioPl8+tpXGqztK2vbD5XfVD+svVXdBru4oZXGDfBuAXFchhPFyOGCtTXId8jFSDbmL
+	oBAgBNV4SfnEUCoiw+U9XGVocuY3DpqKcQML+PmDg0kLCfnldDd4+npDfDOGoKTC02pcB4WQ3Vz
+	3bLFn984dAuTvsgDnKi68P3Nw0dtavP3yiKuUHmsXguFp3o6KqmOPMZWJ6dR8y6S0nsRTTtWnSG
+	lFSzIRao0Kr8ViQJv/7SJC2A==
+X-Google-Smtp-Source: AGHT+IH/KDLvQBQ7UfQ+ug7/uqqc5vZ4hRiu7RY+Ut1AjNGo+pZ/b3uV5AW21gKl38+5adHmTwsrgg==
+X-Received: by 2002:a17:902:d507:b0:265:982a:d450 with SMTP id d9443c01a7336-27ed4a492e2mr13671305ad.40.1758756431589;
+        Wed, 24 Sep 2025 16:27:11 -0700 (PDT)
+Received: from mars.local.gmail.com (KD111238238118.ec-userreverse.dion.ne.jp. [111.238.238.118])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-27ed6ab64c7sm4012795ad.130.2025.09.24.16.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Sep 2025 16:27:10 -0700 (PDT)
+Date: Thu, 25 Sep 2025 08:27:07 +0900
+Message-ID: <m2qzvv77p0.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: arnd@arndb.de
+Cc: johannes@sipsolutions.net,
+	geert@linux-m68k.org,
+	linux-um@lists.infradead.org,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH RESEND v11 10/13] um: nommu: a work around for MMU dependency to PCI driver
+In-Reply-To: <b55251bf-625e-48c3-8c60-eb4f8358f397@app.fastmail.com>
+References: <cover.1758181109.git.thehajime@gmail.com>
+	<4a9dde10c586883d20a8201ca7d76e6d7d52eaf4.1758181109.git.thehajime@gmail.com>
+	<a58620ecefa207e141a435c36492647c3d5bd3df.camel@sipsolutions.net>
+	<m28qib8g1r.wl-thehajime@gmail.com>
+	<6b1abe384237c8129e8043ecdfdad77758d2fd2f.camel@sipsolutions.net>
+	<m27bxu949d.wl-thehajime@gmail.com>
+	<CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com>
+	<23adb61e95275251e459513a03ab7d2bcf1f2e07.camel@sipsolutions.net>
+	<m2zfak7mnd.wl-thehajime@gmail.com>
+	<b55251bf-625e-48c3-8c60-eb4f8358f397@app.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250924_122057_151521_1B7CB8C3 
-X-CRM114-Status: GOOD (  15.55  )
+X-CRM114-CacheID: sfid-20250924_162712_579443_E682B2F0 
+X-CRM114-Status: GOOD (  24.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,45 +112,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 9/24/25 11:17, Alexander Patrakov wrote:
->> Therefore is it really initrd you are removing or just some corner case
->> ? If it is really initrd, then how does QEMU still work with that
->> -initrd parameter ?
+
+Hello Arnd,
+
+On Wed, 24 Sep 2025 20:03:11 +0900,
+Arnd Bergmann wrote:
+
+> > currently nommu UML doesn't come with using PCI except building under
+> > kunit (ARCH=um), but I have in my mind to use it under !MMU
+> > environment, so would be an option in the future.
+> >
+> > and this series doesn't include PCI w/ !MMU.
+> >
+> > so, I would propose the modification to revert the MMU dependency when
+> > time has come.
 > 
-> The QEMU -initrd parameter is a misnomer. It can be used to pass an
-> initrd or an initramfs, and the kernel automatically figures out what
-> it is.
+> The reason why it's currently disabled is that it was causing extra
+> work to fix build failures in random PCI drivers that individually
+> have a CONFIG_MMU dependency. Since we know that none of the NOMMU
+> boards we support uses PCI, this was an easy way to avoid work.
+> 
+> While there are still developers that care about NOMMU Linux
+> and test it on the platforms they use, the NOMMU build failures
+> usually end up in code that are irrelevant for their use cases,
+> so neither the platform owners nor the driver authors care deeply
+> about fixing that combination.
+> 
+> If you want to be able to use PCI drivers on UML-NOMMU,
+> you can probably use
+> 
+> config PCI
+>        depends on MMU || UML
+> 
+> so it will be ignored by the build bots on other architectures.
+> You'll still have to decide whether to fix driver code when
+> regressions in PCI drivers happen, add 'depends on !UML'
+> to individual drivers, or just live with randconfig failures.
 
-It's not a misnomer, initrams has always been able to make use of the 
-existing initrd loading mechanism to read images externally supplied by 
-the bootloader. It's what grub calls it too. I documented it in the 
-"External initramfs images" section of 
-https://kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt 
-back in 2005. The mechanism itself is 30 years old 
-(Documentation/initrd.txt was written by Werner Almsberger in linux 
-1.3.73 from March 7, 1996, ala 
-https://github.com/mpe/linux-fullhistory/commit/afc106342783 ).
+thanks for the detail information.
+yes, when nommu UML wish to use PCI drivers in the future, I'll take
+this approach to be able to use it.
 
-Since initrd contents could always be in a bunch of different 
-autodetected formats (and optionally compressed just like the kernel), 
-initramfs just hooked in to the staircase and said "if the format is 
-cpio, call this function to handle it". The patch series proposes 
-removing all the other formats, but not otherwise changing the existing 
-external image loader mechanism. (Personally I think removing the 
-architecture-specific hacks but leaving the generic support under init/ 
-would probably have made more sense as a first step.)
-
-The bootloader hands off an initrd image, initramfs is the boot-time 
-cpio extraction plumbing that's _init tagged and gets freed, and rootfs 
-is the persistent mounted instance of ramfs or tmpfs that's always there 
-and is analogous to the init task (PID 1) except for the mount tree. 
-(And is often overmounted so it's not visible, but it's still there. And 
-is NOT SPECIAL: overmounts aren't a new concept, nor is hiding them in 
-things like "df".)
-
-There's a REASON my documentation file was called 
-ramfs-rootfs-initramfs.txt: the naming's always been a bit... layered. 
-(And yes, I have always spelled initmpfs with only one t.)
-
-Rob
+-- Hajime
 
