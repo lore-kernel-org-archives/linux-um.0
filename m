@@ -4,63 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 360B6CAC5A5
-	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 14:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2228BCAC5B1
+	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 16:18:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sC8Bv+IHsX6wUs//ST+Kb4J52aBiV724ykUwuhZDdgY=; b=vtTpYmf2WPTkWqMa+1WNaSaN5b
-	JgzRkF8STzj+fIV03fYN0/txPO00080WVNbsUnmSiTxc9o8+aTe9h3K+ZsFDTWTbtIMhMqT7/lukO
-	ugwnvLPbEYXrvv323XCgpKMYK7gC+2Wb+lTDEbNEx4mf68n70SB56O1ozOy3yXxKWcXcx21iOtZsC
-	H0ywaoXEtJlaZOim7CLEwBQt6N4IqcxhKm4mbssRW7T/fxQOTL2F3lPfj43UqeKO2GZ7rSi176Db8
-	y/qyGHkJEawb907+b6FeKJyalWWuPWcmckskfUJd1yWbQ37IX6YxvcKP8gX+G+uJ6q90ivUn2qQS3
-	aBHkKQVQ==;
+	bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=; b=m3P/gNwCJxDq0e/Eya74XN8Q84
+	alrW/I1G3F2C2hHZm7gNdSwYxoGWdyJ2K9g0u+18UYBYEo4FtC4dYNhQCjntlAfLUauxDVk3wb4wL
+	2oseV7XViOJAVri8OsmksnlwZCLgs1JBadxP7sxwDTmkmDpL6ppGf7bUzB561tk1DhkMinFmrZlYX
+	DI70VrT60Frc/IASOBMZE09PtyUZ/EOrbija9Suwuakm6ctnij+dAbSkc8ngNCyvW83GzzExyLACa
+	m/Fgc8KsZNBtj08wvNoISkOXY+YIUvUxeagVhFWVChy53jbeqEzRJ8s/UDOaEC/bv105zBOyIGJ1/
+	APEER7rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1QNn-00000000bB0-48Tb;
-	Wed, 24 Sep 2025 14:22:11 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1v1SC2-00000001dd1-0M0C;
+	Wed, 24 Sep 2025 16:18:10 +0000
+Received: from mail-qt1-x836.google.com ([2607:f8b0:4864:20::836])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1QNl-00000000b6m-1iQe
+	id 1v1SBz-00000001dZU-0mXz
 	for linux-um@lists.infradead.org;
-	Wed, 24 Sep 2025 14:22:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=sC8Bv+IHsX6wUs//ST+Kb4J52aBiV724ykUwuhZDdgY=;
-	t=1758723729; x=1759933329; b=k3dfII3oHaIpu+3UbZNNAaJKHJ65c7q3QQpC4C0jp5YB/e4
-	2wJ+0XaQNixrEAk5SwnPWy0XdEiue5FwYZvSMeH/844KNpd+jcANpdou2IfXCbkA22Nb6Xpfrhs45
-	543GlPsSLQBlYhnbDEhQ1TEnEEX9oK2tuAf+84HiN7Cq4mQ8Ho6qoIOrie1HnyYie4+cSYKGOOof0
-	nv+dX02TO0Y7hKKa5zUx/f+Ux/pF/S292IxtTG2jEBPjq0ASLsbs7NvltGi15vghnWXhX4CfdmN0n
-	MuKEUJyI/g6AAZmFTT3wUYbNkyvcqEJej0jlOp0RxiL2JzgXEU3UjL36tCl/S1lw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1v1QNi-000000090Bz-1RrK;
-	Wed, 24 Sep 2025 16:22:07 +0200
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org,
-	Willy Tarreau <w@1wt.eu>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	linux-kselftest@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v3 12/12] um: switch ptrace FP register access to nolibc
-Date: Wed, 24 Sep 2025 16:20:59 +0200
-Message-ID: <20250924142059.527768-13-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20250924142059.527768-1-benjamin@sipsolutions.net>
-References: <20250924142059.527768-1-benjamin@sipsolutions.net>
+	Wed, 24 Sep 2025 16:18:08 +0000
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4d41154079aso213201cf.0
+        for <linux-um@lists.infradead.org>; Wed, 24 Sep 2025 09:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758730685; x=1759335485; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=;
+        b=gakQqHPZzhqukTiSs1diXISX6JRML3Uep8JDB4dtVrMyHgJ6XQc/fAwHZ603wwMP0G
+         LN0b0SMU9MvTm4gPW1OZuiQeK+OC7mC8hkOMJ57sa6I8uy1uOgJO8syErT8NliKjjisr
+         jXnDTt1hH8O+wzDytxnGI7gmwu7lnOVTbUH2MolLqvzwVDDRlHm/hD6YqyyHDVMSXOin
+         KEWCdc01bcqIcPAE9XbNBV7Agmzwcl9TY+W5+7EFmxsdGxO9K8KFeOLoDbvY6ml3Pz7W
+         JgyPeESZBCIu4VExPHM7JCnm9wEH+AYaTUh2unL2VaygGGqpPIw53Ycad+Lt/Zi7T4HQ
+         8JTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758730685; x=1759335485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=;
+        b=L6J6+siShA96gy7VRhv5qt8rGaXJqNScBUUwH9kAOD9A0WTK09gfbZMynweVwRCrT0
+         L3YQrf+MzhXAHbhVBhiwc3ZWj2eUSpdXjk+OG/4PY5jVAeU3V21j/5GiXxTee02Cx6ev
+         KJHDmcuYLYcIwVPfrL0t9/CV7DUsFBvZxAfGQsoh05qQ7ubs61+XQeQozMdGskkiUR2m
+         w1i6wQhEI0Yl/vhIBq526SMhGw0LdcA+hrUc8icKTnF8q5RJ8KlPrfGX6WKid/CYOq6W
+         oDbBjEhCA55HMObII1fV9Mv3/MSOkuUYda0bp3lwRIe9qcbNT6UjFfQSbb0eqiy7eXO6
+         LTUw==
+X-Forwarded-Encrypted: i=1; AJvYcCUIQ1hzkK1jp4/bDaPX5E/ad6DvmxlP+IZ0p5YxZbKpa5O5te/HNY4L1FewpgyKHOYvw/qwa2XH+A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxEqvkeu86G7S9UTvpYB0j8zxki3AP9TxB9Y+Rnq0wzDq2GJwHv
+	ANB2BWRtdQ1A0e0ImeTHrmsF+UNsypH2hszwQ8t3+oaXxNnUHbAhpUBz7LUKRsXtE8wC+Popz4Z
+	QTY03O+kmlXyueLbXH4F/svH9hcjVhMg=
+X-Gm-Gg: ASbGncvp84/S2QhjyOz33rgZ5puwobdQPv+PJGWpMZm0QaAS/U7SWUEAZnaMtSmVLLq
+	ZgZ0PqBqu1H1g5Ohf/AyUeNv/JO87oaS1s1Xvg1e8KbdhVAs+aWymDHX47dn94329jrnZuMJPx5
+	7M/R5+Qr7xpcBeXrgHcIUwmTQlaFhIC+orF5v9xr+L6fElWsfTm7WbxCU1WOlnI3cWxJWagAVzV
+	i/A869PEEEL/e2/OUSZxYiXISit9NUwpsqJDhqh
+X-Google-Smtp-Source: AGHT+IHrjx0XfB3NQHdqBt66Ox1dwY4oj3I0wMxztSwqqFAAkQnhEkK0QBLdnresO+RuCvDJitimjmBRn2YZHsgZxpk=
+X-Received: by 2002:a05:622a:3d2:b0:4d9:ea03:74f8 with SMTP id
+ d75a77b69052e-4da473535b8mr6186491cf.16.1758730685377; Wed, 24 Sep 2025
+ 09:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250913003842.41944-1-safinaskar@gmail.com> <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
+In-Reply-To: <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
+From: Alexander Patrakov <patrakov@gmail.com>
+Date: Thu, 25 Sep 2025 00:17:39 +0800
+X-Gm-Features: AS18NWB-xeGoRDKYPj3kUYXUnKXLhFMFvvc0QyoLpOeKcP1DsD-enKeBhlulfsI
+Message-ID: <CAN_LGv3Opj9RW0atfXODy-Epn++5mt_DLEi-ewxR9Me5x46Bkg@mail.gmail.com>
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
+	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250924_072209_471092_21719B5F 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20250924_091807_237224_C65FCECE 
+X-CRM114-Status: GOOD (  20.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,106 +118,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+On Tue, Sep 23, 2025 at 8:22=E2=80=AFPM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 13/09/2025 =C3=A0 02:37, Askar Safin a =C3=A9crit :
+> > [Vous ne recevez pas souvent de courriers de safinaskar@gmail.com. D=C3=
+=A9couvrez pourquoi ceci est important =C3=A0 https://aka.ms/LearnAboutSend=
+erIdentification ]
+> >
+> > Intro
+> > =3D=3D=3D=3D
+> > This patchset removes classic initrd (initial RAM disk) support,
+> > which was deprecated in 2020.
+> > Initramfs still stays, and RAM disk itself (brd) still stays, too.
+> > init/do_mounts* and init/*initramfs* are listed in VFS entry in
+> > MAINTAINERS, so I think this patchset should go through VFS tree.
+> > This patchset touchs every subdirectory in arch/, so I tested it
+> > on 8 (!!!) archs in Qemu (see details below).
+> > Warning: this patchset renames CONFIG_BLK_DEV_INITRD (!!!) to CONFIG_IN=
+ITRAMFS
+> > and CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_* (for example,
+> > CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP).
+> > If you still use initrd, see below for workaround.
+>
+> Apologise if my question looks stupid, but I'm using QEMU for various
+> tests, and the way QEMU is started is something like:
+>
+> qemu-system-ppc -kernel ./vmlinux -cpu g4 -M mac99 -initrd
+> ./qemu/rootfs.cpio.gz
+>
+> I was therefore expecting (and fearing) it to fail with your series
+> applied, but surprisingly it still works.
+>
+> Therefore is it really initrd you are removing or just some corner case
+> ? If it is really initrd, then how does QEMU still work with that
+> -initrd parameter ?
 
-The registers.c file only contains the routines for floating point
-register access in ptrace mode and initial size detection. After the
-addition of sys/uio.h and sys/ptrace.h to nolibc it can be moved to use
-it by using the sys_ptrace() wrapper.
+The QEMU -initrd parameter is a misnomer. It can be used to pass an
+initrd or an initramfs, and the kernel automatically figures out what
+it is. What you are passing is an initramfs (a gzipped cpio archive
+with all the files), which is a modern and supported use case.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-
----
-v3:
-- Cast argument to (void *)
-- Remove unused sys/user.h include which does not exist in nolibc
-
-v2:
-- Use new sys_ptrace from nolibc
----
- arch/x86/um/os-Linux/Makefile    |  5 ++++-
- arch/x86/um/os-Linux/registers.c | 20 +++++---------------
- 2 files changed, 9 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
-index 77a308aaa5ec..d37320430822 100644
---- a/arch/x86/um/os-Linux/Makefile
-+++ b/arch/x86/um/os-Linux/Makefile
-@@ -3,10 +3,13 @@
- # Licensed under the GPL
- #
- 
--obj-y = registers.o mcontext.o
-+obj-y = mcontext.o
- 
- obj-$(CONFIG_X86_32) += tls.o
- 
- USER_OBJS := $(obj-y)
- 
-+obj-y += registers.o
-+NOLIBC_OBJS := registers.o
-+
- include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
-index eb1cdadc8a61..72c7493f3b89 100644
---- a/arch/x86/um/os-Linux/registers.c
-+++ b/arch/x86/um/os-Linux/registers.c
-@@ -7,9 +7,6 @@
- #include <errno.h>
- #include <stdlib.h>
- #include <sys/ptrace.h>
--#ifdef __i386__
--#include <sys/user.h>
--#endif
- #include <longjmp.h>
- #include <sysdep/ptrace_user.h>
- #include <sys/uio.h>
-@@ -28,9 +25,7 @@ int get_fp_registers(int pid, unsigned long *regs)
- 		.iov_len = host_fp_size,
- 	};
- 
--	if (ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov) < 0)
--		return -errno;
--	return 0;
-+	return sys_ptrace(PTRACE_GETREGSET, pid, (void *)ptrace_regset, &iov);
- }
- 
- int put_fp_registers(int pid, unsigned long *regs)
-@@ -40,9 +35,7 @@ int put_fp_registers(int pid, unsigned long *regs)
- 		.iov_len = host_fp_size,
- 	};
- 
--	if (ptrace(PTRACE_SETREGSET, pid, ptrace_regset, &iov) < 0)
--		return -errno;
--	return 0;
-+	return sys_ptrace(PTRACE_SETREGSET, pid, (void *)ptrace_regset, &iov);
- }
- 
- int arch_init_registers(int pid)
-@@ -60,9 +53,7 @@ int arch_init_registers(int pid)
- 
- 	/* GDB has x86_xsave_length, which uses x86_cpuid_count */
- 	ptrace_regset = NT_X86_XSTATE;
--	ret = ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
--	if (ret)
--		ret = -errno;
-+	ret = sys_ptrace(PTRACE_GETREGSET, pid, (void *)ptrace_regset, &iov);
- 
- 	if (ret == -ENODEV) {
- #ifdef CONFIG_X86_32
-@@ -71,9 +62,8 @@ int arch_init_registers(int pid)
- 		ptrace_regset = NT_PRFPREG;
- #endif
- 		iov.iov_len = 2 * 1024 * 1024;
--		ret = ptrace(PTRACE_GETREGSET, pid, ptrace_regset, &iov);
--		if (ret)
--			ret = -errno;
-+		ret = sys_ptrace(PTRACE_GETREGSET, pid,
-+				 (void *)ptrace_regset, &iov);
- 	}
- 
- 	munmap(iov.iov_base, 2 * 1024 * 1024);
--- 
-2.51.0
-
+--=20
+Alexander Patrakov
 
