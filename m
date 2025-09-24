@@ -4,65 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8236CAC5A7
-	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 07:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A3ECAC5A5
+	for <linux-um@archiver.kernel.org>; Wed, 24 Sep 2025 08:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=D2wn6RMMBnB/+9wWDZ2/t9VQgCDz7Hs9Ndx57HE6Dsg=; b=w6TBs00xiPVhUELe9pcp8kp1zl
-	FB0rbMSBHuD6afvkGunxlkKInHT7EQf+0j7XFSBFw/gCpQcm513zZakUBCbgtPZLUKuIgPqON4cbD
-	/AoMnaumjCO3C2hXMkDxFfSCRIovlGFxZgghw/mcfMbGF1CK4cU0M436wQq7xYKq0CMDZYuc4XMce
-	8FPSJImZqtT239OzB9M4H9xobmcNnF3PZspr+RXGUr0z17aZu6yuTSFmlB4kqZdGObIT3mz8+Iu8e
-	F6j82DnWhzmfrTs07tk6nYa+yIWQstbjvYUIBypHFECIRCfWBvLmErJV9Res+qp4s3GvZT2GB19pN
-	AbaSnDLw==;
+	bh=xG/1vYGs3+fuqywYG6UuJwna6J76UW6FbhxCIwoVdYk=; b=ZmcNNzoKlbdVMyaqPC1/S1mpqw
+	R8DMX7g9/QvWaM77jdG9O4KfK2Qd43kIf0wjBCy/3Oc8s95z98ff925nMytHna4vLcfItvVV6jtjY
+	Kn+8kGpk9pMsj5z+THLpteCHOSW99bf8zLaFeTxNoyFMo/Ch8QFkDSMV+lAuRS/p+kz52JoYVgr2v
+	aL0zHkv68F62of18el8hK2t7evp1NtmKAs38uT5SmHPU81msXWfqgmyBEH5zACVLIXU/oX2Mu79nu
+	Uq7w7tw/hUeF4C1OiDhWc4o+sm2T6lAWvy0ESbN4Sb1uY2ryGKnJjpKOmgUzE6UufOx8aodaS5b2y
+	/URJSuaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1KM0-0000000Fo3Z-0yoG;
-	Wed, 24 Sep 2025 07:55:56 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1v1KT1-0000000FoYx-2u6A;
+	Wed, 24 Sep 2025 08:03:11 +0000
+Received: from mail-vs1-f51.google.com ([209.85.217.51])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v1KLy-0000000Fo2n-0juF;
-	Wed, 24 Sep 2025 07:55:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=D2wn6RMMBnB/+9wWDZ2/t9VQgCDz7Hs9Ndx57HE6Dsg=;
-	t=1758700554; x=1759910154; b=R3lXYP9aI4scTeiLBaEXA77iBdHJ7gbfni5fAj7VLFKHOvq
-	MsnNCFRldGH35kPInGcwPr1WNpBu9ggDQk3GGoBYKGNB41O0C+Ms7oUgRMYkbx4J4QiuzpBqH2zI/
-	ymp0lmVif3OMmaMb99aiWATXPTZ54531q2pTABB9K81BccQMhl8dpwF/dHVr8ERySs13hgkt4tCc2
-	xsKy7fLUO0DakQvpuHKJssKEyMZMffbDaM6sn6zqzagOis0NxeomyC/GOnHbbyhro4yQqDqb59T6V
-	woA6lHiIlXP587yuSZ9fMG5cN2cC4P9jD5R35KIn+I00hJg2QU7RHGLELk9rl4YA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1v1KLs-00000008P0I-0JrN;
-	Wed, 24 Sep 2025 09:55:48 +0200
-Message-ID: <97fde69716ea4742b6cb4aca1a3ecc8788693cd3.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 00/11] Start porting UML to nolibc
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Willy Tarreau <w@1wt.eu>, Hajime Tazaki <thehajime@gmail.com>
-Cc: johannes@sipsolutions.net, hch@infradead.org,
- linux-um@lists.infradead.org, 	linux@weissschuh.net,
- linux-kselftest@vger.kernel.org, acme@redhat.com, 
-	linux-kernel@vger.kernel.org
-Date: Wed, 24 Sep 2025 09:55:47 +0200
-In-Reply-To: <20250924033217.GA9039@1wt.eu>
-References: <20250919153420.727385-1-benjamin@sipsolutions.net>
-	 <aM15eChUObXfxLzs@infradead.org>
-	 <4354d88c2ff7a57a7324cc39b4ce5ed4ebe5277d.camel@sipsolutions.net>
-	 <m2y0q47mbs.wl-thehajime@gmail.com> <20250924033217.GA9039@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	id 1v1KSz-0000000FoYG-0LlT
+	for linux-um@lists.infradead.org;
+	Wed, 24 Sep 2025 08:03:10 +0000
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-59d576379b9so1507962137.1
+        for <linux-um@lists.infradead.org>; Wed, 24 Sep 2025 01:03:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758700987; x=1759305787;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xG/1vYGs3+fuqywYG6UuJwna6J76UW6FbhxCIwoVdYk=;
+        b=rMs2Eh79m/HnGVRBEtPzsHbC5wrP3j+d6L3eyIsShjwtDnyooOYx70YrhhSBK/A9CQ
+         203PG7CKSykIvtJhd/WC0bV6G5Wt8YEXvkscN+GvYZgeV1aMn5UWUO0IXWhhSDM34k5/
+         HOmgcILQZU1jXXaviNrGKD/b8fhs0UUIY1xkQrRp0lziMAb8ZCY19Id7Tz/h2w8vhdYy
+         V15i6bMon+jaiSRPr3V8xxzdbM67etBBvcm4QBsWMWt2a7F9qUKBB20q/Cu1hkFd/SGv
+         9Vo2GecGXWUQqMjzb+6lMilBtRReejin6bgujfp7R6rSRFNhLfJEOxd8+uY+08c1vEoQ
+         TPgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTUlImkLvzHiHKdk5nZZMFZ1lyqBzsSrieIpWHnV9wkDKPEp0tbvH8v4ABZ/XpHKuDGh0ME1DkwQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwIhqU+83wFpc0QCFQrH5u+groxj+YNmkB/LZefmFNQcYJoNG0S
+	EKqEWh1dA8+ssxtAuMfpOSdNGXUmmdQlCgela48eEgD4rSKiDFkLH/zye8vHQgAR
+X-Gm-Gg: ASbGnctIFHtQ9Mw3jXsN42suQuWCH0SzOtxhtnbjgiOvxQZoKsDBye4Nex7PR6txM21
+	vTXkaxAbB6Dnm2mAgXyBziaA8SyVekyGBl2J1m3r6ORc2eFu9+Uy0ukjOYgYa07OiD1RBYUKrLz
+	QeBD51dH3xVc5F7UljvZOuNP97Occm61vv3foTTArpHfTKXgFjqpQrtiKk7vDfRq2yFpHrlsXSi
+	sTa9edrqFPLFn/EsYNSJIqVAXT+kWMraH5cpHCTnXMCbbc7DdAE+BQ8QoottbKuaOkF05WRNY1F
+	QDOjCCu1u+SH1rVEP4CL/TnoVi3qBa1nZG4AmV/wjwhyimNDMv4wqzNh9xg7uzNpebRNdc2b/Q0
+	9IhYZLeSx8vEjt7JD0Bous4muvkObgSfKhebbu19cUoXp589rr18oPB1MS9Wu
+X-Google-Smtp-Source: AGHT+IEZHY5sQZ4iAuQM0X1y9Vh6PCYKkxy+NmDjuIGBzq/3wCapKslCiYgvHDYJhfMBYvyuJnpqIQ==
+X-Received: by 2002:a05:6102:6a83:b0:523:863d:ece1 with SMTP id ada2fe7eead31-5a5787a5a60mr2256449137.17.1758700987046;
+        Wed, 24 Sep 2025 01:03:07 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-8f25b3cf97dsm1931430241.18.2025.09.24.01.03.06
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Sep 2025 01:03:06 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-8e2702252b0so2883335241.3
+        for <linux-um@lists.infradead.org>; Wed, 24 Sep 2025 01:03:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXyBQBqtPio8Y6r1QKjNMsamWyv6pk9qOzz735gYxkPxAewG6N+AwBkBBFg//eRqxbq8STiYlSi3w==@lists.infradead.org
+X-Received: by 2002:a05:6102:6890:b0:52a:ef9a:cbef with SMTP id
+ ada2fe7eead31-5a57a2e5015mr1830757137.35.1758700986150; Wed, 24 Sep 2025
+ 01:03:06 -0700 (PDT)
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+References: <cover.1758181109.git.thehajime@gmail.com> <4a9dde10c586883d20a8201ca7d76e6d7d52eaf4.1758181109.git.thehajime@gmail.com>
+ <a58620ecefa207e141a435c36492647c3d5bd3df.camel@sipsolutions.net>
+ <m28qib8g1r.wl-thehajime@gmail.com> <6b1abe384237c8129e8043ecdfdad77758d2fd2f.camel@sipsolutions.net>
+ <m27bxu949d.wl-thehajime@gmail.com> <CAMuHMdWAdhiY=MiG5JtboffSo_=D7TD5vFM6Ui5E8eS_VJiJ=g@mail.gmail.com>
+ <23adb61e95275251e459513a03ab7d2bcf1f2e07.camel@sipsolutions.net> <m2zfak7mnd.wl-thehajime@gmail.com>
+In-Reply-To: <m2zfak7mnd.wl-thehajime@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 24 Sep 2025 10:02:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW-417mPdhx8VzD5HK+OBzR6wOwgve7TQVaDB=B1ACQhQ@mail.gmail.com>
+X-Gm-Features: AS18NWDjzUUYN1IH_NRSUgt7ztz7YMlPE3cxQjph-t1F9aMXgPt3FYPP6cpRC98
+Message-ID: <CAMuHMdW-417mPdhx8VzD5HK+OBzR6wOwgve7TQVaDB=B1ACQhQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v11 10/13] um: nommu: a work around for MMU
+ dependency to PCI driver
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, 
+	ricarkol@google.com, Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org, 
+	arnd@arndb.de
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250924_005554_238087_3475E1EE 
-X-CRM114-Status: GOOD (  28.55  )
+X-CRM114-CacheID: sfid-20250924_010309_132389_A4449D8F 
+X-CRM114-Status: GOOD (  28.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,69 +100,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2025-09-24 at 05:32 +0200, Willy Tarreau wrote:
-> On Wed, Sep 24, 2025 at 08:58:47AM +0900, Hajime Tazaki wrote:
-> >=20
-> > Hello Benjamin, Johannes,
-> >=20
-> > On Mon, 22 Sep 2025 16:41:36 +0900,
-> > Johannes Berg wrote:
-> > >=20
-> > > On Fri, 2025-09-19 at 08:40 -0700, Christoph Hellwig wrote:
-> > > > On Fri, Sep 19, 2025 at 05:34:09PM +0200, Benjamin Berg wrote:
-> > > > > From: Benjamin Berg <benjamin.berg@intel.com>
-> > > > >=20
-> > > > > This patchset is an attempt to start a nolibc port of UML.
-> > > >=20
-> > > > It would be useful to explain why that is desirable.
-> > >=20
-> > > Agree, it should be here, but FWIW it's been discussed elsewhere on t=
-he
-> > > linux-um list in the past and basically there are various issues arou=
-nd
-> > > it. Off the top of my head:
-> > > =C2=A0- glibc enabling new features such as rseq that interact badly =
-with how
-> > > =C2=A0=C2=A0 UML manages memory (there were fixes for this, it worked=
- sometimes
-> > > =C2=A0=C2=A0 and sometimes not)
-> > > =C2=A0- allocation placement for TLS is problematic (see the SMP seri=
-es)
-> > > =C2=A0- it's (too) easy to accidentally call glibc functions that req=
-uire
-> > > =C2=A0=C2=A0 huge amounts of stack space
-> > >=20
-> > > There are probably other reasons, but the mixed nature of UML being b=
-oth
-> > > kernel and "hypervisor" code in a single place doesn't mix well with
-> > > glibc.
-> >=20
-> > just curious
-> >=20
-> > - are those issues not happening in other libc implementation ? (e.g.,
-> > =C2=A0 musl-libc)
-> > - same question to nolibc: is there any possibility that nolibc will
-> > =C2=A0 evolve as glibc does, and this evolution introduces the UML issu=
-es ?
->=20
-> Nolibc focuses on early boot programs. That does not mean it will never
-> evolve towrards more generic usage but this remains unlikely, and in any
-> case there's the goal will remain not to degrade the experience on the
-> original target (early boot). That doesn't mean there will never be any
-> breakage but we're doing our best to keep things in a clean and workable
-> state. Regarding threads, it seems unlikely that they'll arrive any time
-> soon. But if they did, assuming UML would by then be a long established
-> user, we'd certainly find a solution together (even via build-time
-> defines if needed).
+Hi Hajime,
 
-Also, with nolibc it is really simple to override any functions as
-needed. We will likely want to do this for malloc/free so that nothing
-bad can happen there.
+On Wed, 24 Sept 2025 at 01:51, Hajime Tazaki <thehajime@gmail.com> wrote:
+> On Wed, 24 Sep 2025 02:13:47 +0900,
+> Johannes Berg wrote:
+> > On Tue, 2025-09-23 at 17:42 +0200, Geert Uytterhoeven wrote:
+> > > > currently, drivers/pci/Kconfig (CONFIG_PCI) marks as depends on MMU,
+> > > > so we cannot select it when CONFIG_MMU=n.
+> > >
+> > > That is a fairly recent change, see commit 8fe743b5eba0abfb ("PCI:
+> > > Add CONFIG_MMU dependency") in v6.16-rc1.  As this is not a "hard"
+> > > dependency, perhaps it should be reverted, iff you are willing to take
+> > > care of the casual breakage?
+> >
+> > Why though? UML with PCI can't really be a functional thing, only a
+> > testing thing, and testing PCI on !MMU when that is actually impossible
+> > in non-simulation is pointless?
+>
+> currently nommu UML doesn't come with using PCI except building under
+> kunit (ARCH=um), but I have in my mind to use it under !MMU
+> environment, so would be an option in the future.
+>
+> and this series doesn't include PCI w/ !MMU.
+>
+> so, I would propose the modification to revert the MMU dependency when
+> time has come.
+>
+> btw, what do you mean by "hard" dependency in this context, Geert ?
 
-Actually, UML already tries to do that for glibc. However, it
-effectively fails (for dynamically linked builds) because the
-dynamically linked glibc still uses its internal version for these
-symbols.
+I mean the PCI core does not really require an MMU, and PCI in-se
+should work without it (e.g. on Coldfire MCF54xx).  Arnd added the
+dependency to avoid having to deal with future build regressions.
 
-Benjamin
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
