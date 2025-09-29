@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 522FDCCD1A2
-	for <linux-um@archiver.kernel.org>; Fri, 17 Oct 2025 08:06:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B19C7CCA476
+	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:From:Cc:To:Subject:
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=Bng1/1BVXUk1NKCno716V5LgVGQ1BNvdNFZ4NcMDgJ0=; b=S4G2I75BCH8QozpSECvbq6pjQV
-	0sCOLeUC85fXP9R5Ff9bjCvwxd5GhfrSfLYrVn6cSlUWp3L8IAMikA1//U73p1Eg1vzcebSiPfB/v
-	uxi9NbEleW2dtQWwP2AvjT+whkzmuzluUcz0Wr4ziYc8wtWY012to+DhbrzmLFDMTFm81P3+tRtzo
-	dDnvRN6U8KLoW1Nxsmu3ktFQYKnQ3T7KIpEyRdITHltGay6ZTvXGgEeGik5bR3VDFGe1r8nHIj4dF
-	Cgkcv9nZsV8JcLW/hQkOidROHU4Pk8PyqY0t/IkkvsqMzzff7nUkx34SF0VBaK9eGqRA7CqHD80EB
-	S1S+wOGg==;
+	bh=r+yfnouGAxJLMxX7PYNWLinKX2hTrrnX1JjuNMojpG4=; b=H1IS393ssgQQE72cqe6dmAfoQz
+	JwnEfPPNj7HhjeotJJU4wSQA3YAMxX7F0TTKK6v9Ri1//GxBCuS9CG85YYBh8WAttc3hMoL06Z8OS
+	J7lpJhEh8vxQ6d17lozz6kSDym9oxaOPqA7aNAyQI83wJI4817oCf6qwzfDizVE9z/j677h4dbUGp
+	5ff8/Ob0c6/6g3eOBsLXoFCpLJI8SezG5ljnGv1whM7oYDhYXQ8yA3XjNbsgXZ0ls7yrqD+SbobfM
+	e2iH/Ni8ObGhgLx0HOnebzn1eSltVuv//fD+ILkvFUGrrGZmD0FhqAniDS5vVnDdO0tt0eTltrOeF
+	zZ786Cmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9fTK-0000000725v-1Djz;
-	Fri, 17 Oct 2025 08:05:58 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1v5k9G-0000000HZqk-2hV4;
+	Mon, 06 Oct 2025 12:17:02 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9fTH-0000000724G-0knC;
-	Fri, 17 Oct 2025 08:05:56 +0000
+	id 1v3EEj-00000002a8W-3njF;
+	Mon, 29 Sep 2025 13:48:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 782DD45A8B;
-	Fri, 17 Oct 2025 08:05:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA077C4CEFE;
-	Fri, 17 Oct 2025 08:05:53 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 1529462515;
+	Mon, 29 Sep 2025 13:48:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD1B0C4CEF4;
+	Mon, 29 Sep 2025 13:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760688354;
-	bh=YOfE2dusPxaWBKd8nlIpPYnwK35lY1FgnMY8GHpw1To=;
+	s=korg; t=1759153696;
+	bh=FRCZRfk0/9Y0TgXFpLHgUktrJCsdSngcjZYfOD5xZeQ=;
 	h=Subject:To:Cc:From:Date:In-Reply-To:From;
-	b=JcEpuLh21dmJKWXrm44O7oJmNoJlFlyi6s6Dm4FuBhtcupBDvQfT65Prt1n2HtDBS
-	 xBwgoRWEMXdLoAOER/yaeb8+GPzvm2l22izBRaXSxpokwLD2+iwF22GcUPcwpdXo/6
-	 7LDHOeaqaB3dcdM5iV5xAE+D8EaLIejXTBoGK9B8=
-Subject: Patch "minmax: Introduce {min,max}_array()" has been added to the 5.15-stable tree
-To: David.Laight@ACULAB.COM,adilger.kernel@dilger.ca,agk@redhat.com,airlied@linux.ie,akpm@linux-foundation.org,amd-gfx@lists.freedesktop.org,andriy.shevchenko@linux.intel.com,andy.shevchenko@gmail.com,anton.ivanov@cambridgegreys.com,bp@alien8.de,broonie@kernel.org,christophe.leroy@csgroup.eu,clm@fb.com,coreteam@netfilter.org,daniel@ffwll.ch,dave.hansen@linux.intel.com,davem@davemloft.net,dm-devel@redhat.com,dmitry.torokhov@gmail.com,dri-devel@lists.freedesktop.org,dsahern@kernel.org,dsterba@suse.com,dushistov@mail.ru,farbere@amazon.com,freedreno@lists.freedesktop.org,fw@strlen.de,gregkh@linuxfoundation.org,hdegoede@redhat.com,herve.codina@bootlin.com,hpa@zytor.com,jack@suse.com,james.morse@arm.com,jdelvare@suse.com,jdike@addtoit.com,jejb@linux.ibm.com,jernej.skrabec@gmail.com,jmaloy@redhat.com,josef@toxicpanda.com,kadlec@netfilter.org,krzysztof.kozlowski@canonical.com,kuba@kernel.org,linus.walleij@linaro.org,linux-arm-kernel@lists.infradead.org,linux-mm@kvack.org,linux-staging@lists.
- linux.dev,linux-stm32@st-md-mailman.stormreply.com,linux-sunxi@lists.linux.dev,linux-um@lists.infradead.org,linux@rasmusvillemoes.dk,linux@roeck-us.net,luc.vanoostenryck@gmail.com,luto@kernel.org,maarten.lankhorst@linux.intel.com,malattia@linux.it,martin.petersen@oracle.com,maz@kernel.org,mcoquelin.stm32@gmail.com,mgross@linux.intel.com,minchan@kernel.org,mingo@redhat.com,mripard@kernel.org,ngupta@vflare.org,pablo@netfilter.org,peterz@infradead.org,pmladek@suse.com,qiuxu.zhuo@intel.com,quic_akhilpo@quicinc.com,richard@nod.at,robdclark@gmail.com,rostedt@goodmis.org,rric@kernel.org,ruanjinjie@huawei.com,sakari.ailus@linux.intel.com,sashal@kernel.org,sean@poorly.run,senozhatsky@chromium.org,shuah@kernel.org,snitzer@redhat.com,tglx@linutronix.de,tipc-discussion@lists.sourceforge.net,tony.luck@intel.com,tytso@mit.edu,tzimmermann@suse.de,wens@csie.org,willy@infradead.org,x86@kernel.org,ying.xue@windriver.com,yoshfuji@linux-ipv6.org
+	b=B6t+Jrd3GyamU4Ar7VX528fTEGPw8TfIGLU+v86PgGuTdJBU5fURzBfMtrPPpNBHn
+	 VBRNmAsDrb0Y9aUYk8ilRuUzMH87bN+auTdiVcj9Ry/18znhvhzzhca51CuLTEUIdH
+	 keAbfTPJvzLrltacoycIYTVEGViEsKeEmZ5Er910=
+Subject: Patch "minmax: Introduce {min,max}_array()" has been added to the 6.1-stable tree
+To: David.Laight@ACULAB.COM,Rodrigo.Siqueira@amd.com,Xinhui.Pan@amd.com,adilger.kernel@dilger.ca,agk@redhat.com,airlied@gmail.com,akpm@linux-foundation.org,alexander.deucher@amd.com,alexandre.torgue@foss.st.com,amd-gfx@lists.freedesktop.org,andrii@kernel.org,andriy.shevchenko@linux.intel.com,andy.shevchenko@gmail.com,anton.ivanov@cambridgegreys.com,artur.paszkiewicz@intel.com,ast@kernel.org,bp@alien8.de,brian.starkey@arm.com,broonie@kernel.org,christian.koenig@amd.com,christophe.leroy@csgroup.eu,clm@fb.com,coreteam@netfilter.org,daniel@ffwll.ch,daniel@iogearbox.net,dave.hansen@linux.intel.com,davem@davemloft.net,dm-devel@redhat.com,dmitry.baryshkov@linaro.org,dmitry.torokhov@gmail.com,dri-devel@lists.freedesktop.org,dsahern@kernel.org,dsterba@suse.com,dushistov@mail.ru,edumazet@google.com,evan.quan@amd.com,farbere@amazon.com,fei1.li@intel.com,freedreno@lists.freedesktop.org,fw@strlen.de,gregkh@linuxfoundation.org,haoluo@google.com,harry.wentland@amd.com,hdegoede@redhat.com,herve.codi
+ na@bootlin.com,hpa@zytor.com,jack@suse.com,james.morse@arm.com,james.qian.wang@arm.com,jdelvare@suse.com,jejb@linux.ibm.com,jernej.skrabec@gmail.com,jmaloy@redhat.com,joabreu@synopsys.com,johannes@sipsolutions.net,john.fastabend@gmail.com,jolsa@kernel.org,josef@toxicpanda.com,kadlec@netfilter.org,keescook@chromium.org,kpsingh@kernel.org,krzysztof.kozlowski@linaro.org,kuba@kernel.org,linus.walleij@linaro.org,linux-arm-kernel@lists.infradead.org,linux-mm@kvack.org,linux-staging@lists.linux.dev,linux-stm32@st-md-mailman.stormreply.com,linux-sunxi@lists.linux.dev,linux-um@lists.infradead.org,linux@armlinux.org.uk,linux@rasmusvillemoes.dk,linux@roeck-us.net,liviu.dudau@arm.com,luc.vanoostenryck@gmail.com,luto@kernel.org,maarten.lankhorst@linux.intel.com,malattia@linux.it,markgross@kernel.org,martin.lau@linux.dev,martin.petersen@oracle.com,maz@kernel.org,mchehab@kernel.org,mcoquelin.stm32@gmail.com,mhiramat@kernel.org,mihail.atanassov@arm.com,minchan@kernel.org,mingo@redhat.com,mripard@ke
+ rnel.org,mykolal@fb.com,ngupta@vflare.org,pabeni@redhat.com,pablo@netfilter.org,peppe.cavallaro@st.com,peterz@infradead.org,pmladek@suse.com,qiuxu.zhuo@intel.com,quic_abhinavk@quicinc.com,quic_akhilpo@quicinc.com,rajur@chelsio.com,richard@nod.at,robdclark@gmail.com,rostedt@goodmis.org,rric@kernel.org,ruanjinjie@huawei.com,sakari.ailus@linux.intel.com,samuel@sholland.org,sashal@kernel.org,sdf@google.com,sean@poorly.run,senozhatsky@chromium.org,shuah@kernel.org,snitzer@kernel.org,song@kernel.org,sunpeng.li@amd.com,tglx@linutronix.de,tipc-discussion@lists.sourceforge.net,tony.luck@intel.com,tytso@mit.edu,tzimmermann@suse.de,wad@chromium.org,wens@csie.org,willy@infradead.org,x86@kernel.org,yhs@fb.com,ying.xue@windriver.com,yoshfuji@linux-ipv6.org
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Fri, 17 Oct 2025 10:05:10 +0200
-In-Reply-To: <20251008152946.29285-3-farbere@amazon.com>
-Message-ID: <2025101710-unclamped-refract-c17a@gregkh>
+Date: Mon, 29 Sep 2025 15:47:51 +0200
+In-Reply-To: <20250924202320.32333-3-farbere@amazon.com>
+Message-ID: <2025092950-unwritten-skittle-230c@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
 X-stable: commit
 X-Patchwork-Hint: ignore 
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_010555_256857_E1C68529 
-X-CRM114-Status: GOOD (  14.69  )
+X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:25 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,26 +72,27 @@ This is a note to let you know that I've just added the patch titled
 
     minmax: Introduce {min,max}_array()
 
-to the 5.15-stable tree which can be found at:
+to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      minmax-introduce-min-max-_array.patch
-and it can be found in the queue-5.15 subdirectory.
+and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
-From stable+bounces-183614-greg=kroah.com@vger.kernel.org Wed Oct  8 17:31:31 2025
+From prvs=3555e8f33=farbere@amazon.com Wed Sep 24 22:25:22 2025
 From: Eliav Farber <farbere@amazon.com>
-Date: Wed, 8 Oct 2025 15:29:27 +0000
+Date: Wed, 24 Sep 2025 20:23:03 +0000
 Subject: minmax: Introduce {min,max}_array()
-To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>, <anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <james.morse@arm.com>, <rric@kernel.org>, <airlied@linux.ie>, <daniel@ffwll.ch>, <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, <tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>, <jdelvare@suse.com>, <linux@roeck-us.net>, <linus.walleij@linaro.org>, <dmitry.torokhov@gmail.com>, <maz@kernel.org>, <wens@csie.org>, <jernej.skrabec@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>, <mcoquelin.stm32@gmail.com>, <krzysztof.kozlowski@canonical.com>, <malattia@linux.it>, <hdegoede@redhat.com>, <mgross@linux.intel.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <sakari.ailus@l
- inux.intel.com>, <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <dushistov@mail.ru>, <luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>, <senozhatsky@chromium.org>, <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>, <akpm@linux-foundation.org>, <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>, <shuah@kernel.org>, <willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>, <quic_akhilpo@quicinc.com>, <ruanjinjie@huawei.com>, <David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>, <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>, <freedreno@l
- ists.freedesktop.org>, <linux-hwmon@vger.kernel.org>, <linux-input@vger.kernel.org>, <linux-sunxi@lists.linux.dev>, <linux-media@vger.kernel.org>, <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>, <platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>, <linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>, <linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>, <linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
+To: <linux@armlinux.org.uk>, <richard@nod.at>, <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>, <dave.hansen@linux.intel.com>, <luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <mchehab@kernel.org>, <james.morse@arm.com>, <rric@kernel.org>, <harry.wentland@amd.com>, <sunpeng.li@amd.com>, <Rodrigo.Siqueira@amd.com>, <alexander.deucher@amd.com>, <christian.koenig@amd.com>, <Xinhui.Pan@amd.com>, <airlied@gmail.com>, <daniel@ffwll.ch>, <evan.quan@amd.com>, <james.qian.wang@arm.com>, <liviu.dudau@arm.com>, <mihail.atanassov@arm.com>, <brian.starkey@arm.com>, <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, <tzimmermann@suse.de>, <robdclark@gmail.com>, <quic_abhinavk@quicinc.com>, <dmitry.baryshkov@linaro.org>, <sean@poorly.run>, <jdelvare@suse.com>, <linux@roeck-us.net>, <linus.walleij@linaro.org>, <dmitry.torokhov@gmail.com>, <maz@k
+ ernel.org>, <wens@csie.org>, <jernej.skrabec@gmail.com>, <samuel@sholland.org>, <agk@redhat.com>, <snitzer@kernel.org>, <dm-devel@redhat.com>, <rajur@chelsio.com>, <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>, <peppe.cavallaro@st.com>, <alexandre.torgue@foss.st.com>, <joabreu@synopsys.com>, <mcoquelin.stm32@gmail.com>, <krzysztof.kozlowski@linaro.org>, <malattia@linux.it>, <hdegoede@redhat.com>, <markgross@kernel.org>, <artur.paszkiewicz@intel.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <sakari.ailus@linux.intel.com>, <gregkh@linuxfoundation.org>, <fei1.li@intel.com>, <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <dushistov@mail.ru>, <luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <mhiramat@kernel.org>, <pmladek@suse.com>, <senozhatsky@chromium.org>, <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.
+ org>, <akpm@linux-foundation.org>, <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>, <andrii@kernel.org>, <mykolal@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <shuah@kernel.org>, <keescook@chromium.org>, <wad@chromium.org>, <willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>, <ruanjinjie@huawei.com>, <quic_akhilpo@quicinc.com>, <David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>, <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>, <linux-hwmon@vger.kernel.org>, <linux-input@vge
+ r.kernel.org>, <linux-sunxi@lists.linux.dev>, <linux-media@vger.kernel.org>, <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>, <platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>, <linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>, <linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>, <bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <20251008152946.29285-3-farbere@amazon.com>
+Message-ID: <20250924202320.32333-3-farbere@amazon.com>
 
 From: Herve Codina <herve.codina@bootlin.com>
 
@@ -189,9 +189,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from farbere@amazon.com are
 
-queue-5.15/minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
-queue-5.15/minmax-add-in_range-macro.patch
-queue-5.15/minmax-deduplicate-__unconst_integer_typeof.patch
-queue-5.15/minmax-avoid-overly-complicated-constant-expressions-in-vm-code.patch
-queue-5.15/minmax-introduce-min-max-_array.patch
+queue-6.1/minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
+queue-6.1/minmax-add-in_range-macro.patch
+queue-6.1/minmax-deduplicate-__unconst_integer_typeof.patch
+queue-6.1/minmax-introduce-min-max-_array.patch
 
