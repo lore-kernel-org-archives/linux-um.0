@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E27CCD182
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF58CCA471
 	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4vb6NSqQR6ex3kWRbhDvcIC1XoiVTA7hMRv6Rl9gJRM=; b=cJ1C2RMSjFhy9lJ6n/HenfDBTs
-	2X4NeHDOFu/uZLUG9LId698ufpvLQIjA9fLrDR2/HX+iCRr3gfiFhaNT/HGgyeyidOBYjOw1v0otI
-	Rlzm9UwXSLZROoEEp3k4ewm/BNh7SJIs7PsqGUTkPJcJl1vDA0/CB9SQwGJjMfosGPCjvA8XMEkF1
-	WUTt+lmP2gcFVbxkYMFbj9mK/Nm5qLQNnwtLSRifSxVBb0Pqs29Jpvhh1H92Or6LNvAj+0GNN7VRL
-	avVgT6Ufe+9rVCuTsIggV5vidjBXbmuyiZIyYilExb6K5FJ72/I8aTgSTVb6a9DK43sQNi8oBDFge
-	MOKq5Fgw==;
+	bh=jvk2RBzXwrA99Hwxay/jSQlk3gLjsVti9lJHvH/pTPQ=; b=dezY842/ydCXAmDYvfPHoqThAV
+	fdLyTZWkuH27grjbBUYsdgHxO03yEEl1MdcauScq8c8aHBzIe+tAW6t8tAgDtSNoREjKTqv6rFzP8
+	Hn70OWRD6R+t327JA8/Ejpmf1ShC/TJfrceP/v58elPuYfmkG9Uzsx6T/7Kxjqy/6yLQsp4AQFKCZ
+	ldPqkZZtWVYHK/aJW+ZSF5z3d5/IKLAF6QDenRBAKxVxBRHXz18gzyRgqMyMeffzysFgEt4NBS15W
+	Y6LwsiUMfSuTNKbAZrXEd0qditXOx/aOl77tG+ubvrVIYHelUH4/7AXSx6hGeXcOZCa7d1tn0eZMQ
+	u+6spAsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k9Z-0000000HaLy-2snU;
-	Mon, 06 Oct 2025 12:17:21 +0000
-Received: from fra-out-013.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([63.178.132.221])
+	id 1v5k9a-0000000HaN6-0R1e;
+	Mon, 06 Oct 2025 12:17:22 +0000
+Received: from fra-out-009.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.64.237.68])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v4QFf-0000000BCiq-2eJa;
-	Thu, 02 Oct 2025 20:50:13 +0000
+	id 1v4QG6-0000000BCpI-3jAJ;
+	Thu, 02 Oct 2025 20:50:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1759438211; x=1790974211;
+  t=1759438238; x=1790974238;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4vb6NSqQR6ex3kWRbhDvcIC1XoiVTA7hMRv6Rl9gJRM=;
-  b=tYY8txHm3ym1t9TQp6mLXvfpbM72h5ldmBLP5KxtznKvarrqeaVAryOS
-   YnroD1j+Q6G/ShN3Qu0gv2IYioE06hnpQ5EiLkwpf4rhJ6JsAzON5hgIK
-   zPZcKM9sRusQNDjhBkpbWSkXITF7qS6ASEwjXDnwsrX+q27U/9qwYhfgX
-   pfP5W9WxvTG/+cF+DBRtYvjzrwhgwJ6v94DkhnUVNK5EZ+azavfAPtTFq
-   D66N0S1l4OCy+J1e30B8iX3kVNyc0aS0LQ9YwiSXfTWzK+fZ+fkbfQxbw
-   kyDE5BG70hBwF8KiyeAZ410p1CoI/jb2evcoM/mi1NVMC96dZVz7hkNfQ
+  bh=jvk2RBzXwrA99Hwxay/jSQlk3gLjsVti9lJHvH/pTPQ=;
+  b=LglAKWAVttojWXBJWXdOhxvE7+CSwBIvLFSW1i8Wftcok+gHxDVUr4fp
+   +5L7wwbjlniqewpO1elNxSoVFz1fFjkYKuIEvryjUSGL5ns1AIafAn29H
+   ZWo0jxKuOSAcxPntyDxzlC4blmwZVIGIG7R2D/Mo+LhN5yZNWs0YD6Xpt
+   vqBq0ZAWYy8jqZuV1E1GTaFNq0LZOjPbHxLdewcpEdZdKhD7cNeMB/kRF
+   xOv3rabc9MBNHuhS+3wZEVJrFUL61arM3S/gkHCpU/kGGZVZYCO0j2iOr
+   00bhVav/Dsmygdo9TqoOWbm6xuUCRUFiAQJLVHIhTcmTkyHAvxJqgAWPS
    g==;
-X-CSE-ConnectionGUID: utlCpslsQsGOylyVYCd5AQ==
-X-CSE-MsgGUID: aB51SxZXRUu7bS1JkwJF5A==
+X-CSE-ConnectionGUID: YiAweu1YTFWm7gL7sAM34g==
+X-CSE-MsgGUID: cPMixKcNRUaFt+r0RIS6uw==
 X-IronPort-AV: E=Sophos;i="6.18,310,1751241600"; 
-   d="scan'208";a="2929237"
-Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-013.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2025 20:50:01 +0000
-Received: from EX19MTAEUC002.ant.amazon.com [54.240.197.228:7396]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.3.52:2525] with esmtp (Farcaster)
- id c3bf194d-31fd-4dcf-beaf-1d9e157b04ba; Thu, 2 Oct 2025 20:50:00 +0000 (UTC)
-X-Farcaster-Flow-ID: c3bf194d-31fd-4dcf-beaf-1d9e157b04ba
+   d="scan'208";a="2929522"
+Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
+  by internal-fra-out-009.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2025 20:50:28 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [54.240.197.225:22450]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.22.27:2525] with esmtp (Farcaster)
+ id 8269f201-c56b-4da0-ad37-545a7d678908; Thu, 2 Oct 2025 20:50:27 +0000 (UTC)
+X-Farcaster-Flow-ID: 8269f201-c56b-4da0-ad37-545a7d678908
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Thu, 2 Oct 2025 20:50:00 +0000
+ Thu, 2 Oct 2025 20:50:26 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Thu, 2 Oct 2025
- 20:49:35 +0000
+ 20:50:00 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -99,11 +99,11 @@ To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
-CC: Christoph Hellwig <hch@infradead.org>, "Jason A. Donenfeld"
-	<Jason@zx2c4.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 04/19 5.15.y] minmax: fix indentation of __cmp_once() and __clamp_once()
-Date: Thu, 2 Oct 2025 20:47:18 +0000
-Message-ID: <20251002204733.35652-5-farbere@amazon.com>
+CC: Linus Torvalds <torvalds@linux-foundation.org>, Lorenzo Stoakes
+	<lorenzo.stoakes@oracle.com>, David Laight <David.Laight@aculab.com>
+Subject: [PATCH 05/19 5.15.y] minmax: avoid overly complicated constant expressions in VM code
+Date: Thu, 2 Oct 2025 20:47:19 +0000
+Message-ID: <20251002204733.35652-6-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251002204733.35652-1-farbere@amazon.com>
 References: <20251002204733.35652-1-farbere@amazon.com>
@@ -114,9 +114,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D035UWA001.ant.amazon.com (10.13.139.101) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251002_135011_987849_E75C3F4C 
-X-CRM114-Status: UNSURE (   9.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251002_135039_222771_11111CA7 
+X-CRM114-Status: GOOD (  11.08  )
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:29 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -132,73 +131,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: David Laight <David.Laight@ACULAB.COM>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit f4b84b2ff851f01d0fac619eadef47eb41648534 ]
+[ Upstream commit 3a7e02c040b130b5545e4b115aada7bacd80a2b6 ]
 
-Remove the extra indentation and align continuation markers.
+The minmax infrastructure is overkill for simple constants, and can
+cause huge expansions because those simple constants are then used by
+other things.
 
-Link: https://lkml.kernel.org/r/bed41317a05c498ea0209eafbcab45a5@AcuMS.aculab.com
-Signed-off-by: David Laight <david.laight@aculab.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+For example, 'pageblock_order' is a core VM constant, but because it was
+implemented using 'min_t()' and all the type-checking that involves, it
+actually expanded to something like 2.5kB of preprocessor noise.
+
+And when that simple constant was then used inside other expansions:
+
+  #define pageblock_nr_pages      (1UL << pageblock_order)
+  #define pageblock_start_pfn(pfn)  ALIGN_DOWN((pfn), pageblock_nr_pages)
+
+and we then use that inside a 'max()' macro:
+
+	case ISOLATE_SUCCESS:
+		update_cached = false;
+		last_migrated_pfn = max(cc->zone->zone_start_pfn,
+			pageblock_start_pfn(cc->migrate_pfn - 1));
+
+the end result was that one statement expanding to 253kB in size.
+
+There are probably other cases of this, but this one case certainly
+stood out.
+
+I've added 'MIN_T()' and 'MAX_T()' macros for this kind of "core simple
+constant with specific type" use.  These macros skip the type checking,
+and as such need to be very sparingly used only for obvious cases that
+have active issues like this.
+
+Reported-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Link: https://lore.kernel.org/all/36aa2cad-1db1-4abf-8dd2-fb20484aabc3@lucifer.local/
+Cc: David Laight <David.Laight@aculab.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ include/linux/minmax.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 62b0c0a3cf30..2ec559284a9f 100644
+index 2ec559284a9f..a7ef65f78933 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -46,11 +46,11 @@
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
+@@ -270,4 +270,11 @@ static inline bool in_range32(u32 val, u32 start, u32 len)
+ #define swap(a, b) \
+ 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
  
- #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--		typeof(x) unique_x = (x);		\
--		typeof(y) unique_y = (y);		\
--		static_assert(__types_ok(x, y),		\
--			#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
--		__cmp(op, unique_x, unique_y); })
-+	typeof(x) unique_x = (x);			\
-+	typeof(y) unique_y = (y);			\
-+	static_assert(__types_ok(x, y),			\
-+		#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
-+	__cmp(op, unique_x, unique_y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
-@@ -60,16 +60,16 @@
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
- 
--#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({	\
--		typeof(val) unique_val = (val);				\
--		typeof(lo) unique_lo = (lo);				\
--		typeof(hi) unique_hi = (hi);				\
--		static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
--				(lo) <= (hi), true),					\
--			"clamp() low limit " #lo " greater than high limit " #hi);	\
--		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
--		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
--		__clamp(unique_val, unique_lo, unique_hi); })
-+#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
-+	typeof(val) unique_val = (val);						\
-+	typeof(lo) unique_lo = (lo);						\
-+	typeof(hi) unique_hi = (hi);						\
-+	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
-+			(lo) <= (hi), true),					\
-+		"clamp() low limit " #lo " greater than high limit " #hi);	\
-+	static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
-+	static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
-+	__clamp(unique_val, unique_lo, unique_hi); })
- 
- #define __careful_clamp(val, lo, hi) ({					\
- 	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
++/*
++ * Use these carefully: no type checking, and uses the arguments
++ * multiple times. Use for obvious constants only.
++ */
++#define MIN_T(type,a,b) __cmp(min,(type)(a),(type)(b))
++#define MAX_T(type,a,b) __cmp(max,(type)(a),(type)(b))
++
+ #endif	/* _LINUX_MINMAX_H */
 -- 
 2.47.3
 
