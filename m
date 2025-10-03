@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA98FCCD184
-	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1E23CCD185
+	for <linux-um@archiver.kernel.org>; Mon,  6 Oct 2025 12:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DpRzthrnz6JTHsOC4O+aqLHWM/bhaI69F/+S/FagesY=; b=Si8pIkoeaJdJsZ
-	gO3VTapQ8Hwwla+bn18lME0Jwts9oh9ecj8Cs0/EiAmDxSvJOrqaDbpcpMUQCmQNQHueV7k1dHrUJ
-	tyX6z1kv439jDYToEzl3YYxQKblcM2L0iovJKw3NxHb4JMA4DFxr+7RlqMy6SNPq9xNJ28d/WXxRD
-	HHefMucs2D2aAXO4qC148A+eJcuMKip+eVPsv4UyCCXR471mLWA0c2JjowXW1vVgRHIy7lYTpdklx
-	SEptTM03Ye1ML9Iezd0ReA9SBTI4gnBIio4Ph3uCBRGUkt0ZrBj9tSKaA4mDrKMzsJZJ3AypLV024
-	9kWe+8xcdSh2PeRHbGTw==;
+	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CCU0o8wSJQJX56U4+pnGKdTopFZ/0WcuCtYzGhhpTrQ=; b=2pUDKDt6K+u7JSaOLtPCy7Gauu
+	hs+DMeREvkomG6FUso49nTm+wTO/5MenQ2tjiYt9Axzc2L5mE0ZotjXWcvKiupAtyyLpZs0dpceR2
+	Kr0LsD+TZ8TpD1IYtMIZWO1I1EMbHrc8Wq4Diflq9LKQCT1m9PGjljjDFGtshGUghI4QFVPqkNIB+
+	htmsvm/gA78njqH5qfpOah4pdZFIcXdR5VyRKU/o6lhncnITQJBIW2V7EOc00LQqKlYtecGpbmZ+2
+	FW91DXz1befSPDjZqLaDMJ2s7FMwMCkqebHMxkdgWFnd9GLkVjiWD/PzcdzU1dRuQdvbkaGcVX+VD
+	6xX6YO6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5k9i-0000000Hab1-1UKB;
-	Mon, 06 Oct 2025 12:17:30 +0000
-Received: from fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([3.74.81.189])
+	id 1v5k9j-0000000HacU-1g9l;
+	Mon, 06 Oct 2025 12:17:31 +0000
+Received: from fra-out-011.esa.eu-central-1.outbound.mail-perimeter.amazon.com ([52.28.197.132])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v4fOz-0000000CJiR-11Ux;
-	Fri, 03 Oct 2025 13:00:50 +0000
+	id 1v4fPw-0000000CJtY-10QB;
+	Fri, 03 Oct 2025 13:01:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1759496449; x=1791032449;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DpRzthrnz6JTHsOC4O+aqLHWM/bhaI69F/+S/FagesY=;
-  b=o+/SzsKSPAm4GqkPuHofS+x6rZ+xsDRlkK7OyPIQ4Efjh0PeoKE5rFua
-   jL9lVXkeiOqrEMx7lAfJsxzKuqoDt0OVKURCC9nZwxTFxx7y+ESm5Uz9j
-   hzqENRclcSvlhN2u5ruyu1ftC+MLVV3l4etxDdRk4QsKjSZeG5YHPN5rx
-   kXoxXdKN0qo6rR+zjAt8d52H3eQq9OChTMZxXZB2pmCiZ3+W/deufdhYj
-   FG0oJd2wJBlN9agMdOS9CTfGEXGlxpu6s6Q+d0d9fgMefB16GrUvKV8eg
-   lXaEFyTYRgEcDyPjTutlsB/QV80OIDqSvRS4M6NnD23q0BXA9Qs0kXtd8
-   Q==;
-X-CSE-ConnectionGUID: aBCG9PMxQNqBMtPRKr77WA==
-X-CSE-MsgGUID: pZYBUhUbSjiqEaIzSZznhg==
+  t=1759496508; x=1791032508;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=CCU0o8wSJQJX56U4+pnGKdTopFZ/0WcuCtYzGhhpTrQ=;
+  b=rFgeTOSlcusPoAUfwdMPbuP091UQ6yp3Q1u81W5lqXsI29vaLZpAgUXj
+   P6/CA5WnrkqLLKIuILGx07CfT9RcKYjbwT4xbwR4CuClEp2BXmnkvZ521
+   holLfrZAz1RPc5Xo7gducgC/kZqE/Mwi0nF6iZoS6DS3I+mYMJJLFx1DQ
+   TbzeBbImdv+UKTk3GSX0ppvhC+im6BDrtdKwOxybqeV+45QB21aWbo1in
+   m3zCzXXNaF+l6sdJ7rJpEr7vk39LAO0t9qUoMg+qATkTWRTVedKDp+mU8
+   1a5hMrOXNYI2qWibyO+9yPyF4UqgDzRuuVP9xNboHi8L5RtOzi3yXnlxw
+   g==;
+X-CSE-ConnectionGUID: tfF0uA3NT9Wv7xRjl6BuWg==
+X-CSE-MsgGUID: qc8tbCehSsiKPhY3WYGIPA==
 X-IronPort-AV: E=Sophos;i="6.18,312,1751241600"; 
-   d="scan'208";a="3062608"
-Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
-  by internal-fra-out-004.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2025 13:00:38 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [54.240.197.232:5201]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.1.16:2525] with esmtp (Farcaster)
- id 102aa012-5090-4986-8c7d-754292fc7b11; Fri, 3 Oct 2025 13:00:38 +0000 (UTC)
-X-Farcaster-Flow-ID: 102aa012-5090-4986-8c7d-754292fc7b11
+   d="scan'208";a="2960400"
+Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
+  by internal-fra-out-011.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2025 13:01:36 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [54.240.197.228:13481]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.22.27:2525] with esmtp (Farcaster)
+ id 3dc9ed1a-be3b-484d-8c8a-735ffa6b2136; Fri, 3 Oct 2025 13:01:36 +0000 (UTC)
+X-Farcaster-Flow-ID: 3dc9ed1a-be3b-484d-8c8a-735ffa6b2136
 Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
+ EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 3 Oct 2025 13:00:38 +0000
+ Fri, 3 Oct 2025 13:01:28 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D018EUA004.ant.amazon.com (10.252.50.85) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 3 Oct 2025
- 13:00:13 +0000
+ 13:01:03 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -99,10 +99,14 @@ To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: [PATCH v2 00/19 5.15.y] Backport minmax.h updates from v6.17-rc7
-Date: Fri, 3 Oct 2025 12:59:47 +0000
-Message-ID: <20251003130006.41681-1-farbere@amazon.com>
+CC: Andy Shevchenko <andy.shevchenko@gmail.com>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 02/19 5.15.y] minmax: Introduce {min,max}_array()
+Date: Fri, 3 Oct 2025 12:59:49 +0000
+Message-ID: <20251003130006.41681-3-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251003130006.41681-1-farbere@amazon.com>
+References: <20251003130006.41681-1-farbere@amazon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -110,8 +114,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
  EX19D018EUA004.ant.amazon.com (10.252.50.85)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251003_060049_581056_0163338D 
-X-CRM114-Status: GOOD (  13.62  )
+X-CRM114-CacheID: sfid-20251003_060148_576227_B7045EFC 
+X-CRM114-Status: GOOD (  11.99  )
 X-Mailman-Approved-At: Mon, 06 Oct 2025 05:16:29 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -127,105 +131,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This series backports 19 patches to update minmax.h in the 5.15.y branch,
-aligning it with v6.17-rc7.
+From: Herve Codina <herve.codina@bootlin.com>
 
-The ultimate goal is to synchronize all longterm branches so that they
-include the full set of minmax.h changes (6.12.y and 6.6.y were already
-backported by me and are now aligned, 6.1.y is in progress).
+[ Upstream commit c952c748c7a983a8bda9112984e6f2c1f6e441a5 ]
 
-The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
-min()/max()/clamp() if the arguments have the same signedness"), which
-is missing in kernel 5.10.y.
+Introduce min_array() (resp max_array()) in order to get the
+minimal (resp maximum) of values present in an array.
 
-In mainline, this change enables min()/max()/clamp() to accept mixed
-argument types, provided both have the same signedness. Without it,
-backported patches that use these forms may trigger compiler warnings,
-which escalate to build failures when -Werror is enabled.
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Link: https://lore.kernel.org/r/20230623085830.749991-8-herve.codina@bootlin.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Eliav Farber <farbere@amazon.com>
+---
+ include/linux/minmax.h | 64 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-Changes in v2:
-- Fix the order of patches 6 - 10 according to order in mainline branch.
-- Use same style of [ Upstream commit <HASH> ] in all patches.
-
-Andy Shevchenko (1):
-  minmax: deduplicate __unconst_integer_typeof()
-
-David Laight (8):
-  minmax: fix indentation of __cmp_once() and __clamp_once()
-  minmax.h: add whitespace around operators and after commas
-  minmax.h: update some comments
-  minmax.h: reduce the #define expansion of min(), max() and clamp()
-  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
-  minmax.h: move all the clamp() definitions after the min/max() ones
-  minmax.h: simplify the variants of clamp()
-  minmax.h: remove some #defines that are only expanded once
-
-Herve Codina (1):
-  minmax: Introduce {min,max}_array()
-
-Linus Torvalds (8):
-  minmax: avoid overly complicated constant expressions in VM code
-  minmax: add a few more MIN_T/MAX_T users
-  minmax: simplify and clarify min_t()/max_t() implementation
-  minmax: make generic MIN() and MAX() macros available everywhere
-  minmax: don't use max() in situations that want a C constant
-    expression
-  minmax: simplify min()/max()/clamp() implementation
-  minmax: improve macro expansion and type checking
-  minmax: fix up min3() and max3() too
-
-Matthew Wilcox (Oracle) (1):
-  minmax: add in_range() macro
-
- arch/arm/mm/pageattr.c                        |   6 +-
- arch/um/drivers/mconsole_user.c               |   2 +
- arch/x86/mm/pgtable.c                         |   2 +-
- drivers/edac/sb_edac.c                        |   4 +-
- drivers/edac/skx_common.h                     |   1 -
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
- .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
- .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
- .../amd/pm/swsmu/smu11/sienna_cichlid_ppt.c   |   2 +
- .../drm/arm/display/include/malidp_utils.h    |   2 +-
- .../display/komeda/komeda_pipeline_state.c    |  24 +-
- drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
- drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
- drivers/hwmon/adt7475.c                       |  24 +-
- drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
- drivers/irqchip/irq-sun6i-r.c                 |   2 +-
- drivers/md/dm-integrity.c                     |   4 +-
- drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
- .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
- drivers/net/fjes/fjes_main.c                  |   4 +-
- drivers/nfc/pn544/i2c.c                       |   2 -
- drivers/platform/x86/sony-laptop.c            |   1 -
- drivers/scsi/isci/init.c                      |   6 +-
- .../pci/hive_isp_css_include/math_support.h   |   5 -
- drivers/virt/acrn/ioreq.c                     |   4 +-
- fs/btrfs/misc.h                               |   2 -
- fs/btrfs/tree-checker.c                       |   2 +-
- fs/ext2/balloc.c                              |   2 -
- fs/ext4/ext4.h                                |   2 -
- fs/ufs/util.h                                 |   6 -
- include/linux/compiler.h                      |   9 +
- include/linux/minmax.h                        | 264 +++++++++++++-----
- kernel/trace/preemptirq_delay_test.c          |   2 -
- lib/btree.c                                   |   1 -
- lib/decompress_unlzma.c                       |   2 +
- lib/logic_pio.c                               |   3 -
- lib/vsprintf.c                                |   2 +-
- lib/zstd/zstd_internal.h                      |   2 -
- mm/zsmalloc.c                                 |   1 -
- net/ipv4/proc.c                               |   2 +-
- net/ipv6/proc.c                               |   2 +-
- net/netfilter/nf_nat_core.c                   |   6 +-
- net/tipc/core.h                               |   2 +-
- net/tipc/link.c                               |  10 +-
- tools/testing/selftests/vm/mremap_test.c      |   2 +
- 47 files changed, 289 insertions(+), 183 deletions(-)
-
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index d4bc394b449e..aac0b7d23768 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -168,6 +168,70 @@
+  */
+ #define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
+ 
++/*
++ * Remove a const qualifier from integer types
++ * _Generic(foo, type-name: association, ..., default: association) performs a
++ * comparison against the foo type (not the qualified type).
++ * Do not use the const keyword in the type-name as it will not match the
++ * unqualified type of foo.
++ */
++#define __unconst_integer_type_cases(type)	\
++	unsigned type:  (unsigned type)0,	\
++	signed type:    (signed type)0
++
++#define __unconst_integer_typeof(x) typeof(			\
++	_Generic((x),						\
++		char: (char)0,					\
++		__unconst_integer_type_cases(char),		\
++		__unconst_integer_type_cases(short),		\
++		__unconst_integer_type_cases(int),		\
++		__unconst_integer_type_cases(long),		\
++		__unconst_integer_type_cases(long long),	\
++		default: (x)))
++
++/*
++ * Do not check the array parameter using __must_be_array().
++ * In the following legit use-case where the "array" passed is a simple pointer,
++ * __must_be_array() will return a failure.
++ * --- 8< ---
++ * int *buff
++ * ...
++ * min = min_array(buff, nb_items);
++ * --- 8< ---
++ *
++ * The first typeof(&(array)[0]) is needed in order to support arrays of both
++ * 'int *buff' and 'int buff[N]' types.
++ *
++ * The array can be an array of const items.
++ * typeof() keeps the const qualifier. Use __unconst_integer_typeof() in order
++ * to discard the const qualifier for the __element variable.
++ */
++#define __minmax_array(op, array, len) ({				\
++	typeof(&(array)[0]) __array = (array);				\
++	typeof(len) __len = (len);					\
++	__unconst_integer_typeof(__array[0]) __element = __array[--__len]; \
++	while (__len--)							\
++		__element = op(__element, __array[__len]);		\
++	__element; })
++
++/**
++ * min_array - return minimum of values present in an array
++ * @array: array
++ * @len: array length
++ *
++ * Note that @len must not be zero (empty array).
++ */
++#define min_array(array, len) __minmax_array(min, array, len)
++
++/**
++ * max_array - return maximum of values present in an array
++ * @array: array
++ * @len: array length
++ *
++ * Note that @len must not be zero (empty array).
++ */
++#define max_array(array, len) __minmax_array(max, array, len)
++
+ /**
+  * clamp_t - return a value clamped to a given range using a given type
+  * @type: the type of variable to use
 -- 
 2.47.3
 
