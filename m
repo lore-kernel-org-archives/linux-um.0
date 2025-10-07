@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E994CCA470
-	for <linux-um@archiver.kernel.org>; Tue,  7 Oct 2025 07:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0868CCA470
+	for <linux-um@archiver.kernel.org>; Tue,  7 Oct 2025 07:14:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=BzuUtXbmr2B8qIKAvnZ2uQaIp5WU2irrCgrncJjQNfM=; b=I/uA8ypfghG/EWqmTihjTJ3rE7
-	JA8sLWsOSU9VeiHEK1gXNfAzejPG/GG1qhMgJXRX2RZp9s4nArh/EdmRWSUQ7nb5veKPK+QM0jhxR
-	QjBN0N8XH1+Qsb688clNwxU06+XbCjbbLtOIo4WYn6qJ0zlFxgu9CD2/JXKD5GlgV8fWy2VtbyyJq
-	U+YNWe97SU3haJVVCrh/Cd/0rYQ3edPhFNMGwa9Tj4euzngyx1oazEQmhgwnWEY2C3rcBeRbiahQZ
-	1U4aoZvbBXvXZD280YYoMqPLlDWJCdFAOSQAEYjxyPFd6BzNI5Va7xIbtVzbp/iCuESviwpuMHIUK
-	Ot8cAtjg==;
+	bh=BzuUtXbmr2B8qIKAvnZ2uQaIp5WU2irrCgrncJjQNfM=; b=JkiNmleuBhA9RswxnpV6XPgQf0
+	AdGE9MxvIfIwwqcQDPs9AKHENhtNdfgcsHdL7FwStMd8WurJj+O/v2Q56jx+FrjCGJDAb9AI/1Y7u
+	C7k8kjFFu1w6zI869GkRPmmWnQacBPzhimQ4+7y+DE6WwGPP1ITFK4x/4+zIK841kYiBHxfJimb6A
+	QzZiSRHm2IjLg0GeBcsp3pWDBavyK+3mOC6hW9uJlzPyo0e4w/6JBguwH6IigSMoyTK7r502iHXN+
+	cTMwFMgo67t7p3dbEbxGX1ZOIixtLlK5AACSso69mmf/H+JbAd/ns3K+r7Ese1UQWODTH7StNmvDF
+	R1cDdjqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v61m2-00000001Qi8-1I53;
-	Tue, 07 Oct 2025 07:06:14 +0000
+	id 1v61uU-00000001R9Y-3zEk;
+	Tue, 07 Oct 2025 07:14:58 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v61lz-00000001Qhj-4BIF
+	id 1v61uT-00000001R8T-06sV
 	for linux-um@lists.infradead.org;
-	Tue, 07 Oct 2025 07:06:13 +0000
+	Tue, 07 Oct 2025 07:14:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=BzuUtXbmr2B8qIKAvnZ2uQaIp5WU2irrCgrncJjQNfM=; t=1759820771; x=1761030371; 
-	b=dIHZ7uOpI76x/Xs6vJ08e4qvtX9S9LLjqFc62ZyJDNgSy9y00xsN9/3MdFRe+/eipuYBi0iBv6Q
-	3A1vXhe28uCJZKc4VyPid/RCt5vIgmux0ePjQwVn+suEmh3eSXpaSozZCGKAM9mVBnchwdtJ7bGVa
-	jwicHMjlrTfosz/6+hu3k0MFG3AXMlSl/2M+c03ltbOMjDswMzjqc1MgztIBmWweUV9EkqOz5onKc
-	OO/fnSnynPX/2zzCDdYptPgbbyQ9qdzZERIguldKrkx4Ebg7B6FfP9g0LdxP3PpVGLAsGgAPqeKU7
-	2NDnnTdFhOejlAswCnIZS4mDhukJuWy1ZRxg==;
+	bh=BzuUtXbmr2B8qIKAvnZ2uQaIp5WU2irrCgrncJjQNfM=; t=1759821296; x=1761030896; 
+	b=YOEFO+or2xoSNl7c2TulJ+HY0jy7g115lcQUz4oSrMYaOLACccGegRHkuepWLlds4dSjatytkOZ
+	tit19MbLThmb+EuGrnYEd7P7O1DdDf1VNZAN7kNhHviK0iL2vvKgjPsMglN91D91duc/r+oQ5c5ua
+	JXJctzDT/GIZABbhSusKkd4QUtoReqS5Joo3TW4PtUqGH6FmLqsTKylSGwzEeq4Kz1YQVIiD8H+hK
+	73OVxh94gYmxdZpVkxGux2NTQjdbTAyoEPlsBXkFlhiP12w2PaPuwVNYY0lnY64maHWRWA8lg6FbD
+	BSreUz0Bhr/zdtELzf8nwsbM2jBE7MEk3row==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1v61lv-0000000G6ry-1dmm;
-	Tue, 07 Oct 2025 09:06:07 +0200
+	id 1v61uQ-0000000G7NL-10Bx;
+	Tue, 07 Oct 2025 09:14:54 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] um/hostfs: define HOSTFS_ATTR_* via asm-offsets
-Date: Tue,  7 Oct 2025 09:06:03 +0200
-Message-ID: <20251007070604.366164-2-johannes@sipsolutions.net>
+Subject: [PATCH 1/2] um/hostfs: define HOSTFS_ATTR_* via asm-offsets
+Date: Tue,  7 Oct 2025 09:14:52 +0200
+Message-ID: <20251007071452.367989-3-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.51.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251007_000612_058718_B6AA5ECC 
-X-CRM114-Status: GOOD (  15.09  )
+X-CRM114-CacheID: sfid-20251007_001457_162142_416D8815 
+X-CRM114-Status: GOOD (  15.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
