@@ -4,161 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95CBBCCFA1A
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 09:19:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40074CCFA13
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=; b=Hq2jQbAcgmSlrhne+nseqVjYe6
-	2gQ3b2uHNzEUJMXh2YfEdCf121SAFNh3ASjScEYeZ1HUd5/65BtMtPzIXW87TE5Q2BRfu6a3kMguv
-	6p8dZUv/NhRtJ9zdVC3/WzSBUrGTm70dTdpE64yiLh1asZFXGn+fxkwBtpny0RQmb+9lBEU76YVj/
-	14JGiFrQhX/+Ekb6lj6C+psRz+4k6WfQ9TfzrmqXFfdgVLg7Z+DMFDue3/C6zN5l+4Xw5TGd9vrbG
-	FmcNIrifKBJUbI6NV2uFjp8lT7UonFLwYo82t54kVJZ1yjqsVC237d6DLyZZKH5eWpHi/E6AapNc3
-	iCEDX0zg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=6cTKEV+ZWAzAeKhYDhuZKam17XzSPB7XFB7f4qhxTuM=; b=bS0m89uit4bP3WB6gwM8cAHMs7
+	qNuKQPuPYMby7GI8HX1rRgtjQ2aRUPCDVy3j7JZYAuV+xXZwH0/Lq0DFKA7l85D0OSV0K/8HriVxZ
+	iWaQVNOSjA541XKFgDKZySphVOWqXax0tnyUvPJzfLcKo7hhxyc4EV37j2IzqXckA2bk7CACmjPix
+	Q9K99OkkKbwl5OHZoBrgFKWJentf1hUGyjgcgoSbAMz6WDcKnJ0Ohkrik0D7JVr2p2nBSTJwu5ULf
+	6F2IWPEv/St+NoGcXV7BRpvRqdZNwNZjNIAGmfqwZr3I7D5K2WX0telJM79IJP3rNsTiy0cUuy4Xn
+	GTqtCu8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHf6j-00000002xkJ-14xj;
-	Sat, 08 Nov 2025 09:19:41 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1vHlqK-00000003GCR-0qmV;
+	Sat, 08 Nov 2025 16:31:12 +0000
+Received: from pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.83.148.184])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHf6g-00000002xip-15Ga
-	for linux-um@lists.infradead.org;
-	Sat, 08 Nov 2025 09:19:39 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-7afc154e411so1022605b3a.1
-        for <linux-um@lists.infradead.org>; Sat, 08 Nov 2025 01:19:37 -0800 (PST)
+	id 1v6W7G-0000000480W-3VRm;
+	Wed, 08 Oct 2025 15:30:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762593577; x=1763198377; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
-        b=Lmyigp8GWiatW2ItchEJ36AD6kVkLwsAeAynuWKlVTG5yRaNyO+8W2LS62ea535RqI
-         VUKhBwRh9BauktKwQi4OBmFKp9pDn20L4Qg0BCRTjktCqibHwzFb6T/f+vKgMcWrAE7T
-         CaQ6w0+sbdFYjv2znl2GyeN4ETJVNpTqizCB9TrggpffLZra9DmjBsJE7PvoT2+iBq/I
-         6wyyn0AITzOpuyfDZMkfjIX8j1cCu31ij+dgiTs+EId1VQm0WyW6K2IvJ4IADECk+tKa
-         DO3Bc2UYEcuJTCV+4jNRzBZ2OhQX8ydwqq5kE6dhXXXsVPSRH9qwlS+gRPp90PseM0Tr
-         yM4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762593577; x=1763198377;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xMJJSbsWQXZcDWYlPD+q/sMKmcoPg7XO2KNCJJBRcPk=;
-        b=DdLdRS9MuVWWzzqzAOyx07/J1sihW+ArKjYQVXy/+X3AIWlqc/LYtD73ZW1e9tfc0u
-         QOwOQbsC5E9HxlO5zQoIiBca2V3Amy1ttiX7Dz2fbFY/0iXuTCtdNz/qbU+UdEq8ZNx6
-         Yabpq1HlAIYNrXRXeEeOBDP0rJ9PwJloz1IqMRSeVfx+ZENQ59k0VvSdiqymbAlbHWhR
-         WrDk9qAqIk6aw3O22HvQhrEEDTsPdw2oukRaktrd753yWNkx6cG4/6C8+dj8o81uorf9
-         CMDOfDz6mSYDispX0yAqorNMWdVh3jvy5bx3GTn/l69bqHcDQalS1JhIkHyoE87tHZCd
-         UFyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJfNt/PIHgXoaHEm/ZtkWI7twLlVvwN3MimHukMkYF42/8iCyvj0wj/sSELrRU4J6PG4ocdV2Hfg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwZ0tAxhRRFMkR80lawEPnPdL1Ew+axuiXmQvwgvPgRg2Bccbq+
-	o916AsdpgbSq7aMgIp9cyNrQzqnRiYtlNMFK+0FGdB617UFWU8a2e5k5
-X-Gm-Gg: ASbGnctHIV5tDdoMcYBJbtBEFNSVS5WYFOe1rANoMmYl8cVMCTUoth1TWWIOKREgG2R
-	HaCNtVMRuQIkfwzMDtNZusiuV4S8gNmoaBW5l94KzARt97ht50nNP2krDJWCaL17ZM1GywIqeeZ
-	zSjzvengLEXIADNPSgI8fIkhs33xkhyz25MH6tw+xMY4Mbumg2gRSdQlmdWZHT5mdsjKRP2+ykF
-	86tnqYrhIois6iTLjYUw4XAcXt9PWyH04u4vj/h5ZP67zSY8WZxbU/mnAPMDapB6utTJVjubbc0
-	Eq+gl+ukOX3uMzSx3H5D2nhh1yUwkSr59vW3FVATzfc0inqCb9uSxRfnMudbD7n8rV0WW1sCRqO
-	tO2RFA2ryzWNSbnj1NfvasNBYFYUhFC3eA4pPexdX0GlJdq5zxamKVZ7vtQEUwdPhYgsGa+7GB0
-	LH
-X-Google-Smtp-Source: AGHT+IF0YP4Otkbzly3RQbSixJdpmmdp1zu3glQ2poSUDNCvD7oGyUzRXByQOYxnN497yc+CfkoJmg==
-X-Received: by 2002:a05:6a00:a8d:b0:7ac:69cd:ea0d with SMTP id d2e1a72fcca58-7b226f8dd18mr2391831b3a.19.1762593576763;
-        Sat, 08 Nov 2025 01:19:36 -0800 (PST)
-Received: from archie.me ([210.87.74.117])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c953cf79sm5483323b3a.3.2025.11.08.01.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Nov 2025 01:19:35 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 77412400200B; Sat, 08 Nov 2025 16:19:33 +0700 (WIB)
-Date: Sat, 8 Nov 2025 16:19:33 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Dominique Martinet <asmadeus@codewreck.org>,
-	Jeff Layton <jlayton@kernel.org>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>, Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
-	Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>, Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Hildenbrand <david@redhat.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hansg@kernel.org>, Carlos Maiolino <cem@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	NeilBrown <neilb@ownmail.net>, linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-mm@kvack.org, linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-xfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] vfs: remove the excl argument from the ->create()
- inode_operation
-Message-ID: <aQ8LJfKC0R-4ehLU@archie.me>
-References: <20251107-create-excl-v2-1-f678165d7f3f@kernel.org>
- <aQ7fOmknHIxcxuha@codewreck.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1759937410; x=1791473410;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6cTKEV+ZWAzAeKhYDhuZKam17XzSPB7XFB7f4qhxTuM=;
+  b=emmY8FV1TjpO5kV+y6NvRiXJnTUU1b/SS/CH5DGx2UDkw+TszuMDaGXw
+   ajv1krO3O2JKnQR1Xa5RsF5EnSAwQrcf3QpQWAlJ9hy0MH6ez0vUO4J7f
+   Dq6ZPlY8LgPnf873Jcx9HQg9/Ks9LzezAwvlwSUuqGY7YxnRHgW9VlXJ7
+   oK60RY3iwA6R05cRHfr2KeAiUDtucVpD2Z7oVQyd/8xEnKY6ZRzi7zgK7
+   RubdlFJ6wHZR6cKzleeAtfl3cgedF/sIVP02aBi8LZVABQfLr75ORgPkR
+   4+V30UYe+lhDbFisZHP0wzwLy8YoEHG7PrMA0CaTvqPGYBxUamNz5DiF1
+   g==;
+X-CSE-ConnectionGUID: +r/ORJCDT3mdkeM9bLhVCA==
+X-CSE-MsgGUID: 5xwXbkFvQYqm5UYp+BBs7A==
+X-IronPort-AV: E=Sophos;i="6.19,213,1754956800"; 
+   d="scan'208";a="4330400"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 15:30:06 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:22420]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.3:2525] with esmtp (Farcaster)
+ id 93ca9f84-9d14-4911-90f5-a97300a639c2; Wed, 8 Oct 2025 15:30:06 +0000 (UTC)
+X-Farcaster-Flow-ID: 93ca9f84-9d14-4911-90f5-a97300a639c2
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
+ Wed, 8 Oct 2025 15:30:05 +0000
+Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
+ (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Wed, 8 Oct 2025
+ 15:29:52 +0000
+From: Eliav Farber <farbere@amazon.com>
+To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
+	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
+	<luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
+	<tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <james.morse@arm.com>,
+	<rric@kernel.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>,
+	<jdelvare@suse.com>, <linux@roeck-us.net>, <linus.walleij@linaro.org>,
+	<dmitry.torokhov@gmail.com>, <maz@kernel.org>, <wens@csie.org>,
+	<jernej.skrabec@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>,
+	<dm-devel@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+	<mcoquelin.stm32@gmail.com>, <krzysztof.kozlowski@canonical.com>,
+	<malattia@linux.it>, <hdegoede@redhat.com>, <mgross@linux.intel.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<sakari.ailus@linux.intel.com>, <clm@fb.com>, <josef@toxicpanda.com>,
+	<dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>,
+	<adilger.kernel@dilger.ca>, <dushistov@mail.ru>,
+	<luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>,
+	<senozhatsky@chromium.org>, <andriy.shevchenko@linux.intel.com>,
+	<linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>,
+	<akpm@linux-foundation.org>, <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>,
+	<pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
+	<jmaloy@redhat.com>, <ying.xue@windriver.com>, <shuah@kernel.org>,
+	<willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>,
+	<quic_akhilpo@quicinc.com>, <ruanjinjie@huawei.com>,
+	<David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>,
+	<amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
+	<linux-hwmon@vger.kernel.org>, <linux-input@vger.kernel.org>,
+	<linux-sunxi@lists.linux.dev>, <linux-media@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+	<platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>,
+	<linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
+	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
+	<linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH v3 00/19 5.15.y] Backport minmax.h updates from v6.17-rc7
+Date: Wed, 8 Oct 2025 15:29:25 +0000
+Message-ID: <20251008152946.29285-1-farbere@amazon.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hTQgJTXrd9+JcPiP"
-Content-Disposition: inline
-In-Reply-To: <aQ7fOmknHIxcxuha@codewreck.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.19.116.181]
+X-ClientProxiedBy: EX19D032UWA001.ant.amazon.com (10.13.139.62) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251108_011938_315798_E7E0E5B0 
-X-CRM114-Status: GOOD (  21.35  )
+X-CRM114-CacheID: sfid-20251008_083010_933344_551DF205 
+X-CRM114-Status: GOOD (  16.26  )
+X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -173,78 +127,143 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+This series backports 19 patches to update minmax.h in the 5.15.y branch,
+aligning it with v6.17-rc7.
 
---hTQgJTXrd9+JcPiP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The ultimate goal is to synchronize all longterm branches so that they
+include the full set of minmax.h changes.
 
-On Sat, Nov 08, 2025 at 03:12:10PM +0900, Dominique Martinet wrote:
-> Jeff Layton wrote on Fri, Nov 07, 2025 at 10:05:03AM -0500:
-> > diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesyst=
-ems/vfs.rst
-> > index 4f13b01e42eb5e2ad9d60cbbce7e47d09ad831e6..7a55e491e0c87a0d18909bd=
-181754d6d68318059 100644
-> > --- a/Documentation/filesystems/vfs.rst
-> > +++ b/Documentation/filesystems/vfs.rst
-> > @@ -505,7 +505,10 @@ otherwise noted.
-> >  	if you want to support regular files.  The dentry you get should
-> >  	not have an inode (i.e. it should be a negative dentry).  Here
-> >  	you will probably call d_instantiate() with the dentry and the
-> > -	newly created inode
-> > +        newly created inode. This operation should always provide O_EX=
-CL
->=20
-> This and the block below change halfway from tab (old text) to spaces
-> (your patch)
->=20
-> Looks like the file has a few space-indented sections though so it won't
-> be the first if that goes in as is, the html-rendering doesn't seem to
-> care :)
+6.12.y was already backported and changes are part of v6.12.49.
+6.6.y was already backported and changes are part of v6.6.109.
+6.1.y was already backported and changes are currently in the 6.1-stable
+tree.
 
-FYI: I'm using Vim. My important settings (in ~/.vimrc) are:
+The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
+min()/max()/clamp() if the arguments have the same signedness"), which
+is missing in kernel 5.10.y.
 
-```
-set nojoinspaces
-set textwidth=3D0
-set backspace=3D2
-```
+In mainline, this change enables min()/max()/clamp() to accept mixed
+argument types, provided both have the same signedness. Without it,
+backported patches that use these forms may trigger compiler warnings,
+which escalate to build failures when -Werror is enabled.
 
-However, ftplugin override these for each file type, so you have to essenti=
-ally
-"fork" the relevant ftplugin file for each type if you want for your settin=
-gs
-to take precedence. For example, in case of reST, copy
-/usr/share/vim/vim91/ftplugin/rst.vim to ~/.vim/ftplugin/rst and override t=
-he
-already defined options there:
+Changes in v3:
+- Fix fs/erofs/zdata.h in patch 06/19 to use MIN_T instead of min_t to
+  fix build on the following patch (07/19):
+In file included from ./include/linux/kernel.h:16,
+                 from ./include/linux/list.h:9,
+                 from ./include/linux/wait.h:7,
+                 from ./include/linux/wait_bit.h:8,
+                 from ./include/linux/fs.h:6,
+                 from fs/erofs/internal.h:10,
+                 from fs/erofs/zdata.h:9,
+                 from fs/erofs/zdata.c:6:
+fs/erofs/zdata.c: In function ‘z_erofs_decompress_pcluster’:
+fs/erofs/zdata.h:185:61: error: ISO C90 forbids variable length array ‘pages_onstack’ [-Werror=vla]
+  185 |         min_t(unsigned int, THREAD_SIZE / 8 / sizeof(struct page *), 96U)
+      |                                                             ^~~~
+./include/linux/minmax.h:49:23: note: in definition of macro ‘__cmp_once_unique’
+   49 |         ({ type ux = (x); type uy = (y); __cmp(op, ux, uy); })
+      |                       ^
+./include/linux/minmax.h:164:27: note: in expansion of macro ‘__cmp_once’
+  164 | #define min_t(type, x, y) __cmp_once(min, type, x, y)
+      |                           ^~~~~~~~~~
+fs/erofs/zdata.h:185:9: note: in expansion of macro ‘min_t’
+  185 |         min_t(unsigned int, THREAD_SIZE / 8 / sizeof(struct page *), 96U)
+      |         ^~~~~
+fs/erofs/zdata.c:847:36: note: in expansion of macro ‘Z_EROFS_VMAP_ONSTACK_PAGES’
+  847 |         struct page *pages_onstack[Z_EROFS_VMAP_ONSTACK_PAGES];
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-```
-=2E..
-" keep tabs as-is
-setlocal comments=3Dfb:.. commentstring=3D..\ %s noexpandtab
-=2E..
-if exists("g:rst_style") && g:rst_style !=3D 0
-    setlocal noexpandtab shiftwidth=3D8 softtabstop=3D0 tabstop=3D8
-endif
-=2E..
-```
+- Increase test coverage using `make allyesconfig` and
+  `make allmodconfig` for arm64, arm, x86_64 and i386 architectures.
 
-Thanks.
+Changes in v2:
+- Fix the order of patches 6 - 10 according to order in mainline branch.
+- Use same style of [ Upstream commit <HASH> ] in all patches.
 
---=20
-An old man doll... just what I always wanted! - Clara
+Andy Shevchenko (1):
+  minmax: deduplicate __unconst_integer_typeof()
 
---hTQgJTXrd9+JcPiP
-Content-Type: application/pgp-signature; name=signature.asc
+David Laight (8):
+  minmax: fix indentation of __cmp_once() and __clamp_once()
+  minmax.h: add whitespace around operators and after commas
+  minmax.h: update some comments
+  minmax.h: reduce the #define expansion of min(), max() and clamp()
+  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
+  minmax.h: move all the clamp() definitions after the min/max() ones
+  minmax.h: simplify the variants of clamp()
+  minmax.h: remove some #defines that are only expanded once
 
------BEGIN PGP SIGNATURE-----
+Herve Codina (1):
+  minmax: Introduce {min,max}_array()
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaQ8LHwAKCRD2uYlJVVFO
-o2WVAPsFBRuUsYfWxAnWROgP/61sBqVYDc/UsPimcXm5dJJfgQD9ESTXpfxlpefS
-VKeWBneX6svZYShHE5RzrbcYO+G5GA0=
-=gW2v
------END PGP SIGNATURE-----
+Linus Torvalds (8):
+  minmax: avoid overly complicated constant expressions in VM code
+  minmax: add a few more MIN_T/MAX_T users
+  minmax: simplify and clarify min_t()/max_t() implementation
+  minmax: make generic MIN() and MAX() macros available everywhere
+  minmax: don't use max() in situations that want a C constant
+    expression
+  minmax: simplify min()/max()/clamp() implementation
+  minmax: improve macro expansion and type checking
+  minmax: fix up min3() and max3() too
 
---hTQgJTXrd9+JcPiP--
+Matthew Wilcox (Oracle) (1):
+  minmax: add in_range() macro
+
+ arch/arm/mm/pageattr.c                        |   6 +-
+ arch/um/drivers/mconsole_user.c               |   2 +
+ arch/x86/mm/pgtable.c                         |   2 +-
+ drivers/edac/sb_edac.c                        |   4 +-
+ drivers/edac/skx_common.h                     |   1 -
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
+ .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
+ .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
+ .../amd/pm/swsmu/smu11/sienna_cichlid_ppt.c   |   2 +
+ .../drm/arm/display/include/malidp_utils.h    |   2 +-
+ .../display/komeda/komeda_pipeline_state.c    |  24 +-
+ drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
+ drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
+ drivers/hwmon/adt7475.c                       |  24 +-
+ drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
+ drivers/irqchip/irq-sun6i-r.c                 |   2 +-
+ drivers/md/dm-integrity.c                     |   4 +-
+ drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
+ .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ drivers/net/fjes/fjes_main.c                  |   4 +-
+ drivers/nfc/pn544/i2c.c                       |   2 -
+ drivers/platform/x86/sony-laptop.c            |   1 -
+ drivers/scsi/isci/init.c                      |   6 +-
+ .../pci/hive_isp_css_include/math_support.h   |   5 -
+ drivers/virt/acrn/ioreq.c                     |   4 +-
+ fs/btrfs/misc.h                               |   2 -
+ fs/btrfs/tree-checker.c                       |   2 +-
+ fs/erofs/zdata.h                              |   2 +-
+ fs/ext2/balloc.c                              |   2 -
+ fs/ext4/ext4.h                                |   2 -
+ fs/ufs/util.h                                 |   6 -
+ include/linux/compiler.h                      |   9 +
+ include/linux/minmax.h                        | 264 +++++++++++++-----
+ kernel/trace/preemptirq_delay_test.c          |   2 -
+ lib/btree.c                                   |   1 -
+ lib/decompress_unlzma.c                       |   2 +
+ lib/logic_pio.c                               |   3 -
+ lib/vsprintf.c                                |   2 +-
+ lib/zstd/zstd_internal.h                      |   2 -
+ mm/zsmalloc.c                                 |   1 -
+ net/ipv4/proc.c                               |   2 +-
+ net/ipv6/proc.c                               |   2 +-
+ net/netfilter/nf_nat_core.c                   |   6 +-
+ net/tipc/core.h                               |   2 +-
+ net/tipc/link.c                               |  10 +-
+ tools/testing/selftests/vm/mremap_test.c      |   2 +
+ 48 files changed, 290 insertions(+), 184 deletions(-)
+
+-- 
+2.47.3
+
 
