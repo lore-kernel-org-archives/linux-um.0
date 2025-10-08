@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6271CD13D2
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC74CCD129C
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nWSej8xbBt1No+Mk4Q7cDNVqN1sPbiSh6ZSRtMK8qI8=; b=kHib4EH2pNQhwI8xdc1NDo4C3s
-	hvKonamroUiWJzi8GtTEdGpLesPLlpG6/UFcRngWhp/e46POv/XfLLi+4XZwXxWpRSCHbDJo1bfgF
-	KLePFSKInpvLoCfgLfoLPGvvLFKoqLr33pmo2QUQUfzufqsfQZtkh52e8vrg3/l241gOxQfH4rM+u
-	b4I/DqVfgMiWcqZeLgR0GnqRXKH07eAT1+giO7mHoQ7clFl0Jz4lNw8zrWgxLS0sflmdjhe64pvax
-	1sBUN+PBbdgxn0y5ub9cfFS3mzYJPX/6w9juC/jO+q/+q3mLreDMzJNvAnNWZX+H9uYIAaskiP2vf
-	C+4Gjfdg==;
+	bh=jvk2RBzXwrA99Hwxay/jSQlk3gLjsVti9lJHvH/pTPQ=; b=LdqMkeq4g3EzGKb06XJ0an1MiY
+	C55pMF8Zcrqx/nfCLEKHH13x7bFQKf4MH2MwF3p2YhaENF3QE3kjhUvMgo5tUHsVvh/FpP3lXErq/
+	1OHtFuV3HussOq/Q95M9NNYUjMkLuamPirhBcOkw+a95cRJCqBV78xT949oz+TqKyxAXNOemE7+wy
+	lgk1l55mx2fa1fZ//KNBt2Amz9z7uGrj/r1YvdLVG7VpV0kJWxLdpgJQy+kfJi/EYpwNcLQaaiF82
+	kn3xVNw8QV1+c5tAKJpe43IYxX9CFPk5iJrXR8X+MCr171mX2532UroUSeUio1q2SoPavv/MlEnX+
+	axTe4Dmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlqN-00000003GEo-2lEG;
-	Sat, 08 Nov 2025 16:31:15 +0000
-Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.162.73.231])
+	id 1vHlqM-00000003GDo-1yq4;
+	Sat, 08 Nov 2025 16:31:14 +0000
+Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.155.198.111])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6W8z-000000048Vk-18KV;
-	Wed, 08 Oct 2025 15:31:58 +0000
+	id 1v6W8T-000000048N6-2zpw;
+	Wed, 08 Oct 2025 15:31:27 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1759937517; x=1791473517;
+  t=1759937485; x=1791473485;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nWSej8xbBt1No+Mk4Q7cDNVqN1sPbiSh6ZSRtMK8qI8=;
-  b=tA1s1Ysd2SUZY2MQhRWUrfgyvGqeKV3xn6AXxWcKeW4mqC36c9RFSMpN
-   mXKO+mZNlG929U6c3GosRAAdjNU+xpO7Lt+NwyJQx3EYdafCeMoeEhqpe
-   BLlj0FX1CpT6Q7O0DD1SyybeRzVxbCMH8Fq9MV4grcQfw9B7QM2meCpZM
-   Chv31IEXy68zShKmGKc3yuoLrDHl85q2zuExhmEM6MMmziVgCFl2JeRd1
-   uosLt0L/hP6OSE5WxaAL/oXj9kP/ftxm1J6AFwbmS976bu1ySNm8yy1Gs
-   965xaHHuqPhOy8JICcRqVEaHQUJQzxIfisQtdpQQmbumwj2ZVIh2aXtjT
-   A==;
-X-CSE-ConnectionGUID: ycDfQ159Q52OquxNui086Q==
-X-CSE-MsgGUID: Htks0LY0Tz2E6Ou+WxB4jw==
+  bh=jvk2RBzXwrA99Hwxay/jSQlk3gLjsVti9lJHvH/pTPQ=;
+  b=ZapQTducq58w/mblsQienBoqi0LPRoFCt1s+f3L7E74DJGPw2RoZ1KYO
+   GybO8PW4UMbUFmJWE7eYt8C6ACNM4D6Vv6WKMAW8/lEfUQBYQBk14dt3E
+   bYD8fBj0KlxKZ9sJofA7E5YBXVUi/KCdXPZKvWfshqFU1HAgJ4z5Yroff
+   RaSragkWdG/zhKtotPyluGeGSC9TUKezs+XJ70qPFmq/vx7OP91+hCV1F
+   eB/CZtbH3zbLStk6aYKNI4E2O/DdbJXDSBPPj3rtrFZ657JOFjhxPGvfC
+   jtUKqQRbagOnDP4fbqtnUv0fmVSg6zbW8luQcBmRxw23bslWrRbuTZSHR
+   g==;
+X-CSE-ConnectionGUID: C84d4vrqS4+tQbY5ZX7vPg==
+X-CSE-MsgGUID: Smt1enfbSGyJRBqUsp38fA==
 X-IronPort-AV: E=Sophos;i="6.19,213,1754956800"; 
-   d="scan'208";a="4334930"
-Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
-  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 15:31:53 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.7.35:8640]
+   d="scan'208";a="4410627"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 15:31:25 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:44901]
  by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.54.171:2525] with esmtp (Farcaster)
- id 0a7c58d4-562e-4eb3-b770-43495007b45e; Wed, 8 Oct 2025 15:31:53 +0000 (UTC)
-X-Farcaster-Flow-ID: 0a7c58d4-562e-4eb3-b770-43495007b45e
+ id 71b65f11-5afc-47a3-8856-278291bee2e7; Wed, 8 Oct 2025 15:31:24 +0000 (UTC)
+X-Farcaster-Flow-ID: 71b65f11-5afc-47a3-8856-278291bee2e7
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 8 Oct 2025 15:31:50 +0000
+ Wed, 8 Oct 2025 15:31:24 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Wed, 8 Oct 2025
- 15:31:37 +0000
+ 15:31:11 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>,
@@ -99,11 +99,11 @@ To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>,
 	<linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>,
 	<coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>,
 	<linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
-CC: Linus Torvalds <torvalds@linux-foundation.org>, David Laight
-	<David.Laight@aculab.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: [PATCH v3 07/19 5.15.y] minmax: simplify and clarify min_t()/max_t() implementation
-Date: Wed, 8 Oct 2025 15:29:32 +0000
-Message-ID: <20251008152946.29285-8-farbere@amazon.com>
+CC: Linus Torvalds <torvalds@linux-foundation.org>, Lorenzo Stoakes
+	<lorenzo.stoakes@oracle.com>, David Laight <David.Laight@aculab.com>
+Subject: [PATCH v3 05/19 5.15.y] minmax: avoid overly complicated constant expressions in VM code
+Date: Wed, 8 Oct 2025 15:29:30 +0000
+Message-ID: <20251008152946.29285-6-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251008152946.29285-1-farbere@amazon.com>
 References: <20251008152946.29285-1-farbere@amazon.com>
@@ -114,9 +114,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D037UWC003.ant.amazon.com (10.13.139.231) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251008_083157_379271_9F7AE446 
-X-CRM114-Status: UNSURE (   9.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251008_083125_801441_A4EAD9A2 
+X-CRM114-Status: GOOD (  11.15  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -134,77 +133,63 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 017fa3e89187848fd056af757769c9e66ac3e93d ]
+[ Upstream commit 3a7e02c040b130b5545e4b115aada7bacd80a2b6 ]
 
-This simplifies the min_t() and max_t() macros by no longer making them
-work in the context of a C constant expression.
+The minmax infrastructure is overkill for simple constants, and can
+cause huge expansions because those simple constants are then used by
+other things.
 
-That means that you can no longer use them for static initializers or
-for array sizes in type definitions, but there were only a couple of
-such uses, and all of them were converted (famous last words) to use
-MIN_T/MAX_T instead.
+For example, 'pageblock_order' is a core VM constant, but because it was
+implemented using 'min_t()' and all the type-checking that involves, it
+actually expanded to something like 2.5kB of preprocessor noise.
 
+And when that simple constant was then used inside other expansions:
+
+  #define pageblock_nr_pages      (1UL << pageblock_order)
+  #define pageblock_start_pfn(pfn)  ALIGN_DOWN((pfn), pageblock_nr_pages)
+
+and we then use that inside a 'max()' macro:
+
+	case ISOLATE_SUCCESS:
+		update_cached = false;
+		last_migrated_pfn = max(cc->zone->zone_start_pfn,
+			pageblock_start_pfn(cc->migrate_pfn - 1));
+
+the end result was that one statement expanding to 253kB in size.
+
+There are probably other cases of this, but this one case certainly
+stood out.
+
+I've added 'MIN_T()' and 'MAX_T()' macros for this kind of "core simple
+constant with specific type" use.  These macros skip the type checking,
+and as such need to be very sparingly used only for obvious cases that
+have active issues like this.
+
+Reported-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+Link: https://lore.kernel.org/all/36aa2cad-1db1-4abf-8dd2-fb20484aabc3@lucifer.local/
 Cc: David Laight <David.Laight@aculab.com>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
-V1 -> V2:
-Use `[ Upstream commit <HASH> ]` instead of `commit <HASH> upstream.`
-like in all other patches.
-
- include/linux/minmax.h | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ include/linux/minmax.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index a7ef65f78933..9c2848abc804 100644
+index 2ec559284a9f..a7ef65f78933 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -45,17 +45,20 @@
+@@ -270,4 +270,11 @@ static inline bool in_range32(u32 val, u32 start, u32 len)
+ #define swap(a, b) \
+ 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
  
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
- 
--#define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--	typeof(x) unique_x = (x);			\
--	typeof(y) unique_y = (y);			\
-+#define __cmp_once_unique(op, type, x, y, ux, uy) \
-+	({ type ux = (x); type uy = (y); __cmp(op, ux, uy); })
++/*
++ * Use these carefully: no type checking, and uses the arguments
++ * multiple times. Use for obvious constants only.
++ */
++#define MIN_T(type,a,b) __cmp(min,(type)(a),(type)(b))
++#define MAX_T(type,a,b) __cmp(max,(type)(a),(type)(b))
 +
-+#define __cmp_once(op, type, x, y) \
-+	__cmp_once_unique(op, type, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
-+
-+#define __careful_cmp_once(op, x, y) ({			\
- 	static_assert(__types_ok(x, y),			\
- 		#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
--	__cmp(op, unique_x, unique_y); })
-+	__cmp_once(op, __auto_type, x, y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
--		__cmp(op, x, y),				\
--		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
-+		__cmp(op, x, y), __careful_cmp_once(op, x, y))
- 
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
-@@ -158,7 +161,7 @@
-  * @x: first value
-  * @y: second value
-  */
--#define min_t(type, x, y)	__careful_cmp(min, (type)(x), (type)(y))
-+#define min_t(type, x, y) __cmp_once(min, type, x, y)
- 
- /**
-  * max_t - return maximum of two values, using the specified type
-@@ -166,7 +169,7 @@
-  * @x: first value
-  * @y: second value
-  */
--#define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
-+#define max_t(type, x, y) __cmp_once(max, type, x, y)
- 
- /*
-  * Do not check the array parameter using __must_be_array().
+ #endif	/* _LINUX_MINMAX_H */
 -- 
 2.47.3
 
