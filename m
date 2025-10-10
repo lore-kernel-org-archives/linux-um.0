@@ -4,92 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A61A6CCD184
-	for <linux-um@archiver.kernel.org>; Thu,  9 Oct 2025 15:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8E5ECCD184
+	for <linux-um@archiver.kernel.org>; Fri, 10 Oct 2025 02:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WQBxmURKiGaN3QIqBhTff7pEbZ70mJ9TllMgftPCUcQ=; b=qZNfJ79vQ164coYUdzhtZqQoJo
-	GPM6ojcGMDncJSPEq5IOO7bFewBcmUZ8Oqs0j6M5ObovYAE+eyE0PGwCOWIv5jb8EUlxolZqweY4q
-	2KKy/3RONpeqwbwJ32F9VbY7PtOXHofqo08V1G13MYMzIJDcvR3NgxZIvMuPQmrNXjkUOB9wxDe0q
-	A7Zh5a94RLqbEc1KANCmv38wiiC2atlusSCFZmsW/ugLFRnh4Dur5WntOKsZrRAo8aeRpt8uOB0sf
-	KxVXGdjkjgGsQmufWnpA80dXOlFqjov8mCh/8ecfEyme7pE7mQm00lPI/PVgduIspnO1MPic8yMZb
-	WSojD3tA==;
+	bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=; b=f4G3rxzDSpZRIzh+3WvGk6zZaq
+	zdbLSIl0185iTP3zKIg7EKUMdlhFKSJDS2y+I6mATd1xSlnFGgOsQx2M+8IMoY+zxwI3JjQPObk4T
+	/iPd6svwDlPvQ0Qxx5xMr05oRp84XjXBysQ5TTiR2W6RPLYx8ALE0qBcp74EOOuEQzNzODkTk6rAV
+	jEu/wAx3Wg/PAK4sXl4EqQwEtqvEf3U9cjWwLJR9jsESmmaL08Rvv/2PTpzi5gtOdO0GyCzcctqcp
+	iK/8GrPEhfRww6kM6W5VzpLdFfrC1qtrtaWRD3h048ZbXRphO6ZylOEDOcfzpJwSKUzQRB+33XHp3
+	Vxn3Zemw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6t3c-00000006baV-38QW;
-	Thu, 09 Oct 2025 15:59:56 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1v73BV-00000007WXx-2g32;
+	Fri, 10 Oct 2025 02:48:45 +0000
+Received: from mail-yx1-xb12b.google.com ([2607:f8b0:4864:20::b12b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v6t3Y-00000006bUA-1bUV
+	id 1v73BT-00000007WWn-39Ki
 	for linux-um@lists.infradead.org;
-	Thu, 09 Oct 2025 15:59:54 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-57a604fecb4so1408215e87.1
-        for <linux-um@lists.infradead.org>; Thu, 09 Oct 2025 08:59:51 -0700 (PDT)
+	Fri, 10 Oct 2025 02:48:44 +0000
+Received: by mail-yx1-xb12b.google.com with SMTP id 956f58d0204a3-633be3be1e6so2501656d50.1
+        for <linux-um@lists.infradead.org>; Thu, 09 Oct 2025 19:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760025590; x=1760630390; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1760064523; x=1760669323; darn=lists.infradead.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WQBxmURKiGaN3QIqBhTff7pEbZ70mJ9TllMgftPCUcQ=;
-        b=cZyEhQhMSD7X3uXeVIKIPHao30plBnq+20CatvCysbsJla9gICClJVAukc93fqDAcf
-         EgdiWLujWg2rzz/PqNQUJuZYnV6ecXrhyIBLCVAqLBI8Q5jfnsU1A9abnOIZVoDiq+S+
-         nOB6Z/ybvXYNWb5vRoQpvPG4G7z9PYoOuRQiKrvc/bau21EOrvTHQsSfIZ4Oi3+XxM4J
-         CW8yF+D9zYUBfS+qSioxRImqOtwafbUsPdFGd9XRZUvKe4FRDq8aXL+QutojSH6319IX
-         2xzFAOEjPOfoyIoBfpKz0KjnwWtWh3095e1mS0zRUgjkEvpfVbjGgknfK5hPEa9nro4j
-         loiQ==
+        bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=;
+        b=nn70f5QF3gnIFo96OLfM9AXsi306gRPjkR5MQ1WgRwMxQhlGQ4uTK0OMQgXQ5NuF1T
+         TEKTfv56Ew9qDwVKro9r4NzdlRy4umYWPKZb6iUpmajuxe3CfDE5xqPxL0PkBbDroIOh
+         i1gucFxOywYyh65NprHvcEXRXUqZjy9c10CjXMgYm4wLMOND7Hy9xB4fmke6C253Qbxv
+         DORAI+SzQ4kT2yBLhUKff8wA+AvB4xaVfiWb9Tz3EA1Cn0R8ov4Cfd6f2GHEYiu9X7zQ
+         +ocsJ7vcJQcXW82XrbnEHuWF5jU3tgQgH5MfUMqeb//eWalvzdN4eaCmkJzfOtHPEXdl
+         QeQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760025590; x=1760630390;
+        d=1e100.net; s=20230601; t=1760064523; x=1760669323;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WQBxmURKiGaN3QIqBhTff7pEbZ70mJ9TllMgftPCUcQ=;
-        b=os+27BxvrDfJHoZS/2XJTFzlRJM4xaIZFLdFW8zLILDMV/qFdwjOJiyNf4FI9QVcJO
-         cxZLieoR39M463Z7+PW9s7ARTrbgTsYNOlErX6M9nhqn/mAphEsri3Ef1wix1hvzxSGu
-         yIiubtDYZW2Cok5riQPMYhp9BAwdYDqpsXGNWtL/FNYJuGkvIVj0MjLxJWiKchigokyr
-         g7+jQPPX1cERRZGmskg5bZvusK5X6pIvbXwsV1eIgX1enYpgI0LLmjIxgRe8YOqhlfwo
-         pk9BP8x6sbmkomZuOi60G2DUARU5Q1HxMq/5f4xIl4sp9A0jrbDWmxtyLBH0GVgYOJuE
-         PP1g==
-X-Forwarded-Encrypted: i=1; AJvYcCV+I0H44Lp26C9RG1ZWbi/FvVdOGHDW4QqNJ6goCR+zzIuOd+sVcQ03eokeZm5G7LeXRZ0sX+S91g==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzUNq0HWCI+TIEoQpbgeqZByM+fk4tNS4YHZBTf/dHSvf9cEy8r
-	mH7R1WutGORQ/5UcTJa2iZS+78QBP0AkfOyQVjsVcttTEbv3jUYr/c8dbsjq3oJuxY0ijsnQxRt
-	4qkHR6zoULjRp0e9a4eBIkz0IRHksQUw=
-X-Gm-Gg: ASbGncvswGDCyBfTInovvOTJWR5Dl4smn8MNHhlkJkz1QNc6/owyLMAGJdAxaEMwkuz
-	xUd3VDF2Lme/5pTMDJHGh6fhHoo/Bb3ZTdEOekmvPsHJ4w1oLh5+P+Q9UqKRELddN84yLnVWk/p
-	bxekbwMBfv4PRZkUCsVZeXFsBj7kxZW6RabDMWIqrIHc85PV1QjeJ6q9OQD53f/Vi22kJvdp/d/
-	GQ/EnuskVRhy2IayDw5JeFJKJHSlCI4bkRuIOFp/Q==
-X-Google-Smtp-Source: AGHT+IFiOw5ablsLgUKfCaNuQJri4wcztl+zI4ly3LRjrgaXjzgOnqWcpR8ZMzuTHWFg5QDe7h9JoAEutSyQKhvfT4w=
-X-Received: by 2002:a05:6512:1291:b0:57d:ffa4:56f4 with SMTP id
- 2adb3069b0e04-5906dae5904mr2393608e87.41.1760025589415; Thu, 09 Oct 2025
- 08:59:49 -0700 (PDT)
+        bh=SUvjTYrAKggs3w1tKlxCJydt04WX0hyij5ZVnNtO2rY=;
+        b=dT4Lrh6YcN0X2nXISnDgOP6bnaHMKV7AfJLL5M0tfVIu7DjB5bPOVI1IaklQoB9Ebb
+         9ER2aBhiGrNmXDZEW2OfE/MNqCFybw2cxuQY9eSV+f5unXmahTo0aJwcjRc/aFaRskLy
+         Wrjry4SiwY7DnAAdUW7jFsju11xh8fHsjSoh+dSnwo3Pef4AhAg9NjNgeiV/UadFMTdr
+         8aZs9C1CMGxQJXJESm4m6g6HeAfuA+oKzfUHfzfd+Wn02UdER7MMN+f8ZE8hvJPJwtG3
+         dStwoNcb6sPKKLFBg/Wf6CJHtnOr7S5+z0MXvcytadnrHwMNbeEDo+6aJZKKatgoiyJA
+         fXuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPFTU4XC4fVDblAOr18qcHefL2pXgsHBW0g+ainD4tGZ+qFgwnErpvmQBUOfh+K9Lo7XIoN0hz0w==@lists.infradead.org
+X-Gm-Message-State: AOJu0YynCDhTpjaYmNbjcvVoOonLeqfXcUqBwT2gSpLJ6gmQ7QIC4fjD
+	rhHJVHuqy/7Bfm3VeUg6hV2C0rHUOdZXlR+AuDfNQTVL9SZaledHgUC+mc51DSkuLh1jMjmOyqq
+	HDQHJCa1Aw+PhTLQA3G1q+1+ATyI1A3k=
+X-Gm-Gg: ASbGncsZ4JQpW2SudmR1g9pQNRpOvQBBqy3/UICZW/4E83DsvwDoWlulNQQUwBFHWe4
+	flUr3Rpjpm/xsUPYljAEqriEnRA+9Bcz25l/fMRlXkefqVYpqWq5ckIOqchBNcs/KmtRg2OK2UO
+	PjmGq3bjGceB+IZRV7zyJ1IuFlgbJa0bc/07NW9eMiBgWsnXOzJCs9su0nLRhD9H597kwWJ1vv9
+	FRGYytGAxwVSSpauW0cjl+OELaIa2tGViHAy+lpbQ==
+X-Google-Smtp-Source: AGHT+IE/ruZR0Nl+gZjd7KSfaZ+4Yt5azf8Eoz6teA2EZ5XcCIQ6BBXF8AxOCZshaSTrV+l7WDzDAJYCcqNIJ+IMELc=
+X-Received: by 2002:a53:cd0e:0:b0:635:4ed0:571e with SMTP id
+ 956f58d0204a3-63ccc4fd4b5mr7697871d50.22.1760064522649; Thu, 09 Oct 2025
+ 19:48:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20250810125746.1105476-1-snovitoll@gmail.com> <20250810125746.1105476-2-snovitoll@gmail.com>
- <87ldmv6p5n.ritesh.list@gmail.com>
-In-Reply-To: <87ldmv6p5n.ritesh.list@gmail.com>
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Date: Thu, 9 Oct 2025 20:59:32 +0500
-X-Gm-Features: AS18NWAnJdcYDP3fsUmpv8ZuZnvVnkv1zMHsU4QWH3X3orZoE8748Ur0FWZohd0
-Message-ID: <CACzwLxia6xMcQ=vsYG7SE+pUO8=4DiRWD_Omq3wzRyuhDjGcPQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kasan: introduce ARCH_DEFER_KASAN and unify static
- key across modes
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: ryabinin.a.a@gmail.com, christophe.leroy@csgroup.eu, bhe@redhat.com, 
-	hca@linux.ibm.com, andreyknvl@gmail.com, akpm@linux-foundation.org, 
-	zhangqing@loongson.cn, chenhuacai@loongson.cn, davidgow@google.com, 
-	glider@google.com, dvyukov@google.com, alexghiti@rivosinc.com, alex@ghiti.fr, 
-	agordeev@linux.ibm.com, vincenzo.frascino@arm.com, elver@google.com, 
-	kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+References: <20250913003842.41944-1-safinaskar@gmail.com> <20250913003842.41944-22-safinaskar@gmail.com>
+ <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+In-Reply-To: <a079375f-38c2-4f38-b2be-57737084fde8@kernel.org>
+From: Askar Safin <safinaskar@gmail.com>
+Date: Fri, 10 Oct 2025 05:48:06 +0300
+X-Gm-Features: AS18NWC-iakvkxLfUlO1LRxakg0fg4KV7Trw_hsIF2wxGpnmpWZvHTCQ7Z3GaoE
+Message-ID: <CAPnZJGDK08eDWaMTmvVQwkAAThUvgB0XgAapqqV4_ZmWeay-iw@mail.gmail.com>
+Subject: Re: [PATCH RESEND 21/62] init: remove all mentions of root=/dev/ram*
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
 	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-mm@kvack.org
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
+	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251009_085952_439255_80158209 
-X-CRM114-Status: GOOD (  15.68  )
+X-CRM114-CacheID: sfid-20251009_194843_800013_D26AE033 
+X-CRM114-Status: UNSURE (   8.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,72 +120,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 4, 2025 at 5:38=E2=80=AFAM Ritesh Harjani <ritesh.list@gmail.co=
-m> wrote:
->
->
-> Only book3s64 needs static keys here because of radix v/s hash mode
-> selection during runtime. The changes in above for powerpc looks good to
-> me. It's a nice cleanup too.
->
+On Sun, Sep 14, 2025 at 1:06=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+> Please wrap commit message according to Linux coding style / submission
+I will do this for v2
 
-Hello,
-Thanks for the review and sorry for the late reply. This has already
-been merged.
-AFAIU, in arch/powerpc/Kconfig
+> To me your patchset is way too big bomb, too difficult to review. You
+v2 will be small.
 
-config PPC
-...
-        select ARCH_NEEDS_DEFER_KASAN if PPC_RADIX_MMU
-
-and in arch/powerpc/platforms/Kconfig.cputype:
-
-config PPC_RADIX_MMU
-        bool "Radix MMU Support"
-        depends on PPC_BOOK3S_64
-        select ARCH_HAS_GIGANTIC_PAGE
-        default y
-
-So the KASAN static key is enabled only for PPC_BOOK3S_64 by this
-Kconfig selection.
-In other git changes like:
-arch/powerpc/mm/kasan/init_32.c
-arch/powerpc/mm/kasan/init_book3e_64.c
-
-, where we call kasan_init_generic() -> kasan_enable() does nothing because
-CONFIG_ARCH_DEFER_KASAN is not selected.
-
-> So feel free to take:
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com> #powerpc
->
-> However I have few comments below...
->
-> > @@ -246,7 +255,7 @@ static inline void poison_slab_object(struct kmem_c=
-ache *cache, void *object,
-> >  bool __kasan_slab_pre_free(struct kmem_cache *cache, void *object,
-> >                               unsigned long ip)
-> >  {
-> > -     if (!kasan_arch_is_ready() || is_kfence_address(object))
-> > +     if (is_kfence_address(object))
->
-> For changes in mm/kasan/common.c.. you have removed !kasan_enabled()
-> check at few places. This seems to be partial revert of commit [1]:
->
->   b3c34245756ada "kasan: catch invalid free before SLUB reinitializes the=
- object"
->
-> Can you please explain why this needs to be removed?
-
-kasan_arch_is_ready() was removed here because in
-commit 1e338f4d99e6("kasan: introduce ARCH_DEFER_KASAN and unify
-static key across modes")
-I've unified the check with kasan_enabled() which is already called in
-the __wrapper
-__kasan_slab_pre_free in include/linux/kasan.h
-
-> Also the explaination of the same should be added in the commit msg too.
->
-> [1]: https://lore.kernel.org/all/20240809-kasan-tsbrcu-v8-1-aef4593f9532@=
-google.com/
->
+--
+Askar Safin
 
