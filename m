@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05F8FCCD184
-	for <linux-um@archiver.kernel.org>; Sat, 11 Oct 2025 08:07:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A005FCCD184
+	for <linux-um@archiver.kernel.org>; Sat, 11 Oct 2025 09:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bj+xcsleBH2mEpd+DDmMDg6DzDmHkh8m8PwoIwde6eE=; b=GyuPvRMkdQ+Xtz4u6pbuA+s7r2
-	ul6zNT0iuOarZOdpAD8tx/ZMCUIsvP2MNulWKFJfV2VRbF5XThKAUODYPJk4IfGrRftEGnddl8FKc
-	yAObQailcOtGZp75NacdTjGzlYe0qoBad2hI29vDAJJUDui47gJVUsnBw0P1BGOxyIsrA6SAI1na/
-	swazvlDVUqvONW0dD1NwtR4uwqYqlcfXo78yOGV7BLMju5FY4x3s2sHIt5o8Tc+oxHLBZ1DWxYvEZ
-	emH3UXdkgL+oGRzIXYW6A9UVIsa8RIstiksvlYE4/b8p9Oqv4VGxxkCARSVLajUFCv7cQRyanq3Y2
-	VQ4HPC2Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ggOs2eAUyo4VXT1Pr+8pBElLmd5laphuk6GJ+x94CPU=; b=3pkj5ZkVV4PLTZlmli75gg9cDF
+	O63Bf0mr/e88mYMZI1nKXilgXyIUIIyB/zGNUCsaV6wdMUXtksDKalVz/wI5SDs6Cknqm1a821XbF
+	2Ln1MM0wrUIh/IkvOQjssqw7WUOGDgw1V/ryLn99svZ4w27YIMWvfThyRgJXWmSrT5C6FGkdIq+58
+	OFOoBt5UweeAbk0jf1aN6vqxYfQYCTkyetPfPG4gsPvAtCnn37Nl23wWRF7PeATNrOJDKybcJMXdm
+	SEYSat1AsePvZhxJgxVA8fBd5gaxM9fFD4AsedPcyevVxHhLdj7GFxoOPKx9YcaasvwYtd6P3szFP
+	QKI3zriA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v7UdF-00000009wJZ-1v3T;
-	Sat, 11 Oct 2025 08:07:13 +0000
-Received: from canpmsgout06.his.huawei.com ([113.46.200.221])
+	id 1v7Vyp-0000000A0CM-1Lw9;
+	Sat, 11 Oct 2025 09:33:35 +0000
+Received: from canpmsgout08.his.huawei.com ([113.46.200.223])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v7UdC-00000009wIP-0hlH
+	id 1v7Vym-0000000A0Bz-0n4O
 	for linux-um@lists.infradead.org;
-	Sat, 11 Oct 2025 08:07:12 +0000
+	Sat, 11 Oct 2025 09:33:33 +0000
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=bj+xcsleBH2mEpd+DDmMDg6DzDmHkh8m8PwoIwde6eE=;
-	b=jNL3mPw+6YRO7RQ9q0CMwiXptoolguULvX0x/K4Y/eRzHdczhNtewJ3e5urvBknUWMLyn91XU
-	uGf4+5818gpLFEeDvrTEfYg0jLOiVAjvfOb3ToVQF16lszpiyUHHAmTZ4qGrXDze6B56c96xgUa
-	z5HUGPDSp1hvDseAoyFoMlU=
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4ckGQz27YbzRhR7
-	for <linux-um@lists.infradead.org>; Sat, 11 Oct 2025 16:06:35 +0800 (CST)
+	bh=ggOs2eAUyo4VXT1Pr+8pBElLmd5laphuk6GJ+x94CPU=;
+	b=s/FXj8qapy0aucC0yRdED0WqNkV/UN3jfUkKNvl0TPiLMj0ukdb4x6JBR7WCjVkbzn42YlJ3q
+	rR/t/viNbnsmLxMScKfrptU8kbmtJ3lSNhVJq0B9Yl376ILQQGf78WkdzuNlPOpDGMEGKIoM8GK
+	lX/f9e3QOBj51OJpfB9loRQ=
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4ckJLr0ZXFzmV6w;
+	Sat, 11 Oct 2025 17:33:08 +0800 (CST)
 Received: from kwepemr500015.china.huawei.com (unknown [7.202.195.162])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3CC9D180B66
-	for <linux-um@lists.infradead.org>; Sat, 11 Oct 2025 16:06:53 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- kwepemr500015.china.huawei.com (7.202.195.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 11 Oct 2025 16:06:52 +0800
-Message-ID: <08a853d0-aa74-48c8-9df9-7d21186a3dbc@huawei.com>
-Date: Sat, 11 Oct 2025 16:06:55 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] um/hostfs: define HOSTFS_ATTR_* via asm-offsets
-Content-Language: en-US
-To: <linux-um@lists.infradead.org>
-References: <20251007071452.367989-3-johannes@sipsolutions.net>
+	by mail.maildlp.com (Postfix) with ESMTPS id D8772140123;
+	Sat, 11 Oct 2025 17:33:25 +0800 (CST)
+Received: from huawei.com (10.67.174.162) by kwepemr500015.china.huawei.com
+ (7.202.195.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sat, 11 Oct
+ 2025 17:33:25 +0800
 From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <20251007071452.367989-3-johannes@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.104]
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+To: <richard@nod.at>, <anton.ivanov@cambridgegreys.com>,
+	<johannes@sipsolutions.net>, <geoff@geoffthorpe.net>
+CC: <linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+	<brauner@kernel.org>, <lihongbo22@huawei.com>
+Subject: [PATCH] hostfs: Fix only passing host root in boot stage with new mount
+Date: Sat, 11 Oct 2025 09:22:35 +0000
+Message-ID: <20251011092235.29880-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.162]
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
  kwepemr500015.china.huawei.com (7.202.195.162)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251011_010710_866588_2B12E6F8 
-X-CRM114-Status: GOOD (  21.75  )
+X-CRM114-CacheID: sfid-20251011_023332_573487_3635A67D 
+X-CRM114-Status: GOOD (  12.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,108 +76,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+In the old mount proceedure, hostfs could only pass root directory during
+boot. This is because it constructed the root directory using the @root_ino
+event without any mount options. However, when using it with the new mount
+API, this step is no longer triggered. As a result, if users mounts without
+specifying any mount options, the @host_root_path remains uninitialized. To
+prevent this issue, the @host_root_path should be initialized at the time
+of allocation.
 
+Reported-by: Geoffrey Thorpe <geoff@geoffthorpe.net>
+Closes: https://lore.kernel.org/all/643333a0-f434-42fb-82ac-d25a0b56f3b7@geoffthorpe.net/
+Fixes: cd140ce9f611 ("hostfs: convert hostfs to use the new mount API")
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/hostfs/hostfs_kern.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-On 2025/10/7 15:14, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> The HOSTFS_ATTR_* values were meant to be standalone for
-> communication between hostfs's kernel and user code parts.
-> However, it's easy to forget that HOSTFS_ATTR_* should be
-> used even on the kernel side, and that wasn't consistently
-> done. As a result, the values need to match ATTR_* values,
-> which is not useful to maintain by hand. Instead, generate
-> them via asm-offsets like other constants that UML needs
-> in user-side code that aren't otherwise available in any
-> header files that can be included there.
-> 
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 1e1acf5775ab..86455eebbf6c 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -979,7 +979,7 @@ static int hostfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+ 	struct hostfs_fs_info *fsi = fc->s_fs_info;
+ 	struct fs_parse_result result;
+-	char *host_root;
++	char *host_root, *tmp_root;
+ 	int opt;
+ 
+ 	opt = fs_parse(fc, hostfs_param_specs, param, &result);
+@@ -990,11 +990,13 @@ static int hostfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	case Opt_hostfs:
+ 		host_root = param->string;
+ 		if (!*host_root)
+-			host_root = "";
+-		fsi->host_root_path =
+-			kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
+-		if (fsi->host_root_path == NULL)
++			break;
++		tmp_root = kasprintf(GFP_KERNEL, "%s%s",
++				     fsi->host_root_path, host_root);
++		if (!tmp_root)
+ 			return -ENOMEM;
++		kfree(fsi->host_root_path);
++		fsi->host_root_path = tmp_root;
+ 		break;
+ 	}
+ 
+@@ -1004,17 +1006,17 @@ static int hostfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ static int hostfs_parse_monolithic(struct fs_context *fc, void *data)
+ {
+ 	struct hostfs_fs_info *fsi = fc->s_fs_info;
+-	char *host_root = (char *)data;
++	char *tmp_root, *host_root = (char *)data;
+ 
+ 	/* NULL is printed as '(null)' by printf(): avoid that. */
+ 	if (host_root == NULL)
+-		host_root = "";
++		return 0;
+ 
+-	fsi->host_root_path =
+-		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
+-	if (fsi->host_root_path == NULL)
++	tmp_root = kasprintf(GFP_KERNEL, "%s%s", fsi->host_root_path, host_root);
++	if (!tmp_root)
+ 		return -ENOMEM;
+-
++	kfree(fsi->host_root_path);
++	fsi->host_root_path = tmp_root;
+ 	return 0;
+ }
+ 
+@@ -1049,6 +1051,11 @@ static int hostfs_init_fs_context(struct fs_context *fc)
+ 	if (!fsi)
+ 		return -ENOMEM;
+ 
++	fsi->host_root_path = kasprintf(GFP_KERNEL, "%s/", root_ino);
++	if (!fsi->host_root_path) {
++		kfree(fsi);
++		return -ENOMEM;
++	}
+ 	fc->s_fs_info = fsi;
+ 	fc->ops = &hostfs_context_ops;
+ 	return 0;
+-- 
+2.22.0
 
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
-
-Thanks,
-Hongbo
-
-> ---
->   arch/um/include/shared/common-offsets.h    | 10 +++++++
->   arch/x86/um/shared/sysdep/kernel-offsets.h |  1 +
->   fs/hostfs/hostfs.h                         | 34 +---------------------
->   3 files changed, 12 insertions(+), 33 deletions(-)
-> 
-> diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-> index 8ca66a1918c3..fcec75a93e0c 100644
-> --- a/arch/um/include/shared/common-offsets.h
-> +++ b/arch/um/include/shared/common-offsets.h
-> @@ -18,3 +18,13 @@ DEFINE(UM_NSEC_PER_USEC, NSEC_PER_USEC);
->   DEFINE(UM_KERN_GDT_ENTRY_TLS_ENTRIES, GDT_ENTRY_TLS_ENTRIES);
->   
->   DEFINE(UM_SECCOMP_ARCH_NATIVE, SECCOMP_ARCH_NATIVE);
-> +
-> +DEFINE(HOSTFS_ATTR_MODE, ATTR_MODE);
-> +DEFINE(HOSTFS_ATTR_UID, ATTR_UID);
-> +DEFINE(HOSTFS_ATTR_GID, ATTR_GID);
-> +DEFINE(HOSTFS_ATTR_SIZE, ATTR_SIZE);
-> +DEFINE(HOSTFS_ATTR_ATIME, ATTR_ATIME);
-> +DEFINE(HOSTFS_ATTR_MTIME, ATTR_MTIME);
-> +DEFINE(HOSTFS_ATTR_CTIME, ATTR_CTIME);
-> +DEFINE(HOSTFS_ATTR_ATIME_SET, ATTR_ATIME_SET);
-> +DEFINE(HOSTFS_ATTR_MTIME_SET, ATTR_MTIME_SET);
-> diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
-> index 6fd1ed400399..ee6b44ef2217 100644
-> --- a/arch/x86/um/shared/sysdep/kernel-offsets.h
-> +++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
-> @@ -5,6 +5,7 @@
->   #include <linux/crypto.h>
->   #include <linux/kbuild.h>
->   #include <linux/audit.h>
-> +#include <linux/fs.h>
->   #include <asm/mman.h>
->   #include <asm/seccomp.h>
->   
-> diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-> index 15b2f094d36e..aa02599b770f 100644
-> --- a/fs/hostfs/hostfs.h
-> +++ b/fs/hostfs/hostfs.h
-> @@ -3,40 +3,8 @@
->   #define __UM_FS_HOSTFS
->   
->   #include <os.h>
-> +#include <generated/asm-offsets.h>
->   
-> -/*
-> - * These are exactly the same definitions as in fs.h, but the names are
-> - * changed so that this file can be included in both kernel and user files.
-> - */
-> -
-> -#define HOSTFS_ATTR_MODE	1
-> -#define HOSTFS_ATTR_UID 	2
-> -#define HOSTFS_ATTR_GID 	4
-> -#define HOSTFS_ATTR_SIZE	8
-> -#define HOSTFS_ATTR_ATIME	16
-> -#define HOSTFS_ATTR_MTIME	32
-> -#define HOSTFS_ATTR_CTIME	64
-> -#define HOSTFS_ATTR_ATIME_SET	128
-> -#define HOSTFS_ATTR_MTIME_SET	256
-> -
-> -/* This one is unused by hostfs. */
-> -#define HOSTFS_ATTR_FORCE	512	/* Not a change, but a change it */
-> -#define HOSTFS_ATTR_ATTR_FLAG	1024
-> -
-> -/*
-> - * If you are very careful, you'll notice that these two are missing:
-> - *
-> - * #define ATTR_KILL_SUID	2048
-> - * #define ATTR_KILL_SGID	4096
-> - *
-> - * and this is because they were added in 2.5 development.
-> - * Actually, they are not needed by most ->setattr() methods - they are set by
-> - * callers of notify_change() to notify that the setuid/setgid bits must be
-> - * dropped.
-> - * notify_change() will delete those flags, make sure attr->ia_valid & ATTR_MODE
-> - * is on, and remove the appropriate bits from attr->ia_mode (attr is a
-> - * "struct iattr *"). -BlaisorBlade
-> - */
->   struct hostfs_timespec {
->   	long long tv_sec;
->   	long long tv_nsec;
 
