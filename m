@@ -4,107 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9256DCAC5BB
-	for <linux-um@archiver.kernel.org>; Fri, 10 Oct 2025 04:58:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05F8FCCD184
+	for <linux-um@archiver.kernel.org>; Sat, 11 Oct 2025 08:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=; b=soSivPw4yNEi1fTj+o9oqDon8q
-	GSxU7NweGgzF2ncu+M6df6sGfu0F5MZ6GC6F6DMRP2f9UO7euocTuK/V89MY3AU4byzdZgc87Aggg
-	wsKBtGoTKijTwRIss5YhG8jq3N8QC0MdQDbCGRR0OMgU9Cdp0dYb8HL/svwzOb+c367CZPt3bUe7g
-	XyC1ZpOyy4Yfq6tqLMDTOYFgW3cq7pM+DR7geNd9lncjuGNi5gNGlCu5Y/8cmo6FFfvx+uijrBS3H
-	9cGVFHLrf32R7pDyZh5Yk8pf+pp4M5hJdcbKpTd9SltoaRKLXoVxWJn2sGYajgkZf9a3Y4HWUSUDz
-	AkyxcxiA==;
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bj+xcsleBH2mEpd+DDmMDg6DzDmHkh8m8PwoIwde6eE=; b=GyuPvRMkdQ+Xtz4u6pbuA+s7r2
+	ul6zNT0iuOarZOdpAD8tx/ZMCUIsvP2MNulWKFJfV2VRbF5XThKAUODYPJk4IfGrRftEGnddl8FKc
+	yAObQailcOtGZp75NacdTjGzlYe0qoBad2hI29vDAJJUDui47gJVUsnBw0P1BGOxyIsrA6SAI1na/
+	swazvlDVUqvONW0dD1NwtR4uwqYqlcfXo78yOGV7BLMju5FY4x3s2sHIt5o8Tc+oxHLBZ1DWxYvEZ
+	emH3UXdkgL+oGRzIXYW6A9UVIsa8RIstiksvlYE4/b8p9Oqv4VGxxkCARSVLajUFCv7cQRyanq3Y2
+	VQ4HPC2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v75Cc-00000007gKc-0Pfe;
-	Fri, 10 Oct 2025 04:58:02 +0000
-Received: from mail-yx1-xb12d.google.com ([2607:f8b0:4864:20::b12d])
+	id 1v7UdF-00000009wJZ-1v3T;
+	Sat, 11 Oct 2025 08:07:13 +0000
+Received: from canpmsgout06.his.huawei.com ([113.46.200.221])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v75CY-00000007gIN-3fP5
+	id 1v7UdC-00000009wIP-0hlH
 	for linux-um@lists.infradead.org;
-	Fri, 10 Oct 2025 04:58:01 +0000
-Received: by mail-yx1-xb12d.google.com with SMTP id 956f58d0204a3-63bc1aeb427so1693683d50.3
-        for <linux-um@lists.infradead.org>; Thu, 09 Oct 2025 21:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760072278; x=1760677078; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=byZ6t6wrDWSM3IddaYudPoR6XYlS7rynO3IjgiQPfI2Ml35UyMwNN53dYO102kEBt9
-         o6/WD7QMEip9m8poYQsQL/UPW3lnIaf5cfUJa4ET61KFoYrOKqPwiffDvhnzCkSXcLss
-         iq+5EM1cXwqvyIsuzbKxPyj6QLqX00yE0YGBqDzAtuWc9Rz10N3BKLQwlxH+U4/Y7OqF
-         jOK0+z7HS5oIKUQ+jyFw1NW6eQLbhWBbQ+g8DMB7NzieN1x7xuOwvbe1QGKRRq9WTRrk
-         iWpXNqv0vlUHRXEl+/1iuOMv/jMaXN2PiDVXkt1kgubaVjxf1YERjzHdbNofm9AiCjFu
-         mmFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760072278; x=1760677078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=PQyMA4yYpGKoooyiN1EnszKiSuwtOTVVhQQek8YWoFgD3sFxoJyzwMx5SxuINoAR4T
-         zoaZpveePZFLfX5cXZiuPm8L5ZUoOEy+GKZMjU2IoTuw7zlhWn+yoSrX2ZxftUwUGie3
-         L48ugdsv4wFdR875Q3WULkswGC8SZ6hvK3TbzWMEukNrAzQnzkBA9UHNbZrn2vInWLDa
-         axPrcOkL6Y8x7xX45BOWfC94x2UDCpUV8xuwinBtfZ1LexFDOLnNLV/I+MrerNhrn73B
-         lldT8P8s70LRedSi8SWjfevuhP748v8azLRQ066VBNlNz28AJ7/XJn0tPybQZiCIL7GY
-         dq5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVeddJehcUw0xII/ST5FVba7OBNlw2p52XTPiBnaeUHKXwQ0hrwgaZICUM4/9iuDn3LJQaTIfrWcA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxGyoaT9MKYP3fBfuOJ1bTVefqyxsIfnIXNIOVIyTtVIHUfkgu3
-	46JB+hyubjOoBykNE2PY2utKC4lwWqrg3b+/9Puk8OgHX/OC1oYRgDLhWwWMtzsKfOpULd6qxiy
-	yjz4hAQaJa/DWsOXfn3nHTAhbSX5Fcp8=
-X-Gm-Gg: ASbGncs+skPgn/noCXZspNTmkUKcHDjrXgq216kyb0V1dg+qq09B8F1WhT3R7Xu8dfk
-	tvb8gJcgaleRbwT0a/JsrK4+8afhI1wHcy8bXhKrsyAYyRPqwa6IvGwHYAbIjer89GMf7LhlP25
-	U5AWI0FfLMgKg+AjFDBtE+hrBwAXgrwQA3rnrlp6tR9hHclTCtkY+Rb1vqW0JGW6/EEu6pOQ9xH
-	nqFEyw24v9RlLJCsF/YxleGQQ==
-X-Google-Smtp-Source: AGHT+IHqDciv7GAPYfMGdKr9Fwuo5GT168N8GcrpsJ5KozP5HqYqg/LDALxuogvzJXgNCm6zrA+DoCqu7lr8uhQrVc0=
-X-Received: by 2002:a53:5009:0:b0:636:2420:d3ce with SMTP id
- 956f58d0204a3-63ccb93456dmr7466309d50.51.1760072277565; Thu, 09 Oct 2025
- 21:57:57 -0700 (PDT)
+	Sat, 11 Oct 2025 08:07:12 +0000
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=bj+xcsleBH2mEpd+DDmMDg6DzDmHkh8m8PwoIwde6eE=;
+	b=jNL3mPw+6YRO7RQ9q0CMwiXptoolguULvX0x/K4Y/eRzHdczhNtewJ3e5urvBknUWMLyn91XU
+	uGf4+5818gpLFEeDvrTEfYg0jLOiVAjvfOb3ToVQF16lszpiyUHHAmTZ4qGrXDze6B56c96xgUa
+	z5HUGPDSp1hvDseAoyFoMlU=
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4ckGQz27YbzRhR7
+	for <linux-um@lists.infradead.org>; Sat, 11 Oct 2025 16:06:35 +0800 (CST)
+Received: from kwepemr500015.china.huawei.com (unknown [7.202.195.162])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3CC9D180B66
+	for <linux-um@lists.infradead.org>; Sat, 11 Oct 2025 16:06:53 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ kwepemr500015.china.huawei.com (7.202.195.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 11 Oct 2025 16:06:52 +0800
+Message-ID: <08a853d0-aa74-48c8-9df9-7d21186a3dbc@huawei.com>
+Date: Sat, 11 Oct 2025 16:06:55 +0800
 MIME-Version: 1.0
-References: <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
- <20250925131055.3933381-1-nschichan@freebox.fr>
-In-Reply-To: <20250925131055.3933381-1-nschichan@freebox.fr>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Fri, 10 Oct 2025 07:57:21 +0300
-X-Gm-Features: AS18NWAQwCKadWHXCZjVUBNaD3TaKIilJiJAQzSbvGFaYuFuE8UDpW1_H3riB-k
-Message-ID: <CAPnZJGBPyONjJoM6cskxysDnN4pxWuWJCK5A6TgikR2xHsrN5Q@mail.gmail.com>
-Subject: Re: [PATCH-RFC] init: simplify initrd code (was Re: [PATCH RESEND
- 00/62] initrd: remove classic initrd support).
-To: nschichan@freebox.fr
-Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
-	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
-	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
-	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
-	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
-	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
-	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
-	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
-	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] um/hostfs: define HOSTFS_ATTR_* via asm-offsets
+Content-Language: en-US
+To: <linux-um@lists.infradead.org>
+References: <20251007071452.367989-3-johannes@sipsolutions.net>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20251007071452.367989-3-johannes@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.104]
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemr500015.china.huawei.com (7.202.195.162)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251009_215758_933034_BAACB8CD 
-X-CRM114-Status: UNSURE (   7.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251011_010710_866588_2B12E6F8 
+X-CRM114-Status: GOOD (  21.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,20 +76,108 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 25, 2025 at 4:12=E2=80=AFPM <nschichan@freebox.fr> wrote:
-> - drop prompt_ramdisk and ramdisk_start kernel parameters
-> - drop compression support
-> - drop image autodetection, the whole /initrd.image content is now
->   copied into /dev/ram0
-> - remove rd_load_disk() which doesn't seem to be used anywhere.
 
-I welcome any initrd simplification!
 
-> Hopefully my email config is now better and reaches gmail users
-> correctly.
+On 2025/10/7 15:14, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> The HOSTFS_ATTR_* values were meant to be standalone for
+> communication between hostfs's kernel and user code parts.
+> However, it's easy to forget that HOSTFS_ATTR_* should be
+> used even on the kernel side, and that wasn't consistently
+> done. As a result, the values need to match ATTR_* values,
+> which is not useful to maintain by hand. Instead, generate
+> them via asm-offsets like other constants that UML needs
+> in user-side code that aren't otherwise available in any
+> header files that can be included there.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Yes, I got this email.
+Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
 
---
-Askar Safin
+Thanks,
+Hongbo
+
+> ---
+>   arch/um/include/shared/common-offsets.h    | 10 +++++++
+>   arch/x86/um/shared/sysdep/kernel-offsets.h |  1 +
+>   fs/hostfs/hostfs.h                         | 34 +---------------------
+>   3 files changed, 12 insertions(+), 33 deletions(-)
+> 
+> diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
+> index 8ca66a1918c3..fcec75a93e0c 100644
+> --- a/arch/um/include/shared/common-offsets.h
+> +++ b/arch/um/include/shared/common-offsets.h
+> @@ -18,3 +18,13 @@ DEFINE(UM_NSEC_PER_USEC, NSEC_PER_USEC);
+>   DEFINE(UM_KERN_GDT_ENTRY_TLS_ENTRIES, GDT_ENTRY_TLS_ENTRIES);
+>   
+>   DEFINE(UM_SECCOMP_ARCH_NATIVE, SECCOMP_ARCH_NATIVE);
+> +
+> +DEFINE(HOSTFS_ATTR_MODE, ATTR_MODE);
+> +DEFINE(HOSTFS_ATTR_UID, ATTR_UID);
+> +DEFINE(HOSTFS_ATTR_GID, ATTR_GID);
+> +DEFINE(HOSTFS_ATTR_SIZE, ATTR_SIZE);
+> +DEFINE(HOSTFS_ATTR_ATIME, ATTR_ATIME);
+> +DEFINE(HOSTFS_ATTR_MTIME, ATTR_MTIME);
+> +DEFINE(HOSTFS_ATTR_CTIME, ATTR_CTIME);
+> +DEFINE(HOSTFS_ATTR_ATIME_SET, ATTR_ATIME_SET);
+> +DEFINE(HOSTFS_ATTR_MTIME_SET, ATTR_MTIME_SET);
+> diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
+> index 6fd1ed400399..ee6b44ef2217 100644
+> --- a/arch/x86/um/shared/sysdep/kernel-offsets.h
+> +++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
+> @@ -5,6 +5,7 @@
+>   #include <linux/crypto.h>
+>   #include <linux/kbuild.h>
+>   #include <linux/audit.h>
+> +#include <linux/fs.h>
+>   #include <asm/mman.h>
+>   #include <asm/seccomp.h>
+>   
+> diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+> index 15b2f094d36e..aa02599b770f 100644
+> --- a/fs/hostfs/hostfs.h
+> +++ b/fs/hostfs/hostfs.h
+> @@ -3,40 +3,8 @@
+>   #define __UM_FS_HOSTFS
+>   
+>   #include <os.h>
+> +#include <generated/asm-offsets.h>
+>   
+> -/*
+> - * These are exactly the same definitions as in fs.h, but the names are
+> - * changed so that this file can be included in both kernel and user files.
+> - */
+> -
+> -#define HOSTFS_ATTR_MODE	1
+> -#define HOSTFS_ATTR_UID 	2
+> -#define HOSTFS_ATTR_GID 	4
+> -#define HOSTFS_ATTR_SIZE	8
+> -#define HOSTFS_ATTR_ATIME	16
+> -#define HOSTFS_ATTR_MTIME	32
+> -#define HOSTFS_ATTR_CTIME	64
+> -#define HOSTFS_ATTR_ATIME_SET	128
+> -#define HOSTFS_ATTR_MTIME_SET	256
+> -
+> -/* This one is unused by hostfs. */
+> -#define HOSTFS_ATTR_FORCE	512	/* Not a change, but a change it */
+> -#define HOSTFS_ATTR_ATTR_FLAG	1024
+> -
+> -/*
+> - * If you are very careful, you'll notice that these two are missing:
+> - *
+> - * #define ATTR_KILL_SUID	2048
+> - * #define ATTR_KILL_SGID	4096
+> - *
+> - * and this is because they were added in 2.5 development.
+> - * Actually, they are not needed by most ->setattr() methods - they are set by
+> - * callers of notify_change() to notify that the setuid/setgid bits must be
+> - * dropped.
+> - * notify_change() will delete those flags, make sure attr->ia_valid & ATTR_MODE
+> - * is on, and remove the appropriate bits from attr->ia_mode (attr is a
+> - * "struct iattr *"). -BlaisorBlade
+> - */
+>   struct hostfs_timespec {
+>   	long long tv_sec;
+>   	long long tv_nsec;
 
