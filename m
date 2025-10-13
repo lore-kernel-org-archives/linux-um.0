@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9642ACCD18D
-	for <linux-um@archiver.kernel.org>; Mon, 13 Oct 2025 16:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44680CCD183
+	for <linux-um@archiver.kernel.org>; Mon, 13 Oct 2025 17:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MzpJMWVhNoOjgk4BJX8F1SShnKbckMn+Nc+zuR294Q0=; b=J82WU6Aej8jmZaguTKuqHES0zB
-	cQAt3dRq6hAJ44j5FWJYhKa4hHtS99tP14MWFt36VZUBGredDLr8q+Mb8XV4i6g+QqD4VLJjzzg3T
-	mw1a25aVRo9K8b7k1hEQMs1i6ToOvMNBQq4e5WpsZ8SLwuDJRtwuc93YmEYvNwehDt3btpqF+lH3F
-	dNfl6R+chDFwkRy9C9pUoB3tpU4io3+UcfM+505G0OWy3dEVTlPaJTuYZ/NULI7qnwZoWthZ2r//7
-	uaOx4u6H3A3LNJ29HT5aulIvXTkPLjI2mPoaPb/8sjTR2WHjXWLtaL0YFOp9PHFUAEbecuqclRQ1J
-	FW28EEmQ==;
+	bh=nByoAi13Ef5gTkHhIxkIOpZEtyksfBMXQWVuUX54muQ=; b=qOR0EfD8gkvN1DcM9HgiZBbND4
+	59VHl/b/DVesIdCZXZoTcnFFc1EKXe/lFeMFtHLX8+KpCKds4h4tRHL+CQri9QBMtmTR5TfSNSSYI
+	OSwmdgpvamuhWs+ipHjLFuuOaFT1KfPoan0XjvgJLswecgAtViF5j/DEgr/QS4Bbp6ZaoNS/R0RYF
+	B0VF2MBb2vJVDQkWtGKVtB7/rOQ3XLPeFauqB8schVbUCUozafxUc9ZxvkNTiEFr0uCrkzuotJYbE
+	rS88NUFevoJ3D05/rS7/++Dbf0Iw0Jdpnj7fHrBQriNBi2gFUii43WMVOReB9mUICcNvjsx/05vso
+	GSL+tpCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8LDD-0000000Dq0X-3AAp;
-	Mon, 13 Oct 2025 16:15:51 +0000
-Received: from terminus.zytor.com ([2607:7c80:54:3::136] helo=mail.zytor.com)
+	id 1v8M8g-0000000E0NA-1rXu;
+	Mon, 13 Oct 2025 17:15:14 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8LDB-0000000Dq03-44E8
+	id 1v8M8f-0000000E0MT-1Pu0
 	for linux-um@lists.infradead.org;
-	Mon, 13 Oct 2025 16:15:51 +0000
-Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 59DGEplg1360107
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 13 Oct 2025 09:14:52 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 59DGEplg1360107
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025092201; t=1760372093;
-	bh=MzpJMWVhNoOjgk4BJX8F1SShnKbckMn+Nc+zuR294Q0=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=JQss/l/MXShiySKzZWsav9VeArEu5N+uHoA047KLEMyntuwcMeK9wlN7HIQ0Tqk38
-	 JWP3hXYKNvikpWfX6arlx9W0uwDMOxRmDNvKTDAE5F6UoQRuW2UYdQH8FS/dmu5d3E
-	 IWsydJI7iSqT/4JiUB/QpAvO0m3CLOT54r0BnuzOxjwp1hTkoYG5cC2cXMzIqbFFu/
-	 hVeOMUm7eShn55+XGXxv1i0cXqiWlUTDXcOMz142IMJrmHCUqBtj9hGS3pSQf+YHB+
-	 vjYWunPASD2OmpmvS1CGd8ToW6X150kS6ymSlNwqvCNTUzUlIQ4v/fyvlZZe23Moc7
-	 PV1r9bSGOj9qg==
-Date: Mon, 13 Oct 2025 09:14:51 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Dave Hansen <dave.hansen@intel.com>,
-        =?ISO-8859-1?Q?Thomas_Wei=DFschuh?= <thomas.weissschuh@linutronix.de>,
-        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Shuah Khan <shuah@kernel.org>
-CC: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] vdso: Remove struct getcpu_cache
-User-Agent: K-9 Mail for Android
-In-Reply-To: <e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
-References: <20251013-getcpu_cache-v2-1-880fbfa3b7cc@linutronix.de> <e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
-Message-ID: <9F23DEFF-FCD7-488E-B31C-E891A7521D9E@zytor.com>
+	Mon, 13 Oct 2025 17:15:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id AADAD620D4
+	for <linux-um@lists.infradead.org>; Mon, 13 Oct 2025 17:15:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5384FC19425
+	for <linux-um@lists.infradead.org>; Mon, 13 Oct 2025 17:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760375712;
+	bh=qg3NRHdeNA4Fg5h3g9E13z1ZmJaUuUt4rsIs+bfAZf0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nInNi8ldgd1mbqOSNYEn0pvWDU/WshfNHypWq71z7uedvu9QnRfeqGNexbgxkQWls
+	 f2uSbfqG61R0A7mseEzZHj5XzQdF4CKWpU8WYjlz7LGv0ZD7jEV1HjvOJDz4QmW1nv
+	 7xejInsLO+AwE5lGA5DuIDUXa905yRbcZf8QTe1rCeC1iR7E3MOR2rj1iOyyl3h8E6
+	 q56Yj6mpnz4vm1ikUfWkH3B45H06p59zFUjdS/IoBGKAA45YFyC3iXzYEXNxkboYJQ
+	 /XsOeh2UIs5o+N21V8eMOivhe2kaee1fG903o6NTrx/vhqLEntGtDyLt+O6Iy1bxTH
+	 r5nBrhzJ5zA4w==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-57e36125e8aso918586e87.2
+        for <linux-um@lists.infradead.org>; Mon, 13 Oct 2025 10:15:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXHmVVPknX8cPh+GQmFkX5z3YYNHAW4ILtdCdNQRprX58rYLeLajSBAdK0MJNgSu4UCOU4ReLibmA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyDP5+NcaGKl0IPkaJ5vHWA8H1OE/Nwx69IBdHKp5JQbZoYO/TC
+	vLGbuQ4/HrkDvPeK45Fxo0I3Aj4JsogmRzTrkDq8j6hB6DVabAjha2d7yZOsb146SIwTB0++bEE
+	qGtOI+CfK3skOJNQuRQk8ALAvO5EMex2NVpLky7j6
+X-Google-Smtp-Source: AGHT+IFe+SzxnNHmLcFlvnfkJvIZjwnZkm1Ok6JvoMYuj8nhVWXCmwvh0KaZdzeEUyoNuxcssWgKIbqhAnjyljsSJMw=
+X-Received: by 2002:a05:6512:230c:b0:573:68fd:7ad2 with SMTP id
+ 2adb3069b0e04-5906dd53da9mr5881107e87.35.1760375710222; Mon, 13 Oct 2025
+ 10:15:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20251013-getcpu_cache-v2-1-880fbfa3b7cc@linutronix.de> <e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
+In-Reply-To: <e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
+From: Andy Lutomirski <luto@kernel.org>
+Date: Mon, 13 Oct 2025 10:14:58 -0700
+X-Gmail-Original-Message-ID: <CALCETrV2W3cZEJ2yy7F-F9=e_8HLP84ZWrOJCzUYn_ASb0+M6A@mail.gmail.com>
+X-Gm-Features: AS18NWDGlHiZ6TxV2AYIYIygvwnW3vlieR2fC4dbq7adbnnZ1RUCMMYySi05JAY
+Message-ID: <CALCETrV2W3cZEJ2yy7F-F9=e_8HLP84ZWrOJCzUYn_ASb0+M6A@mail.gmail.com>
+Subject: Re: [PATCH v2] vdso: Remove struct getcpu_cache
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Shuah Khan <shuah@kernel.org>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-api@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251013_091550_009784_1517CB29 
-X-CRM114-Status: UNSURE (   8.08  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,27 +91,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On October 13, 2025 7:06:55 AM PDT, Dave Hansen <dave=2Ehansen@intel=2Ecom>=
+On Mon, Oct 13, 2025 at 7:07=E2=80=AFAM Dave Hansen <dave.hansen@intel.com>=
  wrote:
->On 10/13/25 02:20, Thomas Wei=C3=9Fschuh wrote:
->> -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu=
+>
+> On 10/13/25 02:20, Thomas Wei=C3=9Fschuh wrote:
+> > -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu=
 _cache *unused);
->> -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu=
+> > -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu=
 _cache *unused)
->> +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)=
+> > +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)=
 ;
->> +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)
->>  {
->>  	int cpu_id;
+> > +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)
+> >  {
+> >       int cpu_id;
 >
->It would ideally be nice to have a _bit_ more history on this about
->how it became unused any why there is such high confidence that
->userspace never tries to use it=2E
->
->Let's say someone comes along in a few years and wants to use this
->'unused' parameter=2E Could they?
+> It would ideally be nice to have a _bit_ more history on this about
+> how it became unused any why there is such high confidence that
+> userspace never tries to use it.
 
-I believe it was a private storage area for the kernel to use=2E=2E=2E whi=
-ch it doesn't=2E Not doing anything at all with the pointer is perfectly le=
-gitimate=2E
+The theory is that people thought that getcpu was going to be kind of
+slow, so userspace would allocate a little cache (IIRC per-thread) and
+pass it in, and the vDSO would do, well, something clever to return
+the right value.  The something clever was probably based on the idea
+that you can't actually tell (in general) if the return value from
+getcpu is stale, since you might well get migrated right as the
+function returns anyway, so the cache could be something silly like
+(jiffies, cpu).
+
+I don't actually remember whether the kernel ever used this.  It's
+possible that there are ancient kernels where passing a wild, non-null
+pointer would blow up.  But it's certainly safe to pass null, and it's
+certainly safe for the kernel to ignore the parameter.
+
+--Andy
+
+>
+> Let's say someone comes along in a few years and wants to use this
+> 'unused' parameter. Could they?
+>
 
