@@ -4,64 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E7B6CCA476
-	for <linux-um@archiver.kernel.org>; Mon, 13 Oct 2025 10:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51A94CCD18D
+	for <linux-um@archiver.kernel.org>; Mon, 13 Oct 2025 14:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SaOiceD8AzIEGCDQ5kBv+r0GHHl/O1zjqW5YawrIHbs=; b=M+J9doAnmQzbC45Cp9exrapkhS
-	qC04IXF3I+xUA1D/jTu4wjq/wpO7UIcE1s3UmtMIZH+z5zkVmWZKY5K8ErpFofH1B4zXlyzq7UORT
-	WWzoi0AsPxuyoKZtdgtjHzbdChrLzTRyqI6qvAlFS89Yl6g2m5LwLfp5+4A7RRNCcvk4PUo412oKL
-	vlKAcfP8AP6lkukMzz3J0PbG12P89zrheKZPpQeRT+OX13SC6Uw0aRnyfVeG+8lbV8GHrXJbl2kk0
-	U0mfPpRZvxbV/ibjtxmzuKejRsnvz3vY/TC1ZM4HKlFNqGxcJGS1YvSUneooMeTa+Z5YM4RrcYH2R
-	9UIxAq4w==;
+	bh=ZVeSgejAU779/KkOzhWjkeoNy6gv3TpuFPzetwkWcBw=; b=BMlDQYOibwNPLw8ZwmqO+G9ViZ
+	BQYzeuO/tlsR5xyP/TxxXbWlOja6yeGjO/nB7hGtG53XSFKrTQXjxNRWvDt4di7tcJ1Y99+5EgYll
+	D8ClCv3nHnhM1BAn3txFAklceepm2CXCOMIdQ4gSN1ED2r00jxaA7r8GIxUOIrnrjvk/Emlzhg441
+	St4ueRfTF9uYULTszjrD+LPDrKxDooJVPCAsdiFT9Xu5R/vuA2pmcqMW+cvEgGHRKB9+8YD2zPhqU
+	A9Z1j1V4Y1nyuDvMeL/YJMgWnQ+3bF5YXAqb5afNaNfdSbLaAkdY/ub5+iqVLAscENgd4V2eWKg78
+	elzP3OMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8Fym-0000000Cv9X-1Qui;
-	Mon, 13 Oct 2025 10:40:36 +0000
-Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
+	id 1v8JCY-0000000DJMH-3Fai;
+	Mon, 13 Oct 2025 14:07:02 +0000
+Received: from mgamail.intel.com ([198.175.65.12])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8Fyj-0000000Cv58-3k4c
+	id 1v8JCW-0000000DJKq-12ai
 	for linux-um@lists.infradead.org;
-	Mon, 13 Oct 2025 10:40:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1760352024;
-	bh=fzbFR5HRnGrKHRndRJ8HHP3IHBABgYcit+jrA4C+kmQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=C/IUQwJRljYYCG64In1mr1nBxn9Tmc/5hOpZiMh09bqkYMVVIFFirEqV+s66BiwcS
-	 /PZlG7UCuvio8IhpNmitlH2pvfLYu+7G3KxBZHxqATtPFcD+f1Jh0w84XMh4K6COw1
-	 SW+LaqUQkqMUtV1Isj6A3RRL/FzEElq3Vsf/0rI0=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Mon, 13 Oct 2025 12:40:21 +0200
-Subject: [PATCH 4/4] x86/um/vdso: Drop VDSO64-y from Makefile
+	Mon, 13 Oct 2025 14:07:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760364420; x=1791900420;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L5mJoBb6ix5GBpByToQiDe5tqBFj7Zbr19ly3L1L3KI=;
+  b=fqDjKLNvp9EhJV1sz50GPUO/wjIdpmvcZC9jSNHJZBeil2DT4y3fW31z
+   StiQ24u9dxwC3SW3JRg1BlJ/RQSsIrgyKzhdsWKcKs8LZAjqEccurOV9F
+   /AJNrKq2gvWNP3i2sutmzigytxecR11cNje+0dPmaOqF58MJ9/SmFL/3I
+   Zxbal++uNCyo6PU8lB/rZLAv2/Hp+F2HjZMyfwup20SeJH1guEm5M8P9+
+   9OuZx+w+CSq7UHF7tY3OEQaBbEEsv12tTAIoPWKM3qmHolnK1lws2XhHJ
+   5U+HCUUvX4yu0JjMlkBPvbsTAwRoUL/wvvMwGWkor3Sahqi/emy2xrU6a
+   w==;
+X-CSE-ConnectionGUID: Ea2MxrA5TIqQc0pcakc3kA==
+X-CSE-MsgGUID: IZP0SFbwTlSCuMQAfetepg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11581"; a="73946679"
+X-IronPort-AV: E=Sophos;i="6.19,225,1754982000"; 
+   d="scan'208";a="73946679"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2025 07:06:57 -0700
+X-CSE-ConnectionGUID: uNRTtnxdRKStoMWW6widHg==
+X-CSE-MsgGUID: WCIV4fbYShWKbukyiTN2yA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,225,1754982000"; 
+   d="scan'208";a="186691282"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO [10.125.111.123]) ([10.125.111.123])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2025 07:06:57 -0700
+Message-ID: <e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
+Date: Mon, 13 Oct 2025 07:06:55 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] vdso: Remove struct getcpu_cache
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Andy Lutomirski <luto@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Vincenzo Frascino <vincenzo.frascino@arm.com>, Shuah Khan <shuah@kernel.org>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20251013-getcpu_cache-v2-1-880fbfa3b7cc@linutronix.de>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20251013-getcpu_cache-v2-1-880fbfa3b7cc@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251013-uml-vdso-cleanup-v1-4-a079c7adcc69@weissschuh.net>
-References: <20251013-uml-vdso-cleanup-v1-0-a079c7adcc69@weissschuh.net>
-In-Reply-To: <20251013-uml-vdso-cleanup-v1-0-a079c7adcc69@weissschuh.net>
-To: Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1760352023; l=749;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=fzbFR5HRnGrKHRndRJ8HHP3IHBABgYcit+jrA4C+kmQ=;
- b=oTuqtMKWBTQHe1Og6mGe7pRgLqIMi3izMEb85Zh1vxzG84LlxI8l3H7Rp3s14EZTLfbcb5KzH
- H3XYP1eH6S6B3wX0SQEBZCcMsonIIQAMT74yuPXPlK5isdMR19SfGO3
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251013_034034_076210_C90A0ECF 
-X-CRM114-Status: UNSURE (   7.67  )
+X-CRM114-CacheID: sfid-20251013_070700_329540_CF1AE1A3 
+X-CRM114-Status: UNSURE (   6.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,38 +142,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This symbol is unnecessary, remove it.
+On 10/13/25 02:20, Thomas Weißschuh wrote:
+> -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused);
+> -int __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused)
+> +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused);
+> +int __vdso_getcpu(unsigned int *cpu, unsigned int *node, void *unused)
+>  {
+>  	int cpu_id;
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- arch/x86/um/vdso/Makefile | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+It would ideally be nice to have a _bit_ more history on this about
+how it became unused any why there is such high confidence that
+userspace never tries to use it.
 
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 7478d11dacb7..8a7c8b37cb6e 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -3,16 +3,13 @@
- # Building vDSO images for x86.
- #
- 
--VDSO64-y		:= y
--
--vdso-install-$(VDSO64-y)	+= vdso.so
--
-+vdso-install-y += vdso.so
- 
- # files to link into the vdso
- vobjs-y := vdso-note.o um_vdso.o
- 
- # files to link into kernel
--obj-$(VDSO64-y)			+= vdso.o vma.o
-+obj-y += vdso.o vma.o
- 
- vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
- 
-
--- 
-2.51.0
-
+Let's say someone comes along in a few years and wants to use this
+'unused' parameter. Could they?
 
