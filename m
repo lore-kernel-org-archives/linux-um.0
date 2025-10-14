@@ -4,86 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0BE7CCD18E
-	for <linux-um@archiver.kernel.org>; Tue, 14 Oct 2025 08:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5671ACCD18E
+	for <linux-um@archiver.kernel.org>; Tue, 14 Oct 2025 23:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SzW2cWfpQXuLGQqbaNqxu1i17z4sh2RC+KzHuoIl4BY=; b=qG8rR1LO0NPktGnWXkPDRLEZm7
-	lK26vq16zYMS1SdJiUja/T6xNd+aoPD6Hl8bmfU4Db1z0w6yVjKkahh3FFG4KSkML3jqyjMggW0RH
-	9sMpKUVOsPiU4tPsNbDG8mljgjRghPf+CNdp7ZT91LIn776kUqpZ3QUk3Do/LjnUyeGAt3+6yZ7z4
-	s+GxTQSnsCJfcZaZCE8/DMzGGCTH8ugEU/QW9Bdr5/CTAiBKWBo1yRM9gg45ISpEp8Rs4s+b42Hs7
-	fxHu5dPTbg8S2i1cMr1TxmyVMK8NBwpB43bh/Iof//ek5SFAz/WYxQXQI685x+IaE9uPZlovxHw/D
-	lNQ1Dtjg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=NfNsGle/18B0Bo7Y9O3EDhKrI4Nxt/CvZdDjQHWN1cg=; b=Mv7YbJBScEm363Q97gYlXf4ccG
+	iHqliuJ1xJHmxhHTfd3/dPqICqMrx9R7FfdXzKK/R9VHPd+Edt+t5sCgbKpOiS82y2rqTP6gSBlzK
+	L0f0MickA5QcujdbgUKO3neBVbH+kwjT7kU3D1LxfsbwNkjAxRCVohPIm0fMoNtVhXC6zne74zviu
+	kl+E1EwIChLvD2ANlV/nms1zdgpazkmVzTHYvVlX1AHbt7bMfZp3G+8a//Cq6noeJXe8Xg+Ajv3Bm
+	GjZJTIGpabPP3r2/CC0I7KQ+57WPeT61Nwa8aLX9XaF5MlPDdYW9acGyaGwIUc3phqlAfibuVkFSG
+	pXh5QdxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8apd-0000000Fgk0-0jVP;
-	Tue, 14 Oct 2025 08:56:33 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1v8oQ4-000000002Fm-1QqL;
+	Tue, 14 Oct 2025 23:27:04 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8apa-0000000Fgi7-08LV
+	id 1v8oQ2-000000002Eu-0TGb
 	for linux-um@lists.infradead.org;
-	Tue, 14 Oct 2025 08:56:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1760432188;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SzW2cWfpQXuLGQqbaNqxu1i17z4sh2RC+KzHuoIl4BY=;
-	b=DBoF7f5CJLx8LIEZz8p61JrmQjd/o8kqXzoXDelIZykH9/2k+qSWOTHcXY1m2fAgPplnlj
-	B+Yk1BjRGANpl92ORb4WnhFgnnk/4MKCpHnThWdJZ+342siCBJMd8/mzbgf8M/xEsli2fS
-	TAYPsF0lHpiQr1OxWs1bPmjHgAyTLdw=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-88ZyZhZiPSKzb3dgMZdLLQ-1; Tue,
- 14 Oct 2025 04:56:22 -0400
-X-MC-Unique: 88ZyZhZiPSKzb3dgMZdLLQ-1
-X-Mimecast-MFC-AGG-ID: 88ZyZhZiPSKzb3dgMZdLLQ_1760432179
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8A5F2180045C;
-	Tue, 14 Oct 2025 08:56:17 +0000 (UTC)
-Received: from fweimer-oldenburg.csb.redhat.com (unknown [10.44.33.199])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E4B5F19560A2;
-	Tue, 14 Oct 2025 08:56:08 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>,  Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <thomas.weissschuh@linutronix.de>,  Huacai Chen <chenhuacai@kernel.org>,
-  WANG Xuerui <kernel@xen0n.name>,  Heiko Carstens <hca@linux.ibm.com>,
-  Vasily Gorbik <gor@linux.ibm.com>,  Alexander Gordeev
- <agordeev@linux.ibm.com>,  Christian Borntraeger
- <borntraeger@linux.ibm.com>,  Sven Schnelle <svens@linux.ibm.com>,  Thomas
- Gleixner <tglx@linutronix.de>,  Ingo Molnar <mingo@redhat.com>,  Borislav
- Petkov <bp@alien8.de>,  Dave Hansen <dave.hansen@linux.intel.com>,
-  x86@kernel.org,  "H. Peter Anvin" <hpa@zytor.com>,  Richard Weinberger
- <richard@nod.at>,  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-  Johannes Berg <johannes@sipsolutions.net>,  Vincenzo Frascino
- <vincenzo.frascino@arm.com>,  Shuah Khan <shuah@kernel.org>,
-  loongarch@lists.linux.dev,  linux-kernel@vger.kernel.org,
-  linux-s390@vger.kernel.org,  linux-um@lists.infradead.org,
-  linux-api@vger.kernel.org,  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] vdso: Remove struct getcpu_cache
-In-Reply-To: <CALCETrV2W3cZEJ2yy7F-F9=e_8HLP84ZWrOJCzUYn_ASb0+M6A@mail.gmail.com>
-	(Andy Lutomirski's message of "Mon, 13 Oct 2025 10:14:58 -0700")
-References: <20251013-getcpu_cache-v2-1-880fbfa3b7cc@linutronix.de>
-	<e95dc212-6fd3-43e3-aeb7-bf55917e0cd4@intel.com>
-	<CALCETrV2W3cZEJ2yy7F-F9=e_8HLP84ZWrOJCzUYn_ASb0+M6A@mail.gmail.com>
-Date: Tue, 14 Oct 2025 10:56:06 +0200
-Message-ID: <lhu5xchq2u1.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 14 Oct 2025 23:27:03 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2E486451DD;
+	Tue, 14 Oct 2025 23:27:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B5FC4CEE7;
+	Tue, 14 Oct 2025 23:26:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760484421;
+	bh=5P1c3HZEgKsH8ctIgX15GY1ZMuJMbfzZtY7o952H6bs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IAIs28YoYYvTrrE6xrA4Mqu+f7sL30GgVRQxjsd5CChdUvpnaZYJYVeiDell/F2IN
+	 H9pgChYZCjj9nKJS6e181RNvep2M6yeUfhzb/IJ2zfnLF659Eyjx3NQ8j/gvPXAYZS
+	 x3cnJiO3jzpTH46snLMjJVB0vCMNNLOdcCQbHgYvmZWyhdKt8mw1l3HRCL6GSMC5bL
+	 82BWfHUGktSP1x3HxRKj0fZ1SEBQAAYADoP5dMMel/SZpsWaTnMVrIPmh21IgYY2oD
+	 2cS3lRg2oVeaon1x3iJ2d8VmUbt1sGjKjr+Jhie7/jUpc5cXeod+vjihF24pc6Hyts
+	 dfD5G9P7ZgSZg==
+From: Sasha Levin <sashal@kernel.org>
+To: nathan@kernel.org
+Cc: Matt.Kelly2@boeing.com,
+	akpm@linux-foundation.org,
+	andrew.j.oppelt@boeing.com,
+	anton.ivanov@cambridgegreys.com,
+	ardb@kernel.org,
+	arnd@arndb.de,
+	bhelgaas@google.com,
+	bp@alien8.de,
+	chuck.wolber@boeing.com,
+	dave.hansen@linux.intel.com,
+	dvyukov@google.com,
+	hpa@zytor.com,
+	jinghao7@illinois.edu,
+	johannes@sipsolutions.net,
+	jpoimboe@kernel.org,
+	justinstitt@google.com,
+	kees@kernel.org,
+	kent.overstreet@linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	llvm@lists.linux.dev,
+	luto@kernel.org,
+	marinov@illinois.edu,
+	masahiroy@kernel.org,
+	maskray@google.com,
+	mathieu.desnoyers@efficios.com,
+	matthew.l.weber3@boeing.com,
+	mhiramat@kernel.org,
+	mingo@redhat.com,
+	morbo@google.com,
+	ndesaulniers@google.com,
+	oberpar@linux.ibm.com,
+	paulmck@kernel.org,
+	peterz@infradead.org,
+	richard@nod.at,
+	rostedt@goodmis.org,
+	samitolvanen@google.com,
+	samuel.sarkisian@boeing.com,
+	sashal@kernel.org,
+	steven.h.vanderleest@boeing.com,
+	tglx@linutronix.de,
+	tingxur@illinois.edu,
+	tyxu@illinois.edu,
+	wentaoz5@illinois.edu,
+	x86@kernel.org
+Subject: [RFC PATCH 0/4] Enable Clang's Source-based Code Coverage and MC/DC for x86-64
+Date: Tue, 14 Oct 2025 19:26:35 -0400
+Message-ID: <20251014232639.673260-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20250829181007.GA468030@ax162>
+References: <20250829181007.GA468030@ax162>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251014_015630_140378_B425E5DA 
-X-CRM114-Status: GOOD (  15.26  )
+X-CRM114-CacheID: sfid-20251014_162702_189581_807A2A80 
+X-CRM114-Status: GOOD (  11.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,27 +118,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-* Andy Lutomirski:
+This series adds support for Clang's Source-based Code Coverage to the
+Linux kernel, enabling more accurate coverage measurement at the source
+level compared to gcov. This is particularly valuable for safety-critical
+use cases (automotive, medical, aerospace) where MC/DC coverage is required
+for certification.
 
-> The theory is that people thought that getcpu was going to be kind of
-> slow, so userspace would allocate a little cache (IIRC per-thread) and
-> pass it in, and the vDSO would do, well, something clever to return
-> the right value.  The something clever was probably based on the idea
-> that you can't actually tell (in general) if the return value from
-> getcpu is stale, since you might well get migrated right as the
-> function returns anyway, so the cache could be something silly like
-> (jiffies, cpu).
+Changes since previous patchset [1]:
+- Rebased on v6.18-rc1
+- Adapted to lib/crypto reorganization (curve25519 exclusion moved to
+  lib/crypto/Makefile)
+- Minor correctness fixes throughout the codebase
 
-It probably had to do something with per-CPU or per-node mappings of the
-vDSO.  Or may some non-coherent cache line in the vDSO.  As far as I
-understand it, the cache has zero chance of working with the way vDSO
-data is currently implemented.
+The implementation has been tested with a kernel build using Clang 18+ and
+boots successfully in a KVM environment with instrumentation enabled.
 
-We have the CPU ID and node ID in the restartable sequences area now
-(although glibc does not use the node ID yet).  It's not a cache.  So
-this clearly supersedes whatever struct getcpu_cache tried to achieve.
+[1] https://lore.kernel.org/all/20240905043245.1389509-1-wentaoz5@illinois.edu/
 
-Thanks,
-Florian
+Wentao Zhang (4):
+  llvm-cov: add Clang's Source-based Code Coverage support
+  llvm-cov: add Clang's MC/DC support
+  x86: disable llvm-cov instrumentation
+  x86: enable llvm-cov support
+
+ Makefile                          |   9 ++
+ arch/Kconfig                      |   1 +
+ arch/x86/Kconfig                  |   2 +
+ arch/x86/crypto/Makefile          |   1 +
+ arch/x86/kernel/vmlinux.lds.S     |   2 +
+ include/asm-generic/vmlinux.lds.h |  36 +++++
+ kernel/Makefile                   |   1 +
+ kernel/llvm-cov/Kconfig           | 121 ++++++++++++++
+ kernel/llvm-cov/Makefile          |   8 +
+ kernel/llvm-cov/fs.c              | 253 ++++++++++++++++++++++++++++++
+ kernel/llvm-cov/llvm-cov.h        | 157 ++++++++++++++++++
+ lib/crypto/Makefile               |   3 +-
+ scripts/Makefile.lib              |  23 +++
+ scripts/mod/modpost.c             |   2 +
+ 14 files changed, 618 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/llvm-cov/Kconfig
+ create mode 100644 kernel/llvm-cov/Makefile
+ create mode 100644 kernel/llvm-cov/fs.c
+ create mode 100644 kernel/llvm-cov/llvm-cov.h
+
+-- 
+2.51.0
 
 
