@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FE86CCD18E
-	for <linux-um@archiver.kernel.org>; Tue, 14 Oct 2025 23:27:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3A34CCD184
+	for <linux-um@archiver.kernel.org>; Tue, 14 Oct 2025 23:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8HBofCLPawa6CE1rvY1ls9D+BkHx547tY3L6YJa+htc=; b=rTeWuT0M2grybwfXNNOjF1/0hR
-	JRTt119EJcVuavNF5V83Au22bXfvoaz02GWBtAgs728VbBVlabhzdkuMDsUE1uCAIkNfA2MrysNT/
-	2huXRp2B9SGerWJTq3xFuGQPh2xb2jRMmmnaFhwvWLHJOgTi71wkXJdmhldB12ZVd2jXbdQuJ+2hG
-	NCIt43cLgARYDIRqc1d482NizlnEI8hNS3mlAbcXGl8qJe+VKRW85UNHO+0U6/sLYlABuhhdmIX4H
-	w07HQvFexDPqWgxopvYPLGZp9scSsMJjIOYdL/SPD9Ga6vED1W3kNzLlQSV34DTdPDlQLTJ1jzLus
-	qeeeXouQ==;
+	bh=Ahe+677CuItOdldLOvGaCypCb6CPjDUyBHc2bowxPwg=; b=Scpr0+sJ/jOoFhtgUjOdrDw68x
+	1eIXmvxfzuKrYSn1MPErEuXMT3usEC7HIR/Jbm7XUVosojjbw7MUXHNbyqsnh42hYCiGQHhFmuj44
+	m3Xv8FbmLkp4U7nTQ77W2p/BlYA2KHUGvtksx6hiGzFlEXAk0b2ArD4MIbOdkN2ghTcgd7a4/Oqxc
+	xVSk1SEeMl/jsNfuYmvJ1EQl9Ft+I6uJSZW8IDGH8Y1qbOipXjY8QXjBatwAhXfOOtfSW5sU1TZM/
+	/9jtMtkht8nKZYYuec5HSXkM/wHBGTbmYXi9UdkO1kPZkddlrwz4kT31u2Jl9w+JuKpbZqqUBbDw6
+	t+Hanrbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8oQI-000000002OO-1auj;
-	Tue, 14 Oct 2025 23:27:18 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1v8oQO-000000002SL-2wt2;
+	Tue, 14 Oct 2025 23:27:24 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v8oQH-000000002Nk-2F3a
+	id 1v8oQM-000000002QT-1phE
 	for linux-um@lists.infradead.org;
-	Tue, 14 Oct 2025 23:27:17 +0000
+	Tue, 14 Oct 2025 23:27:23 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id ECD2B6230B;
+	by sea.source.kernel.org (Postfix) with ESMTP id 05A5143323;
+	Tue, 14 Oct 2025 23:27:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA00FC2BC9E;
 	Tue, 14 Oct 2025 23:27:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B694CC4CEE7;
-	Tue, 14 Oct 2025 23:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760484436;
-	bh=QGg+cLDwaefAIpaStFsfisZ/bUz9GPM0JcN2ANfbxL0=;
+	s=k20201202; t=1760484441;
+	bh=1TpApqFhm/8zdJyy1fMGH2+/kuKom2S6e7bMBlVrzaI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pKdDKOWiCCF0uO5b9ZcYY1BKNr+frW1mUAru6DUz9aXZJTdh6ZWlh5tnRp95mgDfQ
-	 RdfvUAJTqnZX1mtiK631WnZGgekKT0nhK6WXDPiqCNtoAsYYNZU2O9AFP1RQgkTv+t
-	 f6dVDm/cXoDfYVbTQsj29DLBis4ZYBqIUcVVGfj9DF9PunCEJ/C+ko7w1gTcEw1kSy
-	 qD3WijxGv+RiypVFw9Fn14vqwIqKR/vXB4zqgM5KMiJ01EtOk7LEh6KJlB4dbOKbuD
-	 E8M5VPBwNRnnqOLqNgkorR3uN7/hb/dh7blUarL6QnXAdyEV+UOAN7pLPsEUxxWIGU
-	 IT/smkxEufu2Q==
+	b=MJhaVLVTpMS4DhVN7xy3hEHyuXzk6r43Kn+AEBSzU4LXGX5jF4QabLgDvRkZUOKH8
+	 VFZxTTtQcb11/rIXUHJtJr+al0C307wX0VVOKSZg4oLtkQAEqIgWf7Ale4uJTxzLro
+	 rtMyu3zruLexE+RU6YBjkWHr59gAB48cmJxSxWjpPE5JNxjffZGX+zfU7WWJHg4WR2
+	 /U9nAL9NZcc8MvoBcG41B0tz1oz6SyABCYR5QmcwJHl0LG2AuADxSeXZ2ZhHA0/4gK
+	 JZtRxO5EDXwMN97Dz8fuGlvmFVZ/ie8Mtmp5ZddzB8hF+nmbYd6y7PM3Qn+sqPnKbJ
+	 z0eAFrjQwzmWg==
 From: Sasha Levin <sashal@kernel.org>
 To: nathan@kernel.org
 Cc: Matt.Kelly2@boeing.com,
@@ -93,15 +93,19 @@ Cc: Matt.Kelly2@boeing.com,
 	tyxu@illinois.edu,
 	wentaoz5@illinois.edu,
 	x86@kernel.org
-Subject: [RFC PATCH 3/4] x86: disable llvm-cov instrumentation
-Date: Tue, 14 Oct 2025 19:26:38 -0400
-Message-ID: <20251014232639.673260-4-sashal@kernel.org>
+Subject: [RFC PATCH 4/4] x86: enable llvm-cov support
+Date: Tue, 14 Oct 2025 19:26:39 -0400
+Message-ID: <20251014232639.673260-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251014232639.673260-1-sashal@kernel.org>
 References: <20250829181007.GA468030@ax162>
  <20251014232639.673260-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251014_162722_487572_D7DF21C2 
+X-CRM114-Status: UNSURE (   7.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,44 +122,42 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Wentao Zhang <wentaoz5@illinois.edu>
 
-Disable instrumentation for arch/x86/crypto/curve25519-x86_64.c. Otherwise
-compilation would fail with "error: inline assembly requires more registers
-than available".
-
-Similar behavior was reported with gcov as well. See c390c452ebeb ("crypto:
-x86/curve25519 - disable gcov").
+Set ARCH_HAS_* options to "y" in kconfig and include section description in
+linker script.
 
 Signed-off-by: Wentao Zhang <wentaoz5@illinois.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/crypto/Makefile | 1 +
- lib/crypto/Makefile      | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/Kconfig              | 2 ++
+ arch/x86/kernel/vmlinux.lds.S | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-index 2d30d5d361458..9fac64c39766f 100644
---- a/arch/x86/crypto/Makefile
-+++ b/arch/x86/crypto/Makefile
-@@ -77,3 +77,4 @@ aria-aesni-avx2-x86_64-y := aria-aesni-avx2-asm_64.o aria_aesni_avx2_glue.o
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index fa3b616af03a2..7764562df838b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -90,6 +90,8 @@ config X86
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_KCOV			if X86_64
++	select ARCH_HAS_LLVM_COV		if X86_64
++	select ARCH_HAS_LLVM_COV_PROFILE_ALL	if X86_64
+ 	select ARCH_HAS_KERNEL_FPU_SUPPORT
+ 	select ARCH_HAS_MEM_ENCRYPT
+ 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index d7af4a64c211b..d2caff2a1abff 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -203,6 +203,8 @@ SECTIONS
  
- obj-$(CONFIG_CRYPTO_ARIA_GFNI_AVX512_X86_64) += aria-gfni-avx512-x86_64.o
- aria-gfni-avx512-x86_64-y := aria-gfni-avx512-asm_64.o aria_gfni_avx512_glue.o
+ 	BUG_TABLE
+ 
++	LLVM_COV_DATA
 +
-diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
-index bded351aeacef..9a8040ea7b626 100644
---- a/lib/crypto/Makefile
-+++ b/lib/crypto/Makefile
-@@ -81,8 +81,9 @@ libchacha20poly1305-$(CONFIG_CRYPTO_SELFTESTS)	+= chacha20poly1305-selftest.o
- obj-$(CONFIG_CRYPTO_LIB_CURVE25519) += libcurve25519.o
- libcurve25519-y := curve25519.o
+ 	ORC_UNWIND_TABLE
  
--# Disable GCOV in odd or sensitive code
-+# Disable GCOV and llvm-cov in odd or sensitive code
- GCOV_PROFILE_curve25519.o := n
-+LLVM_COV_PROFILE_curve25519-x86_64.o := n
- 
- ifeq ($(CONFIG_ARCH_SUPPORTS_INT128),y)
- libcurve25519-$(CONFIG_CRYPTO_LIB_CURVE25519_GENERIC) += curve25519-hacl64.o
+ 	/* Init code and data - will be freed after init */
 -- 
 2.51.0
 
