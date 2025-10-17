@@ -4,74 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79EF6CCFA13
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 579B2CCFA1E
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QGaAvozmIqIzV143yBTS5nQtsGF8X9DZFIMkdv4YYLs=; b=xvWazkKbjjCNplduN+bYf9O492
-	CbArFAFJR61LrNTZ/el+o1KWfgtofVvgr/qlzk/MqfXTEUuNxGNff1lpKf3nrJIp/YLRUfh7zn/Kz
-	/k8ECj3fy3H6lL3v9t3sOciGarziZxcSrEsQtp4Zj/Ps4OL75SYARgpwIGEuzSps2um054qggsM4u
-	9gzcHXbQdqmwIFoxAoCEcRoYjiFRn+DKJfvCm1QDl3KB8PdMz6iLj5AzDEPuz+48RQ6fsC+UjCFfE
-	ltDWeCG4m8IB8X5YAuq6UIYO1EKm/wXKnoWDvjClRFVFoJlosW1r7Mev24RlEZ+DRj8BJKwZp38/6
-	A8Vy3HzQ==;
+	bh=Axggb3gQ9gMod1E1Yl366ABHVZrqad4JWTadzq2JQtY=; b=hVIFZiYKBW6lpTm+Srwf3QLBNJ
+	XYrN4BGPPZ7ZeL0aZMup0CMA5e2soA42PA2C4kGvid50Gms1BDkcedklZ2n+MNAzdyVjb8WntXnMA
+	K7AYXJiUGhKZlg1PknGVXWGJuqx2KX3zgHbVwzoUr25azBOKEQEu+ZrNxnZTCJlXdAem/Dq57XlPV
+	HZQqwp+KiBrfVwq1XQEWgTEEOm1DAPBefclfDbGTmNQ36LavlxprW1M5h69DpRq8v8kRbVnReFXWX
+	pdsOO+cNsNwf6mm47o+dt0ZMd4O4RDipvENPL1Kbsm8UIEVst5r17wtM2etkaYyaNf4lheADErMMQ
+	eLsRn9ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlqh-00000003Gar-3X0w;
-	Sat, 08 Nov 2025 16:31:35 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vHlqj-00000003Gbf-3Gco;
+	Sat, 08 Nov 2025 16:31:37 +0000
+Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com ([52.34.181.151])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gQw-00000007Cna-3u6S;
-	Fri, 17 Oct 2025 09:07:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Sender:
-	Reply-To:Cc:Content-ID:Content-Description;
-	bh=QGaAvozmIqIzV143yBTS5nQtsGF8X9DZFIMkdv4YYLs=; b=PKkMcIZW7IhDqTsBJ3oP9Vi17g
-	M2frqQ/cU+LuKL0km1oIjFxctb8lOdz5uWU/fweckxHjsdVG9U4r87cnxz4jdkt8LBtOZM2GvfmLa
-	WnznV+UDVvZtFwSv7Ui71/1yvb4BmnXV5DotEJSQNJKN+uo9iMdrGWT+f6JHwSzeMJAud1DIC3yKZ
-	IcsikTtrx3lP0Ozj+7N8REm3frmkUTKPj05J/yrio6KxyfDJVCqwVrf7FjAEu6IbXdwhO1didAtE+
-	ZvE94kwS+u8tv2/yMi98sgYjkZfZQWB9Jui0uZEqNvyMyO5SZW0NOZ8qTQH55r4TLlOuO+yGmY0qd
-	U2JCjBEA==;
-Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.162.73.231])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gQa-00000007Pxj-1IYH;
-	Fri, 17 Oct 2025 09:07:32 +0000
+	id 1v9gRC-00000007D9R-3qJn;
+	Fri, 17 Oct 2025 09:07:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760692032; x=1792228032;
+  t=1760692070; x=1792228070;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=QGaAvozmIqIzV143yBTS5nQtsGF8X9DZFIMkdv4YYLs=;
-  b=BS9gkN94gs1RwypGvfTGTQAA3e5pcpCa5cb4SyNP25DYP2D/vGu6AUFf
-   0UBHCCzRyD/BnWDUHsUs2YBaCPS8FJjA8Tw9kWDHGovy7mpUiKb4IIW6l
-   4pi5474Am0XYvQjzZX8pSbK+IZSBZvSfQiYiqPUybwdjmZM2D+Q+xGP+v
-   6wVKkMb/xnUYXMP0Hx40//PgZJ0giyzTBk7J0MHkepuI6Vp+V+HZKkzrv
-   4bZ9YPd/IrcqIRHgPTEKnaPvbUXsBr6OLHyvSL/Jp/IT7hjHfEcKl/1F1
-   PWvFmk0UH//giobupmgK8TS/fKbW45hsgkWlLwC/OLrJEYfF5akuLTeYe
-   Q==;
-X-CSE-ConnectionGUID: S8umDZu2RQyC2BaF0R7VWQ==
-X-CSE-MsgGUID: V1+N7JwKSPydLXwfcmGstQ==
-X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
-   d="scan'208";a="4877961"
-Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
-  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:07:01 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:7581]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.44.167:2525] with esmtp (Farcaster)
- id c0228e10-0b40-498e-9c44-0899bb353965; Fri, 17 Oct 2025 09:07:01 +0000 (UTC)
-X-Farcaster-Flow-ID: c0228e10-0b40-498e-9c44-0899bb353965
+  bh=Axggb3gQ9gMod1E1Yl366ABHVZrqad4JWTadzq2JQtY=;
+  b=Lt56+MzTPm7JVj7+pJKndDpIXgus8Fr4uJhtPFBs/eR1Q+IQoPC/y2qu
+   8B9rBYXVB/AxOKyPmS/g86wRBCQemnbYwHW8eNeaFoGsUbGneRNqR76BF
+   07XdmGpM3zww5A89d0Ro6IVvTCsfk101clPlTvJ5HvVX1/9211+/75Gxl
+   kEhMetNBqLkxawoICwCuTiLpD6jAVUalGM5+MxayS27WoXJpA9M3FHavY
+   RLHhByLoEVrxIYsAhc8rtSm6qXfiNV2f5SgXywot69JdKBmD150QoGQn6
+   hdYZMhl3L4Vh3Gq1P3S9Di5mL4I/9uNyJztZua0oIjazbLhIjBXVzrjyY
+   g==;
+X-CSE-ConnectionGUID: KhdS/BHxQO6GfnkB7Y5SdA==
+X-CSE-MsgGUID: lUTObcljTvugkRhBtO1Rag==
+X-IronPort-AV: E=Sophos;i="6.18,263,1751241600"; 
+   d="scan'208";a="5073215"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:07:49 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.51:5394]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.52:2525] with esmtp (Farcaster)
+ id 6f0c35a7-7288-49ab-a83f-0cddef51b437; Fri, 17 Oct 2025 09:07:48 +0000 (UTC)
+X-Farcaster-Flow-ID: 6f0c35a7-7288-49ab-a83f-0cddef51b437
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:07:01 +0000
+ Fri, 17 Oct 2025 09:07:45 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:06:46 +0000
+ 09:07:31 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -120,9 +106,9 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
 	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
 	<tipc-discussion@lists.sourceforge.net>
-Subject: [PATCH v2 04/27 5.10.y] minmax: clamp more efficiently by avoiding extra comparison
-Date: Fri, 17 Oct 2025 09:04:56 +0000
-Message-ID: <20251017090519.46992-5-farbere@amazon.com>
+Subject: [PATCH v2 07/27 5.10.y] minmax: deduplicate __unconst_integer_typeof()
+Date: Fri, 17 Oct 2025 09:04:59 +0000
+Message-ID: <20251017090519.46992-8-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
 References: <20251017090519.46992-1-farbere@amazon.com>
@@ -133,8 +119,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_100717_577449_BFCEA5D0 
-X-CRM114-Status: GOOD (  15.19  )
+X-CRM114-CacheID: sfid-20251017_020751_019581_7FCB0B97 
+X-CRM114-Status: GOOD (  11.42  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -150,184 +136,79 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2122e2a4efc2cd139474079e11939b6e07adfacd ]
+[ Upstream commit 5e57418a2031cd5e1863efdf3d7447a16a368172 ]
 
-Currently the clamp algorithm does:
+It appears that compiler_types.h already have an implementation of the
+__unconst_integer_typeof() called __unqual_scalar_typeof().  Use it
+instead of the copy.
 
-    if (val > hi)
-        val = hi;
-    if (val < lo)
-        val = lo;
-
-But since hi > lo by definition, this can be made more efficient with:
-
-    if (val > hi)
-        val = hi;
-    else if (val < lo)
-        val = lo;
-
-So fix up the clamp and clamp_t functions to do this, adding the same
-argument checking as for min and min_t.
-
-For simple cases, code generation on x86_64 and aarch64 stay about the
-same:
-
-    before:
-            cmp     edi, edx
-            mov     eax, esi
-            cmova   edi, edx
-            cmp     edi, esi
-            cmovnb  eax, edi
-            ret
-    after:
-            cmp     edi, esi
-            mov     eax, edx
-            cmovnb  esi, edi
-            cmp     edi, edx
-            cmovb   eax, esi
-            ret
-
-    before:
-            cmp     w0, w2
-            csel    w8, w0, w2, lo
-            cmp     w8, w1
-            csel    w0, w8, w1, hi
-            ret
-    after:
-            cmp     w0, w1
-            csel    w8, w0, w1, hi
-            cmp     w0, w2
-            csel    w0, w8, w2, lo
-            ret
-
-On MIPS64, however, code generation improves, by removing arithmetic in
-the second branch:
-
-    before:
-            sltu    $3,$6,$4
-            bne     $3,$0,.L2
-            move    $2,$6
-
-            move    $2,$4
-    .L2:
-            sltu    $3,$2,$5
-            bnel    $3,$0,.L7
-            move    $2,$5
-
-    .L7:
-            jr      $31
-            nop
-    after:
-            sltu    $3,$4,$6
-            beq     $3,$0,.L13
-            move    $2,$6
-
-            sltu    $3,$4,$5
-            bne     $3,$0,.L12
-            move    $2,$4
-
-    .L13:
-            jr      $31
-            nop
-
-    .L12:
-            jr      $31
-            move    $2,$5
-
-For more complex cases with surrounding code, the effects are a bit
-more complicated. For example, consider this simplified version of
-timestamp_truncate() from fs/inode.c on x86_64:
-
-    struct timespec64 timestamp_truncate(struct timespec64 t, struct inode *inode)
-    {
-        struct super_block *sb = inode->i_sb;
-        unsigned int gran = sb->s_time_gran;
-
-        t.tv_sec = clamp(t.tv_sec, sb->s_time_min, sb->s_time_max);
-        if (t.tv_sec == sb->s_time_max || t.tv_sec == sb->s_time_min)
-            t.tv_nsec = 0;
-        return t;
-    }
-
-    before:
-            mov     r8, rdx
-            mov     rdx, rsi
-            mov     rcx, QWORD PTR [r8]
-            mov     rax, QWORD PTR [rcx+8]
-            mov     rcx, QWORD PTR [rcx+16]
-            cmp     rax, rdi
-            mov     r8, rcx
-            cmovge  rdi, rax
-            cmp     rdi, rcx
-            cmovle  r8, rdi
-            cmp     rax, r8
-            je      .L4
-            cmp     rdi, rcx
-            jge     .L4
-            mov     rax, r8
-            ret
-    .L4:
-            xor     edx, edx
-            mov     rax, r8
-            ret
-
-    after:
-            mov     rax, QWORD PTR [rdx]
-            mov     rdx, QWORD PTR [rax+8]
-            mov     rax, QWORD PTR [rax+16]
-            cmp     rax, rdi
-            jg      .L6
-            mov     r8, rax
-            xor     edx, edx
-    .L2:
-            mov     rax, r8
-            ret
-    .L6:
-            cmp     rdx, rdi
-            mov     r8, rdi
-            cmovge  r8, rdx
-            cmp     rax, r8
-            je      .L4
-            xor     eax, eax
-            cmp     rdx, rdi
-            cmovl   rax, rsi
-            mov     rdx, rax
-            mov     rax, r8
-            ret
-    .L4:
-            xor     edx, edx
-            jmp     .L2
-
-In this case, we actually gain a branch, unfortunately, because the
-compiler's replacement axioms no longer as cleanly apply.
-
-So all and all, this change is a bit of a mixed bag.
-
-Link: https://lkml.kernel.org/r/20220926133435.1333846-2-Jason@zx2c4.com
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20230911154913.4176033-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Herve Codina <herve.codina@bootlin.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/minmax.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/minmax.h | 26 +++-----------------------
+ 1 file changed, 3 insertions(+), 23 deletions(-)
 
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 8b092c66c5aa..abdeae409dad 100644
+index 0e89c78810f6..c813c1187510 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -38,7 +38,7 @@
- 		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_MINMAX_H
+ #define _LINUX_MINMAX_H
  
- #define __clamp(val, lo, hi)	\
--	__cmp(__cmp(val, lo, >), hi, <)
-+	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
++#include <linux/compiler_types.h>
+ #include <linux/const.h>
+ #include <linux/types.h>
  
- #define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({	\
- 		typeof(val) unique_val = (val);				\
+@@ -151,27 +152,6 @@
+  */
+ #define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
+ 
+-/*
+- * Remove a const qualifier from integer types
+- * _Generic(foo, type-name: association, ..., default: association) performs a
+- * comparison against the foo type (not the qualified type).
+- * Do not use the const keyword in the type-name as it will not match the
+- * unqualified type of foo.
+- */
+-#define __unconst_integer_type_cases(type)	\
+-	unsigned type:  (unsigned type)0,	\
+-	signed type:    (signed type)0
+-
+-#define __unconst_integer_typeof(x) typeof(			\
+-	_Generic((x),						\
+-		char: (char)0,					\
+-		__unconst_integer_type_cases(char),		\
+-		__unconst_integer_type_cases(short),		\
+-		__unconst_integer_type_cases(int),		\
+-		__unconst_integer_type_cases(long),		\
+-		__unconst_integer_type_cases(long long),	\
+-		default: (x)))
+-
+ /*
+  * Do not check the array parameter using __must_be_array().
+  * In the following legit use-case where the "array" passed is a simple pointer,
+@@ -186,13 +166,13 @@
+  * 'int *buff' and 'int buff[N]' types.
+  *
+  * The array can be an array of const items.
+- * typeof() keeps the const qualifier. Use __unconst_integer_typeof() in order
++ * typeof() keeps the const qualifier. Use __unqual_scalar_typeof() in order
+  * to discard the const qualifier for the __element variable.
+  */
+ #define __minmax_array(op, array, len) ({				\
+ 	typeof(&(array)[0]) __array = (array);				\
+ 	typeof(len) __len = (len);					\
+-	__unconst_integer_typeof(__array[0]) __element = __array[--__len]; \
++	__unqual_scalar_typeof(__array[0]) __element = __array[--__len];\
+ 	while (__len--)							\
+ 		__element = op(__element, __array[__len]);		\
+ 	__element; })
 -- 
 2.47.3
 
