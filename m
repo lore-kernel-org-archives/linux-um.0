@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CE9CD1292
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BF2ECCFA13
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:To:From:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zbj2mTisKzioKQVYABevmwS3PD+KbTl4NbCfwfEx+Qc=; b=h0h9nnDZirbnyy
-	pqkFngoCLYdYUIMHjcz8P+u7fpsEc/J2bHvos90/kl9yz9oxmn24JZ3KvsdGU0jHj4VTriSQvnZe9
-	7s6sIbJvdocd6cODK2fRvUSwT2tCcvxJs0vDYuImhEc4z504l0dD5Bc+CS/LjSEmoLj3nGt5M4evl
-	LREbkKtBZaHEVIASaeJAyMBFEipEJ9G4ZY5yxBohKgF28FB6MQ+W09JobJ8vnRBgB9kkkhVVzikGY
-	O37zapBE/vJbK7XjI6eqsvOl7fTFKUxv2AxyX0k0JUODvopVAmt41iOJ3YZ+z+rm9s/ua2opm4Tuc
-	X0qHxoXTBmbVAbPFwkKw==;
+	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kFRk/YEfanxcwxn3T4iYIqsiSiWmkv1ShCNggWcZo/w=; b=QqX0XSgLVCIt2Q+PdWbw1UnkhI
+	bDsoSCTlj/3FMC1U8ZAYschQhy1T3CjzGZ030nS3HfJzsPW7CKcugMYRaBVwicUi8RPT6rtR+Zevs
+	5BgIDdfjNHKrreWpcOGK6rAUJLdTHCplCIgk66Oyxfd+HTr0ibN9Z3hjsDiw5gQ4Us7dgkbVKoZoB
+	zWJDC7cOZnm5AJo8G357S9lYekwFY9C6En8NRD6FHoomlmmwC1D3Xk2UVOuRFSIcoH14Axfo8Ej2W
+	/W/NwVnnI8eonH9QHiWNAC5WtgUPbg8hFf7A9FiTYP+B/Zdnje3caJu/HGCHlS5fXXsWtghTEYi02
+	OAQnlkjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlqc-00000003GVf-2RTt;
-	Sat, 08 Nov 2025 16:31:30 +0000
-Received: from pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com ([34.218.115.239])
+	id 1vHlqd-00000003GWX-2Cag;
+	Sat, 08 Nov 2025 16:31:31 +0000
+Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com ([52.34.181.151])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gPE-00000007BT5-13Zn;
-	Fri, 17 Oct 2025 09:05:49 +0000
+	id 1v9gPO-00000007BWp-27dD
+	for linux-um@lists.infradead.org;
+	Fri, 17 Oct 2025 09:06:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760691948; x=1792227948;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zbj2mTisKzioKQVYABevmwS3PD+KbTl4NbCfwfEx+Qc=;
-  b=Ru1y67Ke9PrC10OIw0RaF5/8iH3f05SJBxg+72qBmH+zba4ePfBIKXt1
-   KNgNDjdbHayABvaPkgaXTHu3L6aHCVTq7LM71k9aadNWHGthQcLsI0md9
-   to0jWhRUIenqZihWMYsDvUG1yw8K72yOpyRbGjeHO/znBYdilG2f7LgOK
-   MQbIM21RCnH3ghhsDi+eAWgLRTaVuRTQ08LA+aWUY0J+IxbgGqP90pssT
-   TV6c4SdHfFKhEWBp36iRr3OEHxOAPX7FH64kJUiI9mA4QAc5nkoe2sVok
-   Byo2oZvGlL0JDSiv7fCdvbOFUIplYYCtRlHjIR4arewnHrSsWyzmQOI63
+  t=1760691958; x=1792227958;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kFRk/YEfanxcwxn3T4iYIqsiSiWmkv1ShCNggWcZo/w=;
+  b=eec4gFv0g4FAVDkjgOqBUn9avSsi2hOUDHu2mMGpl5pfWee35bFCiPMY
+   0tWP5oHJUMPcFYueuwEUOVgFQg0XWfEmPU/8j0ZcQ0YmASDBnMl6F9vVh
+   mAjVRDqzXLgkAq5EdStMu1vBAk5+ggaThr+D83dc2lX5OrDj6CO+Lss4v
+   Gr1cl0yCc4wOwkhPHZAQDiAj/x2Xu+Ci4mBWbE6xHhBYOmemh99KjmbiR
+   QWjb8XjOkv4dgL5WGjg8pJPwr0+yQ3kEyY3+J9tQ/0vilyrWiL1qnDA9Y
+   Aiq58uTBnbO66mryyPtNeC7O2xHpr6zK6YbfA+X8Zn0dKBT773+xb0aBL
    A==;
-X-CSE-ConnectionGUID: r6Bg9Du6S1OIcsGc5tRu+Q==
-X-CSE-MsgGUID: RfhnESv6RwG1ZmzF97qNew==
-X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
-   d="scan'208";a="4884236"
-Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
-  by internal-pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:43 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:17609]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.44:2525] with esmtp (Farcaster)
- id 48bd48bb-d4c8-4418-898a-1915d00032a2; Fri, 17 Oct 2025 09:05:43 +0000 (UTC)
-X-Farcaster-Flow-ID: 48bd48bb-d4c8-4418-898a-1915d00032a2
+X-CSE-ConnectionGUID: mmWdkVVjTsyPnw62us7gdA==
+X-CSE-MsgGUID: zCG8tz2uQkG3AJR2iQRSzQ==
+X-IronPort-AV: E=Sophos;i="6.18,263,1751241600"; 
+   d="scan'208";a="5073156"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:55 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:9202]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.191:2525] with esmtp (Farcaster)
+ id b995c6ee-454b-49f6-9b2c-0072079f78ab; Fri, 17 Oct 2025 09:05:54 +0000 (UTC)
+X-Farcaster-Flow-ID: b995c6ee-454b-49f6-9b2c-0072079f78ab
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:05:38 +0000
+ Fri, 17 Oct 2025 09:05:54 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:05:23 +0000
+ 09:05:38 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -106,10 +107,17 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
 	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
 	<tipc-discussion@lists.sourceforge.net>
-Subject: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
-Date: Fri, 17 Oct 2025 09:04:52 +0000
-Message-ID: <20251017090519.46992-1-farbere@amazon.com>
+CC: Arnd Bergmann <arnd@arndb.de>, Dan Williams <dan.j.williams@intel.com>,
+	Eric Dumazet <edumazet@google.com>, Isabella Basso <isabbasso@riseup.net>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Sander Vanheule <sander@svanheule.net>, Vlastimil Babka <vbabka@suse.cz>,
+	Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH v2 01/27 5.10.y] overflow, tracing: Define the is_signed_type() macro once
+Date: Fri, 17 Oct 2025 09:04:53 +0000
+Message-ID: <20251017090519.46992-2-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
+References: <20251017090519.46992-1-farbere@amazon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -117,8 +125,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_020548_387565_71E0A234 
-X-CRM114-Status: GOOD (  14.47  )
+X-CRM114-CacheID: sfid-20251017_020558_602685_2FAB689A 
+X-CRM114-Status: GOOD (  16.22  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -134,144 +142,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This series backports 27 patches to update minmax.h in the 5.10.y
-branch, aligning it with v6.17-rc7.
+From: Bart Van Assche <bvanassche@acm.org>
 
-The ultimate goal is to synchronize all long-term branches so that they
-include the full set of minmax.h changes.
+[ Upstream commit 92d23c6e94157739b997cacce151586a0d07bb8a ]
 
-- 6.12.y has already been backported; the changes are included in
-  v6.12.49.
-- 6.6.y has already been backported; the changes are included in
-  v6.6.109.
-- 6.1.y has already been backported; the changes are currently in the
-  6.1-stable tree.
-- 5.15.y has already been backported; the changes are currently in the
-  5.15-stable tree.
+There are two definitions of the is_signed_type() macro: one in
+<linux/overflow.h> and a second definition in <linux/trace_events.h>.
 
-The key motivation is to bring in commit d03eba99f5bf ("minmax: allow
-min()/max()/clamp() if the arguments have the same signedness"), which
-is missing in kernel 5.10.y.
+As suggested by Linus Torvalds, move the definition of the
+is_signed_type() macro into the <linux/compiler.h> header file. Change
+the definition of the is_signed_type() macro to make sure that it does
+not trigger any sparse warnings with future versions of sparse for
+bitwise types. See also:
+https://lore.kernel.org/all/CAHk-=whjH6p+qzwUdx5SOVVHjS3WvzJQr6mDUwhEyTf6pJWzaQ@mail.gmail.com/
+https://lore.kernel.org/all/CAHk-=wjQGnVfb4jehFR0XyZikdQvCZouE96xR_nnf5kqaM5qqQ@mail.gmail.com/
 
-In mainline, this change enables min()/max()/clamp() to accept mixed
-argument types, provided both have the same signedness. Without it,
-backported patches that use these forms may trigger compiler warnings,
-which escalate to build failures when -Werror is enabled.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Isabella Basso <isabbasso@riseup.net>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sander Vanheule <sander@svanheule.net>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20220826162116.1050972-3-bvanassche@acm.org
+Signed-off-by: Eliav Farber <farbere@amazon.com>
+---
+ include/linux/compiler.h     | 6 ++++++
+ include/linux/overflow.h     | 1 -
+ include/linux/trace_events.h | 2 --
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-The first two patches in this series were added to prevent build
-failures caused by changes introduced later in minmax.h.
-
- - Commit 92d23c6e9415 ("overflow, tracing: Define the is_signed_type()
-   macro once") is needed for commit 75ca38c1960f ("minmax: allow
-   min()/max()/clamp()").
-
- - Commit cea628008fc8 ("btrfs: remove duplicated in_range() macro") is
-   needed for commit f9bff0e31881 ("minmax: add in_range() macro").
-
-The changes were tested using `make allyesconfig` and
-`make allmodconfig` for arm64, arm, x86_64 and i386 architectures.
-
-Changes in v2:
-The series was updated after initially backporting and approving the
-newer long-term branches.
-
-Andy Shevchenko (2):
-  minmax: deduplicate __unconst_integer_typeof()
-  minmax: fix header inclusions
-
-Bart Van Assche (1):
-  overflow, tracing: Define the is_signed_type() macro once
-
-David Laight (11):
-  minmax: allow min()/max()/clamp() if the arguments have the same
-    signedness.
-  minmax: fix indentation of __cmp_once() and __clamp_once()
-  minmax: allow comparisons of 'int' against 'unsigned char/short'
-  minmax: relax check to allow comparison between unsigned arguments and
-    signed constants
-  minmax.h: add whitespace around operators and after commas
-  minmax.h: update some comments
-  minmax.h: reduce the #define expansion of min(), max() and clamp()
-  minmax.h: use BUILD_BUG_ON_MSG() for the lo < hi test in clamp()
-  minmax.h: move all the clamp() definitions after the min/max() ones
-  minmax.h: simplify the variants of clamp()
-  minmax.h: remove some #defines that are only expanded once
-
-Herve Codina (1):
-  minmax: Introduce {min,max}_array()
-
-Jason A. Donenfeld (2):
-  minmax: sanity check constant bounds when clamping
-  minmax: clamp more efficiently by avoiding extra comparison
-
-Johannes Thumshirn (1):
-  btrfs: remove duplicated in_range() macro
-
-Linus Torvalds (8):
-  minmax: avoid overly complicated constant expressions in VM code
-  minmax: add a few more MIN_T/MAX_T users
-  minmax: simplify and clarify min_t()/max_t() implementation
-  minmax: make generic MIN() and MAX() macros available everywhere
-  minmax: don't use max() in situations that want a C constant
-    expression
-  minmax: simplify min()/max()/clamp() implementation
-  minmax: improve macro expansion and type checking
-  minmax: fix up min3() and max3() too
-
-Matthew Wilcox (Oracle) (1):
-  minmax: add in_range() macro
-
- arch/arm/mm/pageattr.c                        |   6 +-
- arch/um/drivers/mconsole_user.c               |   2 +
- arch/x86/mm/pgtable.c                         |   2 +-
- drivers/edac/sb_edac.c                        |   4 +-
- drivers/edac/skx_common.h                     |   1 -
- .../drm/amd/display/modules/hdcp/hdcp_ddc.c   |   2 +
- .../drm/amd/pm/powerplay/hwmgr/ppevvmath.h    |  14 +-
- .../drm/arm/display/include/malidp_utils.h    |   2 +-
- .../display/komeda/komeda_pipeline_state.c    |  24 +-
- drivers/gpu/drm/drm_color_mgmt.c              |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |   6 -
- drivers/gpu/drm/radeon/evergreen_cs.c         |   2 +
- drivers/hwmon/adt7475.c                       |  24 +-
- drivers/input/touchscreen/cyttsp4_core.c      |   2 +-
- drivers/md/dm-integrity.c                     |   6 +-
- drivers/media/dvb-frontends/stv0367_priv.h    |   3 +
- .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   |  18 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
- drivers/net/fjes/fjes_main.c                  |   4 +-
- drivers/nfc/pn544/i2c.c                       |   2 -
- drivers/platform/x86/sony-laptop.c            |   1 -
- drivers/scsi/isci/init.c                      |   6 +-
- .../pci/hive_isp_css_include/math_support.h   |   5 -
- fs/btrfs/ctree.h                              |   2 -
- fs/btrfs/extent_io.c                          |   1 +
- fs/btrfs/file-item.c                          |   1 +
- fs/btrfs/misc.h                               |   2 -
- fs/btrfs/raid56.c                             |   1 +
- fs/btrfs/tree-checker.c                       |   2 +-
- fs/erofs/zdata.h                              |   2 +-
- fs/ext2/balloc.c                              |   2 -
- fs/ext4/ext4.h                                |   2 -
- fs/ufs/util.h                                 |   6 -
- include/linux/compiler.h                      |  15 +
- include/linux/minmax.h                        | 267 ++++++++++++++----
- include/linux/overflow.h                      |   1 -
- include/linux/trace_events.h                  |   2 -
- kernel/trace/preemptirq_delay_test.c          |   2 -
- lib/btree.c                                   |   1 -
- lib/decompress_unlzma.c                       |   2 +
- lib/logic_pio.c                               |   3 -
- lib/vsprintf.c                                |   2 +-
- lib/zstd/zstd_internal.h                      |   2 -
- mm/zsmalloc.c                                 |   1 -
- net/ipv4/proc.c                               |   2 +-
- net/ipv6/proc.c                               |   2 +-
- net/netfilter/nf_nat_core.c                   |   6 +-
- net/tipc/core.h                               |   2 +-
- net/tipc/link.c                               |  10 +-
- 49 files changed, 312 insertions(+), 169 deletions(-)
-
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index bbd74420fa21..004a030d5ad2 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -245,6 +245,12 @@ static inline void *offset_to_ptr(const int *off)
+ /* &a[0] degrades to a pointer: a different type from an array */
+ #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+ 
++/*
++ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
++ * bool and also pointer types.
++ */
++#define is_signed_type(type) (((type)(-1)) < (__force type)1)
++
+ /*
+  * This is needed in functions which generate the stack canary, see
+  * arch/x86/kernel/smpboot.c::start_secondary() for an example.
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 73bc67ec2136..e6bf14f462e9 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -29,7 +29,6 @@
+  * https://mail-index.netbsd.org/tech-misc/2007/02/05/0000.html -
+  * credit to Christian Biere.
+  */
+-#define is_signed_type(type)       (((type)(-1)) < (type)1)
+ #define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
+ #define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
+ #define type_min(T) ((T)((T)-type_max(T)-(T)1))
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5af2acb9fb7d..0c8c3cf36f96 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -700,8 +700,6 @@ extern int trace_add_event_call(struct trace_event_call *call);
+ extern int trace_remove_event_call(struct trace_event_call *call);
+ extern int trace_event_get_offsets(struct trace_event_call *call);
+ 
+-#define is_signed_type(type)	(((type)(-1)) < (type)1)
+-
+ int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set);
+ int trace_set_clr_event(const char *system, const char *event, int set);
+ int trace_array_set_clr_event(struct trace_array *tr, const char *system,
 -- 
 2.47.3
 
