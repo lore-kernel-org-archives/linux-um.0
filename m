@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BF2ECCFA13
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2B36CCFA18
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kFRk/YEfanxcwxn3T4iYIqsiSiWmkv1ShCNggWcZo/w=; b=QqX0XSgLVCIt2Q+PdWbw1UnkhI
-	bDsoSCTlj/3FMC1U8ZAYschQhy1T3CjzGZ030nS3HfJzsPW7CKcugMYRaBVwicUi8RPT6rtR+Zevs
-	5BgIDdfjNHKrreWpcOGK6rAUJLdTHCplCIgk66Oyxfd+HTr0ibN9Z3hjsDiw5gQ4Us7dgkbVKoZoB
-	zWJDC7cOZnm5AJo8G357S9lYekwFY9C6En8NRD6FHoomlmmwC1D3Xk2UVOuRFSIcoH14Axfo8Ej2W
-	/W/NwVnnI8eonH9QHiWNAC5WtgUPbg8hFf7A9FiTYP+B/Zdnje3caJu/HGCHlS5fXXsWtghTEYi02
-	OAQnlkjQ==;
+	bh=LUfhSEtyrzlTvFjtMARdG8e1ebgK9JT+esac/DH/XMI=; b=ToRgKzNUhScMVDtLkZDv1Ma736
+	ImV6AtIaedSXU//xBElrt+TkgDWYh2eB8XrvsKOpFxj84yPuCHihGv8Q/HE6j69/kQ+0eD+NA52ji
+	17XlWl9eegIFJ93mOdcVE73aTil7/LJ4Vs/aiK/N+ArAl210X0i2iJOe7K4GUbIH8HiKDM5kaPSPH
+	Axpwm4mU+C9oJs4w5uvqfCuTuU/Tr5HsYS4tybO+1GbQ7n4t7L/dcMrjhrSMeYvfIw8hcmJXrxHsi
+	SOuFwl3bxIdY43I/Bon2YX+aOfD17SYd6LDqjUp+1YXLdojENOh8Ufb9YqMp/0zaIky3gQ4BM5+P8
+	EtCw4FiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlqd-00000003GWX-2Cag;
-	Sat, 08 Nov 2025 16:31:31 +0000
-Received: from pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com ([52.34.181.151])
+	id 1vHlqf-00000003GY4-0jYO;
+	Sat, 08 Nov 2025 16:31:33 +0000
+Received: from pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com ([52.42.203.116])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gPO-00000007BWp-27dD
-	for linux-um@lists.infradead.org;
-	Fri, 17 Oct 2025 09:06:01 +0000
+	id 1v9gPd-00000007BbA-00tW;
+	Fri, 17 Oct 2025 09:06:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760691958; x=1792227958;
+  t=1760691973; x=1792227973;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kFRk/YEfanxcwxn3T4iYIqsiSiWmkv1ShCNggWcZo/w=;
-  b=eec4gFv0g4FAVDkjgOqBUn9avSsi2hOUDHu2mMGpl5pfWee35bFCiPMY
-   0tWP5oHJUMPcFYueuwEUOVgFQg0XWfEmPU/8j0ZcQ0YmASDBnMl6F9vVh
-   mAjVRDqzXLgkAq5EdStMu1vBAk5+ggaThr+D83dc2lX5OrDj6CO+Lss4v
-   Gr1cl0yCc4wOwkhPHZAQDiAj/x2Xu+Ci4mBWbE6xHhBYOmemh99KjmbiR
-   QWjb8XjOkv4dgL5WGjg8pJPwr0+yQ3kEyY3+J9tQ/0vilyrWiL1qnDA9Y
-   Aiq58uTBnbO66mryyPtNeC7O2xHpr6zK6YbfA+X8Zn0dKBT773+xb0aBL
+  bh=LUfhSEtyrzlTvFjtMARdG8e1ebgK9JT+esac/DH/XMI=;
+  b=NOxCyy5ciPbmpC+Nyjv8TEiMbWoED3iFf7i91kC45FQCswPVxMfGhKtK
+   e6AzE8+SXqH1Mi9QHZ/qwq6DSIIkOaYTQ2DQxXflj47EAN8zu7ieOrAow
+   azXWRemg81oDK+JGHABN+06WXtwuFICyIsW6JKSxv5qATn+5/Z9AdisSj
+   +E+tnjMlcZYH7/RCbEPzmlUePdsypL9uCeansbPDE3BED9628od+K09ej
+   Kzv9Cet4s3bfigaKI0GjglJU6ZU3/QgIzSpTJxmdMUrEnsTJnq21vdYiR
+   xgymogfanmgr0qQF49Q2rzGTYelLJVsdfpUBd3JCaDbIR9CgfH3xdZaZU
    A==;
-X-CSE-ConnectionGUID: mmWdkVVjTsyPnw62us7gdA==
-X-CSE-MsgGUID: zCG8tz2uQkG3AJR2iQRSzQ==
-X-IronPort-AV: E=Sophos;i="6.18,263,1751241600"; 
-   d="scan'208";a="5073156"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-007.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:05:55 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:9202]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.191:2525] with esmtp (Farcaster)
- id b995c6ee-454b-49f6-9b2c-0072079f78ab; Fri, 17 Oct 2025 09:05:54 +0000 (UTC)
-X-Farcaster-Flow-ID: b995c6ee-454b-49f6-9b2c-0072079f78ab
+X-CSE-ConnectionGUID: enesJP57TPGNCxKTMYzCNQ==
+X-CSE-MsgGUID: Ip79uzQWRJCjVSqut+I56A==
+X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
+   d="scan'208";a="5064204"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-008.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:06:10 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.236:20862]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.50:2525] with esmtp (Farcaster)
+ id 8166205d-ccd0-42f5-b377-b6e5ff420d67; Fri, 17 Oct 2025 09:06:09 +0000 (UTC)
+X-Farcaster-Flow-ID: 8166205d-ccd0-42f5-b377-b6e5ff420d67
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:05:54 +0000
+ Fri, 17 Oct 2025 09:06:09 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:05:38 +0000
+ 09:05:54 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -107,14 +106,10 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
 	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
 	<tipc-discussion@lists.sourceforge.net>
-CC: Arnd Bergmann <arnd@arndb.de>, Dan Williams <dan.j.williams@intel.com>,
-	Eric Dumazet <edumazet@google.com>, Isabella Basso <isabbasso@riseup.net>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-	Sander Vanheule <sander@svanheule.net>, Vlastimil Babka <vbabka@suse.cz>,
-	Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH v2 01/27 5.10.y] overflow, tracing: Define the is_signed_type() macro once
-Date: Fri, 17 Oct 2025 09:04:53 +0000
-Message-ID: <20251017090519.46992-2-farbere@amazon.com>
+CC: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 02/27 5.10.y] btrfs: remove duplicated in_range() macro
+Date: Fri, 17 Oct 2025 09:04:54 +0000
+Message-ID: <20251017090519.46992-3-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
 References: <20251017090519.46992-1-farbere@amazon.com>
@@ -125,8 +120,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_020558_602685_2FAB689A 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20251017_020613_109352_BEFC1B67 
+X-CRM114-Status: GOOD (  10.05  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -142,90 +137,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit 92d23c6e94157739b997cacce151586a0d07bb8a ]
+[ Upstream commit cea628008fc8c6c9c7b53902f6659e040f33c790 ]
 
-There are two definitions of the is_signed_type() macro: one in
-<linux/overflow.h> and a second definition in <linux/trace_events.h>.
+The in_range() macro is defined twice in btrfs' source, once in ctree.h
+and once in misc.h.
 
-As suggested by Linus Torvalds, move the definition of the
-is_signed_type() macro into the <linux/compiler.h> header file. Change
-the definition of the is_signed_type() macro to make sure that it does
-not trigger any sparse warnings with future versions of sparse for
-bitwise types. See also:
-https://lore.kernel.org/all/CAHk-=whjH6p+qzwUdx5SOVVHjS3WvzJQr6mDUwhEyTf6pJWzaQ@mail.gmail.com/
-https://lore.kernel.org/all/CAHk-=wjQGnVfb4jehFR0XyZikdQvCZouE96xR_nnf5kqaM5qqQ@mail.gmail.com/
+Remove the definition in ctree.h and include misc.h in the files depending
+on it.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Isabella Basso <isabbasso@riseup.net>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Sander Vanheule <sander@svanheule.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20220826162116.1050972-3-bvanassche@acm.org
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- include/linux/compiler.h     | 6 ++++++
- include/linux/overflow.h     | 1 -
- include/linux/trace_events.h | 2 --
- 3 files changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.h     | 2 --
+ fs/btrfs/extent_io.c | 1 +
+ fs/btrfs/file-item.c | 1 +
+ fs/btrfs/raid56.c    | 1 +
+ 4 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index bbd74420fa21..004a030d5ad2 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -245,6 +245,12 @@ static inline void *offset_to_ptr(const int *off)
- /* &a[0] degrades to a pointer: a different type from an array */
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index d9d6a57acafe..a9926fb10c49 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3597,8 +3597,6 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
+ 	return signal_pending(current);
+ }
  
-+/*
-+ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-+ * bool and also pointer types.
-+ */
-+#define is_signed_type(type) (((type)(-1)) < (__force type)1)
-+
- /*
-  * This is needed in functions which generate the stack canary, see
-  * arch/x86/kernel/smpboot.c::start_secondary() for an example.
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-index 73bc67ec2136..e6bf14f462e9 100644
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -29,7 +29,6 @@
-  * https://mail-index.netbsd.org/tech-misc/2007/02/05/0000.html -
-  * credit to Christian Biere.
-  */
--#define is_signed_type(type)       (((type)(-1)) < (type)1)
- #define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
- #define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
- #define type_min(T) ((T)((T)-type_max(T)-(T)1))
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 5af2acb9fb7d..0c8c3cf36f96 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -700,8 +700,6 @@ extern int trace_add_event_call(struct trace_event_call *call);
- extern int trace_remove_event_call(struct trace_event_call *call);
- extern int trace_event_get_offsets(struct trace_event_call *call);
- 
--#define is_signed_type(type)	(((type)(-1)) < (type)1)
+-#define in_range(b, first, len) ((b) >= (first) && (b) < (first) + (len))
 -
- int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set);
- int trace_set_clr_event(const char *system, const char *event, int set);
- int trace_array_set_clr_event(struct trace_array *tr, const char *system,
+ /* Sanity test specific functions */
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ void btrfs_test_destroy_inode(struct inode *inode);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 8498994ef5c6..489d370ddd60 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -13,6 +13,7 @@
+ #include <linux/pagevec.h>
+ #include <linux/prefetch.h>
+ #include <linux/cleancache.h>
++#include "misc.h"
+ #include "extent_io.h"
+ #include "extent-io-tree.h"
+ #include "extent_map.h"
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index cbea4f572155..6e46da3ee433 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -9,6 +9,7 @@
+ #include <linux/highmem.h>
+ #include <linux/sched/mm.h>
+ #include <crypto/hash.h>
++#include "misc.h"
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "transaction.h"
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 9678d7fa4dcc..ed3e40a4a3cb 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -13,6 +13,7 @@
+ #include <linux/list_sort.h>
+ #include <linux/raid/xor.h>
+ #include <linux/mm.h>
++#include "misc.h"
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "volumes.h"
 -- 
 2.47.3
 
