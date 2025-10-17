@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10FC4CCFA13
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC6A7CCFA1E
 	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7swfVbslESxQg74V4Pet/sTVI7N58Kfpf4qGaJIy9fE=; b=nVVuB44zB54sUpjiWgkoXTuAtD
-	dIYYUjU4KlaoQvhFIaYZ8TCTB9zgBSK2ntQTyrAKkw6Oj/F8oWTjIbMaDfPRhNC+smck0V4kNcE2w
-	QlQuaxmxAFga4oJzC3O6PKGK65HqRwfEQFN4OZgUCA8CmjPmiCgCmDpEj6dK923/ZtRPaFeAkqWz8
-	3XZz8Y51TulSY4I4Q8HM0ziCDSMepDLiNRpP4JmvOkDbPUouiPNDpNE8gwExCTcOawxvXxiOj7TPq
-	x3SU1SckczbGiDlSy9uqnGV/6tnkgcP9Wejf9Sns0AmeqJ8/Mq23r0RX+sWZNBb/qESYbp7kidKaY
-	uyyKZ3MA==;
+	bh=xkEPvUKyQPfYOtTnd+JXsEAKoNLEM/0U49oHM5nqIDU=; b=CjOGt+hDbN4skWN08WaUSpGaWz
+	MYk2QxwbrX7pzF7XM/ZPWJsqhPRebljd2HrhDDvTwopcXNP6Firw5MIv0iGPu2i/ffCQOynCKwZu0
+	pMUi3PdzSDIurxJQdNaZF+z8AhW0mP9JaDBYPGlGjISYoLm3xeIa0NFM3AY6on0la0rpKxtZLNgid
+	/K1l2EIrln1cSltljlVHcjpv5X75AtSPcmxgoFVOrv6ly8kJ1rHVutOoOMjGhbNJ7QyobaRj/BXPG
+	lwbKHeFdMI5Z8U9P0BM3RHvNMKVjuUDV+qEyJFYe4jR3m6M0AESv3QB8r3oe3p8Eilruy2I1iVJGi
+	HsY2gJUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlqz-00000003GnH-0zO2;
-	Sat, 08 Nov 2025 16:31:53 +0000
-Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.155.198.111])
+	id 1vHlr0-00000003GpW-1Pxa;
+	Sat, 08 Nov 2025 16:31:54 +0000
+Received: from pdx-out-001.esa.us-west-2.outbound.mail-perimeter.amazon.com ([44.245.243.92])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gUJ-00000007EW2-34m4;
-	Fri, 17 Oct 2025 09:11:05 +0000
+	id 1v9gUZ-00000007Eb0-28pb;
+	Fri, 17 Oct 2025 09:11:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760692263; x=1792228263;
+  t=1760692279; x=1792228279;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7swfVbslESxQg74V4Pet/sTVI7N58Kfpf4qGaJIy9fE=;
-  b=R5fxUu1nOlJiQ6y2OmoKaLFNHGuv5pc3gECIurbidroNMEkEpCNuugw8
-   pby2pBdMzyj3bkOx2raJhdUgMDDNPRv/4pnPKK4iXchoKlfisOPl2FXgX
-   cQZ8u4Ou3Tr2gqUmPoXEJuise9YFLRVVCQYe6Ivlhl1DiDG0lihE1QR0c
-   +WC2jPKiQQ9i0ypRKNjfZwd/kaKW+cKRfU08/DfmDYV65oB5t28EWDe0f
-   HPpiEa6V1D+aWijau1TQ4lSoFuuAdqrGklYmKmZwFMqGTD21EBubJ8rot
-   L4xKq5Lt+/wjeaz2bxi7n+Ri81JIQ0aha3RmoA8IueZ8x6br/zOUjM65F
-   A==;
-X-CSE-ConnectionGUID: eqxFMeIYQ1uOPc/j2alofw==
-X-CSE-MsgGUID: +S/ImWiVSgab/RiiMMwNZQ==
-X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
-   d="scan'208";a="4957083"
-Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
-  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:11:03 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:31840]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.50:2525] with esmtp (Farcaster)
- id bb414978-1e68-41dd-b082-083baabb1a79; Fri, 17 Oct 2025 09:11:02 +0000 (UTC)
-X-Farcaster-Flow-ID: bb414978-1e68-41dd-b082-083baabb1a79
+  bh=xkEPvUKyQPfYOtTnd+JXsEAKoNLEM/0U49oHM5nqIDU=;
+  b=hkuEvxoLBBO9KQ7ywvYUBbtE2zbtdfRgl3ud9EdWApjlfjIlxP3hRv+Z
+   UdkQUhPvc6In1aBckjJ9M5DyG9VsX79NEa29P7CubPSEH4JOwtDzqK+Te
+   MwvrpnYDOoGe41rDMNl1h7D7jk2wQ9VPgokcibejFQ+VG/+FK5Vg9RVmu
+   7gdEmn2ZwqbWJ8F68J0f63MJHH1B442KIfNF2IHDMQVcB6U+Jdae364iS
+   YL3BBHF7WB0sqATolfMyD7ofkoHTaZ1/ng/iI/uGD2dwYe991dfj6FQm3
+   ddXYem7kblGH53UT6U8TRzk3iHSyZx0Xwh3twxCPYEGtA5XEznoacjS/f
+   w==;
+X-CSE-ConnectionGUID: 5Uc6w+veQIeLQm4ezOfqhw==
+X-CSE-MsgGUID: A14h5u3WT/mI8TOSF5gOjQ==
+X-IronPort-AV: E=Sophos;i="6.18,281,1751241600"; 
+   d="scan'208";a="5073605"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-001.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:11:18 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.236:21760]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.52:2525] with esmtp (Farcaster)
+ id c6478c41-76d5-45db-a014-deb30057516e; Fri, 17 Oct 2025 09:11:18 +0000 (UTC)
+X-Farcaster-Flow-ID: c6478c41-76d5-45db-a014-deb30057516e
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:11:02 +0000
+ Fri, 17 Oct 2025 09:11:17 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:10:47 +0000
+ 09:11:02 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -108,9 +108,9 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<tipc-discussion@lists.sourceforge.net>
 CC: Linus Torvalds <torvalds@linux-foundation.org>, David Laight
 	<David.Laight@aculab.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Subject: [PATCH v2 17/27 5.10.y] minmax: don't use max() in situations that want a C constant expression
-Date: Fri, 17 Oct 2025 09:05:09 +0000
-Message-ID: <20251017090519.46992-18-farbere@amazon.com>
+Subject: [PATCH v2 18/27 5.10.y] minmax: simplify min()/max()/clamp() implementation
+Date: Fri, 17 Oct 2025 09:05:10 +0000
+Message-ID: <20251017090519.46992-19-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
 References: <20251017090519.46992-1-farbere@amazon.com>
@@ -121,8 +121,8 @@ X-Originating-IP: [172.19.116.181]
 X-ClientProxiedBy: EX19D038UWC002.ant.amazon.com (10.13.139.238) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_021103_856294_E3E04253 
-X-CRM114-Status: GOOD (  14.36  )
+X-CRM114-CacheID: sfid-20251017_021119_596542_E98532E1 
+X-CRM114-Status: GOOD (  15.61  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -140,87 +140,137 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit cb04e8b1d2f24c4c2c92f7b7529031fc35a16fed ]
+[ Upstream commit dc1c8034e31b14a2e5e212104ec508aec44ce1b9 ]
 
-We only had a couple of array[] declarations, and changing them to just
-use 'MAX()' instead of 'max()' fixes the issue.
+Now that we no longer have any C constant expression contexts (ie array
+size declarations or static initializers) that use min() or max(), we
+can simpify the implementation by not having to worry about the result
+staying as a C constant expression.
 
-This will allow us to simplify our min/max macros enormously, since they
-can now unconditionally use temporary variables to avoid using the
-argument values multiple times.
+So now we can unconditionally just use temporary variables of the right
+type, and get rid of the excessive expansion that used to come from the
+use of
+
+   __builtin_choose_expr(__is_constexpr(...), ..
+
+to pick the specialized code for constant expressions.
+
+Another expansion simplification is to pass the temporary variables (in
+addition to the original expression) to our __types_ok() macro.  That
+may superficially look like it complicates the macro, but when we only
+want the type of the expression, expanding the temporary variable names
+is much simpler and smaller than expanding the potentially complicated
+original expression.
+
+As a result, on my machine, doing a
+
+  $ time make drivers/staging/media/atomisp/pci/isp/kernels/ynr/ynr_1.0/ia_css_ynr.host.i
+
+goes from
+
+	real	0m16.621s
+	user	0m15.360s
+	sys	0m1.221s
+
+to
+
+	real	0m2.532s
+	user	0m2.091s
+	sys	0m0.452s
+
+because the token expansion goes down dramatically.
+
+In particular, the longest line expansion (which was line 71 of that
+'ia_css_ynr.host.c' file) shrinks from 23,338kB (yes, 23MB for one
+single line) to "just" 1,444kB (now "only" 1.4MB).
+
+And yes, that line is still the line from hell, because it's doing
+multiple levels of "min()/max()" expansion thanks to some of them being
+hidden inside the uDIGIT_FITTING() macro.
+
+Lorenzo has a nice cleanup patch that makes that driver use inline
+functions instead of macros for sDIGIT_FITTING() and uDIGIT_FITTING(),
+which will fix that line once and for all, but the 16-fold reduction in
+this case does show why we need to simplify these helpers.
 
 Cc: David Laight <David.Laight@aculab.com>
 Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- drivers/input/touchscreen/cyttsp4_core.c | 2 +-
- drivers/md/dm-integrity.c                | 4 ++--
- fs/btrfs/tree-checker.c                  | 2 +-
- lib/vsprintf.c                           | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/minmax.h | 43 ++++++++++++++++++++----------------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/input/touchscreen/cyttsp4_core.c b/drivers/input/touchscreen/cyttsp4_core.c
-index 02a73d9a4def..c10140c9aafa 100644
---- a/drivers/input/touchscreen/cyttsp4_core.c
-+++ b/drivers/input/touchscreen/cyttsp4_core.c
-@@ -857,7 +857,7 @@ static void cyttsp4_get_mt_touches(struct cyttsp4_mt_data *md, int num_cur_tch)
- 	struct cyttsp4_touch tch;
- 	int sig;
- 	int i, j, t = 0;
--	int ids[max(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
-+	int ids[MAX(CY_TMA1036_MAX_TCH, CY_TMA4XX_MAX_TCH)];
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index fc384714da45..e3e4353df983 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -35,10 +35,10 @@
+ #define __is_noneg_int(x)	\
+ 	(__builtin_choose_expr(__is_constexpr(x) && __is_signed(x), x, -1) >= 0)
  
- 	memset(ids, 0, si->si_ofs.tch_abs[CY_TCH_T].max * sizeof(int));
- 	for (i = 0; i < num_cur_tch; i++) {
-diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-index 7fa3bf74747d..917ba18be77f 100644
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -1600,7 +1600,7 @@ static void integrity_metadata(struct work_struct *w)
- 		struct bio *bio = dm_bio_from_per_bio_data(dio, sizeof(struct dm_integrity_io));
- 		char *checksums;
- 		unsigned extra_space = unlikely(digest_size > ic->tag_size) ? digest_size - ic->tag_size : 0;
--		char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
-+		char checksums_onstack[MAX(HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
- 		sector_t sector;
- 		unsigned sectors_to_process;
+-#define __types_ok(x, y) 					\
+-	(__is_signed(x) == __is_signed(y) ||			\
+-		__is_signed((x) + 0) == __is_signed((y) + 0) ||	\
+-		__is_noneg_int(x) || __is_noneg_int(y))
++#define __types_ok(x, y, ux, uy) 				\
++	(__is_signed(ux) == __is_signed(uy) ||			\
++	 __is_signed((ux) + 0) == __is_signed((uy) + 0) ||	\
++	 __is_noneg_int(x) || __is_noneg_int(y))
  
-@@ -1882,7 +1882,7 @@ static bool __journal_read_write(struct dm_integrity_io *dio, struct bio *bio,
- 				} while (++s < ic->sectors_per_block);
- #ifdef INTERNAL_VERIFY
- 				if (ic->internal_hash) {
--					char checksums_onstack[max((size_t)HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
-+					char checksums_onstack[MAX(HASH_MAX_DIGESTSIZE, MAX_TAG_SIZE)];
+ #define __cmp_op_min <
+ #define __cmp_op_max >
+@@ -51,34 +51,31 @@
+ #define __cmp_once(op, type, x, y) \
+ 	__cmp_once_unique(op, type, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
  
- 					integrity_sector_checksum(ic, logical_sector, mem + bv.bv_offset, checksums_onstack);
- 					if (unlikely(memcmp(checksums_onstack, journal_entry_tag(ic, je), ic->tag_size))) {
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index c28bb37688c6..fd4768c5e439 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -587,7 +587,7 @@ static int check_dir_item(struct extent_buffer *leaf,
- 		 */
- 		if (key->type == BTRFS_DIR_ITEM_KEY ||
- 		    key->type == BTRFS_XATTR_ITEM_KEY) {
--			char namebuf[max(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
-+			char namebuf[MAX(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
+-#define __careful_cmp_once(op, x, y) ({			\
+-	static_assert(__types_ok(x, y),			\
++#define __careful_cmp_once(op, x, y, ux, uy) ({		\
++	__auto_type ux = (x); __auto_type uy = (y);	\
++	static_assert(__types_ok(x, y, ux, uy),		\
+ 		#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
+-	__cmp_once(op, __auto_type, x, y); })
++	__cmp(op, ux, uy); })
  
- 			read_extent_buffer(leaf, namebuf,
- 					(unsigned long)(di + 1), name_len);
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index b08b8ee1bbc0..90372391ce90 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1078,7 +1078,7 @@ char *resource_string(char *buf, char *end, struct resource *res,
- #define FLAG_BUF_SIZE		(2 * sizeof(res->flags))
- #define DECODED_BUF_SIZE	sizeof("[mem - 64bit pref window disabled]")
- #define RAW_BUF_SIZE		sizeof("[mem - flags 0x]")
--	char sym[max(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
-+	char sym[MAX(2*RSRC_BUF_SIZE + DECODED_BUF_SIZE,
- 		     2*RSRC_BUF_SIZE + FLAG_BUF_SIZE + RAW_BUF_SIZE)];
+-#define __careful_cmp(op, x, y)					\
+-	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
+-		__cmp(op, x, y), __careful_cmp_once(op, x, y))
++#define __careful_cmp(op, x, y) \
++	__careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
  
- 	char *p = sym, *pend = sym + sizeof(sym);
+ #define __clamp(val, lo, hi)	\
+ 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+ 
+-#define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
+-	typeof(val) unique_val = (val);						\
+-	typeof(lo) unique_lo = (lo);						\
+-	typeof(hi) unique_hi = (hi);						\
++#define __clamp_once(val, lo, hi, uval, ulo, uhi) ({				\
++	__auto_type uval = (val);						\
++	__auto_type ulo = (lo);							\
++	__auto_type uhi = (hi);							\
+ 	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
+ 			(lo) <= (hi), true),					\
+ 		"clamp() low limit " #lo " greater than high limit " #hi);	\
+-	static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
+-	static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
+-	__clamp(unique_val, unique_lo, unique_hi); })
+-
+-#define __careful_clamp(val, lo, hi) ({					\
+-	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
+-		__clamp(val, lo, hi),					\
+-		__clamp_once(val, lo, hi, __UNIQUE_ID(__val),		\
+-			     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
++	static_assert(__types_ok(uval, lo, uval, ulo), "clamp() 'lo' signedness error");	\
++	static_assert(__types_ok(uval, hi, uval, uhi), "clamp() 'hi' signedness error");	\
++	__clamp(uval, ulo, uhi); })
++
++#define __careful_clamp(val, lo, hi) \
++	__clamp_once(val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
+ 
+ /**
+  * min - return minimum of two values of the same or compatible types
 -- 
 2.47.3
 
