@@ -4,74 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E97DCCFA13
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A921CCFA1E
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
-	:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IyCE+4rtsA0oj5GYV3ldh81I3wYriob8vp0F6h3lfsk=; b=TzaH8TD7RCrsA69ZnlDgBFq4vd
-	Z7bOmeUq3cbobJ9mLaK60B1s9KHa5FLRz9u+jUBleVV4WbuBs257gTSDKaqjXC02TXhGCAR2L/RvM
-	gr7ybj9G4XMewwDytR0LwMGbhcJ6AILYHb2wrNx3zVvbvxtGO04y16adxYgaMj+ZId0cYmV9ggcN1
-	GJbqiPdzlqYvJt0OFD2B5J8/0fxXWMY0Bu0G9BAdT+3xmsGWFQa6vifmxKbV+Ua2ypAR9EdI6MkNJ
-	lKwvwP60F8AuLES1XCAazJgnJnULZD5OMVf+AuPgkZ2klRZX824cICwR2yUrj/6yyRMY+2fBuRtZ/
-	6jQdDNhg==;
+	bh=UnBmV/SkhIg5SgTRTNSUlBFA6sgQ2eBqJGsC4N+ceR0=; b=iArWkGsYbvEz/WyxDy7uRGGhio
+	/f7ywhMoyBmrr4vnQII7/Va/oKKJZuDjAdABhO1sujTdgVhJ6fL1NLM9cCWgFXAd0fQnkY8bZygdB
+	w1l7ZlggxEL3+hSBIiSonIml1DCv5jAJis+cmLlVBkCYgswYHoL9QI+7HgsefgS0DQJ+tiAnnGvn8
+	RqEIlgOcxeSqVbAygKdzkiyvPvF5NeM7J/sULLJR+rXBZ8HJUTr2zATM8jjcvxtSgtLrKRfuCoIHH
+	jOt1rjehCM3kMx8rWiTMc0+lGY+Q7QNfD5lnu28ym6tV6vZiLngZXnU7w9nJLds7A1xMx6aTcxgAW
+	RTsoV3jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlql-00000003GdG-0Yy6;
-	Sat, 08 Nov 2025 16:31:39 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gRE-00000007DDp-48q5;
-	Fri, 17 Oct 2025 09:07:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:To:From:Sender:
-	Reply-To:Cc:Content-ID:Content-Description;
-	bh=IyCE+4rtsA0oj5GYV3ldh81I3wYriob8vp0F6h3lfsk=; b=AYorA+DdR4OfTYiPhmi6p0AUKP
-	lLQSD7npQOFcVk6z1brX03NEiG4ZQm+bj6AUt2lkuZay+sCakcl8S9Sz0WGWCdVrWHXj+KlhPO8d8
-	9A6578aDblf91yNESddeV6PWYJxJQyZRZxn94H8oBAFamg/gENNdzKyadQ2RW/Co7VVKyaNnkhEJA
-	k36sZjwojtaPOXwqeVW3hakR0Fei0OWTylGYZrY+9IzIp3AqlYtAiR2vR2egRQPS+dMhzDDyCR6ug
-	P1eKWHWVIn/OYpk0N37fLSjoRV6uNk79oTZFvYQxas8vBlujbetnXhEi3ghuxWVzEHmy9fOKNeJDp
-	Mk3kc6Kw==;
-Received: from pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com ([34.218.115.239])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9gQh-00000007Pz7-1q9F;
-	Fri, 17 Oct 2025 09:07:47 +0000
+	id 1vHlqm-00000003Gf1-3IIt;
+	Sat, 08 Nov 2025 16:31:40 +0000
+Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com ([35.155.198.111])
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v9gRs-00000007DdF-3kIB;
+	Fri, 17 Oct 2025 09:08:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1760692039; x=1792228039;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=IyCE+4rtsA0oj5GYV3ldh81I3wYriob8vp0F6h3lfsk=;
-  b=s/9T4Zp9Mj2EyOc4A+3GZ1dBb3bkY2Bfg2KGwhw8Y3uwRT6AakzytlmA
-   EwOnrmrQ0ccKIM9XRU0Fj7YRGNkEbcMLF114/6zW1p7yxJMl70tnQrxvh
-   PL+WhKsUKMLQZqZ/sCvSF8waMGWqeTAOPhxkDgbvnl1QXcUxfRXV+JqlI
-   /lpjzJrkYk8hFol+4iylhTZoQIUOSrozbvJNSOVfw8eOgTOMOt1XymTRI
-   xOaLQv7WUtcpHXOTx91Dy2nLPtG0p7LzqN+8nYkr1Y5+4oxoRFKl1B+P0
-   AKKsXdwVuu054mLxFG5p6MxIhCh45osYak4V+U3cxjLcEvUCi5GphrHpK
-   A==;
-X-CSE-ConnectionGUID: 9MAP8nw4RL6pQXD/MaZ/aw==
-X-CSE-MsgGUID: IDq1ZkwSQ4WRVPQDMofXPg==
+  t=1760692112; x=1792228112;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=UnBmV/SkhIg5SgTRTNSUlBFA6sgQ2eBqJGsC4N+ceR0=;
+  b=BsHB3ydmd706O0sDG6UKLbs020hapxJq9cDsEiXWjiRYrGDN6aauc0J8
+   g2DdIHMivfpw5lISviWsxQ0UdBo0pa+By+NJdBetZjjjFGK5idw6K+0ty
+   ypN2Bc9/1TfCuhrsxWWaCSn0FIuYBeNce6MDBALkgSpKBS6rPFzOf1nUx
+   MwJciq+b48fn+ri6cvO8rabUxRwawwf15oneTCf1v9/Cm2137IxV9zT9T
+   Q2VNyoOfu/a43Tmm2KlbhOfwqneqHPxTyBviTk8ld18pOSzg8shBElhqh
+   C2DHmpdt8dVOTuKGUiCEJAf7ioDHcfiZiXPfslo8o83s+gQqFc45XJ+Wf
+   w==;
+X-CSE-ConnectionGUID: WCpaR4cdS9OdN2hKjiDnYQ==
+X-CSE-MsgGUID: N/lOrbq4SWaAdwkuRlI2qg==
 X-IronPort-AV: E=Sophos;i="6.19,236,1754956800"; 
-   d="scan'208";a="4884324"
+   d="scan'208";a="4956861"
 Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
-  by internal-pdx-out-013.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:07:16 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [205.251.233.234:19756]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.52:2525] with esmtp (Farcaster)
- id 215ce60c-4634-45fd-9017-91585991e890; Fri, 17 Oct 2025 09:07:16 +0000 (UTC)
-X-Farcaster-Flow-ID: 215ce60c-4634-45fd-9017-91585991e890
+  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2025 09:08:25 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.105:29079]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.58.51:2525] with esmtp (Farcaster)
+ id 2bc32977-123f-4a3f-bfc0-1f8a878e3279; Fri, 17 Oct 2025 09:08:25 +0000 (UTC)
+X-Farcaster-Flow-ID: 2bc32977-123f-4a3f-bfc0-1f8a878e3279
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Fri, 17 Oct 2025 09:07:16 +0000
+ Fri, 17 Oct 2025 09:08:24 +0000
 Received: from dev-dsk-farbere-1a-46ecabed.eu-west-1.amazon.com
  (172.19.116.181) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20; Fri, 17 Oct 2025
- 09:07:01 +0000
+ 09:08:09 +0000
 From: Eliav Farber <farbere@amazon.com>
 To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>,
@@ -120,9 +106,11 @@ To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
 	<linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>,
 	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
 	<tipc-discussion@lists.sourceforge.net>
-Subject: [PATCH v2 05/27 5.10.y] minmax: add in_range() macro
-Date: Fri, 17 Oct 2025 09:04:57 +0000
-Message-ID: <20251017090519.46992-6-farbere@amazon.com>
+CC: Christoph Hellwig <hch@infradead.org>, Linus Torvalds
+	<torvalds@linux-foundation.org>
+Subject: [PATCH v2 09/27 5.10.y] minmax: allow min()/max()/clamp() if the arguments have the same signedness.
+Date: Fri, 17 Oct 2025 09:05:01 +0000
+Message-ID: <20251017090519.46992-10-farbere@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251017090519.46992-1-farbere@amazon.com>
 References: <20251017090519.46992-1-farbere@amazon.com>
@@ -130,11 +118,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [172.19.116.181]
-X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
+X-ClientProxiedBy: EX19D035UWA001.ant.amazon.com (10.13.139.101) To
  EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251017_100722_509667_7691587D 
-X-CRM114-Status: GOOD (  24.50  )
+X-CRM114-CacheID: sfid-20251017_020832_978182_172EC407 
+X-CRM114-Status: GOOD (  15.45  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -150,458 +138,172 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit f9bff0e31881d03badf191d3b0005839391f5f2b ]
+[ Upstream commit d03eba99f5bf7cbc6e2fdde3b6fa36954ad58e09 ]
 
-Patch series "New page table range API", v6.
+The type-check in min()/max() is there to stop unexpected results if a
+negative value gets converted to a large unsigned value.  However it also
+rejects 'unsigned int' v 'unsigned long' compares which are common and
+never problematc.
 
-This patchset changes the API used by the MM to set up page table entries.
-The four APIs are:
+Replace the 'same type' check with a 'same signedness' check.
 
-    set_ptes(mm, addr, ptep, pte, nr)
-    update_mmu_cache_range(vma, addr, ptep, nr)
-    flush_dcache_folio(folio)
-    flush_icache_pages(vma, page, nr)
+The new test isn't itself a compile time error, so use static_assert() to
+report the error and give a meaningful error message.
 
-flush_dcache_folio() isn't technically new, but no architecture
-implemented it, so I've done that for them.  The old APIs remain around
-but are mostly implemented by calling the new interfaces.
+Due to the way builtin_choose_expr() works detecting the error in the
+'non-constant' side (where static_assert() can be used) also detects
+errors when the arguments are constant.
 
-The new APIs are based around setting up N page table entries at once.
-The N entries belong to the same PMD, the same folio and the same VMA, so
-ptep++ is a legitimate operation, and locking is taken care of for you.
-Some architectures can do a better job of it than just a loop, but I have
-hesitated to make too deep a change to architectures I don't understand
-well.
-
-One thing I have changed in every architecture is that PG_arch_1 is now a
-per-folio bit instead of a per-page bit when used for dcache clean/dirty
-tracking.  This was something that would have to happen eventually, and it
-makes sense to do it now rather than iterate over every page involved in a
-cache flush and figure out if it needs to happen.
-
-The point of all this is better performance, and Fengwei Yin has measured
-improvement on x86.  I suspect you'll see improvement on your architecture
-too.  Try the new will-it-scale test mentioned here:
-https://lore.kernel.org/linux-mm/20230206140639.538867-5-fengwei.yin@intel.com/
-You'll need to run it on an XFS filesystem and have
-CONFIG_TRANSPARENT_HUGEPAGE set.
-
-This patchset is the basis for much of the anonymous large folio work
-being done by Ryan, so it's received quite a lot of testing over the last
-few months.
-
-This patch (of 38):
-
-Determine if a value lies within a range more efficiently (subtraction +
-comparison vs two comparisons and an AND).  It also has useful (under some
-circumstances) behaviour if the range exceeds the maximum value of the
-type.  Convert all the conflicting definitions of in_range() within the
-kernel; some can use the generic definition while others need their own
-definition.
-
-Link: https://lkml.kernel.org/r/20230802151406.3735276-1-willy@infradead.org
-Link: https://lkml.kernel.org/r/20230802151406.3735276-2-willy@infradead.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/fe7e6c542e094bfca655abcd323c1c98@AcuMS.aculab.com
+Signed-off-by: David Laight <david.laight@aculab.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Eliav Farber <farbere@amazon.com>
 ---
- arch/arm/mm/pageattr.c                        |  6 ++---
- .../drm/arm/display/include/malidp_utils.h    |  2 +-
- .../display/komeda/komeda_pipeline_state.c    | 24 ++++++++---------
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c         |  6 -----
- .../net/ethernet/chelsio/cxgb3/cxgb3_main.c   | 18 ++++++-------
- fs/btrfs/misc.h                               |  2 --
- fs/ext2/balloc.c                              |  2 --
- fs/ext4/ext4.h                                |  2 --
- fs/ufs/util.h                                 |  6 -----
- include/linux/minmax.h                        | 27 +++++++++++++++++++
- lib/logic_pio.c                               |  3 ---
- net/netfilter/nf_nat_core.c                   |  6 ++---
- net/tipc/core.h                               |  2 +-
- net/tipc/link.c                               | 10 +++----
- 14 files changed, 61 insertions(+), 55 deletions(-)
+ include/linux/minmax.h | 60 ++++++++++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 28 deletions(-)
 
-diff --git a/arch/arm/mm/pageattr.c b/arch/arm/mm/pageattr.c
-index 9790ae3a8c68..3b3bfa825fad 100644
---- a/arch/arm/mm/pageattr.c
-+++ b/arch/arm/mm/pageattr.c
-@@ -25,7 +25,7 @@ static int change_page_range(pte_t *ptep, unsigned long addr, void *data)
- 	return 0;
- }
- 
--static bool in_range(unsigned long start, unsigned long size,
-+static bool range_in_range(unsigned long start, unsigned long size,
- 	unsigned long range_start, unsigned long range_end)
- {
- 	return start >= range_start && start < range_end &&
-@@ -46,8 +46,8 @@ static int change_memory_common(unsigned long addr, int numpages,
- 	if (!size)
- 		return 0;
- 
--	if (!in_range(start, size, MODULES_VADDR, MODULES_END) &&
--	    !in_range(start, size, VMALLOC_START, VMALLOC_END))
-+	if (!range_in_range(start, size, MODULES_VADDR, MODULES_END) &&
-+	    !range_in_range(start, size, VMALLOC_START, VMALLOC_END))
- 		return -EINVAL;
- 
- 	data.set_mask = set_mask;
-diff --git a/drivers/gpu/drm/arm/display/include/malidp_utils.h b/drivers/gpu/drm/arm/display/include/malidp_utils.h
-index 49a1d7f3539c..9f83baac6ed8 100644
---- a/drivers/gpu/drm/arm/display/include/malidp_utils.h
-+++ b/drivers/gpu/drm/arm/display/include/malidp_utils.h
-@@ -35,7 +35,7 @@ static inline void set_range(struct malidp_range *rg, u32 start, u32 end)
- 	rg->end   = end;
- }
- 
--static inline bool in_range(struct malidp_range *rg, u32 v)
-+static inline bool malidp_in_range(struct malidp_range *rg, u32 v)
- {
- 	return (v >= rg->start) && (v <= rg->end);
- }
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
-index 7cc891c091f8..3e414d2fbdda 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
-@@ -305,12 +305,12 @@ komeda_layer_check_cfg(struct komeda_layer *layer,
- 	if (komeda_fb_check_src_coords(kfb, src_x, src_y, src_w, src_h))
- 		return -EINVAL;
- 
--	if (!in_range(&layer->hsize_in, src_w)) {
-+	if (!malidp_in_range(&layer->hsize_in, src_w)) {
- 		DRM_DEBUG_ATOMIC("invalidate src_w %d.\n", src_w);
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&layer->vsize_in, src_h)) {
-+	if (!malidp_in_range(&layer->vsize_in, src_h)) {
- 		DRM_DEBUG_ATOMIC("invalidate src_h %d.\n", src_h);
- 		return -EINVAL;
- 	}
-@@ -452,14 +452,14 @@ komeda_scaler_check_cfg(struct komeda_scaler *scaler,
- 	hsize_out = dflow->out_w;
- 	vsize_out = dflow->out_h;
- 
--	if (!in_range(&scaler->hsize, hsize_in) ||
--	    !in_range(&scaler->hsize, hsize_out)) {
-+	if (!malidp_in_range(&scaler->hsize, hsize_in) ||
-+	    !malidp_in_range(&scaler->hsize, hsize_out)) {
- 		DRM_DEBUG_ATOMIC("Invalid horizontal sizes");
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&scaler->vsize, vsize_in) ||
--	    !in_range(&scaler->vsize, vsize_out)) {
-+	if (!malidp_in_range(&scaler->vsize, vsize_in) ||
-+	    !malidp_in_range(&scaler->vsize, vsize_out)) {
- 		DRM_DEBUG_ATOMIC("Invalid vertical sizes");
- 		return -EINVAL;
- 	}
-@@ -574,13 +574,13 @@ komeda_splitter_validate(struct komeda_splitter *splitter,
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&splitter->hsize, dflow->in_w)) {
-+	if (!malidp_in_range(&splitter->hsize, dflow->in_w)) {
- 		DRM_DEBUG_ATOMIC("split in_w:%d is out of the acceptable range.\n",
- 				 dflow->in_w);
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&splitter->vsize, dflow->in_h)) {
-+	if (!malidp_in_range(&splitter->vsize, dflow->in_h)) {
- 		DRM_DEBUG_ATOMIC("split in_h: %d exceeds the acceptable range.\n",
- 				 dflow->in_h);
- 		return -EINVAL;
-@@ -624,13 +624,13 @@ komeda_merger_validate(struct komeda_merger *merger,
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&merger->hsize_merged, output->out_w)) {
-+	if (!malidp_in_range(&merger->hsize_merged, output->out_w)) {
- 		DRM_DEBUG_ATOMIC("merged_w: %d is out of the accepted range.\n",
- 				 output->out_w);
- 		return -EINVAL;
- 	}
- 
--	if (!in_range(&merger->vsize_merged, output->out_h)) {
-+	if (!malidp_in_range(&merger->vsize_merged, output->out_h)) {
- 		DRM_DEBUG_ATOMIC("merged_h: %d is out of the accepted range.\n",
- 				 output->out_h);
- 		return -EINVAL;
-@@ -866,8 +866,8 @@ void komeda_complete_data_flow_cfg(struct komeda_layer *layer,
- 	 * input/output range.
- 	 */
- 	if (dflow->en_scaling && scaler)
--		dflow->en_split = !in_range(&scaler->hsize, dflow->in_w) ||
--				  !in_range(&scaler->hsize, dflow->out_w);
-+		dflow->en_split = !malidp_in_range(&scaler->hsize, dflow->in_w) ||
-+				  !malidp_in_range(&scaler->hsize, dflow->out_w);
- }
- 
- static bool merger_is_available(struct komeda_pipeline *pipe,
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 655938df4531..f11da95566da 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -657,12 +657,6 @@ struct block_header {
- 	u32 data[];
- };
- 
--/* this should be a general kernel helper */
--static int in_range(u32 addr, u32 start, u32 size)
--{
--	return addr >= start && addr < start + size;
--}
--
- static bool fw_block_mem(struct a6xx_gmu_bo *bo, const struct block_header *blk)
- {
- 	if (!in_range(blk->addr, bo->iova, bo->size))
-diff --git a/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c b/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-index 8a167eea288c..10790a370f22 100644
---- a/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
-@@ -2131,7 +2131,7 @@ static const struct ethtool_ops cxgb_ethtool_ops = {
- 	.set_link_ksettings = set_link_ksettings,
- };
- 
--static int in_range(int val, int lo, int hi)
-+static int cxgb_in_range(int val, int lo, int hi)
- {
- 	return val < 0 || (val <= hi && val >= lo);
- }
-@@ -2162,19 +2162,19 @@ static int cxgb_extension_ioctl(struct net_device *dev, void __user *useraddr)
- 			return -EINVAL;
- 		if (t.qset_idx >= SGE_QSETS)
- 			return -EINVAL;
--		if (!in_range(t.intr_lat, 0, M_NEWTIMER) ||
--		    !in_range(t.cong_thres, 0, 255) ||
--		    !in_range(t.txq_size[0], MIN_TXQ_ENTRIES,
-+		if (!cxgb_in_range(t.intr_lat, 0, M_NEWTIMER) ||
-+		    !cxgb_in_range(t.cong_thres, 0, 255) ||
-+		    !cxgb_in_range(t.txq_size[0], MIN_TXQ_ENTRIES,
- 			      MAX_TXQ_ENTRIES) ||
--		    !in_range(t.txq_size[1], MIN_TXQ_ENTRIES,
-+		    !cxgb_in_range(t.txq_size[1], MIN_TXQ_ENTRIES,
- 			      MAX_TXQ_ENTRIES) ||
--		    !in_range(t.txq_size[2], MIN_CTRL_TXQ_ENTRIES,
-+		    !cxgb_in_range(t.txq_size[2], MIN_CTRL_TXQ_ENTRIES,
- 			      MAX_CTRL_TXQ_ENTRIES) ||
--		    !in_range(t.fl_size[0], MIN_FL_ENTRIES,
-+		    !cxgb_in_range(t.fl_size[0], MIN_FL_ENTRIES,
- 			      MAX_RX_BUFFERS) ||
--		    !in_range(t.fl_size[1], MIN_FL_ENTRIES,
-+		    !cxgb_in_range(t.fl_size[1], MIN_FL_ENTRIES,
- 			      MAX_RX_JUMBO_BUFFERS) ||
--		    !in_range(t.rspq_size, MIN_RSPQ_ENTRIES,
-+		    !cxgb_in_range(t.rspq_size, MIN_RSPQ_ENTRIES,
- 			      MAX_RSPQ_ENTRIES))
- 			return -EINVAL;
- 
-diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
-index 6461ebc3a1c1..40ad75511435 100644
---- a/fs/btrfs/misc.h
-+++ b/fs/btrfs/misc.h
-@@ -8,8 +8,6 @@
- #include <asm/div64.h>
- #include <linux/rbtree.h>
- 
--#define in_range(b, first, len) ((b) >= (first) && (b) < (first) + (len))
--
- static inline void cond_wake_up(struct wait_queue_head *wq)
- {
- 	/*
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 9bf086821eb3..1d9380c5523b 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -36,8 +36,6 @@
-  */
- 
- 
--#define in_range(b, first, len)	((b) >= (first) && (b) <= (first) + (len) - 1)
--
- struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
- 					     unsigned int block_group,
- 					     struct buffer_head ** bh)
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1dc1292d8977..4adaf97d7435 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3659,8 +3659,6 @@ static inline void set_bitmap_uptodate(struct buffer_head *bh)
- 	set_bit(BH_BITMAP_UPTODATE, &(bh)->b_state);
- }
- 
--#define in_range(b, first, len)	((b) >= (first) && (b) <= (first) + (len) - 1)
--
- /* For ioend & aio unwritten conversion wait queues */
- #define EXT4_WQ_HASH_SZ		37
- #define ext4_ioend_wq(v)   (&ext4__ioend_wq[((unsigned long)(v)) %\
-diff --git a/fs/ufs/util.h b/fs/ufs/util.h
-index 4931bec1a01c..89247193d96d 100644
---- a/fs/ufs/util.h
-+++ b/fs/ufs/util.h
-@@ -11,12 +11,6 @@
- #include <linux/fs.h>
- #include "swab.h"
- 
--
--/*
-- * some useful macros
-- */
--#define in_range(b,first,len)	((b)>=(first)&&(b)<(first)+(len))
--
- /*
-  * functions used for retyping
-  */
 diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index abdeae409dad..7affadcb2a29 100644
+index 2a197f54fe05..8718fd71a793 100644
 --- a/include/linux/minmax.h
 +++ b/include/linux/minmax.h
-@@ -3,6 +3,7 @@
- #define _LINUX_MINMAX_H
+@@ -12,9 +12,8 @@
+  *
+  * - avoid multiple evaluations of the arguments (so side-effects like
+  *   "x++" happen only once) when non-constant.
+- * - perform strict type-checking (to generate warnings instead of
+- *   nasty runtime surprises). See the "unnecessary" pointer comparison
+- *   in __typecheck().
++ * - perform signed v unsigned type-checking (to generate compile
++ *   errors instead of nasty runtime surprises).
+  * - retain result as a constant expressions when called with only
+  *   constant expressions (to avoid tripping VLA warnings in stack
+  *   allocation usage).
+@@ -22,23 +21,30 @@
+ #define __typecheck(x, y) \
+ 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
  
- #include <linux/const.h>
-+#include <linux/types.h>
+-#define __no_side_effects(x, y) \
+-		(__is_constexpr(x) && __is_constexpr(y))
++/* is_signed_type() isn't a constexpr for pointer types */
++#define __is_signed(x) 								\
++	__builtin_choose_expr(__is_constexpr(is_signed_type(typeof(x))),	\
++		is_signed_type(typeof(x)), 0)
+ 
+-#define __safe_cmp(x, y) \
+-		(__typecheck(x, y) && __no_side_effects(x, y))
++#define __types_ok(x, y) \
++	(__is_signed(x) == __is_signed(y))
+ 
+-#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
++#define __cmp_op_min <
++#define __cmp_op_max >
+ 
+-#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
++#define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
++
++#define __cmp_once(op, x, y, unique_x, unique_y) ({	\
+ 		typeof(x) unique_x = (x);		\
+ 		typeof(y) unique_y = (y);		\
+-		__cmp(unique_x, unique_y, op); })
++		static_assert(__types_ok(x, y),		\
++			#op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
++		__cmp(op, unique_x, unique_y); })
+ 
+-#define __careful_cmp(x, y, op) \
+-	__builtin_choose_expr(__safe_cmp(x, y), \
+-		__cmp(x, y, op), \
+-		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
++#define __careful_cmp(op, x, y)					\
++	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
++		__cmp(op, x, y),				\
++		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+ 
+ #define __clamp(val, lo, hi)	\
+ 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
+@@ -47,17 +53,15 @@
+ 		typeof(val) unique_val = (val);				\
+ 		typeof(lo) unique_lo = (lo);				\
+ 		typeof(hi) unique_hi = (hi);				\
++		static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
++				(lo) <= (hi), true),					\
++			"clamp() low limit " #lo " greater than high limit " #hi);	\
++		static_assert(__types_ok(val, lo), "clamp() 'lo' signedness error");	\
++		static_assert(__types_ok(val, hi), "clamp() 'hi' signedness error");	\
+ 		__clamp(unique_val, unique_lo, unique_hi); })
+ 
+-#define __clamp_input_check(lo, hi)					\
+-        (BUILD_BUG_ON_ZERO(__builtin_choose_expr(			\
+-                __is_constexpr((lo) > (hi)), (lo) > (hi), false)))
+-
+ #define __careful_clamp(val, lo, hi) ({					\
+-	__clamp_input_check(lo, hi) +					\
+-	__builtin_choose_expr(__typecheck(val, lo) && __typecheck(val, hi) && \
+-			      __typecheck(hi, lo) && __is_constexpr(val) && \
+-			      __is_constexpr(lo) && __is_constexpr(hi),	\
++	__builtin_choose_expr(__is_constexpr((val) - (lo) + (hi)),	\
+ 		__clamp(val, lo, hi),					\
+ 		__clamp_once(val, lo, hi, __UNIQUE_ID(__val),		\
+ 			     __UNIQUE_ID(__lo), __UNIQUE_ID(__hi))); })
+@@ -67,14 +71,14 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define min(x, y)	__careful_cmp(x, y, <)
++#define min(x, y)	__careful_cmp(min, x, y)
+ 
+ /**
+  * max - return maximum of two values of the same or compatible types
+  * @x: first value
+  * @y: second value
+  */
+-#define max(x, y)	__careful_cmp(x, y, >)
++#define max(x, y)	__careful_cmp(max, x, y)
+ 
+ /**
+  * umin - return minimum of two non-negative values
+@@ -83,7 +87,7 @@
+  * @y: second value
+  */
+ #define umin(x, y)	\
+-	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
++	__careful_cmp(min, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
+ 
+ /**
+  * umax - return maximum of two non-negative values
+@@ -91,7 +95,7 @@
+  * @y: second value
+  */
+ #define umax(x, y)	\
+-	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
++	__careful_cmp(max, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
+ 
+ /**
+  * min3 - return minimum of three values
+@@ -143,7 +147,7 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
++#define min_t(type, x, y)	__careful_cmp(min, (type)(x), (type)(y))
+ 
+ /**
+  * max_t - return maximum of two values, using the specified type
+@@ -151,7 +155,7 @@
+  * @x: first value
+  * @y: second value
+  */
+-#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
++#define max_t(type, x, y)	__careful_cmp(max, (type)(x), (type)(y))
  
  /*
-  * min()/max()/clamp() macros must accomplish three things:
-@@ -175,6 +176,32 @@
-  */
- #define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
- 
-+static inline bool in_range64(u64 val, u64 start, u64 len)
-+{
-+	return (val - start) < len;
-+}
-+
-+static inline bool in_range32(u32 val, u32 start, u32 len)
-+{
-+	return (val - start) < len;
-+}
-+
-+/**
-+ * in_range - Determine if a value lies within a range.
-+ * @val: Value to test.
-+ * @start: First value in range.
-+ * @len: Number of values in range.
-+ *
-+ * This is more efficient than "if (start <= val && val < (start + len))".
-+ * It also gives a different answer if @start + @len overflows the size of
-+ * the type by a sufficient amount to encompass @val.  Decide for yourself
-+ * which behaviour you want, or prove that start + len never overflow.
-+ * Do not blindly replace one form with the other.
-+ */
-+#define in_range(val, start, len)					\
-+	((sizeof(start) | sizeof(len) | sizeof(val)) <= sizeof(u32) ?	\
-+		in_range32(val, start, len) : in_range64(val, start, len))
-+
- /**
-  * swap - swap values of @a and @b
-  * @a: first value
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index 07b4b9a1f54b..2ea564a40064 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -20,9 +20,6 @@
- static LIST_HEAD(io_range_list);
- static DEFINE_MUTEX(io_range_mutex);
- 
--/* Consider a kernel general helper for this */
--#define in_range(b, first, len)        ((b) >= (first) && (b) < (first) + (len))
--
- /**
-  * logic_pio_register_range - register logical PIO range for a host
-  * @new_range: pointer to the IO range to be registered.
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index b7c3c902290f..96b61f0658c8 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -262,7 +262,7 @@ static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
- /* If we source map this tuple so reply looks like reply_tuple, will
-  * that meet the constraints of range.
-  */
--static int in_range(const struct nf_conntrack_tuple *tuple,
-+static int nf_in_range(const struct nf_conntrack_tuple *tuple,
- 		    const struct nf_nat_range2 *range)
- {
- 	/* If we are supposed to map IPs, then we must be in the
-@@ -311,7 +311,7 @@ find_appropriate_src(struct net *net,
- 				       &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
- 			result->dst = tuple->dst;
- 
--			if (in_range(result, range))
-+			if (nf_in_range(result, range))
- 				return 1;
- 		}
- 	}
-@@ -543,7 +543,7 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
- 	if (maniptype == NF_NAT_MANIP_SRC &&
- 	    !(range->flags & NF_NAT_RANGE_PROTO_RANDOM_ALL)) {
- 		/* try the original tuple first */
--		if (in_range(orig_tuple, range)) {
-+		if (nf_in_range(orig_tuple, range)) {
- 			if (!nf_nat_used_tuple(orig_tuple, ct)) {
- 				*tuple = *orig_tuple;
- 				return;
-diff --git a/net/tipc/core.h b/net/tipc/core.h
-index 73a26b0b9ca1..7c86fa4bb967 100644
---- a/net/tipc/core.h
-+++ b/net/tipc/core.h
-@@ -199,7 +199,7 @@ static inline int less(u16 left, u16 right)
- 	return less_eq(left, right) && (mod(right) != mod(left));
- }
- 
--static inline int in_range(u16 val, u16 min, u16 max)
-+static inline int tipc_in_range(u16 val, u16 min, u16 max)
- {
- 	return !less(val, min) && !more(val, max);
- }
-diff --git a/net/tipc/link.c b/net/tipc/link.c
-index 336d1bb2cf6a..ca96bdb77190 100644
---- a/net/tipc/link.c
-+++ b/net/tipc/link.c
-@@ -1588,7 +1588,7 @@ static int tipc_link_advance_transmq(struct tipc_link *l, struct tipc_link *r,
- 					  last_ga->bgack_cnt);
- 			}
- 			/* Check against the last Gap ACK block */
--			if (in_range(seqno, start, end))
-+			if (tipc_in_range(seqno, start, end))
- 				continue;
- 			/* Update/release the packet peer is acking */
- 			bc_has_acked = true;
-@@ -2216,12 +2216,12 @@ static int tipc_link_proto_rcv(struct tipc_link *l, struct sk_buff *skb,
- 		strncpy(if_name, data, TIPC_MAX_IF_NAME);
- 
- 		/* Update own tolerance if peer indicates a non-zero value */
--		if (in_range(peers_tol, TIPC_MIN_LINK_TOL, TIPC_MAX_LINK_TOL)) {
-+		if (tipc_in_range(peers_tol, TIPC_MIN_LINK_TOL, TIPC_MAX_LINK_TOL)) {
- 			l->tolerance = peers_tol;
- 			l->bc_rcvlink->tolerance = peers_tol;
- 		}
- 		/* Update own priority if peer's priority is higher */
--		if (in_range(peers_prio, l->priority + 1, TIPC_MAX_LINK_PRI))
-+		if (tipc_in_range(peers_prio, l->priority + 1, TIPC_MAX_LINK_PRI))
- 			l->priority = peers_prio;
- 
- 		/* If peer is going down we want full re-establish cycle */
-@@ -2264,13 +2264,13 @@ static int tipc_link_proto_rcv(struct tipc_link *l, struct sk_buff *skb,
- 		l->rcv_nxt_state = msg_seqno(hdr) + 1;
- 
- 		/* Update own tolerance if peer indicates a non-zero value */
--		if (in_range(peers_tol, TIPC_MIN_LINK_TOL, TIPC_MAX_LINK_TOL)) {
-+		if (tipc_in_range(peers_tol, TIPC_MIN_LINK_TOL, TIPC_MAX_LINK_TOL)) {
- 			l->tolerance = peers_tol;
- 			l->bc_rcvlink->tolerance = peers_tol;
- 		}
- 		/* Update own prio if peer indicates a different value */
- 		if ((peers_prio != l->priority) &&
--		    in_range(peers_prio, 1, TIPC_MAX_LINK_PRI)) {
-+		    tipc_in_range(peers_prio, 1, TIPC_MAX_LINK_PRI)) {
- 			l->priority = peers_prio;
- 			rc = tipc_link_fsm_evt(l, LINK_FAILURE_EVT);
- 		}
+  * Do not check the array parameter using __must_be_array().
 -- 
 2.47.3
 
