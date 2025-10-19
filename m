@@ -4,55 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 944E3CD1292
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C7CCCFA18
+	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=k7g0LrzGV4wxVY6hersvIbt46GBOchsWh7G1cWkERsA=; b=QpxIRYNmH49ELVVcoAzikEzG2I
-	BxvYVbZ6evjbpVnp/nK6AXbqSN9l7V+lnqAkRtSDWMOH45eYbamtnhW/s1TD+MJ3Xz3NQzYz2dIDW
-	8Qa1+HKiu5oyZG05c5+7jnePTEF0bjLNewcT1s7TahXkEnYRD7KT5euAeod+hYdkWRxCMc0D9TX3u
-	8qlgFr1jvh/jcA3hS4AmjUPOY/OjU8a9V4z1ixnbVGSqbB0jNVoF7eXaAJv2xFXVABMinKDSZ45R/
-	94b4Nfls6Rw7NbS0/40dQq5gNNN8wOwx6I/6sovAafvG4yKN7HK99++2n0vISH/U5kfaZs/i2bac+
-	K5MWRfOw==;
+	bh=ikD2kzN+q0cZ+A+hpvPS0b6qB0klIxQK1wnjtsaF4E4=; b=pflFubdtMcuHE72Vojybh/vA2S
+	vX91i+9G/4PaHq8X1LM5OveeL72W4G9H4cM7K7kYj3fzr8wbpslR6v80OSvOQ3dpx5xEn/zXS39Bv
+	+pZFvo39Hnc/7mH8h1Nq4X6GW7jbBMsIQmzWb1mi7irJtZIP2Yac4N53DisMHH6oKvquyygza7Vkd
+	VtqkVYdM67izb0U+lP7Y6idoCXas/xpVpTpGm/Ql0tUuRozgakmRDwpW8an2k9nHAIplh2IVepx+l
+	K65XbfhRR2gcpX6mGrm8mrt9VFcnBlaJHWEjFuBhXnv8Nknss6VfBBmUuzje7TROv2CWpvENXZQzP
+	Pg6xlNxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlrP-00000003HGR-0ozr;
+	id 1vHlrP-00000003HHR-3ZDS;
 	Sat, 08 Nov 2025 16:32:19 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vASff-0000000B0Fg-0Xfu;
-	Sun, 19 Oct 2025 12:37:59 +0000
+	id 1vASgC-0000000B0Jq-2eEQ;
+	Sun, 19 Oct 2025 12:38:33 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 285FE604E4;
-	Sun, 19 Oct 2025 12:37:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54864C4CEE7;
-	Sun, 19 Oct 2025 12:37:42 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 408344079E;
+	Sun, 19 Oct 2025 12:38:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2363C4CEE7;
+	Sun, 19 Oct 2025 12:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760877463;
-	bh=dgzA9LsGuiP/mYejoGwFkpon4M45cMihfvBvR4qrSRg=;
+	s=korg; t=1760877510;
+	bh=oGwiDB09ge0ciPiwd9WRh3Y/M8CeD9dHfclvYoY7FBA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mr7tZ637v1WDh2Nr8sg19/xoeGzZL3RvlnXfYUykPJk+G6zQteton6Oo+u5wVdnxN
-	 ZBC8QPSBVC5hJfXNWgutJHN6QRJ4bxeGe2+hYWxIp2brHCNu/KXcKMeG5P43CM4Fjg
-	 vDPDOANq6idL2020QoIIUuWRPKXTuhm7Nf2n5Cxw=
-Date: Sun, 19 Oct 2025 14:37:40 +0200
+	b=nPSmMhj3TEXZoJrVWpARUkUyuGqk5lSFTPPoq1ZLeK3fCa9fne3RGlMO8KN1UE5lj
+	 ujRuOzzKq00FxR8F6wzbmtZQ/5O3ZNw8lG3lB3NfHxm+YwEDzwS2JsXmf0Ca6p4Frl
+	 ca5FOfnjYZ+gRAebgpsYtYTlOl8nww3/qAlyQSN0=
+Date: Sun, 19 Oct 2025 14:38:26 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
-To: "Farber, Eliav" <farbere@amazon.com>
-Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "jdike@addtoit.com" <jdike@addtoit.com>, "richard@nod.at" <richard@nod.at>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "luto@kernel.org" <luto@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "tony.luck@intel.com" <tony.luck@intel.com>, "qiuxu.zhuo@intel.com" <qiuxu.zhuo@intel.com>, "mchehab@kernel.org" <mchehab@kernel.org>, "james.morse@arm.com" <james.morse@arm.com>, "rric@kernel.org" <rric@kernel.org>, "harry.wentland@amd.com" <harry.wentland@amd.com>, "sunpeng.li@amd.com" <sunpeng.li@amd.com>, "alexander.deucher@amd.com" <alexander.deucher@amd.com>, "christian.koenig@amd.com" <christian.koenig@amd.com>, "airlied@linux.ie" <airlied@linux.ie>, "daniel@ffwll.ch" <daniel@ffwll.ch>, "evan.quan@amd.com" <evan.quan@amd.com>, "james.qian.wang@arm.com" <james.qian.wang@arm.com>, "liviu.dudau@arm.com" <liviu.dudau@arm.com>, "mihail.atanassov@arm.com" <mihail.atanassov@arm.com>, "brian.starkey@arm.com" <brian.starkey@arm.com>, "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>, "mripard@kernel.org" <mripard@kernel.org>, "tzimmermann@suse.de" <tzimmermann@suse.de>, "robdclark@gmail.com" <robdclark@gmail.com>, "sean@poorly.run" <sean@poorly.run>, "jdelvare@suse.com" <jdelvare@suse.com>, "linux@roeck-us.net" <linux@roeck-us.net>, "fery@cypress.com" <fery@cypress.com>, "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>, "agk@redhat.com" <agk@redhat.com>, "snitzer@redhat.com" <snitzer@redhat.com>, "dm-devel@redhat.com" <dm-devel@redhat.com>, "rajur@chelsio.com" <rajur@chelsio.com>, "davem@davemloft.net" <davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>, "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>, "alexandre.torgue@st.com" <alexandre.torgue@st.com>, "joabreu@synopsys.com" <joabreu@synopsys.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "malattia@linux.it" <malattia@linux.it>, "hdegoede@redhat.com" <hdegoede@redhat.com>, "mgross@linux.intel.com" <mgross@linux.intel.com>, "intel-linux-scu@intel.com" <intel-linux-scu@intel.com>, "artur.paszkiewicz@intel.com" <artur.paszkiewicz@intel.com>, "jejb@linux.ibm.com" <jejb@linux.ibm.com>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, "clm@fb.com" <clm@fb.com>, "josef@toxicpanda.com" <josef@toxicpanda.com>, "dsterba@suse.com" <dsterba@suse.com>, "xiang@kernel.org" <xiang@kernel.org>, "chao@kernel.org" <chao@kernel.org>, "jack@suse.com" <jack@suse.com>, "tytso@mit.edu" <tytso@mit.edu>, "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, "dushistov@mail.ru" <dushistov@mail.ru>, "luc.vanoostenryck@gmail.com" <luc.vanoostenryck@gmail.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "pmladek@suse.com" <pmladek@suse.com>, "sergey.senozhatsky@gmail.com" <sergey.senozhatsky@gmail.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>, "minchan@kernel.org" <minchan@kernel.org>, "ngupta@vflare.org" <ngupta@vflare.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>, "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>, "pablo@netfilter.org" <pablo@netfilter.org>, "kadlec@netfilter.org" <kadlec@netfilter.org>, "fw@strlen.de" <fw@strlen.de>, "jmaloy@redhat.com" <jmaloy@redhat.com>, "ying.xue@windriver.com" <ying.xue@windriver.com>, "willy@infradead.org" <willy@infradead.org>, "sashal@kernel.org" <sashal@kernel.org>, "ruanjinjie@huawei.com" <ruanjinjie@huawei.com>, "David.Laight@aculab.com" <David.Laight@aculab.com>, "herve.codina@bootlin.com" <herve.codina@bootlin.com>, "Jason@zx2c4.com" <Jason@zx2c4.com>, "keescook@chromium.org" <keescook@chromium.org>,
- "kbusch@kernel.org" <kbusch@kernel.org>, "nathan@kernel.org" <nathan@kernel.org>, "bvanassche@acm.org" <bvanassche@acm.org>, "ndesaulniers@google.com" <ndesaulniers@google.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, "freedreno@lists.freedesktop.org" <freedreno@lists.freedesktop.org>, "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>, "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, "linux-sparse@vger.kernel.org" <linux-sparse@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "tipc-discussion@lists.sourceforge.net" <tipc-discussion@lists.sourceforge.net>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Eliav Farber <farbere@amazon.com>, stable@vger.kernel.org,
+	linux@armlinux.org.uk, jdike@addtoit.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
+	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
+	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
+	sunpeng.li@amd.com, alexander.deucher@amd.com,
+	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
+	mihail.atanassov@arm.com, brian.starkey@arm.com,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, robdclark@gmail.com, sean@poorly.run,
+	jdelvare@suse.com, linux@roeck-us.net, fery@cypress.com,
+	dmitry.torokhov@gmail.com, agk@redhat.com, snitzer@redhat.com,
+	dm-devel@redhat.com, rajur@chelsio.com, davem@davemloft.net,
+	kuba@kernel.org, peppe.cavallaro@st.com, alexandre.torgue@st.com,
+	joabreu@synopsys.com, mcoquelin.stm32@gmail.com, malattia@linux.it,
+	hdegoede@redhat.com, mgross@linux.intel.com,
+	intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	sakari.ailus@linux.intel.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, xiang@kernel.org, chao@kernel.org, jack@suse.com,
+	tytso@mit.edu, adilger.kernel@dilger.ca, dushistov@mail.ru,
+	luc.vanoostenryck@gmail.com, rostedt@goodmis.org, pmladek@suse.com,
+	sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+	linux@rasmusvillemoes.dk, minchan@kernel.org, ngupta@vflare.org,
+	akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
+	yoshfuji@linux-ipv6.org, pablo@netfilter.org, kadlec@netfilter.org,
+	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
+	willy@infradead.org, sashal@kernel.org, ruanjinjie@huawei.com,
+	David.Laight@aculab.com, herve.codina@bootlin.com, Jason@zx2c4.com,
+	keescook@chromium.org, kbusch@kernel.org, bvanassche@acm.org,
+	ndesaulniers@google.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-edac@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-sparse@vger.kernel.org, linux-mm@kvack.org,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	tipc-discussion@lists.sourceforge.net
 Subject: Re: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
-Message-ID: <2025101929-curator-poplar-7460@gregkh>
+Message-ID: <2025101905-matter-freezable-39e5@gregkh>
 References: <20251017090519.46992-1-farbere@amazon.com>
  <2025101704-rumble-chatroom-60b5@gregkh>
- <CH0PR18MB5433BB2E99395D2AC8B0E0FBC6F7A@CH0PR18MB5433.namprd18.prod.outlook.com>
+ <20251017160924.GA2728735@ax162>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CH0PR18MB5433BB2E99395D2AC8B0E0FBC6F7A@CH0PR18MB5433.namprd18.prod.outlook.com>
+In-Reply-To: <20251017160924.GA2728735@ax162>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251019_053832_703552_B3558A05 
+X-CRM114-Status: GOOD (  18.71  )
 X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,14 +115,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 18, 2025 at 08:07:32PM +0000, Farber, Eliav wrote:
+On Fri, Oct 17, 2025 at 05:09:24PM +0100, Nathan Chancellor wrote:
+> On Fri, Oct 17, 2025 at 05:03:02PM +0200, Greg KH wrote:
 > > On Fri, Oct 17, 2025 at 09:04:52AM +0000, Eliav Farber wrote:
 > > > This series backports 27 patches to update minmax.h in the 5.10.y
 > > > branch, aligning it with v6.17-rc7.
-> > >
+> > > 
 > > > The ultimate goal is to synchronize all long-term branches so that they
 > > > include the full set of minmax.h changes.
-> > >
+> > > 
 > > > - 6.12.y has already been backported; the changes are included in
 > > >   v6.12.49.
 > > > - 6.6.y has already been backported; the changes are included in
@@ -84,26 +132,54 @@ On Sat, Oct 18, 2025 at 08:07:32PM +0000, Farber, Eliav wrote:
 > > >   6.1-stable tree.
 > > > - 5.15.y has already been backported; the changes are currently in the
 > > >   5.15-stable tree.
-> >
+> > 
 > > With this series applied, on an arm64 server, building 'allmodconfig', I
 > > get the following build error.
-> >
+> > 
 > > Oddly I don't see it on my x86 server, perhaps due to different compiler
 > > versions?
-> >
+> > 
 > > Any ideas?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> > ------------------------
+> > 
+> > In function ‘rt2800_txpower_to_dev’,
+> >     inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4022:25:
+> > ./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
+> >   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> >       |                                             ^
+> > ./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
+> >   290 |                         prefix ## suffix();                             \
+> >       |                         ^~~~~~
+> > ./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
+> >   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> >       |         ^~~~~~~~~~~~~~~~~~~
+> > ../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+> >    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+> >       |                                     ^~~~~~~~~~~~~~~~~~
+> > ../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+> >   188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
+> >       |         ^~~~~~~~~~~~~~~~
+> > ../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
+> >   195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
+> >       |         ^~~~~~~~~~~~
+> > ../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
+> >   218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
+> >       |                                    ^~~~~~~~~~~~~~~
+> > ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
+> >  3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
+> >       |                        ^~~~~~~
 > 
-> This mainline commit is missing:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/net/wireless/ralink/rt2x00/rt2800lib.c?h=v6.18-rc1&id=66063033f77e10b985258126a97573f84bb8d3b4
-> 
-> This fix already exists in 5.15.y:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/net/wireless/ralink/rt2x00/rt2800lib.c?h=v5.15.194&id=2d3cef3d7a5df260a14a6679c4aca0c97e570ee5
-> …but is missing in 5.10.y.
-> 
-> I now backported it to 5.10.y here:
-> https://lore.kernel.org/stable/20251018195945.18825-1-farbere@amazon.com/T/#u
+> Missing commit 3bc753c06dd0 ("kbuild: treat char as always unsigned")?
 
-Thanks,I've queued that up now.
+That's going to be messy to backport, it's not even in 6.1.y, so let's
+leave that alone if at all possible.
+
+thanks,
 
 greg k-h
 
