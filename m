@@ -4,54 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E12A3CCD19A
-	for <linux-um@archiver.kernel.org>; Fri, 17 Oct 2025 08:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD156CCD193
+	for <linux-um@archiver.kernel.org>; Mon, 20 Oct 2025 11:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:From:Cc:To:Subject:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=oL6CGum7U6y7VC981LkHoeUdZajRgfZcn9dkk7SevwQ=; b=hFmRXCMgGsIZrtemUwcS/c9d13
-	Hz5IpFR28oRWucA9N7I2jmdy1NcZtUgXaoF0hOhk06cI3p6dkpMceshJigs+Uz2syVZnpcY4TZ3o7
-	ezQ+q3HCZLs8+Asvu3EVx88Mn71BsJgNZsu0WX9qukrGSSh+xrw/f3QPCuGMVUNnEL44SWB+1JCIP
-	ZuxVVfw4bIWfYQgiY5SKRSA7vcSFXuZSHbX5QYKBUKsq17f27n+/xxohf/vWt7vM2F18wzCSRE/Oz
-	dkd4AKWoQEai65E5XI8HsjTyH7R8YIWL1QAiPSCcK7MOgrtwHRW7DBnj6f5DlUUBVNzxt/2y5zXhj
-	In3Do+9Q==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=nxLi65g4dGwi3ujksBH+bmbmQ5CpFWJvidjZ0C43bek=; b=gY3eDzZvvvkU71xm3ox9plz7fL
+	wZwBfUnYHyjjweSc9faneuUcRPe9uZ1WXm0MnV8ZCg3og2jWqGNwpRhIyvkdC4DQn2Bm94EnzkJmD
+	bvcyIw8gTUJQ/w0S0FY/Gw7tFMurvBaJlddkQSuAjAzn2ycYp75ZB53kIL279ziuvwrrBamrGMOIM
+	vQGw5KO8FkB0YvNx7URH7aCnI9j6pgm+7xd4CHjAk1aB1V8gJaV3cU4Qg+PJeDjZh3GxcrS1LIBKZ
+	ikn13lw2BZ+AK5lAkpjo1gvjly0atFxVfTNxDpeTw1eJ3TFLkg3GUbtLfnR/sC03oHYvODAAeL5Zc
+	mfA3nudg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9fe1-000000073VA-2pbw;
-	Fri, 17 Oct 2025 08:17:01 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vAoSc-0000000D8Nb-0orC;
+	Mon, 20 Oct 2025 11:53:58 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9fdx-000000073SN-2o00;
-	Fri, 17 Oct 2025 08:16:57 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C4B1B6429A;
-	Fri, 17 Oct 2025 08:16:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ECFBC19421;
-	Fri, 17 Oct 2025 08:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760689016;
-	bh=/nupFfiBDTK8f3z19X5zBCAoNMhBKwg/9yA8JDj7YJ8=;
-	h=Subject:To:Cc:From:Date:In-Reply-To:From;
-	b=ekUis2qS/K43Wa3oMb6pzVrmzyh0OGl14tcBxht+kGV+lez/llzNd0s9mNO0RzixN
-	 Q75JOdhNNo5UNgwXRxdAmWUi1TmKQfgq+e5PzKWDXtyivWCST/OSYnWJkfXMnb/O0F
-	 bWFd3BTr2YRTDY2ZsyW9T5wO/yvIT9f9cT9MABvo=
-Subject: Patch "minmax.h: update some comments" has been added to the 5.15-stable tree
-To: David.Laight@ACULAB.COM,Jason@zx2c4.com,adilger.kernel@dilger.ca,agk@redhat.com,airlied@linux.ie,akpm@linux-foundation.org,amd-gfx@lists.freedesktop.org,andriy.shevchenko@linux.intel.com,anton.ivanov@cambridgegreys.com,arnd@kernel.org,axboe@kernel.dk,bp@alien8.de,clm@fb.com,coreteam@netfilter.org,dan.carpenter@linaro.org,daniel@ffwll.ch,dave.hansen@linux.intel.com,davem@davemloft.net,david.laight@aculab.com,dm-devel@redhat.com,dmitry.torokhov@gmail.com,dri-devel@lists.freedesktop.org,dsahern@kernel.org,dsterba@suse.com,dushistov@mail.ru,farbere@amazon.com,freedreno@lists.freedesktop.org,fw@strlen.de,gregkh@linuxfoundation.org,hch@infradead.org,hdegoede@redhat.com,herve.codina@bootlin.com,hpa@zytor.com,jack@suse.com,james.morse@arm.com,jdelvare@suse.com,jdike@addtoit.com,jejb@linux.ibm.com,jernej.skrabec@gmail.com,jmaloy@redhat.com,josef@toxicpanda.com,kadlec@netfilter.org,krzysztof.kozlowski@canonical.com,kuba@kernel.org,linus.walleij@linaro.org,linux-arm-kernel@lists.infradead.o
- rg,linux-mm@kvack.org,linux-staging@lists.linux.dev,linux-stm32@st-md-mailman.stormreply.com,linux-sunxi@lists.linux.dev,linux-um@lists.infradead.org,linux@rasmusvillemoes.dk,linux@roeck-us.net,lorenzo.stoakes@oracle.com,luc.vanoostenryck@gmail.com,luto@kernel.org,maarten.lankhorst@linux.intel.com,malattia@linux.it,martin.petersen@oracle.com,maz@kernel.org,mcoquelin.stm32@gmail.com,mgross@linux.intel.com,minchan@kernel.org,mingo@redhat.com,mjguzik@gmail.com,mripard@kernel.org,ngupta@vflare.org,pablo@netfilter.org,pedro.falcato@gmail.com,peterz@infradead.org,pmladek@suse.com,qiuxu.zhuo@intel.com,quic_akhilpo@quicinc.com,richard@nod.at,robdclark@gmail.com,rostedt@goodmis.org,rric@kernel.org,ruanjinjie@huawei.com,sakari.ailus@linux.intel.com,sashal@kernel.org,sean@poorly.run,senozhatsky@chromium.org,shuah@kernel.org,snitzer@redhat.com,tglx@linutronix.de,tipc-discussion@lists.sourceforge.net,tony.luck@intel.com,tytso@mit.edu,tzimmermann@suse.de,wens@csie.org,willy@infradead.org,x86@kern
- el.org,ying.xue@windriver.com,yoshfuji@linux-ipv6.org
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Fri, 17 Oct 2025 10:16:20 +0200
-In-Reply-To: <20251008152946.29285-15-farbere@amazon.com>
-Message-ID: <2025101720-splashed-matriarch-b59d@gregkh>
+	id 1vAoSZ-0000000D8N0-2fLz
+	for linux-um@lists.infradead.org;
+	Mon, 20 Oct 2025 11:53:57 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-4270a3464caso1756677f8f.1
+        for <linux-um@lists.infradead.org>; Mon, 20 Oct 2025 04:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1760961233; x=1761566033; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nxLi65g4dGwi3ujksBH+bmbmQ5CpFWJvidjZ0C43bek=;
+        b=GTPnUgDhLggneCbz7LJD6DziBIDwHJ2b2GfA/W73VaYbxqy88l/UD/HvYsJZv2a4Sx
+         BuGzy01jdsLA9IBK3pbpHwqOPyedGXPjrX80Wxe141QewUiGVW5SNT8mxXGSoS1YazJx
+         LB/Tvkw5ihcPetpUjZ1gVyhHMTgvL+1YGupaHQwtjKXz7VMd+HsPEyGgFXrtSTh0Ghfy
+         FqJV6hjGRF9aCJll//Bjl1zqwL8qn8AvCA9zZsRxO0efezIruY/01w6BQvAJ/MWnjRMX
+         Qu+PVHYdnTZ9KdJg9ElWDH9vjd2LBInjKDovSR/Pm+bFPONgk6QRCwwCMn3GVkdKajmV
+         a4Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760961233; x=1761566033;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nxLi65g4dGwi3ujksBH+bmbmQ5CpFWJvidjZ0C43bek=;
+        b=QfpPbg+cs5pp5Ns0GipPWD2T2rPw2pZOqOuEX28RTCk7a00G33cvlR6Y/BgKvetCSw
+         avQt3U9MsS8J+0AdVdhHOxT+lgre6ZSst3mQlUjCtRQtcNoSG6fnY4X3mO5liIpnGHdB
+         MpYNzQbt0O35r7c973CnWQ04a3ec1L9y8Bjk76wnoRHwsbPZpRvwhkLvwbdFnFOOe8hr
+         Re0SUkW8XlY5lWAzSwlzh6NzKAkVO+s2X7juKLSJDCb135XMFi0H0YtRfEeWvTGJxB2v
+         9DguCjNW8/veERkCw/4UgZw6ha7P7OoaYohm88xj03adL5EbvT10XdxuVgveuu8F8RmF
+         5A7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUYUsCX+qAudPu6Vx1AOqgKPzZiwrE32PSpOHZemasWu+Y+OVpsL6BoiKhRbJZn39rKRG0wmL/V9A==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzs82uTUmv48KU8v6fawL9vhFLO6pjjbv/8rWlmiBpNPc4KdLv5
+	UbEVrSrH/eb1B9i/39M+w0n9MKD0RfHFISmzFb8t28+Op5YhX3x0+2L0ZOn214Can0A=
+X-Gm-Gg: ASbGncuZYG/Wpq862+YvaRcUWUicszSXk39jlT1ssBcHmZUps3OdKMcnTHmxyRdJ1MT
+	2PAHdGMWqxlYWbZ1Lju3KeqZKx2xYCXXfMA29Ys7pYtC7QA9/ytEcsI6OfQsrAHuOTUoIdt46jX
+	4NYQtvArtNHe+ZbbqEdDOPr4owhynQ4vONmbHbVCgYgSXUtIdCHkp1LjvqmyyKy5sSORySPHqkK
+	KTPlbOnaxivfvCsOkmMeTEgs8hIpAUlehO3TruaNrXU7b7epKamy2CKk3yjmnXcTdc0reldQHMU
+	OQa4CIevQacdSfigEJh6JsdjCuY+4kv/MNosAkyzjXBEmV8kfcMWyvltATs7iyAPPXyv/yOMgpL
+	0B4iF2XwJFHij+8+WzgfojXhNi4KF+ByiofTBOaCg0poE/+RFnGpYePY2ROag8vTQsT1/D6l6s3
+	gQQSx7xgAKewivhVUaCfmb
+X-Google-Smtp-Source: AGHT+IErqGtubFP6M8NiY7VOpNWyIz/IZypNc+TYzCMimJqqWR79oYHNIBLeUwbSgQtIWQOkjfgZRw==
+X-Received: by 2002:a5d:5d01:0:b0:427:7ac:528f with SMTP id ffacd0b85a97d-42707ac53b8mr8364947f8f.33.1760961233199;
+        Mon, 20 Oct 2025 04:53:53 -0700 (PDT)
+Received: from [10.100.51.209] (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-891cf590691sm544700785a.52.2025.10.20.04.53.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Oct 2025 04:53:52 -0700 (PDT)
+Message-ID: <eca6031d-7f72-4f24-bbd4-95354d5c9ca5@suse.com>
+Date: Mon, 20 Oct 2025 13:53:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-X-stable: commit
-X-Patchwork-Hint: ignore 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] PCI: Support FIXUP quirks in modules
+To: Brian Norris <briannorris@chromium.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Luis Chamberlain
+ <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ linux-pci@vger.kernel.org, David Gow <davidgow@google.com>,
+ Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Sami Tolvanen <samitolvanen@google.com>, Richard Weinberger
+ <richard@nod.at>, Wei Liu <wei.liu@kernel.org>,
+ Brendan Higgins <brendan.higgins@linux.dev>, kunit-dev@googlegroups.com,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+References: <20250912230208.967129-1-briannorris@chromium.org>
+ <20250912230208.967129-2-briannorris@chromium.org>
+ <c84d6952-7977-47cd-8f09-6ea223217337@suse.com> <aNLb9g0AbBXZCJ4m@google.com>
+ <2071b071-874c-4f85-8500-033c73dfaaab@suse.com> <aORJhL1yAPyV7YAW@google.com>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <aORJhL1yAPyV7YAW@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251020_045355_720992_C1E7EC11 
+X-CRM114-Status: GOOD (  44.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,173 +112,139 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 10/7/25 12:58 AM, Brian Norris wrote:
+> Hi Petr,
+> 
+> On Wed, Sep 24, 2025 at 09:48:47AM +0200, Petr Pavlu wrote:
+>> On 9/23/25 7:42 PM, Brian Norris wrote:
+>>> Hi Petr,
+>>>
+>>> On Tue, Sep 23, 2025 at 02:55:34PM +0200, Petr Pavlu wrote:
+>>>> On 9/13/25 12:59 AM, Brian Norris wrote:
+>>>>> @@ -259,6 +315,12 @@ void pci_fixup_device(enum pci_fixup_pass pass, struct pci_dev *dev)
+>>>>>  		return;
+>>>>>  	}
+>>>>>  	pci_do_fixups(dev, start, end);
+>>>>> +
+>>>>> +	struct pci_fixup_arg arg = {
+>>>>> +		.dev = dev,
+>>>>> +		.pass = pass,
+>>>>> +	};
+>>>>> +	module_for_each_mod(pci_module_fixup, &arg);
+>>>>
+>>>> The function module_for_each_mod() walks not only modules that are LIVE,
+>>>> but also those in the COMING and GOING states. This means that this code
+>>>> can potentially execute a PCI fixup from a module before its init
+>>>> function is invoked, and similarly, a fixup can be executed after the
+>>>> exit function has already run. Is this intentional?
+>>>
+>>> Thanks for the callout. I didn't really give this part much thought
+>>> previously.
+>>>
+>>> Per the comments, COMING means "Full formed, running module_init". I
+>>> believe that is a good thing, actually; specifically for controller
+>>> drivers, module_init() might be probing the controller and enumerating
+>>> child PCI devices to which we should apply these FIXUPs. That is a key
+>>> case to support.
+>>>
+>>> GOING is not clearly defined in the header comments, but it seems like
+>>> it's a relatively narrow window between determining there are no module
+>>> refcounts (and transition to GOING) and starting to really tear it down
+>>> (transitioning to UNFORMED before any significant teardown).
+>>> module_exit() runs in the GOING phase.
+>>>
+>>> I think it does not make sense to execute FIXUPs on a GOING module; I'll
+>>> make that change.
+>>
+>> Note that when walking the modules list using module_for_each_mod(),
+>> the delete_module() operation can concurrently transition a module to
+>> MODULE_STATE_GOING. If you are thinking about simply having
+>> pci_module_fixup() check that mod->state isn't MODULE_STATE_GOING,
+>> I believe this won't quite work.
+> 
+> Good point. I think this at least suggests that this should hook into
+> some blocking point in the module-load sequence, such as the notifiers
+> or even module_init() as you suggest below.
+> 
+>>> Re-quoting one piece:
+>>>> This means that this code
+>>>> can potentially execute a PCI fixup from a module before its init
+>>>> function is invoked,
+>>>
+>>> IIUC, this part is not true? A module is put into COMING state before
+>>> its init function is invoked.
+>>
+>> When loading a module, the load_module() function calls
+>> complete_formation(), which puts the module into the COMING state. At
+>> this point, the new code in pci_fixup_device() can see the new module
+>> and potentially attempt to invoke its PCI fixups. However, such a module
+>> has still a bit of way to go before its init function is called from
+>> do_init_module(). The module hasn't yet had its arguments parsed, is not
+>> linked in sysfs, isn't fully registered with codetag support, and hasn't
+>> invoked its constructors (needed for gcov/kasan support).
+> 
+> It seems unlikely that sysfs, codetag, or arguments should matter much.
+> gcov and kasan might be nice to have though.
+> 
+>> I don't know enough about PCI fixups and what is allowable in them, but
+>> I suspect it would be better to ensure that no fixup can be invoked from
+>> the module during this period.
+> 
+> I don't know of general rules, but they generally do pretty minimal work
+> to adjust various fields in and around 'struct pci_dev', to account for
+> broken IDs. Sometimes they need to read a few PCI registers. They may
+> even tweak PM-related features. It varies based
+> on what kind of "quriky" devices need to be handled, but it's usually
+> pretty straightforward and well-contained -- not relying on any kind of
+> global state, or even all that much specific to the module in question
+> besides constant IDs.
+> 
+> (You can peruse drivers/pci/quirks.c or the various other files that use
+> DECLARE_PCI_FIXUP_*() macros, if you're curious.)
+> 
+>> If the above makes sense, I think using module_for_each_mod() might not
+>> be the right approach. Alternative options include registering a module
+>> notifier or having modules explicitly register their PCI fixups in their
+>> init function.
+> 
+> I agree module_for_each_mod() is probably not the right choice, but I'm
+> not sure what the right choice is.
+> 
+> register_module_notifier() + keying off MODULE_STATE_COMING before
+> pulling in the '.pci_fixup*' list seems attractive, but it still comes
+> before gcov/kasan.
+> 
+> It seems like "first thing in module_init()" would be the right choice,
+> but I don't know of a great way to do that.
 
-This is a note to let you know that I've just added the patch titled
+We could introduce a new module state and have the module notifier fire
+with this state at the required point. This seems to align best with how
+other code is hooked into the module loader, although I dislike the idea
+of introducing a new module state.
 
-    minmax.h: update some comments
+It might also be possible to insert a quirk registration function into
+.init_array so it is called by do_mod_ctors().
 
-to the 5.15-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> I could insert PCI-related
+> calls directly into do_init_module() / delete_module(), but that doesn't
+> seem very elegant. I could also mess with the module_{init,exit}()
+> macros, but that seems a bit strange too.
 
-The filename of the patch is:
-     minmax.h-update-some-comments.patch
-and it can be found in the queue-5.15 subdirectory.
+I don't think you want to modify module_{init,exit}(), but you could
+introduce something like module_pci_controller(), along with
+pci_register_quirks() and pci_unregister_quirks(), which would handle
+quirk registration, somewhat similar to how module_pci_driver() works.
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+> 
+> I'm open to suggestions. Or else maybe I'll just go with
+> register_module_notifier(), and accept that there may some small
+> downsides still.
 
+If it turns out there is no better way than register_module_notifier(),
+then as mentioned above, it is possible to add a new module state to
+properly support this case.
 
-From prvs=36971892a=farbere@amazon.com Wed Oct  8 17:34:21 2025
-From: Eliav Farber <farbere@amazon.com>
-Date: Wed, 8 Oct 2025 15:29:39 +0000
-Subject: minmax.h: update some comments
-To: <gregkh@linuxfoundation.org>, <jdike@addtoit.com>, <richard@nod.at>, <anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <james.morse@arm.com>, <rric@kernel.org>, <airlied@linux.ie>, <daniel@ffwll.ch>, <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, <tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>, <jdelvare@suse.com>, <linux@roeck-us.net>, <linus.walleij@linaro.org>, <dmitry.torokhov@gmail.com>, <maz@kernel.org>, <wens@csie.org>, <jernej.skrabec@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>, <mcoquelin.stm32@gmail.com>, <krzysztof.kozlowski@canonical.com>, <malattia@linux.it>, <hdegoede@redhat.com>, <mgross@linux.intel.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <sakari.ailus@l
- inux.intel.com>, <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>, <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <dushistov@mail.ru>, <luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>, <senozhatsky@chromium.org>, <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>, <akpm@linux-foundation.org>, <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>, <shuah@kernel.org>, <willy@infradead.org>, <farbere@amazon.com>, <sashal@kernel.org>, <quic_akhilpo@quicinc.com>, <ruanjinjie@huawei.com>, <David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>, <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>, <freedreno@l
- ists.freedesktop.org>, <linux-hwmon@vger.kernel.org>, <linux-input@vger.kernel.org>, <linux-sunxi@lists.linux.dev>, <linux-media@vger.kernel.org>, <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>, <platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>, <linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>, <linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>, <tipc-discussion@lists.sourceforge.net>, <linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Jens Axboe <axboe@kernel.dk>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Mateusz Guzik <mjguzik@gmail.com>, "Pedro Falcato" <pedro.falcato@gmail.com>
-Message-ID: <20251008152946.29285-15-farbere@amazon.com>
-
-From: David Laight <David.Laight@ACULAB.COM>
-
-[ Upstream commit 10666e99204818ef45c702469488353b5bb09ec7 ]
-
-- Change three to several.
-- Remove the comment about retaining constant expressions, no longer true.
-- Realign to nearer 80 columns and break on major punctiation.
-- Add a leading comment to the block before __signed_type() and __is_nonneg()
-  Otherwise the block explaining the cast is a bit 'floating'.
-  Reword the rest of that comment to improve readability.
-
-Link: https://lkml.kernel.org/r/85b050c81c1d4076aeb91a6cded45fee@AcuMS.aculab.com
-Signed-off-by: David Laight <david.laight@aculab.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-Cc: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Pedro Falcato <pedro.falcato@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Eliav Farber <farbere@amazon.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/minmax.h |   61 ++++++++++++++++++++++---------------------------
- 1 file changed, 28 insertions(+), 33 deletions(-)
-
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -8,13 +8,10 @@
- #include <linux/types.h>
- 
- /*
-- * min()/max()/clamp() macros must accomplish three things:
-+ * min()/max()/clamp() macros must accomplish several things:
-  *
-  * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - Retain result as a constant expressions when called with only
-- *   constant expressions (to avoid tripping VLA warnings in stack
-- *   allocation usage).
-  * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-  * - Unsigned char/short are always promoted to signed int and can be
-@@ -31,25 +28,23 @@
-  *   bit #0 set if ok for unsigned comparisons
-  *   bit #1 set if ok for signed comparisons
-  *
-- * In particular, statically non-negative signed integer
-- * expressions are ok for both.
-+ * In particular, statically non-negative signed integer expressions
-+ * are ok for both.
-  *
-- * NOTE! Unsigned types smaller than 'int' are implicitly
-- * converted to 'int' in expressions, and are accepted for
-- * signed conversions for now. This is debatable.
-- *
-- * Note that 'x' is the original expression, and 'ux' is
-- * the unique variable that contains the value.
-- *
-- * We use 'ux' for pure type checking, and 'x' for when
-- * we need to look at the value (but without evaluating
-- * it for side effects! Careful to only ever evaluate it
-- * with sizeof() or __builtin_constant_p() etc).
-- *
-- * Pointers end up being checked by the normal C type
-- * rules at the actual comparison, and these expressions
-- * only need to be careful to not cause warnings for
-- * pointer use.
-+ * NOTE! Unsigned types smaller than 'int' are implicitly converted to 'int'
-+ * in expressions, and are accepted for signed conversions for now.
-+ * This is debatable.
-+ *
-+ * Note that 'x' is the original expression, and 'ux' is the unique variable
-+ * that contains the value.
-+ *
-+ * We use 'ux' for pure type checking, and 'x' for when we need to look at the
-+ * value (but without evaluating it for side effects!
-+ * Careful to only ever evaluate it with sizeof() or __builtin_constant_p() etc).
-+ *
-+ * Pointers end up being checked by the normal C type rules at the actual
-+ * comparison, and these expressions only need to be careful to not cause
-+ * warnings for pointer use.
-  */
- #define __signed_type_use(x, ux) (2 + __is_nonneg(x, ux))
- #define __unsigned_type_use(x, ux) (1 + 2 * (sizeof(ux) < 4))
-@@ -57,19 +52,19 @@
- 	__signed_type_use(x, ux) : __unsigned_type_use(x, ux))
- 
- /*
-- * To avoid warnings about casting pointers to integers
-- * of different sizes, we need that special sign type.
-+ * Check whether a signed value is always non-negative.
-  *
-- * On 64-bit we can just always use 'long', since any
-- * integer or pointer type can just be cast to that.
-+ * A cast is needed to avoid any warnings from values that aren't signed
-+ * integer types (in which case the result doesn't matter).
-  *
-- * This does not work for 128-bit signed integers since
-- * the cast would truncate them, but we do not use s128
-- * types in the kernel (we do use 'u128', but they will
-- * be handled by the !is_signed_type() case).
-- *
-- * NOTE! The cast is there only to avoid any warnings
-- * from when values that aren't signed integer types.
-+ * On 64-bit any integer or pointer type can safely be cast to 'long'.
-+ * But on 32-bit we need to avoid warnings about casting pointers to integers
-+ * of different sizes without truncating 64-bit values so 'long' or 'long long'
-+ * must be used depending on the size of the value.
-+ *
-+ * This does not work for 128-bit signed integers since the cast would truncate
-+ * them, but we do not use s128 types in the kernel (we do use 'u128',
-+ * but they are handled by the !is_signed_type() case).
-  */
- #ifdef CONFIG_64BIT
-   #define __signed_type(ux) long
-
-
-Patches currently in stable-queue which might be from farbere@amazon.com are
-
-queue-5.15/minmax-add-a-few-more-min_t-max_t-users.patch
-queue-5.15/minmax-improve-macro-expansion-and-type-checking.patch
-queue-5.15/minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
-queue-5.15/minmax.h-simplify-the-variants-of-clamp.patch
-queue-5.15/minmax-add-in_range-macro.patch
-queue-5.15/minmax.h-move-all-the-clamp-definitions-after-the-min-max-ones.patch
-queue-5.15/minmax-don-t-use-max-in-situations-that-want-a-c-constant-expression.patch
-queue-5.15/minmax.h-remove-some-defines-that-are-only-expanded-once.patch
-queue-5.15/minmax.h-use-build_bug_on_msg-for-the-lo-hi-test-in-clamp.patch
-queue-5.15/minmax-simplify-min-max-clamp-implementation.patch
-queue-5.15/minmax-deduplicate-__unconst_integer_typeof.patch
-queue-5.15/minmax-simplify-and-clarify-min_t-max_t-implementation.patch
-queue-5.15/minmax.h-add-whitespace-around-operators-and-after-commas.patch
-queue-5.15/minmax-avoid-overly-complicated-constant-expressions-in-vm-code.patch
-queue-5.15/minmax-make-generic-min-and-max-macros-available-everywhere.patch
-queue-5.15/minmax-fix-up-min3-and-max3-too.patch
-queue-5.15/minmax.h-reduce-the-define-expansion-of-min-max-and-clamp.patch
-queue-5.15/minmax-introduce-min-max-_array.patch
-queue-5.15/minmax.h-update-some-comments.patch
+-- 
+Thanks,
+Petr
 
