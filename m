@@ -4,64 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 265C9CCD184
-	for <linux-um@archiver.kernel.org>; Tue, 21 Oct 2025 12:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5827CCD1A7
+	for <linux-um@archiver.kernel.org>; Tue, 21 Oct 2025 13:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BUBEBpKpQ0dQopBT9LFZrxTolM9V1bKEMA7Drwquggs=; b=J6ZkN8Yjpo13flXwr00/fWQ0/Q
-	EVixZj+qpLLTEnuJa/2R1+x7vRFP7/k/v1tPcpKY5jWabeQHCZsREn6INfv1HupKCdrBHkUr7gZr6
-	tgq+wIcfK0N8RBjoBXs5rlfnyJG7sh41FDDXFbb8yZh+lMH/zVTPPA7XQdafIHaifsn3ByTh0w99e
-	25B5N1rriH6n4vq8rKizyawpsr8FVrd8ub+UoaSvxxJUDSWZZXm2BxX/VIDCtgIlq3q3CG6rvyvSE
-	1PsiGGQEVKowLqx9hLNr3WjrXKx5eMi0gF9fo8qRR7bAZIPA82wBD4PWVNNXJdBFSAMc17d38A9/A
-	5gNHb6lQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AkHBvluqEAhBVuY5qakHEhb8DpY+qUwXRRCxYI3Rcw4=; b=EjO1CmZcuOfyQxBSbvRj1XS+6r
+	Y7sHYOw/1umtjJUiCwNpGJ+RanVT5Xw+rGLUMTOyh494+imv+663er5uTam/NZgukQCy5bWdyYWO6
+	qHIvCwizTuYmatJmAk4/J6eX0MWEDbh+v2vRa3ylOu3vGuAk8lgX/HBUg3ntZr/zePYXCAAAv04QR
+	Y/641djnFNtQEJUQxN3cuqsVJ+uhV06j0sgJZHp65c0jOepYfA1KV57D+TTlXufWYU8BEs93RgQvt
+	5826wh+0FNd7akn+uTiKqkHAfM6J6B396vCtl3WgevO0GdzN+aOgyJy4lUUJ+VD2LzgbFBsnGLoZy
+	RXUxEZPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBBIa-0000000GvvX-0gtM;
-	Tue, 21 Oct 2025 12:17:08 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vBCIa-0000000H87j-3wgJ;
+	Tue, 21 Oct 2025 13:21:12 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vBBIZ-0000000GvvN-2YH7
+	id 1vBCIW-0000000H86l-0fD6
 	for linux-um@lists.infradead.org;
-	Tue, 21 Oct 2025 12:17:07 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0BED660403;
-	Tue, 21 Oct 2025 12:16:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B80DBC4CEF1;
-	Tue, 21 Oct 2025 12:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761049012;
-	bh=8JIExmKFL1e/CmjoJnRReujq8mU/REJBTwDG9/fjmkU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pGLJZYWROnGvExmYkpXY4E+CrprIx+KCNr+WptCpQtmc/zHCY71hGPeLTZqIHT87x
-	 v/YV85rpXuABPTl4JXzhFjH5acPF23vIYol4MGVUrky+415tynJPWA0PwyehSgsHIA
-	 k/sU5EL38wzaIOMkn1Wl7ZNbsmcFuuHmk47VQ0DW3OhK9I8btaigTx6YRZBprK9hKT
-	 8KXmHoCiFKSPTR6ut/kLClCRl1P+8shhu7kcD4BRNc8so6fNcST0gnUwBRNKGwnOhY
-	 2JNUBbO4bSgsGm4JwmOQAmD+Tc652+AOL4595AsZnpzIb4nzwF9YIWEQ+68nBgqOfA
-	 glAz4lV71Wv/A==
-From: Christian Brauner <brauner@kernel.org>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	geoff@geoffthorpe.net,
-	Hongbo Li <lihongbo22@huawei.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-um@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] hostfs: Fix only passing host root in boot stage with new mount
-Date: Tue, 21 Oct 2025 14:16:46 +0200
-Message-ID: <20251021-genau-erwachen-eb2436082486@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251011092235.29880-1-lihongbo22@huawei.com>
-References: <20251011092235.29880-1-lihongbo22@huawei.com>
+	Tue, 21 Oct 2025 13:21:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=AkHBvluqEAhBVuY5qakHEhb8DpY+qUwXRRCxYI3Rcw4=;
+	t=1761052868; x=1762262468; b=b/8+plw+ya5Y/2dlMHkLQD9wDlYFjbFBhlilc4VbJ+3FAj3
+	0bubXolxbRLqrq4SQISUhVYSmBFTAZ8sqmS/fAVV9Fyhbvk09HGf8/jyX+kzN4f/s1/syW0DEiYhM
+	C3micdDv46MTZohoa+GDaLrNjAV7q962f/nIw2IjhHOxCeJ2EjG9jVo29RK+c3iyXVrgKxbo6batG
+	cB69I1IXVcbseQg9bfQoU97onDVWFwOflZ83WRjRPBQt55WTdNFC3XoMWZLTTBdn0fO6zKH0WPfxi
+	j/HwJsRRgPrym6afg5lycEXlBW99UByuWUaAuiFknqo9FAuQjO1XxyZazcUXC4zA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1vBCII-0000000BrDl-3dF6;
+	Tue, 21 Oct 2025 15:20:55 +0200
+Message-ID: <fc93795ff03dc767a800a18a6ef33ff778f13b5d.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 03/10] um: vdso: Implement __vdso_getcpu() via syscall
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Tiwei Bie <tiwei.bie@linux.dev>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, benjamin@sipsolutions.net, arnd@arndb.de, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	tiwei.btw@antgroup.com
+Date: Tue, 21 Oct 2025 15:20:54 +0200
+In-Reply-To: <96ae8e726480a36a37d472106b761a141394e845.camel@sipsolutions.net>
+References: <1568f254-7963-4015-91ed-7630d5d87881@t-8ch.de>
+		 <20250922045020.48158-1-tiwei.bie@linux.dev>
+		 <495a5594-8ac6-4b7d-be6b-7c176b741c21@t-8ch.de>
+		 <76b5ba35f864764100c9a5a00d50d8fa4276cd98.camel@sipsolutions.net>
+		 <21755635-74d4-4fa4-8ffd-371c17630fdf@t-8ch.de>
+		 <366bb558c3fd23b9a80008d923f29ed0234e17b9.camel@sipsolutions.net>
+		 <61ae09df-d65b-4c9d-a0c1-7de915246590@t-8ch.de>
+		 (sfid-20250922_180452_263852_EC16D5FF) <96ae8e726480a36a37d472106b761a141394e845.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1332; i=brauner@kernel.org; h=from:subject:message-id; bh=8JIExmKFL1e/CmjoJnRReujq8mU/REJBTwDG9/fjmkU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWR8r1y/Rf/WKsu3lzLW/rxiuPuNmvWdmRkNf8/PyvoQx fH8V0V0QEcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBENvkzMuxy8/t58cvkqFd/ jC/e/ZDk/ForQLvVsipfr83u1eZjq18wMhz2jlG7Esc2wVpER2xJCVOzlE588cq35fvMYwXnBX9 tZAMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251021_062108_193367_25952534 
+X-CRM114-Status: UNSURE (   9.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,32 +83,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, 11 Oct 2025 09:22:35 +0000, Hongbo Li wrote:
-> In the old mount proceedure, hostfs could only pass root directory during
-> boot. This is because it constructed the root directory using the @root_ino
-> event without any mount options. However, when using it with the new mount
-> API, this step is no longer triggered. As a result, if users mounts without
-> specifying any mount options, the @host_root_path remains uninitialized. To
-> prevent this issue, the @host_root_path should be initialized at the time
-> of allocation.
-> 
-> [...]
+On Mon, 2025-09-22 at 19:07 +0200, Johannes Berg wrote:
+>=20
+> I actually have half a patch somewhere that rejiggers the UM vDSO to be
+> more like normal architectures, using lib/vdso/gettimeofday.c and making
+> the build more regular etc. Maybe I should dig that up and try to make
+> it work entirely - it was part of a previous attempt of adding the time-
+> travel thing I mentioned.
 
-Applied to the vfs.fixes branch of the vfs/vfs.git tree.
-Patches in the vfs.fixes branch should appear in linux-next soon.
+So that patch is almost 5 years old and with all the VDSO rework since
+then, there's no way I can make that work again right now ... I guess
+it'd be better to start from scratch and make a real VDSO for UML.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+I'll take a look at your cleanups though.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fixes
-
-[1/1] hostfs: Fix only passing host root in boot stage with new mount
-      https://git.kernel.org/vfs/vfs/c/590a4c70008c
+joahnnes
 
