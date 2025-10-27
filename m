@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D212CCF9E5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A604FCCF9ED
 	for <linux-um@archiver.kernel.org>; Mon, 27 Oct 2025 00:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,32 +12,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QjFrwlF759x9QExSvPBA2TAaIUv0ml3JmoT2DaGEPdo=; b=Z4kRmoB5utisL+Pz09ycl/1s6o
-	FekifqXeSHXE/P6ExRjW9flbjamu+4mqXVzWLcczIEJ7xRT/58lu2L8LdDG+TyY9i2g6g5XHxNWuy
-	2qFkLS//AGwUBS12mBX4fz57lMfcLaY2K55nnmfNDPS8jyaoJOeVLGlCTvd7AAd/BWmns+hz9qs2m
-	PNFGqf5RoUgTS3XO3sl7h9YKJS8gyMvEf+II3w3I6vWjDrIC6tnZ1VeEPS/9hxRFJzdzaAhvqY/vM
-	NMVVynhjs0uwf4l1Lw27umT7YiWpR8+A6E1uekzmI693ViWihC9ttVtgtazA4CKr8o8BBJbO3A+ml
-	y17m3Qlw==;
+	bh=QSESnP/sa4r5ORTRPvhvwWnuR1/omMMQhE1G5EL1OGY=; b=zxxkHyMLxbQ09+cAZ9KLZEdmVZ
+	ZBXqeRwiz/tMhkb+avaotl0jrucH+9IqotBy/GK4T9BsyjGvYUXNIjACYjG7pqfh1VcX/ZlNNN5G9
+	eBYo0HgWqEQgbwKBWg7l5U/1mkJh1bHVZc4rRoa+7N2yVDEkfX/8y76dfCFzFOpQy8UG/ru+GnpJo
+	HUyfKagHbp3B/SvKxtT2/HadIFjDoz9GX0/PfDBmImrzjNB3CZlhPM/dnliwQ/c8tQRZpfVdxUQ4D
+	BAo+L6Y1KHss4iAthsPhdvOjwN1PmoqNwGqNmt95edzzlD7amnpYdQkvUGyOysLKXIxLqyKOczktv
+	Er95EQ6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDAwa-0000000CtKu-0hkG;
-	Mon, 27 Oct 2025 00:18:40 +0000
-Received: from out-173.mta0.migadu.com ([91.218.175.173])
+	id 1vDAwc-0000000CtM2-1jRA;
+	Mon, 27 Oct 2025 00:18:42 +0000
+Received: from out-188.mta0.migadu.com ([2001:41d0:1004:224b::bc])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDAwX-0000000CtK2-2FDK
+	id 1vDAwa-0000000CtKe-1rFo
 	for linux-um@lists.infradead.org;
-	Mon, 27 Oct 2025 00:18:38 +0000
+	Mon, 27 Oct 2025 00:18:41 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761524315;
+	t=1761524318;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QjFrwlF759x9QExSvPBA2TAaIUv0ml3JmoT2DaGEPdo=;
-	b=d4RhZ0g+0hgDpoTkj5KARfRZ8GwC9ZHCDLUPcoTGJFnec/pe5+kdAyECOlFdqSV2NWE5hn
-	bVBRqkXxkyGrHiCCXfO2nM5yqnLaLktAN8+avRk+O+9QeBEOh4UBndt259lQRt3lMfZscd
-	4ozKS3wrPZAsspc0QNPyG32pcoyPd7I=
+	bh=QSESnP/sa4r5ORTRPvhvwWnuR1/omMMQhE1G5EL1OGY=;
+	b=fkM9ai0lAa8UqXU+xcEiedv2Dy6vnBO1C1mJVEKWzCGSI7MY2MvmP2rwe7J/q8lQ7bFS1i
+	P15rgxxVVWTFotoWX/3l9p318D36F0tco8fAr/iJk3R/AOVV+gRzAxdoxIFupdVgbsaAHC
+	A1dOckJIKXHLkKV9X2CRN9hLK1hV0bo=
 From: Tiwei Bie <tiwei.bie@linux.dev>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -48,18 +48,17 @@ Cc: linux-um@lists.infradead.org,
 	arnd@arndb.de,
 	tiwei.btw@antgroup.com,
 	tiwei.bie@linux.dev
-Subject: [PATCH v4 1/8] um: Do not disable kmalloc in initial_thread_cb()
-Date: Mon, 27 Oct 2025 08:18:08 +0800
-Message-Id: <20251027001815.1666872-2-tiwei.bie@linux.dev>
+Subject: [PATCH v4 2/8] um: Turn signals_* into thread-local variables
+Date: Mon, 27 Oct 2025 08:18:09 +0800
+Message-Id: <20251027001815.1666872-3-tiwei.bie@linux.dev>
 In-Reply-To: <20251027001815.1666872-1-tiwei.bie@linux.dev>
 References: <20251027001815.1666872-1-tiwei.bie@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251026_171837_719149_621FF80F 
-X-CRM114-Status: UNSURE (   7.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251026_171840_633436_AF615F5C 
+X-CRM114-Status: GOOD (  11.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,34 +75,121 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-Currently, initial_thread_cb() temporarily disables kmalloc when
-it invokes the callback, allowing the callback to bypass kmalloc.
-This is unnecessary for the current users of initial_thread_cb(),
-and we should avoid memory allocations that are not under the
-control of the UML kernel. Therefore, let's stop temporarily
-disabling kmalloc in initial_thread_cb().
+Turn signals_enabled, signals_pending and signals_active into
+thread-local variables. This enables us to control and track
+signals independently on each CPU thread. This is a preparation
+for adding SMP support.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/kernel/process.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/um/include/asm/irqflags.h   |  4 ++--
+ arch/um/include/shared/longjmp.h |  3 +--
+ arch/um/include/shared/os.h      |  1 +
+ arch/um/kernel/ksyms.c           |  2 +-
+ arch/um/os-Linux/signal.c        | 11 ++++++++---
+ 5 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 9c9c66dc45f0..757e21185a0e 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -185,11 +185,7 @@ int copy_thread(struct task_struct * p, const struct kernel_clone_args *args)
+diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/asm/irqflags.h
+index 1e69ef5bc35e..31e49e0894c5 100644
+--- a/arch/um/include/asm/irqflags.h
++++ b/arch/um/include/asm/irqflags.h
+@@ -2,7 +2,7 @@
+ #ifndef __UM_IRQFLAGS_H
+ #define __UM_IRQFLAGS_H
  
- void initial_thread_cb(void (*proc)(void *), void *arg)
+-extern int signals_enabled;
++int um_get_signals(void);
+ int um_set_signals(int enable);
+ void block_signals(void);
+ void unblock_signals(void);
+@@ -10,7 +10,7 @@ void unblock_signals(void);
+ #define arch_local_save_flags arch_local_save_flags
+ static inline unsigned long arch_local_save_flags(void)
  {
--	int save_kmalloc_ok = kmalloc_ok;
--
--	kmalloc_ok = 0;
- 	initial_thread_cb_skas(proc, arg);
--	kmalloc_ok = save_kmalloc_ok;
+-	return signals_enabled;
++	return um_get_signals();
  }
  
- int arch_dup_task_struct(struct task_struct *dst,
+ #define arch_local_irq_restore arch_local_irq_restore
+diff --git a/arch/um/include/shared/longjmp.h b/arch/um/include/shared/longjmp.h
+index 8863319039f3..c53e43d980c8 100644
+--- a/arch/um/include/shared/longjmp.h
++++ b/arch/um/include/shared/longjmp.h
+@@ -5,7 +5,6 @@
+ #include <sysdep/archsetjmp.h>
+ #include <os.h>
+ 
+-extern int signals_enabled;
+ extern int setjmp(jmp_buf);
+ extern void longjmp(jmp_buf, int);
+ 
+@@ -15,7 +14,7 @@ extern void longjmp(jmp_buf, int);
+ 
+ #define UML_SETJMP(buf) ({				\
+ 	int n, enable;					\
+-	enable = *(volatile int *)&signals_enabled;	\
++	enable = um_get_signals();			\
+ 	n = setjmp(*buf);				\
+ 	if(n != 0)					\
+ 		um_set_signals_trace(enable);		\
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index b35cc8ce333b..324d4eed3385 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -243,6 +243,7 @@ extern void send_sigio_to_self(void);
+ extern int change_sig(int signal, int on);
+ extern void block_signals(void);
+ extern void unblock_signals(void);
++extern int um_get_signals(void);
+ extern int um_set_signals(int enable);
+ extern int um_set_signals_trace(int enable);
+ extern void deliver_alarm(void);
+diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
+index f2fb77da08cf..96314c31e61c 100644
+--- a/arch/um/kernel/ksyms.c
++++ b/arch/um/kernel/ksyms.c
+@@ -6,8 +6,8 @@
+ #include <linux/module.h>
+ #include <os.h>
+ 
++EXPORT_SYMBOL(um_get_signals);
+ EXPORT_SYMBOL(um_set_signals);
+-EXPORT_SYMBOL(signals_enabled);
+ 
+ EXPORT_SYMBOL(os_stat_fd);
+ EXPORT_SYMBOL(os_stat_file);
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 11f07f498270..58da8c6ece98 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -68,12 +68,12 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ #define SIGCHLD_BIT 2
+ #define SIGCHLD_MASK (1 << SIGCHLD_BIT)
+ 
+-int signals_enabled;
++static __thread int signals_enabled;
+ #if IS_ENABLED(CONFIG_UML_TIME_TRAVEL_SUPPORT)
+ static int signals_blocked, signals_blocked_pending;
+ #endif
+-static unsigned int signals_pending;
+-static unsigned int signals_active = 0;
++static __thread unsigned int signals_pending;
++static __thread unsigned int signals_active;
+ 
+ static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ {
+@@ -342,6 +342,11 @@ void unblock_signals(void)
+ 	}
+ }
+ 
++int um_get_signals(void)
++{
++	return signals_enabled;
++}
++
+ int um_set_signals(int enable)
+ {
+ 	int ret;
 -- 
 2.34.1
 
