@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E946CCF9E0
-	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E7DCCD1BF
+	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 10:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r+OpakVxPJ/8rFYZ6shm+dgcRKRinbxn3aHYzX6Nx9A=; b=bMIDF9minDbJMD9zcbVogCtRyB
-	shm27dQCOTKE1x52CnbokqYKTN16L0K0q2mG+6WDooDf+bHynj5t2x6IXfx6AevE4UbpcLyF4Sqgm
-	sdhpUYzYlAmHc6Yzk/2mQJbg+Q+iDCguP2XiH28ojfOGc2alKyfnBGTYAeHzZ3uKlPekHwDC52ymz
-	J2ZiuWThmUI6ASVmdac/FJ5sPy+de5jsnLQQ66hVVh7ekPl/z+Sj0hncNOKfNH91EQ3JHkx9RR1rj
-	afta38rOQtf8y/iuzxn08lZl6NEI3YiaQZWomPUpKmIVupj+DerJRgf6/OzgHLSwj7t+F7VfSAq1A
-	QmkmTp9Q==;
+	bh=CIDM+dygb2BUa46zAb+3HHz7zZDAxImWZVxBS/LTMHU=; b=KHPU1iCAvFlbiLIrJfGu2GJnxi
+	40Bx0ColfH2DSEiLWUOd1GkK7dFpgjOBvecSu1jP8Nv2dt3CXbtD1T0ff0eEHI8V/v4CoIAv7kPcV
+	Gxp2N/Aa78WHJV/1442YUwZuEMq5XhUKOF3Sx8La5HsBkEoAmrUmoSr7KFAHAj57NabY/0OXe9CUh
+	ztwO5v9/ZNLNepMGUDOtjgH7ASyiSfYHynmbGa8gQypH112aZatlsCu7RvoP1ypE50aenUBFhHT5f
+	SML7NJwY3dzDgxVj62SoqZF7vFuUto6zhaqpIHqTcei0sn0o/bCjLLufJcWAzf3u6GIs/EV1VRv5F
+	93ywPc7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpd-0000000FdA8-0DXJ;
-	Tue, 28 Oct 2025 09:17:33 +0000
-Received: from todd.t-8ch.de ([159.69.126.157])
+	id 1vDgqH-0000000Fkpl-2HHo;
+	Tue, 28 Oct 2025 10:22:17 +0000
+Received: from out-183.mta0.migadu.com ([2001:41d0:1004:224b::b7])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpV-0000000Fd1D-3gRX
+	id 1vDgqE-0000000Fjwl-2LP1
 	for linux-um@lists.infradead.org;
-	Tue, 28 Oct 2025 09:17:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1761643039;
-	bh=QvY+nAXDRHky/oaQZhIuoK3hf3WfhaB7cgzN/dQrG7M=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=EMVGtZMPhsecf5rpkJJ/jcc3uyvDjTFHD2vNe/tl526UmuYjZKm36042T/jZYyorp
-	 fvLPcNE5mwYXs0SzI2Et9znl+dcWpVVVSfbmN7Bq3fMSrcw4jQr2MMgH6IjpcKI0z6
-	 1x3jeHenNrFto9cZMgy3jsqz9/MfdcOnj4CBY3Mg=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Tue, 28 Oct 2025 10:15:44 +0100
-Subject: [PATCH 09/10] x86/um: Remove FIXADDR_USER_START and
- FIXADDR_USE_END
+	Tue, 28 Oct 2025 10:22:16 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761646700;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CIDM+dygb2BUa46zAb+3HHz7zZDAxImWZVxBS/LTMHU=;
+	b=Gja65oT6Ej3kxXJIiBfObdJr37XT53qezfnH3LsJZAnwoVZKN2tpcLv8CNpvLYIhbaGQV8
+	qYlG2OEB/ZGBARDnNezC6stE3g2U73DKDbmDaNKrbU6L5iLqWTVVzt7rwN1anw7vmoHTxH
+	cTMZA6ZmB0/KnSUdsXeqX13lpSlfBPw=
+From: Tiwei Bie <tiwei.bie@linux.dev>
+To: linux@weissschuh.net
+Cc: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	johannes.berg@intel.com,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	tiwei.btw@antgroup.com,
+	tiwei.bie@linux.dev
+Subject: Re: [PATCH] um: Avoid circular dependency on asm-offsets in pgtable.h
+Date: Tue, 28 Oct 2025 18:17:50 +0800
+Message-Id: <20251028101750.3263748-1-tiwei.bie@linux.dev>
+In-Reply-To: <20251028-uml-offsets-circular-v1-1-601c363cfaaa@weissschuh.net>
+References: <20251028-uml-offsets-circular-v1-1-601c363cfaaa@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-9-e930063eff5f@weissschuh.net>
-References: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
-In-Reply-To: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
-To: Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Kees Cook <kees@kernel.org>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-mm@kvack.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=1070;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=QvY+nAXDRHky/oaQZhIuoK3hf3WfhaB7cgzN/dQrG7M=;
- b=6eLwZ6/9TeBOy4ZjspiFcrQRDfICig8yzA6Y3xnYNYR2RoI6gjbrzGzbn6VKROBqqC7L1VjTm
- x5TBTjM7lAGDRSthAoXmnP69TGoARREVZ8AWHbT3bsy56gshRzuxU42
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251028_021726_094140_0881F5E3 
-X-CRM114-Status: UNSURE (   6.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251028_032214_758616_F4C63D87 
+X-CRM114-Status: GOOD (  14.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,41 +74,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-There are no users left.
+On Tue, 28 Oct 2025 10:02:55 +0100, Thomas Weißschuh wrote:
+> Recent changes have added an include of as-layout.h to pgtable.h.
+> However this introduces a circular dependency during asm-offsets
+> generation as as-layout.h depends on asm-offsets and pgtable.h is an
+> input for asm-offsets.
+> 
+> Building from a clean state results in the following error:
+> 
+>   CC      arch/um/kernel/asm-offsets.s
+> In file included from arch/um/include/asm/pgtable.h:48,
+>                  from include/linux/pgtable.h:6,
+>                  from include/linux/mm.h:31,
+>                  from include/linux/pid_namespace.h:7,
+>                  from include/linux/ptrace.h:10,
+>                  from include/linux/audit.h:13,
+>                  from arch/um/kernel/asm-offsets.c:8:
+> arch/um/include/shared/as-layout.h:9:10: fatal error: generated/asm-offsets.h: No such file or directory
+>     9 | #include <generated/asm-offsets.h>
+>       |          ^~~~~~~~~~~~~~~~~~~~~~~~~
+> compilation terminated.
+> make[4]: *** [scripts/Makefile.build:182: arch/um/kernel/asm-offsets.s] Error 1
+> 
+> As the inclusion of as-layout.h in pgtable.h is not yet needed while
+> asm-offsets are generated, break the dependency here.
+> 
+> Fixes: a7f7dbae94a5 ("um: Remove file-based iomem emulation support")
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>  arch/um/include/asm/pgtable.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+> index 1a0d7405e97c..3b42b0f45bf6 100644
+> --- a/arch/um/include/asm/pgtable.h
+> +++ b/arch/um/include/asm/pgtable.h
+> @@ -45,7 +45,9 @@ extern unsigned long *empty_zero_page;
+>   * area for the same reason. ;)
+>   */
+>  
+> +#ifndef COMPILE_OFFSETS
+>  #include <as-layout.h> /* for high_physmem */
+> +#endif
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- arch/x86/um/asm/elf.h | 8 --------
- 1 file changed, 8 deletions(-)
+Oops, my bad. Thanks for the fix!
 
-diff --git a/arch/x86/um/asm/elf.h b/arch/x86/um/asm/elf.h
-index 8d7df4684c38..fdd5a612f678 100644
---- a/arch/x86/um/asm/elf.h
-+++ b/arch/x86/um/asm/elf.h
-@@ -72,10 +72,6 @@ extern char * elf_aux_platform;
- #define ELF_PLATFORM_FALLBACK "i586"
- #define ELF_PLATFORM (elf_aux_platform ?: ELF_PLATFORM_FALLBACK)
- 
--/* No user-accessible fixmap addresses, i.e. vsyscall */
--#define FIXADDR_USER_START      0
--#define FIXADDR_USER_END        0
--
- #else
- 
- /* x86-64 relocation types, taken from asm-x86_64/elf.h */
-@@ -157,10 +153,6 @@ extern char * elf_aux_platform;
- 
- #define ELF_PLATFORM "x86_64"
- 
--/* No user-accessible fixmap addresses, i.e. vsyscall */
--#define FIXADDR_USER_START      0
--#define FIXADDR_USER_END        0
--
- #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
- struct linux_binprm;
- extern int arch_setup_additional_pages(struct linux_binprm *bprm,
+Reviewed-by: Tiwei Bie <tiwei.btw@antgroup.com>
 
--- 
-2.51.1.dirty
-
+Regards,
+Tiwei
 
