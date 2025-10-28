@@ -4,58 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A24E5CCD1A5
-	for <linux-um@archiver.kernel.org>; Mon, 27 Oct 2025 05:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A94CCF9E0
+	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6nFfSB7FGxHMuiAmL1/d2OksjT0Sh70yy9OvTvuiKcU=; b=QCjbQ5nRzlhaXamPpB0RuEDndv
-	WfiGm6VYZ9LeiPpp9QMtqT7XOpqo8SUX8qRNfZGkXC3vLktLjsz2hvv1e04Up5c0+9p945iBJcvva
-	anmoiZHkbazbINlMiAeXfIn+BKniMhappB6KwxXSyVJRh/TzZsJqvywXtIGQHMASvQmaGYf0RT6sk
-	MZi5LaqApH0KeU4ZF4ObVSjjnyfZ08l8RfgJsy8i0rY52bt1qNWdZt2BQuT6nmgtP1pMO2H4GIMM2
-	B/j6rgbzdYoD18eAVvq7wg1pxGOKejB8fo19ZQlw2P5rQYHYPXhbrv4Cp1uwzBr7VSdhj6J+cqqdJ
-	drSb9rmQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HTyTdfVLRcEcdUtzLzbBCl8vlxuUStbbRZ4WoJy5q2c=; b=lxLNrPBRaAYzDwat8tbNjg5/Nn
+	SQvT17jtLezNXdV4W3d9mVgLPF4y9ZxtAoiKdNW8whXbcn6UrF8Y5wukQlIgecCzMcmxtYPA0dcRf
+	0O4X+O93UgUhmYEpzii827IcNjNb8TIFawmlad2zbnoRBiuD8HvC2aivrN+m0Q6vcj4uBrDiN7UpU
+	jrYt/t8pGdWphEhYUjI+pIPWOc8TyezIuM8uHEznwE1OmqpsMWrTjccgbZxV/RJXCeoTHJ8KxA7oh
+	bkJAKak44f8bzymItK5HbA75nbrJpZg4yDMTk5eZSz0SXkChbtcLxw8YzXFETo/BFVegnDNPnjD6Q
+	FRSbrrzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDG3X-0000000D8pV-1lcN;
-	Mon, 27 Oct 2025 05:46:11 +0000
-Received: from out-171.mta1.migadu.com ([2001:41d0:203:375::ab])
+	id 1vDfbz-0000000FbW2-42RI;
+	Tue, 28 Oct 2025 09:03:27 +0000
+Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDG3U-0000000D8m9-1PPc
+	id 1vDfbx-0000000FbUC-3siq
 	for linux-um@lists.infradead.org;
-	Mon, 27 Oct 2025 05:46:09 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761543966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6nFfSB7FGxHMuiAmL1/d2OksjT0Sh70yy9OvTvuiKcU=;
-	b=MVQ5RidtUUkpzb9/lL4nyY6ZecNrSL2SdaCvHTioikSH2zp+sWJbTQ/ISYnkzFPFqZ+WAA
-	MpClb2DfY7pHo1XOrPOuqaoeVDA55zIVUenDzhA+I2Qv+L3W6XlRP+V/LBot5RejK1ODYR
-	mhSLWqNL0Rt37mT952TQDt2CLJa35d4=
-From: Tiwei Bie <tiwei.bie@linux.dev>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	tiwei.btw@antgroup.com,
-	tiwei.bie@linux.dev
-Subject: [PATCH v2 4/4] um: Remove file-based iomem emulation support
-Date: Mon, 27 Oct 2025 13:45:19 +0800
-Message-Id: <20251027054519.1996090-5-tiwei.bie@linux.dev>
-In-Reply-To: <20251027054519.1996090-1-tiwei.bie@linux.dev>
-References: <20251027054519.1996090-1-tiwei.bie@linux.dev>
+	Tue, 28 Oct 2025 09:03:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1761642199;
+	bh=oa18QKX0l9/zrNbFelaAjri3Nu2ogEOJV9SkekhMHUQ=;
+	h=From:Date:Subject:To:Cc:From;
+	b=gKlVBm8+5rI8Ix1xm8HYkLa0WTs+Xa9sbAw5SjORYeyAVZW1efCTXFr6dzFTvmf4G
+	 y7HsaCbfkJHF6uW2GaS4ouJ/vr0ZJ6hhiUZ4hZLhXhz2J9y8gz/GpACd5hygdX9KOc
+	 SOuG3xde40rXzLz1d93xLI0MMIJxXmc1C4dasNvI=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Tue, 28 Oct 2025 10:02:55 +0100
+Subject: [PATCH] um: Avoid circular dependency on asm-offsets in pgtable.h
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <20251028-uml-offsets-circular-v1-1-601c363cfaaa@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAL6GAGkC/x3MSQqAMAxA0atI1gba4oRXERdaUw04kagI4t0tL
+ t/i/weUhEmhTh4Qulh5WyNsmoCfunUk5CEanHG5Na7Cc5lxC0HpUPQs/pw7wSLrhyzvDdnSQUx
+ 3ocD3v23a9/0A7IcIwGYAAAA=
+X-Change-ID: 20251028-uml-offsets-circular-64bd45b0e172
+To: Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Tiwei Bie <tiwei.btw@antgroup.com>
+Cc: Johannes Berg <johannes.berg@intel.com>, linux-um@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1761642198; l=2009;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=oa18QKX0l9/zrNbFelaAjri3Nu2ogEOJV9SkekhMHUQ=;
+ b=OVVJ6XiAIwfOGNjqdKBxkJURJ81/moXtAdeO8yQBzBW9u2Vin6xW5z2/tz1VDO6XEWJVxEWXD
+ Bb29WTwZKlaCE5h6M6dh02jtSGHRJIP2IiSXVbUvLiuAtiNBmGGCE38
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251026_224608_601058_F8B69944 
-X-CRM114-Status: GOOD (  26.20  )
+X-CRM114-CacheID: sfid-20251028_020326_106996_D6E68E05 
+X-CRM114-Status: UNSURE (   8.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,473 +78,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+Recent changes have added an include of as-layout.h to pgtable.h.
+However this introduces a circular dependency during asm-offsets
+generation as as-layout.h depends on asm-offsets and pgtable.h is an
+input for asm-offsets.
 
-The file-based iomem emulation was introduced to support writing
-paravirtualized drivers based on emulated iomem regions. However,
-the only driver that makes use of it is an example driver called
-mmapper, which was written over two decades ago.
+Building from a clean state results in the following error:
 
-We now have several modern device emulation mechanisms, such as
-vhost-user-based virtio-uml. Remove the file-based iomem emulation
-support to reduce the maintenance burden.
+  CC      arch/um/kernel/asm-offsets.s
+In file included from arch/um/include/asm/pgtable.h:48,
+                 from include/linux/pgtable.h:6,
+                 from include/linux/mm.h:31,
+                 from include/linux/pid_namespace.h:7,
+                 from include/linux/ptrace.h:10,
+                 from include/linux/audit.h:13,
+                 from arch/um/kernel/asm-offsets.c:8:
+arch/um/include/shared/as-layout.h:9:10: fatal error: generated/asm-offsets.h: No such file or directory
+    9 | #include <generated/asm-offsets.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[4]: *** [scripts/Makefile.build:182: arch/um/kernel/asm-offsets.s] Error 1
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+As the inclusion of as-layout.h in pgtable.h is not yet needed while
+asm-offsets are generated, break the dependency here.
+
+Fixes: a7f7dbae94a5 ("um: Remove file-based iomem emulation support")
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/um/Kconfig                    |   6 --
- arch/um/drivers/Makefile           |   1 -
- arch/um/drivers/mmapper_kern.c     | 135 -----------------------------
- arch/um/include/asm/pgtable.h      |   4 +-
- arch/um/include/shared/kern_util.h |   1 -
- arch/um/include/shared/mem_user.h  |  13 ---
- arch/um/kernel/mem.c               |   2 +-
- arch/um/kernel/physmem.c           |  71 ---------------
- arch/um/kernel/um_arch.c           |   7 +-
- arch/um/os-Linux/skas/process.c    |   7 --
- arch/um/os-Linux/start_up.c        |  50 -----------
- 11 files changed, 4 insertions(+), 293 deletions(-)
- delete mode 100644 arch/um/drivers/mmapper_kern.c
+ arch/um/include/asm/pgtable.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 49781bee7905..0b4d00596a8c 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -200,12 +200,6 @@ config KERNEL_STACK_ORDER
- 	  increase in the size of the state which needs to be saved when handling
- 	  signals.
- 
--config MMAPPER
--	tristate "iomem emulation driver"
--	help
--	  This driver allows a host file to be used as emulated IO memory inside
--	  UML.
--
- config PGTABLE_LEVELS
- 	int
- 	default 4 if 64BIT
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 6bf8cbf71d3c..36dc57840084 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -29,7 +29,6 @@ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
- 
- obj-$(CONFIG_UML_NET_VECTOR) += vector.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
--obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
- obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
-diff --git a/arch/um/drivers/mmapper_kern.c b/arch/um/drivers/mmapper_kern.c
-deleted file mode 100644
-index 807cd3358740..000000000000
---- a/arch/um/drivers/mmapper_kern.c
-+++ /dev/null
-@@ -1,135 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * arch/um/drivers/mmapper_kern.c
-- *
-- * BRIEF MODULE DESCRIPTION
-- *
-- * Copyright (C) 2000 RidgeRun, Inc.
-- * Author: RidgeRun, Inc.
-- *         Greg Lonnon glonnon@ridgerun.com or info@ridgerun.com
-- *
-- */
--
--#include <linux/stddef.h>
--#include <linux/types.h>
--#include <linux/fs.h>
--#include <linux/init.h>
--#include <linux/miscdevice.h>
--#include <linux/module.h>
--#include <linux/mm.h>
--
--#include <linux/uaccess.h>
--#include <mem_user.h>
--
--/* These are set in mmapper_init, which is called at boot time */
--static unsigned long mmapper_size;
--static unsigned long p_buf;
--static char *v_buf;
--
--static ssize_t mmapper_read(struct file *file, char __user *buf, size_t count,
--			    loff_t *ppos)
--{
--	return simple_read_from_buffer(buf, count, ppos, v_buf, mmapper_size);
--}
--
--static ssize_t mmapper_write(struct file *file, const char __user *buf,
--			     size_t count, loff_t *ppos)
--{
--	if (*ppos > mmapper_size)
--		return -EINVAL;
--
--	return simple_write_to_buffer(v_buf, mmapper_size, ppos, buf, count);
--}
--
--static long mmapper_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	return -ENOIOCTLCMD;
--}
--
--static int mmapper_mmap(struct file *file, struct vm_area_struct *vma)
--{
--	int ret = -EINVAL;
--	int size;
--
--	if (vma->vm_pgoff != 0)
--		goto out;
--
--	size = vma->vm_end - vma->vm_start;
--	if (size > mmapper_size)
--		return -EFAULT;
--
--	/*
--	 * XXX A comment above remap_pfn_range says it should only be
--	 * called when the mm semaphore is held
--	 */
--	if (remap_pfn_range(vma, vma->vm_start, p_buf >> PAGE_SHIFT, size,
--			    vma->vm_page_prot))
--		goto out;
--	ret = 0;
--out:
--	return ret;
--}
--
--static int mmapper_open(struct inode *inode, struct file *file)
--{
--	return 0;
--}
--
--static int mmapper_release(struct inode *inode, struct file *file)
--{
--	return 0;
--}
--
--static const struct file_operations mmapper_fops = {
--	.owner		= THIS_MODULE,
--	.read		= mmapper_read,
--	.write		= mmapper_write,
--	.unlocked_ioctl	= mmapper_ioctl,
--	.mmap		= mmapper_mmap,
--	.open		= mmapper_open,
--	.release	= mmapper_release,
--	.llseek		= default_llseek,
--};
--
--/*
-- * No locking needed - only used (and modified) by below initcall and exitcall.
-- */
--static struct miscdevice mmapper_dev = {
--	.minor		= MISC_DYNAMIC_MINOR,
--	.name		= "mmapper",
--	.fops		= &mmapper_fops
--};
--
--static int __init mmapper_init(void)
--{
--	int err;
--
--	printk(KERN_INFO "Mapper v0.1\n");
--
--	v_buf = (char *) find_iomem("mmapper", &mmapper_size);
--	if (mmapper_size == 0) {
--		printk(KERN_ERR "mmapper_init - find_iomem failed\n");
--		return -ENODEV;
--	}
--	p_buf = __pa(v_buf);
--
--	err = misc_register(&mmapper_dev);
--	if (err) {
--		printk(KERN_ERR "mmapper - misc_register failed, err = %d\n",
--		       err);
--		return err;
--	}
--	return 0;
--}
--
--static void __exit mmapper_exit(void)
--{
--	misc_deregister(&mmapper_dev);
--}
--
--module_init(mmapper_init);
--module_exit(mmapper_exit);
--
--MODULE_AUTHOR("Greg Lonnon <glonnon@ridgerun.com>");
--MODULE_DESCRIPTION("DSPLinux simulator mmapper driver");
--MODULE_LICENSE("GPL");
 diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 24fdea6f88c3..6ca7583003cd 100644
+index 1a0d7405e97c..3b42b0f45bf6 100644
 --- a/arch/um/include/asm/pgtable.h
 +++ b/arch/um/include/asm/pgtable.h
-@@ -45,10 +45,10 @@ extern unsigned long *empty_zero_page;
+@@ -45,7 +45,9 @@ extern unsigned long *empty_zero_page;
   * area for the same reason. ;)
   */
  
--extern unsigned long end_iomem;
-+#include <as-layout.h> /* for high_physmem */
++#ifndef COMPILE_OFFSETS
+ #include <as-layout.h> /* for high_physmem */
++#endif
  
  #define VMALLOC_OFFSET	(__va_space)
--#define VMALLOC_START ((end_iomem + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
-+#define VMALLOC_START	((high_physmem + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
- #define VMALLOC_END	(TASK_SIZE-2*PAGE_SIZE)
- #define MODULES_VADDR	VMALLOC_START
- #define MODULES_END	VMALLOC_END
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 949a03c7861e..3ca589f3cd97 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -39,7 +39,6 @@ extern void uml_pm_wake(void);
- 
- extern int start_uml(void);
- extern void paging_init(void);
--extern int parse_iomem(char *str, int *add);
- 
- extern void uml_cleanup(void);
- extern void do_uml_exitcalls(void);
-diff --git a/arch/um/include/shared/mem_user.h b/arch/um/include/shared/mem_user.h
-index d4727efcf23d..8a5b72872ff8 100644
---- a/arch/um/include/shared/mem_user.h
-+++ b/arch/um/include/shared/mem_user.h
-@@ -32,21 +32,8 @@
- #ifndef _MEM_USER_H
- #define _MEM_USER_H
- 
--struct iomem_region {
--	struct iomem_region *next;
--	char *driver;
--	int fd;
--	int size;
--	unsigned long phys;
--	unsigned long virt;
--};
--
--extern struct iomem_region *iomem_regions;
--extern int iomem_size;
--
- #define ROUND_4M(n) ((((unsigned long) (n)) + (1 << 22)) & ~((1 << 22) - 1))
- 
--extern unsigned long find_iomem(char *driver, unsigned long *len_out);
- extern void setup_physmem(unsigned long start, unsigned long usable,
- 			  unsigned long len);
- extern void map_memory(unsigned long virt, unsigned long phys,
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 19d40b58eac4..dc938715ec9d 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -197,7 +197,7 @@ void __init paging_init(void)
- 		panic("%s: Failed to allocate %lu bytes align=%lx\n",
- 		      __func__, PAGE_SIZE, PAGE_SIZE);
- 
--	max_zone_pfn[ZONE_NORMAL] = end_iomem >> PAGE_SHIFT;
-+	max_zone_pfn[ZONE_NORMAL] = high_physmem >> PAGE_SHIFT;
- 	free_area_init(max_zone_pfn);
- 
- #if IS_ENABLED(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA)
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index af02b5f9911d..ae6ca373c261 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -105,19 +105,6 @@ int phys_mapping(unsigned long phys, unsigned long long *offset_out)
- 		fd = physmem_fd;
- 		*offset_out = phys;
- 	}
--	else if (phys < __pa(end_iomem)) {
--		struct iomem_region *region = iomem_regions;
--
--		while (region != NULL) {
--			if ((phys >= region->phys) &&
--			    (phys < region->phys + region->size)) {
--				fd = region->fd;
--				*offset_out = phys - region->phys;
--				break;
--			}
--			region = region->next;
--		}
--	}
- 
- 	return fd;
- }
-@@ -140,61 +127,3 @@ __uml_setup("mem=", uml_mem_setup,
- "    be more, and the excess, if it's ever used, will just be swapped out.\n"
- "	Example: mem=64M\n\n"
- );
--
--__uml_setup("iomem=", parse_iomem,
--"iomem=<name>,<file>\n"
--"    Configure <file> as an IO memory region named <name>.\n\n"
--);
--
--/*
-- * This list is constructed in parse_iomem and addresses filled in
-- * setup_iomem, both of which run during early boot.  Afterwards, it's
-- * unchanged.
-- */
--struct iomem_region *iomem_regions;
--
--/* Initialized in parse_iomem and unchanged thereafter */
--int iomem_size;
--
--unsigned long find_iomem(char *driver, unsigned long *len_out)
--{
--	struct iomem_region *region = iomem_regions;
--
--	while (region != NULL) {
--		if (!strcmp(region->driver, driver)) {
--			*len_out = region->size;
--			return region->virt;
--		}
--
--		region = region->next;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL(find_iomem);
--
--static int setup_iomem(void)
--{
--	struct iomem_region *region = iomem_regions;
--	unsigned long iomem_start = high_physmem + PAGE_SIZE;
--	int err;
--
--	while (region != NULL) {
--		err = os_map_memory((void *) iomem_start, region->fd, 0,
--				    region->size, 1, 1, 0);
--		if (err)
--			printk(KERN_ERR "Mapping iomem region for driver '%s' "
--			       "failed, errno = %d\n", region->driver, -err);
--		else {
--			region->virt = iomem_start;
--			region->phys = __pa(region->virt);
--		}
--
--		iomem_start += region->size + PAGE_SIZE;
--		region = region->next;
--	}
--
--	return 0;
--}
--
--__initcall(setup_iomem);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 74c75d2287d5..fb46d1339e6c 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -255,8 +255,6 @@ unsigned long task_size;
- EXPORT_SYMBOL(task_size);
- 
- unsigned long brk_start;
--unsigned long end_iomem;
--EXPORT_SYMBOL(end_iomem);
- 
- #define MIN_VMALLOC (32 * 1024 * 1024)
- 
-@@ -365,9 +363,7 @@ int __init linux_main(int argc, char **argv, char **envp)
- 	setup_machinename(init_utsname()->machine);
- 
- 	physmem_size = PAGE_ALIGN(physmem_size);
--	iomem_size = PAGE_ALIGN(iomem_size);
--
--	max_physmem = TASK_SIZE - uml_physmem - iomem_size - MIN_VMALLOC;
-+	max_physmem = TASK_SIZE - uml_physmem - MIN_VMALLOC;
- 	if (physmem_size > max_physmem) {
- 		physmem_size = max_physmem;
- 		os_info("Physical memory size shrunk to %llu bytes\n",
-@@ -375,7 +371,6 @@ int __init linux_main(int argc, char **argv, char **envp)
- 	}
- 
- 	high_physmem = uml_physmem + physmem_size;
--	end_iomem = high_physmem + iomem_size;
- 
- 	start_vm = VMALLOC_START;
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 0bc10cd4cbed..820846ff7179 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -298,7 +298,6 @@ static int userspace_tramp(void *data)
- 		.seccomp = using_seccomp,
- 		.stub_start = STUB_START,
- 	};
--	struct iomem_region *iomem;
- 	int ret;
- 
- 	if (using_seccomp) {
-@@ -332,12 +331,6 @@ static int userspace_tramp(void *data)
- 
- 	fcntl(init_data.stub_data_fd, F_SETFD, 0);
- 
--	/* In SECCOMP mode, these FDs are passed when needed */
--	if (!using_seccomp) {
--		for (iomem = iomem_regions; iomem; iomem = iomem->next)
--			fcntl(iomem->fd, F_SETFD, 0);
--	}
--
- 	/* dup2 signaling FD/socket to STDIN */
- 	if (dup2(tramp_data->sockpair[0], 0) < 0)
- 		exit(3);
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index a827c2e01aa5..8b19dca83f71 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -489,53 +489,3 @@ void __init os_early_checks(void)
- 		fatal("Failed to initialize default registers");
- 	stop_ptraced_child(pid, 1);
- }
--
--int __init parse_iomem(char *str, int *add)
--{
--	struct iomem_region *new;
--	struct stat64 buf;
--	char *file, *driver;
--	int fd, size;
--
--	driver = str;
--	file = strchr(str,',');
--	if (file == NULL) {
--		os_warn("parse_iomem : failed to parse iomem\n");
--		goto out;
--	}
--	*file = '\0';
--	file++;
--	fd = open(file, O_RDWR, 0);
--	if (fd < 0) {
--		perror("parse_iomem - Couldn't open io file");
--		goto out;
--	}
--
--	if (fstat64(fd, &buf) < 0) {
--		perror("parse_iomem - cannot stat_fd file");
--		goto out_close;
--	}
--
--	new = malloc(sizeof(*new));
--	if (new == NULL) {
--		perror("Couldn't allocate iomem_region struct");
--		goto out_close;
--	}
--
--	size = (buf.st_size + UM_KERN_PAGE_SIZE) & ~(UM_KERN_PAGE_SIZE - 1);
--
--	*new = ((struct iomem_region) { .next		= iomem_regions,
--					.driver		= driver,
--					.fd		= fd,
--					.size		= size,
--					.phys		= 0,
--					.virt		= 0 });
--	iomem_regions = new;
--	iomem_size += new->size + UM_KERN_PAGE_SIZE;
--
--	return 0;
-- out_close:
--	close(fd);
-- out:
--	return 1;
--}
+ #define VMALLOC_START	((high_physmem + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
+
+---
+base-commit: aa3e6faf620b1091ae85b07c0106918d48fcce05
+change-id: 20251028-uml-offsets-circular-64bd45b0e172
+
+Best regards,
 -- 
-2.34.1
+Thomas Weißschuh <linux@weissschuh.net>
 
 
