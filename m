@@ -4,45 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40D14CCF9E0
-	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89098CCF9F1
+	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ooKBC1eDKfdKcleVvvkixZdpBL8Ich2YbLbfX/B4glQ=; b=iiPxCsPJOx8utKRY5uK3702RbU
-	GdSut9Z+Bpz5qBcX9QNYKC9sT5bFUi3F0PIBBh45DUY2GojbIBnKOsu+oNc9panQEl2JzcTzjGptC
-	DW9oB5hRUTXJgmTbO1eJWCYUTFO4zRVXSV1dg5aXr0Y9QBJv54e562SeSxv+BuCiDhUfQYT7dCdjO
-	D1zcd0x8cieHn2+ZeJiQnijmrdM4RUOG/lwuhpGm1S/Ew08Awx8WplPkWlpjo1LX9E7Ehg7WgJ8Xz
-	1lw5dHj6ZPVfH3G5KC/dLVV8ORzxg+uDt0kd2B01Y1OmK7uUKIcMOAJE7+8mwRQUstQbVvAib0Nok
-	JT29FHLA==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=noNlmxCJE3KO/lPWg5rcvAC/N6+hMXNKqLIKFsG5DTo=; b=eNtJna5LduilTy
+	Sl2b8xTkUORlc2Jfd8YQBziR6AIprZqKNeXQdS0hUKHUBJrpvD3dHztBzNb3gVEieKv2xMSA7hpS8
+	DhE/JhD8UYYPrt0fZzQ0fUagZTsjLaPLZuBmfAFifE6QrdIJQOvg9svBOORf/DNIZp0NydCkKeKDe
+	Ia4amNPwJ2PEo1eoWAXAG5/G+txOtucEUYucNYV0QfeqzttGSnSdLvUd/jm+YhtneLvKqeGSPWhCh
+	IcybTGAyAVp3AJXKOH/bTEICOSr2BnOT4nFcIT62Gik2CxPCllBP8Q+WmdQBGGnitJXXej6vWJFYm
+	r2V5fgS8+Q1TCmcbHCNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpT-0000000Fd0c-2Ss3;
-	Tue, 28 Oct 2025 09:17:23 +0000
+	id 1vDfpY-0000000Fd3k-0urD;
+	Tue, 28 Oct 2025 09:17:28 +0000
 Received: from todd.t-8ch.de ([159.69.126.157])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpR-0000000Fcys-1XOo
+	id 1vDfpR-0000000Fcz4-3usM
 	for linux-um@lists.infradead.org;
-	Tue, 28 Oct 2025 09:17:22 +0000
+	Tue, 28 Oct 2025 09:17:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1761643037;
-	bh=pLpK9WMmHxQL+UmXL2BRNL9YHlr3HJAmGpPpWZh9za0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=U+a6P211/4XvUxWAKsYQOUFks4HNaWzQk8OLSQf9m41OMxtrAQAM4Bw89Ces0WUiX
-	 v0AHKlr7R/J5zIR02pXLsR95jwlpU7cs9/lmyuvXp6pFW5X9JIFdzeidNG9xyOlrHO
-	 2uNN9h3tYOgq87JRV/pzbYC8noegWMFq7VlBTxdE=
+	bh=xB7h3ce2gbt35UPG3jOGIq2cIVnYk+vgnnNmKPQ3hUc=;
+	h=From:Subject:Date:To:Cc:From;
+	b=n3Cna5cwrHoFXFZwXsYyr7xr8U1JWDVfqk8mrpEf4PO2s+yHzfo9ae9GaHIoF8OAT
+	 pZxv9lkhfM75w4QdyKXmE+mYxFbn4uRlRg22lrILG3xbdF/DL60Hb0d1d53sXXv02R
+	 62OfOdhoO6A1fBQUiI+iFw7EzH6AhO4EqQgAt/tg=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Tue, 28 Oct 2025 10:15:38 +0100
-Subject: [PATCH 03/10] um: Split out default elf_aux_hwcap
+Subject: [PATCH 00/10] um: remove vDSO passthrough on 32bit x86
+Date: Tue, 28 Oct 2025 10:15:35 +0100
+Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-3-e930063eff5f@weissschuh.net>
-References: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
-In-Reply-To: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIALeJAGkC/x3MQQ6CMBAF0KuQWTtJHQHRqxAWYL8wiVDSgcaEc
+ Hcbl2/zDjJEhdGzOCgiqWlYMq6Xgl5Tv4xg9dkkTir3kIr3+cMRc0jgmwy68WrYfeDkLXAzOLl
+ LiaaWmnKxRrz1++/b7jx/CUHeqW4AAAA=
+X-Change-ID: 20250925-uml-remove-32bit-pseudo-vdso-8b02724e8626
 To: Richard Weinberger <richard@nod.at>, 
  Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
  Johannes Berg <johannes@sipsolutions.net>, 
@@ -54,16 +56,16 @@ Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=941;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=1974;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=pLpK9WMmHxQL+UmXL2BRNL9YHlr3HJAmGpPpWZh9za0=;
- b=O5gJ+jOwEsAHrk5KZPP4TwQau/fdz95vgKIKxfOYVp6/PV/ok0lwndsYaEsJfWY4HcGigVgsg
- LyWjDLG7c/TBFz9ODtVE6y69f4yeLZPtk2aonTCktjVxwFlAwClOMI2
+ bh=xB7h3ce2gbt35UPG3jOGIq2cIVnYk+vgnnNmKPQ3hUc=;
+ b=fy3Gznoqa4idS4vD+Qw7c736OSjfulXJWRQdumuwvFU5YCVJrhuicwaakAQoBCgYhdehVlJzU
+ ntwkq3FfWbvCXZdNvbbkRNDKA4+YT8j8iaJXv5Yyc1gTYwqKH/G2rWl
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251028_021721_563503_5CA912D2 
-X-CRM114-Status: UNSURE (   8.51  )
+X-CRM114-CacheID: sfid-20251028_021722_130988_6FF75D5F 
+X-CRM114-Status: UNSURE (   6.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,35 +81,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Setting all auxiliary vector values to default values if one of them
-was not provided by the host will discard perfectly fine values.
+Inheriting the vDSO from the host is problematic. The values read
+from the time functions will not be correct for the UML kernel.
+Furthermore the start and end of the vDSO are not stable or
+detectable by userspace. Specifically the vDSO datapages start
+before AT_SYSINFO_EHDR and the vDSO itself is larger than a single page.
 
-Remove the elf_aux_platform fallback from the vDSO ones.
-As zero is the correct fallback anyways, don't create a new conditional.
+This codepath is only used on 32bit x86 UML. In my testing with both
+32bit and 64bit hosts the passthrough functionality has always been
+disabled anyways due to the checks against envp in scan_elf_aux().
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/um/os-Linux/elf_aux.c | 2 --
- 1 file changed, 2 deletions(-)
+Thomas Weißschuh (10):
+      um: Split out default elf_aux_platform
+      x86/um: Move ELF_PLATFORM fallback to x86-specific code
+      um: Split out default elf_aux_hwcap
+      x86/um: Do not inherit vDSO from host
+      x86/um: Drop gate area handling
+      um: Remove fixaddr_user_init()
+      um: Remove redundant range check from __access_ok_vsyscall()
+      um: Remove __access_ok_vsyscall()
+      x86/um: Remove FIXADDR_USER_START and FIXADDR_USE_END
+      um: Always set up AT_HWCAP and AT_PLATFORM
 
-diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
-index 4aadb9ea5ae3..9ee0e3199790 100644
---- a/arch/um/os-Linux/elf_aux.c
-+++ b/arch/um/os-Linux/elf_aux.c
-@@ -62,11 +62,9 @@ __init void scan_elf_aux( char **envp)
- 		}
- 	}
- 	if ( ! __kernel_vsyscall || ! vsyscall_ehdr ||
--	     ! elf_aux_hwcap ||
- 	     ! page_size || (vsyscall_ehdr % page_size) ) {
- 		__kernel_vsyscall = 0;
- 		vsyscall_ehdr = 0;
--		elf_aux_hwcap = 0;
- 	}
- 	else {
- 		vsyscall_end = vsyscall_ehdr + page_size;
+ arch/um/include/asm/page.h    |   4 --
+ arch/um/include/asm/uaccess.h |   9 +---
+ arch/um/kernel/mem.c          | 107 ------------------------------------------
+ arch/um/os-Linux/Makefile     |   4 +-
+ arch/um/os-Linux/elf_aux.c    |  37 +++------------
+ arch/um/os-Linux/main.c       |   4 --
+ arch/um/os-Linux/user_syms.c  |   6 ---
+ arch/x86/um/Kconfig           |   4 --
+ arch/x86/um/Makefile          |   5 +-
+ arch/x86/um/asm/elf.h         |  39 ++-------------
+ arch/x86/um/elfcore.c         |  78 ------------------------------
+ arch/x86/um/mem_32.c          |  50 --------------------
+ 12 files changed, 15 insertions(+), 332 deletions(-)
+---
+base-commit: 83e4187d1b952c36ffc2d01a2e532ad8a9e80a76
+change-id: 20250925-uml-remove-32bit-pseudo-vdso-8b02724e8626
 
+Best regards,
 -- 
-2.51.1.dirty
+Thomas Weißschuh <linux@weissschuh.net>
 
 
