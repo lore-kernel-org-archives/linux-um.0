@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D304CCCF9EF
-	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDF86CCD1BF
+	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2l+TS1LMPx7p4hg9dw/BzaoTvSuCmUu6gVv2GXD+OOk=; b=tLjWRJEgiBRCatc7mdgjtg1Flh
-	eUM9EQxgTDfKHXQm2QBCQqK8QQn1S9JKyUZWa7T3yg9XmC9XZ6sXYiYc8bGdLKxDet+3sh5DWT67Z
-	1aCs/LNrP126ujXB9h3zRorKhwrUJxJOsxV0+ICfZ374zV7lilA+vK8cxuDUCTc+myFqFuLqq3Zr1
-	cYvRxw5TFt8oyeYQmVcrd8gIhuVkxn4z8Fd5gRWp22Cen2vl0AfbjAxa8UNbCzgv+372PUduDbTSJ
-	5I/8ZEi2iK3hXlR9/n+tHdtGmgqviz0ZF9QMZcq9S+66qYPw4SR5IuSQngqkUDSJypfGTmyV4gQ6c
-	U6t2FHIw==;
+	bh=AHYEc+7bFZ9SQ8uNEgo4nVYWQFf8fTUlITvRCThhJdI=; b=qi8VAdabiF7algxrS9xB4WPsHa
+	chNbfN8i+0NBTpQiK+dI33SVTrlO8Xcwm7o44UEU2HsnEsf7NQRnvikKC6aA4bJDf6MliBmE2vH+j
+	kn8M7ByGbxNCdNI5zugRzFvst7DefvocHngSPtU349GfFn+UugN3LCLFmJ8DX+kLCueXrEDrxF+jk
+	WrNRi31+FVvvIkfLO4pwrKsVHkYHp0Et1EzaEurDmN4B4Qm1wQmfLoZW0JxpmyOJz5JMPwsdWyMKk
+	IJ4NTKJaDDEUKQU6TlRe7sg7eic+uZZ+TLbzJU/uhQXE8y8ctK+C+NmqBsi/vTHntcLl3tpKDfa+n
+	J+aGEBTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpZ-0000000Fd4o-2Kwf;
-	Tue, 28 Oct 2025 09:17:29 +0000
+	id 1vDfpb-0000000Fd7y-30y1;
+	Tue, 28 Oct 2025 09:17:31 +0000
 Received: from todd.t-8ch.de ([159.69.126.157])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfpT-0000000Fczl-0RCi
+	id 1vDfpV-0000000Fd16-2sta
 	for linux-um@lists.infradead.org;
-	Tue, 28 Oct 2025 09:17:24 +0000
+	Tue, 28 Oct 2025 09:17:28 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1761643037;
-	bh=wVCfXhX9gFOuIM1xQSYX/MuDADsnjta9ksjbCV8j1aI=;
+	s=mail; t=1761643039;
+	bh=CxIHi84E4Pt5K6l2BuyDuvOD5HSJpAj9jMAXhBrWhPI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=A7PL0Uetb0vlc4ijKa9jjavmz5+neq80T0IwIUe00l43iq8uhX14/EuBt+ppWAmDl
-	 KUf0q8mnw6o2DB3eCoB98duMuZSTfwBSxMkqpziZzyXFjCEzZw2205LxAL7wXOtD3W
-	 32oxXXyxHPoHZBqibMOS/9ma5dHYKOaK9T1jjWzo=
+	b=KWo7sg0HDLVwuJxbMVa0QVJzurgJIyDK1zw+ebn5phBhr3C7MAG7cMyz7E3fh1y4e
+	 avOz7YrsLk6fYH4IO4FdkTI/iNgikB3bVS59fqSLrIm96xlRBup9wuuqLoQcjwrxJc
+	 lbH0wPaZH2bjA7cpHu677LiCQ4taEjaAg3HuaoXc=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Tue, 28 Oct 2025 10:15:36 +0100
-Subject: [PATCH 01/10] um: Split out default elf_aux_platform
+Date: Tue, 28 Oct 2025 10:15:43 +0100
+Subject: [PATCH 08/10] um: Remove __access_ok_vsyscall()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-1-e930063eff5f@weissschuh.net>
+Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-8-e930063eff5f@weissschuh.net>
 References: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
 In-Reply-To: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
 To: Richard Weinberger <richard@nod.at>, 
@@ -54,16 +54,16 @@ Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=1040;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=1320;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=wVCfXhX9gFOuIM1xQSYX/MuDADsnjta9ksjbCV8j1aI=;
- b=LhVFRghTmmP714gZhBulmaoihKd0f0VHzMs3eM+Bz2Cmqsv3SkDHbn+Naifonr7vh0qOBz1qm
- +z67DoHCAyeBU8AmUiQXuyNKzejI1lEP2jTG2CUIC4+3TqOBckzoq7J
+ bh=CxIHi84E4Pt5K6l2BuyDuvOD5HSJpAj9jMAXhBrWhPI=;
+ b=indsseQNY5fyzet23byGMfRz3iZPxGotar2HG8qPmnBRDzv8C40nHyUQRT0Da3oxy3nlZoEEs
+ qs0pIYidKlJBq6P+Kh9ASIbrA6/scKN4tp4chTLKNoVkGLy5/Xl70ij
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251028_021723_298367_D4D42C98 
-X-CRM114-Status: UNSURE (   9.18  )
+X-CRM114-CacheID: sfid-20251028_021725_957677_3FC8E02C 
+X-CRM114-Status: UNSURE (   7.48  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,39 +79,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Setting all auxiliary vector values to default values if one of them
-was not provided by the host will discard perfectly fine values.
-
-Move the elf_aux_platform fallback to its own conditional.
+FIXADDR_USER_START and FIXADDR_USER_END are now always zero.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/um/os-Linux/elf_aux.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/um/include/asm/uaccess.h | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
-index 0a0f91cf4d6d..a62fe39e85c9 100644
---- a/arch/um/os-Linux/elf_aux.c
-+++ b/arch/um/os-Linux/elf_aux.c
-@@ -62,14 +62,16 @@ __init void scan_elf_aux( char **envp)
- 		}
- 	}
- 	if ( ! __kernel_vsyscall || ! vsyscall_ehdr ||
--	     ! elf_aux_hwcap || ! elf_aux_platform ||
-+	     ! elf_aux_hwcap ||
- 	     ! page_size || (vsyscall_ehdr % page_size) ) {
- 		__kernel_vsyscall = 0;
- 		vsyscall_ehdr = 0;
- 		elf_aux_hwcap = 0;
--		elf_aux_platform = "i586";
- 	}
- 	else {
- 		vsyscall_end = vsyscall_ehdr + page_size;
- 	}
-+
-+	if (!elf_aux_platform)
-+		elf_aux_platform = "i586";
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 3770bdeee100..0df9ea4abda8 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -15,10 +15,6 @@
+ 	(((unsigned long) (addr) < TASK_SIZE) && \
+ 	 (((unsigned long) (addr) + (size)) < TASK_SIZE))
+ 
+-#define __access_ok_vsyscall(addr, size) \
+-	  (((unsigned long) (addr) >= FIXADDR_USER_START) && \
+-	  ((unsigned long) (addr) + (size) <= FIXADDR_USER_END))
+-
+ #define __addr_range_nowrap(addr, size) \
+ 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+ 
+@@ -39,9 +35,7 @@ static inline int __access_ok(const void __user *ptr, unsigned long size);
+ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ {
+ 	unsigned long addr = (unsigned long)ptr;
+-	return __addr_range_nowrap(addr, size) &&
+-		(__under_task_size(addr, size) ||
+-		 __access_ok_vsyscall(addr, size));
++	return __addr_range_nowrap(addr, size) && __under_task_size(addr, size);
  }
+ 
+ #define __get_kernel_nofault(dst, src, type, err_label)			\
 
 -- 
 2.51.1.dirty
