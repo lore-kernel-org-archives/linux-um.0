@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A94CCF9E0
-	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40D14CCF9E0
+	for <linux-um@archiver.kernel.org>; Tue, 28 Oct 2025 09:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=HTyTdfVLRcEcdUtzLzbBCl8vlxuUStbbRZ4WoJy5q2c=; b=lxLNrPBRaAYzDwat8tbNjg5/Nn
-	SQvT17jtLezNXdV4W3d9mVgLPF4y9ZxtAoiKdNW8whXbcn6UrF8Y5wukQlIgecCzMcmxtYPA0dcRf
-	0O4X+O93UgUhmYEpzii827IcNjNb8TIFawmlad2zbnoRBiuD8HvC2aivrN+m0Q6vcj4uBrDiN7UpU
-	jrYt/t8pGdWphEhYUjI+pIPWOc8TyezIuM8uHEznwE1OmqpsMWrTjccgbZxV/RJXCeoTHJ8KxA7oh
-	bkJAKak44f8bzymItK5HbA75nbrJpZg4yDMTk5eZSz0SXkChbtcLxw8YzXFETo/BFVegnDNPnjD6Q
-	FRSbrrzQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ooKBC1eDKfdKcleVvvkixZdpBL8Ich2YbLbfX/B4glQ=; b=iiPxCsPJOx8utKRY5uK3702RbU
+	GdSut9Z+Bpz5qBcX9QNYKC9sT5bFUi3F0PIBBh45DUY2GojbIBnKOsu+oNc9panQEl2JzcTzjGptC
+	DW9oB5hRUTXJgmTbO1eJWCYUTFO4zRVXSV1dg5aXr0Y9QBJv54e562SeSxv+BuCiDhUfQYT7dCdjO
+	D1zcd0x8cieHn2+ZeJiQnijmrdM4RUOG/lwuhpGm1S/Ew08Awx8WplPkWlpjo1LX9E7Ehg7WgJ8Xz
+	1lw5dHj6ZPVfH3G5KC/dLVV8ORzxg+uDt0kd2B01Y1OmK7uUKIcMOAJE7+8mwRQUstQbVvAib0Nok
+	JT29FHLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfbz-0000000FbW2-42RI;
-	Tue, 28 Oct 2025 09:03:27 +0000
-Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
+	id 1vDfpT-0000000Fd0c-2Ss3;
+	Tue, 28 Oct 2025 09:17:23 +0000
+Received: from todd.t-8ch.de ([159.69.126.157])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vDfbx-0000000FbUC-3siq
+	id 1vDfpR-0000000Fcys-1XOo
 	for linux-um@lists.infradead.org;
-	Tue, 28 Oct 2025 09:03:27 +0000
+	Tue, 28 Oct 2025 09:17:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1761642199;
-	bh=oa18QKX0l9/zrNbFelaAjri3Nu2ogEOJV9SkekhMHUQ=;
-	h=From:Date:Subject:To:Cc:From;
-	b=gKlVBm8+5rI8Ix1xm8HYkLa0WTs+Xa9sbAw5SjORYeyAVZW1efCTXFr6dzFTvmf4G
-	 y7HsaCbfkJHF6uW2GaS4ouJ/vr0ZJ6hhiUZ4hZLhXhz2J9y8gz/GpACd5hygdX9KOc
-	 SOuG3xde40rXzLz1d93xLI0MMIJxXmc1C4dasNvI=
+	s=mail; t=1761643037;
+	bh=pLpK9WMmHxQL+UmXL2BRNL9YHlr3HJAmGpPpWZh9za0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=U+a6P211/4XvUxWAKsYQOUFks4HNaWzQk8OLSQf9m41OMxtrAQAM4Bw89Ces0WUiX
+	 v0AHKlr7R/J5zIR02pXLsR95jwlpU7cs9/lmyuvXp6pFW5X9JIFdzeidNG9xyOlrHO
+	 2uNN9h3tYOgq87JRV/pzbYC8noegWMFq7VlBTxdE=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Tue, 28 Oct 2025 10:02:55 +0100
-Subject: [PATCH] um: Avoid circular dependency on asm-offsets in pgtable.h
+Date: Tue, 28 Oct 2025 10:15:38 +0100
+Subject: [PATCH 03/10] um: Split out default elf_aux_hwcap
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20251028-uml-offsets-circular-v1-1-601c363cfaaa@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAL6GAGkC/x3MSQqAMAxA0atI1gba4oRXERdaUw04kagI4t0tL
- t/i/weUhEmhTh4Qulh5WyNsmoCfunUk5CEanHG5Na7Cc5lxC0HpUPQs/pw7wSLrhyzvDdnSQUx
- 3ocD3v23a9/0A7IcIwGYAAAA=
-X-Change-ID: 20251028-uml-offsets-circular-64bd45b0e172
+Message-Id: <20251028-uml-remove-32bit-pseudo-vdso-v1-3-e930063eff5f@weissschuh.net>
+References: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
+In-Reply-To: <20251028-uml-remove-32bit-pseudo-vdso-v1-0-e930063eff5f@weissschuh.net>
 To: Richard Weinberger <richard@nod.at>, 
  Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
  Johannes Berg <johannes@sipsolutions.net>, 
- Tiwei Bie <tiwei.btw@antgroup.com>
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-um@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Kees Cook <kees@kernel.org>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mm@kvack.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1761642198; l=2009;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1761643036; l=941;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=oa18QKX0l9/zrNbFelaAjri3Nu2ogEOJV9SkekhMHUQ=;
- b=OVVJ6XiAIwfOGNjqdKBxkJURJ81/moXtAdeO8yQBzBW9u2Vin6xW5z2/tz1VDO6XEWJVxEWXD
- Bb29WTwZKlaCE5h6M6dh02jtSGHRJIP2IiSXVbUvLiuAtiNBmGGCE38
+ bh=pLpK9WMmHxQL+UmXL2BRNL9YHlr3HJAmGpPpWZh9za0=;
+ b=O5gJ+jOwEsAHrk5KZPP4TwQau/fdz95vgKIKxfOYVp6/PV/ok0lwndsYaEsJfWY4HcGigVgsg
+ LyWjDLG7c/TBFz9ODtVE6y69f4yeLZPtk2aonTCktjVxwFlAwClOMI2
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251028_020326_106996_D6E68E05 
-X-CRM114-Status: UNSURE (   8.70  )
+X-CRM114-CacheID: sfid-20251028_021721_563503_5CA912D2 
+X-CRM114-Status: UNSURE (   8.51  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,57 +79,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Recent changes have added an include of as-layout.h to pgtable.h.
-However this introduces a circular dependency during asm-offsets
-generation as as-layout.h depends on asm-offsets and pgtable.h is an
-input for asm-offsets.
+Setting all auxiliary vector values to default values if one of them
+was not provided by the host will discard perfectly fine values.
 
-Building from a clean state results in the following error:
+Remove the elf_aux_platform fallback from the vDSO ones.
+As zero is the correct fallback anyways, don't create a new conditional.
 
-  CC      arch/um/kernel/asm-offsets.s
-In file included from arch/um/include/asm/pgtable.h:48,
-                 from include/linux/pgtable.h:6,
-                 from include/linux/mm.h:31,
-                 from include/linux/pid_namespace.h:7,
-                 from include/linux/ptrace.h:10,
-                 from include/linux/audit.h:13,
-                 from arch/um/kernel/asm-offsets.c:8:
-arch/um/include/shared/as-layout.h:9:10: fatal error: generated/asm-offsets.h: No such file or directory
-    9 | #include <generated/asm-offsets.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[4]: *** [scripts/Makefile.build:182: arch/um/kernel/asm-offsets.s] Error 1
-
-As the inclusion of as-layout.h in pgtable.h is not yet needed while
-asm-offsets are generated, break the dependency here.
-
-Fixes: a7f7dbae94a5 ("um: Remove file-based iomem emulation support")
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/um/include/asm/pgtable.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/um/os-Linux/elf_aux.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 1a0d7405e97c..3b42b0f45bf6 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -45,7 +45,9 @@ extern unsigned long *empty_zero_page;
-  * area for the same reason. ;)
-  */
- 
-+#ifndef COMPILE_OFFSETS
- #include <as-layout.h> /* for high_physmem */
-+#endif
- 
- #define VMALLOC_OFFSET	(__va_space)
- #define VMALLOC_START	((high_physmem + VMALLOC_OFFSET) & ~(VMALLOC_OFFSET-1))
+diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
+index 4aadb9ea5ae3..9ee0e3199790 100644
+--- a/arch/um/os-Linux/elf_aux.c
++++ b/arch/um/os-Linux/elf_aux.c
+@@ -62,11 +62,9 @@ __init void scan_elf_aux( char **envp)
+ 		}
+ 	}
+ 	if ( ! __kernel_vsyscall || ! vsyscall_ehdr ||
+-	     ! elf_aux_hwcap ||
+ 	     ! page_size || (vsyscall_ehdr % page_size) ) {
+ 		__kernel_vsyscall = 0;
+ 		vsyscall_ehdr = 0;
+-		elf_aux_hwcap = 0;
+ 	}
+ 	else {
+ 		vsyscall_end = vsyscall_ehdr + page_size;
 
----
-base-commit: aa3e6faf620b1091ae85b07c0106918d48fcce05
-change-id: 20251028-uml-offsets-circular-64bd45b0e172
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.51.1.dirty
 
 
