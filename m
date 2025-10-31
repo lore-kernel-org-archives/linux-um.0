@@ -4,65 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E0ABCCF9E9
-	for <linux-um@archiver.kernel.org>; Wed, 29 Oct 2025 14:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54E6CCF9EE
+	for <linux-um@archiver.kernel.org>; Fri, 31 Oct 2025 08:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jbDiRc1txlZTTk//UC1k3FW4pC0DVEyDhtcenS6QTzU=; b=RsBcSK+O16KIJ5UoPo43Qcf1S1
-	oFcWHgIh8GCLpHRlCk7QOYOqhj3DelpbgkBDQa4BMoAVD0BjbtRCMoV3OnPB0m9L5WtUNIuNwNuKP
-	1cLPuzG3hVPLWhQrQitjxlMjaiWygoysQA/Aq0FOTceyV+mXOf0cx/cDU4uMh+s81Wygnc18xXrGx
-	jDumsK0RUkf0Mm0CpLklIGdaoh8f/Y8pvBMKiGExnzQHQTQh6jPn2SUb9M94V5e4WrCiLagfKmbMY
-	O1qpKmJK8S/+W+AS300zyfhgRl0Hl1rQ34KpKpUOdphtUO1otKz5mUk0PuXTXYAY1tm+2pDJAzrZn
-	t+2ELzCw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Z7mI9BcntzgVUKh5moz36lXrwspXfS+6u2bbjA0rfUU=; b=YEfI6AgpuHIZQAlx1DG9wH7W06
+	urY1jhp+p6VkG+OnGlK+wC4VGYAupEx2doPWlOAxWHj/U622qkL/SSwJu4sxvZmvcFAhldqD+vjk7
+	FNTUtVDlMn0mc0lzV4E7rzVdW3yBUC911gaK3/ezGpFl+CafMYIVTuWmkXO5yUm0DmznntHjGb+nn
+	pmDnYpRA0BKFgEtxa2DR+HCsDPJI2oPG2G4POYd4iZivPsDWEtr6lfIbdrFyFjVD7HD9QWWu8rxGN
+	vF+qTRnJusTnJxbwSUyW2pBMagKmYxzC7Op+oAG+2jOQQbDReIda7Sfbkc6CQCuRgokk+MMLobiBW
+	b1mnP6lQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vE6ph-00000001VVm-1PWm;
-	Wed, 29 Oct 2025 14:07:25 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1vEk8o-00000005bPI-3e5R;
+	Fri, 31 Oct 2025 08:05:46 +0000
+Received: from mout.web.de ([217.72.192.78])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vE6pe-00000001VUQ-1hRa
+	id 1vEk8l-00000005bOJ-30sC
 	for linux-um@lists.infradead.org;
-	Wed, 29 Oct 2025 14:07:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=jbDiRc1txlZTTk//UC1k3FW4pC0DVEyDhtcenS6QTzU=;
-	t=1761746842; x=1762956442; b=RnZwIs4PNZ3PZwUVKJ83697t2o+14V0yQeLRP6yq0mCwade
-	rlnpVTjrs26AxgWAikmh3KoLJ4jGBmgm+cZ1HygcPkE91jp2VWi6/JVQ6xPWJX9BGwJuNJI+GbS6y
-	AFWfQ79VxLlaO8jkCg3FicUXH0OOdkrqsbK/2dLwt5ts8I6OZunCKLCWpNJ19NHiX0ynQcMIwBFTk
-	bCNOW8nbOnKOvI/TdT5Wcar1QEAQ1B2owNpHraJMTZNorUd54uLcVqVMMyaXSf+OxKxnvJP9Uy9gW
-	QjyXNakiNUgSp7xncyiKMN24w5uuVemhFjSqCmrt8YbhDOxkTPFlwluaVqdr/4fg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1vE6pV-0000000EkWX-0O7N;
-	Wed, 29 Oct 2025 15:07:13 +0100
-Message-ID: <516b490d30be6d0676ffe3be5942954bc3c08a39.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 09/12] um: use nolibc for the --showconfig
- implementation
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: linux-um@lists.infradead.org, Willy Tarreau <w@1wt.eu>, 
-	linux-kselftest@vger.kernel.org, kernel test robot <lkp@intel.com>, Arnaldo
- Carvalho de Melo	 <acme@redhat.com>, oe-kbuild-all@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Date: Wed, 29 Oct 2025 15:07:12 +0100
-In-Reply-To: <99359472-8b1e-4d51-adb8-5b16f1f90a9f@weissschuh.net>
-References: <aNaNtI+mbyc4zgFy@rli9-mobl>
-	 <99359472-8b1e-4d51-adb8-5b16f1f90a9f@weissschuh.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	Fri, 31 Oct 2025 08:05:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1761897923; x=1762502723; i=markus.elfring@web.de;
+	bh=Z7mI9BcntzgVUKh5moz36lXrwspXfS+6u2bbjA0rfUU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
+	 Subject:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=HGEn4YaIDnarXowZdr43jslkkDhFK0nRNLJAaLSUTbDTcl22wFqgDkb+BexzeNtf
+	 etJPNpkv/D56ak66R1jjKJzlqJtTlgNjC+DOUXcbLfeN3csN7f47g9de6vyIdgAJV
+	 z9FKLAEC9WA1XeKhAFeK8sEcY+zebUTIwZCt/CSBMze9htHuwMk+ozuOSPgkSOk8/
+	 hgTzFucF7kv3VCJZeaHMB4w/mW0dmu0rHeYxIs9gQ9D1DeSaqKNLlp30oLscUu2X1
+	 /yshFfHv+UQX2OQUVcb8jknHA6iswiNUNrV1ngSZvPMfOmJuiJMx5brVk27KYA/IB
+	 huuBcvLP17q6+ylGeQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.69.206]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MNfY9-1vdhua2Qzz-00Z92J; Fri, 31
+ Oct 2025 09:05:23 +0100
+Message-ID: <3b2e9b4e-4186-4d05-836f-73e1203f34d7@web.de>
+Date: Fri, 31 Oct 2025 09:05:21 +0100
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+To: linux-um@lists.infradead.org,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Richard Weinberger <richard@nod.at>, Tiwei Bie <tiwei.btw@antgroup.com>
+Content-Language: en-GB, de-DE
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Miaoqian Lin <linmq006@gmail.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] um: virtio-pci: Use pointer from memcpy() call for assignment
+ in virtio_pcidev_send_cmd()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XiZ0b6wjUlYkMlDZm4mhQWGgStcS3cU0YyKIoXpLBWUuNWQJNt5
+ v0wuNb1CuDsB9UhqoCh0GJE/Y3TveiLweGTv+h4w/pLvhRSXfPiQZbWXOZa7Q5CFtKUE/lI
+ 4Bi3mbU2JJl4y+gPPnJdLGxx/FFAycPLX+sFgxi5iEsVz5BK+TsGQRrlrmGbrcpJ1ljYqoY
+ YvOm01cU3M1cc7enqoEGQ==
+UI-OutboundReport: notjunk:1;M01:P0:xaK+7SCO+TI=;dYn16fC/0PcSdUwZnqz8nRZzdiz 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 wbB3OUEb9micYskNY=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251029_070722_444067_E8ADD693 
-X-CRM114-Status: GOOD (  20.33  )
+X-CRM114-CacheID: sfid-20251031_010544_044523_6CB6879F 
+X-CRM114-Status: UNSURE (   8.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,72 +84,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Thomas,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 31 Oct 2025 08:58:22 +0100
 
-On Mon, 2025-10-20 at 17:21 +0300, Thomas Wei=C3=9Fschuh wrote:
-> Hi Benjamin,
->=20
-> Sep 26, 2025 15:57:43 kernel test robot <lkp@intel.com>:
->=20
-> > kernel test robot noticed the following build warnings:
-> >=20
-> > [auto build test WARNING on uml/next]
-> > [also build test WARNING on uml/fixes shuah-kselftest/next shuah-
-> > kselftest/fixes linus/master v6.17-rc7 next-20250925]
-> > [If your patch is applied to the wrong git tree, kindly drop us a
-> > note.
-> > And when submitting patch, we suggest to use '--base' as documented
-> > in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >=20
-> > url:=C2=A0=C2=A0=C2=A0
-> > https://github.com/intel-lab-lkp/linux/commits/Benjamin-Berg/tools-comp=
-iler-h-fix-__used-definition/20250924-222547
-> > base:=C2=A0=C2=A0
-> > https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux=C2=A0next
-> > patch link:=C2=A0=C2=A0=C2=A0
-> > https://lore.kernel.org/r/20250924142059.527768-10-benjamin%40sipsoluti=
-ons.net
-> > patch subject: [PATCH v3 09/12] um: use nolibc for the --showconfig
-> > implementation
-> > :::::: branch date: 2 days ago
-> > :::::: commit date: 2 days ago
-> > config: um-randconfig-r111-20250926
-> > (https://download.01.org/0day-ci/archive/20250926/202509261452.g5pe
-> > aXCc-lkp@intel.com/config)
-> > compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-> > reproduce (this is a W=3D1 build):
-> > (https://download.01.org/0day-ci/archive/20250926/202509261452.g5pe
-> > aXCc-lkp@intel.com/reproduce)
-> >=20
-> > If you fix the issue in a separate patch/commit (i.e. not just a
-> > new version of
-> > the same patch/commit), kindly add following tags
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes:
-> > > https://lore.kernel.org/r/202509261452.g5peaXCc-lkp@intel.com/
-> >=20
-> > sparse warnings: (new ones prefixed by >>)
-> > =C2=A0=C2=A0 command-line: note: in included file (through
-> > tools/include/nolibc/nolibc.h, tools/include/nolibc/stddef.h,
-> > arch/um/include/shared/user.h, builtin):
-> > > > tools/include/nolibc/sys.h:109:29: sparse: sparse: Using plain
-> > > > integer as NULL pointer
-> > =C2=A0=C2=A0unistd.h:70:30: sparse: sparse: Using plain integer as NULL
-> > pointer
-> > =C2=A0=C2=A0 tools/include/nolibc/unistd.h:70:33: sparse: sparse: Using=
- plain
-> > integer as NULL pointer
->=20
-> Do you intend to work on your UML with nolibc patches this cycle?
-> If not I would fix these sparse warnings in the nolibc tree and also
-> apply your nolibc patches.
+A pointer was assigned to a variable. The same pointer was used for
+the destination parameter of a memcpy() call.
+This function is documented in the way that the same value is returned.
+Thus convert two separate statements into a direct variable assignment for
+the return value from a memory copy action.
 
-We are not in a hurry for the UML part and while it shouldn't be too
-much work, I obviously didn't get around to it in the last week.
+The source code was transformed by using the Coccinelle software.
 
-So, feel free to pull the patches in via your tree. Then I'll submit
-the UML part again in the next cycle.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ arch/um/drivers/virtio_pcidev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Benjamin
+diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcid=
+ev.c
+index f9b4b6f7582c..33f6889cce7b 100644
+=2D-- a/arch/um/drivers/virtio_pcidev.c
++++ b/arch/um/drivers/virtio_pcidev.c
+@@ -125,8 +125,7 @@ static int virtio_pcidev_send_cmd(struct virtio_pcidev=
+_device *dev,
+ 		     out && out_size <=3D sizeof(buf->data);
+=20
+ 	buf_idx =3D virtio_pcidev_get_buf(dev, &posted);
+-	buf =3D &dev->bufs[buf_idx];
+-	memcpy(buf, cmd, cmd_size);
++	buf =3D memcpy(&dev->bufs[buf_idx], cmd, cmd_size);
+=20
+ 	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
+ 		dev->extra_ptrs[buf_idx] =3D kmemdup(extra, extra_size,
+=2D-=20
+2.51.1
+
 
