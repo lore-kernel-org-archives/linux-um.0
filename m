@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54E6CCF9EE
-	for <linux-um@archiver.kernel.org>; Fri, 31 Oct 2025 08:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EB03CCF9E3
+	for <linux-um@archiver.kernel.org>; Sun,  2 Nov 2025 09:49:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:From:Cc:To:MIME-Version:Date:Message-ID:Reply-To:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Z7mI9BcntzgVUKh5moz36lXrwspXfS+6u2bbjA0rfUU=; b=YEfI6AgpuHIZQAlx1DG9wH7W06
-	urY1jhp+p6VkG+OnGlK+wC4VGYAupEx2doPWlOAxWHj/U622qkL/SSwJu4sxvZmvcFAhldqD+vjk7
-	FNTUtVDlMn0mc0lzV4E7rzVdW3yBUC911gaK3/ezGpFl+CafMYIVTuWmkXO5yUm0DmznntHjGb+nn
-	pmDnYpRA0BKFgEtxa2DR+HCsDPJI2oPG2G4POYd4iZivPsDWEtr6lfIbdrFyFjVD7HD9QWWu8rxGN
-	vF+qTRnJusTnJxbwSUyW2pBMagKmYxzC7Op+oAG+2jOQQbDReIda7Sfbkc6CQCuRgokk+MMLobiBW
-	b1mnP6lQ==;
+	bh=CTo/fO8AwTUlnERfKnS0Hq9g4pzw1jJNDet5wuDWHQk=; b=W7LeZ6uxQgxAVKSgVH3KrW9bQ3
+	tNIfLiYp7l3OOdIxDiNbfjxN179yasmJ0836ftkvxXVDn3oqBn7ucg3A2YK085etJE3msD/Wy2Qab
+	CM7sQ7Vb5svDF8aF+PIH+3UIjUp42WUTSBlMgiUZfFv7Xfx2eV8bN/9woKFViSb1ZbBZcEgVApSuu
+	xxc7FJhsRnxsTyCNl4cN9KdT9M2DGhRyfPPF3zziWvrXh2lB1h6Wbux1YTAbjl602+ahYZvB3za6e
+	btmD2WhEpsL8qnyxktSlNzpAuva/VOitpsmZ4cA2nk7t6DQOCtrg1rr1ObBnWNAsUK+OSwKZGsJA8
+	TVu5G5jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEk8o-00000005bPI-3e5R;
-	Fri, 31 Oct 2025 08:05:46 +0000
-Received: from mout.web.de ([217.72.192.78])
+	id 1vFUie-00000008RlP-204D;
+	Sun, 02 Nov 2025 09:49:52 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vEk8l-00000005bOJ-30sC
+	id 1vFUib-00000008Rl1-49nJ
 	for linux-um@lists.infradead.org;
-	Fri, 31 Oct 2025 08:05:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1761897923; x=1762502723; i=markus.elfring@web.de;
-	bh=Z7mI9BcntzgVUKh5moz36lXrwspXfS+6u2bbjA0rfUU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
-	 Subject:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=HGEn4YaIDnarXowZdr43jslkkDhFK0nRNLJAaLSUTbDTcl22wFqgDkb+BexzeNtf
-	 etJPNpkv/D56ak66R1jjKJzlqJtTlgNjC+DOUXcbLfeN3csN7f47g9de6vyIdgAJV
-	 z9FKLAEC9WA1XeKhAFeK8sEcY+zebUTIwZCt/CSBMze9htHuwMk+ozuOSPgkSOk8/
-	 hgTzFucF7kv3VCJZeaHMB4w/mW0dmu0rHeYxIs9gQ9D1DeSaqKNLlp30oLscUu2X1
-	 /yshFfHv+UQX2OQUVcb8jknHA6iswiNUNrV1ngSZvPMfOmJuiJMx5brVk27KYA/IB
-	 huuBcvLP17q6+ylGeQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.69.206]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MNfY9-1vdhua2Qzz-00Z92J; Fri, 31
- Oct 2025 09:05:23 +0100
-Message-ID: <3b2e9b4e-4186-4d05-836f-73e1203f34d7@web.de>
-Date: Fri, 31 Oct 2025 09:05:21 +0100
+	Sun, 02 Nov 2025 09:49:51 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-29558061c68so7681235ad.0
+        for <linux-um@lists.infradead.org>; Sun, 02 Nov 2025 01:49:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762076989; x=1762681789; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CTo/fO8AwTUlnERfKnS0Hq9g4pzw1jJNDet5wuDWHQk=;
+        b=msgGmTv3ieYfFNx2v1/V9jN8vacy27P60qzJrrPdKoUDdddbTZAalcE+IjY/C+RwL6
+         5n/Wcacq6OHPs71lDmHg+yGwXUrvCo4ajsPfzcvNzhGiTWqTcacbZZFacce3V4GEl38e
+         vYwQKFQjR5jLFrTOmFm0RveHwBSLT9cf28D483Nx7SKJisGsydZqkRwWDnh3Dq+ZoBB6
+         zRP/XcQzzxIOr/0akf7nHPOqkWgPvyA1xUPHhHtX11kqaJKdWCyYImFz1UFDZtohtEVN
+         r9l7lr/G948gH6C8HAHffDeKo5HaqsSwPoSDSFVwu1ADed2bcrDKOtkdwceiwQfkOFAu
+         yqYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762076989; x=1762681789;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CTo/fO8AwTUlnERfKnS0Hq9g4pzw1jJNDet5wuDWHQk=;
+        b=hrBZ+Z1bfqVratZCsFq99GsDAzEykajUzX/jdX5Z9FgJugTXwWOg5RpL2V+Yfd0wEM
+         qgQX2ZSVG9sGWfzs1/XdmfbfZUfixSFVUHRYf+fNa1Ip0jw1cxcJZRx/0Dp1L7BbKBOb
+         QRUdszT8XR9graPVSnJqRf07u+y7inaToqqhKrvz9NDHz3w8uU2jXwl+D26iGHQsPRt7
+         ADhDgGlX+XT+Myb+oynBdnQt4IdAjYojx1hYwO6SMzxaLMbhSNFgTGFE+hQKhiSgcMLv
+         w3s/8Ep/tEvq/iRf/Vl/Q2mnSgrQAI6zGYyxchD1wDq5PR7VsSQazLzBONyjDIM4O3s1
+         qTpw==
+X-Gm-Message-State: AOJu0Yz0TfEwA0VgpKpB+ZtN8eH42b9SLg+uyGCUF5NCCO0snnO8D56v
+	cn2kN0Gbqrwp69QmLhVcvK3mn6gK8AJJml2kCr2kTreJZ+dyet7yL3b/
+X-Gm-Gg: ASbGncvAiJ37f687AQ6gLBp0EoiaUBXnwrRSvHGeb1CUwT06dYE/A9Dg5IiW6yLmyDK
+	sVvS4JR4lg0bZB98R+JYEQvMLqKPkiWWu18qkjkWcAWs4emxnoGrJfPAIvH0wnhszkIzgkDLpJZ
+	PukJoM1evvcUKMHvqNlj/XrJGYCRFs2Tf0bzW8IpPyw2C8aoMObrV/8bhqlsmy8wnqKslYgnNv5
+	3gGkd4L8bxHmytp0t7Ewhk3kfYQnhE7tVq0F5TZ0ekPI0/jMBb809zoVAdsbR8HWW5UYFCy5+4Z
+	/MOVZ7KOnFc55CbMYEX+2ghYcfeFdhCXHvk+Y2WeH67lM8RF7/z4Dbne6Pnkuhmqc8JUrYFl0CB
+	PNOSLelGqbLx5WADUnMB5+C6gkToInh6L0Mgkfdt9u54CtV0KFVNJS4IettrZLSb9Dg0OwSGUVr
+	hYLU3tcT23eaXJ8XyPKZQpobAE3qIKYPHVpxwtmmWVi+eKmA==
+X-Google-Smtp-Source: AGHT+IG5uEZuIhw9XthpVR/gauM2QFGD0azbjoJ+g93MQt9Wwqr6xtlh/sIZ+JQcm6X627sSMbAf5A==
+X-Received: by 2002:a17:903:41c7:b0:295:62d:4ffa with SMTP id d9443c01a7336-2951a3b12dfmr134893555ad.21.1762076988895;
+        Sun, 02 Nov 2025 01:49:48 -0800 (PST)
+Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b9b8f2b5403sm812430a12.17.2025.11.02.01.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Nov 2025 01:49:48 -0800 (PST)
+Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
+	id 0F85011237FC; Sun,  2 Nov 2025 18:49:41 +0900 (JST)
+From: Hajime Tazaki <thehajime@gmail.com>
+To: linux-um@lists.infradead.org
+Cc: thehajime@gmail.com,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v12 00/13] nommu UML
+Date: Sun,  2 Nov 2025 18:49:25 +0900
+Message-ID: <cover.1762075876.git.thehajime@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-um@lists.infradead.org,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Richard Weinberger <richard@nod.at>, Tiwei Bie <tiwei.btw@antgroup.com>
-Content-Language: en-GB, de-DE
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- Miaoqian Lin <linmq006@gmail.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] um: virtio-pci: Use pointer from memcpy() call for assignment
- in virtio_pcidev_send_cmd()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XiZ0b6wjUlYkMlDZm4mhQWGgStcS3cU0YyKIoXpLBWUuNWQJNt5
- v0wuNb1CuDsB9UhqoCh0GJE/Y3TveiLweGTv+h4w/pLvhRSXfPiQZbWXOZa7Q5CFtKUE/lI
- 4Bi3mbU2JJl4y+gPPnJdLGxx/FFAycPLX+sFgxi5iEsVz5BK+TsGQRrlrmGbrcpJ1ljYqoY
- YvOm01cU3M1cc7enqoEGQ==
-UI-OutboundReport: notjunk:1;M01:P0:xaK+7SCO+TI=;dYn16fC/0PcSdUwZnqz8nRZzdiz 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 wbB3OUEb9micYskNY=
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251031_010544_044523_6CB6879F 
-X-CRM114-Status: UNSURE (   8.59  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251102_014950_038773_79BBE96F 
+X-CRM114-Status: GOOD (  21.32  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,39 +99,187 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 31 Oct 2025 08:58:22 +0100
+This patchset is another spin of nommu mode addition to UML.  It would
+be nice to hear about your opinions on that.
 
-A pointer was assigned to a variable. The same pointer was used for
-the destination parameter of a memcpy() call.
-This function is documented in the way that the same value is returned.
-Thus convert two separate statements into a direct variable assignment for
-the return value from a memory copy action.
+There are still several limitations/issues which we already found;
+here is the list of those issues.
 
-The source code was transformed by using the Coccinelle software.
+- memory mapped by loadable modules are not distinguished from
+  userspace memory.
+- CONFIG_SMP is disabled as host_fs handling doesn't work with thread
+  local storage.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- arch/um/drivers/virtio_pcidev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+-- Hajime
 
-diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcid=
-ev.c
-index f9b4b6f7582c..33f6889cce7b 100644
-=2D-- a/arch/um/drivers/virtio_pcidev.c
-+++ b/arch/um/drivers/virtio_pcidev.c
-@@ -125,8 +125,7 @@ static int virtio_pcidev_send_cmd(struct virtio_pcidev=
-_device *dev,
- 		     out && out_size <=3D sizeof(buf->data);
-=20
- 	buf_idx =3D virtio_pcidev_get_buf(dev, &posted);
--	buf =3D &dev->bufs[buf_idx];
--	memcpy(buf, cmd, cmd_size);
-+	buf =3D memcpy(&dev->bufs[buf_idx], cmd, cmd_size);
-=20
- 	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
- 		dev->extra_ptrs[buf_idx] =3D kmemdup(extra, extra_size,
-=2D-=20
-2.51.1
+v12:
+- rebase with the latest uml/next branch
+- disable SMP and tls as those doesn't work with host_fs handling ([11/13])
+
+v11:
+- clean up userspace return routine and integrate to userspace() ([04/13])
+- fix direction flag issue on using nolibc memcpy ([04/13])
+- fix a crash issue when using usermode helper ([06/13])
+- test with out-of-tree kunit-uapi patches (which uses umh)
+ - https://lore.kernel.org/all/20250626-kunit-kselftests-v4-0-48760534fef5@linutronix.de/
+ - https://lore.kernel.org/all/20250626195714.2123694-3-benjamin@sipsolutions.net/
+- https://lore.kernel.org/all/cover.1758181109.git.thehajime@gmail.com/
+
+v10:
+- fix wrong comment on gs register handling ([09/13])
+- remove unnecessary code of early syscall implementation ([04/13])
+- https://lore.kernel.org/all/cover.1750594487.git.thehajime@gmail.com/
+
+v9:
+- rebase with the latest uml/next branch
+- add performance numbers of new SECCOMP mode, and update results ([12/13])
+- add a workaround for upstream change on MMU depedency to PCI drivers ([10/13])
+- https://lore.kernel.org/all/cover.1750294482.git.thehajime@gmail.com/
+
+v8:
+- rebase with the latest uml/next branch
+- clean up segv_handler to align with the latest uml ([9/12])
+- https://lore.kernel.org/all/cover.1745980082.git.thehajime@gmail.com/
+
+v7:
+- properly handle FP register upon signal delivery [10/13]
+- update benchmark result with new FP register handling [12/13]
+- fix arch_has_single_step() for !MMU case [07/13]
+- revert stack alignment as it is in uml/fixes tree [10/13]
+- https://lore.kernel.org/all/cover.1737348399.git.thehajime@gmail.com/
+
+v6:
+- rebase to the latest uml/next tree
+- more clean up on mmu/nommu for signal handling [10/13]
+- rename functions of mcontext routines [06,10/13]
+- added Acked-by tag for binfmt_elf_fdpic [02/13]
+- https://lore.kernel.org/linux-um/cover.1736853925.git.thehajime@gmail.com/
+
+v5:
+- clean up stack manipulation code [05,06,07,10/13]
+- https://lore.kernel.org/linux-um/cover.1733998168.git.thehajime@gmail.com/
+
+v4:
+- add arch/um/nommu, arch/x86/um/nommu to contain !MMU specific codes
+- remove zpoline patch
+- drop binfmt_elf_fdpic patch
+- reduce ifndef CONFIG_MMU if possible
+- split to elf header cleanup patch [01/13]
+- fix kernel test robot warnings [06/13]
+- fix coding styles [07/13]
+- move task_top_of_stack definition [05/13]
+- https://lore.kernel.org/linux-um/cover.1733652929.git.thehajime@gmail.com/
+
+v3:
+- https://lore.kernel.org/linux-um/cover.1733199769.git.thehajime@gmail.com/
+- add seccomp-based syscall hook in addition to zpoline [06/13]
+- remove RFC, add a line to MAINTAINERS file
+- fix kernel test robot warnings [02/13,08/13,10/13]
+- add base-commit tag to cover letter
+- pull the latest uml/next
+- clean up SIGSEGV handling [10/13]
+- detect fsgsbase availability with elf aux vector [08/13]
+- simplify vdso code with macros [09/13]
+
+RFC v2:
+- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
+- base branch is now uml/linux.git instead of torvalds/linux.git.
+- reorganize the patch series to clean up
+- fixed various coding styles issues
+- clean up exec code path [07/13]
+- fixed the crash/SIGSEGV case on userspace programs [10/13]
+- add seccomp filter to limit syscall caller address [06/13]
+- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
+- removes unrelated changes
+- removes unneeded ifndef CONFIG_MMU
+- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
+- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
+  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
+
+RFC:
+- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
+
+Hajime Tazaki (13):
+  x86/um: nommu: elf loader for fdpic
+  um: decouple MMU specific code from the common part
+  um: nommu: memory handling
+  x86/um: nommu: syscall handling
+  um: nommu: seccomp syscalls hook
+  x86/um: nommu: process/thread handling
+  um: nommu: configure fs register on host syscall invocation
+  x86/um/vdso: nommu: vdso memory update
+  x86/um: nommu: signal handling
+  um: change machine name for uname output
+  um: nommu: disable SMP on nommu UML
+  um: nommu: add documentation of nommu UML
+  um: nommu: plug nommu code into build system
+
+ Documentation/virt/uml/nommu-uml.rst   | 180 ++++++++++++++++++++++
+ MAINTAINERS                            |   1 +
+ arch/um/Kconfig                        |  14 +-
+ arch/um/Makefile                       |  10 ++
+ arch/um/configs/x86_64_nommu_defconfig |  54 +++++++
+ arch/um/include/asm/futex.h            |   4 +
+ arch/um/include/asm/mmu.h              |   8 +
+ arch/um/include/asm/mmu_context.h      |   2 +
+ arch/um/include/asm/ptrace-generic.h   |   8 +-
+ arch/um/include/asm/uaccess.h          |   7 +-
+ arch/um/include/shared/kern_util.h     |   6 +
+ arch/um/include/shared/os.h            |  16 ++
+ arch/um/kernel/Makefile                |   5 +-
+ arch/um/kernel/mem-pgtable.c           |  55 +++++++
+ arch/um/kernel/mem.c                   |  38 +----
+ arch/um/kernel/process.c               |  38 +++++
+ arch/um/kernel/skas/process.c          |  37 -----
+ arch/um/kernel/um_arch.c               |   3 +
+ arch/um/nommu/Makefile                 |   3 +
+ arch/um/nommu/os-Linux/Makefile        |   7 +
+ arch/um/nommu/os-Linux/seccomp.c       |  87 +++++++++++
+ arch/um/nommu/os-Linux/signal.c        |  24 +++
+ arch/um/nommu/trap.c                   | 201 +++++++++++++++++++++++++
+ arch/um/os-Linux/Makefile              |   3 +-
+ arch/um/os-Linux/internal.h            |   8 +
+ arch/um/os-Linux/mem.c                 |   4 +
+ arch/um/os-Linux/process.c             | 139 ++++++++++++++++-
+ arch/um/os-Linux/signal.c              |  11 +-
+ arch/um/os-Linux/skas/process.c        | 127 ----------------
+ arch/um/os-Linux/start_up.c            |  25 ++-
+ arch/um/os-Linux/util.c                |   3 +-
+ arch/x86/um/Kconfig                    |   2 +-
+ arch/x86/um/Makefile                   |   7 +-
+ arch/x86/um/asm/elf.h                  |   8 +-
+ arch/x86/um/asm/syscall.h              |   6 +
+ arch/x86/um/nommu/Makefile             |   8 +
+ arch/x86/um/nommu/do_syscall_64.c      |  75 +++++++++
+ arch/x86/um/nommu/entry_64.S           | 114 ++++++++++++++
+ arch/x86/um/nommu/os-Linux/Makefile    |   6 +
+ arch/x86/um/nommu/os-Linux/mcontext.c  |  26 ++++
+ arch/x86/um/nommu/syscalls.h           |  18 +++
+ arch/x86/um/nommu/syscalls_64.c        | 121 +++++++++++++++
+ arch/x86/um/shared/sysdep/mcontext.h   |   5 +
+ arch/x86/um/shared/sysdep/ptrace.h     |   2 +-
+ arch/x86/um/vdso/vma.c                 |  17 ++-
+ fs/Kconfig.binfmt                      |   2 +-
+ 46 files changed, 1322 insertions(+), 223 deletions(-)
+ create mode 100644 Documentation/virt/uml/nommu-uml.rst
+ create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+ create mode 100644 arch/um/kernel/mem-pgtable.c
+ create mode 100644 arch/um/nommu/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/seccomp.c
+ create mode 100644 arch/um/nommu/os-Linux/signal.c
+ create mode 100644 arch/um/nommu/trap.c
+ create mode 100644 arch/x86/um/nommu/Makefile
+ create mode 100644 arch/x86/um/nommu/do_syscall_64.c
+ create mode 100644 arch/x86/um/nommu/entry_64.S
+ create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
+ create mode 100644 arch/x86/um/nommu/syscalls.h
+ create mode 100644 arch/x86/um/nommu/syscalls_64.c
+
+
+base-commit: 8e03c195cc4d82100291500f772f85c686653748
+-- 
+2.43.0
 
 
