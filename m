@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF7DACCFA06
-	for <linux-um@archiver.kernel.org>; Sun,  2 Nov 2025 09:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C72CCFA04
+	for <linux-um@archiver.kernel.org>; Sun,  2 Nov 2025 09:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YfBGkCpdCJbbx8ptfVRSSTZ4TOwzXcv5IKpsCTLcAdg=; b=4+no2awxkHUm29TxuE58X+DmfI
-	gEbdL2NOlaj28ET8p4n++PTayIPWorjedjA3S1xDfT3BIC1L3lEFCTR/8qazlhJsol5zX8cA5BEo6
-	LsvUw219LSp4pWVhMXuXZQiwBIdJ5VLKsACl5NXE04qBBvc1ZDFmuWbdIPLn649bREauFRNY+67IL
-	egVg23tKJ63Ut4cR0yPj86Z9sdgFEZ8/NBAVUbJLo4VWJN51UDt9nWSZD+jVr+lUNHmqgr8GffKV8
-	L3ZHZcy204jJZd4ZQsiiZwb+3bH2mI3PczbIHCqJv2oUBtkSqf0CTOM5HsqkLuFFcoz0Xy/JJTJB6
-	5APV+Bzg==;
+	bh=Ph9zR1fvONGEfCwcooy4q6QCBsuZBG7EiBPZ3ZJSBIk=; b=PvX6ueBtT7U8j9ZzJkYFZulaDX
+	qxb2kkE0S6Ug8DgI+Jlo4UCoio/4eiL4/6j6DVYjI49cp4Q6chqhPfl5LuyHfTZe4svr5qcTMe7/f
+	lgXIOJGWntl4XNFMcuk2F2PDt/HYWqNCZ1Atfs6j6VuTV2BZKnKR2xyUAVBzUeJQ/cij3S+x64x9O
+	lXt3vNtwY0y7ua+y/+/mbFsd3Ekpj9BDccASg47CsTYnz+lRasWj3dbnJZJp829T/v8PpZY59dhcr
+	HmNyZMKZrS0c5R1ksmK+1QLKZtR3M96VM5/PhOwM/tkuvk65i5WGze+FfQsltfUazSBrDS9+AQ73G
+	oNBBP7pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vFUit-00000008Rzq-0anc;
-	Sun, 02 Nov 2025 09:50:07 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1vFUiv-00000008S2Y-3OC6;
+	Sun, 02 Nov 2025 09:50:09 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vFUiq-00000008Rwp-44Co
+	id 1vFUis-00000008Rym-38gr
 	for linux-um@lists.infradead.org;
-	Sun, 02 Nov 2025 09:50:06 +0000
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-7a9c64dfa8aso457654b3a.3
-        for <linux-um@lists.infradead.org>; Sun, 02 Nov 2025 01:50:04 -0800 (PST)
+	Sun, 02 Nov 2025 09:50:08 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2952048eb88so31327695ad.0
+        for <linux-um@lists.infradead.org>; Sun, 02 Nov 2025 01:50:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762077004; x=1762681804; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1762077006; x=1762681806; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YfBGkCpdCJbbx8ptfVRSSTZ4TOwzXcv5IKpsCTLcAdg=;
-        b=Q3JVE9SkerjbtUChcmDfaphk3qpjbJfQxd6kc7mrWROg1yogEk7AUauGROip0EpzjC
-         A8rjNbQSlR3Cd1Nx+ANJ0x65ProwgT7UArtRW6P6TXxJ5Q8b0Vu/kxmpvRIC63u1N+9A
-         EZyH+hzdBMFPIQ90Ex0Eytk4kjZ7+xVS4O9WstlwAxh3/iyx6bjT+/N6jqRDzKUX5lyo
-         gBUE62kMdr2xYZRHKiv4vJSEuIfQNX2qtK4QUiTHGXK5MmbTYGJ64O0HjR/pYIgxvybA
-         usywdsNdrcP+jSDixopx7MiMIVBQpRSG+iRaEzV7tGKyv4XKVF9M98uieyTQr4eAIftU
-         DT0g==
+        bh=Ph9zR1fvONGEfCwcooy4q6QCBsuZBG7EiBPZ3ZJSBIk=;
+        b=JSM7Q1g7jgkvRecZceKdwKsrD9h5OEzunXGs34XOmYmjHsREMfx6+z0HHoSCuCd0T7
+         1VQOMTap88OPsD7uoiK8W5T+XaEZHL9abLacsy4q2W3vQvWqq6U6vmZGRf9jnoAZhe0o
+         An96cQ48XqiuakC6rVcuoMs44U7jdrawJyL7xHwbsIXc+rgRVubUHiT6NAWbrnMQpqj7
+         Uunp0J5tmRcq2j+sUdkPELo9TxrQ6DxnIy5ozc4t7iSXAdVVkz3oib7kWWyymW1NwsoB
+         lSGvwHIu/4/D15VTrHA6BiwYRAi3Y0AqZ8+R9ALxmlxFN85TM1qnHtJCiP7QpFrgH+KD
+         h++A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762077004; x=1762681804;
+        d=1e100.net; s=20230601; t=1762077006; x=1762681806;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YfBGkCpdCJbbx8ptfVRSSTZ4TOwzXcv5IKpsCTLcAdg=;
-        b=Fkk/FqGz3T7yvtadXX1xqPJdFDW0lBtK9t1Jzt9HEOy7qx2X8ZVGOAj8ZAU7K+YLUv
-         IK59D0hR/ueM8mx+VV4wGecFimXf1wvMW/0Hg/rEe8b8MtEeZ8HRpz1GAgjWCFC3K9ZF
-         T3wQkJox493TU82BuKyWRhaZOETeBwS7YBOyV5/6vWsoZ+EOrdNqqYd9d7Su8olmq8l1
-         HxuUFAwIkcEQeprtaaT5R9/+z8/l+Bsn5Tw3yA+3/QDjpia82CG7H/DrIwwXu/CE6A8B
-         zBejuKP/w7zrg541J+FX/Sr85oq3mq6+zFuoEcmfd79iY+o1xDcpNm+LvgFze21IMtRA
-         9UXQ==
-X-Gm-Message-State: AOJu0YzqPZKYMzzXC5UV51cHRuZsVBLixnGbjEKseY6eDFMiNsHIYY9l
-	gomIjOU77aIjjZ51CPJrFEfQM/nddXds0O/4omZkexFe96T1yCcQOPgK
-X-Gm-Gg: ASbGncv1NnsMl2KN6Wfviu4OnpDLpQxok1g4WxPy1/P5EGt0XD+ZpDcVpdmRFbsmqHR
-	W7Hu68foTFuK1YCtwS7jCbjK6ZVHFFiGD88fwqQ+hQN5tAMQeVZ7qhMqiMO/a3iVK6o4CUEKbrU
-	bMjVVR1QJVNUrTCvh7vLSRtidOv7cTSzSKUzafxVCjSP9WwevGdFyC0f/H+drtMpgaVqT8FhGDP
-	wA0vNkbF8xf5lfaDFsc7ZdK709YQ6KDRYO9tgAXMvigKFxzc6p2dl1H6gDv0nK+sS30WPC+/2W4
-	MGc0Tl/SCesc4SnVnrhQxaj+p59+A18mVEDCHwIyRBzGKbMbFjJY1l73YTIIT3ECeQSuXz0Qd22
-	fi/iNsBOKugNs9IROKPl0qZr2DGl8fTrqp2+J/cRDkv1YK7uE3IBm3Vps/Q7mZszXRB8iyV+wCP
-	yPjupJH4AgJTIn0dNiL3t4EYt38tY2K/SEt2tdQ/FY/4SE05RUO46HlVef
-X-Google-Smtp-Source: AGHT+IEDhV7V1q+X2A4WeUCbo0ZHZo62KKRfx9fdau0q/StwiLJYD/4G+s6ryRCgEgHJrpTQR06FxQ==
-X-Received: by 2002:a05:6a00:2d1d:b0:7aa:8397:7754 with SMTP id d2e1a72fcca58-7aa83978122mr1186234b3a.2.1762077004150;
-        Sun, 02 Nov 2025 01:50:04 -0800 (PST)
+        bh=Ph9zR1fvONGEfCwcooy4q6QCBsuZBG7EiBPZ3ZJSBIk=;
+        b=dSpWL9hib2Q39icmlM1RlIXl43e3eWKym0rDXb8HMtlSnjY50vz90EdYQ48HSLvhKc
+         0AH4qiUcS5ouov59CXJAugPsyPnEuE9Oo2jbjArxDW6X3Hhj30gBW9WRc2v0iMi/KBYW
+         Vt4LdSy9KOHc5PaI6VEJEaP+WYLEoSBVIFQSujgKpZfOjT8igaMO0J+egV/haKZ3zmZ7
+         t/5BEYYl9Jq6pSHb5L3XoPMlMzVasWv0YXRVGllcp6ZM1pU7v6rzsCCjTc/6hmrIYpN/
+         HM6MD4UQ5SMy8HO5aqIto/6Z6lAahFVmG3jR/6gHm2XpJNGTkM0tqjvm/VmMkdMhACjF
+         ml9w==
+X-Gm-Message-State: AOJu0Yzv7l1A4nuyHFSpMCef6FQOSJexWXy+tnyK3v3lLDn5CUS+xxho
+	2kaSZA6XikWFEGG5OjWaPPGoMVEjuwgHBp1YlKDRkbTHZKiQxQupjXj3DwsgCg==
+X-Gm-Gg: ASbGncuSvs/sqXNqH3WG64ekXP5ioze9UKyVW2OLgw8s9z1v0kxIzT8OqBZkjFRNbDc
+	DIn6EQsYq8OI91sMJakj+kYBi/mlHH2p0n1ldUha+XatVy7bwCfPTiq1XrPCSL/6/sCRNlyinXP
+	g1QAknC0lPBV/bzEKv2RuPU5utRQsqEjpWQYIXAnJfFmrzVt/c3qIVTug6t4I8kp4ZaZZOtJWTp
+	kHrzfWyT/rnEJKpSGkzwGa2b2Kp3stRiVXfbfWWl8IHtoHdwP+vFQWk+dnplrbtFBwALD5AF7Dx
+	v5edHNnV4g+jyDOJebGkJ6B4RB9OnL5fjswTAfECciNsIuFRwrcIyh+nfbPLTuv1mH6ylhbuZqV
+	cSKSpL3tv/SyMUtDDPnR+3nBRDG9XLDuKh+4M7nkexZt8MniR7TP3UJklJwwHGxuFe0k3RsO7YS
+	LwYzjuxumVuLVtJpBc5qh7EJ0aFYrwDIX+BXMS2We/qfr3HCUCbv1HQtprl91CmY/oEek=
+X-Google-Smtp-Source: AGHT+IHUuWG7Ov5kBT/yNTPJH3xuxkjK4iSTaaCg1YaGK1t1FQzTnk7AwddqLgQ2HelyS4KrdoJ2gA==
+X-Received: by 2002:a17:903:2285:b0:290:2a14:2ed5 with SMTP id d9443c01a7336-2951a390655mr107666405ad.4.1762077006004;
+        Sun, 02 Nov 2025 01:50:06 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7aa76782f1esm1243225b3a.67.2025.11.02.01.49.59
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2958dd23059sm18342285ad.47.2025.11.02.01.50.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Nov 2025 01:50:00 -0800 (PST)
+        Sun, 02 Nov 2025 01:50:04 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id E59851123813; Sun,  2 Nov 2025 18:49:57 +0900 (JST)
+	id B73931123817; Sun,  2 Nov 2025 18:50:00 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v12 11/13] um: nommu: disable SMP on nommu UML
-Date: Sun,  2 Nov 2025 18:49:36 +0900
-Message-ID: <54839396f81bc2755728a53912bd8fcb19b889a1.1762075876.git.thehajime@gmail.com>
+Subject: [PATCH v12 13/13] um: nommu: plug nommu code into build system
+Date: Sun,  2 Nov 2025 18:49:38 +0900
+Message-ID: <efea26f968ad9049116cee46fb55f450df50033d.1762075876.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1762075876.git.thehajime@gmail.com>
 References: <cover.1762075876.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251102_015005_006115_998EB500 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20251102_015006_794527_FCB6A8D8 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,50 +102,118 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-CONFIG_SMP doesn't work with nommu UML since fs register handling of
-host does conflict with thread local storage (more specifically,
-the variable signals_enabled).
-
-Thus this commit disables the CONFIG option and the TLS variables.
+Add nommu kernel for um build.  defconfig is also provided.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/os-Linux/internal.h | 8 ++++++++
- arch/x86/um/Kconfig         | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ arch/um/Kconfig                        | 14 ++++++-
+ arch/um/configs/x86_64_nommu_defconfig | 54 ++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+ create mode 100644 arch/um/configs/x86_64_nommu_defconfig
 
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-index bac9fcc8c14c..25cb5cc931c1 100644
---- a/arch/um/os-Linux/internal.h
-+++ b/arch/um/os-Linux/internal.h
-@@ -6,6 +6,14 @@
- #include <stub-data.h>
- #include <signal.h>
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 097c6a6265ef..4907fd2db512 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -34,16 +34,19 @@ config UML
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select TRACE_IRQFLAGS_SUPPORT
+ 	select TTY # Needed for line.c
+-	select HAVE_ARCH_VMAP_STACK
++	select HAVE_ARCH_VMAP_STACK if MMU
+ 	select HAVE_RUST
+ 	select ARCH_HAS_UBSAN
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select THREAD_INFO_IN_TASK
+ 	select SPARSE_IRQ
++	select UACCESS_MEMCPY if !MMU
++	select GENERIC_STRNLEN_USER if !MMU
++	select GENERIC_STRNCPY_FROM_USER if !MMU
  
-+/* NOMMU doesn't work with thread-local storage used in CONFIG_SMP,
-+ * due to the dependency on host_fs variable switch upon user/kernel
-+ * context so, disable TLS until NOMMU supports SMP.
-+ */
-+#ifndef CONFIG_MMU
-+#define __thread
-+#endif
+ config MMU
+-	bool
++	bool "MMU-based Paged Memory Management Support" if 64BIT
+ 	default y
+ 
+ config UML_DMA_EMULATION
+@@ -225,8 +228,15 @@ config MAGIC_SYSRQ
+ 	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
+ 	  unless you really know what this hack does.
+ 
++config ARCH_FORCE_MAX_ORDER
++	int "Order of maximal physically contiguous allocations" if EXPERT
++	default "10" if MMU
++	default "16" if !MMU
 +
- /*
-  * elf_aux.c
-  */
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index c52fb5cb8d21..2bc18ecad783 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -13,7 +13,7 @@ config UML_X86
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select DCACHE_WORD_ACCESS
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
--	select UML_SUBARCH_SUPPORTS_SMP if X86_CX8
-+	select UML_SUBARCH_SUPPORTS_SMP if X86_CX8 && MMU
- 
- config 64BIT
- 	bool "64-bit kernel" if "$(SUBARCH)" = "x86"
+ config KERNEL_STACK_ORDER
+ 	int "Kernel stack size order"
++	default 3 if !MMU
++	range 3 10 if !MMU
+ 	default 2 if 64BIT
+ 	range 2 10 if 64BIT
+ 	default 1 if !64BIT
+diff --git a/arch/um/configs/x86_64_nommu_defconfig b/arch/um/configs/x86_64_nommu_defconfig
+new file mode 100644
+index 000000000000..02cb87091c9f
+--- /dev/null
++++ b/arch/um/configs/x86_64_nommu_defconfig
+@@ -0,0 +1,54 @@
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BSD_PROCESS_ACCT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_LOG_BUF_SHIFT=14
++CONFIG_CGROUPS=y
++CONFIG_BLK_CGROUP=y
++CONFIG_CGROUP_SCHED=y
++CONFIG_CGROUP_DEVICE=y
++CONFIG_CGROUP_CPUACCT=y
++# CONFIG_PID_NS is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++# CONFIG_MMU is not set
++CONFIG_HOSTFS=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_SSL=y
++CONFIG_NULL_CHAN=y
++CONFIG_PORT_CHAN=y
++CONFIG_PTY_CHAN=y
++CONFIG_TTY_CHAN=y
++CONFIG_CON_CHAN="pts"
++CONFIG_SSL_CHAN="pts"
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++CONFIG_IOSCHED_BFQ=m
++CONFIG_BINFMT_MISC=m
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_BLK_DEV_UBD=y
++CONFIG_BLK_DEV_LOOP=m
++CONFIG_BLK_DEV_NBD=m
++CONFIG_DUMMY=m
++CONFIG_TUN=m
++CONFIG_PPP=m
++CONFIG_SLIP=m
++CONFIG_LEGACY_PTY_COUNT=32
++CONFIG_UML_RANDOM=y
++CONFIG_EXT4_FS=y
++CONFIG_QUOTA=y
++CONFIG_AUTOFS_FS=m
++CONFIG_ISO9660_FS=m
++CONFIG_JOLIET=y
++CONFIG_NLS=y
++CONFIG_DEBUG_KERNEL=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_FRAME_WARN=1024
++CONFIG_IPV6=y
 -- 
 2.43.0
 
