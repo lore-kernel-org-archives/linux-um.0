@@ -4,103 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C7CCCFA18
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17900CCFA13
+	for <linux-um@archiver.kernel.org>; Mon, 10 Nov 2025 09:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ikD2kzN+q0cZ+A+hpvPS0b6qB0klIxQK1wnjtsaF4E4=; b=pflFubdtMcuHE72Vojybh/vA2S
-	vX91i+9G/4PaHq8X1LM5OveeL72W4G9H4cM7K7kYj3fzr8wbpslR6v80OSvOQ3dpx5xEn/zXS39Bv
-	+pZFvo39Hnc/7mH8h1Nq4X6GW7jbBMsIQmzWb1mi7irJtZIP2Yac4N53DisMHH6oKvquyygza7Vkd
-	VtqkVYdM67izb0U+lP7Y6idoCXas/xpVpTpGm/Ql0tUuRozgakmRDwpW8an2k9nHAIplh2IVepx+l
-	K65XbfhRR2gcpX6mGrm8mrt9VFcnBlaJHWEjFuBhXnv8Nknss6VfBBmUuzje7TROv2CWpvENXZQzP
-	Pg6xlNxQ==;
+	bh=LtzNxvFuujSl2ZQUousbc8JpVz3Ej2RbTQDavZlkAtM=; b=eQ66EstatSQJPbzMa1LAQ7kTlz
+	HAnif/sw5X5JlmNX0sbRPVrqiEQwBYfg95mgh9hS225dB/aFIDGtVLDgUI25zCmYwG4gn0qhzCgCn
+	tN5t0XH8yni/jTUVkkNe4ATZGhX2Q+I+0AJf8aZ6fXGiIDG3zAw3BUepydDeR7eO1NL4bZ8z9FuCc
+	ZdsUQh+thsywe6JIi6jORwgRdJi/7u+eNRtNACxRnNeMu6n5s0JxanxDLcE+19r6vo3a30YadeaXJ
+	19wE3HNuZChGMuhj7h3nZFwD67pftUwwpHXiRC/8Vr00koDcFvc3/HCvYMCNGHcOFnk2+DU1VqEwt
+	wP41PgGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlrP-00000003HHR-3ZDS;
-	Sat, 08 Nov 2025 16:32:19 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vASgC-0000000B0Jq-2eEQ;
-	Sun, 19 Oct 2025 12:38:33 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 408344079E;
-	Sun, 19 Oct 2025 12:38:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2363C4CEE7;
-	Sun, 19 Oct 2025 12:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760877510;
-	bh=oGwiDB09ge0ciPiwd9WRh3Y/M8CeD9dHfclvYoY7FBA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nPSmMhj3TEXZoJrVWpARUkUyuGqk5lSFTPPoq1ZLeK3fCa9fne3RGlMO8KN1UE5lj
-	 ujRuOzzKq00FxR8F6wzbmtZQ/5O3ZNw8lG3lB3NfHxm+YwEDzwS2JsXmf0Ca6p4Frl
-	 ca5FOfnjYZ+gRAebgpsYtYTlOl8nww3/qAlyQSN0=
-Date: Sun, 19 Oct 2025 14:38:26 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Eliav Farber <farbere@amazon.com>, stable@vger.kernel.org,
-	linux@armlinux.org.uk, jdike@addtoit.com, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, dave.hansen@linux.intel.com,
-	luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	tony.luck@intel.com, qiuxu.zhuo@intel.com, mchehab@kernel.org,
-	james.morse@arm.com, rric@kernel.org, harry.wentland@amd.com,
-	sunpeng.li@amd.com, alexander.deucher@amd.com,
-	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-	evan.quan@amd.com, james.qian.wang@arm.com, liviu.dudau@arm.com,
-	mihail.atanassov@arm.com, brian.starkey@arm.com,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, robdclark@gmail.com, sean@poorly.run,
-	jdelvare@suse.com, linux@roeck-us.net, fery@cypress.com,
-	dmitry.torokhov@gmail.com, agk@redhat.com, snitzer@redhat.com,
-	dm-devel@redhat.com, rajur@chelsio.com, davem@davemloft.net,
-	kuba@kernel.org, peppe.cavallaro@st.com, alexandre.torgue@st.com,
-	joabreu@synopsys.com, mcoquelin.stm32@gmail.com, malattia@linux.it,
-	hdegoede@redhat.com, mgross@linux.intel.com,
-	intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	sakari.ailus@linux.intel.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, xiang@kernel.org, chao@kernel.org, jack@suse.com,
-	tytso@mit.edu, adilger.kernel@dilger.ca, dushistov@mail.ru,
-	luc.vanoostenryck@gmail.com, rostedt@goodmis.org, pmladek@suse.com,
-	sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-	linux@rasmusvillemoes.dk, minchan@kernel.org, ngupta@vflare.org,
-	akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
-	yoshfuji@linux-ipv6.org, pablo@netfilter.org, kadlec@netfilter.org,
-	fw@strlen.de, jmaloy@redhat.com, ying.xue@windriver.com,
-	willy@infradead.org, sashal@kernel.org, ruanjinjie@huawei.com,
-	David.Laight@aculab.com, herve.codina@bootlin.com, Jason@zx2c4.com,
-	keescook@chromium.org, kbusch@kernel.org, bvanassche@acm.org,
-	ndesaulniers@google.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-edac@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-mm@kvack.org,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	tipc-discussion@lists.sourceforge.net
-Subject: Re: [PATCH v2 00/27 5.10.y] Backport minmax.h updates from v6.17-rc7
-Message-ID: <2025101905-matter-freezable-39e5@gregkh>
-References: <20251017090519.46992-1-farbere@amazon.com>
- <2025101704-rumble-chatroom-60b5@gregkh>
- <20251017160924.GA2728735@ax162>
+	id 1vINyl-000000054Ga-2srg;
+	Mon, 10 Nov 2025 09:14:27 +0000
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vINyk-000000054Fz-0GDE;
+	Mon, 10 Nov 2025 09:14:26 +0000
+Date: Mon, 10 Nov 2025 01:14:26 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, ricarkol@google.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 00/13] nommu UML
+Message-ID: <aRGs8lPjH22NqMZc@infradead.org>
+References: <cover.1762588860.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251017160924.GA2728735@ax162>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251019_053832_703552_B3558A05 
-X-CRM114-Status: GOOD (  18.71  )
-X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
+In-Reply-To: <cover.1762588860.git.thehajime@gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,71 +51,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 17, 2025 at 05:09:24PM +0100, Nathan Chancellor wrote:
-> On Fri, Oct 17, 2025 at 05:03:02PM +0200, Greg KH wrote:
-> > On Fri, Oct 17, 2025 at 09:04:52AM +0000, Eliav Farber wrote:
-> > > This series backports 27 patches to update minmax.h in the 5.10.y
-> > > branch, aligning it with v6.17-rc7.
-> > > 
-> > > The ultimate goal is to synchronize all long-term branches so that they
-> > > include the full set of minmax.h changes.
-> > > 
-> > > - 6.12.y has already been backported; the changes are included in
-> > >   v6.12.49.
-> > > - 6.6.y has already been backported; the changes are included in
-> > >   v6.6.109.
-> > > - 6.1.y has already been backported; the changes are currently in the
-> > >   6.1-stable tree.
-> > > - 5.15.y has already been backported; the changes are currently in the
-> > >   5.15-stable tree.
-> > 
-> > With this series applied, on an arm64 server, building 'allmodconfig', I
-> > get the following build error.
-> > 
-> > Oddly I don't see it on my x86 server, perhaps due to different compiler
-> > versions?
-> > 
-> > Any ideas?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > ------------------------
-> > 
-> > In function ‘rt2800_txpower_to_dev’,
-> >     inlined from ‘rt2800_config_channel’ at ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4022:25:
-> > ./../include/linux/compiler_types.h:309:45: error: call to ‘__compiletime_assert_1168’ declared with attribute error: clamp() low limit -7 greater than high limit 15
-> >   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> >       |                                             ^
-> > ./../include/linux/compiler_types.h:290:25: note: in definition of macro ‘__compiletime_assert’
-> >   290 |                         prefix ## suffix();                             \
-> >       |                         ^~~~~~
-> > ./../include/linux/compiler_types.h:309:9: note: in expansion of macro ‘_compiletime_assert’
-> >   309 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> >       |         ^~~~~~~~~~~~~~~~~~~
-> > ../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-> >    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-> >       |                                     ^~~~~~~~~~~~~~~~~~
-> > ../include/linux/minmax.h:188:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-> >   188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
-> >       |         ^~~~~~~~~~~~~~~~
-> > ../include/linux/minmax.h:195:9: note: in expansion of macro ‘__clamp_once’
-> >   195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
-> >       |         ^~~~~~~~~~~~
-> > ../include/linux/minmax.h:218:36: note: in expansion of macro ‘__careful_clamp’
-> >   218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
-> >       |                                    ^~~~~~~~~~~~~~~
-> > ../drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3980:24: note: in expansion of macro ‘clamp_t’
-> >  3980 |                 return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
-> >       |                        ^~~~~~~
-> 
-> Missing commit 3bc753c06dd0 ("kbuild: treat char as always unsigned")?
+On Sat, Nov 08, 2025 at 05:05:35PM +0900, Hajime Tazaki wrote:
+> This patchset is another spin of nommu mode addition to UML.  It would
+> be nice to hear about your opinions on that.
 
-That's going to be messy to backport, it's not even in 6.1.y, so let's
-leave that alone if at all possible.
+I've not seen any explanation of the use case and/or benefits anywhere
+in this cover letter or the patches.  Without that it's usually pretty
+hard to get maintainers and reviewers excited.
 
-thanks,
-
-greg k-h
 
