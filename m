@@ -4,143 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3012CD4F39
-	for <linux-um@archiver.kernel.org>; Thu, 13 Nov 2025 02:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21685CD6E6C
+	for <linux-um@archiver.kernel.org>; Thu, 13 Nov 2025 14:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:
-	Content-Type:Subject:To:From:Message-ID:Reply-To:Cc:Content-Transfer-Encoding
-	:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=jPoO5xhn8epjlQj4FOSt+sQaXi9dauPXbPsed+H4jLs=; b=UaSFqcIh5zRqbGThYiF84engLt
-	064ZmO4zfvOi9loNawXy2cb4zCsSRFLQxSAO5jXf7LqfbVQBRfY5vJ8lx9P0oMM5YPFbvzjXCmtl8
-	H8x8SGyqac5eCuXahCHPcSzDmmtux5bAKC1faB3wfyJ4z/GBCWqH01r8eXvwAlmcYKdKxRznxVxHT
-	UtiufeYdICgHOEtso74jQ0bTL3CFsguqXBjHkvJq3Yo0Xxcjg8ggbQaB3LcZT/5rpVOfpZUTSV76H
-	CasVr3Bbw6azgwsJZbawQ7ADf2Vcl6bcY28brthMMb8IZ492eodJuA2LphEIdPd0Nh6no5lyjaqnY
-	eHjiXzkw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=C6ZlE/8wFoMWAmPveb7rTnuh4QFvGSZOBJ0lkY75WHA=; b=l8c6D2BQaOIHchwSGRgIOA94ci
+	0RC83ja+Go80GDmeuRoaPLM4ToihinsiVj+MKFv1QR8m/EQ0YC58+XNiYSNRwpyWpbMNcYus4Qgb/
+	vKLCQNSBIlSg2bYTzsvWuwIQXofIkPDJe6V1R5nmdQJ2inAQixzopfS6MwyRC1nyQe2hWRzmBqXQ8
+	fQ0RipODn0VDXZhh3U40vmPPQChV57cOBMm2XWDLDM4+veI6Obq+OzymJnVOkJlMmr60Ji/GjGOz7
+	fRewgsJV3GvrAO7MIlU3DoKk3p5pOHkhdWNF2Wm0IugCtdP/JQbarZzJNR1G0CjPlqukH19uG3XVE
+	Wbns6wfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJN1n-00000009ncS-2yff;
-	Thu, 13 Nov 2025 02:25:39 +0000
-Received: from mail-japanwestazon11010030.outbound.protection.outlook.com ([52.101.228.30] helo=OS0P286CU011.outbound.protection.outlook.com)
+	id 1vJYUJ-0000000AcrV-2wt1;
+	Thu, 13 Nov 2025 14:39:51 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJN1j-00000009nbw-2sMU
+	id 1vJYUE-0000000Acqe-0qg7
 	for linux-um@lists.infradead.org;
-	Thu, 13 Nov 2025 02:25:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sLkAP+AD0rSoEVrEAB51TjIY3PrxqcCUZ+gdgi41Q3zwtd3cMMNcqfHER1SMUsyFJV7KP+Ta+n4I2Dl+nrhqjvBOptdu3/maWBUjK2lT6RgRzfSkW2txPM4NvwMoq1zl2586rAFoBppG9R2C7sTDbG6y8KRtz5yv2Cq/6ZxTLY2TQ3JZUz+qonxfVI4aqszeo93dDeUyDfSQkjvPh90PTjiIASaIwfpKzNqQq11epVUUuw5RaFZ135/os7IXwnEmDIvhhkGtlfbLJIUbPSWYpPbghJwKDqllKkjNoCeWdx4FOx7cSeLVEVHqfKKTZq6Zee4/iAgOI/e6QwyZ7cWm2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jPoO5xhn8epjlQj4FOSt+sQaXi9dauPXbPsed+H4jLs=;
- b=EgiTk8yo7sLeJ6YIrLsmrjBeY5WwVGMT+fyKFbd2IawI75kWo2HNIgfQwB1iyuGdsfNieqjZb8d33icem2LCoEiJc71WSaTqd/mAjXvi67/qahP/ws3U9G7T4UR1h7GkML/gNBGsfefIH85q8bPxXDfDGRF69b96Pa4gzp488fp/zJNDrcreM6MtvG1KEFf0RzCT9RMwq66hdH+z4KRaYuT1u9yiMSSAQQ/Of3l/FdcGNVES+ZT0xzS2zfkI9JkYNCC6bevo0YB0tO/kkYkFsOlZq9qdapOJ3tAM2ge34pTtaUs85zh0HG28kjjHtCE1t8KU41GNXk2vGUdvylY3lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jPoO5xhn8epjlQj4FOSt+sQaXi9dauPXbPsed+H4jLs=;
- b=a7xfkbnoFELUqzzjXKix4JQl/JVJ9MQBwdh/ykaa7Uw1oaD8TE01cyBz7tIvcz2Yvtu4ES6i2wpwL2PcpTUaGCr4l7DVAimY+GP8J02srtwhlj0l2FRCyEK8Ie+aOktuhRaUG2RMedMzClzjVQORnc9reJ968/rcazR1yN7DQko=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11) by OS3PR01MB7014.jpnprd01.prod.outlook.com
- (2603:1096:604:12b::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.15; Thu, 13 Nov
- 2025 02:25:26 +0000
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::c568:1028:2fd1:6e11]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::c568:1028:2fd1:6e11%3]) with mapi id 15.20.9320.013; Thu, 13 Nov 2025
- 02:25:26 +0000
-Message-ID: <87h5uywtwp.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
-Subject: [PATCH] um: drivers: virtio: use string choices helper
-User-Agent: Wanderlust/2.15.9 Emacs/29.3 Mule/6.0
-Content-Type: text/plain; charset=US-ASCII
-Date: Thu, 13 Nov 2025 02:25:26 +0000
-X-ClientProxiedBy: TYCPR01CA0081.jpnprd01.prod.outlook.com
- (2603:1096:405:3::21) To TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11)
+	Thu, 13 Nov 2025 14:39:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763044783;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C6ZlE/8wFoMWAmPveb7rTnuh4QFvGSZOBJ0lkY75WHA=;
+	b=aD0yq6Nf/JuXQeJmwadG1xbLLxcS6AR+Aw9a9tWB+57bJ+UaSs4xnOJOpngw+FJcFznqmk
+	88Orl5ckAXXKOL2fkY3kXedQHPcLpH9ero8vhF+OwgJzkrMDSTOwOqR5T/Zm+HBJrCFay2
+	UXBlipk2Bb/PLO5iHdNDy1WvST/79ME=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-445-LpEhHUyaMdOzUX7-l3v95Q-1; Thu, 13 Nov 2025 09:39:39 -0500
+X-MC-Unique: LpEhHUyaMdOzUX7-l3v95Q-1
+X-Mimecast-MFC-AGG-ID: LpEhHUyaMdOzUX7-l3v95Q_1763044778
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-429c7b0ae36so518757f8f.0
+        for <linux-um@lists.infradead.org>; Thu, 13 Nov 2025 06:39:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763044778; x=1763649578;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C6ZlE/8wFoMWAmPveb7rTnuh4QFvGSZOBJ0lkY75WHA=;
+        b=RqECwMY6El3K8spLLEGaLEtYP16KRAQHIVkHVA7SlccJm1eLxOqSA7KmnHcLq0JJh6
+         oL5wFAEGtWd7+YT4HS62wcOPNhi56JyYpzxEu6CQrWrbwgKTtPcE3kS0wRmOeem6W0Y5
+         MZEhd7RoPsmYiADM4fcbjf3X0m5xP/7g4yJQP78IeBpzPLmJUnGaBsR854ZGSb33JE4F
+         fZY+5yT4wfS2MNiRtr9PgrrP6huUL+vTMQb5auPQua87E4tUBZJPuRGw7Bg+sBYYngiZ
+         N+QG1JttvW1F13IJShea/ZAH8IMWAepK28fdbVGtAX+WP7l2fbnZG0+vKE11W48P+iq5
+         eIVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXB0ACAX6qgfQq75yBpkrS/R3wafr0v9i6tMd/BajbwfowUzcz8i9MH8uuroRz99iozm+N3B7ph9A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxluEuHuYrKkqEn+XoiYlxATzvOJPik7Tyo3eLioQD7pgL5PhN8
+	pDaqSIJ6564z3tXAXEklo1GWltL9+NgWXziADzjvMPnLAtLYMCLD6lfQi4NxDxFQzGfMHbKaaAK
+	/l6My1D52dIqVR1q/Ovv09Rgwy/pvOjnxK3HTyJ4KbIpDz8rs6TLsjJwpFcZ0v2CHTw==
+X-Gm-Gg: ASbGnctPeeoeOypr4rcnqYvlSwZulFPiB50iFSaHW54c9eRX0N8zSiZLCtL8GrkLxl3
+	jaAIyDuMHoph23cZy0aN+uFy2rfC83U0W9xoP/RGrrO+OqIgZXXBMzZVfP5fVHYmc60TeVWIRb8
+	xQgaPfg/5GWxAX1RBXSQrfG/At2LWv93gzQY4twQo62iEKZbBEvRE1oPWXdI07HtOx/vmzQHqJc
+	MdjQQsrVDNPkPTMafxpgLiuS1s5jzIXBFKhpNxiAGhcTyJAKwxaN5Rku3JHUes/Dvcvzttjk3A6
+	Hpi/WcfpxUtpn9nV4GuIfoJ2l0FQwSYoGljDLtYmpFKd+bv3UMajVS715XGvoktXk5VMONUioNL
+	+7ihmPTnDXrlz
+X-Received: by 2002:a05:6000:2911:b0:429:cc35:7032 with SMTP id ffacd0b85a97d-42b52821778mr3447032f8f.23.1763044778218;
+        Thu, 13 Nov 2025 06:39:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGec5SZJzkrdZIMQyF+gi07hDcBuVbPd+9nb9X5ZfZ31kZtvs0xZMBq40lgAX06ufK4If5sPw==
+X-Received: by 2002:a05:6000:2911:b0:429:cc35:7032 with SMTP id ffacd0b85a97d-42b52821778mr3446995f8f.23.1763044777793;
+        Thu, 13 Nov 2025 06:39:37 -0800 (PST)
+Received: from [192.168.88.32] ([212.105.155.55])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53f29c5fsm4196462f8f.46.2025.11.13.06.39.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Nov 2025 06:39:37 -0800 (PST)
+Message-ID: <25b05194-63cd-4265-8d2c-e174d801fc3a@redhat.com>
+Date: Thu, 13 Nov 2025 15:39:35 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OS3PR01MB7014:EE_
-X-MS-Office365-Filtering-Correlation-Id: 017b7b89-05b7-495c-d976-08de225be826
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|52116014|1800799024|366016|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?EGo2wQZrzAp6ZYyJqV+aNYITHuIPbmBsdLrRKwQ31bYsdQIq3TYVUFWjWXir?=
- =?us-ascii?Q?d7JXyP5bFGbblyzgSeWFoVvNYPtPjfDeTKoNtP2cA2qaBAuMfJ7BTGCXtSwJ?=
- =?us-ascii?Q?yZ6hL1o/yne6PD2pITEQRyODC4akTvIrvxoYznXtyZr6+8bfcY9EIb6a1JiT?=
- =?us-ascii?Q?VfygVDS8W1MrwNERVylNjJzsowy9x7VWNNORMsHkOxXt0hYOyJ5cseGicpP3?=
- =?us-ascii?Q?jdL/QR9ebW1iyD91guVSPzBu7Nb+Xsvrgp77wdwErzTv0M9WKBcku6Z/9YEU?=
- =?us-ascii?Q?BHRTHd07lfESx1Yg7oy4o4U3XOJO0OyUEViYyQqT3VHCW5F174F0YZ98RtoS?=
- =?us-ascii?Q?xa+HLIEOSBoDzzBiCD4ZXBTa/TvPy8Ve48DvnZNZjrCytFkY4bZXtPHEcoc6?=
- =?us-ascii?Q?G9swiXcsJ+771p5njlsRsj1EAt+jH7ALgyLY58QDuJVXm8WKvWfJThuLMvKb?=
- =?us-ascii?Q?mMzrWYqF5atdTfLgHE67aApZckzhmNnJ9gpfjLILAUXm8XeyPuT9W7V2Af3K?=
- =?us-ascii?Q?eniWE+kDsrj3TGoj19B7Nh5sOdaaEcxQvQudxXMkiGMhtfx76w/7Bj6eOI+Y?=
- =?us-ascii?Q?3aZk9S2LaoKda4mC6DKrOl2xOrvHTTzLMrrpO2STPrbAF9fBXus9HkxeanyE?=
- =?us-ascii?Q?+RE43IwKZKNK8miexaINo/wkACiRnaxONy6Xv+H8nYFroF4giCeyMDi5+G7Z?=
- =?us-ascii?Q?Iaq0bB5XWUY9Z7BJVF1QGGaCY/o9ZfiY0wzg8znBkCsM5zEH3xtrwcmECmOj?=
- =?us-ascii?Q?J5WXVU56pduvhNjOfBGZXRl13gDSxtRR6G04vsEaUhFDnrrE5i0FSEfskQPv?=
- =?us-ascii?Q?X8otCTCc5wTSIlCEkba2fyRK2Gipobj0lRwgffyjFc92YQA38OytnBs2xETd?=
- =?us-ascii?Q?HbU6RniEGDWDTIuzdxIle+9aGSbdOWRQj3WA/UVfzkuMtiZdEzTjfN870l5I?=
- =?us-ascii?Q?zeKOnEE1vxOdas0EvUrAX3oJkb+wRECjima9VWcphNyvn2ztagO/6PFtMWaI?=
- =?us-ascii?Q?EPY5ePa2D39fhje/PaWoNWz471b/j7p8yIXtXRjpQNKU8dPTAlAXMSx15U5F?=
- =?us-ascii?Q?AsQOlSoSeLN5qp/8lnf8etoEko88Qzka2VqWAitYwZjlU7cei4EpBeUW1nej?=
- =?us-ascii?Q?x30HWTdeaDWciG3DCLc0NGurNjRI/LyrlddFg9Qoc+yDdeXdlrFX8eWTWmJo?=
- =?us-ascii?Q?VVTXbHACzqUX7z+gVPGctnMM50O3umnXylvGBFnOSX/YHBOLYRrCWAcKPftu?=
- =?us-ascii?Q?cT0+dOt0LdpFXdcUWUrbEu+5g3fIc/rFjHnbsfD1eas0BYena6Zkpdi5ST7d?=
- =?us-ascii?Q?SP9/+HRQigVakv8nH8201CjPbHLVzad3mOKOb7M5eMpRCyM2nGDak4r/0EXb?=
- =?us-ascii?Q?L/ngpNCZL0ySZbaYvntmjFO1eODt/2qOH5TBzcwwNWTsgkR0v7RuWFOgGCEh?=
- =?us-ascii?Q?Uc+a0joG8+QZ/7IlmLPy5rpqFpBBoZlqsSfqNd1lGsLUkY3YxZvM5M4EQ85D?=
- =?us-ascii?Q?/7eYZW/q6APUQHt9sJvHPRNKSAosiRZZFQcL?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(52116014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zk/9rWV0tVVv6B3j9Ey2KVWvnlb2Ba+TSKAORuh2+u22lFesJ9OwFGePBHPj?=
- =?us-ascii?Q?CDSpdl0lQ8dUwgMzdPcrVhS5+HsASzyD2yMigXV8M1e+lOVszQSReLpW/HRd?=
- =?us-ascii?Q?DeCqiOfYHmUKINY4aS+6sGOSm1SVCBNAcLEWy90/wk8RhTOPV0NoK2wggMcB?=
- =?us-ascii?Q?WBNLXlLSdeLQforxsGLjSUn72M+kmvWNsjNoVN8hbEB5PQHM3CmkAm1wKzwX?=
- =?us-ascii?Q?DEoz5K01e1QvoCZKab5fNYPrH4nN6iFEJv12UMr2WIV67Fea0tXKYxcT7UCQ?=
- =?us-ascii?Q?j5zJTp7wHbdF5rmjTC16IYrDH1z1cb0RD8GJ6l8M+v4dkuBPhfMTh08o8Pcj?=
- =?us-ascii?Q?69uIkAFsaa7vZZojZzY/pQ+luKmwFkqfE4X2B7IDmORKHphg5HOKC9opUIOj?=
- =?us-ascii?Q?4gvwCzqATCvM/BFSc7+c+U5sWp/C3bfbkcxOIpepImBT25UT7IyjRe0qnPSu?=
- =?us-ascii?Q?jIHehXLX42ztUu+eEaGRqoIqsXjDBHZNPWZdNBzUrHD9e6Fdg7pxIgXY6Ouq?=
- =?us-ascii?Q?/sIoWBllYmeJLPZFOdhguKRcelUXOs0D+x84Iwz2XWRlFYIJMrIC2fxyO4b3?=
- =?us-ascii?Q?JoadgRYSJ1K6fvf16chsgkTqqw1vBtVnwBvryOJAHiMW3zs/Y9Bte57KWuo9?=
- =?us-ascii?Q?4VnQ08KrlDJvVR08HNej/zxF6wAlYYcEj5hvClmvdbaPG6B74zTQJZHUgAxp?=
- =?us-ascii?Q?/np8XrEyesWlk2LmWDIkhlS/S2gwJUuAwgHyRgnMEKUXKymG2/NNSTjdWt6A?=
- =?us-ascii?Q?QqL7j1qQvrhECLHCfscz57k4Bc8C8mqrrbfsxs5Wsm21d2QIaC3OQTsaLuVY?=
- =?us-ascii?Q?/d38G33nH3we0IlGwJe0SsJpK0D1ZfmCIbkAAAawqUkjR104SiYuCG3RpsId?=
- =?us-ascii?Q?oqooAUyEm2U64urGO172QBS6OZ4Nr34J6PD+uORU7gj2kd9UEGo+zhUoYrQH?=
- =?us-ascii?Q?gltGklVWnrI83lMq6T8HRnkYCTxEANpBjzjFKSTt6YL3GdVZBh5QQB2oDHEd?=
- =?us-ascii?Q?Uwn5oicxqD7WFXcJWfxTP1cT8EXdICiBso5VtZaYpQ/1otbfamStfhLqd2mo?=
- =?us-ascii?Q?MNiWzv0bXnszVXlYiZ7ZrBUhZv3rmWro1qHmaroJAc0NHN+fDqjR9j9JS670?=
- =?us-ascii?Q?S639Db9BPxWwEZdVrFIwv67ummmmpXa0usWmD5qRplx5SzXuMEiN+awjm4VM?=
- =?us-ascii?Q?/Qu7/8+s5SmOqEUqnn9wSLv7KAH01n7NF+7VzyGYaVwQlyuWcQr1fZId5Tw6?=
- =?us-ascii?Q?62pgQMbq3v+Kt71OmttjpfDgF2oKPlsD2e4VSQL98RS1iQ8kIH8Nw8kkKENX?=
- =?us-ascii?Q?rW6S5zzl/D9joj7TDQMV89OX8N0YJRmAOKJZ/ORVMGNSu+bKn/JlkbDZfRgo?=
- =?us-ascii?Q?ih6p9jY8qSfX7LLM1RUjUxZqo20OY0X/Ttx8X2t+wSIM10h1RjMqVX5oUMyA?=
- =?us-ascii?Q?Jw4WTW8xFFFJWBalKEmotD9fz47kN07CKZEFDdGme+gDUvqgkhA1aIC9mNmG?=
- =?us-ascii?Q?kFxH3mmnMVP2Tb5w2M4F/NLI3lzzBGHXmFtaJcg2kCRKMF09yJfwGfC16TON?=
- =?us-ascii?Q?HiWu0uCb388ft4ooOZTjEuB8b5V33K9Z/m9ZWZjb7ibwnvMTAaUYXNKRP0vS?=
- =?us-ascii?Q?/yQCwW2ZjZKsdCIduR3Kx9g=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 017b7b89-05b7-495c-d976-08de225be826
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2025 02:25:26.6508
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JaZn0qZ/QwOonA9kZnvshspHr34rOXonTrJOrV60/30pcgWHyPAuafgLOOec9o63gSeIdhoTw+Nms9IPsWNXPY9mDBpGrUgiY+9M2yADJy7JgNxykdr6hgcVYz8Yc3zw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB7014
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v5 1/2] virtio-net: correct hdr_len handling for
+ VIRTIO_NET_F_GUEST_HDRLEN
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Simon Horman <horms@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+ Alvaro Karsz <alvaro.karsz@solid-run.com>, linux-um@lists.infradead.org,
+ virtualization@lists.linux.dev
+References: <20251111111212.102083-1-xuanzhuo@linux.alibaba.com>
+ <20251111111212.102083-2-xuanzhuo@linux.alibaba.com>
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20251111111212.102083-2-xuanzhuo@linux.alibaba.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: 01Al39uUhR3cPkWyQioykNK2ynZ5-BM03UWhGoNRALI_1763044778
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251112_182535_960278_E2F53C49 
-X-CRM114-Status: UNSURE (   8.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20251113_063946_659770_B4D0F6F1 
+X-CRM114-Status: GOOD (  14.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,36 +122,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Remove hard-coded strings by using the string helper functions
+On 11/11/25 12:12 PM, Xuan Zhuo wrote:
+> The commit be50da3e9d4a ("net: virtio_net: implement exact header length
+> guest feature") introduces support for the VIRTIO_NET_F_GUEST_HDRLEN
+> feature in virtio-net.
+> 
+> This feature requires virtio-net to set hdr_len to the actual header
+> length of the packet when transmitting, the number of
+> bytes from the start of the packet to the beginning of the
+> transport-layer payload.
+> 
+> However, in practice, hdr_len was being set using skb_headlen(skb),
+> which is clearly incorrect. This commit fixes that issue.
+> 
+> Fixes: be50da3e9d4a ("net: virtio_net: implement exact header length guest feature")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- arch/um/drivers/virtio_uml.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+IMHO this looks like more a new feature - namely,
+VIRTIO_NET_F_GUEST_HDRLEN support - than a fix.
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index de7867ae220d0..6cf1152a1a4e6 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -24,6 +24,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/string_choices.h>
- #include <linux/virtio.h>
- #include <linux/virtio_config.h>
- #include <linux/virtio_ring.h>
-@@ -1151,8 +1152,7 @@ void virtio_uml_set_no_vq_suspend(struct virtio_device *vdev,
- 		return;
- 
- 	vu_dev->no_vq_suspend = no_vq_suspend;
--	dev_info(&vdev->dev, "%sabled VQ suspend\n",
--		 no_vq_suspend ? "dis" : "en");
-+	dev_info(&vdev->dev, "%s VQ suspend\n", str_disabled_enabled(no_vq_suspend));
- }
- 
- static void vu_of_conn_broken(struct work_struct *wk)
--- 
-2.43.0
+[...]
+> @@ -2361,7 +2362,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+>  	if (vnet_hdr_sz &&
+>  	    virtio_net_hdr_from_skb(skb, h.raw + macoff -
+>  				    sizeof(struct virtio_net_hdr),
+> -				    vio_le(), true, 0)) {
+> +				    vio_le(), true, false, 0)) {
+>  		if (po->tp_version == TPACKET_V3)
+>  			prb_clear_blk_fill_status(&po->rx_ring);
+>  		goto drop_n_account;
+To reduce the diffstat, what about creating a __virtio_net_hdr_from_skb()
+variant (please find a better name) allowing the extra `hdrlen_negotiated`
+argument, define virtio_net_hdr_from_skb() as a wrapper of such helper
+withthe extra arg == false, and use the helper in the few places that
+really could use hdrlen?
 
 
