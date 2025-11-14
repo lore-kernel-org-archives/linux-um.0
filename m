@@ -4,92 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ACBBCDE011
-	for <linux-um@archiver.kernel.org>; Fri, 14 Nov 2025 06:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE4DCE7AE5
+	for <linux-um@archiver.kernel.org>; Fri, 14 Nov 2025 11:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yMJTVN/vlpAVXeQX+4HrHc6YyUF9oMQu5Z5m14rtHdA=; b=xDDSGhC3NeSjefsvYAF1zEF5PV
-	MVK3hdUGporTtxK4MWtk752pJIL0zYHRx9g+xLlXBCm965gN9reeJXOGlLD/sO/zhu3LS9bqjYcc6
-	VDwFmKxGa9biGTOt6CVBlWJyVnaCn1GRLge8zOuQyPjMraRqbQWjZSE5FHE5za24mAcZSoy7LmEgD
-	coA0ChTn/bXKqjvkYdnwX/h2JGyaawzsJ5CUiUnH5p7PUWpLKs89B2MKPX9r2d3MFJH0X2QgO56L+
-	9BjxSMF4RL1y1FrToYDCVLXpDCQ2T9bTFW7T9KWCA2F4iTP7aL1hi+g5gcZ8KmwXfNRHKxRMjVlrd
-	LQXQ00YA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=P6T+2Lant3MYurrTyX3sjQxVkxrSJ5NC17wEIBzsAD8=; b=LQQVWfp5d7EglUBCdXN6LG7Pm/
+	V++6pLj/uwq8iahAmfJqQrRCnGjKwEBhUT8x71UDEVGvv51UPqUvp2+09k1OWfnCKa5NgcvpEF2vI
+	DgEaJxiAZj82btcZKOY+GvYqzO2NPxFr+sZApo4AJ4lKMeRPtbotE/sSlJyjoxVTiDK0EYVputF+O
+	AKGx7hnhsQBrta/E67qoiDeQIpuCQnDPoX9WK0U3Ce9lzXEJpoemZmMEIMEECz/3MKghLxOtHzpVB
+	F2U90NvwlR2H4iJpqdu2cDUANZxIv0NhSH+nTf0K9quE6wRGbymDOD3iQl3xPTSazZs54TA6sAAvG
+	nDg8c9fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnaw-0000000Bgfy-0d0b;
-	Fri, 14 Nov 2025 06:47:42 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1vJrkS-0000000C60g-2v0W;
+	Fri, 14 Nov 2025 11:13:48 +0000
+Received: from out-174.mta0.migadu.com ([2001:41d0:1004:224b::ae])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJnat-0000000BgfG-3tfO
+	id 1vJrkQ-0000000C5xk-3AOa
 	for linux-um@lists.infradead.org;
-	Fri, 14 Nov 2025 06:47:40 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-34182b1c64bso1113616a91.3
-        for <linux-um@lists.infradead.org>; Thu, 13 Nov 2025 22:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763102859; x=1763707659; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yMJTVN/vlpAVXeQX+4HrHc6YyUF9oMQu5Z5m14rtHdA=;
-        b=cJXPcR2DEf6rVa2ke5Z4szJaIcxkltZKorIC+hIDqHw79u9O2BPnZ5jw6W5pHTN6Ru
-         bnzUaW9qNLyANhUR1lkPv6fJggK7a4Aw7o96Qn7xPq86M+nh9IiJa7zTgUCH4tVungo3
-         XTa7gVK0CHd1ynRUOY/cmfAjzIloJmQTGAlwh2uefcU3ATR/7kORmNZks+5vS0e2v5wi
-         ktmm6U/mZY2uynU11MN6qSrpi/RTUSXOr8S4UUgLp+Q7n2Hr+BYjCSU6q0v+k/2LZrGl
-         yAO7UJEhDzZX7PAnaL0/DCR2ZMRWONqH/775vaWvTccr0tAIuiRZ3dzgR8sDwN5tMd0U
-         8/tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763102859; x=1763707659;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yMJTVN/vlpAVXeQX+4HrHc6YyUF9oMQu5Z5m14rtHdA=;
-        b=VeBjy0j8anjbqI1MCIgkRX+sBfF/LzgL32ObomXP6zts2/d+ZuJ+DqyIbbh+oBs0Yt
-         kVz3/Bn8LTQyJn4IO04brbyhALe52SAqhnqhj8Gnb25KbCglpGIIixoT6u3h9VUL/f1w
-         nf25l54AgOOdyw2WMMVonBoxiNW7qcF8Lygl7YNieKIJDlKOsiHDNyqcRx6H7v+355i2
-         PBjphx1grjYpYkcTHWK/6dJnJ3+W7r4wSk9b98iI6kNAo4U8mb2r9ENg8TVJ1PaWMibg
-         MlnFc8XAB2bUyvLeJ7ieYifvF5Wxs3t3S+H3oNn5vuz55j7mk1SHOIB7tXQ4RaVFwf/i
-         grzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjexx6d/GLlYl0qIilj7s07uO9gU5TljCz1LJi66fo++54NEikvJcwpXJXjYhwfRsGSEJpWx6Q9A==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyHy6YV3ZPQGMHimHGcc1/pzl37HpagtjJamOMJhAr9jbK7TEQI
-	zDalHhhLMVfq+HU/1QRord+ZHUZj/UpsXDAdJXJVxO4SyCyPB0Vkei8E
-X-Gm-Gg: ASbGnct4rw/83dbAOuWxhH+Qm2d9UHC8yg0bVLNopWSPDXf2S8+nnDYHLqOJjJkAyG3
-	m/vk/Mxnil9UjUr/aBU+48/6OLXP9pzxQHHPGCyNAkURwcZDnTGJYTSnv979c98UhTgVQ4LIgfS
-	yfHWdFNcJyAwfZe0JiRL+ZyUrVJp0dk7TEz3lOhryC1jVa9dFs29G1fW2NtC5mcuNG1u2UWnxOf
-	hDKbRDBqzS3E/BoTld2qmXs5I01qDIiuLn70ExOKnhpz9+fPXmTOX6GTnVTYd+ZVnb7WIunwSEl
-	ikPFrow/HDKadX6Vg8p5LqW8s/3FtgedYo0aA1uTgBk01RlLbhq3fak7Gv52kXjvzPoHYVo/9Jv
-	1hjaMP0ZOI5mpEBn2C5Wb5O4gdmkVTZNeDBYbFTffPMFl6CPt36dgPiZfRffHCsgyO0m2yWu3Fm
-	1U92ho2xgEnJTr+5EUG6bv0LZeUzTSs/gk+cIpIbmyLm91s60B89mm5iPh7IYobvGNDfO5JWY2C
-	DTULvaJ2iFEn9X6WxVzUA==
-X-Google-Smtp-Source: AGHT+IGHpz1tKvWFNZesGxw6JVkl+FA0ukZVvkWMJG28B6VXmNdnR8Ek3Iv90x1oeyryt8GFUkrcjQ==
-X-Received: by 2002:a17:90b:4e8b:b0:33e:2d0f:4793 with SMTP id 98e67ed59e1d1-343f9eb1cb4mr2546923a91.11.1763102858789;
-        Thu, 13 Nov 2025 22:47:38 -0800 (PST)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-343eacbd09fsm2425861a91.4.2025.11.13.22.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 22:47:37 -0800 (PST)
-Date: Fri, 14 Nov 2025 15:47:34 +0900
-Message-ID: <m2a50pxg8p.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: tiwei.bie@linux.dev
-Cc: Liam.Howlett@oracle.com,
-	hch@infradead.org,
-	johannes@sipsolutions.net,
+	Fri, 14 Nov 2025 11:13:48 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763118824;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P6T+2Lant3MYurrTyX3sjQxVkxrSJ5NC17wEIBzsAD8=;
+	b=vExdq/0QIbNXwYGHrXQqTUESTgynxZF1NJ0xtYYbpdRrZ58EdRub+KFh9R2nimgCQ5fatR
+	4xLlVhyB6VQJZcD/sz1r9N+vzLfWl9ZUNEJ579ag0IteNR33li8sNEYMRTdhUYVjBH+SAv
+	KC18Vm38wa/0lScGVl1ZIZrfKVIfEok=
+From: Qi Zheng <qi.zheng@linux.dev>
+To: will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	dev.jain@arm.com,
+	akpm@linux-foundation.org,
+	david@redhat.com,
+	ioworker0@gmail.com
+Cc: linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
 	linux-um@lists.infradead.org,
-	ricarkol@google.com
-Subject: Re: [PATCH v13 00/13] nommu UML
-In-Reply-To: <20251112163651.3689244-1-tiwei.bie@linux.dev>
-References: <m2bjl7y6mv.wl-thehajime@gmail.com>
-	<20251112163651.3689244-1-tiwei.bie@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH 2/7] arc: mm: enable MMU_GATHER_RCU_TABLE_FREE
+Date: Fri, 14 Nov 2025 19:11:16 +0800
+Message-ID: <6a4192f5cef3049f123f08cb04ef5cd0179c3281.1763117269.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <cover.1763117269.git.zhengqi.arch@bytedance.com>
+References: <cover.1763117269.git.zhengqi.arch@bytedance.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251113_224739_965125_385FF0D4 
-X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-CacheID: sfid-20251114_031346_960263_D4A1BFC2 
+X-CRM114-Status: UNSURE (   7.45  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -105,18 +84,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-On Thu, 13 Nov 2025 01:36:51 +0900,
-Tiwei Bie wrote:
+On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of
+empty PTE page table pages (such as 100GB+). To resolve this problem,
+first enable MMU_GATHER_RCU_TABLE_FREE to prepare for enabling the
+PT_RECLAIM feature, which resolves this problem.
 
-> > we haven't seen any functional regressions
-> > since this RFC version (which was 6.12 kernel).
-> 
-> I took a quick look at the code. It appears that patch 02/13 will
-> break the mmu build when UML_TIME_TRAVEL_SUPPORT is enabled.
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+---
+ arch/arc/Kconfig               | 1 +
+ arch/arc/include/asm/pgalloc.h | 9 ++++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-thanks, it is my bad on the move the chunk.
-will fix it and added to my local test.
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index f27e6b90428e4..47db93952386d 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -54,6 +54,7 @@ config ARC
+ 	select HAVE_ARCH_JUMP_LABEL if ISA_ARCV2 && !CPU_ENDIAN_BE32
+ 	select TRACE_IRQFLAGS_SUPPORT
+ 	select HAVE_EBPF_JIT if ISA_ARCV2
++	select MMU_GATHER_RCU_TABLE_FREE
+ 
+ config LOCKDEP_SUPPORT
+ 	def_bool y
+diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
+index dfae070fe8d55..b1c6619435613 100644
+--- a/arch/arc/include/asm/pgalloc.h
++++ b/arch/arc/include/asm/pgalloc.h
+@@ -72,7 +72,8 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
+ 	set_p4d(p4dp, __p4d((unsigned long)pudp));
+ }
+ 
+-#define __pud_free_tlb(tlb, pmd, addr)  pud_free((tlb)->mm, pmd)
++#define __pud_free_tlb(tlb, pud, addr)	\
++	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pud))
+ 
+ #endif
+ 
+@@ -83,10 +84,12 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
+ 	set_pud(pudp, __pud((unsigned long)pmdp));
+ }
+ 
+-#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
++#define __pmd_free_tlb(tlb, pmd, addr)	\
++	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
+ 
+ #endif
+ 
+-#define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
++#define __pte_free_tlb(tlb, pte, addr)	\
++	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
+ 
+ #endif /* _ASM_ARC_PGALLOC_H */
+-- 
+2.20.1
 
--- Hajime
 
