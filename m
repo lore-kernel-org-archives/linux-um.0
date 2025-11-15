@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 860FCCEACFD
-	for <linux-um@archiver.kernel.org>; Sat, 15 Nov 2025 00:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4026ECE8D6B
+	for <linux-um@archiver.kernel.org>; Sat, 15 Nov 2025 01:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hG+LBwa2EjGLXVqwz8jiIWNeMYXszVida+/9bn2P5ME=; b=ZrEm8AFNg0v83oXvvxb7Pm7L87
-	MwE2aQwyqwm29i96eeRE0A9LFnRYC/YhlDgo0EGj77gxYKH/0ZTs/fVIqYCn0Yiiv4LtAWaiEX/XD
-	Tqdfwr5gzk5QwAj0C3NGOasC5Qv1/i9obZgQb1zEQdbH6NpcyhY3TpZxqkd1pKdhtN2cb+FciPItZ
-	bJUWBZNb7PQKhS7dtX3rqRtXPo+4jU0c9IQ2u5ZJpBrvR6YN0ZOnnNyhAoee2ccVBoMKjAWWfrfF2
-	FQVYvbdSqdBSdqb33FxoW3uHE0yoS985ro+AJ/3bY9yQKWo3g7ycHxJ92tAhH60PtIi3G7sP4lgvi
-	0Uf8d3iQ==;
+	bh=YHiX1X/OH2B97KYDjNGeXl/+3uOQJEMtQdEIGNbLMqM=; b=czi/iHC7mqZyqxFTirohCwJym9
+	l7O0FixCfLEF7aw5rgeoq8y9YDUbNVdCY1K8Az9V3i5lS8eXjC8fqj5mYyS82wqSpihx+Aishrq4E
+	Y6rfebHz/JtthcmGAYXjEluad0aG+qFzSb65fdlZQI1EL4vXNL7Yz/0g+fCzGigYKfeDBoIw5XxL/
+	J7g9zmh25KbsruAuZa0+Qr6xe7bwORAdfVxX3ZcvD2rN39iQ3h0RBR4OWnX2+nD4g+xkcCLow57UO
+	TxLTDlX/DgjxYuVBW0RoZbIYYfQ7byy9xjeWkJ8JA4Mi6xI66s6e9lN/fQcdjPCMp6WCd0rRHvLXy
+	Yy3RtSxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vK4WM-0000000DIwU-36fi;
-	Sat, 15 Nov 2025 00:52:06 +0000
-Received: from mgamail.intel.com ([198.175.65.12])
+	id 1vK4qi-0000000DK6d-3CgJ;
+	Sat, 15 Nov 2025 01:13:08 +0000
+Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vK4WI-0000000DIvv-3l2A;
-	Sat, 15 Nov 2025 00:52:04 +0000
+	id 1vK4qf-0000000DK67-1Cz8;
+	Sat, 15 Nov 2025 01:13:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763167923; x=1794703923;
+  t=1763169186; x=1794705186;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=vczM4EmXtUbCfHooelDeHpgPNn3rTsFNVUclJSubvyA=;
-  b=M0PMWwwS7U7hhnxResSwDt8vyQZFkryJfP7DTukI21Qari0n38Pg74EG
-   h4p78e6RgqOFqBrvipUkAzpkPlccmqLXfMXDWA4PLR607pOlhpvpTT2DJ
-   tkMhF4eAgngKZ0dXLyMYQ++zRLNEApsG7I7KjgmniiCgAoADBAQ3B3Avn
-   sNd9tDG/C7nbsA3OEY0OBkbT03sUKkCGOTze/wgoom6mBCJNuIFArflPa
-   kPSSFoTj+7vC5FYMubULIsdYrDmd5r6Hj0D4oQHQj13a26wx2+oFokXHP
-   4GCP+5/K8Mh1rOE8GfpuW36UaYEVtAvOgdFmLPsDMyarSE8nGArLrGF7O
+  bh=ZYpyydEIKJdUZcKYOQA153wYBuCQw3r8OGWjWBD7bf0=;
+  b=dPqc7lYJluAen6/03LeiCqZityRJO6jJ/yRTs4vS+1KkSQRt1ppG9TQh
+   beTpnfmhE2Ilss+FmwiRb7cpDFXzLuN+UYZaCrDWGnTxq3Yhrsi3yh52d
+   wsXwI5Nu0cdMu/+kRNvHhGK1Mo3eefKqiaokkjetqJCZznGweVFIaq0I3
+   kdzxf4YumjRV+23zBfGAD/cseeemRfJ20iOwWlGXYdWEd5bz6Dp+AP/Qe
+   DxaVfKZ2sCgryKFAeZzyLqocyYI+jkNz7SFDqTg20Tg2gFi13VJabP4nC
+   AefZNA1nvrR1nv+yEeYrzZm9Y/XwVciytZJ074df4awS9at9t+WqdV4mM
    g==;
-X-CSE-ConnectionGUID: hEIPpSpUQ5m8A2+yTHhCuQ==
-X-CSE-MsgGUID: PKTC2PmUQFWgFaLzKndC0g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11613"; a="76730944"
+X-CSE-ConnectionGUID: +hCVuBiuQDygqwVFV/cjBw==
+X-CSE-MsgGUID: ejaD8FF9QxOL2MIPk1pT0w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11613"; a="65152399"
 X-IronPort-AV: E=Sophos;i="6.19,306,1754982000"; 
-   d="scan'208";a="76730944"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2025 16:52:01 -0800
-X-CSE-ConnectionGUID: nhmJTMybRgykHV04alN3Xw==
-X-CSE-MsgGUID: 35aAR/X3ReWs6zsMfpLkBA==
+   d="scan'208";a="65152399"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2025 17:13:03 -0800
+X-CSE-ConnectionGUID: OyXkE+18SIC4r9bUHnq2cQ==
+X-CSE-MsgGUID: 7wNDei3wRnCT1vSqROvBmg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.19,306,1754982000"; 
-   d="scan'208";a="227249100"
+   d="scan'208";a="194228351"
 Received: from lkp-server01.sh.intel.com (HELO 7b01c990427b) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 14 Nov 2025 16:51:56 -0800
+  by fmviesa005.fm.intel.com with ESMTP; 14 Nov 2025 17:12:59 -0800
 Received: from kbuild by 7b01c990427b with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1vK4WA-0007YJ-0f;
-	Sat, 15 Nov 2025 00:51:54 +0000
-Date: Sat, 15 Nov 2025 08:51:44 +0800
+	id 1vK4qW-0007Zv-1X;
+	Sat, 15 Nov 2025 01:12:56 +0000
+Date: Sat, 15 Nov 2025 09:12:35 +0800
 From: kernel test robot <lkp@intel.com>
 To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
 	npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
 	akpm@linux-foundation.org, david@redhat.com, ioworker0@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
 Subject: Re: [PATCH 7/7] mm: make PT_RECLAIM depend on
  MMU_GATHER_RCU_TABLE_FREE && 64BIT
-Message-ID: <202511150845.XqOxPJxe-lkp@intel.com>
+Message-ID: <202511150832.iAyO0SAW-lkp@intel.com>
 References: <0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch@bytedance.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251114_165202_985733_0D60165C 
-X-CRM114-Status: GOOD (  14.33  )
+X-CRM114-CacheID: sfid-20251114_171305_374404_21BCBF0E 
+X-CRM114-Status: UNSURE (   9.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,64 +109,36 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Qi-Zheng/alpha-mm-enable-
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git for-next
 patch link:    https://lore.kernel.org/r/0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch%40bytedance.com
 patch subject: [PATCH 7/7] mm: make PT_RECLAIM depend on MMU_GATHER_RCU_TABLE_FREE && 64BIT
-config: arm64-randconfig-004-20251115 (https://download.01.org/0day-ci/archive/20251115/202511150845.XqOxPJxe-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251115/202511150845.XqOxPJxe-lkp@intel.com/reproduce)
+config: arm64-randconfig-002-20251115 (https://download.01.org/0day-ci/archive/20251115/202511150832.iAyO0SAW-lkp@intel.com/config)
+compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251115/202511150832.iAyO0SAW-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511150845.XqOxPJxe-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511150832.iAyO0SAW-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   In file included from mm/pt_reclaim.c:3:
-   mm/pt_reclaim.c: In function 'free_pte':
->> include/asm-generic/tlb.h:731:3: error: implicit declaration of function '__pte_free_tlb'; did you mean 'pte_free_tlb'? [-Werror=implicit-function-declaration]
-      __pte_free_tlb(tlb, ptep, address);  \
-      ^~~~~~~~~~~~~~
-   mm/pt_reclaim.c:31:2: note: in expansion of macro 'pte_free_tlb'
-     pte_free_tlb(tlb, pmd_pgtable(pmdval), addr);
-     ^~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+>> mm/pt_reclaim.c:31:2: error: call to undeclared function '__pte_free_tlb'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      31 |         pte_free_tlb(tlb, pmd_pgtable(pmdval), addr);
+         |         ^
+   include/asm-generic/tlb.h:731:3: note: expanded from macro 'pte_free_tlb'
+     731 |                 __pte_free_tlb(tlb, ptep, address);             \
+         |                 ^
+   1 error generated.
 
 
-vim +731 include/asm-generic/tlb.h
+vim +/__pte_free_tlb +31 mm/pt_reclaim.c
 
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  701  
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  702  #define tlb_remove_pud_tlb_entry(tlb, pudp, address)			\
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  703  	do {								\
-2631ed00b04988 Peter Zijlstra (Intel  2020-06-25  704) 		tlb_flush_pud_range(tlb, address, HPAGE_PUD_SIZE);	\
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  705  		__tlb_remove_pud_tlb_entry(tlb, pudp, address);		\
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  706  	} while (0)
-a00cc7d9dd93d6 Matthew Wilcox         2017-02-24  707  
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  708  /*
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  709   * For things like page tables caches (ie caching addresses "inside" the
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  710   * page tables, like x86 does), for legacy reasons, flushing an
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  711   * individual page had better flush the page table caches behind it. This
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  712   * is definitely how x86 works, for example. And if you have an
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  713   * architected non-legacy page table cache (which I'm not aware of
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  714   * anybody actually doing), you're going to have some architecturally
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  715   * explicit flushing for that, likely *separate* from a regular TLB entry
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  716   * flush, and thus you'd need more than just some range expansion..
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  717   *
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  718   * So if we ever find an architecture
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  719   * that would want something that odd, I think it is up to that
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  720   * architecture to do its own odd thing, not cause pain for others
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  721   * http://lkml.kernel.org/r/CA+55aFzBggoXtNXQeng5d_mRoDnaMBE5Y+URs+PHR67nUpMtaw@mail.gmail.com
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  722   *
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  723   * For now w.r.t page table cache, mark the range_size as PAGE_SIZE
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  724   */
-b5bc66b7131087 Aneesh Kumar K.V       2016-12-12  725  
-a90744bac57c3c Nicholas Piggin        2018-07-13  726  #ifndef pte_free_tlb
-9e1b32caa525cb Benjamin Herrenschmidt 2009-07-22  727  #define pte_free_tlb(tlb, ptep, address)			\
-^1da177e4c3f41 Linus Torvalds         2005-04-16  728  	do {							\
-2631ed00b04988 Peter Zijlstra (Intel  2020-06-25  729) 		tlb_flush_pmd_range(tlb, address, PAGE_SIZE);	\
-22a61c3c4f1379 Peter Zijlstra         2018-08-23  730  		tlb->freed_tables = 1;				\
-9e1b32caa525cb Benjamin Herrenschmidt 2009-07-22 @731  		__pte_free_tlb(tlb, ptep, address);		\
-^1da177e4c3f41 Linus Torvalds         2005-04-16  732  	} while (0)
-a90744bac57c3c Nicholas Piggin        2018-07-13  733  #endif
-^1da177e4c3f41 Linus Torvalds         2005-04-16  734  
+6375e95f381e3d Qi Zheng 2024-12-04  27  
+6375e95f381e3d Qi Zheng 2024-12-04  28  void free_pte(struct mm_struct *mm, unsigned long addr, struct mmu_gather *tlb,
+6375e95f381e3d Qi Zheng 2024-12-04  29  	      pmd_t pmdval)
+6375e95f381e3d Qi Zheng 2024-12-04  30  {
+6375e95f381e3d Qi Zheng 2024-12-04 @31  	pte_free_tlb(tlb, pmd_pgtable(pmdval), addr);
+6375e95f381e3d Qi Zheng 2024-12-04  32  	mm_dec_nr_ptes(mm);
+6375e95f381e3d Qi Zheng 2024-12-04  33  }
+6375e95f381e3d Qi Zheng 2024-12-04  34  
 
 -- 
 0-DAY CI Kernel Test Service
