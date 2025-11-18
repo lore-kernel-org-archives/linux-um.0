@@ -4,67 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D0B6CEACEF
-	for <linux-um@archiver.kernel.org>; Mon, 17 Nov 2025 16:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA6CDCEBF97
+	for <linux-um@archiver.kernel.org>; Tue, 18 Nov 2025 02:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BTWh6KCVX3IOUXWMKrKtbyQgmh8U9cfwOHWJa+mV1OM=; b=vWoST6kMm36GDA/86z7jrHLruo
-	z1cln+S4O4HfqmalGV4KeShXIjowlrvba25LYtJqIAwksYGW8+Kc5M8F47wh8akUlS8djmzULMkpR
-	ipsJbLiSGVCmrF3nklXaizYYfmMRZUl2hCJ43mBHtf4UlW3JlAXHCYfKmiqoptGDsrRjBvfjGOfFk
-	aorkbr9XWZPDcCBs+0idfANbEuaDxqUpwl27Brx4CuwxyKA87cGTxkUMBYXe2cXn6eN8B1WNdFbH7
-	FIOsVbiDRRWJKHhE5kpFGMdcUcPcHebk5AkNNunfHLWBWIQgb2bTQxbWCmS0P9NrqFuomWLU7jvUE
-	E4tpM8CA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Subject:To:
+	From:Date:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=w2IiBFkWS6DSe00zi09tdszzyacxXMfj/k28E+x2XXU=; b=ZY2fCJ2DlIsgnA
+	MMpYKM7ZWA4seanaYSsKgopO+L/3SVUwGhAdQQPICaUId69iBwpZ7LtjA57fkveQJxk71H+jkQIuk
+	sJy18JvzmvkMvgzb9H2CRyPx7COlfZ0HUewC8t71aHNpW/jIw3SXn13VmvxO+dFNOvdIf6n3Lkt4E
+	fj6flh7XQI7rhPvP6RJlYbqhVprJTHwVwHMtRnhEQVX7+mFfLfsMAqU7+8IckSwjauf4sZ2h7/hS5
+	GI0J5On5HAsRXz6YUFB3KLhXGEe/pOi2umdeSPQUOzIjtP9l4PDR+k43dVlOe/uxhnxE+F3I88GVw
+	U6+AqeHa2IwLwX+gArXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vL2YL-0000000GRRc-0BgP;
-	Mon, 17 Nov 2025 16:58:09 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vLBVO-0000000HETK-1i7S;
+	Tue, 18 Nov 2025 02:31:42 +0000
+Received: from mail-qv1-xf36.google.com ([2607:f8b0:4864:20::f36])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vL2YH-0000000GRR2-2tTL;
-	Mon, 17 Nov 2025 16:58:06 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4CB7F41AD1;
-	Mon, 17 Nov 2025 16:58:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11DDC116B1;
-	Mon, 17 Nov 2025 16:58:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763398685;
-	bh=XI7Dqc8hDG/imiQjwpaa5L5QUXIhiYHcmUsbHNJq770=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dPT+kdRJmrc++E4JgaDg0HvOn87ub1fN81aujiL3JuYrC+XABLmrn8IKbujtOxjox
-	 06UW28/7RYwaB1AdZehoyv5pTGVprSBAXjHnoKbjSL+FhOIiMfHk/eazN5xF1ef35L
-	 iI2y5+BgESdTBJPjDJ0iyZWOBGh7c+XsGh6M04pYgwNZsjWk51POupKSyh33gdm0EP
-	 45y5/jkWLrEhutdIoC4OWF5kMcmkisDNjsD7jjLCsAiCX9ZO+pgaVPoMulUmJlaGb9
-	 4LERACYZwJIsl5lju9+IsQAyONXCgmYbWkB3p/ehSBdOllMUN3kNW2OC6dfYrgwBMJ
-	 Dugsm9vMMNdlA==
-Message-ID: <355d3bf3-c6bc-403e-9f19-89259d868611@kernel.org>
-Date: Mon, 17 Nov 2025 17:57:58 +0100
+	id 1vLBVM-0000000HESc-0jid
+	for linux-um@lists.infradead.org;
+	Tue, 18 Nov 2025 02:31:41 +0000
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-882451b353fso34123726d6.1
+        for <linux-um@lists.infradead.org>; Mon, 17 Nov 2025 18:31:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=efficientek-com.20230601.gappssmtp.com; s=20230601; t=1763433098; x=1764037898; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:subject
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w2IiBFkWS6DSe00zi09tdszzyacxXMfj/k28E+x2XXU=;
+        b=G3YXwB/7lgNy1wMV94awiK18E3FDYyJY/P7b6VW0221c3Z9ds+nl4QjrsaROmv5Gnx
+         cbPal2+wzq6YHrNL84xk0pDVMWxLHSR4+K2OCp4YIYTr34LDI+IDZHtRbjLTbzEcTfe6
+         PuRUw+9mt6WHx4rPUspwHwwibGqTgOHE6aVjUzoMY/UcDIpAhdMhN+c9a51wgQmpfeX0
+         wsvLZPOC33RDJj+YQGDhWd2e9M/TrmclCAm6Zmz2vc5fJb5RtDOvfXNm4+SG32qWBhro
+         j5MG/IBd/bpmVEKc07HxaHjLKbgLmYao8dgvCB6uroH4DHxd1dcthIKLP6SYeniGynYe
+         tp6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763433098; x=1764037898;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:subject
+         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w2IiBFkWS6DSe00zi09tdszzyacxXMfj/k28E+x2XXU=;
+        b=LgAeV0EvIAIQGIK9DuPZbvscmg/ao+Iqw0Gs1ohik5/0ZzDkVXEUNgrOarGbCXG3WU
+         rRB4eLjTnqSjMBfIVPothlET+wHDeoVoG+/kEg8loQEeLI+53f+nqTl3kyEBUj2Zthua
+         TRFcrNEQpyYUEu3ZSiLLqBi35OEdoSFzL6mtx5vXBl0YXreCerTBOWPPubUCbquQniOA
+         PBhZ7KWbWrGiO23YfvuERk1yQlHykr/+QicqzXjHcN5wLwNV+p6+t6CdDCBD3TdWaXs8
+         pLfwTL0kdog3xXnVB1F62U98k7ajwQR+8WlLs6Ksn8/yb5GClQG5U1ABB9/yAoh0+Ivy
+         guBQ==
+X-Gm-Message-State: AOJu0Yxymhd1iWwTqMzxKeXJYPpVgsSuyVsm/sya2ZFuHlfijfp8Qzsi
+	phNcK2BBeZ6y8Wxxin+AoiggEpoUFL6kxEMbllHYYStQm278uuhgct8EtmrrTCp4PLwfo8pJSVD
+	jio4=
+X-Gm-Gg: ASbGncvzxQ6IXmXZdirLmh1OnsZKLTnZ+oyG2/DUYTxF1z4i1NZQX8K45IyLPpVQwmv
+	4ySRERR3qvItylw2/a3dJi1J+D49ZEf6hsTalBXzeza1L3+V6e7fjSy8yd4gehpZX/j0stux6c4
+	2psvw4ABIEVrh+rd19PISnFpTlcWg7kpTrGB3UJhO5HwLP/cue2mnDYYTX13dDap+qe4a9gYQOV
+	hMI6HSdN0z/G/gu022O/sZyibgqOJk24w0JIDnsMrMPJejOqhAbF7xJ0at0l6qBSCbaIQtsC1lA
+	3b/l4lQfidpfdihbsCt5oLVsVAympi4tmg4pFP5/1GjYZCKa8WBYURUaGfGefWv8gSr8TYJ0k6i
+	7gVsY3IvwJqCRxb4w1X6Z9EDc2V1TMkeoBrnvBok9/89qfAio1ga7fBMrdCsU6LVfSYFox5Y/pD
+	/R+HPSpTzgXljJxIafsnybr5bHdC951ZfHHlKsKxUg
+X-Google-Smtp-Source: AGHT+IHUdKcsP1uLEfvkoeilVKI2pf5MCSqv24jXqmkwRs0dsE4a/bw2PQvwWhFV5Nif+44JxLmd6g==
+X-Received: by 2002:ad4:594e:0:b0:87c:2900:1fa8 with SMTP id 6a1803df08f44-882926b1878mr244905666d6.46.1763433098238;
+        Mon, 17 Nov 2025 18:31:38 -0800 (PST)
+Received: from crass-HP-ZBook-15-G2 ([199.58.83.10])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-882865cf848sm104511636d6.56.2025.11.17.18.31.36
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 18:31:38 -0800 (PST)
+Date: Mon, 17 Nov 2025 20:31:31 -0600
+From: Glenn Washburn <development@efficientek.com>
+To: linux-um <linux-um@lists.infradead.org>
+Subject: No more non-root networking modes?
+Message-ID: <20251117203131.479a1cfd@crass-HP-ZBook-15-G2>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/7] mm: make PT_RECLAIM depend on
- MMU_GATHER_RCU_TABLE_FREE && 64BIT
-To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
- npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
- akpm@linux-foundation.org, ioworker0@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1763117269.git.zhengqi.arch@bytedance.com>
- <0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch@bytedance.com>
-From: "David Hildenbrand (Red Hat)" <david@kernel.org>
-Content-Language: en-US
-In-Reply-To: <0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251117_085805_794384_A627700B 
-X-CRM114-Status: GOOD (  16.94  )
+X-CRM114-CacheID: sfid-20251117_183140_302356_26984003 
+X-CRM114-Status: UNSURE (   5.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,74 +94,22 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: development@efficientek.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 14.11.25 12:11, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
+Hi all,
 
-Subject: s/&&/&/
+I'm just now noticing that earlier this year obsolete networking
+transports were removed (commit 65eaac591b75). This included SLiRP,
+which was to my knowledge the only transport that supported network
+access as an unprivileged user (no privileged access needed to setup
+the transport either). Am I wrong about that? If not, I'm curious as to
+why functionality that could not be achieved by other means was
+dropped? And if there are any work arounds? I can understand why other
+transports that need privileged access to setup, but were inferior to
+other existing transports would be removed. I write this as someone who
+is currently using the SLiRP transport.
 
-> 
-> Make PT_RECLAIM depend on MMU_GATHER_RCU_TABLE_FREE so that PT_RECLAIM can
-> be enabled by default on all architectures that support
-> MMU_GATHER_RCU_TABLE_FREE.
-> 
-> Considering that a large number of PTE page table pages (such as 100GB+)
-> can only be caused on a 64-bit system, let PT_RECLAIM also depend on
-> 64BIT.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->   arch/x86/Kconfig | 1 -
->   mm/Kconfig       | 6 +-----
->   2 files changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index eac2e86056902..96bff81fd4787 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -330,7 +330,6 @@ config X86
->   	select FUNCTION_ALIGNMENT_4B
->   	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->   	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
->   	select ARCH_SUPPORTS_SCHED_SMT		if SMP
->   	select SCHED_SMT			if SMP
->   	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index a5a90b169435d..e795fbd69e50c 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -1440,14 +1440,10 @@ config ARCH_HAS_USER_SHADOW_STACK
->   	  The architecture has hardware support for userspace shadow call
->             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->   
-> -config ARCH_SUPPORTS_PT_RECLAIM
-> -	def_bool n
-> -
->   config PT_RECLAIM
->   	bool "reclaim empty user page table pages"
->   	default y
-> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
-> -	select MMU_GATHER_RCU_TABLE_FREE
-> +	depends on MMU_GATHER_RCU_TABLE_FREE && MMU && SMP && 64BIT
-
-Who would we have MMU_GATHER_RCU_TABLE_FREE without MMU? (can we drop 
-the MMU part)
-
-Why do we care about SMP in the first place? (can we frop SMP)
-
-But I also wonder why we need "MMU_GATHER_RCU_TABLE_FREE && 64BIT":
-
-Would it be harmful on 32bit (sure, we might not reclaim as much, but 
-still there is memory to be reclaimed?)?
-
-If all 64BIT support MMU_GATHER_RCU_TABLE_FREE (as you previously 
-state), why can't we only check for 64BIT?
-
--- 
-Cheers
-
-David
+Glenn
 
