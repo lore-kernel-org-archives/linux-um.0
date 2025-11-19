@@ -4,64 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F641CF31B0
-	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 12:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2928FCF31B0
+	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 12:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9eiK6+KP3sQeus9efFgfEbOH2adoGq+RjOojwb3xNjU=; b=ocDe63msJ1Ut6E4bUZQz6pTdQZ
-	Yz+B1KJEx6RRWhbovvCDibzfJ75AZzVafP7zEUvBiQkQVdnz7yC/t/lCBvQ47dNO9DuZlm9ZXxkhZ
-	xTy81PXXlR+sfWqUCEA7MQrVhQJ14Jcirl1EpL/nQMnOjHDwAYs1yWI9A7zgs6kL4LuDn58umIkVJ
-	RG3rWGIeG3B4Vn4GCNw4cJ02Iw+msMqdsn8iTY50iTCbIOF8PmJ8NXAFCK6Tas41X/GUkB8ZsmaZk
-	pr0OS8oYrIrg5c+nyqC4pf4rTGz+gXO0XDGmavvauhXVvYHqSHx7Z3JtcIM9PjSEDlI8nBNk+M6ps
-	w3fIMVgA==;
+	bh=2dwmow3TuepoCNwXY3P6hcFzEoPrM376KiDIO88jNoM=; b=Mr8CI1s5Aew+OSjzVMLZHsvRRS
+	LAq8FhqlgiUFpEsKr//zc2wNFpbe5kfHDkrtMayeiMr63r1jZQUB/OeN7/13XO63DybYrSI4293NA
+	FdkVZFakr3EWlWORSnNnhceE0zwYUjSxyjxLBygobfwQXd4V04+WRWh3aEGrg31p68TlW027J4UOr
+	5f/GNupgEZ9stQvRxWzCb1cu/mHp9Xp9Fto2bSbEXxP6JinYlLi67PAZsAx6YopkmbwwZ5koJWIkg
+	FVFzKH8JLdk2ImUeMvMKlLcFh66n55Xr9eB7TO0iXcoOu3o6cjkGT4WG7tiQFLls82/NUgzSbJc6a
+	pU86mDUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLh87-000000036Ta-36Ws;
-	Wed, 19 Nov 2025 12:17:47 +0000
-Received: from out-184.mta0.migadu.com ([2001:41d0:1004:224b::b8])
+	id 1vLhEz-000000037bg-19mJ;
+	Wed, 19 Nov 2025 12:24:53 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLh85-000000036T4-1HJa
-	for linux-um@lists.infradead.org;
-	Wed, 19 Nov 2025 12:17:46 +0000
-Message-ID: <939e3496-5012-4e7d-8a33-e9de4354d4fd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763554662;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9eiK6+KP3sQeus9efFgfEbOH2adoGq+RjOojwb3xNjU=;
-	b=Zqy5lX1a8NH32Urc6QLDGvEAqomF2lRwsHiYL0l9i1s/rF3dYjFpcG8gjDNr8eJS2XwRye
-	ZVGhpKOTCj8lKt/dfRzfgKw3J1mAcg3B69SNBb0spvOTCzuF7kU0BWqQyFrC8oudnT+l5K
-	mEXeAABjnQT0helIioSYA0k5eRwmsng=
-Date: Wed, 19 Nov 2025 20:17:31 +0800
+	id 1vLhEq-000000037T9-3IUb;
+	Wed, 19 Nov 2025 12:24:49 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 0EAD8432FE;
+	Wed, 19 Nov 2025 12:24:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21EBCC116D0;
+	Wed, 19 Nov 2025 12:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763555083;
+	bh=iBiJTRsmPeT8yT7z7CbiOkAhObefLKlCnyqgtKvMuCk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OBSgFKD3+2NvaYtuKw/QdLvJ4kd1qTjKiTeRyHWtELBx2sa2VxIWisexyF7jgJgeD
+	 8/7qcHogwMEYULif7/zT0Blo6SdqmJfDDkjOtqvhR34sRQy8h5rR4W7ewalVmRGYey
+	 Jc1bz1eKKmip3Nhp5EEVKNnH4+TcAvXMYIX4DJVlFe1cnT7kWo4T2BMafaaKj6W0QE
+	 tksi9TyyDvEnpbaBkBecgBzphpzgjI0aD0eMgPZ+3ODv+MpVNh0XNg8xSfrSSBC/HP
+	 tX3pn90oDkV+9B6k4FD+XGPRfz+Fs8u7hySZerofnUkosVm2LUZ1/W1me0CAQMB7jS
+	 lCDTRg/6ptIBg==
+Message-ID: <7160b6ec-4da5-4273-be91-1339bd00d009@kernel.org>
+Date: Wed, 19 Nov 2025 13:24:35 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/7] mm: change mm/pt_reclaim.c to use asm/tlb.h
- instead of asm-generic/tlb.h
-To: "David Hildenbrand (Red Hat)" <david@kernel.org>, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org,
- dev.jain@arm.com, akpm@linux-foundation.org, ioworker0@gmail.com,
- linmag7@gmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/7] mm: make PT_RECLAIM depend on
+ MMU_GATHER_RCU_TABLE_FREE && 64BIT
+To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
+ npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
+ akpm@linux-foundation.org, ioworker0@gmail.com
 Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mm@kvack.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, loongarch@lists.linux.dev,
  linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
  linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1763537007.git.zhengqi.arch@bytedance.com>
- <e9d510106b5bf72a9b577b8c5ad161fd3c29c2b6.1763537007.git.zhengqi.arch@bytedance.com>
- <e539179f-668e-452d-a08e-6143392dae6a@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <e539179f-668e-452d-a08e-6143392dae6a@kernel.org>
+References: <cover.1763117269.git.zhengqi.arch@bytedance.com>
+ <0a4d1e6f0bf299cafd1fc624f965bd1ca542cea8.1763117269.git.zhengqi.arch@bytedance.com>
+ <355d3bf3-c6bc-403e-9f19-89259d868611@kernel.org>
+ <195baf7c-1f4e-46a4-a4aa-e68e7d00c0f9@linux.dev>
+ <9386032c-9840-49da-83f9-74b112f3e752@kernel.org>
+ <956c7ca1-bce8-4eed-8a86-bc8adfc708b8@linux.dev>
+ <6a22ff95-28c1-4c1d-a1a8-6a391bcc8c86@kernel.org>
+ <479b0409-335f-4450-8eb2-5270a5847f5e@linux.dev>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Content-Language: en-US
+In-Reply-To: <479b0409-335f-4450-8eb2-5270a5847f5e@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251119_041745_504838_30B64701 
-X-CRM114-Status: GOOD (  13.43  )
+X-CRM114-CacheID: sfid-20251119_042444_898920_FEBD5260 
+X-CRM114-Status: GOOD (  24.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,47 +85,203 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-On 11/19/25 7:41 PM, David Hildenbrand (Red Hat) wrote:
-> On 19.11.25 08:31, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 19.11.25 13:13, Qi Zheng wrote:
+> 
+> 
+> On 11/19/25 7:35 PM, David Hildenbrand (Red Hat) wrote:
+>> On 19.11.25 12:02, Qi Zheng wrote:
+>>> Hi David,
+>>>
+>>> On 11/19/25 6:19 PM, David Hildenbrand (Red Hat) wrote:
+>>>> On 18.11.25 13:02, Qi Zheng wrote:
+>>>>>
+>>>>>
+>>>>> On 11/18/25 12:57 AM, David Hildenbrand (Red Hat) wrote:
+>>>>>> On 14.11.25 12:11, Qi Zheng wrote:
+>>>>>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>>>>
+>>>>>> Subject: s/&&/&/
+>>>>>
+>>>>> will do.
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Make PT_RECLAIM depend on MMU_GATHER_RCU_TABLE_FREE so that
+>>>>>>> PT_RECLAIM
+>>>>>>> can
+>>>>>>> be enabled by default on all architectures that support
+>>>>>>> MMU_GATHER_RCU_TABLE_FREE.
+>>>>>>>
+>>>>>>> Considering that a large number of PTE page table pages (such as
+>>>>>>> 100GB+)
+>>>>>>> can only be caused on a 64-bit system, let PT_RECLAIM also depend on
+>>>>>>> 64BIT.
+>>>>>>>
+>>>>>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>>>>> ---
+>>>>>>>      arch/x86/Kconfig | 1 -
+>>>>>>>      mm/Kconfig       | 6 +-----
+>>>>>>>      2 files changed, 1 insertion(+), 6 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>>>>>> index eac2e86056902..96bff81fd4787 100644
+>>>>>>> --- a/arch/x86/Kconfig
+>>>>>>> +++ b/arch/x86/Kconfig
+>>>>>>> @@ -330,7 +330,6 @@ config X86
+>>>>>>>          select FUNCTION_ALIGNMENT_4B
+>>>>>>>          imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>>>>>>>          select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>>>>>>> -    select ARCH_SUPPORTS_PT_RECLAIM        if X86_64
+>>>>>>>          select ARCH_SUPPORTS_SCHED_SMT        if SMP
+>>>>>>>          select SCHED_SMT            if SMP
+>>>>>>>          select ARCH_SUPPORTS_SCHED_CLUSTER    if SMP
+>>>>>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>>>>>> index a5a90b169435d..e795fbd69e50c 100644
+>>>>>>> --- a/mm/Kconfig
+>>>>>>> +++ b/mm/Kconfig
+>>>>>>> @@ -1440,14 +1440,10 @@ config ARCH_HAS_USER_SHADOW_STACK
+>>>>>>>            The architecture has hardware support for userspace shadow
+>>>>>>> call
+>>>>>>>                stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>>>>>>> -config ARCH_SUPPORTS_PT_RECLAIM
+>>>>>>> -    def_bool n
+>>>>>>> -
+>>>>>>>      config PT_RECLAIM
+>>>>>>>          bool "reclaim empty user page table pages"
+>>>>>>>          default y
+>>>>>>> -    depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+>>>>>>> -    select MMU_GATHER_RCU_TABLE_FREE
+>>>>>>> +    depends on MMU_GATHER_RCU_TABLE_FREE && MMU && SMP && 64BIT
+>>>>>>
+>>>>>> Who would we have MMU_GATHER_RCU_TABLE_FREE without MMU? (can we drop
+>>>>>> the MMU part)
+>>>>>
+>>>>> OK.
+>>>>>
+>>>>>>
+>>>>>> Why do we care about SMP in the first place? (can we frop SMP)
+>>>>>
+>>>>> OK.
+>>>>>
+>>>>>>
+>>>>>> But I also wonder why we need "MMU_GATHER_RCU_TABLE_FREE && 64BIT":
+>>>>>>
+>>>>>> Would it be harmful on 32bit (sure, we might not reclaim as much, but
+>>>>>> still there is memory to be reclaimed?)?
+>>>>>
+>>>>> This is also fine on 32bit, but the benefits are not significant, So I
+>>>>> chose to enable it only on 64-bit.
+>>>>
+>>>> Right. Address space is smaller, but also memory is smaller. Not that I
+>>>> think we strictly *must* to support 32bit, I merely wonder why we
+>>>> wouldn't just enable it here.
+>>>>
+>>>> OTOH, if there is a good reason we cannot enable it, we can definitely
+>>>> just keep it 64bit only.
+>>>
+>>> The only difficulty is this:
+>>>
+>>>>
+>>>>>
+>>>>> I actually tried enabling MMU_GATHER_RCU_TABLE_FREE on all
+>>>>> architectures, and apart from sparc32 being a bit troublesome (because
+>>>>> it uses mm->page_table_lock for synchronization within
+>>>>> __pte_free_tlb()), the modifications were relatively simple.
+>>>
+>>> in sparc32:
+>>>
+>>> void pte_free(struct mm_struct *mm, pgtable_t ptep)
+>>> {
+>>>            struct page *page;
+>>>
+>>>            page = pfn_to_page(__nocache_pa((unsigned long)ptep) >>
+>>> PAGE_SHIFT);
+>>>            spin_lock(&mm->page_table_lock);
+>>>            if (page_ref_dec_return(page) == 1)
+>>>                    pagetable_dtor(page_ptdesc(page));
+>>>            spin_unlock(&mm->page_table_lock);
+>>>
+>>>            srmmu_free_nocache(ptep, SRMMU_PTE_TABLE_SIZE);
+>>> }
+>>>
+>>> #define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
+>>>
+>>> To enable MMU_GATHER_RCU_TABLE_FREE on sparc32, we need to implement
+>>> __tlb_remove_table(), and call the pte_free() above in
+>>> __tlb_remove_table().
+>>>
+>>> However, the __tlb_remove_table() does not have an mm parameter:
+>>>
+>>> void __tlb_remove_table(void *_table)
+>>>
+>>> so we need to use another lock instead of mm->page_table_lock.
+>>>
+>>> I have already sent the v2 [1], and perhaps after that I can enable
+>>> PT_RECLAIM on all 32-bit architectures as well.
+>>>
 >>
->> Generally, the asm/tlb.h will include asm-generic/tlb.h, so change
->> mm/pt_reclaim.c to use asm/tlb.h instead of asm-generic/tlb.h. This can
->> also fix compilation errors on some architecture when CONFIG_PT_RECLAIM
->> is enabled (such as alpha).
-> 
-> "This is a preparation for enabling CONFIG_PT_RECLAIM on other 
-> architectures, such as alpha."
-
-OK, will modify it in the next version.
-
-> 
+>> I guess if we just make it depend on MMU_GATHER_RCU_TABLE_FREE that will
+>> be fine.
 >>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   mm/pt_reclaim.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>> [1].
+>>> https://lore.kernel.org/all/
+>>> cover.1763537007.git.zhengqi.arch@bytedance.com/
+>>>
+>>>>>
+>>>>>>
+>>>>>> If all 64BIT support MMU_GATHER_RCU_TABLE_FREE (as you previously
+>>>>>> state), why can't we only check for 64BIT?
+>>>>>
+>>>>> OK, will do.
+>>>>
+>>>> This was also more of a question for discussion:
+>>>>
+>>>> Would it make sense to have
+>>>>
+>>>> config PT_RECLAIM
+>>>>        def_bool y
+>>>>        depends on MMU_GATHER_RCU_TABLE_FREE
+>>>
+>>> make sense.
+>>>
+>>>>
+>>>> (a) Would we want to make it configurable (why?)
+>>>
+>>> No, it was just out of caution before.
+>>>
+>>>> (b) Do we really care about SMP (why?)
+>>>
+>>> No. Simply because the following situation is impossible to occur:
+>>>
+>>> pte_offset_map
+>>> traversing the PTE page table
+>>>
+>>> <preemption or hardirq>
+>>>
+>>> call madvise(MADV_DONTNEED)
+>>>
+>>> so there's no need to free PTE page via RCU.
+>>>
+>>>> (c) Do we want to limit to 64bit (why?)
+>>>
+>>> No, just because the profit is greater at 64-BIT.
 >>
->> diff --git a/mm/pt_reclaim.c b/mm/pt_reclaim.c
->> index 0d9cfbf4fe5d8..46771cfff8239 100644
->> --- a/mm/pt_reclaim.c
->> +++ b/mm/pt_reclaim.c
->> @@ -2,7 +2,7 @@
->>   #include <linux/hugetlb.h>
->>   #include <linux/pgalloc.h>
->> -#include <asm-generic/tlb.h>
->> +#include <asm/tlb.h>
->>   #include "internal.h"
+>> I was briefly wondering if on 32bit (but maybe also on 64bit with
+>> configurable user page table levels?) we could have the scenario that we
+>> only have two page table levels.
+>>
+>> So reclaiming the PMD level (corresponding to the highest level) would
 > 
-> Right, we're using pte_free_tlb(), and the default lives in include/asm- 
-> generic/tlb.h.
-> 
-> Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
+> reclaiming the PMD level? The PT_RECLAIM only reclaim PTE pages, not PMD
+> pages, am I misunderstanding something?
 
-Thanks!
+Sorry, I looked too much into PMD table sharing the last days :D
 
-> 
+You're right, it would work in any case even with only 2 levels of apge 
+tables.
 
+-- 
+Cheers
+
+David
 
