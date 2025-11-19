@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4205CF2567
-	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 07:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DD43CF3185
+	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 10:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z/QZPwfh2tBLiGMNDgv3nVc2+27U6V/3aKYz1C9WyO4=; b=pE5jI0+hYQKEe7aFciZEoyLLFp
-	xVWAGfBK4USTfaAfPr0yTNgSHT2s5PmGZ/IqQoR455PMQ+81ocaRFzD5lzSVSw2XlAWKX4WI8HT3U
-	G4vUxj/7KEmciAI+OWKDC5Y+lf2BKQ4lLKiyc8TjcBN7WwIaH9mdhQDqISR2iMRYl/6FlVI/HB+c7
-	IDlnOezykrYaYGV+ZWUho2xN6fZ+kmjP48NC/AvUXPwT3AJL773MLB+RkjyZdMLIyZdAf6TFxTUZN
-	gow4kWLjQeTwUXTRBlTyuXuokoKgHmVF6T4vsrAcEN/zd6ph3KKLSLHogmCH4VbBpq+SciWwU0IDn
-	QHGmZ/bw==;
+	bh=szA32RJyVbeRYTjJ7Ow9x4Y9um0eAlyuuRKChzXOWH8=; b=zE52Vkz+On21FgUoJifBDICng+
+	ssuyG14Z58gOZ1nJaqiMUVU2VJg4Pkb4MhnenHAgvOFgyDjgpNxa4u1tQyQhXPn+5dtYgDXDuDSZv
+	DnlmOV8JCWhw3zkkg+H/04b3m1z+xWquW3EXtoqVw60TOSkgXadtcUkzfRnBA51ESw0Jdia3W+YQu
+	zzRplHXWAlvNl538Pw6fF7Igp1SKKx0RJgw21L+fg4BkWF/RnAr7s6kukqy3C8O6KDP7CEkrJcSNq
+	bhMy3v8xf1fsecw0RdEaLSNYy1z2TnirwGsPlZFYC1rTg6L6Pw7fFGwna9U95KKAiHmWtwZASrAAF
+	iJHdoGzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLchD-00000002idK-2ysJ;
-	Wed, 19 Nov 2025 07:33:43 +0000
-Received: from out-183.mta0.migadu.com ([91.218.175.183])
+	id 1vLfCC-00000002wl2-3Ghv;
+	Wed, 19 Nov 2025 10:13:52 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLchA-00000002ias-0CFB
-	for linux-um@lists.infradead.org;
-	Wed, 19 Nov 2025 07:33:41 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763537617;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/QZPwfh2tBLiGMNDgv3nVc2+27U6V/3aKYz1C9WyO4=;
-	b=LUgmfphZq+fvy8Fvu1tjVnrqGz9k2q8SBhj9h64+wRn+7bojNcXZyqdp6prQqscS2feFX8
-	bObNs5syxHC8+5XyV15RIhnayEGuvN50r1EUj1rPlsxFv7tOY7PB78KcZic/oWfkHREL8W
-	JIpYE0IsfsnkMqTZu6kB6Akc6TgnRVo=
-From: Qi Zheng <qi.zheng@linux.dev>
-To: will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	peterz@infradead.org,
-	dev.jain@arm.com,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	ioworker0@gmail.com,
-	linmag7@gmail.com
-Cc: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-alpha@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 7/7] mm: enable PT_RECLAIM on all 64-bit architectures
-Date: Wed, 19 Nov 2025 15:31:24 +0800
-Message-ID: <caacf08b765ef00770b7c75afdb5e5754485b2aa.1763537007.git.zhengqi.arch@bytedance.com>
-In-Reply-To: <cover.1763537007.git.zhengqi.arch@bytedance.com>
-References: <cover.1763537007.git.zhengqi.arch@bytedance.com>
+	id 1vLfCA-00000002wkX-0iuW;
+	Wed, 19 Nov 2025 10:13:51 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 8355C43FA7;
+	Wed, 19 Nov 2025 10:13:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB52CC16AAE;
+	Wed, 19 Nov 2025 10:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763547226;
+	bh=8IYxu/C3qrGid3n3xMVLRSBITnzao99XRln0ciNWneY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LdGoDxJt9h1Tlf1FCndkLyh+OwHFWpLYja9EnuhCaStGYdTO/u/3+Fxjm8oCvXk2/
+	 E35KNa8rkDsQ4bPiZhB7BvC+7G9u3vv2O95UQNcf+uUOrfyBdK3uT+eewjqJwxMg6f
+	 O1rm2iLUscQJgkXdhNOc9AFc9kCFpZIhNjSzZINyqhCmWVFyFPOvsz8HJeqmQXW4+H
+	 s7XMLF+PxrmhzX0byFy0OOO5Djr+zth+JdHGDpKJGZ+dUbNfoMyOEIkvtSt3VTig0u
+	 DjN5MNM3mx4xWC+cutnpwm7m5sszHgWntNoXn6IOKKCqq/T/Yv6HJIdQv894sJyfel
+	 bVNiG5QRYn7SA==
+Message-ID: <afecde77-a4af-40f1-a905-9de8a1bdd783@kernel.org>
+Date: Wed, 19 Nov 2025 11:13:37 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] enable PT_RECLAIM on all 64-bit architectures
+To: Qi Zheng <arch0.zheng@gmail.com>, Qi Zheng <qi.zheng@linux.dev>,
+ will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
+ peterz@infradead.org, dev.jain@arm.com, akpm@linux-foundation.org,
+ ioworker0@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1763117269.git.zhengqi.arch@bytedance.com>
+ <83e88171-54cb-4112-a344-f6a7d7f13784@kernel.org>
+ <f7f0ca8d-bca2-4a3e-8c45-85cba1b0ff18@gmail.com>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Content-Language: en-US
+In-Reply-To: <f7f0ca8d-bca2-4a3e-8c45-85cba1b0ff18@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251118_233340_240876_7A584121 
-X-CRM114-Status: UNSURE (   9.36  )
+X-CRM114-CacheID: sfid-20251119_021350_236115_154830E8 
+X-CRM114-Status: UNSURE (   8.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,52 +81,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 18.11.25 12:53, Qi Zheng wrote:
+> 
+> 
+> On 11/18/25 12:53 AM, David Hildenbrand (Red Hat) wrote:
+>> On 14.11.25 12:11, Qi Zheng wrote:
+>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>
+>>> Hi all,
+>>>
+>>> This series aims to enable PT_RECLAIM on all 64-bit architectures.
+>>>
+>>> On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of
+>>> empty PTE
+>>> page table pages (such as 100GB+). To resolve this problem, we need to
+>>> enable
+>>> PT_RECLAIM, which depends on MMU_GATHER_RCU_TABLE_FREE.
+>>>
+>>
+>> Makes sense!
+>>
+>>> Therefore, this series first enables MMU_GATHER_RCU_TABLE_FREE on all
+>>> 64-bit
+>>> architectures, and finally makes PT_RECLAIM depend on
+>>> MMU_GATHER_RCU_TABLE_FREE
+>>> && 64BIT. This way, PT_RECLAIM can be enabled by default on all 64-bit
+>>> architectures.
+>>
+>> Could we then even go ahead and stop making PT_RECLAIM user-selectable?
+> 
+> OK, will change to:
 
-Now, the MMU_GATHER_RCU_TABLE_FREE is enabled on all 64-bit architectures,
-so make PT_RECLAIM depend on 64BIT, thereby enabling PT_RECLAIM on all
-64-bit architectures.
+Was more of a question: is there any scenario where we ran so far into 
+issues with it?
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- arch/x86/Kconfig | 1 -
- mm/Kconfig       | 9 ++-------
- 2 files changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index eac2e86056902..96bff81fd4787 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -330,7 +330,6 @@ config X86
- 	select FUNCTION_ALIGNMENT_4B
- 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
- 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
--	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
- 	select ARCH_SUPPORTS_SCHED_SMT		if SMP
- 	select SCHED_SMT			if SMP
- 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
-diff --git a/mm/Kconfig b/mm/Kconfig
-index d548976d0e0ad..94eec5c0cad96 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -1448,14 +1448,9 @@ config ARCH_HAS_USER_SHADOW_STACK
- 	  The architecture has hardware support for userspace shadow call
-           stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
- 
--config ARCH_SUPPORTS_PT_RECLAIM
--	def_bool n
--
- config PT_RECLAIM
--	bool "reclaim empty user page table pages"
--	default y
--	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
--	select MMU_GATHER_RCU_TABLE_FREE
-+	def_bool y
-+	depends on 64BIT
- 	help
- 	  Try to reclaim empty user page table pages in paths other than munmap
- 	  and exit_mmap path.
 -- 
-2.20.1
+Cheers
 
+David
 
