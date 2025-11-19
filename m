@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2F67CF2588
-	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 07:33:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96F75CF2588
+	for <linux-um@archiver.kernel.org>; Wed, 19 Nov 2025 07:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zdgUvYzcKft0e9ATGbEv1Xh5QzTrrx2Vkhg8Ynjkseo=; b=CsMnAIOlTk2ZA+o+hUEy7k/w09
-	jkG7CP+rPCRKOnlBdTJlmg6uUyISWd22S1PZj4XAqg/yBfozGVj/64cs77f04u1wlBecUKxEC8Wve
-	XP+e7C5rcdRFEq27OoAKM6qNhgo5oBc/Iw/QXgP2+ZHinStJYJ109BQNKPodxrLzoz4MQwLNGRX7/
-	+nAD+2JPnGjl9PH9cDxkQwgQRxxlwQVdgOexF/W64yUYynx93I/QXL4AAdqkqei1xSLtECQWSsdGQ
-	D358bOZppjKEABTIT7fVXj1P42+PlWDz0Bh3DnqIyp3G7cPnavb+0Kb930tzlSwgcO67bnLo/+xOO
-	0/ujv2VA==;
+	bh=8PNYJl+4luznSu7Qs41hn6BnOWw9fSYJ1f3qY5qKkjU=; b=I7xYRMOOx+eE7dfSUh0W6roYMK
+	60Lpe/xNvqFcU/6zcGOONh6jiLgmTxasSQbuVyrd3CSwT21Z02HY8vaPxuu2+04awlq/848pbo/Nm
+	jBEfw4pxgO9ZDYGK3ZEGcXM75wZewmhzWwl0YH9ms2EJCe/5kAXExhnPwLovEhzDmhTcGBja29XKT
+	gGWtUM5NA3yxDdS+Do3OTS8TF4HTRkDuirXHSivKL2VUKtThBNWloAqTOi9QuKeuOAAzdde4LUOD5
+	QkmHYrq1tg/3L3kdztvS+u/PnUz3b2i5WkcWqKdov6z7j7mvWd0cNeIgcciM5/7P9qbrA6jCxE/4D
+	F2QT75FQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLcgn-00000002iRD-39cd;
-	Wed, 19 Nov 2025 07:33:17 +0000
-Received: from out-170.mta0.migadu.com ([2001:41d0:1004:224b::aa])
+	id 1vLcgs-00000002iTd-1XWG;
+	Wed, 19 Nov 2025 07:33:22 +0000
+Received: from out-177.mta0.migadu.com ([91.218.175.177])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLcgl-00000002iPM-023L
+	id 1vLcgq-00000002iRj-2g0K
 	for linux-um@lists.infradead.org;
-	Wed, 19 Nov 2025 07:33:16 +0000
+	Wed, 19 Nov 2025 07:33:21 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1763537588;
+	t=1763537598;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zdgUvYzcKft0e9ATGbEv1Xh5QzTrrx2Vkhg8Ynjkseo=;
-	b=Pb5LFJ+IU/AZ2Oz4xGklQJtAr7Es3lk5E9mJtBOlpGjpEgsHLj1bdTC0GTVwKClzrR4LOK
-	intXEaBo7Ss5/OCkxQXg0NTRpmfVxlu9kTak8I4es9WvoPUCvmE9L4Qkpx6nGAl9AKSns5
-	kY9KU02r2QCtq/wVBDCUyb2Auh35ZjY=
+	bh=8PNYJl+4luznSu7Qs41hn6BnOWw9fSYJ1f3qY5qKkjU=;
+	b=UPZyoHTWlvcojbrasT0m6wZAA4vVJvUtdfGcqOc224298mAJZj8RgoKfcBwgHvUNwVVlYY
+	xUXSg/BFyvnGHDg1OT0FG3OvfiUEgAljF44L6ANy/FULPK7Dli6T59Yj/3HWliWxACip+2
+	cxcFG/pEkqS5KVkntRXLnkKsYrtQDIY=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: will@kernel.org,
 	aneesh.kumar@kernel.org,
@@ -57,18 +57,19 @@ Cc: linux-arch@vger.kernel.org,
 	linux-parisc@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH v2 4/7] mips: mm: enable MMU_GATHER_RCU_TABLE_FREE
-Date: Wed, 19 Nov 2025 15:31:21 +0800
-Message-ID: <1ef6075dca55a0ace4a6de6350531e4bc513080e.1763537007.git.zhengqi.arch@bytedance.com>
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH v2 5/7] parisc: mm: enable MMU_GATHER_RCU_TABLE_FREE
+Date: Wed, 19 Nov 2025 15:31:22 +0800
+Message-ID: <74f0e72f11347656a9de0d4b9e2bccc17e4338a7.1763537007.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1763537007.git.zhengqi.arch@bytedance.com>
 References: <cover.1763537007.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251118_233315_197072_9798EF9B 
-X-CRM114-Status: UNSURE (   9.03  )
+X-CRM114-CacheID: sfid-20251118_233320_866750_861A2D00 
+X-CRM114-Status: UNSURE (   8.44  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,56 +93,40 @@ first enable MMU_GATHER_RCU_TABLE_FREE to prepare for enabling the
 PT_RECLAIM feature, which resolves this problem.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
 ---
- arch/mips/Kconfig               | 1 +
- arch/mips/include/asm/pgalloc.h | 7 +++----
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/parisc/Kconfig           | 1 +
+ arch/parisc/include/asm/tlb.h | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e8683f58fd3e2..8b16dd4db7c08 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -99,6 +99,7 @@ config MIPS
- 	select IRQ_FORCED_THREADING
- 	select ISA if EISA
- 	select LOCK_MM_AND_FIND_VMA
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 47fd9662d8005..62d5a89d5c7bc 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -79,6 +79,7 @@ config PARISC
+ 	select GENERIC_CLOCKEVENTS
+ 	select CPU_NO_EFFICIENT_FFS
+ 	select THREAD_INFO_IN_TASK
 +	select MMU_GATHER_RCU_TABLE_FREE
- 	select MODULES_USE_ELF_REL if MODULES
- 	select MODULES_USE_ELF_RELA if MODULES && 64BIT
- 	select PERF_USE_VMALLOC
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 942af87f1cddb..9a7e5af16c00b 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -48,8 +48,7 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- extern void pgd_init(void *addr);
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
+ 	select NEED_DMA_MAP_STATE
+ 	select NEED_SG_DMA_LENGTH
+ 	select HAVE_ARCH_KGDB
+diff --git a/arch/parisc/include/asm/tlb.h b/arch/parisc/include/asm/tlb.h
+index 44235f367674d..4501fee0a8fa4 100644
+--- a/arch/parisc/include/asm/tlb.h
++++ b/arch/parisc/include/asm/tlb.h
+@@ -5,8 +5,8 @@
+ #include <asm-generic/tlb.h>
  
--#define __pte_free_tlb(tlb, pte, address)	\
--	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-+#define __pte_free_tlb(tlb, pte, address)	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 
-@@ -72,7 +71,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
- 	return pmd;
- }
- 
--#define __pmd_free_tlb(tlb, x, addr)	pmd_free((tlb)->mm, x)
-+#define __pmd_free_tlb(tlb, x, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(x))
+ #if CONFIG_PGTABLE_LEVELS == 3
+-#define __pmd_free_tlb(tlb, pmd, addr)	pmd_free((tlb)->mm, pmd)
++#define __pmd_free_tlb(tlb, pmd, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
+ #endif
+-#define __pte_free_tlb(tlb, pte, addr)	pte_free((tlb)->mm, pte)
++#define __pte_free_tlb(tlb, pte, addr)	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
  
  #endif
- 
-@@ -98,7 +97,7 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
- 	set_p4d(p4d, __p4d((unsigned long)pud));
- }
- 
--#define __pud_free_tlb(tlb, x, addr)	pud_free((tlb)->mm, x)
-+#define __pud_free_tlb(tlb, x, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(x))
- 
- #endif /* __PAGETABLE_PUD_FOLDED */
- 
 -- 
 2.20.1
 
