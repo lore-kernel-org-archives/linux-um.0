@@ -4,55 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F248CD129C
-	for <linux-um@archiver.kernel.org>; Sat,  8 Nov 2025 16:32:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FE8BCFC29E
+	for <linux-um@archiver.kernel.org>; Fri, 21 Nov 2025 18:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:In-Reply-To:Date:From:Cc:To:Subject:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=8qH74T/unu+vyyxcXmOmm9hgYi9a+jF2BcueMkCbFM0=; b=2DhE9ma8mGMAUfKJRX0OfnDvZN
-	RNnhKOEM2JeQjL2uD+DLdzUKu7/iJQCW49ud0/CGpItYo1+Q1eJhMF6SddsrVWBv9ohLgXc+W5oP+
-	uMbS5Qi0KwKD7mjBIaQxjqZ1jItdtkGDTbObMOcCkuYiO5SuddIsazZ36/RZ6XHhoVqexODSf0mmY
-	m4MOWivtsb0uRolVjq+p3AZFncbCWYaCw8DthW4qwXKrvpOli+atmbgUhyxDZLaT4R4+DpjseIqPM
-	W2Juk3a2zfgh44gbBb20tMoZnsZ65avvtFHTqjXUIxM1dz/fuFu9+npKxi8c8CON+WkXPsgsIqcXP
-	HWba3AAA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ibfn7mBD8G88qTHwmiSSUBpyhylgYk5Y/kKJqSpwQsI=; b=U2w4AT/AO3Rby3
+	PkxGDHgL5A1lYYJP72VqYxpv4w3LN2pk/qAnRqoJxrBry53aJE9LmHjEB5hCK9cafAVsQVDsjuJOl
+	vLaYsRCyQwi2+xI6Rtroi2EWQwXgXHP+eXuV3kcX4+smy7yY69NuMFRXuowZqEwpFBbqrY+CnXxsm
+	JymAq2qpu+z+RdmuINoEqDBz9gnuG2waTCucpUCsBT2V82Z3YaxjB+nYmOdhiBlUC2RiSfaxWj7/b
+	6nWDP9U0QZUm6TQ7b7/jiwS6aKV2WRAvTVgAkZm3LtP4ijjm0ORB5mzKKz18op6SNzwgI2x2C1WIn
+	GTg4h7BlBPEeTPZGMzVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vHlrJ-00000003HB0-3Ck5;
-	Sat, 08 Nov 2025 16:32:13 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vMWDk-00000008s31-0wmX;
+	Fri, 21 Nov 2025 18:51:00 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v9kqM-00000007zG7-2PbB;
-	Fri, 17 Oct 2025 13:50:06 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C994F643A4;
-	Fri, 17 Oct 2025 13:50:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 428C7C4CEF9;
-	Fri, 17 Oct 2025 13:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760709005;
-	bh=dmLSOb2GYlnT9o1IkzmIVv/9ztWuUVzDp82QHtRSSS8=;
-	h=Subject:To:Cc:From:Date:In-Reply-To:From;
-	b=GnSRlmd0RtwXk/OVucv97XC2fxDtarMsik6x8upmP4o2u+cekk7MY6s05aPjBeFFp
-	 h/4X3h3X9WtLvRI9Scrx2awB4Y6i95XAs6CRIzzTr+coAWKcQM5/+HnmipPa1yqZxv
-	 YFKLIh7u92D3jKwiQ9EUaSnbdBWSj8l3R2t2eUwk=
-Subject: Patch "overflow, tracing: Define the is_signed_type() macro once" has been added to the 5.10-stable tree
-To: David.Laight@ACULAB.COM,Jason@zx2c4.com,adilger.kernel@dilger.ca,agk@redhat.com,airlied@linux.ie,akpm@linux-foundation.org,alexander.deucher@amd.com,alexandre.torgue@st.com,amd-gfx@lists.freedesktop.org,andriy.shevchenko@linux.intel.com,anton.ivanov@cambridgegreys.com,arnd@arndb.de,artur.paszkiewicz@intel.com,bp@alien8.de,brian.starkey@arm.com,bvanassche@acm.org,chao@kernel.org,christian.koenig@amd.com,clm@fb.com,coreteam@netfilter.org,dan.j.williams@intel.com,daniel@ffwll.ch,dave.hansen@linux.intel.com,davem@davemloft.net,dm-devel@redhat.com,dmitry.torokhov@gmail.com,dri-devel@lists.freedesktop.org,dsterba@suse.com,dushistov@mail.ru,edumazet@google.com,evan.quan@amd.com,farbere@amazon.com,fery@cypress.com,freedreno@lists.freedesktop.org,fw@strlen.de,gregkh@linuxfoundation.org,harry.wentland@amd.com,hdegoede@redhat.com,herve.codina@bootlin.com,hpa@zytor.com,intel-linux-scu@intel.com,isabbasso@riseup.net,jack@suse.com,james.morse@arm.com,james.qian.wang@arm.com,jdelvare@suse.com,j
- dike@addtoit.com,jejb@linux.ibm.com,jmaloy@redhat.com,joabreu@synopsys.com,josef@toxicpanda.com,jpoimboe@kernel.org,kadlec@netfilter.org,kbusch@kernel.org,keescook@chromium.org,kuba@kernel.org,kuznet@ms2.inr.ac.ru,linux-arm-kernel@lists.infradead.org,linux-erofs@lists.ozlabs.org,linux-mm@kvack.org,linux-staging@lists.linux.dev,linux-stm32@st-md-mailman.stormreply.com,linux-um@lists.infradead.org,linux@armlinux.org.uk,linux@rasmusvillemoes.dk,linux@roeck-us.net,liviu.dudau@arm.com,luc.vanoostenryck@gmail.com,luto@kernel.org,maarten.lankhorst@linux.intel.com,malattia@linux.it,martin.petersen@oracle.com,mchehab@kernel.org,mcoquelin.stm32@gmail.com,mgross@linux.intel.com,mhiramat@kernel.org,mihail.atanassov@arm.com,minchan@kernel.org,mingo@redhat.com,mripard@kernel.org,nathan@kernel.org,ndesaulniers@google.com,ngupta@vflare.org,pablo@netfilter.org,peppe.cavallaro@st.com,peterz@infradead.org,pmladek@suse.com,qiuxu.zhuo@intel.com,rajur@chelsio.com,richard@nod.at,robdclark@gmail.com,rosted
- t@goodmis.org,rric@kernel.org,ruanjinjie@huawei.com,sakari.ailus@linux.intel.com,sander@svanheule.net,sashal@kernel.org,sean@poorly.run,sergey.senozhatsky@gmail.com,snitzer@redhat.com,sunpeng.li@amd.com,tglx@linutronix.de,tipc-discussion@lists.sourceforge.net,tony.luck@intel.com,tytso@mit.edu,tzimmermann@suse.de,vbabka@suse.cz,whjH6p+qzwUdx5SOVVHjS3WvzJQr6mDUwhEyTf6pJWzaQ@mail.gmail.com,willy@infradead.org,wjQGnVfb4jehFR0XyZikdQvCZouE96xR_nnf5kqaM5qqQ@mail.gmail.com,x86@kernel.org,xiang@kernel.org,ying.xue@windriver.com,yoshfuji@linux-ipv6.org,yury.norov@gmail.com
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Fri, 17 Oct 2025 15:48:34 +0200
-In-Reply-To: <20251017090519.46992-2-farbere@amazon.com>
-Message-ID: <2025101734-uncertain-tragedy-c5de@gregkh>
+	id 1vMWDi-00000008s2b-0NxW
+	for linux-um@lists.infradead.org;
+	Fri, 21 Nov 2025 18:50:59 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-429c7869704so1992057f8f.2
+        for <linux-um@lists.infradead.org>; Fri, 21 Nov 2025 10:50:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763751055; x=1764355855; darn=lists.infradead.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ibfn7mBD8G88qTHwmiSSUBpyhylgYk5Y/kKJqSpwQsI=;
+        b=KtxjQMCFw+Hf9BN8N+6isLLOg0IK2BBgV+L1coetBAGgMWbAunUreC2nNZ0tr2MkG6
+         znoZspwStf/F4Uir1ut5a8U4PRIvKT0AP3R2MeUSQRphkaabFSojILtv4rzGfPucV0ji
+         D8WCikGrgehWPfSsUppcm4T4QUrwypwQV5irP4vaMKN3M+bedtv9SdM7v77jq+rfV+5J
+         qkKGVBIIQFI9bmSbqVCQck7Hz4OSUkFgtsvdGIhAS10lcoB9dBQH25oSgJfbLMLbVAxq
+         H+NbAEiI6v7oqlgJEW/LuUAzSMHi2OSzmbmHTdPf2URngCQZxjdGif+BsYhHIrYmEgsr
+         UZFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763751055; x=1764355855;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ibfn7mBD8G88qTHwmiSSUBpyhylgYk5Y/kKJqSpwQsI=;
+        b=Obbjs9gs6xAv1PFnmCCVElN7iQrjY5gn1MUQklNlr42pyybLBAE+rTuDXlSRujhV/g
+         UQcV+hqrwJWKnr1r5FlW/HhtzYANorhyMG6zZaVkeC5ZtahbJomcxVfYFMJxQXq4ladX
+         mUxLB1bNf4R05ABYrOO99gTcoJ6SmPMJKmXEOtL5P42x/Z9BR/d5HfT1hgvgludD2DWy
+         eLovyhM+7RR0xwUm6A71d9bCusj0JWvQI5mmkcLt87z3pt041en2E2DL1X2movOJt1ex
+         aITo6rw3SdlUOyXqqbWKIUP508SDxON5vQuEewCPyi0JsRs0y32PlfdcUFMM728HbAqy
+         fnuw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1hYR7LB0UixeMkddVjJJ/rxLyrIls9X2olMiWVc4p84ZnJb5GZpDEm9MOXiztNBLs6tGL6HXnQg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzsNMdgv+Ho2jH7xr3XXI1HHxlbV4FR2/el+EhSLmxX40Vfgskf
+	t3Oip/65W7k+3WWYZW1XfWffxWqztj+xLLmwhVlBlWyZhQ02GGGdDpSqfSHgSXrR3oCjwBgG0xD
+	yOhxvzsY=
+X-Gm-Gg: ASbGncsysO1YG0dZFzPWeUvAc1Ls1X8g6u+WX56yukCNc8t+mHJwkrGDAiEo9tnaBfT
+	VonencjvwWpo1RIPsB0AjM0sdBsuIiVCjyMdSKNKmt1q88aK3rWBKr4etVszz3IzY5tUAN0SZFD
+	TsRRKzolISXwWqSmjK3IDkJtRMGYRbmYqCO99i8Df7AnhfSIFlZZZN+Hp0E7TKBplwVHDRbzglp
+	Lnr5VnWFopLBTuGtTwfa3wRxVwCg8v8cZ6XQcePdHZWWhPiVNlE+Cf3f8nZIsNEUld+TcGzBeYi
+	aHgAt0IoiQL+VC/W3lOwh6sxNTk6fj8ZtQieV60f+Garj3S6JyRLw+lTUEjuga+wW0f+umo9+F7
+	JlOg5dsW56clwheLX8P1dmeLgCmZC7ZFEEyzgKJsZhK3EZD1mX5ws+S8OnJYsbfprst8yvtVI3v
+	5RVBPFG61Ei9gXi/KfLVm4RF/u00TGQzKx1PE=
+X-Google-Smtp-Source: AGHT+IHxEr/Yh7njaXk+mwYujoxolgcHP00SWc/UQYnx2ejCkcaeHIL00gnZEqf09doPvbBPesYlHg==
+X-Received: by 2002:a05:6000:2c05:b0:42b:394a:9e0 with SMTP id ffacd0b85a97d-42cc1d27abamr3461896f8f.32.1763751055244;
+        Fri, 21 Nov 2025 10:50:55 -0800 (PST)
+Received: from [127.0.0.1] (99.36.160.45.gramnet.com.br. [45.160.36.99])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fd8baesm12473639f8f.39.2025.11.21.10.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Nov 2025 10:50:54 -0800 (PST)
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v2 0/4] printk cleanup - part 2
+Date: Fri, 21 Nov 2025 15:50:32 -0300
+Message-Id: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-X-stable: commit
-X-Patchwork-Hint: ignore 
-X-Mailman-Approved-At: Sat, 08 Nov 2025 08:31:10 -0800
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHi0IGkC/22Nyw6CMBBFf4XM2jHT8mblfxgWTTtIo5amBaIh/
+ LuVxJ3Lc5J77gaRg+UIXbZB4NVGO7kE8pSBHpW7MVqTGCTJkioS6IN18x31g5VbPHoVZol5MzS
+ mFNRQ20Ka+sCDfR3Za594tHGewvt4WcXX/oLV/+AqkHAoZK3rIjdG0SUukc96ekK/7/sH/Ekl9
+ 7cAAAA=
+X-Change-ID: 20250601-printk-cleanup-part2-38f8d5108099
+To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
+ John Ogness <john.ogness@linutronix.de>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>, 
+ Jason Wessel <jason.wessel@windriver.com>, 
+ Daniel Thompson <danielt@kernel.org>, 
+ Douglas Anderson <dianders@chromium.org>, 
+ Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+ kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org, 
+ Marcos Paulo de Souza <mpdesouza@suse.com>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763751050; l=2044;
+ i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
+ bh=PRmdFpBAp0gKYH3/id9Pz+CPCxU1dvesvh01EHtKBRM=;
+ b=BB4qSfzhItSvSkb4sdozUwQREO5JyqBCeTI4O6aM+90/NYaHuB2QnqOSN1qJltnW37QS3VMVc
+ WAytuhobAlHD+BrNYQL4GhwMxYd+M7u1t6KVhQ+YfHsl6wR1PtaGGy+
+X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
+ pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20251121_105058_180768_9EB50395 
+X-CRM114-Status: GOOD (  10.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,141 +121,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+The first part can be found here[1]. The proposed changes do not
+change the functionality of printk, but were suggestions made by
+Petr Mladek. I already have more patches for a part 3 ,but I would like
+to see these ones merged first.
 
-This is a note to let you know that I've just added the patch titled
+I did the testing with VMs, checking suspend and resume cycles, and it worked
+as expected.
 
-    overflow, tracing: Define the is_signed_type() macro once
+Thanks for reviewing!
 
-to the 5.10-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+[1]: https://lore.kernel.org/lkml/20250226-printk-renaming-v1-0-0b878577f2e6@suse.com/
 
-The filename of the patch is:
-     overflow-tracing-define-the-is_signed_type-macro-once.patch
-and it can be found in the queue-5.10 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From linux-staging+bounces-34939-greg=kroah.com@lists.linux.dev Fri Oct 17 11:09:40 2025
-From: Eliav Farber <farbere@amazon.com>
-Date: Fri, 17 Oct 2025 09:04:53 +0000
-Subject: overflow, tracing: Define the is_signed_type() macro once
-To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>, <linux@armlinux.org.uk>, <jdike@addtoit.com>, <richard@nod.at>, <anton.ivanov@cambridgegreys.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>, <qiuxu.zhuo@intel.com>, <mchehab@kernel.org>, <james.morse@arm.com>, <rric@kernel.org>, <harry.wentland@amd.com>, <sunpeng.li@amd.com>, <alexander.deucher@amd.com>, <christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>, <evan.quan@amd.com>, <james.qian.wang@arm.com>, <liviu.dudau@arm.com>, <mihail.atanassov@arm.com>, <brian.starkey@arm.com>, <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, <tzimmermann@suse.de>, <robdclark@gmail.com>, <sean@poorly.run>, <jdelvare@suse.com>, <linux@roeck-us.net>, <fery@cypress.com>, <dmitry.torokhov@gmail.com>, <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>, <rajur@chelsio
- .com>, <davem@davemloft.net>, <kuba@kernel.org>, <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>, <joabreu@synopsys.com>, <mcoquelin.stm32@gmail.com>, <malattia@linux.it>, <hdegoede@redhat.com>, <mgross@linux.intel.com>, <intel-linux-scu@intel.com>, <artur.paszkiewicz@intel.com>, <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <sakari.ailus@linux.intel.com>, <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>, <xiang@kernel.org>, <chao@kernel.org>, <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <dushistov@mail.ru>, <luc.vanoostenryck@gmail.com>, <rostedt@goodmis.org>, <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>, <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>, <minchan@kernel.org>, <ngupta@vflare.org>, <akpm@linux-foundation.org>, <kuznet@ms2.inr.ac.ru>, <yoshfuji@linux-ipv6.org>, <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>, <jmaloy@redhat.com>, <ying.xue@windriver.com>, <willy@infradead.org>, <farbere@amazon.com>,
-  <sashal@kernel.org>, <ruanjinjie@huawei.com>, <David.Laight@ACULAB.COM>, <herve.codina@bootlin.com>, <Jason@zx2c4.com>, <keescook@chromium.org>, <kbusch@kernel.org>, <nathan@kernel.org>, <bvanassche@acm.org>, <ndesaulniers@google.com>, <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>, <linux-edac@vger.kernel.org>, <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>, <linux-hwmon@vger.kernel.org>, <linux-input@vger.kernel.org>, <linux-media@vger.kernel.org>, <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>, <platform-driver-x86@vger.kernel.org>, <linux-scsi@vger.kernel.org>, <linux-staging@lists.linux.dev>, <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>, <linux-sparse@vger.kernel.org>, <linux-mm@kvack.org>, <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>, <tipc-discussion@
- lists.sourceforge.net>
-Cc: Arnd Bergmann <arnd@arndb.de>, Dan Williams <dan.j.williams@intel.com>, Eric Dumazet <edumazet@google.com>, Isabella Basso <isabbasso@riseup.net>, Josh Poimboeuf <jpoimboe@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Sander Vanheule <sander@svanheule.net>, Vlastimil Babka <vbabka@suse.cz>, Yury Norov <yury.norov@gmail.com>
-Message-ID: <20251017090519.46992-2-farbere@amazon.com>
-
-From: Bart Van Assche <bvanassche@acm.org>
-
-[ Upstream commit 92d23c6e94157739b997cacce151586a0d07bb8a ]
-
-There are two definitions of the is_signed_type() macro: one in
-<linux/overflow.h> and a second definition in <linux/trace_events.h>.
-
-As suggested by Linus Torvalds, move the definition of the
-is_signed_type() macro into the <linux/compiler.h> header file. Change
-the definition of the is_signed_type() macro to make sure that it does
-not trigger any sparse warnings with future versions of sparse for
-bitwise types. See also:
-https://lore.kernel.org/all/CAHk-=whjH6p+qzwUdx5SOVVHjS3WvzJQr6mDUwhEyTf6pJWzaQ@mail.gmail.com/
-https://lore.kernel.org/all/CAHk-=wjQGnVfb4jehFR0XyZikdQvCZouE96xR_nnf5kqaM5qqQ@mail.gmail.com/
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Isabella Basso <isabbasso@riseup.net>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Sander Vanheule <sander@svanheule.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20220826162116.1050972-3-bvanassche@acm.org
-Signed-off-by: Eliav Farber <farbere@amazon.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- include/linux/compiler.h     |    6 ++++++
- include/linux/overflow.h     |    1 -
- include/linux/trace_events.h |    2 --
- 3 files changed, 6 insertions(+), 3 deletions(-)
+Changes in v2:
+- Squashed patches 1 and 3 (CON_SUSPEND usage) and now is the last patch
+  of the series, suggested by Petr Mladek
+- Moved commit 4 as the first one in the series, and it was changed to
+  use console_is_usable helper, suggested by Petr Mladek
+- Moved commit 5 as the second commit in the series, and adjusted to use
+  console_is_usable helper, suggested by Petr Mladek
+- The patch 6 was dropped, since it was implemented in a different patchset
+  (https://lore.kernel.org/lkml/20250902-nbcon-kgdboc-v3-0-cd30a8106f1c@suse.com/)
+- Patch 7 was moved as third patch, and is using the console_is_usable,
+  suggested by Petr Mladek
+- Patch 2 was dropped from this patchset, and will be included in the
+  next cleanup patchset.
+- Link to v1: https://lore.kernel.org/r/20250606-printk-cleanup-part2-v1-0-f427c743dda0@suse.com
 
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -246,6 +246,12 @@ static inline void *offset_to_ptr(const
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
- 
- /*
-+ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-+ * bool and also pointer types.
-+ */
-+#define is_signed_type(type) (((type)(-1)) < (__force type)1)
-+
-+/*
-  * This is needed in functions which generate the stack canary, see
-  * arch/x86/kernel/smpboot.c::start_secondary() for an example.
-  */
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -29,7 +29,6 @@
-  * https://mail-index.netbsd.org/tech-misc/2007/02/05/0000.html -
-  * credit to Christian Biere.
-  */
--#define is_signed_type(type)       (((type)(-1)) < (type)1)
- #define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
- #define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
- #define type_min(T) ((T)((T)-type_max(T)-(T)1))
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -700,8 +700,6 @@ extern int trace_add_event_call(struct t
- extern int trace_remove_event_call(struct trace_event_call *call);
- extern int trace_event_get_offsets(struct trace_event_call *call);
- 
--#define is_signed_type(type)	(((type)(-1)) < (type)1)
--
- int ftrace_set_clr_event(struct trace_array *tr, char *buf, int set);
- int trace_set_clr_event(const char *system, const char *event, int set);
- int trace_array_set_clr_event(struct trace_array *tr, const char *system,
+---
+Marcos Paulo de Souza (4):
+      drivers: serial: kgdboc: Drop checks for CON_ENABLED and CON_BOOT
+      arch: um: kmsg_dump: Use console_is_usable
+      printk: Use console_is_usable on console_unblank
+      printk: Make console_{suspend,resume} handle CON_SUSPENDED
 
+ arch/um/kernel/kmsg_dump.c  |  2 +-
+ drivers/tty/serial/kgdboc.c |  1 -
+ drivers/tty/tty_io.c        |  2 +-
+ kernel/printk/printk.c      | 17 +++++++----------
+ 4 files changed, 9 insertions(+), 13 deletions(-)
+---
+base-commit: 887c7f05d40eb51ba3f38fd71d5e6b4aff4bb8a2
+change-id: 20250601-printk-cleanup-part2-38f8d5108099
 
-Patches currently in stable-queue which might be from farbere@amazon.com are
+Best regards,
+--  
+Marcos Paulo de Souza <mpdesouza@suse.com>
 
-queue-5.10/minmax-allow-comparisons-of-int-against-unsigned-char-short.patch
-queue-5.10/minmax-add-a-few-more-min_t-max_t-users.patch
-queue-5.10/minmax-improve-macro-expansion-and-type-checking.patch
-queue-5.10/minmax-fix-indentation-of-__cmp_once-and-__clamp_once.patch
-queue-5.10/minmax.h-simplify-the-variants-of-clamp.patch
-queue-5.10/minmax-add-in_range-macro.patch
-queue-5.10/minmax.h-move-all-the-clamp-definitions-after-the-min-max-ones.patch
-queue-5.10/minmax-allow-min-max-clamp-if-the-arguments-have-the-same-signedness.patch
-queue-5.10/minmax-don-t-use-max-in-situations-that-want-a-c-constant-expression.patch
-queue-5.10/minmax.h-remove-some-defines-that-are-only-expanded-once.patch
-queue-5.10/minmax.h-use-build_bug_on_msg-for-the-lo-hi-test-in-clamp.patch
-queue-5.10/minmax-simplify-min-max-clamp-implementation.patch
-queue-5.10/minmax-deduplicate-__unconst_integer_typeof.patch
-queue-5.10/minmax-simplify-and-clarify-min_t-max_t-implementation.patch
-queue-5.10/minmax.h-add-whitespace-around-operators-and-after-commas.patch
-queue-5.10/minmax-sanity-check-constant-bounds-when-clamping.patch
-queue-5.10/minmax-avoid-overly-complicated-constant-expressions-in-vm-code.patch
-queue-5.10/minmax-make-generic-min-and-max-macros-available-everywhere.patch
-queue-5.10/minmax-fix-up-min3-and-max3-too.patch
-queue-5.10/minmax.h-reduce-the-define-expansion-of-min-max-and-clamp.patch
-queue-5.10/minmax-fix-header-inclusions.patch
-queue-5.10/minmax-introduce-min-max-_array.patch
-queue-5.10/btrfs-remove-duplicated-in_range-macro.patch
-queue-5.10/overflow-tracing-define-the-is_signed_type-macro-once.patch
-queue-5.10/minmax-relax-check-to-allow-comparison-between-unsigned-arguments-and-signed-constants.patch
-queue-5.10/minmax-clamp-more-efficiently-by-avoiding-extra-comparison.patch
-queue-5.10/minmax.h-update-some-comments.patch
 
