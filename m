@@ -4,108 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C05D8CFC296
-	for <linux-um@archiver.kernel.org>; Fri, 21 Nov 2025 18:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AA81CFC51E
+	for <linux-um@archiver.kernel.org>; Sat, 22 Nov 2025 08:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zeiJZSVEGGN00WPtN6lgqyU6XWLEKHbZMZ9rjX+7HGY=; b=qWCIdsB+b0A5vjSR8Y5S8zlPGM
-	NrBFJEQeu/LR5DYkRZTMMTirKCWhH8QN+Q9y4zywnAmA8JZT2JrmCEMJAiy/sGkHVacLLWnkxcjCZ
-	5JB7gy9UVF5hlgck0+/IrVMytj9vAHhwDsb4EYXUElbmTqvFeRV01nVeqYvXwI6zI9uZTGFqJ5/Au
-	p79MeJR3eZ3FdMr4UaLhp2E+r5ZAz+MiXMqt/dGL1O3TQJNGWAlSsunIFhDlXc1WXYADyLN6N30BW
-	BvI9BYZJHQfWTB8/N0nAgMFaDPR/cjAW0t8jvU8JBCOZjQacLSRCb30QJQ9u1mJV0Coh0u+Fo780+
-	FTYFqJTg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
+	Subject:Message-ID:Mime-Version:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=tjw8aI/2+6BpvAtWs9pCDpeY2rVZkm/V2EMdU6q1xQI=; b=G4LvKs4WTLcu6/AWhKwz05vf3o
+	pXrYvkd6BONbelyKAmFoxf6jLVAmqJGHpVPB8Xl1C3R/yoBPlPJQU1rDToOpf0jYvkrRLFJBd2NDL
+	Ha/gfvBOxaQwSuXYMU/acLcrflrmqwVIUXkdM3F8IEY79Mkwx/UqtQ1h12bRK0kP/+vs/tQDZFjh2
+	Twhult76pKv1RJB/d3cI0/uHL689pnDkCiubW6TRHBmu6qlc69lzYInoVhWrDor5lP3Os3QVBgUqd
+	UJwkYLi1VN7oCT3Uae7lSPV29P6yw3vJ63/OStIh0yz46UCbl8fB8tmbHH2IEjj846/3N7wy7PJv3
+	iu7X/mMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMWE1-00000008s9N-2Fqp;
-	Fri, 21 Nov 2025 18:51:17 +0000
-Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
+	id 1vMj2a-00000009NiP-35G3;
+	Sat, 22 Nov 2025 08:32:20 +0000
+Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vMWDz-00000008s83-1xt9
+	id 1vMj2Y-00000009Nhu-082F
 	for linux-um@lists.infradead.org;
-	Fri, 21 Nov 2025 18:51:16 +0000
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-42b3c965cc4so1296727f8f.0
-        for <linux-um@lists.infradead.org>; Fri, 21 Nov 2025 10:51:15 -0800 (PST)
+	Sat, 22 Nov 2025 08:32:19 +0000
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-34378c914b4so9242547a91.1
+        for <linux-um@lists.infradead.org>; Sat, 22 Nov 2025 00:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763751073; x=1764355873; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zeiJZSVEGGN00WPtN6lgqyU6XWLEKHbZMZ9rjX+7HGY=;
-        b=dmwoit4+JS4lP7YwuRv7uKV4cpWzwQCr/Ap2G1RaW8I+G6sOyf1mjEmxIOwWqFRIJe
-         bPs+lLjvtqIpzOLvieQ51hzV4dboaYgme1Vtzy1kqVELwBD11RaH6acjVYY1nULViJrB
-         LP9+kQvwIOhYYkk79laPg2bkGHSywdLUU6CO/8zq8VoPzgABrPldgXqY5Q/MGN4CWcIR
-         D0PCl3GUD4XBpEkJfeSFR9RlW0rVIPCX45dR2ZYTkXT2CThId3tZ1ZE6QMqGRzDPvAo+
-         Bp2+m0nTq4WZdkE62frFoObW5bMD5Kpk80CuGtlhtSsg9tuqW7FeXW4pg/nGE75wWOlI
-         THIQ==
+        d=google.com; s=20230601; t=1763800337; x=1764405137; darn=lists.infradead.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tjw8aI/2+6BpvAtWs9pCDpeY2rVZkm/V2EMdU6q1xQI=;
+        b=EEfsD0yqMtJ3DzUUIF4o2XamfLT2kKVDW3nfTJ0Er268383m5GoMMENLJjYQgCdfcX
+         7t4+g1atf1a+RSHE+mls5fMNWeX4YHeLKnmOfsEg+pyTDD90M1UJRovLuAZZH2bSi/NF
+         lRtxumwwNSodZkczNgc3imc/Q6jCv1E4V+KBTF6519SZSNfgnVj2fYsnpCnmHiT9fBXB
+         FWCRcYitg+UWiBLivCj7S6ng6sbsvUxb5XUOC3KrWEndK6pUfZrZzViJU2H/+7/vrVh+
+         j+RclngfJv0LkUfIQ9D++Ff4sDTzW1rsqD+kmCaHbAl+NKfRsudmFv5g2Pd1jg03ifSx
+         ZeEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763751073; x=1764355873;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zeiJZSVEGGN00WPtN6lgqyU6XWLEKHbZMZ9rjX+7HGY=;
-        b=NPGPr6ah+B4yjIB/6ZQ5QcOvM3Nu+l5eISUHr/5gMUrA4pLJrNqkHMzCNIdrIwXbNR
-         /y/hchQ+wzzvwOs/4hMnuLgPYzrGo0+3Xj3Hv766JJZArtaLYxccbxhTt0Sx3Kbpr0hY
-         +hkgJuaZoHSMVm6WAWKPn94w+us5xnguYtVz+AKFF6id0qdaD886uJ4kREvAdgp98s1I
-         bFY2eBkDdwuRLYRWfu95fM7WS5sAFTLux+ZNIbzuDh++53ICyqRumjWZL2PF/QDMkk7j
-         8VK36XxkFQ9eIYhD6K2fkyxu6MgLJzABzm283smoBTBxhkBFyyEv4RqHwAawZ2SiGBnt
-         mjFg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+TUfKxB5s7abVQ1G5iHkSv+PsTHhTJHMU8ppgBy83d++AHAMLolq3cDaSoXOnqul2Db8/zRbsDA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxRojL4FFtv86rsJiCIyotwpfuBmSrvz7WxhoBl/idtAoREzRm8
-	SMsUfgzu08YOkLuoiIY9JlkYMXwNj6xUC6rRrtK3S6NDySR3kfhYauwo9oShEvTdLq+veNu76Sc
-	7p2n+IMc=
-X-Gm-Gg: ASbGnctr45SMdIhbFXgk8V5SaOkpwJvgEJuxhJmgyp82PXEWW/g/ClEGpwWpLYgTNLM
-	Edj0E6RhL1JkdlRkrLNlRSUpH1/d3NFhrNa7t5kCB5L+JUFNxvzLeCwrLiEkshLYM21axJ7hMUx
-	A5ieJi0etmFKV7S32rW8gePEo2V5K2KL8tha1JqsQlZUuKryootdFBQWhWOZo6dmIF8c4ou8MWg
-	nUBbDMmeays7YHnzs6RDZyv3AYt4/aJQjJ8IKzlY7jUD6ReMedG3nyHYd/qN05aASJ4ct8i9XNE
-	8DrA1VPvammXtMzmBg5TCeya0VvvDNw9EBWNTQi9zArv8Fu3XmuTBMhCgIzBfoysVE60tdHkZZ0
-	pPGm5xPVLvUgOdimieiWqOhBHBQEVS2zELsLzyubUtAHfQlDEdfv3Yk/eOsK2gJb4IoP+yJCZcM
-	/7JpRQjk9Gjc/CN6Dvmnad0sSup3Fk0x23k5s=
-X-Google-Smtp-Source: AGHT+IENN61/obhbDbsiWgswns0YOtLZMBMlnpiskqZW9+NCINqWoGwYz+8q1vTBc1WOclyJO+Metw==
-X-Received: by 2002:a05:6000:4210:b0:429:eb05:1c69 with SMTP id ffacd0b85a97d-42cba63b646mr8898226f8f.2.1763751073426;
-        Fri, 21 Nov 2025 10:51:13 -0800 (PST)
-Received: from [127.0.0.1] (99.36.160.45.gramnet.com.br. [45.160.36.99])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fd8baesm12473639f8f.39.2025.11.21.10.51.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 10:51:13 -0800 (PST)
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Fri, 21 Nov 2025 15:50:36 -0300
-Subject: [PATCH v2 4/4] printk: Make console_{suspend,resume} handle
- CON_SUSPENDED
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251121-printk-cleanup-part2-v2-4-57b8b78647f4@suse.com>
-References: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
-In-Reply-To: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
-To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
- John Ogness <john.ogness@linutronix.de>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>, 
- Jason Wessel <jason.wessel@windriver.com>, 
- Daniel Thompson <danielt@kernel.org>, 
- Douglas Anderson <dianders@chromium.org>, 
- Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
- kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org, 
- Marcos Paulo de Souza <mpdesouza@suse.com>
-X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763751050; l=1998;
- i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=Me+FmgCVuipIeMGIOmW7VyWb0ioSCEd8yB49PjrkFbM=;
- b=1f1XQPksSyg2y3pXUnelAzKyzaedaVrzMjIzV4D5cPN+kduYUUNr7nIbIGu3SdlK+vY1dppDR
- WrcjcRwmPvCAZWS/IHHAlVNhq/wnrv4ph6Y5HplOAbeUOE6cjJPPdGD
-X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
- pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
+        d=1e100.net; s=20230601; t=1763800337; x=1764405137;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tjw8aI/2+6BpvAtWs9pCDpeY2rVZkm/V2EMdU6q1xQI=;
+        b=gDZtLtxukiY403pf6d/CN8+GZ4/ttGu4KNkTqpvc3FhuhiPlBVQxsqx3js560l47jC
+         Gvsi5EjCjkDE3sOzB4bDwHmAbLnvdF3QR7RiFcsbNXBvG+Lg/g2UtfX9266rB+d8GGHf
+         I2vMsJenLjvoeoyG/d98xpkkETXwq4wr6k1T4SJZs3ZaeGewMhsQ4RKJC+PXkf9NxEUK
+         gH15WvAonWN3ZwuXkXlLAfknVdspkDVc28rPPSB0O41uZTM2OFf1tR8BA2VMO27lkIbP
+         6mFbD+BIHk82J2JaiYwHfLlrTC/1u5QcWyk/dI9qC08YTM+wsQY66La9RHLYNIbsdyed
+         Np0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWCMcRQsxcSdHr7VviGXq0MFbNxaDs24Oi8Lf8YGz0OjjRc+HzVwcyVgzp8TI8TjY25lu4aB/bvtg==@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywrvz8RU6o8GkWuXTq5k6J8WlRAb1G7lWbZA7ObTeLbZfjlP+7L
+	z7Y1nBJXtVp0sbXiQcoCXvTDtxBDQARu7CDaGvM8gCMCCiHgSJ4O9/3NkHPxpgVM/j77IwZX+hS
+	6+hCksrBpTamI8g==
+X-Google-Smtp-Source: AGHT+IFpm4WPPdyNkn7T9C5i+DiRgpU+Gw7XnL1ezBCClEJfss/czSHMfxCJTpkY6PfTfg1L3XhRDYgd2jfgZg==
+X-Received: from pjbpw1.prod.google.com ([2002:a17:90b:2781:b0:33b:c211:1fa9])
+ (user=davidgow job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:2c86:b0:340:54a1:d6fe with SMTP id 98e67ed59e1d1-34733e60868mr5397018a91.15.1763800336865;
+ Sat, 22 Nov 2025 00:32:16 -0800 (PST)
+Date: Sat, 22 Nov 2025 16:32:12 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.rc2.455.g230fcf2819-goog
+Message-ID: <20251122083213.3996586-1-davidgow@google.com>
+Subject: [PATCH] arch: um: Don't rename vmap to kernel_vmap
+From: David Gow <davidgow@google.com>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Miguel Ojeda <ojeda@kernel.org>, 
+	"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Cc: David Gow <davidgow@google.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251121_105115_526952_CCD61B19 
-X-CRM114-Status: GOOD (  11.18  )
+X-CRM114-CacheID: sfid-20251122_003218_075056_CA7D3EB0 
+X-CRM114-Status: GOOD (  11.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,64 +90,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Since commit 9e70a5e109a4 ("printk: Add per-console suspended state")
-the CON_SUSPENDED flag was introced, and this flag was being checked
-on console_is_usable function, which returns false if the console is
-suspended.
+In order to work around the existence of a vmap symbol in libpcap, the
+UML makefile unconditionally redefines vmap to kernel_vmap. However,
+this not only affects the actual vmap symbol, but also anything else
+named vmap, including a number of struct members in DRM.
 
-To make the behavior consistent, change show_cons_active to look for
-consoles that are not suspended, instead of checking CON_ENABLED.
+This would not be too much of a problem, since all uses are also
+updated, except we now have Rust DRM bindings, which expect the
+corresponding Rust structs to have 'vmap' names. Since the redefinition
+applies in bindgen, but not to Rust code, we end up with errors such as:
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+error[E0560]: struct `drm_gem_object_funcs` has no fields named `vmap`
+  --> rust/kernel/drm/gem/mod.rs:210:9
+
+Since, as far as I can tell, we no longer actually link to libpcap, it
+should be safe to just remove this define unconditionally.
+
+(If it's not, we can possibly either disable DRM Rust bindings under
+UML, or move the redefinition of vmap behind some config option.)
+
+We also take this opportunity to update the comment.
+
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- drivers/tty/tty_io.c   | 2 +-
- kernel/printk/printk.c | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/um/Makefile | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index e2d92cf70eb7..1b2ce0f36010 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -3554,7 +3554,7 @@ static ssize_t show_cons_active(struct device *dev,
- 			continue;
- 		if (!(c->flags & CON_NBCON) && !c->write)
- 			continue;
--		if ((c->flags & CON_ENABLED) == 0)
-+		if (c->flags & CON_SUSPENDED)
- 			continue;
- 		cs[i++] = c;
- 		if (i >= ARRAY_SIZE(cs))
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fed98a18e830..fe7c956f73bd 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3542,7 +3542,7 @@ void console_suspend(struct console *console)
- {
- 	__pr_flush(console, 1000, true);
- 	console_list_lock();
--	console_srcu_write_flags(console, console->flags & ~CON_ENABLED);
-+	console_srcu_write_flags(console, console->flags | CON_SUSPENDED);
- 	console_list_unlock();
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 7be0143b5ba3..721b652ffb65 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -46,19 +46,17 @@ ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
+ ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
  
- 	/*
-@@ -3555,13 +3555,14 @@ void console_suspend(struct console *console)
- }
- EXPORT_SYMBOL(console_suspend);
+-# -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
+-# named - it's a common symbol in libpcap, so we get a binary which crashes.
+-#
+-# Same things for in6addr_loopback and mktime - found in libc. For these two we
+-# only get link-time error, luckily.
++# -Dstrrchr=kernel_strrchr (as well as the various in6addr symbols) prevents
++#  anything from referencing
++# libc symbols with the same name, which can cause a linker error.
+ #
+ # -Dlongjmp=kernel_longjmp prevents anything from referencing the libpthread.a
+ # embedded copy of longjmp, same thing for setjmp.
+ #
+-# These apply to USER_CFLAGS to.
++# These apply to USER_CFLAGS too.
  
-+/* Unset CON_SUSPENDED flag so the console can start printing again. */
- void console_resume(struct console *console)
- {
- 	struct console_flush_type ft;
- 	bool is_nbcon;
- 
- 	console_list_lock();
--	console_srcu_write_flags(console, console->flags | CON_ENABLED);
-+	console_srcu_write_flags(console, console->flags & ~CON_SUSPENDED);
- 	is_nbcon = console->flags & CON_NBCON;
- 	console_list_unlock();
- 
-
+ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+-	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
++	$(ARCH_INCLUDE) $(MODE_INCLUDE)	\
+ 	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
+ 	-Din6addr_loopback=kernel_in6addr_loopback \
+ 	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
 -- 
-2.51.1
+2.52.0.rc2.455.g230fcf2819-goog
 
 
