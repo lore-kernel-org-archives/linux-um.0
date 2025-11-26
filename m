@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8E2DD10F4F
-	for <linux-um@archiver.kernel.org>; Wed, 26 Nov 2025 13:22:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8413D10F50
+	for <linux-um@archiver.kernel.org>; Wed, 26 Nov 2025 13:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=I+mhDkufW6jQ5YRScCzzhwHbJH9j3fMQKiq5R61ePjI=; b=x+JvsiNLN6IMf2QVsL9vgDIoCW
-	Yas23ewXWjX5a9hj9cOXxdkFeZRGeIurUQp/51LVVM0AotmkvORn/TC0djoLjB9Mmvcrq0hpx2Qsn
-	u8J8V8EShWNMNL6vmGxc+GKLdWPKlyYmvBrXbYqs2KnZ9dPrzrpS4SnufbCr3mbRSKLI8vYhk29PS
-	MgFZ1HGDJ8ZL+/eSyRkJC8FvPiiyNSfZ8vvxehN64nFpZIsWbH7U1J/hVVvp5NOJMhdhWPOqVSLO6
-	U5xc5yniOR5QYIGn8ZQTjWLc6G5iU0OOL2l8GR62941V0ZP5w2GuBdOd9MtqcCyl3TcTB3gt8vA17
-	c/GprU4A==;
+	bh=0f4JQ430d3gYxGe5A4S7xjaYOrTUOg5SC/fVmpakeBc=; b=ddIpJMUdpHBj8HgHVsDwq4/GsB
+	8ekwh9InEcHlq/soEPAzza3qEx9jBhOffjdQVf6MbZBN7FkVlNLrpCAuykjD/ymbLpq02FqRfmc6R
+	+1WYgXS5MxpHs7QmWltx1nKxG/ZOw8MrVRT6ZY3c98/wJXbEHCKnz92cGfYn9qNl4LgDilTyHKKuC
+	5WGrBqfQGSHhwjUz+CLNGXTd9P6oDcGj0KO5SeOq2Yx5NKcBA6cF1sQTJ78qrmnjXjjXNoqoYrM/p
+	LaYgfxYYMvZAyExIWziVMKEIMCMCx7WqNI5MfShNQI07SWkeB4iHqyiMMoD+qD4In2i+KhUobgQ8O
+	9RCK4OCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOFTy-0000000F2Ok-1eJn;
-	Wed, 26 Nov 2025 13:22:54 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1vOFW6-0000000F2ST-3mbj;
+	Wed, 26 Nov 2025 13:25:06 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOFTt-0000000F2O1-2cW9
+	id 1vOFW3-0000000F2SA-3QYc
 	for linux-um@lists.infradead.org;
-	Wed, 26 Nov 2025 13:22:51 +0000
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-42bb288c1bfso3945697f8f.2
-        for <linux-um@lists.infradead.org>; Wed, 26 Nov 2025 05:22:49 -0800 (PST)
+	Wed, 26 Nov 2025 13:25:05 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-42b38693c4dso2943294f8f.3
+        for <linux-um@lists.infradead.org>; Wed, 26 Nov 2025 05:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764163368; x=1764768168; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1764163502; x=1764768302; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+mhDkufW6jQ5YRScCzzhwHbJH9j3fMQKiq5R61ePjI=;
-        b=BZ6Ymv/0u1F61nhU+juuCuQJJ160ykgq0qJuJfUK4MtS9GoIlkebh7nJIxBmLWlSRi
-         5STUA18Pxp85ey61NjTLSKaE+N3XhAX5nTUS9OWyQKnHzhc1fETqO2Tc4UXdJ9sQV/5s
-         BIOfbxhroXBlIOKl4t74nvZuIUS+B/PkbN6C6xEPCyPOiqc57jfD4KiEqtGb+OJ5WoTC
-         bkT2O3VvolHmnLoOL0wJZkRtIasGyncbiSbmlL/Q8q5zEEhOWMNAJPlL4J/NoFrD24wU
-         34e/CBUTU7f/QaNNiDmJc4Km1iDNgJteR4P3gLlitHNJm9BtxcEuDYpOIId79e2fiH1i
-         YiMw==
+        bh=0f4JQ430d3gYxGe5A4S7xjaYOrTUOg5SC/fVmpakeBc=;
+        b=YrbUbUThKh0xbO8p1i1/edX7svrzqN15PW6XZ1nO1ThbW9Xz1xSlw1+jZC6cRLBAB1
+         gP7GJvlI1hF5+t66f1TxUQofqNqDAC+eyrmdUbDCm9NaY1be38bD8teiXYRhNopCkaX8
+         bvBQWVjoxb7Xjl9KuPhqOqCBdMod4x1rBI7Iq1ae/iKWsAT4cxsHH2jnqCFLO9tSaA5k
+         2uCvtDm4oKO2ZRNF2pa7p02KuA5kDUMKpIFrJz50ITn5XeIDchPpPXxIV5X9vFwI3GUD
+         7coF2srs2rGaVM7aPbgIDeJdsDCKwQu8AC5HWiANUUlFiEgXTvnTzrV6o7ln7+b4f8tt
+         UGvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764163368; x=1764768168;
+        d=1e100.net; s=20230601; t=1764163502; x=1764768302;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I+mhDkufW6jQ5YRScCzzhwHbJH9j3fMQKiq5R61ePjI=;
-        b=ht2O8Umsvnvl+fguB10WoJDlo9TRzF72VeKm44dMKSHs+mNJioo3qLLLxhQW5tRtjh
-         FdWWaz1WZae1eR4gofiJCiMbaSxi8dHzeb1PeTycMoO72DJU8JGNghQScdU/DHFMIhHE
-         hReKtWn7jOQZDKpycRbU24ElBJ57o9UK9IzQqGZd+/1HzOz8BM4R5RLsRBi9Fn0pL8zt
-         DsVjhpdilUxTiO9zlfm1ACvWWhU9vd5wbBeMkal+MNsR7CIMNI0uP+vNvFSF54dQuxNc
-         DO4OReDWD0Duxi+fUTSroMUKFc9aSMFu2kYfgHq1Fu4LbtGe1CnF6k5zJMlY2FRP5x4G
-         vWNg==
-X-Forwarded-Encrypted: i=1; AJvYcCV0cFTzfY5QcgWB5/lDuDOdQuVHanSeLsCpWdg1Y3cA+QlPyoxVNIxHaTVIMtap/J8TAaQonGxlsQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YynxcZjE1mcgFS+k/vcFbXcy9SpsocCdVdzmGTdyD/HFuyxMHB7
-	ARuLUZcm7eIcFAjaxxgjEJv8BKlRs42ep++Nz8qWBO3h30Pd+aNW5zi08+WO0g4o35c=
-X-Gm-Gg: ASbGncs/JmEVYDtBen4dCO78zPzaIbIwWxQqbxzcMWGK3vdxXPymqXPJFdUb7KuTnmA
-	a5XXDixkcy2gZd7I5AI/ClvtXnOgidwnk33eiyhxQij3CDahptH7Xb55AtOfiyUrp8LFCpY61Td
-	2ycAPVxbr1UQNrHfXPWODXob5NwAmnYa4U9aeBmKq6W/In3o+EkXE3vOVxpuxA0rx/5amzQm0k1
-	bb4BDCZCQuolYYsMd2XtQB0c8fAVOFH38S+db0txsOB57NrztG+xhzi4mOVWlzBw2WxV455IRBN
-	WGL/wv67wEr+ySl1o6+b5p5gFUDDGYv0YOWaLeoKcpajkBiI6ORMkV7f8BNs5mNIhE3TlOmcsfS
-	GAzA4rJYFEXiXNDT6OO25Btf1Q0tFOjR/bC5DR/nRw2bbgjkTdBmJu/dzoYw3pBSVKZZQUhJ7qO
-	Xds6yTkEiknIS97A==
-X-Google-Smtp-Source: AGHT+IGJcihhcxfNfd8mIQtL0Z/0hLrPGwpypQO8Ri9oGZbHR7NXbvwNhm6TwKmffccOm4pb+YONkw==
-X-Received: by 2002:a05:6000:2288:b0:429:c4bb:fbbb with SMTP id ffacd0b85a97d-42e0f2129cemr6983138f8f.13.1764163367783;
-        Wed, 26 Nov 2025 05:22:47 -0800 (PST)
+        bh=0f4JQ430d3gYxGe5A4S7xjaYOrTUOg5SC/fVmpakeBc=;
+        b=K2aVHT23eAKw3KtBoYbzgNd9rZCck2Y+6FeWeXOAfQbakinGPwL05wvSqg5uzjs8up
+         8NE4bsEqsUJWwrS/6Om7ptwy5TsYnkcRV/xtGNLmPmiO3vIQ0HZj9B6zum+7Yu8CFlv5
+         LcD/7vkmpVkVWCFwaWe0vLMlphQQilwRwy4/Sj01DFTW3CBkJfBcAG0RLsYL7UfCSkAj
+         Z16NWHV46WKaRnSmtZn6QWp2gpE3WvJPAokAkesCawBf+yI6k1e0RFU3qzK5NDyJQZHN
+         h5qaV48I+sbnuqZ+HJnu/VV2nByYF69YzEkjhjKmD/l4eTIcBHwRsv3xVWUbklxC33Dn
+         jF/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUo/bBRvirahQgkWfaM0mEeIAHPPeZbaHLb06gA2sjeTToAMBWvhl2Wb0jU+NI+kyS1Dsj8vaKlOQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzFlXAoO1trFgB1Ve4sc+PUXL1Oq5IiZI4Z6R2p7xi0lPXRXvZR
+	lTGUhZXmPVFmYtcV/73/4QjHe1y6TOC4C9GZBbxk/naWaskNR1QUeEHrgxomq6a7tBQ=
+X-Gm-Gg: ASbGncsA/2HRsyJ76JZ/hwoNViuOLgDTjOWdnN9L7nwTBNvgY3q7dq3ZK4KL2SbOYpB
+	7kfurbsNfIOhYlfU9r7wkdyAhXr1O6GX6dtSTw/EaIhSP+58Dj/JF9dKIbdRl7QLDGKtDGSo8f4
+	xBVSatR/UfVEzKuNdzPhpLQ1VxnJYI0At/i1Z+3ak9mJmojjSeukm4m0BLTZG5OdJw6XzU75htU
+	4+cPL4DLYfUtVy8oYVzakVKuIvLXZKHw2IIzQdvQGL9997caJM2ae6XWd/zLpOJ3nsECuvqh+Sd
+	xn9HW8GSYX3J3ER6QszqGBtQKjdwZl9qNTs4ZhHs6WzokedREo4nFdd5spMsaF67U71bDwj/gOo
+	YFG0pGYTDYOxQhCD0x4e3lSB2JGlT6UIzRRD9h87UrYcTP70px/pJBJW1B1Q0w2r/ukeyktKk1i
+	UbJVHuPrqUG6G0bA==
+X-Google-Smtp-Source: AGHT+IGt6B18Cfsh2aUtNnKQ/GdUe6r5HR9xnqzEThLvWMbBGO0PZDF86prVk/ruzgDmDAMG5bRFMQ==
+X-Received: by 2002:a05:6000:310a:b0:429:bb21:94dd with SMTP id ffacd0b85a97d-42e0f35024amr7000231f8f.46.1764163501920;
+        Wed, 26 Nov 2025 05:25:01 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fa3a81sm41314165f8f.26.2025.11.26.05.22.46
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42cb7fb8a29sm41169883f8f.30.2025.11.26.05.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Nov 2025 05:22:47 -0800 (PST)
-Date: Wed, 26 Nov 2025 14:22:44 +0100
+        Wed, 26 Nov 2025 05:25:01 -0800 (PST)
+Date: Wed, 26 Nov 2025 14:24:58 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
@@ -85,17 +85,17 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
 	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] arch: um: kmsg_dump: Use console_is_usable
-Message-ID: <aSb_JDBBX9Yh0jCM@pathway.suse.cz>
+Subject: Re: [PATCH v2 3/4] printk: Use console_is_usable on console_unblank
+Message-ID: <aSb_qmjfNc1seDzb@pathway.suse.cz>
 References: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
- <20251121-printk-cleanup-part2-v2-2-57b8b78647f4@suse.com>
+ <20251121-printk-cleanup-part2-v2-3-57b8b78647f4@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251121-printk-cleanup-part2-v2-2-57b8b78647f4@suse.com>
+In-Reply-To: <20251121-printk-cleanup-part2-v2-3-57b8b78647f4@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251126_052250_319002_AD87D5D9 
-X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-CacheID: sfid-20251126_052503_893063_2BCED5A8 
+X-CRM114-Status: UNSURE (   8.88  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -111,11 +111,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri 2025-11-21 15:50:34, Marcos Paulo de Souza wrote:
-> All consoles found on for_each_console are registered, meaning that all
-> of them have the CON_ENABLED flag set. Since NBCON was introduced it's
-> important to check if a given console also implements the NBCON callbacks.
-> The function console_is_usable does exactly that.
+On Fri 2025-11-21 15:50:35, Marcos Paulo de Souza wrote:
+> The macro for_each_console_srcu iterates over all registered consoles. It's
+> implied that all registered consoles have CON_ENABLED flag set, making
+> the check for the flag unnecessary. Call console_is_usable function to
+> fully verify if the given console is usable before calling the ->unblank
+> callback.
 > 
 > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
