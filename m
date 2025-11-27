@@ -4,87 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B646D11183
-	for <linux-um@archiver.kernel.org>; Thu, 27 Nov 2025 09:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F642D116E2
+	for <linux-um@archiver.kernel.org>; Thu, 27 Nov 2025 09:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oUT144wkzY8rQNmn2e3gnaa7iDaBgNTvAKCQq5DQpjo=; b=JcTzBDZtf2ildkMr+qDn6DyIJn
-	Ezys52FmI9K3iMxLuXLJTBDZ99wAmSrPfC2gta7GvG/DzbFSb55d/eFPoc3jJRG93iPo9MFe5WKry
-	QvnatJn5XCI4BLT+5316+iyRbJVP3emzV5nahnpA4A721B/e5u9Wn1LEIQDGcWA54njBexsMKQUIw
-	ysyXebhCuRV6P7z8jcmWcdjPtdnvJCDd6/FsqcnB5PKol+f+X2IhiJLyTGhRdc0McrkVRXKyb6qLV
-	Lum5PX4jeKSeJEwfT0OFZPD+rpLswOuFBIM2wH8ZnVF1rEwYbpKvjWGkCF2v2MEnhpTQXIExdfdMu
-	bNVY+lTw==;
+	bh=M55NOPX6+5YD0B0HIxdp5eD8kEu/VA3rAyDyjjhFwp8=; b=urNU426fiWjJW0qkT2nrZTFIW3
+	fGUTjAYoQhz85uSF99oWAxZi6aqlAbEQPKspEY2QyOAmkxoJV2KzJZJrgiNIwfU2QzgiMgURfcI4l
+	NTLVJVm7jBmL2uzyNbVp2HkKLnRxaTtsLchYVwJPp/Cpa99cXaEObTm+QYJyCYyGexLlD72wRvabm
+	7BumBgAoGppmjIubDZkAevTm7i34DdYkwKv32dKqOjywSH5yIyQ6S5Xg3/8aL5Pu+w7lozKc2jvdf
+	QsTNRT7p1u/rf/q6gLI/Ue9IT4qef993XtVvHb921byo7+WL04T+PswGhS9O1EW7J8vWGVjSgLj7y
+	zk7cVgGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOYH2-0000000GIXT-0cJS;
-	Thu, 27 Nov 2025 09:26:48 +0000
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+	id 1vOYd6-0000000GKDd-00GG;
+	Thu, 27 Nov 2025 09:49:36 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOYH0-0000000GIWy-0PWw
+	id 1vOYd3-0000000GKD7-2G7m
 	for linux-um@lists.infradead.org;
-	Thu, 27 Nov 2025 09:26:47 +0000
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-4eddfb8c7f5so6404421cf.1
-        for <linux-um@lists.infradead.org>; Thu, 27 Nov 2025 01:26:45 -0800 (PST)
+	Thu, 27 Nov 2025 09:49:35 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-b735487129fso99306366b.0
+        for <linux-um@lists.infradead.org>; Thu, 27 Nov 2025 01:49:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764235604; x=1764840404; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oUT144wkzY8rQNmn2e3gnaa7iDaBgNTvAKCQq5DQpjo=;
-        b=QivFHgcHXvpADEcv6trNdnNnzAUC3h0DIBMH9sKomeEk2l0TAmW2sQnmYGFS8e1Uev
-         Oniim0X3o4cbRNrkte5d1ttzd/jP7jEJDFl3BwdCmukxokF1fpjLyUGnQZLu3LFk53FY
-         J7m8P+fiFUnrxnttTY+wMnlZ2JTqVImyM3xcZUlGlHb6w9CtgjWOMW7yypKcZ82CWK8D
-         Vq1kLtkfTySBf6Zr+TlTefvY9Woelt+mrbbsEGdFTJ9a64UbwghA16icnyBzH56EIg6w
-         gz7Ny6whVv46E8vF8aKUhPPmoHq0OXpbrvhq0Rz+3P95OpZfCAaaxxlKorqB6XUuP1u/
-         JP6A==
+        d=suse.com; s=google; t=1764236972; x=1764841772; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M55NOPX6+5YD0B0HIxdp5eD8kEu/VA3rAyDyjjhFwp8=;
+        b=NHCU0RaSu9WPpStYnoWljxkWwGtD0wPrTg3M3oKFRSdVKz3QBtFVz+vHFYp2FFIyNd
+         lx/sjlYGrk8SGaNIo4fg2R1rXmTlbNar47TSH1ByMj++8Bnwqfb9qaTaRPCpBg/M0dXb
+         7GTxS2DIa2OOmTgbwS9buOHSsm7ceEpTjncVWhQTA8OorfMiDStmX48L1DSC7NNM/I/8
+         8742wzJIRVOOdCBRwg6QftbNBzFy9MWYSkrU07Wx56jIQ5FWOYJtQyYx8UJbQsv3MyS+
+         oW8VDlJxOZ51n87nHnZdisJ1FF95Ax3JZ+OIM+YAtPmhappqdbO0+elZaT7rOqCzNV0P
+         f8AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764235604; x=1764840404;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oUT144wkzY8rQNmn2e3gnaa7iDaBgNTvAKCQq5DQpjo=;
-        b=DuIX39JK86zMSHpUVfpJyVTR5CxHpApN/ACi+Sp+tRkgzugJSms1TeG6oppFSb4k3F
-         s6F+JQb+oQCsS4E2gH2ejtET0J2h//KMcZOJDzFvoxPPhjlupDexoc3X/K5rfAVwQt1x
-         RqZ9Nlq9WsnrDhFIzww7sReOfWCHofRduhLttCBA2dljTMi22m0JxHmqZe9tjFfxTKly
-         01NkkkbIY8Z6odcOpQN8YLj1RsEaWGJKzD18X5w7Z8rWJWxU0ES8PiSwcSolfUXAIRyZ
-         HZVN/0fJRroZeNyKhPEZwzcHBygFg4awMD7Aq5LCD4Dngh1Nj5DLD/2MOMK/PmIDviAU
-         lq/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVBxHfj74RBQ9vHH2cwYz7NZ+Ey2T8/73g8kzo0ZoKOAi5F1Nh0Y7V0k0DanF+BbfZCo8iPOvMM1w==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxce/fhscohw3l8sq6AinEK5gYNOK4NiCh9yuufiWHrU7YREW0a
-	N6wIsNgfma6ay/7HiDhfyIVVQv9CeYqMSNOYnIGGr9kaCSzTL+ll0xuiAipPXZf2/veu7i0CqOk
-	C94cLyl3GRnZEHbt81+pYutPuWHxuR6d36TpYVZd9
-X-Gm-Gg: ASbGncuXeJljN33zcz8COkaCIgNtZKtJoWyp461PyPlVpwSW+qLOJQkLmD/u6CUttYr
-	8WAJ3kio7CfV+0qEq9qbtDTY41nJfSIATdqhCE4j5d1FeXcEXl87kCsaHUNruVbfQJIs/Kuf1hP
-	Z7RZlsX4nkK0YJEXdoMsfS9tR5w2VA11syBNJmICQ8iODec2iSgVoCmhvbmV/8D5/LKkXdc8QsX
-	64zjOQiypRCo01jvQGrOzLzkQmjX8sduIyK6SrTWYVT1FO+39fAVVy5erl3W6kUnFrEuw==
-X-Google-Smtp-Source: AGHT+IEkT5sCukaPzIaA+NLZWrr9JoV2OMXXL4LmCmPyzPL4gvLMcSKdyRa5hEdOBEyE9aeaeW9w9HzvquWVNQAXvGA=
-X-Received: by 2002:ac8:5f06:0:b0:4ee:219e:e74 with SMTP id
- d75a77b69052e-4efbdb254demr133247771cf.77.1764235603711; Thu, 27 Nov 2025
- 01:26:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764236972; x=1764841772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M55NOPX6+5YD0B0HIxdp5eD8kEu/VA3rAyDyjjhFwp8=;
+        b=gmU6JwpTgemk/k8tzQYHs8aDRPkMI62OfOUCVxukKbweRwAtcAgPFSr36+e6Y39qaN
+         P3yn4fQS7SnzSclkZ+fKdpq6w48bVpRR7gSqPJ8/Bh2czOQv3UWkJeDedPhD0ShibYf/
+         cGnwSa5LsdDoEvVfJdaUEcRXynUjFwsykmrOFrd1Hv2a3XKhjcDsjSfW8HIiaLoNnrrS
+         BGqiuzggeHCUfxrU2WDx44PWlXaUER5N6fCMoqanihOHIIO9BS7e0+wfs7bIRBg3QcMh
+         BnnvdjDARc5002cwbutGNxnJS9um+axFteLlLw9oeOjgmg6SXZSiCGFIlsvG37xLCQsV
+         +5+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWMtn929KDsLjDx6ER86ZAztTD1mTtE961d+dYoxhYfGiheLsr+E+MngRz/xSOAYIkfldat2lEUsw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwhzmxpJdS4JtooTTaWZc1tvwJF8ne+wftDcQ8a0ODCq4rNXOsz
+	chjYu6s1JHOldgmajJjzPTEEWspm7LLvVMYA/O3B/OaT74ArE5+IQaa9bF8VcQnHsV0=
+X-Gm-Gg: ASbGncsIT7TrxH59PyOJKYjoLk8yi7bD55X2USINT6q23LtrRGqHDZIW3Gj+OvKvOL7
+	jjFSK1E6zsx/BEhITDeLAcPR1ZG1HaIKnnSzMgJ4MJNcc0FzkdUoZ0eUhjC/Vq6ztdzSUHq7Vcp
+	Hj2/bx2JexZRmHv/tMjtpoJ7n6GLCj2qqC6q8EStcy/FWmbgw8cgMbOy3McXputsGpOpHSgVcZL
+	k4i8q/ZRPQOMnKMqU7gaKeDqFlGypLRPc/UX4T4/stEoeqIIHzt06cQFzpivaw7GOUiwLHn5ao2
+	6kkKLvFwEZGuWWnUfv4Mn7NDn2Cs+nft0am4kg9Yug8xceqDm9Z8sUIEFhEe8bBwazHw62CWvdL
+	5U+E3ArUkl8OrK2l4una3VljT27xEyC/mrKZUWNZ4V4KD6ePJtxDnFIYsljTmyST26v1gHU6Gat
+	a7OOMH9xTwRdikYQ==
+X-Google-Smtp-Source: AGHT+IFxlu0dGYyZ0OR2t4e3UxMOdqisZjIAo/bgT3egjX/1jqRrOdQbJ5C0zIWcx5YhoZUyiTy5Wg==
+X-Received: by 2002:a17:906:2612:b0:b76:b632:1123 with SMTP id a640c23a62f3a-b76b63214demr1036789966b.42.1764236971612;
+        Thu, 27 Nov 2025 01:49:31 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b76f5162093sm123547366b.2.2025.11.27.01.49.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Nov 2025 01:49:31 -0800 (PST)
+Date: Thu, 27 Nov 2025 10:49:28 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
+Subject: Re: [PATCH v2 4/4] printk: Make console_{suspend,resume} handle
+ CON_SUSPENDED
+Message-ID: <aSgeqM3DWvR8-cMY@pathway.suse.cz>
+References: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
+ <20251121-printk-cleanup-part2-v2-4-57b8b78647f4@suse.com>
 MIME-Version: 1.0
-References: <202511210858.uwVivgvn-lkp@intel.com> <84b74435-5aad-4c15-aea5-db87b4a6bf11@kernel.org>
- <CANiq72mCd7FVO0Btsvct5Dy67TkBJd=QJgnPvLMn9d43Vy0YnA@mail.gmail.com>
-In-Reply-To: <CANiq72mCd7FVO0Btsvct5Dy67TkBJd=QJgnPvLMn9d43Vy0YnA@mail.gmail.com>
-From: David Gow <davidgow@google.com>
-Date: Thu, 27 Nov 2025 17:26:31 +0800
-X-Gm-Features: AWmQ_bkv4jFqUVeh8Qet3Ka4JTmk4vo1-CieIBCvvBE5E8ixD9z_QhWmpogPjVE
-Message-ID: <CABVgOS=SFM7Po-Xyf0nyT=np8fKNJzuHSBeyw+m4dL1vivq1WA@mail.gmail.com>
-Subject: Re: [linux-next:master 4806/10599] error[E0560]: struct
- `bindings::kernel_param_ops` has no field named `get`
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Daniel Gomez <da.gomez@kernel.org>, kernel test robot <lkp@intel.com>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, 
-	Benno Lossin <lossin@kernel.org>, linux-modules@vger.kernel.org, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000007f1bfb0644901c9e"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251121-printk-cleanup-part2-v2-4-57b8b78647f4@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251127_012646_174345_EE4FA044 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20251127_014933_644069_4593644F 
+X-CRM114-Status: GOOD (  34.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,143 +111,310 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---0000000000007f1bfb0644901c9e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Fri 2025-11-21 15:50:36, Marcos Paulo de Souza wrote:
+> Since commit 9e70a5e109a4 ("printk: Add per-console suspended state")
+> the CON_SUSPENDED flag was introced, and this flag was being checked
+> on console_is_usable function, which returns false if the console is
+> suspended.
+> 
+> To make the behavior consistent, change show_cons_active to look for
+> consoles that are not suspended, instead of checking CON_ENABLED.
+> 
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -3554,7 +3554,7 @@ static ssize_t show_cons_active(struct device *dev,
+>  			continue;
+>  		if (!(c->flags & CON_NBCON) && !c->write)
+>  			continue;
+> -		if ((c->flags & CON_ENABLED) == 0)
+> +		if (c->flags & CON_SUSPENDED)
 
-On Wed, 26 Nov 2025 at 21:50, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Wed, Nov 26, 2025 at 2:41=E2=80=AFPM Daniel Gomez <da.gomez@kernel.org=
-> wrote:
-> >
-> > On 21/11/2025 01.24, kernel test robot wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
-xt.git master
-> > > head:   88cbd8ac379cf5ce68b7efcfd4d1484a6871ee0b
-> > > commit: 0b08fc292842a13aa496413b48c1efb83573b8c6 [4806/10599] rust: i=
-ntroduce module_param module
-> > > config: um-randconfig-001-20251121 (https://download.01.org/0day-ci/a=
-rchive/20251121/202511210858.uwVivgvn-lkp@intel.com/config)
-> > > compiler: clang version 22.0.0git (https://github.com/llvm/llvm-proje=
-ct 9e9fe08b16ea2c4d9867fb4974edf2a3776d6ece)
-> > > rustc: rustc 1.88.0 (6b00bc388 2025-06-23)
-> > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/a=
-rchive/20251121/202511210858.uwVivgvn-lkp@intel.com/reproduce)
-> >
-> > We can't reproduce this.
-> >
-> > If anyone cares, please let us know how to reproduce it.
-> >
+I believe that we could and should replace
 
-Thanks -- this does sit in the category of things I care about (at
-least in theory), but also can't reproduce.
+		if (!(c->flags & CON_NBCON) && !c->write)
+			continue;
+		if (c->flags & CON_SUSPENDED)
+			continue;
 
-It looks like this affects random struct fields in bindings:: (I've
-seen other 0day reports with other structs and fields). If anyone has
-any idea what's going on, suggestions are welcome.
+with
 
-Cheers,
--- David
+		if (!console_is_usable(c, c->flags, true) &&
+		    !console_is_usable(c, c->flags, false))
+			continue;
 
---0000000000007f1bfb0644901c9e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+It would make the value compatible with all other callers/users of
+the console drivers.
 
-MIIUnQYJKoZIhvcNAQcCoIIUjjCCFIoCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ghIEMIIGkTCCBHmgAwIBAgIQfofDAVIq0iZG5Ok+mZCT2TANBgkqhkiG9w0BAQwFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSNjETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMzA0MTkwMzUzNDdaFw0zMjA0MTkwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFI2IFNNSU1FIENBIDIwMjMwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDYydcdmKyg
-4IBqVjT4XMf6SR2Ix+1ChW2efX6LpapgGIl63csmTdJQw8EcbwU9C691spkltzTASK2Ayi4aeosB
-mk63SPrdVjJNNTkSbTowej3xVVGnYwAjZ6/qcrIgRUNtd/mbtG7j9W80JoP6o2Szu6/mdjb/yxRM
-KaCDlloE9vID2jSNB5qOGkKKvN0x6I5e/B1Y6tidYDHemkW4Qv9mfE3xtDAoe5ygUvKA4KHQTOIy
-VQEFpd/ZAu1yvrEeA/egkcmdJs6o47sxfo9p/fGNsLm/TOOZg5aj5RHJbZlc0zQ3yZt1wh+NEe3x
-ewU5ZoFnETCjjTKz16eJ5RE21EmnCtLb3kU1s+t/L0RUU3XUAzMeBVYBEsEmNnbo1UiiuwUZBWiJ
-vMBxd9LeIodDzz3ULIN5Q84oYBOeWGI2ILvplRe9Fx/WBjHhl9rJgAXs2h9dAMVeEYIYkvW+9mpt
-BIU9cXUiO0bky1lumSRRg11fOgRzIJQsphStaOq5OPTb3pBiNpwWvYpvv5kCG2X58GfdR8SWA+fm
-OLXHcb5lRljrS4rT9MROG/QkZgNtoFLBo/r7qANrtlyAwPx5zPsQSwG9r8SFdgMTHnA2eWCZPOmN
-1Tt4xU4v9mQIHNqQBuNJLjlxvalUOdTRgw21OJAFt6Ncx5j/20Qw9FECnP+B3EPVmQIDAQABo4IB
-ZTCCAWEwDgYDVR0PAQH/BAQDAgGGMDMGA1UdJQQsMCoGCCsGAQUFBwMCBggrBgEFBQcDBAYJKwYB
-BAGCNxUGBgkrBgEEAYI3FQUwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUM7q+o9Q5TSoZ
-18hmkmiB/cHGycYwHwYDVR0jBBgwFoAUrmwFo5MT4qLn4tcc1sfwf8hnU6AwewYIKwYBBQUHAQEE
-bzBtMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vcm9vdHI2MDsGCCsG
-AQUFBzAChi9odHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9yb290LXI2LmNydDA2
-BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL3Jvb3QtcjYuY3JsMBEG
-A1UdIAQKMAgwBgYEVR0gADANBgkqhkiG9w0BAQwFAAOCAgEAVc4mpSLg9A6QpSq1JNO6tURZ4rBI
-MkwhqdLrEsKs8z40RyxMURo+B2ZljZmFLcEVxyNt7zwpZ2IDfk4URESmfDTiy95jf856Hcwzdxfy
-jdwx0k7n4/0WK9ElybN4J95sgeGRcqd4pji6171bREVt0UlHrIRkftIMFK1bzU0dgpgLMu+ykJSE
-0Bog41D9T6Swl2RTuKYYO4UAl9nSjWN6CVP8rZQotJv8Kl2llpe83n6ULzNfe2QT67IB5sJdsrNk
-jIxSwaWjOUNddWvCk/b5qsVUROOuctPyYnAFTU5KY5qhyuiFTvvVlOMArFkStNlVKIufop5EQh6p
-jqDGT6rp4ANDoEWbHKd4mwrMtvrh51/8UzaJrLzj3GjdkJ/sPWkDbn+AIt6lrO8hbYSD8L7RQDqK
-C28FheVr4ynpkrWkT7Rl6npWhyumaCbjR+8bo9gs7rto9SPDhWhgPSR9R1//WF3mdHt8SKERhvtd
-NFkE3zf36V9Vnu0EO1ay2n5imrOfLkOVF3vtAjleJnesM/R7v5tMS0tWoIr39KaQNURwI//WVuR+
-zjqIQVx5s7Ta1GgEL56z0C5GJoNE1LvGXnQDyvDO6QeJVThFNgwkossyvmMAaPOJYnYCrYXiXXle
-A6TpL63Gu8foNftUO0T83JbV/e6J8iCOnGZwZDrubOtYn1QwggWDMIIDa6ADAgECAg5F5rsDgzPD
-hWVI5v9FUTANBgkqhkiG9w0BAQwFADBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBS
-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
-Dxz3AgMBAAGjggHgMIIB3DAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1UdDwEB
-/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFHZtY3XkWtC2
-e2Idfk+0JyK7BLzzMFgGA1UdIARRME8wCQYHZ4EMAQUBAjBCBgorBgEEAaAyCgMDMDQwMgYIKwYB
-BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQC
-MAAwgZoGCCsGAQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWdu
-LmNvbS9jYS9nc2F0bGFzcjZzbWltZWNhMjAyMzBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5n
-bG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3J0MB8GA1UdIwQYMBaA
-FDO6vqPUOU0qGdfIZpJogf3BxsnGMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vY2EvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3JsMA0GCSqGSIb3DQEBCwUAA4ICAQBo
-hqjbVaHxZoT6HHUuwQcTlbgXpuVi59bQPrSwb/6Pn1t3h3SLeuUCvOYpoQjxlWy/FexsPW+nWS0I
-PUmWpt6sxbIRTKPfb7cPk32XezfnA0jexucybiXzkZKTrbI7zoMOzDIWpTKYZAonB9Zzi7Dso4An
-ZOtz/E3yhdR/q1MK30d5fiCS0vorEd0Oy8Jzcc7TJ2HGMzEEXiFFvVrJYJHvfYOeXE4ywAG6YWO0
-x78+bXeB9vkeWHhOYKyYXuAXrnHASddEICg1QlJCHDAISMC1Wn/tjqTMTt3sDAe+dhi9V1FEGTbG
-g9PxPVP4huJEMIBu/MWNMzHfiW4E7eCHVPrmtX7CFDlMik7qsgQBbO5h6EcxBamhIflfMgoISsRJ
-Vyll2E5BNVwkNstMgU3WMg5yIaQcuGFgFnMTrQcaLEEFPV3cCP9pgXovYDirnB7FKNdCZNHfeBY1
-HEXJ2jIPDP6nWSbYoRry0TvPgxh5ZeM5+sc1L7kY75C8U4FV3t4qdC+p7rgqfAggdvDPa5BJbTRg
-KAzwyf3z7XUrYp38pXybmDnsEcRNBIOEqBXoiBxZXaKQqaY921nWAroMM/6I6CVpTnu6JEeQkoi4
-IgGIEaTFPcgAjvpDQ8waLJL84EP6rbLW6dop+97BXbeO9L/fFf40kBhve6IggpJSeU9RdCQ5czGC
-Al0wggJZAgEBMGgwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKjAo
-BgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjYgU01JTUUgQ0EgMjAyMwIQAYQLf/BIzLow9kWqD8My
-PzANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQg5LXBbVwJviFHaG7sd1NMdeLa/KMU
-naVDj9iq5y+s09MwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUx
-MTI3MDkyNjQ0WjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
-YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcN
-AQEBBQAEggEAVHDyUQgDfm2klAOfnDAqPBl+Yc6L5AM49NAME17UhB6D/zvdtSrQIpeR+mHH67l7
-l5WjBdX2HzuxLQ80nC8Wui4M8OzGGmRhlMUHHlW+JcyrHC6AdzsJGowzC97LpRd2QN9Zy7HZO82Q
-SWrKmwdxrbt7I1t0SdJgLUM5t6gYTB2MkiQds/snyGcK9th3wKl/oxCQHdJsz/afh/YNRMGQbsXm
-NOw0c/mI+XsFKWaiGdhf4l5NhGCAKJt6jv7gr0CNBkkFpuJyzMp60iLggElen+0feroJa9SOUbkZ
-rq3+fDNFAVk5+1V5433w0kTN7vcWVPNT4XjpRdgdufDAy9HZSA==
---0000000000007f1bfb0644901c9e--
+The variant using two console_is_usable() calls with "true/false"
+parameters is inspited by __pr_flush().
+
+>  			continue;
+>  		cs[i++] = c;
+>  		if (i >= ARRAY_SIZE(cs))
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index fed98a18e830..fe7c956f73bd 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3542,7 +3542,7 @@ void console_suspend(struct console *console)
+>  {
+>  	__pr_flush(console, 1000, true);
+>  	console_list_lock();
+> -	console_srcu_write_flags(console, console->flags & ~CON_ENABLED);
+> +	console_srcu_write_flags(console, console->flags | CON_SUSPENDED);
+
+This is the same flag which is set also by the console_suspend_all()
+API. Now, as discussed at
+https://lore.kernel.org/lkml/844j4lepak.fsf@jogness.linutronix.de/
+
+   + console_suspend()/console_resume() API is used by few console
+     drivers to suspend the console when the related HW device
+     gets suspended.
+
+   + console_suspend_all()/console_resume_all() is used by
+     the power management subsystem to call down/up all consoles
+     when the system is going down/up. It is a big hammer approach.
+
+We need to distinguish the two APIs so that console drivers which were
+suspended by both APIs stay suspended until they get resumed by both
+APIs. I mean:
+
+	// This should suspend all consoles unless it is not disabled
+	// by "no_console_suspend" API.
+	console_suspend_all();
+	// This suspends @con even when "no_console_suspend" parameter
+	// is used. It is needed because the HW is going to be suspended.
+	// It has no effect when the consoles were already suspended
+	// by the big hammer API.
+	console_suspend(con);
+
+	// This might resume the console when "no_console_suspend" option
+	// is used. The driver should work because the HW was resumed.
+	// But it should stay suspended when all consoles are supposed
+	// to stay suspended because of the big hammer API.
+	console_resume(con);
+	// This should resume all consoles.
+	console_resume_all();
+
+Other behavior would be unexpected and untested. It might cause regression.
+
+I see two solutions:
+
+   + add another CON_SUSPENDED_ALL flag
+   + add back "consoles_suspended" global variable
+
+I prefer adding back the "consoles_suspended" global variable because
+it is a global state...
+
+The global state should be synchronized the same way as the current
+per-console flag (write under console_list_lock, read under
+console_srcu_read_lock()).
+
+Also it should be checked by console_is_usable() API. Otherwise, we
+would need to update all callers.
+
+This brings a challenge how to make it safe and keep the API sane.
+I propose to create:
+
+  + __console_is_usable() where the "consoles_suspended" value will
+    be passed as parameter. It might be used directly under
+    console_list_lock().
+
+  + console_is_usable() with the existing parameters. It will check
+    the it was called under console_srcu_read_lock, read
+    the global "consoles_suspend" and pass it to
+    __console_is_usable().
+
+
+>  	console_list_unlock();
+>  
+>  	/*
+
+I played with the code to make sure that it looked sane
+and I ended with the following changes on top of this patch.
+
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 1b2ce0f36010..fda4683d12f1 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -3552,9 +3552,8 @@ static ssize_t show_cons_active(struct device *dev,
+ 	for_each_console(c) {
+ 		if (!c->device)
+ 			continue;
+-		if (!(c->flags & CON_NBCON) && !c->write)
+-			continue;
+-		if (c->flags & CON_SUSPENDED)
++		if (!__console_is_usable(c, c->flags, consoles_suspended, true) &&
++		    !__console_is_usable(c, c->flags, consoles_suspended, false))
+ 			continue;
+ 		cs[i++] = c;
+ 		if (i >= ARRAY_SIZE(cs))
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 5f17321ed962..090490ef570f 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -496,6 +496,7 @@ extern void console_list_lock(void) __acquires(console_mutex);
+ extern void console_list_unlock(void) __releases(console_mutex);
+ 
+ extern struct hlist_head console_list;
++extern bool consoles_suspended;
+ 
+ /**
+  * console_srcu_read_flags - Locklessly read flags of a possibly registered
+@@ -548,6 +549,47 @@ static inline void console_srcu_write_flags(struct console *con, short flags)
+ 	WRITE_ONCE(con->flags, flags);
+ }
+ 
++/**
++ * consoles_suspended_srcu_read - Locklessly read the global flag for
++ *				suspending all consoles.
++ *
++ * The global "consoles_suspended" flag is synchronized using console_list_lock
++ * and console_srcu_read_lock. It is the same approach as CON_SUSSPENDED flag.
++ * See console_srcu_read_flags() for more details.
++ *
++ * Context: Any context.
++ * Return: The current value of the global "consoles_suspended" flag.
++ */
++static inline short consoles_suspended_srcu_read(void)
++{
++	WARN_ON_ONCE(!console_srcu_read_lock_is_held());
++
++	/*
++	 * The READ_ONCE() matches the WRITE_ONCE() when "consoles_suspended"
++	 * is modified with consoles_suspended_srcu_write().
++	 */
++	return data_race(READ_ONCE(consoles_suspended));
++}
++
++/**
++ * consoles_suspended_srcu_write - Write the global flag for suspending
++ *			all consoles.
++ * @suspend:	new value to write
++ *
++ * The write must be done under the console_list_lock. The caller is responsible
++ * for calling synchronize_srcu() to make sure that all callers checking the
++ * usablility of registered consoles see the new state.
++ *
++ * Context: Any context.
++ */
++static inline void consoles_suspended_srcu_write(bool suspend)
++{
++	lockdep_assert_console_list_lock_held();
++
++	/* This matches the READ_ONCE() in consoles_suspended_srcu_read(). */
++	WRITE_ONCE(consoles_suspended, suspend);
++}
++
+ /* Variant of console_is_registered() when the console_list_lock is held. */
+ static inline bool console_is_registered_locked(const struct console *con)
+ {
+@@ -617,13 +659,15 @@ extern bool nbcon_kdb_try_acquire(struct console *con,
+ extern void nbcon_kdb_release(struct nbcon_write_context *wctxt);
+ 
+ /*
+- * Check if the given console is currently capable and allowed to print
+- * records. Note that this function does not consider the current context,
+- * which can also play a role in deciding if @con can be used to print
+- * records.
++ * This variant might be called under console_list_lock where both
++ * @flags and @all_suspended flags can be read directly.
+  */
+-static inline bool console_is_usable(struct console *con, short flags, bool use_atomic)
++static inline bool __console_is_usable(struct console *con, short flags,
++				       bool all_suspended, bool use_atomic)
+ {
++	if (all_suspended)
++		return false;
++
+ 	if (!(flags & CON_ENABLED))
+ 		return false;
+ 
+@@ -666,6 +710,20 @@ static inline bool console_is_usable(struct console *con, short flags, bool use_
+ 	return true;
+ }
+ 
++/*
++ * Check if the given console is currently capable and allowed to print
++ * records. Note that this function does not consider the current context,
++ * which can also play a role in deciding if @con can be used to print
++ * records.
++ */
++static inline bool console_is_usable(struct console *con, short flags,
++				     bool use_atomic)
++{
++	bool all_suspended = consoles_suspended_srcu_read();
++
++	return __console_is_usable(con, flags, all_suspended, use_atomic);
++}
++
+ #else
+ static inline void nbcon_cpu_emergency_enter(void) { }
+ static inline void nbcon_cpu_emergency_exit(void) { }
+@@ -678,6 +736,8 @@ static inline void nbcon_reacquire_nobuf(struct nbcon_write_context *wctxt) { }
+ static inline bool nbcon_kdb_try_acquire(struct console *con,
+ 					 struct nbcon_write_context *wctxt) { return false; }
+ static inline void nbcon_kdb_release(struct nbcon_write_context *wctxt) { }
++static inline bool __console_is_usable(struct console *con, short flags,
++				       bool all_suspended, bool use_atomic) { return false; }
+ static inline bool console_is_usable(struct console *con, short flags,
+ 				     bool use_atomic) { return false; }
+ #endif
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 23a14e8c7a49..12247df07420 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -104,6 +104,13 @@ DEFINE_STATIC_SRCU(console_srcu);
+  */
+ int __read_mostly suppress_printk;
+ 
++/*
++ * Global flag for calling down all consoles during suspend.
++ * There is also a per-console flag which is used when the related
++ * device HW gets disabled, see CON_SUSPEND.
++ */
++bool consoles_suspended;
++
+ #ifdef CONFIG_LOCKDEP
+ static struct lockdep_map console_lock_dep_map = {
+ 	.name = "console_lock"
+@@ -2731,8 +2738,6 @@ MODULE_PARM_DESC(console_no_auto_verbose, "Disable console loglevel raise to hig
+  */
+ void console_suspend_all(void)
+ {
+-	struct console *con;
+-
+ 	if (console_suspend_enabled)
+ 		pr_info("Suspending console(s) (use no_console_suspend to debug)\n");
+ 
+@@ -2749,8 +2754,7 @@ void console_suspend_all(void)
+ 		return;
+ 
+ 	console_list_lock();
+-	for_each_console(con)
+-		console_srcu_write_flags(con, con->flags | CON_SUSPENDED);
++	consoles_suspended_srcu_write(true);
+ 	console_list_unlock();
+ 
+ 	/*
+@@ -2765,7 +2769,6 @@ void console_suspend_all(void)
+ void console_resume_all(void)
+ {
+ 	struct console_flush_type ft;
+-	struct console *con;
+ 
+ 	/*
+ 	 * Allow queueing irq_work. After restoring console state, deferred
+@@ -2776,8 +2779,7 @@ void console_resume_all(void)
+ 
+ 	if (console_suspend_enabled) {
+ 		console_list_lock();
+-		for_each_console(con)
+-			console_srcu_write_flags(con, con->flags & ~CON_SUSPENDED);
++		consoles_suspended_srcu_write(false);
+ 		console_list_unlock();
+ 
+ 		/*
+
+Best Regards,
+Petr
 
