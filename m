@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C591DD116EA
-	for <linux-um@archiver.kernel.org>; Fri, 28 Nov 2025 09:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 889E4D116F3
+	for <linux-um@archiver.kernel.org>; Fri, 28 Nov 2025 12:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+JX3XeAoPziFMJInK2Wsnqx3380N8ZAktDPiEBHNHZM=; b=c6HuRJd2V6dntZUGZk7pLdyJSa
-	RX4SRhsccnHb49O2RHdgSlYqgY3AHPedCmLcd5RJzvMFBlHDns2aOjoDES2wXPBEvZkSQuK7v0bL9
-	BZUTnKThNsaN4gHpWBILT1WTA5duluu6F8c6MXsAnN8NJ92vjzxamGxQGn790YqTi0PU/L7tHICGV
-	F3s4Y5EsI7a/3+wz//IFCqfulNVzC1H/ATTBf0EFUQ4Fg4TCO5mEDeINm7NhxPn79PSukgdZuBGA8
-	x6lzsdOUn5nj03h8KKeUyxzmS0C9Ye+6EZUB9v1z3w1ZSUqEzEaaU7lKazPbV15hbB1JmsjobbWzu
-	RgTHNijA==;
+	bh=pcb229vvLyBxSU063HYeCn4lxqy1srWBTS640feRync=; b=Yv20ZALJqRJuas5Tz1ybg230KD
+	l2ZNuy+FxUthFx0Mwc2y7SFwp7h+9FfCXNZfzmpzEoEZn3FgrGJ+XFrmMjLI1Pug/lWXXJ8zLH+Go
+	os5GIB89EFxReCbK74XoPaIBdARlFJier4PswE8EyU9307UyrBYETdUBUT6MccCHmVH+Yj8Vu/Zmu
+	zQCHEuUe9sxuYOCF/aTRke5Z4pIaB2/njRv4pbylIRWHALqUw2aTmO47AdlI4KlYu7ue3wyFFdwT1
+	j7OXJd3MfRVa+mtHitMRy8QymqWJkJTSAprc+rtdpS21SUpvJbNbMdHk/RwdYhCexRjr1HRibs7no
+	7d+/esYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOv9Y-00000000Fbe-2pCw;
-	Fri, 28 Nov 2025 09:52:36 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1vOxd1-00000000Qk3-3fce;
+	Fri, 28 Nov 2025 12:31:11 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vOv9R-00000000FaX-3eNh
+	id 1vOxcw-00000000Qje-32uR
 	for linux-um@lists.infradead.org;
-	Fri, 28 Nov 2025 09:52:34 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-477632b0621so9259395e9.2
-        for <linux-um@lists.infradead.org>; Fri, 28 Nov 2025 01:52:28 -0800 (PST)
+	Fri, 28 Nov 2025 12:31:10 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4775ae77516so18985245e9.1
+        for <linux-um@lists.infradead.org>; Fri, 28 Nov 2025 04:31:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riscstar-com.20230601.gappssmtp.com; s=20230601; t=1764323547; x=1764928347; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1764333065; x=1764937865; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+JX3XeAoPziFMJInK2Wsnqx3380N8ZAktDPiEBHNHZM=;
-        b=fCPswDYr2DV4So4q2GxekOY4G9yFpE1GMgSnO30c68zOYNSEBNlKurQevEZ90xhsGX
-         f5HUMN7XAzor8+nRKPUnHQxEbDp/AkzYdqg3ZvhJFSvu6TVEi+6KbZLPqk6fiQkwW3cl
-         bo+TlwNiM0c2EwLGcmqxoG1y0g/CNWOFzDct480pvd/esr4ApCUkWbGkOFQ68RF1qFyf
-         KTV8kZ23sNNgDbyV49UKWaLg73ct7clCKteN+CInUKpzLoo5nzQ8Vz5WDdKQWUnYPNOV
-         c7Oo9QgnhMjvlaNyeNkQQrSntVhl6+e4wpnmJOD8QO5aYeBZOasBFsEqv5K88kwS0W22
-         Cmxg==
+        bh=pcb229vvLyBxSU063HYeCn4lxqy1srWBTS640feRync=;
+        b=eww+fP4S2PIzx4KSYob2EJ7fj9OhKEQJoDUnsbKsgaMmnnKwn8jklIRhNX/ats+QW9
+         b5WTtOwpl0K9EwFFyl3IV8diewiVRhjcFwdHt/yc6cIJeYXSReUGOoM/du+fs0fOCEL/
+         3IPMkoBEK5I0i2EGgin3wh5RtPzYl87cHjsY3CJ7wi1LzQSssk0t7qxDgsI7bsZw62an
+         biJj5AszELS5t+dE1KfXXIcnaETroW3uFhYuTzUjdhYTwb5pUIl6/E92Geu4ouK1W2cp
+         oLx+zJiv5eh23BqIepoO0HXYX7IIFHVlcpt4RqmkHe9gUVNVIxM121Sx2doXO+6lMjJQ
+         ljxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764323547; x=1764928347;
+        d=1e100.net; s=20230601; t=1764333065; x=1764937865;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+JX3XeAoPziFMJInK2Wsnqx3380N8ZAktDPiEBHNHZM=;
-        b=TIVDQGcNMFkixLXG+oydlITQyNnKd+48iwkaggp+LZDgHelsec5lqHZNOQx+e6tnK3
-         SKzZfMj7ipN37LwWec69eq/YJKfwIrdXXomRHZctT2JyD+EAk6BRy1YTm8fvpuYBrlLr
-         /U4faMLlz8sRQtfSrzAio3aBhAFPikOnGHYrRiV1fjbLNFcgd2X6wK5q5s2XfGx7D0Co
-         7Qny05MSo9gr3oa4iIU3v/bgRY9E1YctMkrSNDrPN8+rp2Pa0b4EUUvPLlelXnT1J7LA
-         a/3AfbDBA+C+iDi2TVWFcXKlv48ZxVhknN3PAdeT1kYIFP6j7sxVqbbqqkMNdzi1TDvi
-         Z+3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWvbHLbXulZTZCsiS0xNsEWwJBsrcfycIy+PhA9zYw4h2qWRwPddzD3GFyJrjqGAUK+UylOdrL6zA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw6Baswue1crYeLNHiSzDHN0T1ZEF9vF3S/qTwG87gkealu//zQ
-	uOH7uaqiWa4GofPvOxopzu9QFvp/5uGofjT+H23/AVN5JeBv6AweSwriWtjHJ4Dlnto=
-X-Gm-Gg: ASbGncvjxSW0LZkRg7rWZqaDOmIy5vcNZ+A5IFTW/yF6il1HU7FeGeaFipOqcgP4HTz
-	9rppjRC0PqfbBD/y2nCKPFglRKNjHsh9RFw+tcQSQr+GPJm972U6zWCnmHKFOtOIULji8kZumsB
-	nOgXq+c5MdY/6ID9eB06gdj8HjkugeyBmjcp2C4Cu7svvqlZYqQGMPWBSaAAiShsIGE93csH83E
-	E9Vyg4kiL+CWf2gVglh+JmTzwkUXGM3HVrFXrcZhxE/BqM17zv9yi65d92yqm6VyXS4aHOx8bGy
-	cyfFBpculZc60k74kHiKR/zT37vh8dXhtxmilCe9QdQWSABS4hNAY60IXwCh+V+ZMU3G3wwL/gd
-	HqWPmNny647SvSYgeuWWAHIC2HuF0Gyg/yN3G1brLRCYJbay1wZwaHBa1ogKHOTZcD4NwwF/dMw
-	qmyLLeG9obv09F9XluImZXBXVDHW9TRKHt+2Kj/PYfnk9ydSehpsrI2X5OdvEfKCY0qmtKVw==
-X-Google-Smtp-Source: AGHT+IEou8ioIaohphRX3g14Kfa+nakRPZ5lw4pW3M17hreUZfX39G6tpJPxcg2/gDvtuPOahWfOAg==
-X-Received: by 2002:a05:600c:1f0f:b0:46e:37fe:f0e6 with SMTP id 5b1f17b1804b1-477c1131db6mr263935475e9.30.1764323547239;
-        Fri, 28 Nov 2025 01:52:27 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4791164d365sm76381955e9.12.2025.11.28.01.52.26
+        bh=pcb229vvLyBxSU063HYeCn4lxqy1srWBTS640feRync=;
+        b=YmIqn+UP89W9ica2i8zXWFgjsnxs2eWT0DNn/E8CRfOrUiXh7nl6BYoL1v4F6r29xU
+         vj3AoQGHldmKF7lXZUaNaP/r2aqSvD4WflCJjgffLLIwDBEo3pSVODis+nB/BZjzktRz
+         Xwgn9jRJxv5UCsvmIoKIciLZM4ti9zBrVjR/py+a3ZWWHea3EUvIh5Vylb66wN4k1aVR
+         wwwtmEAlRH2t4HEHMfrLrbZLq+9wzGOjWMSwSz90XM03v7teYy2u2ElSCbDWX/C1WFtG
+         h6TP8KMgbUIjSiPG76obNWkZFPduRLknUnPfxqrUtnDVySwLRoYbYXjAbUEmhesFfl9f
+         TRuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtSFmKmV8g4rM9GoYVA8g35DJyICim0AuYl5mct7t1kCstafw3f4/ofnf8OUYY1LFg8B0FWyUQcQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxGq4iQrxfERVCSlBHaQvlH3QArCr4s16QgnSRx0dgPghDvmjFF
+	q2LyLvtIThePz2Qg8/XiUtEzlZsINtfGYSvH3XWv10aoHHBuBcFtcvRMzaoSLhjqP9Q=
+X-Gm-Gg: ASbGncvPTrmGqsTmSfrAt5pyptBMSMqhbQmb8osk2lUHadhIB+fWPTTd1RT43uj17Y7
+	7MNZMe+Rre38oXHKx9bVya8cKSk7wda2NazIylH0+hD9vfCJn1Avgf/s41Lpc9JVPXwiUB7dc2F
+	CjJfSr+e4lccDGPm30D/LdmzMGrAM8kPaRGjersq8Pw1jLTtErgZVXeJF3BBKbuvsNPAiA8/u7B
+	c48/gLTPLD9qC/pzMGWde+HoDSjfSJadhtKLkUygGP9oNusD5ixjrtqxBfFeRT0oe8vui+l05kt
+	LjrVujrXaYyNx0HjPjPnZ1qIkxZnQFomNbkNokHH+CoaR4TLy0W0wp6VZFeGzr1T/UaMuuC7fFa
+	YfAtjpAMRdKa1p8KDt7llKMx2228qVDSW/nyR8eXvzRpGEA65dz3JvyhXoGJ0Qcc59JKxYNaiC+
+	0hRxu0KqhgrJ00oQ==
+X-Google-Smtp-Source: AGHT+IHRcq2FJ5WThogfhlAWqk7vaz8fGAovTB+lQ9cVsK0w612w7DjIt7QhCUcTVHzHz5dbtHK8GA==
+X-Received: by 2002:a05:600c:450f:b0:46e:1abc:1811 with SMTP id 5b1f17b1804b1-477c1124ecfmr270011685e9.27.1764333064798;
+        Fri, 28 Nov 2025 04:31:04 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1ca1a3e4sm9837124f8f.25.2025.11.28.04.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Nov 2025 01:52:26 -0800 (PST)
-Date: Fri, 28 Nov 2025 09:52:24 +0000
-From: Daniel Thompson <daniel@riscstar.com>
-To: Petr Mladek <pmladek@suse.com>
+        Fri, 28 Nov 2025 04:31:04 -0800 (PST)
+Date: Fri, 28 Nov 2025 13:31:01 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Daniel Thompson <daniel@riscstar.com>
 Cc: Marcos Paulo de Souza <mpdesouza@suse.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	John Ogness <john.ogness@linutronix.de>,
@@ -87,16 +87,17 @@ Cc: Marcos Paulo de Souza <mpdesouza@suse.com>,
 	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
 	kgdb-bugreport@lists.sourceforge.net, linux-um@lists.infradead.org
 Subject: Re: [PATCH v2 0/4] printk cleanup - part 2
-Message-ID: <aSlw2AHo_AWzjH-s@aspen.lan>
+Message-ID: <aSmWBYRmH_BNM4kg@pathway.suse.cz>
 References: <20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com>
  <aShr0DZRmpDnL0nz@pathway.suse.cz>
+ <aSlw2AHo_AWzjH-s@aspen.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aShr0DZRmpDnL0nz@pathway.suse.cz>
+In-Reply-To: <aSlw2AHo_AWzjH-s@aspen.lan>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251128_015230_128142_4D956328 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20251128_043106_807680_C1611317 
+X-CRM114-Status: GOOD (  21.17  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,37 +112,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 27, 2025 at 04:18:40PM +0100, Petr Mladek wrote:
-> On Fri 2025-11-21 15:50:32, Marcos Paulo de Souza wrote:
-> > The first part can be found here[1]. The proposed changes do not
-> > change the functionality of printk, but were suggestions made by
-> > Petr Mladek. I already have more patches for a part 3 ,but I would like
-> > to see these ones merged first.
+On Fri 2025-11-28 09:52:24, Daniel Thompson wrote:
+> On Thu, Nov 27, 2025 at 04:18:40PM +0100, Petr Mladek wrote:
+> > On Fri 2025-11-21 15:50:32, Marcos Paulo de Souza wrote:
+> > > The first part can be found here[1]. The proposed changes do not
+> > > change the functionality of printk, but were suggestions made by
+> > > Petr Mladek. I already have more patches for a part 3 ,but I would like
+> > > to see these ones merged first.
+> > >
+> > > I did the testing with VMs, checking suspend and resume cycles, and it worked
+> > > as expected.
+> > >
+> > > Thanks for reviewing!
 > >
-> > I did the testing with VMs, checking suspend and resume cycles, and it worked
-> > as expected.
+> > > Marcos Paulo de Souza (4):
+> > >       drivers: serial: kgdboc: Drop checks for CON_ENABLED and CON_BOOT
+> > >       arch: um: kmsg_dump: Use console_is_usable
+> > >       printk: Use console_is_usable on console_unblank
 > >
-> > Thanks for reviewing!
->
-> > Marcos Paulo de Souza (4):
-> >       drivers: serial: kgdboc: Drop checks for CON_ENABLED and CON_BOOT
-> >       arch: um: kmsg_dump: Use console_is_usable
-> >       printk: Use console_is_usable on console_unblank
->
-> These three patches were simple, straightforward, and ready for linux
-> next.
->
-> I have comitted them into printk/linux.git, branch rework/nbcon-in-kdb.
-> I am going to push them for 6.19.
+> > These three patches were simple, straightforward, and ready for linux
+> > next.
+> >
+> > I have comitted them into printk/linux.git, branch rework/nbcon-in-kdb.
+> > I am going to push them for 6.19.
+> 
+> I pointed the kgdb test suite at this branch (as I did for the earlier
+> part of the patchset, although I think I forgot to post about it).
+> 
+> The console coverage is fairly modest (I think just 8250 and PL011
+> drivers, with and without earlycon) and the suite exercises features
+> rather than crash resilience. Nevertheless and FWIW, the tests didn't
+> pick up any regressions. Yay!
 
-I pointed the kgdb test suite at this branch (as I did for the earlier
-part of the patchset, although I think I forgot to post about it).
+Great news! Thanks a lot for doing the test and sharing results.
 
-The console coverage is fairly modest (I think just 8250 and PL011
-drivers, with and without earlycon) and the suite exercises features
-rather than crash resilience. Nevertheless and FWIW, the tests didn't
-pick up any regressions. Yay!
-
-
-Daniel.
+Best Regards,
+Petr
 
