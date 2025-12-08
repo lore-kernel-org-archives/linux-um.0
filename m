@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB83D1CDC6
-	for <linux-um@archiver.kernel.org>; Mon,  8 Dec 2025 02:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB10D3B7DD
+	for <linux-um@archiver.kernel.org>; Mon,  8 Dec 2025 07:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=JVapxETF+bI9u8MeuWHunFkO87eXCNelBUhqoYbwZ3w=; b=RT+wiHiRDtmP95udBtSY7GkX1N
-	/LjXiQTXz0/Mk7iKZq9Ly7e0h2MWlhXNJogPpIs1e1THzIbbix4TNaBcslzPZiPCxIERMVeMoDxzT
-	IWIXdsPOEU14wjR+MmOuyJMyZMJ1xWoKP4R8suI5zXREZuLSVGJ7E/uHa1Gw+rVrTecIN2P919YnZ
-	1mGA8x6Z1iXKM955mTo+oaF1MvyzKumGnL3yY5p3+qMFQUimCcjP5wx1CJau2VO28dqRFkKAboNa7
-	jqB8TXik+o/yr/0FuIFlQ33n5kZUTA9usSGvH139nj3D6kUKxVg5SpmjMoJHdrSUohbv0WKavVoxp
-	XmCXBuTg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XLv0HBTetXxoS4vCKz0X9BrXqB4r7kl7AGbnRmgSzlY=; b=3bIeqIYdUgnvBz/E3QbBJGfIOi
+	y6+zrQtbGLzhO79XWhHzfRy8wGtO0pDRnoZcuI3Ck2R8CfJHx+mmJ/lGSmMapu/yhRTdoGfmA+p2+
+	NOGUW9KPJBG3Fy8WAFwfX9FTPt3i56igZA+7O0jtBPeB/nhI71hknctNkOjZPd9NLfwpdHapmgKR+
+	JaLF1KUa4p5+G+B1mptKXRzypSlVaiCZGWyTLgjTeeBUERuTybpYKAZstD1t85LIYkzTEx0T+x/2A
+	CJRgIppzDcChU3fPgpKRkBiIP44JAR5EL3PI3XZfqKXSiZXdK3tsK9BGrN2fiQ5CkBdqxFmQ/jIx5
+	il2xuxaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSR89-0000000CUpm-1Hzm;
-	Mon, 08 Dec 2025 02:37:41 +0000
-Received: from mailgw.kylinos.cn ([124.126.103.232])
+	id 1vSVmE-0000000Clw2-2qp0;
+	Mon, 08 Dec 2025 07:35:22 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSR86-0000000CUpF-0Xo6
+	id 1vSVmC-0000000ClvR-0VLm
 	for linux-um@lists.infradead.org;
-	Mon, 08 Dec 2025 02:37:40 +0000
-X-UUID: d5eb0fbcd3de11f0a38c85956e01ac42-20251208
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:f488f504-f558-433e-b84c-c9a120caee24,IP:0,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:-5
-X-CID-META: VersionHash:a9d874c,CLOUDID:0442bb4fc7d2319a99e4647291aa903e,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:102|850|898,TC:nil,Content:0|15|50,EDM:-
-	3,IP:nil,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:
-	0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: d5eb0fbcd3de11f0a38c85956e01ac42-20251208
-X-User: chenchangcheng@kylinos.cn
-Received: from localhost.localdomain [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <chenchangcheng@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 608062599; Mon, 08 Dec 2025 10:37:27 +0800
-From: Chen Changcheng <chenchangcheng@kylinos.cn>
-To: richard@nod.at,
+	Mon, 08 Dec 2025 07:35:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=XLv0HBTetXxoS4vCKz0X9BrXqB4r7kl7AGbnRmgSzlY=;
+	t=1765179320; x=1766388920; b=ccNuFB70e6hCcJHCdWdUFD0Ve1PuzfNxauIDVEh27A4IxBg
+	xHkhFYQUYPPRHVjVobKiidI+fdS/BXhpNgpnBL7obw4e66/UQZ7VTDn08CPr4f4wfeUHvgPCFLWHW
+	YzuhTd2fOyNatVtsCYZh3lJA1Zg0t4urGNN/uYC90xL0V3xHKpGktLg9DMKvEwnkeQUKGZA/NmIy3
+	KtEDul5MuMMau9SHrA8MQJ5xJYa778qcOxCoceUIzIrsSkmPQV7jZ/le7u/xuTWHBr3h9z5wInaU+
+	IEZ7KSy8x2gqrB43sQ9WvOyiXn6NoA4+JmCSnidjoWPLIQPuALM4GiTLnyWV3LLA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1vSVlz-00000002aqJ-3mY0;
+	Mon, 08 Dec 2025 08:35:08 +0100
+Message-ID: <24e75f32d3ff9254d10e40aca328d98ae589cc34.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: use ARRAY_SIZE to calculate the length of an array
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Chen Changcheng <chenchangcheng@kylinos.cn>, richard@nod.at, 
 	anton.ivanov@cambridgegreys.com
-Cc: johannes@sipsolutions.net,
-	benjamin.berg@intel.com,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Chen Changcheng <chenchangcheng@kylinos.cn>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] um: use ARRAY_SIZE to calculate the length of an array
-Date: Mon,  8 Dec 2025 10:37:23 +0800
-Message-Id: <20251208023723.19789-1-chenchangcheng@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+Cc: benjamin.berg@intel.com, linux-um@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Date: Mon, 08 Dec 2025 08:35:07 +0100
+In-Reply-To: <20251208023723.19789-1-chenchangcheng@kylinos.cn>
+References: <20251208023723.19789-1-chenchangcheng@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251207_183738_519956_55C3667C 
-X-CRM114-Status: UNSURE (   8.68  )
+X-CRM114-CacheID: sfid-20251207_233520_457236_EC28F4D8 
+X-CRM114-Status: UNSURE (   6.23  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,31 +75,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-cocci warnings: (new ones prefixed by >>)
->> arch/um/kernel/skas/stub_exe.c:180:23-24: WARNING: Use ARRAY_SIZE
+On Mon, 2025-12-08 at 10:37 +0800, Chen Changcheng wrote:
+> cocci warnings: (new ones prefixed by >>)
+> > > arch/um/kernel/skas/stub_exe.c:180:23-24: WARNING: Use ARRAY_SIZE
+>=20
+> Fixes: 406d17c6c370 ("um: Implement kernel side of SECCOMP based process =
+handling")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202512080556.BbmGuwU4-lkp@i=
+ntel.com/
 
-Fixes: 406d17c6c370 ("um: Implement kernel side of SECCOMP based process handling")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202512080556.BbmGuwU4-lkp@intel.com/
-Signed-off-by: Chen Changcheng <chenchangcheng@kylinos.cn>
----
- arch/um/kernel/skas/stub_exe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Pro-tip: build your patches *before* submitting them and looking like an
+idiot.
 
-diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
-index cbafaa684e66..01a938a5bb4f 100644
---- a/arch/um/kernel/skas/stub_exe.c
-+++ b/arch/um/kernel/skas/stub_exe.c
-@@ -193,7 +193,7 @@ noinline static void real_init(void)
- 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
- 		};
- 		struct sock_fprog prog = {
--			.len = sizeof(filter) / sizeof(filter[0]),
-+			.len = ARRAY_SIZE(filter),
- 			.filter = filter,
- 		};
- 
--- 
-2.25.1
-
+johannes
 
