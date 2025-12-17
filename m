@@ -4,62 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB10D3B7DD
-	for <linux-um@archiver.kernel.org>; Mon,  8 Dec 2025 07:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7510D65526
+	for <linux-um@archiver.kernel.org>; Wed, 17 Dec 2025 09:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XLv0HBTetXxoS4vCKz0X9BrXqB4r7kl7AGbnRmgSzlY=; b=3bIeqIYdUgnvBz/E3QbBJGfIOi
-	y6+zrQtbGLzhO79XWhHzfRy8wGtO0pDRnoZcuI3Ck2R8CfJHx+mmJ/lGSmMapu/yhRTdoGfmA+p2+
-	NOGUW9KPJBG3Fy8WAFwfX9FTPt3i56igZA+7O0jtBPeB/nhI71hknctNkOjZPd9NLfwpdHapmgKR+
-	JaLF1KUa4p5+G+B1mptKXRzypSlVaiCZGWyTLgjTeeBUERuTybpYKAZstD1t85LIYkzTEx0T+x/2A
-	CJRgIppzDcChU3fPgpKRkBiIP44JAR5EL3PI3XZfqKXSiZXdK3tsK9BGrN2fiQ5CkBdqxFmQ/jIx5
-	il2xuxaQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bw+1Lau4jkXgNGH1w/oSy1pnIcM7wv7myPLVDHR+sFs=; b=SbdzkfXJQSXmB1BxlQKL6zkbUJ
+	p/3HbcjVSp51MWohtodvE41vLQUjtKLR34tplcPvL6+rIQPwukwG0/Ds1THyVr93rxVOEq+7KfrKc
+	AIbwjAyEn/nI67FyAAZvAbRn4lRHJq0YCMy60UDHEc+FxniP9PtdrfWzGCA8rFTp70XgxdfqRi6Jp
+	kzaUFHWfD/zUTogUxQMgVDRc1YX+1lWttLerZsl56WNZnoVrCv15yPSvu6nwQZqKYneiBORbl0fJf
+	gkYdE9J4oog5bXaZEwKHp/hwlkzx7DDkhArrAKPvVOHIba09pulfsa0vsXqBtQ1p4+CgUUVasnl6o
+	g9CrZl7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSVmE-0000000Clw2-2qp0;
-	Mon, 08 Dec 2025 07:35:22 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1vVo7c-00000006Snw-2ijT;
+	Wed, 17 Dec 2025 09:47:04 +0000
+Received: from out-176.mta1.migadu.com ([2001:41d0:203:375::b0])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vSVmC-0000000ClvR-0VLm
+	id 1vVo7Z-00000006SnX-2OzA
 	for linux-um@lists.infradead.org;
-	Mon, 08 Dec 2025 07:35:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=XLv0HBTetXxoS4vCKz0X9BrXqB4r7kl7AGbnRmgSzlY=;
-	t=1765179320; x=1766388920; b=ccNuFB70e6hCcJHCdWdUFD0Ve1PuzfNxauIDVEh27A4IxBg
-	xHkhFYQUYPPRHVjVobKiidI+fdS/BXhpNgpnBL7obw4e66/UQZ7VTDn08CPr4f4wfeUHvgPCFLWHW
-	YzuhTd2fOyNatVtsCYZh3lJA1Zg0t4urGNN/uYC90xL0V3xHKpGktLg9DMKvEwnkeQUKGZA/NmIy3
-	KtEDul5MuMMau9SHrA8MQJ5xJYa778qcOxCoceUIzIrsSkmPQV7jZ/le7u/xuTWHBr3h9z5wInaU+
-	IEZ7KSy8x2gqrB43sQ9WvOyiXn6NoA4+JmCSnidjoWPLIQPuALM4GiTLnyWV3LLA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1vSVlz-00000002aqJ-3mY0;
-	Mon, 08 Dec 2025 08:35:08 +0100
-Message-ID: <24e75f32d3ff9254d10e40aca328d98ae589cc34.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: use ARRAY_SIZE to calculate the length of an array
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Chen Changcheng <chenchangcheng@kylinos.cn>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: benjamin.berg@intel.com, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Date: Mon, 08 Dec 2025 08:35:07 +0100
-In-Reply-To: <20251208023723.19789-1-chenchangcheng@kylinos.cn>
-References: <20251208023723.19789-1-chenchangcheng@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	Wed, 17 Dec 2025 09:47:03 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765964817;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bw+1Lau4jkXgNGH1w/oSy1pnIcM7wv7myPLVDHR+sFs=;
+	b=ly15AwCgeTCvVgfKEAGM4N6+Qr/3bm4QCI+29u9WGu6pcYXwgBs1OKy52f7HilHkjkHMPR
+	sHiouE4YFfRjE5AAkAK/J8ELyx11QzPsbKV6xCapoiF96UFCkEGY/h6yJrWtaXJGp1y3sT
+	pxSpzXa0XWo0t7W7DaurMYa8P4nGSAc=
+From: Qi Zheng <qi.zheng@linux.dev>
+To: will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	dev.jain@arm.com,
+	akpm@linux-foundation.org,
+	david@kernel.org,
+	ioworker0@gmail.com,
+	linmag7@gmail.com
+Cc: linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 1/7] mm: change mm/pt_reclaim.c to use asm/tlb.h instead of asm-generic/tlb.h
+Date: Wed, 17 Dec 2025 17:45:42 +0800
+Message-ID: <67a0725081c82cdc2debce6cbdb9273412039553.1765963770.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <cover.1765963770.git.zhengqi.arch@bytedance.com>
+References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251207_233520_457236_EC28F4D8 
-X-CRM114-Status: UNSURE (   6.23  )
+X-CRM114-CacheID: sfid-20251217_014701_825132_328A9F6D 
+X-CRM114-Status: UNSURE (   7.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,18 +83,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2025-12-08 at 10:37 +0800, Chen Changcheng wrote:
-> cocci warnings: (new ones prefixed by >>)
-> > > arch/um/kernel/skas/stub_exe.c:180:23-24: WARNING: Use ARRAY_SIZE
->=20
-> Fixes: 406d17c6c370 ("um: Implement kernel side of SECCOMP based process =
-handling")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202512080556.BbmGuwU4-lkp@i=
-ntel.com/
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Pro-tip: build your patches *before* submitting them and looking like an
-idiot.
+Generally, the asm/tlb.h will include asm-generic/tlb.h, so change
+mm/pt_reclaim.c to use asm/tlb.h instead of asm-generic/tlb.h. This is a
+preparation for enabling CONFIG_PT_RECLAIM on other architectures, such as
+alpha.
 
-johannes
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
+---
+ mm/pt_reclaim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/pt_reclaim.c b/mm/pt_reclaim.c
+index 0d9cfbf4fe5d8..46771cfff8239 100644
+--- a/mm/pt_reclaim.c
++++ b/mm/pt_reclaim.c
+@@ -2,7 +2,7 @@
+ #include <linux/hugetlb.h>
+ #include <linux/pgalloc.h>
+ 
+-#include <asm-generic/tlb.h>
++#include <asm/tlb.h>
+ 
+ #include "internal.h"
+ 
+-- 
+2.20.1
+
 
