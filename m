@@ -4,39 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86194D65526
-	for <linux-um@archiver.kernel.org>; Wed, 17 Dec 2025 09:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6D14D65529
+	for <linux-um@archiver.kernel.org>; Wed, 17 Dec 2025 09:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=oN9R7byRGmHEs6T0OtpuwOuRpbJv46Zq9CpZBf5+XJg=; b=1fg0Po6aFSJzHCMPs0iLD0v5Vs
-	vtytj91cv/lqRfPyMd7juQrk79Y2M39JaDQBKEqGTD7Nhx/b1+NVY8GtALhtqpwVQbH9WW5ExI71/
-	oR5aIJldzbGeRoEjt6r2+IA5RJMWDatCQtTG6e0CNDEu5I0BoN5B18X4Kv9lgNudKuhIAgmZ/K3oS
-	P7uxjUncVOW4xgSmAqfaSC4WWwrNhR/s+zS2ehHPrcgjk5Ys1DsI9YGCjuanK5+G63SFqmune6eB8
-	AkTTivUoL2EewrVvVvR/IJ2wjwBJ8+fcgBTN0dWg3i8MBDXyicJTXrVQeeli/s+Rq46SWDvPzBVzJ
-	b8VJWpbg==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=WjvVUE6PLFuQKn8iudCm/UQAhzXxbds5MAnD30p0biw=; b=zz9y92ykTdSlP6ich0NPKONgsp
+	JhLWH1AYAJEJlgaTSAc1oulFcdBzrJEfxQIMHQKrioWgYht2bcd+u4XW69keuiZGMUoUp7X/LHXx+
+	h76jhDZhAU4yKuo6FIPSaKxoMNrBrhqg63sNiau11ZBSVhIYzkfwHv466LnLheNE/7xwacLPPP6Ba
+	ypfmtqBQItKBuao11L0uUqJeDrC0fHr6+QI/pjZS0zpGXL9N8GmFhbFTbM7mLfSDRuOE9p9vwYY8U
+	EPeBrDNVNP0P2V+oOL7GWpff+eT92EYGQocQM7Wq/u5HRrzzgsIDL10vxiafw964nvSWTsfLqYp5H
+	1dze8Eew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vVo7k-00000006Sqz-0fWE;
-	Wed, 17 Dec 2025 09:47:12 +0000
-Received: from out-173.mta1.migadu.com ([2001:41d0:203:375::ad])
+	id 1vVo7l-00000006SrZ-1lai;
+	Wed, 17 Dec 2025 09:47:13 +0000
+Received: from out-176.mta1.migadu.com ([95.215.58.176])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vVo7f-00000006Snv-3OiD
+	id 1vVo7i-00000006SpS-0ZzW
 	for linux-um@lists.infradead.org;
-	Wed, 17 Dec 2025 09:47:10 +0000
+	Wed, 17 Dec 2025 09:47:11 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765964813;
+	t=1765964827;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=oN9R7byRGmHEs6T0OtpuwOuRpbJv46Zq9CpZBf5+XJg=;
-	b=MRO4qPIxxsVdDqwXzC7u9PLqRjNXx7wnrDSDf1lYyiYd50PIXjJACLh+SJDhboDde2AFBp
-	xudEn7lhZost3Ms/RAgSJ4rwmF9QHLUnd5iBfmp1YPdZeHPAwkC3Dg4lXkpK8Qt3kXk60G
-	KOm9TW1XYyMer/EiQIPn82zf46FXx9c=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjvVUE6PLFuQKn8iudCm/UQAhzXxbds5MAnD30p0biw=;
+	b=brOaZf2K2ad6KJwOD2w1YutexFLGuWsWBcWsSFSW9Rhbh0uxRAqynp0B/EeXVhrva+cXWe
+	gZB0oCXryrPE12cWqlsQwhYB5Dx/EC0LkrSQOTkvtYLvI3X0HBt+KxidI0BnlqQYnQoYUU
+	wdwCgfkrV6k+l3/j3AAJV14uDlUcyGw=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: will@kernel.org,
 	aneesh.kumar@kernel.org,
@@ -55,16 +56,20 @@ Cc: linux-arch@vger.kernel.org,
 	linux-mips@vger.kernel.org,
 	linux-parisc@vger.kernel.org,
 	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 0/7] enable PT_RECLAIM on all 64-bit architectures
-Date: Wed, 17 Dec 2025 17:45:41 +0800
-Message-ID: <cover.1765963770.git.zhengqi.arch@bytedance.com>
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>
+Subject: [PATCH v3 3/7] LoongArch: mm: enable MMU_GATHER_RCU_TABLE_FREE
+Date: Wed, 17 Dec 2025 17:45:44 +0800
+Message-ID: <dae0a0b490e912273a62a49be9d92f470fbcaf04.1765963770.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <cover.1765963770.git.zhengqi.arch@bytedance.com>
+References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251217_014708_002453_6BF5611C 
-X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-CacheID: sfid-20251217_014710_499789_621DCBF7 
+X-CRM114-Status: UNSURE (   7.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,65 +87,63 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Changes in v3:
- - modify the commit message in [PATCH v3 1/7] (suggested by David Hildenbrand)
- - make PT_RECLAIM depends on MMU_GATHER_RCU_TABLE_FREE instead of 64BIT
- - collect Acked-by
- - rebase onto the next-20251217
+On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of
+empty PTE page table pages (such as 100GB+). To resolve this problem,
+first enable MMU_GATHER_RCU_TABLE_FREE to prepare for enabling the
+PT_RECLAIM feature, which resolves this problem.
 
-Changelog in v2:
- - fix compilation errors (reported by Magnus Lindholm and kernel test robot)
- - adjust some code style (suggested by Huacai Chen)
- - make PT_RECLAIM user-unselectable (suggested by David Hildenbrand)
- - rebase onto the next-20251119
-
-Hi all,
-
-This series aims to enable PT_RECLAIM on all 64-bit architectures.
-
-On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of empty PTE
-page table pages (such as 100GB+). To resolve this problem, we need to enable
-PT_RECLAIM, which depends on MMU_GATHER_RCU_TABLE_FREE.
-
-Therefore, this series first enables MMU_GATHER_RCU_TABLE_FREE on all 64-bit
-architectures, and finally makes PT_RECLAIM depend on MMU_GATHER_RCU_TABLE_FREE.
-This way, PT_RECLAIM can be enabled by default on all 64-bit architectures.
-
-Of course, this will also be enabled on some 32-bit architectures that already
-support MMU_GATHER_RCU_TABLE_FREE. That's fine, PT_RECLAIM works well on all
-32-bit architectures as well. Although the benefit isn't significant, there's
-still memory that can be reclaimed. Perhaps PT_RECLAIM can be enabled on all
-32-bit architectures in the future.
-
-Comments and suggestions are welcome!
-
-Thanks,
-Qi
-
-Qi Zheng (7):
-  mm: change mm/pt_reclaim.c to use asm/tlb.h instead of
-    asm-generic/tlb.h
-  alpha: mm: enable MMU_GATHER_RCU_TABLE_FREE
-  LoongArch: mm: enable MMU_GATHER_RCU_TABLE_FREE
-  mips: mm: enable MMU_GATHER_RCU_TABLE_FREE
-  parisc: mm: enable MMU_GATHER_RCU_TABLE_FREE
-  um: mm: enable MMU_GATHER_RCU_TABLE_FREE
-  mm: make PT_RECLAIM depends on MMU_GATHER_RCU_TABLE_FREE
-
- arch/alpha/Kconfig                   | 1 +
- arch/alpha/include/asm/tlb.h         | 6 +++---
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+---
  arch/loongarch/Kconfig               | 1 +
  arch/loongarch/include/asm/pgalloc.h | 7 +++----
- arch/mips/Kconfig                    | 1 +
- arch/mips/include/asm/pgalloc.h      | 7 +++----
- arch/parisc/Kconfig                  | 1 +
- arch/parisc/include/asm/tlb.h        | 4 ++--
- arch/um/Kconfig                      | 1 +
- arch/x86/Kconfig                     | 1 -
- mm/Kconfig                           | 9 ++-------
- mm/pt_reclaim.c                      | 2 +-
- 12 files changed, 19 insertions(+), 22 deletions(-)
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index 730f342145197..43d5b863e1fb2 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -187,6 +187,7 @@ config LOONGARCH
+ 	select IRQ_LOONGARCH_CPU
+ 	select LOCK_MM_AND_FIND_VMA
+ 	select MMU_GATHER_MERGE_VMAS if MMU
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MODULES_USE_ELF_RELA if MODULES
+ 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+ 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
+diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
+index 08dcc698ec184..248f62d0b590e 100644
+--- a/arch/loongarch/include/asm/pgalloc.h
++++ b/arch/loongarch/include/asm/pgalloc.h
+@@ -55,8 +55,7 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ 	return pte;
+ }
+ 
+-#define __pte_free_tlb(tlb, pte, address)	\
+-	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
++#define __pte_free_tlb(tlb, pte, address)	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 
+@@ -79,7 +78,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ 	return pmd;
+ }
+ 
+-#define __pmd_free_tlb(tlb, x, addr)	pmd_free((tlb)->mm, x)
++#define __pmd_free_tlb(tlb, x, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(x))
+ 
+ #endif
+ 
+@@ -99,7 +98,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 	return pud;
+ }
+ 
+-#define __pud_free_tlb(tlb, x, addr)	pud_free((tlb)->mm, x)
++#define __pud_free_tlb(tlb, x, addr)	tlb_remove_ptdesc((tlb), virt_to_ptdesc(x))
+ 
+ #endif /* __PAGETABLE_PUD_FOLDED */
+ 
 -- 
 2.20.1
 
