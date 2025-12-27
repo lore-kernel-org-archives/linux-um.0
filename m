@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33F71E9270E
-	for <linux-um@archiver.kernel.org>; Sat, 27 Dec 2025 12:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20270E8FDD8
+	for <linux-um@archiver.kernel.org>; Sat, 27 Dec 2025 12:19:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PI64KbZN9t1PF6ymgBKKgUkODGeQdgLto8SJvKTSB0M=; b=MrLRjm2DrGtpE1gD/XWOy9HSvt
-	yUUDiYwAbECQuXeF5pyLR4hx2aSdeKH67sb1GHAQseq8hXdd7pyLbkWlVrq4IoBpTP7m12kwPWhra
-	7G+rdIZfCIBMiKKCZua2z1sKf4u94M273DVaaDCQCJvlv4drTcgUWpboApulvXiXIMIvnQcaNvB3v
-	RLAtQGVKxfG1ML0QSa6xuqjd0llm2gpQ+1N/5qE/3hyxA8Y+1IKBxWPBseVxZ4nrO1xoLrbYNT187
-	6KsWDdzI5c1N6ryRS+VW5Rs7GIAKXZ9htwhUNcav7LPwmYqVt8gu7RcRSfHhBwx5/eiZ29vUno67A
-	6cbai47w==;
+	bh=Ltdd8M4LmPmBXDEHAaMGtcqMVaDk3ISf2NYRX3F1G54=; b=OT4rqr0a1IMTPTRW5ktoR8nZTF
+	NOOC2Q3wpKGUZ6/SndGwJxX0NUtnGHAn/1ik6c/unGfJzCr4qL5oN2UjAcL92hfegBj/uYpRcaa2c
+	/wnad0gbNX3zfY0hlDAsSfWamxfsjMPQDB3BCCdC7b4h7Y07gh89wXP2Kn0DEvgliVygI6u0h5itE
+	NTJjvv6NzkaFy1tfPH7tsMVw15OvZY85K6c0fXcA9Mkm4JiwePGVfySSErSg1Ln4D00/Hz3SviE/4
+	LfwpEpYauswR2st9tV36xiHrTWk2NUt90dNm4X/s8W6seXlsTag3czgjq+qwPYZxYFxyjUTf4aYBU
+	sbFyG8Qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vZTGf-00000001xLp-3YFA;
-	Sat, 27 Dec 2025 12:19:33 +0000
-Received: from mail-wm1-x344.google.com ([2a00:1450:4864:20::344])
+	id 1vZTGp-00000001xUu-3Na0;
+	Sat, 27 Dec 2025 12:19:43 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vZTGY-00000001xEW-3il6
+	id 1vZTGh-00000001xN5-3s7R
 	for linux-um@lists.infradead.org;
-	Sat, 27 Dec 2025 12:19:31 +0000
-Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-477a2ab455fso75775765e9.3
-        for <linux-um@lists.infradead.org>; Sat, 27 Dec 2025 04:19:26 -0800 (PST)
+	Sat, 27 Dec 2025 12:19:42 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-477aa218f20so47224475e9.0
+        for <linux-um@lists.infradead.org>; Sat, 27 Dec 2025 04:19:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1766837965; x=1767442765; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1766837974; x=1767442774; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PI64KbZN9t1PF6ymgBKKgUkODGeQdgLto8SJvKTSB0M=;
-        b=Gsi4hHIxSeeXRXdAdUauoIUF/6d0J/pjNaySRXVyh7SekWI8bUuN7+YTe6GK/2Isda
-         T7jsBKJcAyNtcB4ppS17NnTU4ncS0DKpYkUnufwmIUw0fEdm0yWZfJsjiWpGPzysWSJW
-         l4DUajKseMZgvRFmxNoC48z4AKdWBxMtLI/ui/LF7rcxYAGRTd+vXra6lP84EYPHijeI
-         MwrzY31JHhp3835BAwMNUtyy1fXtuuH9keN1lhcSHTVPLV+1t2Vrbrs72qiyY8Hw0cJB
-         AdOlvVrV9CU2ab+qk3bcCFPRNIyVQoDLzBzM3PfPPUh0gdxaxqHEF0e7ztjvOWB1mxDu
-         rWow==
+        bh=Ltdd8M4LmPmBXDEHAaMGtcqMVaDk3ISf2NYRX3F1G54=;
+        b=HfvCOoUkw3NJD50N5SX40vxsWG1Z0Uu9YPcYVllQfcMC6ZVgMtY3586BHAxBCYLGNM
+         j7zuVIG7yiW8+7JT+TmHhjk+tkrZvSzDBolln4/Lzzty9h2B6QtXfilQwHQd75TeI3ro
+         UmAk+68AAGJ1R38mCu+TZlo6eh4qWj3H3qVcz7Ri2a91p7kp4jYiAQgdRggVCwPhfJhY
+         xe3cb5+6Ju9ogR95B6WdlXI7/3PDrLtqRWG6TYaZ2Objv+G+Dd8mmCUjMKdoMbN/4WNX
+         gaxTxPL89vJc3UaG92SXALwe2ufaV9ihO1x6UoWWQhpZhL6o1N1jsHxLEofrYcHYO0+h
+         vygA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766837965; x=1767442765;
+        d=1e100.net; s=20230601; t=1766837974; x=1767442774;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=PI64KbZN9t1PF6ymgBKKgUkODGeQdgLto8SJvKTSB0M=;
-        b=WZkvXtYvOxV8m72Qc9q9NoS5/YxZpOixgEfZKA/tHlQuvZc7ND72lZFHvek1fhkWyJ
-         CdzHJHknpEjyS3xifNlJw/GkdFl2QYJLvCXYj8H9V2lx9msbzq5XIMrKmTQsVw7p1T5p
-         gc7zxXVEXP0tx9PipBxhhH4TYRbVKJ1jnuqJb8k9UEp9YKs+YgknCcr/nnGNXYjTKteo
-         EQa+recJ4IVx14wfd2LzrzJu3zkHpUwsdZxM9UdMr85HMtxmxCVmWjU83bTIGcrP4H35
-         8NSsui/1tJI1FlC0UuA0WDFpOyVxahtVe0NWzZYjRakUjzW049bZ+LK9YeSKUmsS8KNI
-         ZWkw==
-X-Gm-Message-State: AOJu0YweFaLuTUxUjbFgwwt2HhGsCQ/EYeLAfL4QLfUSI6F46bwN8AKV
-	Ie6WMn2LuL4eLg1InV79WNNjzSpa7B8BjtZAweTDARxrtAJkDsztojD8A7ZWtRyFybE=
-X-Gm-Gg: AY/fxX4HaCTfza3MK2sqyEiFHyV3x496Jyq2dAA0GzejQUK9n388XWDK+59kuVdul+a
-	au74kAO/KmWgeOZPF65hFqKoIOpVeLPu9L+LyklnKHTJA/iawuS+gPmobaxGp2jqLPIFJjp5YDA
-	WVRVCW23RyaMf/ffCCrWk3KSsHdwXd33yayHXWZfPsoDpwGDBEpFj+dr5BpxDJOqGpWUyEAPzzz
-	ilLuXSqFvhb9iewGm84WfiiHqgg4P7c/1XV7zW9ADNT1lE9wx4nhENsj4+xJweAJ9Np9FKmPJzL
-	wW17OXunvHxemYWyeH4aJ27TMKO7ygHeHkRz/qdHnY1hh2W9DP/VOoAmIrOguPNrU9npDXcUhrB
-	y1O4iEE8vVrm/GJ9kg3qZTguRo/SjaP+d4thOYVs0jJaFOGyvSuPK1JzukUsLJ89o95Dg+ZLNs9
-	jOsnfhpKdI
-X-Google-Smtp-Source: AGHT+IEqqHc/Rd2kLfHagj9YhzIrZRGfzwvOOoeUxY4FRXLnI0VACA/N9sgft7uDx22VCc1m3UDX7g==
-X-Received: by 2002:a05:600c:190f:b0:475:dd89:acb with SMTP id 5b1f17b1804b1-47d195a72fbmr289900545e9.22.1766837964788;
-        Sat, 27 Dec 2025 04:19:24 -0800 (PST)
+        bh=Ltdd8M4LmPmBXDEHAaMGtcqMVaDk3ISf2NYRX3F1G54=;
+        b=YrHmv/GzwArdmkm8Qo47g5RHJT8N8fK4Ym8mf4pdnAMNH4u87ATOP5BR+3SADtShol
+         luiyJGvxAG5DqQtBtfDuq4i9ZllpprU7ZOfWA0XJERYF4TjLlCerMLAO7Ugn04htAMFS
+         1hvf/IN2IxK5JrxCuI6qMGn7HJLigbH9F8NUTaB561VYwJp5DLj4RIygKnyrOnoZbywz
+         PP8e+BpwFj42yxk9mMzHE19nC96kSHzwls3gSKjNnfAC/xqjzLYXPIX6ff+ceHE/60JE
+         qn9s9pzCI6buv2aQ668cmgABThQg0L2NY1TkduTwX8PxenHzMCgRxQ1iNm51zIcxPoWH
+         /Aaw==
+X-Gm-Message-State: AOJu0Yz2RMoIIuYKoLDCUVuiUs24DSlhVdp/vYF1vEmGOzUhTxaTpuLo
+	yeSKBRSAd8UFsH9hauWujxrOH/wNBIJEM49i823H+cy+OVspt85RRdBfGl56W0a0tVE=
+X-Gm-Gg: AY/fxX5C01ieifVOQ2dYo5dSaBV+J1pXEpo2kUxNgbLOP1pBydQ1UiH7nv6dz+thSIl
+	WBLIHoL7qBIoOBz+STPQxI4Bxrd1jFo87kHr30x9tgAmzphA36AjlINIuRyzaeLaRT/hqoDlXyh
+	CD2mBNfqO1UFVJNlSFDSIhVii06pvmjoef2y0T4S2Zo5Kvw40ZV1zFyvS6Wg2x3BF1zVfTmMPYO
+	pjz2BkOdmGqXL8x1TmSG5q8/gUNVhTFuSU0sHI5llpbOBJEMbeCIVtp8K3nQjliqr6XuM/lBhkF
+	J5BPEubILqiCGs/DAQZ4YMWCmZf5IFM/h5kTNo7tGAJNW4tFaO7fMuFu4pq+fEo3eeQdrDNE6sj
+	RWa27b37ugmzvb6UoO+HVbhtzeDEbI7bKYXL+dD0B21n0U+3E0Y4D+30d9pWalAkFdr+2d2bScQ
+	dmpqr0GxAm
+X-Google-Smtp-Source: AGHT+IHMLS3VfYivW6iZyjAkGRbHMebp8EGQujmDyd6LpCoRzo/q2pR4OLsY4m1yHd+Dy1qj+iz1Lw==
+X-Received: by 2002:a05:600c:5288:b0:47a:75b6:32c with SMTP id 5b1f17b1804b1-47d19532f91mr239061855e9.2.1766837974046;
+        Sat, 27 Dec 2025 04:19:34 -0800 (PST)
 Received: from [127.0.0.1] ([2804:5078:811:d400:58f2:fc97:371f:2])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.19.15
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Dec 2025 04:19:24 -0800 (PST)
+        Sat, 27 Dec 2025 04:19:33 -0800 (PST)
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Sat, 27 Dec 2025 09:16:24 -0300
-Subject: [PATCH 17/19] drivers: tty: ehv_bytechan: Migrate to
- register_console_force helper
+Date: Sat, 27 Dec 2025 09:16:25 -0300
+Subject: [PATCH 18/19] drivers: braille: console: Drop CON_ENABLED console
+ flag
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251227-printk-cleanup-part3-v1-17-21a291bcf197@suse.com>
+Message-Id: <20251227-printk-cleanup-part3-v1-18-21a291bcf197@suse.com>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 In-Reply-To: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 To: Richard Weinberger <richard@nod.at>, 
@@ -113,16 +113,17 @@ Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
  Marcos Paulo de Souza <mpdesouza@suse.com>
 X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=1183;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=917;
  i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=ipo1oJr6oF51GaJ/ypmHdNm6pxSai2H+L3ksWdFz4YE=;
- b=BCXQlMZHiSgf9aACQxFpdYHusJFHrRGAPtAecEP+JmKnj9nHT6kdi2m955mQdUkj992asxAcQ
- YxGwDMjxOJdD2wCUfBrHw1pcuZeGNuCZOOekwLuy8OjtGsDgBHGc3PP
+ bh=M+RAaPiD4L8bkGcekgUNUpTeF+sJQV6vQniznC8VslM=;
+ b=VNcSKbW4wn0ZJDPmlW3fCDrj2qqqMiKzMUpnoUVSmYqwNJRukKGa+p9lja5itToGTVwI9LN+2
+ mQPFka3TIBIDqDnH2JmGqErVL6l4YMmEx/hbdpLg4Ll2XIa+vBtsfSS
 X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
  pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251227_041926_953926_5164A095 
-X-CRM114-Status: GOOD (  11.16  )
+X-CRM114-CacheID: sfid-20251227_041936_074359_D7ADDC99 
+X-CRM114-Status: UNSURE (   8.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,39 +138,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The register_console_force function was introduced to register consoles
-even on the presence of default consoles, replacing the CON_ENABLE flag
-that was forcing the same behavior.
-
-No functional changes.
+The braille console doesn't take the same path on register_console
+that other console drivers. At this point, it only registers the console
+and do not receive any printk message, so we can drop the CON_ENABLED.
 
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- drivers/tty/ehv_bytechan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/accessibility/braille/braille_console.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/tty/ehv_bytechan.c b/drivers/tty/ehv_bytechan.c
-index 69508d7a4135..a2aab48d11ae 100644
---- a/drivers/tty/ehv_bytechan.c
-+++ b/drivers/tty/ehv_bytechan.c
-@@ -299,7 +299,7 @@ static struct console ehv_bc_console = {
- 	.name		= "ttyEHV",
- 	.write		= ehv_bc_console_write,
- 	.device		= ehv_bc_console_device,
--	.flags		= CON_PRINTBUFFER | CON_ENABLED,
-+	.flags		= CON_PRINTBUFFER,
- };
- 
- /*
-@@ -331,7 +331,7 @@ static int __init ehv_bc_console_init(void)
- 	   byte channels here, either, since we only care about one. */
- 
- 	add_preferred_console(ehv_bc_console.name, ehv_bc_console.index, NULL);
--	register_console(&ehv_bc_console);
-+	register_console_force(&ehv_bc_console);
- 
- 	pr_info("ehv-bc: registered console driver for byte channel %u\n",
- 		stdout_bc);
+diff --git a/drivers/accessibility/braille/braille_console.c b/drivers/accessibility/braille/braille_console.c
+index 06b43b678d6e..0b7ec68b305c 100644
+--- a/drivers/accessibility/braille/braille_console.c
++++ b/drivers/accessibility/braille/braille_console.c
+@@ -360,7 +360,6 @@ int braille_register_console(struct console *console, int index,
+ 		if (ret != 0)
+ 			return ret;
+ 	}
+-	console->flags |= CON_ENABLED;
+ 	console->index = index;
+ 	braille_co = console;
+ 	register_keyboard_notifier(&keyboard_notifier_block);
 
 -- 
 2.52.0
