@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE3D4D3B7E5
-	for <linux-um@archiver.kernel.org>; Sun, 28 Dec 2025 12:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67D4AE9272A
+	for <linux-um@archiver.kernel.org>; Sun, 28 Dec 2025 12:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pXj0Z2NgAtnlunEa9AvDDLLh6y0q3hS/njeAcboUK1o=; b=yr0vDqhqsvNcVKTJs+t+0bwByn
-	9P4nqn86+wiQXH1Mttf+Oqvtl2Z+J44s6F8TfrBw8OZ/JTQrW+kOQJtiNS/AzOTQd3TKzQlhr1KRH
-	Wu1U6yi9Q8d6zuIvkRZn6mVr+pOMZC+jopJuvV7xsol2YX1VCQQwa3wdyEsLgc6PfxEbEtrV5B3IJ
-	zB6fW5xj8INF7FQD8oBxtWdhEiwA3dv/MCG06c/9i3heBLGAQzgJYQW9PNVUx5UtBQWQtjv4liDDk
-	yx0XqNE7YHenEUBIB+lCNz7VGJgr0lEY9KXDHW0JkjpTnlYUS+a0DRnwxYvcCw13B5e39RAnZInBa
-	Ces+0sHQ==;
+	bh=AP0KxVQKlHlLZzBbkI5QvPGqFtczppI+IyG+yF+hUQQ=; b=ZxaZ+giozie1+xmPVTDh1/Pwxe
+	k+kV5T8JsZ6A4/GV8mnHW6cjUR8r+c3jsDZFORk3cxMmNZRBNHPRjmcXcgQ01NdombTN6MjeZCTxs
+	qz6a4BGwjegedcQaRmjydZhEaLRD0xtVGdaPwQ4b2OrQSTAkWfWniv9Qj7KPysL687FSn/y2j925O
+	HR+4dFYyPN3NRY4BoZgQSeKUxi5qdD8K+82mdHRvT2grv9S4RJCHUyp//nccCUIsWCmCxhLHD9LDO
+	OAX6oMG1RHUqTdQkPvk7oLlWl5d03Dc6AAiFy9lwR/29z8R4J21Up3O4OH7SqgT70WtnI+kctxU+O
+	/A88vZbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vZq5L-00000002hZX-2xrm;
-	Sun, 28 Dec 2025 12:41:23 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vZq5Z-00000002hhd-0Zuc;
+	Sun, 28 Dec 2025 12:41:37 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vZq5H-00000002hWx-47TD;
-	Sun, 28 Dec 2025 12:41:21 +0000
+	id 1vZq5W-00000002hfV-1lsg;
+	Sun, 28 Dec 2025 12:41:34 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8B1EC40E20;
+	by tor.source.kernel.org (Postfix) with ESMTP id BA2ED60055;
+	Sun, 28 Dec 2025 12:41:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4327C4CEFB;
 	Sun, 28 Dec 2025 12:41:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF3EC16AAE;
-	Sun, 28 Dec 2025 12:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766925679;
-	bh=djQarGwsnsMGImsgSQVJ5sD5jo+ZigjiDeQZakHIJZw=;
+	s=k20201202; t=1766925693;
+	bh=kW7jFO+a0HNCHZzYrQL1gmYZj5c/PO8Gu3w/sSZkgeU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cnFF8D+y5gEh9w2QuJR83XMdbXSjXAklg3EQgCL1XvXDAGgxiYyJJ66WbBKyqdzb8
-	 dcyzX70MvM4Q6Cd45SRj2nfZpZjaj9QgrnQH66vqPkpxUq4Vs1/VDh58aAfkC/+PZ1
-	 /Anha5l4LkVcIDBp+xKPIoYndtqWDvTZ2ZAjBmEa3RGusip9SNeC3ZO1qFpe3g9gJH
-	 hZqzEJrBRCRd8FsbOjS0j9dekuwPf3R4VjAZ8gf36RaKFnfmQA547CQZs5Ze2ZXiLG
-	 UY+neOi/lhd6frDKiGf18Qa10nRCydhK6Rgzaarmp/8fpoVSYTEOeKTAGwqh+nRUWu
-	 Q264AvWO/nLOQ==
+	b=FfgQ/vc3RZBoItL5pKlOQ6mJvnoQsAGeqpPpdU7zRYHFQGex7i+QdZtMRI3l5Rllw
+	 ZrLFvQk9qtWsq6RxUpeOr8prh4q/CdhYAqVHvRtRwVjHkO43GX/qFXaS1qVYcGb1FD
+	 qzL2dObl3ki9QvEKg33KBxrNT/j6nPYcZooual0AXhe3vFD8CcA+OOiUuJx0mf1OxA
+	 WVLdUC1rJWxouQK5crZX45MUNiK05jCNTvxIYRAmvOUlz7ERTG0JunqJxBP2amG0TG
+	 y7+4AV3PANzMZAHRGKed6SN43VGK8AUvIHNJN3y7KKpPCFNAO3P3vfptV4kyFay/sY
+	 pPa+fs43iWi4A==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -107,17 +107,14 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH 04/28] arm64: introduce arch_zone_limits_init()
-Date: Sun, 28 Dec 2025 14:39:34 +0200
-Message-ID: <20251228124001.3624742-5-rppt@kernel.org>
+Subject: [PATCH 05/28] csky: introduce arch_zone_limits_init()
+Date: Sun, 28 Dec 2025 14:39:35 +0200
+Message-ID: <20251228124001.3624742-6-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251228124001.3624742-1-rppt@kernel.org>
 References: <20251228124001.3624742-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20251228_044120_075237_5A0E5FC6 
-X-CRM114-Status: GOOD (  13.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,69 +138,51 @@ Later MM core will use this function as an architecture specific callback
 during nodes and zones initialization and thus there won't be a need to
 call free_area_init() from every architecture.
 
-While on it rename zone_sizes_init() to dma_limits_init() to better
-reflect what that function does.
-
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/arm64/mm/init.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ arch/csky/kernel/setup.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 524d34a0e921..06815d34cc11 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -118,7 +118,21 @@ static phys_addr_t __init max_zone_phys(phys_addr_t zone_limit)
- 	return min(zone_limit, memblock_end_of_DRAM() - 1) + 1;
+diff --git a/arch/csky/kernel/setup.c b/arch/csky/kernel/setup.c
+index e0d6ca86ea8c..8968815d93e6 100644
+--- a/arch/csky/kernel/setup.c
++++ b/arch/csky/kernel/setup.c
+@@ -51,6 +51,14 @@ static void __init setup_initrd(void)
  }
+ #endif
  
--static void __init zone_sizes_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
 +{
-+	phys_addr_t __maybe_unused dma32_phys_limit =
-+		max_zone_phys(DMA_BIT_MASK(32));
-+
-+#ifdef CONFIG_ZONE_DMA
-+	max_zone_pfns[ZONE_DMA] = PFN_DOWN(max_zone_phys(zone_dma_limit));
++	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
++#ifdef CONFIG_HIGHMEM
++	max_zone_pfns[ZONE_HIGHMEM] = max_pfn;
 +#endif
-+#ifdef CONFIG_ZONE_DMA32
-+	max_zone_pfns[ZONE_DMA32] = PFN_DOWN(dma32_phys_limit);
-+#endif
-+	max_zone_pfns[ZONE_NORMAL] = max_pfn;
 +}
 +
-+static void __init dma_limits_init(void)
+ static void __init csky_memblock_init(void)
  {
- 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
- 	phys_addr_t __maybe_unused acpi_zone_dma_limit;
-@@ -139,17 +153,15 @@ static void __init zone_sizes_init(void)
- 	if (memblock_start_of_DRAM() < U32_MAX)
- 		zone_dma_limit = min(zone_dma_limit, U32_MAX);
- 	arm64_dma_phys_limit = max_zone_phys(zone_dma_limit);
--	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+ 	unsigned long lowmem_size = PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET);
+@@ -83,12 +91,9 @@ static void __init csky_memblock_init(void)
+ 	setup_initrd();
  #endif
- #ifdef CONFIG_ZONE_DMA32
--	max_zone_pfns[ZONE_DMA32] = PFN_DOWN(dma32_phys_limit);
- 	if (!arm64_dma_phys_limit)
- 		arm64_dma_phys_limit = dma32_phys_limit;
- #endif
- 	if (!arm64_dma_phys_limit)
- 		arm64_dma_phys_limit = PHYS_MASK + 1;
--	max_zone_pfns[ZONE_NORMAL] = max_pfn;
  
-+	arch_zone_limits_init(max_zone_pfns);
- 	free_area_init(max_zone_pfns);
+-	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
+-
+ 	mmu_init(min_low_pfn, max_low_pfn);
+ 
+ #ifdef CONFIG_HIGHMEM
+-	max_zone_pfn[ZONE_HIGHMEM] = max_pfn;
+ 
+ 	highstart_pfn = max_low_pfn;
+ 	highend_pfn   = max_pfn;
+@@ -97,6 +102,7 @@ static void __init csky_memblock_init(void)
+ 
+ 	dma_contiguous_reserve(0);
+ 
++	arch_zone_limits_init(max_zone_pfn);
+ 	free_area_init(max_zone_pfn);
  }
  
-@@ -319,7 +331,7 @@ void __init bootmem_init(void)
- 	 * done after the fixed reservations
- 	 */
- 	sparse_init();
--	zone_sizes_init();
-+	dma_limits_init();
- 
- 	/*
- 	 * Reserve the CMA area after arm64_dma_phys_limit was initialised.
 -- 
 2.51.0
 
