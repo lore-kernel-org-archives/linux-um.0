@@ -4,48 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 762E1C2A076
-	for <linux-um@archiver.kernel.org>; Sun,  4 Jan 2026 12:02:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBC55C2A062
+	for <linux-um@archiver.kernel.org>; Sun,  4 Jan 2026 20:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1CFQ5srPeWoqo1JSWCS2nyReDQiTWkIfIDjv/mL7ZvY=; b=Q/vecdpjq6b+t0VuzgvebDudfk
-	2c+d6grbifhz0vr7bzq7EXn/tKLfHmMDjk1JalQNPw05t30mV424XY+w9rIBd4jCqfbWXtMq5HHoL
-	XCPihPLUi+4+szy0QxeENtcO20gatRvOluSmv1Ty5T0ftuKfRtmfgEJBlNID3BmohcRMYK5JISjzT
-	kPUP/R5IhaaqoejF6l7gYXJsOnRCiflaayUc3f4M5CHIIs5eCUXyomj1qNZ+tabzPHFx48C0qXqF4
-	WlpNVq+Q7YKro8xqEiUUEwh4fDG3O3y/wNxZDuX7MC+OIDdc2PN/W+7PIvV62UPOpT/1U2gvke1vZ
-	WgRPcxWA==;
+	bh=I1gCbeyIrlCt5J2/Bjwg6Lr/ehCAIvx4DrMKPGr0mIk=; b=hl8vrWZkPzMv37U3/9V6qgh9MQ
+	idUe7sedfT7kcbHFHecVjmyJ8FeQh1Ow4AwIi3VZCE5ZxxnBISDjtl4iDMRCOPd2FQaZNqQOHQc0y
+	sEmmc84ryP8Tw6JQsitfWA0lbufuC2w7yAWJk76b6zaKffT8zGbTgGaE+sCUjMFx5yRaGbYHLt50D
+	zJhym38i5axz+NWPa0RRfFKFmRiTORRO/1JDNGQk81uA2YPiVwn/PfwMWkKsEYtPj8/4oquPXSxDL
+	PSKWGyVRoJhBrVWXeVDn6KUKEsAFp7xXgds7VENx4pjJ6s/pLihSkK8BGsW/boPHNJlf0KAajOef6
+	ER4zhKDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcMoB-0000000ADPv-2W6E;
-	Sun, 04 Jan 2026 12:02:07 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vcVB2-0000000ARjN-1kC7;
+	Sun, 04 Jan 2026 20:58:16 +0000
+Received: from pandora.armlinux.org.uk ([2001:4d48:ad52:32c8:5054:ff:fe00:142])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcMo8-0000000ADP6-1cZQ;
-	Sun, 04 Jan 2026 12:02:05 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id B443941990;
-	Sun,  4 Jan 2026 12:02:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBEE4C4CEF7;
-	Sun,  4 Jan 2026 12:01:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767528123;
-	bh=4sa1iSi4oDg5XKMoz/YTQfrnb1djTAsHN5WmWDd4u+I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=INT0kxBNHgbBEXAA8WBKHyCuHkaVMGgpladnOebfsTa2yzQEYV4mt1yJlN1PwnUNz
-	 G4VwNDd1qyIbSlxRqbG31MW/aCW0NgYeMa2AQOcXg9gdLQ2vLQ8cpLRs/OvRLxPgLM
-	 zrYw+rbOt3/ZgtPyhC+4awQoJA3/jIoNRc6jn+AQvMSMdpvmZk0yDmwOEIirlcn6Fk
-	 MRm98b/tsfvPN/LkKJNqg07jtHRl5wM8VTQcUWaDc+iUxs0zzTGNhqOtNPkcd9CZqU
-	 27IV33yAMIJYJGbt3gk6IFngZkbX6GD6/FqDbQgyLW1/3NDufvpgxz5xhJM1ESJUtq
-	 0kvgqRIhU453Q==
-Date: Sun, 4 Jan 2026 14:01:40 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Klara Modin <klarasmodin@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
+	id 1vcVAy-0000000ARiH-0RQ9;
+	Sun, 04 Jan 2026 20:58:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=I1gCbeyIrlCt5J2/Bjwg6Lr/ehCAIvx4DrMKPGr0mIk=; b=PQx51yTYkgAaIUXq0xW7qPDXV/
+	l2XTuAum3C4YTdjh59Zd9jjet7ae799URg+ZV8rmTkWl+kVHfkxUYw1s/dRjs9aTXD7D6Ho4syQaF
+	UUWur1xKtbiRo01UTGcAE17bVwa7Q1raKrI86aomWrm1nziVTW376kzGUJt7sSCvBg/iJuo8+kzDd
+	nyMzCE7bdEmvI/HMHy4otFSPHCGqcEajEQ2/jkcO2mu5bn1Ymv/9fmd0dXa7MO9wYyaIe2D76FfaF
+	n5lZTtrjJRF5D9eduOTkj4eWKLscCmoWno8MdEQ6ghyWUX2t1zONW89YiFsB5z/4C0opIIXPgMGiC
+	0kKrZFQA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60852)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1vcV9l-000000007Jz-1ZeD;
+	Sun, 04 Jan 2026 20:56:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.98.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1vcV9Z-000000007Df-1tyX;
+	Sun, 04 Jan 2026 20:56:45 +0000
+Date: Sun, 4 Jan 2026 20:56:45 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Klara Modin <klarasmodin@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alex Shi <alexs@kernel.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Andreas Larsson <andreas@gaisler.com>,
 	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
 	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
@@ -72,7 +81,6 @@ Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Pratyush Yadav <pratyush@kernel.org>,
 	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
 	Stafford Horne <shorne@gmail.com>,
 	Suren Baghdasaryan <surenb@google.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -90,22 +98,23 @@ Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH 3.5] arm: make initialization of zero page independent of the
- memory map (was Re: [PATCH v2 22/28] arch, mm: consolidate initialization of
- nodes, zones and memory map)
-Message-ID: <aVpWpLV4Dut5Muo2@kernel.org>
+Subject: Re: [PATCH 3.5] arm: make initialization of zero page independent of
+ the memory map (was Re: [PATCH v2 22/28] arch, mm: consolidate
+ initialization of nodes, zones and memory map)
+Message-ID: <aVrUDeSkqqY9ZCtS@shell.armlinux.org.uk>
 References: <20260102070005.65328-1-rppt@kernel.org>
  <20260102070005.65328-23-rppt@kernel.org>
  <aVhN2NgQEKe0yzva@soda.int.kasm.eu>
  <aVll339wim7dCIaQ@kernel.org>
  <aVlwOyicOLPB9SOa@parmesan.int.kasm.eu>
+ <aVpWpLV4Dut5Muo2@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aVlwOyicOLPB9SOa@parmesan.int.kasm.eu>
+In-Reply-To: <aVpWpLV4Dut5Muo2@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260104_040204_468599_8BACB8F9 
-X-CRM114-Status: GOOD (  18.55  )
+X-CRM114-CacheID: sfid-20260104_125812_151940_CA8D139C 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,120 +129,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Andrew,
+On Sun, Jan 04, 2026 at 02:01:40PM +0200, Mike Rapoport wrote:
+> From 35d016bbf5da7c08cc5c5547c85558fc50cb63aa Mon Sep 17 00:00:00 2001
+> From: Klara Modin <klarasmodin@gmail.com>
+> Date: Sat, 3 Jan 2026 20:40:09 +0200
+> Subject: [PATCH] arm: make initialization of zero page independent of the
+>  memory map
+> 
+> Unlike most architectures, arm keeps a struct page pointer to the
+> empty_zero_page and to initialize it requires conversion of a virtual
+> address to page which makes it necessary to have memory map initialized
+> before creating the empty_zero_page.
+> 
+> Make empty_zero_page a stataic array in BSS to decouple it's
+> initialization from the initialization of the memory map.
 
-Can you please stick this between patch 3 (arm: introduce
-arch_zone_limits_init()) and patch 4 (arm64: introduce
-arch_zone_limits_init())?
+I see you haven't considered _why_ ARM does this.
 
-From 35d016bbf5da7c08cc5c5547c85558fc50cb63aa Mon Sep 17 00:00:00 2001
-From: Klara Modin <klarasmodin@gmail.com>
-Date: Sat, 3 Jan 2026 20:40:09 +0200
-Subject: [PATCH] arm: make initialization of zero page independent of the
- memory map
+You are getting rid of the flush_dcache_page() call, which ensures
+that the zeroed contents of the page are pushed out of the cache
+into memory. This is necessary.
 
-Unlike most architectures, arm keeps a struct page pointer to the
-empty_zero_page and to initialize it requires conversion of a virtual
-address to page which makes it necessary to have memory map initialized
-before creating the empty_zero_page.
+BSS is very similar. It's memset() during the kernel boot _after_
+the caches are enabled. Without an explicit flush, nothing
+guarantees that those writes will be visible to userspace.
 
-Make empty_zero_page a stataic array in BSS to decouple it's
-initialization from the initialization of the memory map.
+To me, this seems like a bad idea, which will cause userspace to
+break.
 
-This also aligns arm with vast majorty of architectures.
+We need to call flush_dcache_page(), and _that_ requires a struct
+page.
 
-Signed-off-by: Klara Modin <klarasmodin@gmail.com>
-Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
----
- arch/arm/include/asm/pgtable.h |  4 ++--
- arch/arm/mm/mmu.c              | 10 +---------
- arch/arm/mm/nommu.c            | 10 +---------
- 3 files changed, 4 insertions(+), 20 deletions(-)
-
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index 86378eec7757..6fa9acd6a7f5 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -15,8 +15,8 @@
-  * ZERO_PAGE is a global shared page that is always zero: used
-  * for zero-mapped memory areas etc..
-  */
--extern struct page *empty_zero_page;
--#define ZERO_PAGE(vaddr)	(empty_zero_page)
-+extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-+#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
- #endif
- 
- #include <asm-generic/pgtable-nopud.h>
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 8bac96e205ac..518def8314e7 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -45,7 +45,7 @@ extern unsigned long __atags_pointer;
-  * empty_zero_page is a special page that is used for
-  * zero-initialized data and COW.
-  */
--struct page *empty_zero_page;
-+unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
- EXPORT_SYMBOL(empty_zero_page);
- 
- /*
-@@ -1754,8 +1754,6 @@ static void __init early_fixmap_shutdown(void)
-  */
- void __init paging_init(const struct machine_desc *mdesc)
- {
--	void *zero_page;
--
- #ifdef CONFIG_XIP_KERNEL
- 	/* Store the kernel RW RAM region start/end in these variables */
- 	kernel_sec_start = CONFIG_PHYS_OFFSET & SECTION_MASK;
-@@ -1781,13 +1779,7 @@ void __init paging_init(const struct machine_desc *mdesc)
- 
- 	top_pmd = pmd_off_k(0xffff0000);
- 
--	/* allocate the zero page. */
--	zero_page = early_alloc(PAGE_SIZE);
--
- 	bootmem_init();
--
--	empty_zero_page = virt_to_page(zero_page);
--	__flush_dcache_folio(NULL, page_folio(empty_zero_page));
- }
- 
- void __init early_mm_init(const struct machine_desc *mdesc)
-diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-index d638cc87807e..7e42d8accec6 100644
---- a/arch/arm/mm/nommu.c
-+++ b/arch/arm/mm/nommu.c
-@@ -31,7 +31,7 @@ unsigned long vectors_base;
-  * empty_zero_page is a special page that is used for
-  * zero-initialized data and COW.
-  */
--struct page *empty_zero_page;
-+unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
- EXPORT_SYMBOL(empty_zero_page);
- 
- #ifdef CONFIG_ARM_MPU
-@@ -156,18 +156,10 @@ void __init adjust_lowmem_bounds(void)
-  */
- void __init paging_init(const struct machine_desc *mdesc)
- {
--	void *zero_page;
--
- 	early_trap_init((void *)vectors_base);
- 	mpu_setup();
- 
--	/* allocate the zero page. */
--	zero_page = (void *)memblock_alloc_or_panic(PAGE_SIZE, PAGE_SIZE);
--
- 	bootmem_init();
--
--	empty_zero_page = virt_to_page(zero_page);
--	flush_dcache_page(empty_zero_page);
- }
- 
- /*
 -- 
-2.51.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
