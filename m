@@ -4,111 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A3BDC2A077
-	for <linux-um@archiver.kernel.org>; Sun,  4 Jan 2026 22:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46BC9C79F8A
+	for <linux-um@archiver.kernel.org>; Mon,  5 Jan 2026 12:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wo1Kl74psMzgyQ0k984/Z8XxStihf6Ag9RZU9qJUQBI=; b=asT+g07Q+lCzVIxkmV04p9OQyi
-	bGacJh0//djUIpK3JTqjbKHL0ZceUzQcrR/JlqluXjuqUglLHc5/s6krggr69n8497u+Dcpz7ntYl
-	S0ew8WF4UkQ/Jk8dLcH3ZGlm0vl3S07Ml8GHdWODMN99xwpn0TXRjGHm8X/dYemZXSgrIQu94tpbg
-	jW58hSyeTXgiUEpUPH3/GMTKHub1EIK66AV2Z25JTJFgqQU70bj7j5LiHgZYG7sTYkswSxJ7LZ+cI
-	/21AHrzMEuedzp1npCu71I+uPARwgyyvNsrz3pjYit9AsRNqRro7sN0wT3wZqqD3smKAPEGNCyog1
-	iLsiWNqA==;
+	bh=DIfhp3vJVBySXs5/naEXyaaROJC4kEOY5dOC0TJhcN0=; b=46dGRPKZj/2su7eLxlZy4ldn+l
+	wwZqlKV2ZlBCe8G4Hui88ovmrFYZwZsPAGE9kv3AyxdZ1XZBRxuDcLtefGOvHwcn7gRFfwrDX38br
+	MRIXloDAl/6RDvqerQgiPwUyAHINPdK9r1/QF+R2wvRBw12+D2fC0wgIzNaWV8e9Y+PSg0WtcFEHy
+	5q7h99hZNgxqqP84fdSQih9oWFrqJ6NLBOkhKtNUIxKHgEdhoptwqo1Awo+IHxaAM7qCQsVXaPSDm
+	A8oeHLNpQIM8wDlGuNBVMrXqOmQ2sHQOwzKq9stA0NMkTEZ64EqmxrYsAAXbayZNNy8bHKGQtT2Dl
+	q3CykUTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcWGM-0000000AVJr-2KaI;
-	Sun, 04 Jan 2026 22:07:50 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vck4N-0000000BLcE-3qmZ;
+	Mon, 05 Jan 2026 12:52:23 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcWGI-0000000AVIx-0Hfi;
-	Sun, 04 Jan 2026 22:07:47 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8C47C434F3;
-	Sun,  4 Jan 2026 22:07:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E756CC4CEF7;
-	Sun,  4 Jan 2026 22:07:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767564464;
-	bh=Ee42W97PW2cmqfwn1Sv3QlRj9Q5zCvDbUSuBQxv/Op0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gScty2FfULdESXHMa7hr8G8loXGEUlcQN5S80gDD5UqJ9suJ3KSg5EBnAfBmPbN4t
-	 9i+loVAvbh0AVx5Yk4Koh1k8IXcYongXSPkBU/coQveXqy9HIob5+WjT9N8n85Gjtm
-	 QC1qHBE6xVD7AdKk4C44SLTYTxRO2wXx2AsAtG8JDeEhyiIAC6f2WQDRBjpGsCOR0w
-	 FS8iQ8IYIJkUJd7l21ONO+cGDEowjKvrtTSsbbdAQreKdAJdoXpAyGIgxSjm5iGWsN
-	 P4fDUybYnndFC6q8lAflfYkDiUy/1o2TDN1ho6i4H4kKv0NoHgcQix3vta1Wo/qJz4
-	 ESWpk4nesfdDw==
-Date: Mon, 5 Jan 2026 00:07:22 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Klara Modin <klarasmodin@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alex Shi <alexs@kernel.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Hildenbrand <david@kernel.org>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
+	id 1vck4K-0000000BLaM-2Nvn
+	for linux-um@lists.infradead.org;
+	Mon, 05 Jan 2026 12:52:22 +0000
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-430f5ecaa08so5733918f8f.3
+        for <linux-um@lists.infradead.org>; Mon, 05 Jan 2026 04:52:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riscstar-com.20230601.gappssmtp.com; s=20230601; t=1767617538; x=1768222338; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DIfhp3vJVBySXs5/naEXyaaROJC4kEOY5dOC0TJhcN0=;
+        b=a3XzevQzmxBmGXDbbG8lMnM8xdp8oyj8xKyux2iW8aZ7UHybILVFAIpT1AO6SGVk0s
+         Gpbo0exRFnP5pSDQQd5bfFOQib491ckMd0aaT2sUOvBLZ0WpWkSXA3BCJvj38nOGyPBR
+         pEMKpBZUEcdSKumHEaMUIrhz8iZrRuyZ7NTfqFnF8Zaju6HlexTzXs8NDgTwBO5HI6Fh
+         onHCTFfp4SuQGDEGPARcBheGf8V0YwGuRivBcumxqI1C4rbsA3v3ZlzqAnHLLCV6/n75
+         /1kph/COT0z9KaS5R+wfOSRghZy+xVDv26zWAklAYZnTMo/Ca0vFykb9VeIxVZr95i4K
+         x3UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767617538; x=1768222338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DIfhp3vJVBySXs5/naEXyaaROJC4kEOY5dOC0TJhcN0=;
+        b=R2CZD9ACqgIjR98XA8cpu2GznlajmT7yQyxQccsv8V/yBhNqrOWCeZK+cfTrMkvqaE
+         +zfCJkx9f/2vQWsiiO5VDjEPw2yvXFMC505edv1R1JnB6agayCQxge4Vit7aVRdEeUvN
+         cCZB2m3JK1OGqsE7xPya5kHOXBbaReXQeh1GnJAwW2EZi/b0SDj3EAHqjmfMl0QYXoFi
+         4rkMbsnR3X8eyiR8Mo57KzO547sCG3ic/X2jD5horBlycqTtwiysecHLl9cP7Fkv++t6
+         nVRaoQJCs5Sxj1D/h3FfRBHhNlvESZuRz4JiCFpD8q/nEBpO0trhsavfyHJ7+HSxb4J8
+         +DIg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/S5NdgVG2X3KnV/RaTV5MbZjKyyXACj+MKX0V40tLcLeohkj6louOv88M9DpDnWwuvPJ+PbFHJw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxHzC2RcdLx7nxfQaZv85EY17PG4Ec3JqB8m27rXhkaRreUbiVE
+	MGM93BKOZD1HKGKbuYpuIH7r7vHDD6+JvbFQJDbQEpXu2mv0SgQm7kAb/ttgCuXpqHY=
+X-Gm-Gg: AY/fxX4ZnNA61DYFsZsnPTrjLEOBPQ30T3X/x+S4FQRuldcyQz0dMLUS43QUYPoWBQ1
+	s+XWR8peowvUCSTFfoyxUjM7G8CFtzhf8NAS66hll8fIQj5wMpWAuUprUHE5XVmiqpkH/d4S+3X
+	KTuy8IFbOXFeMuEMIfISWbos8ksLZiqD0jA9TwxIYmEG1hnd5f8d53gpEW4dLdj8YjzV2d272yN
+	VjvViFgRBKFe+adAmFi+ytcCG4FH5UPw7YT6kIoTI7n0muLiNCHyyo7l3rqct6ML5vsnvyegSm2
+	MJFi1l2S5YlYeA4iNJC66OqehwMatJvgL7CXIxjnwSpSXA09a+nTVvNRGp8/eXz2Gl2rj/5SZQf
+	UVpMlKf+7moWKGqkb6JH0dGk8eCJ/SuX1ijboheItgL9HLzYOKPuyqsEEAL8+65eW/P39xmTUao
+	paltRRlyxjxqgYqML7Y1HzOTJKu/oggn7oLAP5ntm96Q5PYgY2C+9P2sFfOGyF0o0Hc90hwmgSl
+	razeOw6rLdmSeSwYwHHqfa5qSKXmPdrpl8isqiA82bHABYO2XQHUNREYzkw5edRbYv1Xz8Vpd4u
+	zUniGbA=
+X-Google-Smtp-Source: AGHT+IE4Mz004OZ0As7rWOFq5sPjHYJ4N8Pzam8+bOUXJdXGQOskOlJaecSDta7VRdPfx5XGGjwohQ==
+X-Received: by 2002:a05:6000:1844:b0:432:8504:b8a9 with SMTP id ffacd0b85a97d-4328504b8e1mr37753933f8f.62.1767617537725;
+        Mon, 05 Jan 2026 04:52:17 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324ea1b36fsm100029761f8f.5.2026.01.05.04.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jan 2026 04:52:17 -0800 (PST)
+Date: Mon, 5 Jan 2026 12:52:14 +0000
+From: Daniel Thompson <daniel@riscstar.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Stafford Horne <shorne@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
-	x86@kernel.org, linux-alpha@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org
-Subject: Re: [PATCH 3.5] arm: make initialization of zero page independent of
- the memory map (was Re: [PATCH v2 22/28] arch, mm: consolidate
- initialization of nodes, zones and memory map)
-Message-ID: <aVrkmnzgwM5i1VqX@kernel.org>
-References: <20260102070005.65328-1-rppt@kernel.org>
- <20260102070005.65328-23-rppt@kernel.org>
- <aVhN2NgQEKe0yzva@soda.int.kasm.eu>
- <aVll339wim7dCIaQ@kernel.org>
- <aVlwOyicOLPB9SOa@parmesan.int.kasm.eu>
- <aVpWpLV4Dut5Muo2@kernel.org>
- <aVrUDeSkqqY9ZCtS@shell.armlinux.org.uk>
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+	netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 00/19] printk cleanup - part 3
+Message-ID: <aVuz_hpbrk8oSCVC@aspen.lan>
+References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aVrUDeSkqqY9ZCtS@shell.armlinux.org.uk>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260104_140746_173032_1DA34E59 
-X-CRM114-Status: GOOD (  20.76  )
+X-CRM114-CacheID: sfid-20260105_045220_883394_E8654FB7 
+X-CRM114-Status: GOOD (  16.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,45 +135,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jan 04, 2026 at 08:56:45PM +0000, Russell King (Oracle) wrote:
-> On Sun, Jan 04, 2026 at 02:01:40PM +0200, Mike Rapoport wrote:
-> > From 35d016bbf5da7c08cc5c5547c85558fc50cb63aa Mon Sep 17 00:00:00 2001
-> > From: Klara Modin <klarasmodin@gmail.com>
-> > Date: Sat, 3 Jan 2026 20:40:09 +0200
-> > Subject: [PATCH] arm: make initialization of zero page independent of the
-> >  memory map
-> > 
-> > Unlike most architectures, arm keeps a struct page pointer to the
-> > empty_zero_page and to initialize it requires conversion of a virtual
-> > address to page which makes it necessary to have memory map initialized
-> > before creating the empty_zero_page.
-> > 
-> > Make empty_zero_page a stataic array in BSS to decouple it's
-> > initialization from the initialization of the memory map.
-> 
-> I see you haven't considered _why_ ARM does this.
-> 
-> You are getting rid of the flush_dcache_page() call, which ensures
-> that the zeroed contents of the page are pushed out of the cache
-> into memory. This is necessary.
-> 
-> BSS is very similar. It's memset() during the kernel boot _after_
-> the caches are enabled. Without an explicit flush, nothing
-> guarantees that those writes will be visible to userspace.
+Hi Marcos
 
-There's a call to flush_cache_all() paging_init()->devicemaps_init() that
-will guarantee that those writes are flushed long before userspace starts.
- 
-> To me, this seems like a bad idea, which will cause userspace to
-> break.
-> 
-> We need to call flush_dcache_page(), and _that_ requires a struct
-> page.
+On Sat, Dec 27, 2025 at 09:16:07AM -0300, Marcos Paulo de Souza wrote:
+> The parts 1 and 2 can be found here [1] and here[2].
+>
+> The changes proposed in this part 3 are mostly to clarify the usage of
+> the interfaces for NBCON, and use the printk helpers more broadly.
+> Besides it, it also introduces a new way to register consoles
+> and drop thes the CON_ENABLED flag. It seems too much, but in reality
+> the changes are not complex, and as the title says, it's basically a
+> cleanup without changing the functional changes.
 
-Right now there's __flush_dcache_folio() that will break anyway when folio
-divorces from struct page.   
+I ran this patchset through the kgdb test suite and I'm afraid it is
+reporting functional changes.
 
--- 
-Sincerely yours,
-Mike.
+Specifically the earlycon support for kdb has regressed (FWIW the
+problem bisects down to the final patch in the series where CON_ENABLED
+is removed).
+
+Reproduction on x86-64 KVM outside of the test suite should be easy:
+
+    make defconfig
+    scripts/config \
+        --enable DEBUG_INFO \
+	--enable DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT \
+	--enable DEBUG_FS \
+	--enable KALLSYMS_ALL \
+	--enable MAGIC_SYSRQ \
+	--enable KGDB \
+	--enable KGDB_TESTS \
+	--enable KGDB_KDB \
+	--enable KDB_KEYBOARD \
+	--enable LKDTM \
+	--enable SECURITY_LOCKDOWN_LSM
+    make olddefconfig
+    make -j$(nproc)
+    qemu-system-x86_64 \
+        -m 1G -smp 2 -nographic \
+	-kernel arch/x86/boot/bzImage \
+	-append "console=ttyS0,115200 kgdboc=ttyS0 earlycon=uart8250,io,0x3f8 kgdboc_earlycon kgdbwait"
+
+In a successful test the kdb prompt will appear after only a few lines
+of output:
+~~~
+[    0.000000] Linux version 6.19.0-rc4-00020-g4b7f3b144021 (drt@wychelm) (gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #2 SMP PREEMPT_DYNAMIC Mon Jan 6
+[    0.000000] Command line: console=ttyS0,115200 kgdboc=ttyS0 earlycon=uart8250,io,0x3f8 kgdboc_earlycon kgdbwait
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000003ffdffff] usable
+[    0.000000] BIOS-e820: [mem 0x000000003ffe0000-0x000000003fffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x000000fd00000000-0x000000ffffffffff] reserved
+[    0.000000] earlycon: uart8250 at I/O port 0x3f8 (options '')
+[    0.000000] printk: legacy bootconsole [uart8250] enabled
+[    0.000000] kgdboc: Going to register kgdb with earlycon 'uart'
+[    0.000000] KGDB: Registered I/O driver kgdboc_earlycon
+[    0.000000] KGDB: Waiting for connection from remote gdb...
+
+Entering kdb (current=0x0000000000000000, pid 0) on processor 0 due to NonMaskable Interrupt @ 0xffffffff9101491f
+[0]kdb>
+~~~
+
+After this patchset is applied the earlycon triggers do not work
+correctly and we get:
+~~~
+[    0.000000] Linux version 6.19.0-rc4-00019-g882df99205ba (drt@wychelm) (gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44) #3 SMP PREEMPT_DYNAMIC Mon Jan 6
+[    0.000000] Command line: console=ttyS0,115200 kgdboc=ttyS0 earlycon=uart8250,io,0x3f8 kgdboc_earlycon kgdbwait
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000003ffdffff] usable
+[    0.000000] BIOS-e820: [mem 0x000000003ffe0000-0x000000003fffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+[    0.000000] BIOS-e820: [mem 0x000000fd00000000-0x000000ffffffffff] reserved
+[    0.000000] earlycon: uart8250 at I/O port 0x3f8 (options '')
+[    0.000000] kgdboc: No suitable earlycon yet, will try later
+...
+~~~
+
+
+Daniel.
 
