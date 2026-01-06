@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E415CD0429
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60024CD042A
 	for <linux-um@archiver.kernel.org>; Tue,  6 Jan 2026 00:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9tX6gpxi2EQmP4oevyiEdWqZx5mbwRJ2/QZKBfjWcOc=; b=1nWYcMKh6PA2iIlREE8pGS88Y2
-	QuS61An8m9haCr1dgOw+NxISxjguS/QY/8mtkIQfpBF2+lyOgZOQs3YUs27tTdmDgKFSNQVqrT1hi
-	45VLyeCdyTKz+TcMJcp8Zrrb/u6I5+xwugVx8RvI+tWlTfUNHDWrbKmLmqEalxfwoioVarkjj9wNu
-	GKfdjTbewa2UTMwheaEzYZ5ey5uGHmEQbfOE8Zu5eF2kuX6wRJGK4+aVyWubCzBcHQt0sijGOdKQy
-	5cK1z4LQfpP0AumY1/AE0q6wex0OSxGVzQ5frDUDUOaXjxuDKNsgz/EH379aGuiWCs6bADBzDiXDR
-	kcOwn8bg==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=+GItRf63O7TxYIMQbbd/DGIxtORDZBq83Z22ibe5R18=; b=TzAlZVh/+pvDcPZgYS+0vgwCLS
+	1sN3yEPF8MgfOI4R/Ckv8k6AlfHfqm/I0C4vy5Drh1dCXh9M03J+8/OpzEcnny6KHwwrjH+64vGIT
+	9FMP8XFl0kZ8GMFHZhXdLDfBbhktHR3UYZTen352xzoo/90vmp9rQlEtaL7WMs1c4CTMsJoZjeAad
+	97J76fQrDJaS+jk5ukv9q0lYEQUBwaXlBKTgcoNXha9Sr2xfcz4nO4mQWH6ea+CsIwR/s44REntYT
+	CY9QYJPan/BOscxbBjadlPkc7fmgXJuIV4DNMnLXeeEfuxHlRfIKaEtQHWH61zNjI8F1sFqRQlCzL
+	cHm827wQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcuhR-0000000CFny-2uF3;
+	id 1vcuhR-0000000CFnq-1sdV;
 	Tue, 06 Jan 2026 00:13:25 +0000
-Received: from out28-170.mail.aliyun.com ([115.124.28.170])
+Received: from out28-99.mail.aliyun.com ([115.124.28.99])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vcuhM-0000000CFmi-3D8E
+	id 1vcuhM-0000000CFmk-2rxW
 	for linux-um@lists.infradead.org;
-	Tue, 06 Jan 2026 00:13:24 +0000
+	Tue, 06 Jan 2026 00:13:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1767658392; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=9tX6gpxi2EQmP4oevyiEdWqZx5mbwRJ2/QZKBfjWcOc=;
-	b=b9+T/xF+9ncQ800UoU6TKKvq5AbpHRcXmfjDDzuDqurF3dz5lMTXVKL+XkRYEVnIRt9sMPXRvoSy5RxDOl2U1SFcPm/kd9wRi7M5un3OzDNeXDVcvbQyzpyrPmFkSLO6FsM+pU7pPXi83uh5Yj3ub1i7W/T8NmMz+WQ7xWv8E1o=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.g-qgwWU_1767658390 cluster:ay29)
+	t=1767658393; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=+GItRf63O7TxYIMQbbd/DGIxtORDZBq83Z22ibe5R18=;
+	b=taCq8Spmt8wTLMx+JqSk/7iQtu4+xFn+YeZl1bSP35BGy+JLvTSMjzb5SJ6cd7oHTC2Wzl528MtUUAEo7QUv80WZSMIqR00njsMxF68DV29933gOpk/zDuWD9U+XTmntA9MOnE1lB07kVz6msXF8I6Yni44vPP1p3mJ8+jJIT1w=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.g-qgw-l_1767658363 cluster:ay29)
           by smtp.aliyun-inc.com;
           Tue, 06 Jan 2026 08:13:10 +0800
 From: Tiwei Bie <tiwei.btw@antgroup.com>
@@ -41,17 +41,15 @@ To: richard@nod.at,
 	johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
 	Tiwei Bie <tiwei.btw@antgroup.com>
-Subject: [PATCH 1/2] um: Preserve errno within signal handler
-Date: Tue,  6 Jan 2026 08:12:27 +0800
-Message-Id: <20260106001228.1531146-2-tiwei.btw@antgroup.com>
+Subject: [PATCH 0/2] um: Minor signal cleanups
+Date: Tue,  6 Jan 2026 08:12:26 +0800
+Message-Id: <20260106001228.1531146-1-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260106001228.1531146-1-tiwei.btw@antgroup.com>
-References: <20260106001228.1531146-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260105_161321_359279_349DC377 
-X-CRM114-Status: UNSURE (   9.82  )
+X-CRM114-CacheID: sfid-20260105_161321_360736_1A65449B 
+X-CRM114-Status: UNSURE (   3.45  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,50 +65,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-We rely on errno to determine whether a syscall has failed, so we
-need to ensure that accessing errno is async-signal-safe. Currently,
-we preserve the errno in sig_handler_common(), but it doesn't cover
-every possible case. Let's do it in hard_handler() instead, which
-is the signal handler we actually register.
+Tiwei Bie (2):
+  um: Preserve errno within signal handler
+  um: Handle SIGCHLD in seccomp mode like other IRQ signals
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/os-Linux/signal.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/um/os-Linux/signal.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 327fb3c52fc7..de372b936a80 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -36,7 +36,6 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) =
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- {
- 	struct uml_pt_regs r;
--	int save_errno = errno;
- 
- 	r.is_user = 0;
- 	if (sig == SIGSEGV) {
-@@ -50,8 +49,6 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- 		unblock_signals_trace();
- 
- 	(*sig_info[sig])(sig, si, &r, mc);
--
--	errno = save_errno;
- }
- 
- /*
-@@ -207,8 +204,11 @@ static void hard_handler(int sig, siginfo_t *si, void *p)
- {
- 	ucontext_t *uc = p;
- 	mcontext_t *mc = &uc->uc_mcontext;
-+	int save_errno = errno;
- 
- 	(*handlers[sig])(sig, (struct siginfo *)si, mc);
-+
-+	errno = save_errno;
- }
- 
- void set_handler(int sig)
 -- 
 2.34.1
 
