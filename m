@@ -4,91 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 578F7CD5822
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jan 2026 10:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D91EFCFD647
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jan 2026 14:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5sCdqnj/RCGcOZ4N1FNFLLmFTy7auxTIhL2QEEcNqFg=; b=ypBLcoTqUq1zzjAFFoOitfpBQF
-	2NVApeNSLVxDh1WArzNZYeIlX56uN5amUNWPhdCv7TODEWrxnx30the1131COnH0KQeEjzLKGpeFg
-	xnRTmf2Ohz0GocI0P42DYzsyYljxHI4Q5qIywZj1dyAj4TY+e9pEmjcqAxMmcD1RFm/ohRNMopu83
-	ZP/QDq4rmVSBJ9Fw5wa+DOMfG0HGcJGrPM6Al3hure0fFcb+4V6UyUVAebR1Rvo0v/RABIOvk/k3C
-	naR7zI5FJCvYK5SAD+mazhQFGhcmdMBJGr+h35BcWZf47Hv/jvGCVGkA2x5grOrf/TP7xR2lJXQKA
-	H/U5IxKg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+xIhfMAtjHYjFTH+p76wSQ0KBZqEgJllYmQCn9tPHTw=; b=JFObs240ZYsA4+7JzVdRigyt67
+	s37vx3lkhZGsGnT4uCm+XVFA1hKA23eNdFPQ4VP8VAQ8//o3dFkSYibMv37B542jtKZZrJsQjcyBS
+	Z9d+fWOR84bRS68EktuV6EluIdPicsV6W7aq32unF3dCHA65BV17lwlB41k8/Ti6oAR82CjXj1Xhg
+	KV6AgA1+p6lC/37lGpya+xUtt8sMQ8VBX/5ib2f5P2hTFfssGUHU3dXNg/0aiiCnrGHocardJFHaj
+	ay1NdF7OP3kM2rShyVGCYV8zNRpw29zYvp1ECbXNieWLh5pBU/vvKFUrMazUR2AxU+VJBwPso8vX/
+	Gz7YLIOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdQgr-0000000EhKG-28pC;
-	Wed, 07 Jan 2026 10:22:57 +0000
-Received: from smtp-out3.simply.com ([94.231.106.210])
+	id 1vdUpa-0000000F7bi-03QP;
+	Wed, 07 Jan 2026 14:48:14 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vdQgn-0000000EhIq-2zM6;
-	Wed, 07 Jan 2026 10:22:55 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4dmPHX1tZwz1DDr1;
-	Wed,  7 Jan 2026 11:22:48 +0100 (CET)
-Received: from [10.10.15.21] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4dmPHS5YrMz1DDdR;
-	Wed,  7 Jan 2026 11:22:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1767781367;
-	bh=5sCdqnj/RCGcOZ4N1FNFLLmFTy7auxTIhL2QEEcNqFg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=GapqslJRt7PAo/OPdy40/uiS8yl/fdKamd8Ti7v8KhTSWM+dyJpM0kA09WqDkvmTF
-	 JDac2AP0hk4IXLuaOc19G85CIClqVXmQFScccHC7rgNcYdl16DovAFndj0u/scyZuZ
-	 rFnlzmQeoXkgQ81qRhHQTXrNih6T2iluIH43PJMds/ZZIo6rm/VM9YDeYihibbVdmg
-	 uDvdrF41naRrcWhAD/3/BJoa7qr9vCUPqLxuLP48CDDioxfF0rw5/F8n0Js/OfpQsy
-	 f1VR1SCUMB9l0JY24lstr5qvSKP50VGC6KkhF0cw5Ng7hX+p9V4PT5L0p7hEJpFlek
-	 UmVwAHzAgacCA==
-Message-ID: <836139d1-1425-4381-bb84-6c2654a4d239@gaisler.com>
-Date: Wed, 7 Jan 2026 11:22:44 +0100
+	id 1vdUpX-0000000F7aq-2Ult;
+	Wed, 07 Jan 2026 14:48:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=+xIhfMAtjHYjFTH+p76wSQ0KBZqEgJllYmQCn9tPHTw=; b=gfgvtMRN85Hh6ULIivj+/lsOiA
+	MybjhOoCgrIWL+bUF4ZEyrlnJ3BCKR4kow6Y6NDL92/3cFJxBWTaKb1rIOfGBe+Dw0TMz+F6hTAg8
+	Crnru+IpjVNRY8M3Yo5pEqYsNvsbroxjMFB+JLG+kn8JUv7wu/qgJNEaHLWZYnCI/h9377j2QaiDj
+	Wp4USeOE/onY3OPFlzQZveXDAm1UarU5jmZ6+7+4LDv4lZECvq9bRsaYpa+NQlBAndtaGIh51toTF
+	IydUvltqxiSopJRhJfdcYVF+WCRW6z7IOhoMVL5JAXrCp/2naH+s5TUY9eMaE3iE1xilEVS8ykNR8
+	zYY+BTvw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vdUpO-0000000DVbI-1rdl;
+	Wed, 07 Jan 2026 14:48:02 +0000
+Date: Wed, 7 Jan 2026 14:48:02 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Alex Shi <seakeel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>, alexs@kernel.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>, David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	"open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>,
+	"moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+	"open list:MMU GATHER AND TLB INVALIDATION" <linux-arch@vger.kernel.org>,
+	"open list:MMU GATHER AND TLB INVALIDATION" <linux-mm@kvack.org>,
+	"open list:C-SKY ARCHITECTURE" <linux-csky@vger.kernel.org>,
+	"open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>,
+	"open list:LOONGARCH" <loongarch@lists.linux.dev>,
+	"open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+	"open list:MIPS" <linux-mips@vger.kernel.org>,
+	"open list:OPENRISC ARCHITECTURE" <linux-openrisc@vger.kernel.org>,
+	"open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+	"open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+	"open list:SUPERH" <linux-sh@vger.kernel.org>,
+	"open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>
+Subject: Re: [PATCH] mm/pgtable: convert pgtable_t to ptdesc pointer
+Message-ID: <aV5yIuGi9Ni5YP5E@casper.infradead.org>
+References: <20260107064642.15771-1-alexs@kernel.org>
+ <aV4h5vQUNXn5cpMY@kernel.org>
+ <080e493a-e4f1-4c97-a3e1-f76f126b5213@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/19] printk cleanup - part 3
-To: Marcos Paulo de Souza <mpdesouza@suse.com>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jason Wessel <jason.wessel@windriver.com>,
- Daniel Thompson <danielt@kernel.org>,
- Douglas Anderson <dianders@chromium.org>, Petr Mladek <pmladek@suse.com>,
- Steven Rostedt <rostedt@goodmis.org>, John Ogness
- <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <kees@kernel.org>,
- Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
- <gpiccoli@igalia.com>, Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>,
- Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
- kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
- netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- sparclinux@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
-Content-Language: en-US
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260107_022254_112878_CE421115 
-X-CRM114-Status: GOOD (  11.57  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <080e493a-e4f1-4c97-a3e1-f76f126b5213@gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,22 +123,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025-12-27 13:16, Marcos Paulo de Souza wrote:
-> The parts 1 and 2 can be found here [1] and here[2].
-> 
-> The changes proposed in this part 3 are mostly to clarify the usage of
-> the interfaces for NBCON, and use the printk helpers more broadly.
-> Besides it, it also introduces a new way to register consoles
-> and drop thes the CON_ENABLED flag. It seems too much, but in reality
-> the changes are not complex, and as the title says, it's basically a
-> cleanup without changing the functional changes.
+On Wed, Jan 07, 2026 at 05:28:36PM +0800, Alex Shi wrote:
+> Right, I will fix this. and sent the 2nd version.
 
-Hi,
-
-Patches 7-17 all say "replacing the CON_ENABLE flag" in their
-descriptions, which should rather be "replacing the CON_ENABLED flag".
-
-Cheers,
-Andreas
-
+No, the patch is stupid and wrong.  Don't send a v2.  You seem to have a
+hairtrigger resend, so I'm trying to prevent a v2 being sent instead of
+sending a patient reply.
 
