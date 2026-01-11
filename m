@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58369D2502E
-	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5B8DD2502E
+	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:23:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=I9r49gF1239seYn0EXw4a+FTKxA1x4OYVZ+hhz2pvoc=; b=PkKliRHo0r42J6WTAak8KooFUy
-	4TsYpXN9FQ/HaM+OWED/0m8x5DMsubYaeT118A11eZiw40BA+Qn9cqt0jqKjjGTWhG496DRDFsuBs
-	w1Gj2tq0IPYmuhLqLMxFwUlr3pNEV33Flvit/50W7KCPpKfsBkTSWRROjy1/nYbaNhlvAWFmsOTLA
-	tlKpn48LCeCocEUqvS9fUuRf+pvYkg/HGFyEwNYy2vDKm7AiNtUqy2+HxPT4X2emRB0nIHMcnIHjI
-	hAzX3fgNQEOa/qP15Vzxmfwg1CPtrzO4IVcYZEkVro0vuiTprm4CKCaxyHrjxwPHP8fjh9iGpXWy7
-	FTzRrQ7w==;
+	bh=HfcqmLQbnSJvVIv+k+pxkWmR5Wm/caGZYknBWk1pJXo=; b=FN6x61IZ53APPPUPv+6D7RfOQE
+	4l7Bc2kZgIUNITsK6f7HSt6MmDpGqEJzjChWqFXKg7G7NuKZbv4tmYgXuv1RgZ0AQxOyqe2+c+mz4
+	e7qFJMBtKXbbBkEraZYUQ+MZhRq/ew/Xxa5Iahf8zUVnodhAdTXnCCCqWqCrEstzhiwMy3Dyd9qP7
+	fa1THOviwr8XqxPR398bxCAX+ZHgz7b/yiw3XkExPchCeX1ewI1LcLF4VCb7tOEX4ImRKauT/KduB
+	3EDQl3OypQsh4dtm3aBkFRHDgHMdNTPIGmFACHV1ljHEakied8d/yMcfmVvMTdN0Vs/Npvkx7G/KS
+	sgviD06Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqjB-00000003yjz-0HEA;
-	Sun, 11 Jan 2026 08:23:13 +0000
+	id 1veqjP-00000003yt8-1q5L;
+	Sun, 11 Jan 2026 08:23:27 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqj8-00000003yiG-2WOe;
-	Sun, 11 Jan 2026 08:23:10 +0000
+	id 1veqjN-00000003yrN-2dP7;
+	Sun, 11 Jan 2026 08:23:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id E27A660121;
+	by tor.source.kernel.org (Postfix) with ESMTP id 1033960122;
+	Sun, 11 Jan 2026 08:23:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229FCC4CEF7;
 	Sun, 11 Jan 2026 08:23:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05345C16AAE;
-	Sun, 11 Jan 2026 08:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768119789;
-	bh=eqWldmxLZQ+MuA70zzUt7CpIfBT1PwNgoY4RoneYtY0=;
+	s=k20201202; t=1768119804;
+	bh=3bBcyNtfu29ffLXJ+V2J2og1TMjw9NsnHxGDp+htXro=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C7Y72wXMIxHy6XkJmztuJdQ7nrb/H8/0yqr2w4/E8QJWA6Rh7TQ+ZTA2XKzQ3ppiQ
-	 X/qwP1y/mqTOg6PM+vVJgydtDmryLcrPh0+4sdC39sKAoOqs5zk81ppMMhRkZyoBoG
-	 R8KzISUkYPxY9N6ycbarzaLaShlZRJE9S/Kua930Tcb7BlLeq3d9B+2H8aFuuDHi2p
-	 JSEOXk2pHvwES0AP3AccrgQTHtv78VrdBJKTJthZCDN/GF9sDqikJWjBhjbAKeJAd8
-	 G6mQ4D9TgsrMjQP9ao2FZLbEMY9cJGp4mDJvhQueucoRZ6oanJGeKA8L1K/1hlAkwv
-	 jSDEOdDUId0nQ==
+	b=aRGBg6QWrfdw7symPdIfdeBuEObPt3i9tEb12+OCo6mXZGBjZXCBQcNSrZuUzbZg8
+	 PCO5UhVWdvknheOMi+PNJHEombMZMaFBDSNZ32iPSV1o17p4h1FaEH1C/CiJLr4Uo3
+	 j1ptOQDM+v3irPHu2xEaMAyDNWgRyFeg/GVpJlHgHuj2XNSJ4ocgxp0wWYpHIUlz0V
+	 yax5qnU/gPDf3ITT9DtMQulB7ID0HiJYXy98x5uh5/0Ouuae5hHH/gAgW1Ez1ZBkzC
+	 4YGj+Uf0x2zu9bXzfakCQ/NLzF0O+8VrgxXcA88JLftjppFp+8BUbvbua+VSjqZ8u5
+	 x69OyH7O4BEow==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -109,9 +109,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 07/29] hexagon: introduce arch_zone_limits_init()
-Date: Sun, 11 Jan 2026 10:20:41 +0200
-Message-ID: <20260111082105.290734-8-rppt@kernel.org>
+Subject: [PATCH v3 08/29] loongarch: introduce arch_zone_limits_init()
+Date: Sun, 11 Jan 2026 10:20:42 +0200
+Message-ID: <20260111082105.290734-9-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
@@ -142,50 +142,36 @@ call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/hexagon/mm/init.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ arch/loongarch/mm/init.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 34eb9d424b96..e2c9487d8d34 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -54,6 +54,18 @@ void sync_icache_dcache(pte_t pte)
- 	__vmcache_idsync(addr, PAGE_SIZE);
+diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+index 0946662afdd6..17235f87eafb 100644
+--- a/arch/loongarch/mm/init.c
++++ b/arch/loongarch/mm/init.c
+@@ -60,15 +60,19 @@ int __ref page_is_ram(unsigned long pfn)
+ 	return memblock_is_memory(addr) && !memblock_is_reserved(addr);
  }
  
+-void __init paging_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
-+{
-+	/*
-+	 *  This is not particularly well documented anywhere, but
-+	 *  give ZONE_NORMAL all the memory, including the big holes
-+	 *  left by the kernel+bootmem_map which are already left as reserved
-+	 *  in the bootmem_map; free_area_init should see those bits and
-+	 *  adjust accordingly.
-+	 */
-+	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
+ {
+-	unsigned long max_zone_pfns[MAX_NR_ZONES];
+-
+ #ifdef CONFIG_ZONE_DMA32
+ 	max_zone_pfns[ZONE_DMA32] = MAX_DMA32_PFN;
+ #endif
+ 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +}
 +
- /*
-  * In order to set up page allocator "nodes",
-  * somebody has to call free_area_init() for UMA.
-@@ -65,16 +77,7 @@ static void __init paging_init(void)
- {
- 	unsigned long max_zone_pfn[MAX_NR_ZONES] = {0, };
++void __init paging_init(void)
++{
++	unsigned long max_zone_pfns[MAX_NR_ZONES];
  
--	/*
--	 *  This is not particularly well documented anywhere, but
--	 *  give ZONE_NORMAL all the memory, including the big holes
--	 *  left by the kernel+bootmem_map which are already left as reserved
--	 *  in the bootmem_map; free_area_init should see those bits and
--	 *  adjust accordingly.
--	 */
--
--	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
--
-+	arch_zone_limits_init(max_zone_pfn);
- 	free_area_init(max_zone_pfn);  /*  sets up the zonelists and mem_map  */
++	arch_zone_limits_init(max_zone_pfns);
+ 	free_area_init(max_zone_pfns);
+ }
  
- 	/*
 -- 
 2.51.0
 
