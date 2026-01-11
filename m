@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D037ED2502E
-	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3220CD25030
+	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EUP8A0oU4o/USGU4JF7iSIOLVJ/2u6llFeNZ4HBfxOs=; b=xmw6bKvW0/KUTn/1xYp25uGPOb
-	tz9KQ+NZNEJGy0wEx9BTe+sCHWS1JTfQdfQ8d8yZdpEQzpuMO5tPEgkJauSwGhRDnTXjgexGBaKD2
-	wAhW7b0K2MmD09FPoJd0d2gQXPIrAKHwMlSfWe9As/FVUC2SUIS6W/afUbWRLPJ95uU1FNu6MurGi
-	5fHyy/QxU8ej5x1luSMnFTrnTa5u2wYzY+2rnZy7iqCTyI7QBrxR7V4k2Xf/wCFD8sGRT+TjwSZSx
-	eptXgZCNTJ07+ukbXR3/r41++s9ZgoQabgjcHCWjb0k91CJp4eqV2+4ygxj071UUD1M+iL8507L9O
-	96YLF1Pw==;
+	bh=azukzfgsXgu/EZDimou0ymklRTxVzT+QThHCfbcQvB4=; b=ZlZo5sf4Oqkyj6hw6QTYSnshBw
+	wm84EchWaxtKLotNcDhIHm6QyHIiE4z/tQMUU/bX1OBCcHBrR2qzTH9WjJTdhKVt7xeT0gUw5ewh8
+	bMan+NZJBBnS5YI6GEMzVdJ18gn19TR7v/rjbL14MykiDj8qqiZixFyQOJ87Izo7ViPrpnXz+DPNH
+	uTBD80Gxf/+ekQZgQNH7fxdrOpl0VBx5s/mNk6Gb4z1v0KeWs2n78/1WvbrRbrD/jif0gC8Ch6SxK
+	9hiwLKpBw+7uHtP74lF+mfjTYvDuU+vUurkOsKrzueh667yqYepxBqyaG30iYpi7ToGWYOf5c4PQw
+	KERZAMoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqmU-000000040Ya-13J4;
-	Sun, 11 Jan 2026 08:26:38 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1veqmZ-000000040dy-3vdN;
+	Sun, 11 Jan 2026 08:26:43 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqmP-000000040X4-3XaK;
-	Sun, 11 Jan 2026 08:26:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=EUP8A0oU4o/USGU4JF7iSIOLVJ/2u6llFeNZ4HBfxOs=; b=fRf3gYJbMPpVrR+3D92VkiOASa
-	/h6IVjmjaHr3ISmJFrIKT8HAhuYnZwj5Xk+TG0xNius5SnXcfowSvZN1r8GF7IKy7h4gDtX/kWRKy
-	0j8AEEzZY0/XGVmCmGHpnFAouQaKLt4glb6RzET0UOa/aGQSNb5t7XP/hcun1i16ec+xeLksYcIaM
-	D8j6G9lCAR0xLcVQs+gDo2dF0JkhmOwrdPNV+wz9CfXFg0vizRwNvTC/uE9GGaEIbW+X8kHFqrDHN
-	Xf8bvas3H506/iB+tMaz5qcv27F5WBePCP3I5jnnFxxKI1TRtW1W31ViVaMSqfm75NzEMWfjt/5gE
-	0mZIaviw==;
-Received: from sea.source.kernel.org ([172.234.252.31])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqmK-0000000Guf6-054O;
-	Sun, 11 Jan 2026 08:26:30 +0000
+	id 1veqmY-000000040bq-1TVv;
+	Sun, 11 Jan 2026 08:26:42 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5B11F429FA;
+	by tor.source.kernel.org (Postfix) with ESMTP id A263460122;
+	Sun, 11 Jan 2026 08:26:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8F77C4CEF7;
 	Sun, 11 Jan 2026 08:26:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9902BC16AAE;
-	Sun, 11 Jan 2026 08:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768119986;
-	bh=2fA0ShJu41IpFxgmfkKiNARLhjMIlJQdtqcPZZQwJv0=;
+	s=k20201202; t=1768120001;
+	bh=4MJzw8wq/vYacVlPos8SheQzjEj4nCDptI3YxDfhXAU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cE1cYxN4XiRu8w05462pUh7mJ7YsVKuFjZN060SdsKaL4HwvgafRghrCyOjRFhfks
-	 goIC3meGsc011NdlQvuX6sIIgoPYYnguJE4V0ezIriNOLb6UY7TUl/H5KBLc8jHspZ
-	 bqpyaiW+yhS8K0JZpP7OoWNV42LbmkHolciEGY3Q8P86DZkjSJMAXJFu4snmxoEaeq
-	 r3tJN1kJLVtUQz/4sqhj/7RV76IDG6QOBqIhTOn9+KWKkfscjeNSTO2ALgfmelbFhD
-	 UIdusobMPUaMKF4j5L6OSMUErDZGo+V2brMOeeP2O1yqFNvH5sQW4orMNneYRJx38a
-	 Qg78VBIC985zA==
+	b=nl3wHs1O2pqUdz0Vvuzmv46OR0qcJI1+HN5Ee4h/md2AnUo3Ou1FlhbxYHJnpXEFj
+	 Qdh5nldk6nj1FcSAWN1zgII2VIOLmZPirbF4ihWm3QG+z7kpMwkoSBVDrxhWWen7KB
+	 T2i3p8WFkV9Lgt6Z/5CoUlwWxBnIW/3tXd8oV8ehlBl8P22GRw/KKkaxcaBbDttGNB
+	 Gdbga/UDVtZTC0f9560H5GpOjK/dXA/5q43JwZkM44fdhedj3lwEfEjbC0p/+HAVxh
+	 Q6X399TIg7FsRwK7XllXsTWt217qXNEQIQr/VobGW+cbxfbUQn4O+kRXx6S2MViokM
+	 dlYMsjJ7vMB4A==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -123,17 +109,14 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 20/29] um: introduce arch_zone_limits_init()
-Date: Sun, 11 Jan 2026 10:20:54 +0200
-Message-ID: <20260111082105.290734-21-rppt@kernel.org>
+Subject: [PATCH v3 21/29] x86: introduce arch_zone_limits_init()
+Date: Sun, 11 Jan 2026 10:20:55 +0200
+Message-ID: <20260111082105.290734-22-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260111_082628_388948_72B6256F 
-X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -159,32 +142,41 @@ call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/um/kernel/mem.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/mm/init.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 39c4a7e21c6f..2ac4e9debedd 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -84,6 +84,11 @@ void __init mem_init(void)
- 	kmalloc_ok = 1;
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 8bf6ad4b9400..e7ef605a18d6 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -997,12 +997,8 @@ void __init free_initrd_mem(unsigned long start, unsigned long end)
  }
+ #endif
  
+-void __init zone_sizes_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
-+{
-+	max_zone_pfns[ZONE_NORMAL] = high_physmem >> PAGE_SHIFT;
+ {
+-	unsigned long max_zone_pfns[MAX_NR_ZONES];
+-
+-	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
+-
+ #ifdef CONFIG_ZONE_DMA
+ 	max_zone_pfns[ZONE_DMA]		= min(MAX_DMA_PFN, max_low_pfn);
+ #endif
+@@ -1013,7 +1009,15 @@ void __init zone_sizes_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	max_zone_pfns[ZONE_HIGHMEM]	= max_pfn;
+ #endif
 +}
 +
- void __init paging_init(void)
- {
- 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
-@@ -94,7 +99,7 @@ void __init paging_init(void)
- 		panic("%s: Failed to allocate %lu bytes align=%lx\n",
- 		      __func__, PAGE_SIZE, PAGE_SIZE);
++void __init zone_sizes_init(void)
++{
++	unsigned long max_zone_pfns[MAX_NR_ZONES];
++
++	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
  
--	max_zone_pfn[ZONE_NORMAL] = high_physmem >> PAGE_SHIFT;
-+	arch_zone_limits_init(max_zone_pfn);
- 	free_area_init(max_zone_pfn);
++	arch_zone_limits_init(max_zone_pfns);
+ 	free_area_init(max_zone_pfns);
  }
  
 -- 
