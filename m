@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05265D25037
-	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64199D2502E
+	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kBBKJwrcTjhhjxH1pyy/2Lv9SOwm9YyMZRAlSFGYa0Q=; b=yOFo3eiGFASmYWFlpWTLtUdQne
-	wnGaobbVlKKaXeOzTf0oB+XESJ8RyN92x+WELy66+TGDc/t9R0I8MyLHzVJcno4tH3aFPnSOrCmfv
-	Uq0WQmRNMlwFf/9nISb1/Cyup34RUia2ZDQ2zbo6ISdIyyr7hJq713Hafg05NTMydivm/VN4tow0K
-	yTB1v8+wXMMRJ/uXIHIVsXQ49juyvqSgLgv5zpe6qq7cpJ9Vn55+RuZwx46yc6TuYELWrLi04Y67c
-	f1HxbEgGkOrBk4A3xgMQz8xeuIG3ftx2n6owizxk9G04EeNJlB0tt7KpzAjgmxjOVyV+Gyu0oAv4F
-	MZRGSmtw==;
+	bh=NMuEVnl163nXTa+O/OHvtDDMLzmwllm0L4yo7sEJ3YQ=; b=5GvcLgX+se9eckCP5g/HSwaHWh
+	6t9fRTh/f6nPGrBJSJ3qLGOnpR4XCLC13MnSsG9rRRB8YM5uMmUI/BVOH/ip5HyGwOV7Hrik8wMut
+	2JnbdihaKuW4o+hf6cf70sdFOHsWEHSNUb2lZgeEbc3JxmBIqFgVkaTVCOsDySPtFvc8Bp1psR4TR
+	AgAXodDXhTuyDbYTh2sbIu/ARxTBE0kkpwA/ZvvHgXgp0npgCYcJmrAFSsFI5BIl4CMNH7cCoaGZq
+	D9Wf04UfJtxJY8cXU6C37a/kB7W7KR62+jqQxnKLozO+VqSSFWvtrJc8PJKzOakQv2zM+SJoDad1e
+	XMvk/Tcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqnZ-0000000418z-3AHu;
-	Sun, 11 Jan 2026 08:27:45 +0000
+	id 1veqno-000000041G5-0VNY;
+	Sun, 11 Jan 2026 08:28:00 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqnX-0000000417D-1cuc;
-	Sun, 11 Jan 2026 08:27:43 +0000
+	id 1veqnm-000000041EX-0MXG;
+	Sun, 11 Jan 2026 08:27:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5EDF460121;
+	by tor.source.kernel.org (Postfix) with ESMTP id 8073A60127;
+	Sun, 11 Jan 2026 08:27:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D8CC4CEF7;
 	Sun, 11 Jan 2026 08:27:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B0AC4CEF7;
-	Sun, 11 Jan 2026 08:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768120062;
-	bh=zd5p0i2OlJkjqXnS1oV6Bjn1onLoj8/4tNSvugcI3Wg=;
+	s=k20201202; t=1768120077;
+	bh=q+M5A50bBS7JfetqFByPT+KJrphXgISZqTpM92eTenA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cucgyfK549u/HKU9sXOhtGyxmUzXaeQo6OcfMmBauoICa2ALqFD4CHcgssCffdtz0
-	 jNR5GmojmKPSKMXaxzTVfIKcpg4AhT3GBI9gKFSlU99+ajBqkW87jen695O6x8QgyW
-	 qqFORooblG61KNiQrUz0ViZwhnArOqE+rUf8POn7T1L4C49wdI+cVoEUkJVPyN1phL
-	 DB6aLqdi3kVV0WLbCcSIvN7kGg9TuKq12+ybRyVObguRL0q+vGXwqyNaQkOT629PZh
-	 4zn7LMoAz8MYeLMbgJf6kw8eNAuufEeYwPLbjRlaWuHnzdOzixI9umBE0hkN04bQGL
-	 GyVogLrYtnLyQ==
+	b=IGnsApOe52UMwQH9rU0QdFDUAygZdjQbcEkT+VcFh+f2uIPc0Movv0hadDZtysGLu
+	 JMYTBeuroBlSJGszS2K8JW23cEU1tXtb89wIKkYD2uNZvvSMDgnuNSbEAJkkMWfugW
+	 cwtKO3+xV3d/K2hNCc4wGnvGVjpj4mSjlL71LyU4btVNuDx9MwMhZ5QsDvVpKtmQNN
+	 2EAcaKe/SBeeqJy3AZisKps+dHlJ9rGGk1wbkEMkkumkaTeOfnRjlxc0fyDYFkNWJz
+	 /+oWBnCcEaIsUnQb4PUJdVub3TiaSeyalOMYoRZBztcTqMfYM7Z+CzPCQ4YeR/ZN6x
+	 o9YVaMIgO5ztg==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -109,9 +109,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 25/29] mips: drop paging_init()
-Date: Sun, 11 Jan 2026 10:20:59 +0200
-Message-ID: <20260111082105.290734-26-rppt@kernel.org>
+Subject: [PATCH v3 26/29] x86: don't reserve hugetlb memory in setup_arch()
+Date: Sun, 11 Jan 2026 10:21:00 +0200
+Message-ID: <20260111082105.290734-27-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
@@ -133,113 +133,33 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-All three variants of paging_init() on MIPS are wrappers for
-pagetable_init().
+Commit 665eaf313314 ("x86/setup: call hugetlb_bootmem_alloc early")
+added an early call to hugetlb_bootmem_alloc() to setup_arch() to allow
+HVO style pre-initialization of vmemmap on x86.
 
-Instead of having three identical wrappers, call pagetable_init() directly
-from setup_arch() and remove the unnecessary paging_init() functions.
+With the ordering of hugetlb reservation vs memory map initialization
+sorted out in core MM this no longer needs to be an architecture specific
+quirk.
+
+Drop the call to hugetlb_bootmem_alloc() from x86::setup_arch().
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/mips/include/asm/pgalloc.h  | 2 --
- arch/mips/include/asm/pgtable.h  | 2 +-
- arch/mips/kernel/setup.c         | 4 ++--
- arch/mips/loongson64/numa.c      | 5 -----
- arch/mips/mm/init.c              | 5 -----
- arch/mips/sgi-ip27/ip27-memory.c | 5 -----
- 6 files changed, 3 insertions(+), 20 deletions(-)
+ arch/x86/kernel/setup.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 7a04381efa0b..6efd4a58bf10 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -101,6 +101,4 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4d, pud_t *pud)
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 1b2edd07a3e1..e2318fa9b1bb 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1191,7 +1191,6 @@ void __init setup_arch(char **cmdline_p)
  
- #endif /* __PAGETABLE_PUD_FOLDED */
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES)) {
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-		hugetlb_bootmem_alloc();
+ 	}
  
--extern void pagetable_init(void);
--
- #endif /* _ASM_PGALLOC_H */
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 9c06a612d33a..fa7b935f947c 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -56,7 +56,7 @@ extern unsigned long zero_page_mask;
- 	(virt_to_page((void *)(empty_zero_page + (((unsigned long)(vaddr)) & zero_page_mask))))
- #define __HAVE_COLOR_ZERO_PAGE
- 
--extern void paging_init(void);
-+extern void pagetable_init(void);
- 
- /*
-  * Conversion functions: convert a page and protection to a page entry,
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index d36d89d01fa4..7622aad0f0b3 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -614,7 +614,7 @@ static void __init bootcmdline_init(void)
-  * kernel but generic memory management system is still entirely uninitialized.
-  *
-  *  o bootmem_init()
-- *  o paging_init()
-+ *  o pagetable_init()
-  *  o dma_contiguous_reserve()
-  *
-  * At this stage the bootmem allocator is ready to use.
-@@ -778,7 +778,7 @@ void __init setup_arch(char **cmdline_p)
- 	prefill_possible_map();
- 
- 	cpu_cache_init();
--	paging_init();
-+	pagetable_init();
- 
- 	memblock_dump_all();
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index 2cd95020df08..16ffb32cca50 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -160,11 +160,6 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
- }
- 
--void __init paging_init(void)
--{
--	pagetable_init();
--}
--
- /* All PCI device belongs to logical Node-0 */
- int pcibus_to_node(struct pci_bus *bus)
- {
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index c479c42141c3..cd04200d0573 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -415,11 +415,6 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- #endif
- }
- 
--void __init paging_init(void)
--{
--	pagetable_init();
--}
--
- #ifdef CONFIG_64BIT
- static struct kcore_list kcore_kseg0;
- #endif
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 082651facf4f..4317f5ae1fd1 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -410,8 +410,3 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- {
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
- }
--
--void __init paging_init(void)
--{
--	pagetable_init();
--}
+ 	/*
 -- 
 2.51.0
 
