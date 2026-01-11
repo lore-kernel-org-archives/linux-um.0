@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87108D25030
-	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C2D0D25030
+	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hMSeghU9mFb/iSGNjAJ2/WETrT3nayTRWjrK9prgUyE=; b=bK7YZ3YuscKw+3T4XhVREUxb3b
-	UqlVvlG+sOM/8yJKL+TuB8RXV2RorkJuVBbW1BE1pfsCmL0Anpnj9Epdgqp3FABrKMU3AoPHK3ao3
-	zTvLsr4G+/MMRt7RZxRxeRfmRk1XLydP9EnW+UxMrfrz6A92/ooKZAqjTUpA7rGZa8JZzWnnssX2v
-	hLWLNVjVInHc26i0aocEK0Atiez+smQd4Gl7sUKNUJDDqzYVaW792ju+dDzDAumXyKzn1/awZWevv
-	K10zr+PeTAjf+v+3Cdbf0Vcv4pAxD6BGMNOLKfLZR6mnIFOO8HlthCvSCFva5W5f6LtV+BMCiWbni
-	31MNq+Ug==;
+	bh=NuAgXuWhuh/4/DqNt5iu0tb5y5LsF0sumazLqdyIUYg=; b=zHfF3IQk1mBBA26CFleA3ivFO7
+	T3paUYlF3MzpcTBd+NmgRQbWJLffj3oh4WuT7dpJ5Z5hBZIuOIthuAko9myIyTJm+lHRNTboheO/H
+	gkgWEnPAISvrRlhmj/7I3yNcpH3slozjVRSAMN+eNM8jR7x7DcWbv9SKGTnduz2qS69GV3xx392oL
+	cfvl9KtopQEZYkti41e0Mlb0vqPTc8Wpe6lq6T7JCtguqFZeS0ywVjTBxiVbUi+KzJVYTyUeekbjq
+	WD09Sh9Kj9nexNkpzVbRli4UuYh7V0OLmYam5t3aOmRDhWuUxczw+lTd1Ayoh71pzUdBV+5o1bK6X
+	HC+JofFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqhj-00000003y2k-0psH;
-	Sun, 11 Jan 2026 08:21:43 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1veqhw-00000003y76-3D0d;
+	Sun, 11 Jan 2026 08:21:56 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqhg-00000003y1g-3Li4;
-	Sun, 11 Jan 2026 08:21:40 +0000
+	id 1veqhv-00000003y6H-17No;
+	Sun, 11 Jan 2026 08:21:55 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2928960010;
+	by tor.source.kernel.org (Postfix) with ESMTP id 4A27D60121;
+	Sun, 11 Jan 2026 08:21:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C598C4CEF7;
 	Sun, 11 Jan 2026 08:21:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F81EC19424;
-	Sun, 11 Jan 2026 08:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768119698;
-	bh=KgO7SaOs49km6xau9XjjDmzydPHNaHbDsqRu17wGsEs=;
+	s=k20201202; t=1768119714;
+	bh=8QBv9t8LGsuSX+POQQCKwB4fxaLECpliYPuyEC7/9g8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mKsFfy4hncm+FQF9ArIXoeLTO/v06DCp8sXjb1/J7bQiazwbZMdpHIy9QotlxdrKv
-	 cKzwRylS7hXf12+BEXaXStZUkeCwmqdBGWQzJ9yqdLS95oD2cS0pSBfDrcKw/dAkej
-	 56RV0+FAFYsa39zRWlT7ql3sObFpMCuLtdFkflVRr4BAKpyPWA7tvw8HwpcQSyv04q
-	 jpHzxotVHj204aEr/qLLNW0xVwVegN9kaR/1lVEctSggjpdCZQ9WegpvTuhQU3MJ26
-	 pU23I8xS42R0TrNytKEIX7DhURcabHaDeWfPtsCINu3tImuaarWe0Jtqcs5M33w4wE
-	 HXtsM6RgI0KhQ==
+	b=DdukbAExezEnhPD7Fz3wOiEU/vc0M64uJEir3HYWzx4ftF18Ax4Kx16THz6QJsu7G
+	 E7jlAsKeMb+AkrIybQ34sKwp4Ag9HkaBJWByLQtL3mH+3Os/7fMJxySVZHiRW4xVe5
+	 k3QE5dTNYYB+M/SfE0t1/i0VxmYp0VwLJkLcAkEp1g9/uWrRVlpTzL0cbkcs5a3pLw
+	 UwuXLA0sVTL9DaDVBg4Sl2xRgUWXVFQ5KYtJQkT0kDc+lIR7wua8QQPkpV0/Pwyplx
+	 WYfk3IAtXbovl1JeV9CqcFYijlKtF6ZPmguYMVbTa+3iCmyCADI4Ifhnu7KIA4NkzI
+	 ybbHzamQouxpQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -109,9 +109,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 01/29] alpha: introduce arch_zone_limits_init()
-Date: Sun, 11 Jan 2026 10:20:35 +0200
-Message-ID: <20260111082105.290734-2-rppt@kernel.org>
+Subject: [PATCH v3 02/29] arc: introduce arch_zone_limits_init()
+Date: Sun, 11 Jan 2026 10:20:36 +0200
+Message-ID: <20260111082105.290734-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
@@ -141,60 +141,74 @@ during nodes and zones initialization and thus there won't be a need to
 call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
+Acked-by: Vineet Gupta <vgupta@kernel.org>
 ---
- arch/alpha/mm/init.c | 15 ++++++++++-----
- include/linux/mm.h   |  1 +
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ arch/arc/mm/init.c | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index 4c5ab9cd8a0a..cd0cb1abde5f 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -208,12 +208,8 @@ callback_init(void * kernel_end)
- 	return kernel_end;
+diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+index a73cc94f806e..ff7974d38011 100644
+--- a/arch/arc/mm/init.c
++++ b/arch/arc/mm/init.c
+@@ -75,6 +75,25 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
+ 		base, TO_MB(size), !in_use ? "Not used":"");
  }
  
--/*
-- * paging_init() sets up the memory map.
-- */
--void __init paging_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfn)
- {
--	unsigned long max_zone_pfn[MAX_NR_ZONES] = {0, };
- 	unsigned long dma_pfn;
- 
- 	dma_pfn = virt_to_phys((char *)MAX_DMA_ADDRESS) >> PAGE_SHIFT;
-@@ -221,8 +217,17 @@ void __init paging_init(void)
- 
- 	max_zone_pfn[ZONE_DMA] = dma_pfn;
- 	max_zone_pfn[ZONE_NORMAL] = max_pfn;
++{
++	/*----------------- node/zones setup --------------------------*/
++	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
++
++#ifdef CONFIG_HIGHMEM
++	/*
++	 * max_high_pfn should be ok here for both HIGHMEM and HIGHMEM+PAE.
++	 * For HIGHMEM without PAE max_high_pfn should be less than
++	 * min_low_pfn to guarantee that these two regions don't overlap.
++	 * For PAE case highmem is greater than lowmem, so it is natural
++	 * to use max_high_pfn.
++	 *
++	 * In both cases, holes should be handled by pfn_valid().
++	 */
++	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
++#endif
 +}
 +
-+/*
-+ * paging_init() sets up the memory map.
-+ */
-+void __init paging_init(void)
-+{
-+	unsigned long max_zone_pfn[MAX_NR_ZONES] = {0, };
+ /*
+  * First memory setup routine called from setup_arch()
+  * 1. setup swapper's mm @init_mm
+@@ -122,9 +141,6 @@ void __init setup_arch_memory(void)
  
- 	/* Initialize mem_map[].  */
+ 	memblock_dump_all();
+ 
+-	/*----------------- node/zones setup --------------------------*/
+-	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
+-
+ #ifdef CONFIG_HIGHMEM
+ 	/*
+ 	 * On ARC (w/o PAE) HIGHMEM addresses are actually smaller (0 based)
+@@ -139,21 +155,11 @@ void __init setup_arch_memory(void)
+ 	min_high_pfn = PFN_DOWN(high_mem_start);
+ 	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
+ 
+-	/*
+-	 * max_high_pfn should be ok here for both HIGHMEM and HIGHMEM+PAE.
+-	 * For HIGHMEM without PAE max_high_pfn should be less than
+-	 * min_low_pfn to guarantee that these two regions don't overlap.
+-	 * For PAE case highmem is greater than lowmem, so it is natural
+-	 * to use max_high_pfn.
+-	 *
+-	 * In both cases, holes should be handled by pfn_valid().
+-	 */
+-	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
+-
+ 	arch_pfn_offset = min(min_low_pfn, min_high_pfn);
+ 	kmap_init();
+ #endif /* CONFIG_HIGHMEM */
+ 
 +	arch_zone_limits_init(max_zone_pfn);
  	free_area_init(max_zone_pfn);
+ }
  
- 	/* Initialize the kernel's ZERO_PGE. */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 15076261d0c2..628c0e0ac313 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3552,6 +3552,7 @@ static inline unsigned long get_num_physpages(void)
-  * free_area_init(max_zone_pfns);
-  */
- void free_area_init(unsigned long *max_zone_pfn);
-+void arch_zone_limits_init(unsigned long *max_zone_pfn);
- unsigned long node_map_pfn_alignment(void);
- extern unsigned long absent_pages_in_range(unsigned long start_pfn,
- 						unsigned long end_pfn);
 -- 
 2.51.0
 
