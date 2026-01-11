@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14142D2502E
-	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C72C8D25030
+	for <linux-um@archiver.kernel.org>; Sun, 11 Jan 2026 08:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=O8kExoTLliZANVxlSa71PKoJV58jVF11IqoI4S/DqkA=; b=0sPqi0hp7myzBCGSbF9FnEvwua
-	/1keNQBRZOkorXEKTUDTWYp2Qpx3LENEIiCwk45YQo8OyHtDP+4TAmaJybMBX3qm+ky18RJ4tDpCQ
-	HZsYNQ468B9V22d1ZEcixAvRRsLNOH8A7d3tsO7jcRGJshRr5vdBiKrsNpymp/GN2Cj7jcuTnhHA6
-	1gOJTwZWKMd2GKbny+yG+VK5yWrzm6NIJ5tzeJ2s1B0CakDNcGrmVJ4fNDsajZFBfYKGW2GBI+gfv
-	Z+feB7oq2xecrMEwJfspRmZUVMWshdOdx7ZOkanPHEN0Kqj45rxzxKXErcdOixc0E3rXwc2wfqfWZ
-	gb2F1AHg==;
+	bh=tokfLp/e6I58cppZJNFjurjxkamTTnFniADDaVWJ9jM=; b=1bm0wP4n9Mm7rTceS+vi883Nd4
+	eFRLqJHrCRmHaHkbEeNvE4Xccw56KN+HehamI57kZvgBUx0m0jhHPoEAzbW063GOZt3iXOesXGACG
+	jWqbRI1zfERkdFS0gauThyRM0o1GFdsiKuA4dUhW/EPOedGp8aqPzf7MGbjk9/cLte4u2fmjbwCMO
+	V9K50N5TleWuYvgfdzcfdFcN7yrjgSrOdnezztgWi8E+W5kYr2+lBul8AZM9vO5LaG6GUU9Ji7vUZ
+	vZOmbLTlFDKfdRXeoMFFVT1ULnuAFMHEIrB2pka4/HLlL2Jm0tIrmglTL99Mjoqr++Pi1uUM2WNky
+	7zp4xGaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqlb-0000000408I-3Q9W;
-	Sun, 11 Jan 2026 08:25:43 +0000
+	id 1veqlu-000000040IZ-2E3s;
+	Sun, 11 Jan 2026 08:26:02 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1veqlZ-0000000406v-3PrN;
-	Sun, 11 Jan 2026 08:25:41 +0000
+	id 1veqlo-000000040Fu-44HX;
+	Sun, 11 Jan 2026 08:25:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 28AAD60121;
+	by tor.source.kernel.org (Postfix) with ESMTP id 4604560121;
+	Sun, 11 Jan 2026 08:25:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D130C16AAE;
 	Sun, 11 Jan 2026 08:25:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E397C4CEF7;
-	Sun, 11 Jan 2026 08:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768119940;
-	bh=hFJveYfaCrIw0+iDVEP3vQL9fd/XBHyX+JYd2Rm0RhA=;
+	s=k20201202; t=1768119956;
+	bh=8ogz7O8vNIuYttKuy/nGG2q6czMHDvEeQHxuChR5AAc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ejea3zjxcNk55gNO0bbLBhxe4NsBzp6h2dbs/uOwmj7bbdTrm/aLn1CsdSYQKFNyy
-	 MIgW724HlUOkhiogpK1xlqx1PfJ9vKR44ePzsM2MgEMnwLOTLYReW2B1UTZtcIh8qV
-	 HscmT3ORaZ3YNpVrsvYWLb9xhAvf3GwE+1yTZ8bLpTWXBeJ/ZCly/j0T5NtIzfIx6y
-	 1wPtCTY7OtWi8bK+mO5MGkaG9OvtDG3md54oVLJwaZjJezEVKKVPB/mpNay0l7xI6c
-	 OP0eAip/WOsG1W062M/zkogcxJrAkYPvW6p7Fzk4WPU8E58buvamLYO9CoxJxr46de
-	 UnewUkKtu81TQ==
+	b=Vx9CZF9X+r6FjCSdphAFLRUwQBjPzpcpTP1svlo74Z1zpu35asFTu76lv4/ExSZCO
+	 QinlSs5dw1egxaQ3D6u/Wecjs4+oXzXRvVhgln/TIxyQ/SySTsoAPtUbEkqpHXgydE
+	 o0hCrmlWxImpzttux7/U98aTXPChABKFYpihhavzXT97ij//8Nqr0v0/ZJZ0vcsmol
+	 OsGtAGYp7WlLshpxExCRChU6we4lXZT0H7/dFupPg9DFhyYxm5kIqI5sjyM2gMQjUp
+	 CVn/rfpc+W6EoH4dECwOXVOCVcWhHXWVAjMAdtnIQmuArEGRcdx8gH0LPFezkkSTO1
+	 1Ryd+DGSCZgyA==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -109,9 +109,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 17/29] s390: introduce arch_zone_limits_init()
-Date: Sun, 11 Jan 2026 10:20:51 +0200
-Message-ID: <20260111082105.290734-18-rppt@kernel.org>
+Subject: [PATCH v3 18/29] sh: introduce arch_zone_limits_init()
+Date: Sun, 11 Jan 2026 10:20:52 +0200
+Message-ID: <20260111082105.290734-19-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
@@ -142,31 +142,29 @@ call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/s390/mm/init.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/sh/mm/init.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index e4953453d254..1c11ad84dddb 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -86,6 +86,12 @@ static void __init setup_zero_pages(void)
- 	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+index 99e302eeeec1..5e7e63642611 100644
+--- a/arch/sh/mm/init.c
++++ b/arch/sh/mm/init.c
+@@ -264,6 +264,11 @@ static void __init early_reserve_mem(void)
+ 	reserve_crashkernel();
  }
  
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
 +{
-+	max_zone_pfns[ZONE_DMA] = virt_to_pfn(MAX_DMA_ADDRESS);
 +	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +}
 +
- /*
-  * paging_init() sets up the page tables
-  */
-@@ -97,8 +103,7 @@ void __init paging_init(void)
- 	sparse_init();
- 	zone_dma_limit = DMA_BIT_MASK(31);
+ void __init paging_init(void)
+ {
+ 	unsigned long max_zone_pfns[MAX_NR_ZONES];
+@@ -322,7 +327,7 @@ void __init paging_init(void)
+ 	kmap_coherent_init();
+ 
  	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
--	max_zone_pfns[ZONE_DMA] = virt_to_pfn(MAX_DMA_ADDRESS);
 -	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +	arch_zone_limits_init(max_zone_pfns);
  	free_area_init(max_zone_pfns);
