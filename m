@@ -4,82 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9AA2C9EC8C
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jan 2026 10:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FCD9D2D0E6
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jan 2026 12:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VgnN5gtqEe3Q1O0kTTet9lBrugKrM6JP8dsQeWrl1xo=; b=HIfZls56R68tuAkOeBKUMVoIUM
-	BwbfIoPSfcBLsE9pXZFR6dsXhJxx9Hc/aks7bRRtes/Kc2UItfcCCaCzRAcfDtIkZhFzuz980inzW
-	cgbHc9sTrd9NaSw3exoMODy5kbVBKtBVDALThezc9kKHODbSYORqjMuLbFdxTcjwahtyY7gthxOVE
-	5AhOEuTwUBKOWSLFekfhp5cRRtz5DsbM63Tutro7TgEyXVbTShtfNI2CDzhM9Vn2ASS4vAM88c97y
-	XJSbt3yKMuQRIcLvn7vpYZ2cqn/7jcNjteB0tUf/ywMlZ0meppW+bQRAG9XfaSnLbKEK3g/xrmOpW
-	dweM2SRg==;
+	bh=guD8ZDnRvesT5KvXlXi5P5IpxaFCA5kIle2X5/2VdEk=; b=mu0nBfDDLF2IjEZoBmtPW3DWE/
+	rHAVWTRdoLMdcwIry7UHE5UWhDyNnKG6lnJ6G1Z3JWqyzYgt5LZI2gfEhWlJKY0g+jfq8SqRgyblt
+	G6D8stXVXgS0ta/V74nCcTdgYj79rGvDTIVKXjyKVuxAVzNvwnSDHyu6D2qYCas8hN0PBxwWDPt91
+	DLxyTpMJdGUCwJa9M5HUB4Dz6uc77D2VwIgYvBIWlGdei34yYKHGry7kTrpkSoQc9MQB8JmIYjEPM
+	V8OYCbAdJvrsycYnhmxlwcLODlhjvibK7KOv5Dh+jgRFe5y7SDD9mU+OCDcZ4EH+1e5buoJ5d9hsX
+	c3jDG4sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfbLz-00000006sgO-0zzJ;
-	Tue, 13 Jan 2026 10:10:23 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1vfdVY-000000074To-1Im0;
+	Tue, 13 Jan 2026 12:28:24 +0000
+Received: from smtp-out3.simply.com ([94.231.106.210])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfbLu-00000006sg2-3Puf
-	for linux-um@lists.infradead.org;
-	Tue, 13 Jan 2026 10:10:21 +0000
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-3831c18b23bso34567791fa.2
-        for <linux-um@lists.infradead.org>; Tue, 13 Jan 2026 02:10:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768299016; x=1768903816; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VgnN5gtqEe3Q1O0kTTet9lBrugKrM6JP8dsQeWrl1xo=;
-        b=IKMgzNjuiKHlKM02Eradz0/zRy3MMJEFkq45nq4SI2MIePpvNxSSHbFCEpmc/sgxwF
-         /1QdCSJB02kszadG/kpiDkQaR64jxxCOfeI3it53Xg2dqVXWbMksFl2vrHFSAVYUG4Vw
-         59NplNunJU+lPB89E6VwZq4WkBBGw7otJeOnWjXU2oU+bq/3BoupRM9/SI0BqFTt4bNm
-         AyFDPaS8Kp6v+HCGJezAKDwYI5F0G6SG/k21QU0kno8jysetXMGXb4XkQhymQptt6op/
-         93xBm9bKbDxl/QT+/g+BCeOu4vvm8dFkrljDxZ3whPeR1MDy/K9efUSF/nToZwMoycpF
-         zmPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768299016; x=1768903816;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VgnN5gtqEe3Q1O0kTTet9lBrugKrM6JP8dsQeWrl1xo=;
-        b=hwrsJp9UJ4DBEiR+w/WB8jZrRIWJsomI0rY01HZFTqDkF7uXyCw81zTbM3BGgZYWLH
-         NtLhLmgnjeTzp1u7dC8TggMfODRugGrw6Yc7FGkyHNgAXK4vDPF0ReuGEVwbsixXHdJ1
-         8Y6N3S0BrHYAwTcPuEDkxEu8+BszLJLZmYnABlBuD4NfRlN8NhcAmV8/QojEFvmlj+ve
-         eEbaXbzXM1Vh4UDZfDk5p0s9WG62mWFLLdPCBTqu08xFUCL07cdzmJp36+ntWUhtnYYZ
-         3GtrV/yi4YZOHVeGq6HaQDlyE33J1APyL5rQ60MfhvAAfgODuZU6fb/HgkQdIjP1W/nS
-         23pw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzx7mHi4Y16n43uscA0oSoenxkQPCfNA6SXCl0JwVlaeRO8HiW8p5+jbi4kAMIELYKgJ8/qoD3Ug==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yxz2cGlTHSxLPnObUcLgHRuakV+PHrmmvAxqXtpH/6qXDmpbDfY
-	yabixON3bBKeYD2VKVZS/0RtOaObZPbqUxcaeVoDWxzO8Z+W+noGCFWi3+l0OA==
-X-Gm-Gg: AY/fxX4ToR90xNKZT4bB+InYMS6w6FdK8CX7f78PbWcTROFWziqtRIgF0FdJF2W5pv9
-	ST97sXXzqNGKSOzElzZ16x2rLcM61fpXnm4AL/6ffYL1eeWB9AG8ZrkEhTK5frh9MAKEWnzQTeP
-	aslEEEoqZnETiVNd6JRCo5ClxPCFDfZNnwXs3FkLhCfgqf95bu3YXJpMTe86lSnSLhBmleFBV8P
-	WBWqYa1JrbWgc0XRZzERki1f2tAIhjLuRj8Mi84K4uvcQI4FJPlS0ILUhi0gnldiBXJ11lLcExD
-	Xm3rMLvS3IUBB5ClOCLSWsra5g0tuP9xbEqMk/gJTXJmyY9fdvLfrC8AzzcbE1El3W+YHDigC2D
-	pXoPKwyu1RvyHrvFskD0B3tqgXW5/8WBthlfCzs1lIi+SNFE/35LijewrYrMF8A0yD3t3BZSGH3
-	mDxmCQJjQC3cQVOH/gzY8/9sKzrKJkQSl4ra2eq9aKYxVRsY+qht5ys5X2vQ==
-X-Google-Smtp-Source: AGHT+IEOoK2sWcGzQ5k4NJjsFR/RmdeWAB9vvZrFfNJ0u+S6dsEFK74/fdYnqiqEV2XmHMt6sJ390w==
-X-Received: by 2002:a05:6512:138b:b0:598:e851:1db3 with SMTP id 2adb3069b0e04-59b6ef05760mr8236951e87.11.1768293628066;
-        Tue, 13 Jan 2026 00:40:28 -0800 (PST)
-Received: from [172.20.10.9] (mobile-access-c1d2ca-216.dhcp.inet.fi. [193.210.202.216])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-59b72f3ae82sm4416299e87.71.2026.01.13.00.40.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 00:40:27 -0800 (PST)
-Message-ID: <f861a1c6-7ec7-477c-bc42-f9aaf6724bed@gmail.com>
-Date: Tue, 13 Jan 2026 10:40:22 +0200
+	id 1vfdVT-000000074Sj-3htt;
+	Tue, 13 Jan 2026 12:28:22 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4dr7nT4yQ4z1FDXl;
+	Tue, 13 Jan 2026 13:28:13 +0100 (CET)
+Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4dr7nQ25vMz1DDgf;
+	Tue, 13 Jan 2026 13:28:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=simplycom2; t=1768307293;
+	bh=guD8ZDnRvesT5KvXlXi5P5IpxaFCA5kIle2X5/2VdEk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=NC76RtxIq9CvKMBZ8e8fqDdeh4TXwyvNkvf30sHXNOLOnEVZmRBj+bHCDi8FufU/c
+	 kWfZWHOIxSWOKL03enthax76m8YsczdRizVAQDjKjHPFRaRl/L5Y0iqK2UA8boHs2h
+	 YUuM9qT6Ba/QEyyAn4GTFzIGpGi10RKIEp9TlTeLGd8zC+Hr/coq6gBL6LosZXZTF1
+	 gt8Mie1XHzB/bpnFnld9TZavLmhYmlgBWFsXaCVZw4vobFyvtSEkURaEmNJU94ewFm
+	 w3pY4SkxqHFB/QXGBXfUllqNu8tQIWuZ/XTNBQs4TvEhLsgrM+Wzf2b59+1+UOXxo8
+	 bJQ987lvmGGqA==
+Message-ID: <7566eef3-bce4-4100-8a11-d88ef1e887a9@gaisler.com>
+Date: Tue, 13 Jan 2026 13:28:09 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/29] arch, mm: consolidate hugetlb early reservation
-From: Kalle Niemi <kaleposti@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v3 19/29] sparc: introduce arch_zone_limits_init()
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
- Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
  "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
  Catalin Marinas <catalin.marinas@arm.com>,
  "David S. Miller" <davem@davemloft.net>,
@@ -116,15 +89,15 @@ Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
  linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
  sparclinux@vger.kernel.org
 References: <20260111082105.290734-1-rppt@kernel.org>
- <20260112142323.495fc43e662e7d276b0fa371@linux-foundation.org>
- <86b974d7-cabd-4913-b5f2-5b62b520e023@gmail.com>
+ <20260111082105.290734-20-rppt@kernel.org>
 Content-Language: en-US
-In-Reply-To: <86b974d7-cabd-4913-b5f2-5b62b520e023@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <20260111082105.290734-20-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260113_021018_894981_927E7FD3 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20260113_042820_308471_BA2B632A 
+X-CRM114-Status: GOOD (  20.96  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,38 +112,96 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 1/13/26 08:50, Kalle Niemi wrote:
-> On 1/13/26 00:23, Andrew Morton wrote:
->> On Sun, 11 Jan 2026 10:20:34 +0200 Mike Rapoport <rppt@kernel.org> wrote:
->>
->>> v3 changes:
->>> * fix empty_zero_page initialization on arm
->>> * fix ZONE_DMA limit calculation on powerpc
->>> * add Acks
->>
->> updated, thanks.  I'll suppress the ensuing email flood.
->>
->> Kalle, can you please retest sometime, see if the BeagleBone Black boot
->> failure was fixed?
->>
->> Seems we haven't heard back from rmk regarding
->> https://lkml.kernel.org/r/aVrUDeSkqqY9ZCtS@shell.armlinux.org.uk.
+On 2026-01-11 09:20, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Hello!
+> Move calculations of zone limits to a dedicated arch_zone_limits_init()
+> function.
 > 
-> I will test this v3 patch ASAP and reply results here.
-> Collective sorry for the delay; I have been busy!
+> Later MM core will use this function as an architecture specific callback
+> during nodes and zones initialization and thus there won't be a need to
+> call free_area_init() from every architecture.
 > 
-> BR
-> Kalle
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  arch/sparc/mm/init_64.c |  6 ++++++
+>  arch/sparc/mm/srmmu.c   | 12 ++++++++----
+>  2 files changed, 14 insertions(+), 4 deletions(-)
 
-Hello!
+Hi Mike,
 
-I tried this patch by cloning 
-https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=hugetlb-init/v3
+Thanks for this nice cleanup series.
 
-Boots succesfully on BeagleBone Black!
 
-BR
-Kalle
+> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+> index df9f7c444c39..fbaad449dfc9 100644
+> --- a/arch/sparc/mm/init_64.c
+> +++ b/arch/sparc/mm/init_64.c
+> @@ -2279,6 +2279,11 @@ static void __init reduce_memory(phys_addr_t limit_ram)
+>  	memblock_enforce_memory_limit(limit_ram);
+>  }
+>  
+> +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
+> +{
+> +	max_zone_pfns[ZONE_NORMAL] = last_valid_pfn;
+> +}
+> +
+>  void __init paging_init(void)
+>  {
+>  	unsigned long end_pfn, shift, phys_base;
+> @@ -2461,6 +2466,7 @@ void __init paging_init(void)
+>  
+>  		max_zone_pfns[ZONE_NORMAL] = end_pfn;
+
+This old initialization of max_zone_pfns[ZONE_NORMAL] should also be
+removed, right? With that removed it makes the local end_pfn variable
+set but unused, so could you please also remove that one?
+
+I know that this whole code block gets removed later, but the cleanup
+max_zone_pfns[ZONE_NORMAL] and the removal of end_pfn (that is not done
+later in this version of the series) fits logically in this patch.
+
+>  
+> +		arch_zone_limits_init(max_zone_pfns);
+>  		free_area_init(max_zone_pfns);
+>  	}
+>  
+> diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+> index f8fb4911d360..81e90151db90 100644
+> --- a/arch/sparc/mm/srmmu.c
+> +++ b/arch/sparc/mm/srmmu.c
+> @@ -884,6 +884,13 @@ static void __init map_kernel(void)
+>  
+>  void (*poke_srmmu)(void) = NULL;
+>  
+> +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
+> +{
+> +	max_zone_pfns[ZONE_DMA] = max_low_pfn;
+> +	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
+> +	max_zone_pfns[ZONE_HIGHMEM] = highend_pfn;
+> +}
+> +
+>  void __init srmmu_paging_init(void)
+>  {
+>  	int i;
+> @@ -967,10 +974,7 @@ void __init srmmu_paging_init(void)
+>  	{
+>  		unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+>  
+> -		max_zone_pfn[ZONE_DMA] = max_low_pfn;
+> -		max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
+> -		max_zone_pfn[ZONE_HIGHMEM] = highend_pfn;
+> -
+> +		arch_zone_limits_init(max_zone_pfn);
+>  		free_area_init(max_zone_pfn);
+>  	}
+>  }
+
+With the feedback for arch/sparc/mm/init_64.c addressed:
+
+Acked-by: Andreas Larsson <andreas@gaisler.com>
+
+Cheers,
+Andreas
+
 
