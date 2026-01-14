@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76C80D31A25
-	for <linux-um@archiver.kernel.org>; Wed, 14 Jan 2026 08:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21E40D37E2A
+	for <linux-um@archiver.kernel.org>; Wed, 14 Jan 2026 13:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/Nn9M/VPDoeuifL+P7no8o5FApQZk7zNKYvSR+p2CRU=; b=OxlxnnSxsJi21kP/h9md1ZdMLV
-	EoXrsSTRY1LI0c+nwtToykpJZ3UXPWlf9Q2DcsjfbzvnSj3HgT6hN/TYgidL4SEsIk+Q3qjUYBS/a
-	25dnpbLkeiESuZUMRh0oCqjWLPdL/8UpN44rJyLJxYDeyTQ2CWM0HgOinDdePi6Sn9dqxzPjRe4DL
-	TngVHC3WKs6DQsJHkTstZqrTiS9cLr2Fek9v1jK4oynJZhDExCWZgBGeULPCNl8j7yoOm8yyixXnQ
-	JUCZu+UVRoIBZC7eJ9jGpwEtGKFZhQ4d9o+G1bL6yFIT+XwwDnDXI0kp4ueaMDD1YeLtRaKZouls/
-	Cuf5fNAg==;
+	bh=ucpTGToIn8N6Wm60fm7MZ05SRRlKYptl+ek5X25PfwQ=; b=zQW9qAqBnhBzXhvSH5nW1vFHVE
+	uVbrV7Pf9ns+bfJtYx9dIiOxq6GkNsy5yVXteBj8cCrE4qReW+AJAg8P6DuMKfI7lvuFGAmQ/8+zx
+	sMREQcHcMNCoectLp/sHYDqvUreYcRfky/WUe+Ax1RDYPj66TTaxFSlXl50VXit1N/p0hGlQnrkJy
+	JZu3k0d09FeWWXOEMOZp70CQTVCyOPDpMIB0BNoosPbqlih/omkrURvYiu5xvo3HKJseFtMO2s8DT
+	tVw85E3nC869BU2SnQNN7PilHXke76RXAxdozMlCOEOUQPBQPowS1fz69O/0Uc/MB81gzC1RsM5ud
+	ghUCoebg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfwUI-00000008OBz-24Xt;
-	Wed, 14 Jan 2026 08:44:22 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1vg0fk-00000009HyA-1dLd;
+	Wed, 14 Jan 2026 13:12:28 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfwUC-00000008OB6-3Yth
+	id 1vg0fg-00000009HwM-2fcw
 	for linux-um@lists.infradead.org;
-	Wed, 14 Jan 2026 08:44:19 +0000
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-430fbb6012bso6708529f8f.1
-        for <linux-um@lists.infradead.org>; Wed, 14 Jan 2026 00:44:16 -0800 (PST)
+	Wed, 14 Jan 2026 13:12:26 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-47795f6f5c0so54528375e9.1
+        for <linux-um@lists.infradead.org>; Wed, 14 Jan 2026 05:12:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768380255; x=1768985055; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1768396343; x=1769001143; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Nn9M/VPDoeuifL+P7no8o5FApQZk7zNKYvSR+p2CRU=;
-        b=G7YD9GT9MNwkv7GZp7I46HAKE/2DaWiOGkuFcp7CIEWkCHExzYkeWGJ+/neNbppQsn
-         P6/D4UFb0SZalcxfQLR7SKbCf0gq6ZJo8Az6skkP0C49bGV1SPVcambmHhDfdJw295my
-         ebabyiZtdDCN6CjQqmXAtP28KFXa4ZCyAzkqNuu8nxEozbre8l4k3+tG5s0DZEbzOUuy
-         5HgbJVhEmSODoEblLggTtQd96UGVnNXFy3cutrr/jCbtulNCbRFWrc2PFNwgSBW0+nsf
-         59CmNk8DowXdIgMrIAbdrTsbLxVPZcNbupF9k2kTi1qWTtczet7b8uud31TzBp4zDCwG
-         HxKA==
+        bh=ucpTGToIn8N6Wm60fm7MZ05SRRlKYptl+ek5X25PfwQ=;
+        b=YGMlSKQgbnJyDG06D9b3Noa1IcejXdO1zusOy8eTfhSxslGHK+lToxk6/g+d6wK5Cq
+         Ls4971XgzEDmhoWLrQhcxQOzVD2+wzgCwzeZCOhV/yRpWGIPM/CFoNr+R5eUvgt+5fYS
+         8Kj8hD0352ZifkYAQAAbPAJkAtjhbIWmYMtXEHzDpp6dTB1lPr+R8iiJVenOugqq6Gq0
+         ltUV+zV+Gddqta6dHHgbmFBizQq+twsQPFWZbfnRFwqA/VK4He+2u9rm6mbb6siiME7y
+         nRTp5qaeWHkz5d7qtMUnc5z3MIax36zByh2RwZd6gJu70gt69C+4RuPXTxjRPHlPqAqe
+         Ho2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768380255; x=1768985055;
+        d=1e100.net; s=20230601; t=1768396343; x=1769001143;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/Nn9M/VPDoeuifL+P7no8o5FApQZk7zNKYvSR+p2CRU=;
-        b=jhtlsJEuWBOWvexu9M4CQUfdKrVRXVquuN4RZ/aUp2s7WWwIjV8Xn/uHIpJaGEwMbm
-         mGdlML6VD5HIBdHa3ZqAhX9xp+pBfDWhe3eb5YB57Q0qoXIkMsu9TzQcEG+DKGV+CIiR
-         Mf/y1Uo6k/dgtajshA4U1xptiVfJh2ydixKKWYv8JWiYM1tmbroToRMZGtX4m1wdkkYV
-         egPTR3huWRfqzha3cIvtlg6Zd9bgW/LTei6RFW8VbrT/Bdc6L8rm3p80W25VFyLhL1gb
-         iRLadX6VZY53qvuNGHoD4Q+/3aNsQ6ySRck0QpDFXOBgoUiHjVf02A6ga/EaXgD4YYN2
-         tBmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVY+UmiJ2CozXqveAlFP1NZHknl5qXt+BkXxcCIm325fdYHtiMZLTUT4KzFb/OMNZ+lxHsCZhxAwQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx++Yv9+TcAAeN7ebx/rj6LgMmQIPvpr/+5aRWtK8trA2vwHJdv
-	ogwVEi0veaHKxU3kXxyDQocSJV4wgSc0Nzfvh1YMCYumjfDZzICrPb6cLl7nzkyJhjs=
-X-Gm-Gg: AY/fxX7ga0lxeWlblXo0g+RKdgD//nmLfiecXRKoKYtYzlwDl4Dzin9tyeFv/sXYmPb
-	SvyoXuOyv9ydOFRZkoYVg7H9KZSWjZ2Xkg3W5xeFXwmwGZIUbvJ5BHClFbFJzm2E4Y5YvUUsK2m
-	VkEcUElNLfGumMBlAL8To2gN9Ws58VC8DCBv8oxyqGxryG2OLqXoXtgS7g5zIoqmqapVQHExPBP
-	3bT7+0/Swwgr/EY5b7eTCpNx54PGG2h+0wuuzJoG09ySUpTyFc4GC2oTQejKCURbQpqlQUz0rGs
-	4O3kLrYgTbRQ/Pv6O2xEyqZKcBUGbfFkXgQVpCrEKGW9lQk3Fk5F9hnsOdhUtd4aHLEyGWWGXCA
-	itCBGYSMrgLLK2CfvHGJyue+qiK4saJH736+QWwe1zJXeFMriQ9p9vXjk4s/yECrP3jRMa6VCHU
-	U3+6clLrSYwp48Dg==
-X-Received: by 2002:a05:6000:61e:b0:431:a38:c2f7 with SMTP id ffacd0b85a97d-4342c574bedmr1500621f8f.59.1768380254886;
-        Wed, 14 Jan 2026 00:44:14 -0800 (PST)
+        bh=ucpTGToIn8N6Wm60fm7MZ05SRRlKYptl+ek5X25PfwQ=;
+        b=EdFXeI2wpGx4bwfcoiRDzvrAix++xTqf/DvkXdmslAaY9fe41an6H4VGyF4JEJCwGI
+         GKSYoaNqT7s6XRrRGyvb6mcETZppHaDR94Bu9lyLjURKntXI13SHbEupjF3bdDJthhAt
+         3ghK/PeMSjsPPaASuszyLDX+kk4np8hnJsPi23RLMvIyYuBwof4qFW+V0PeqS/qISlLu
+         TjuO8Oz1WbV/uIJo5MtCeR1baHKrYDLi9cqssTRzQ4vHHkghiGjf9jbjiGqUbU+KlQwa
+         /8QwRLL/8EYw7gs7GNHAXJ416MFUddSHnx3zfkHMAeS89ZLIzUY7p7K6R0G8mzSNzfHA
+         BZpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCNKNAO6KPMPXT7A74HaXKuFtmeLWheKLTPM3V7IMTsUmCIoF7K7PF6i2+s22LeV2V/FcHVnAyCg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzHLPrRTDLJMszIrP6umCAAyAljtyC9RSgw4S/JiE3ZvG3TsHht
+	VjXEK9dqrY0Ckba122tByLMTYkVCY/R/YDnQVbzCZizoBLZ8/SFu6KRzM+HjvC1/1vI=
+X-Gm-Gg: AY/fxX7gMp0OLM5ReBzeEXKdJxJpqYPKthUbDyFbFCluWeNAZIR2iayaSykII0EaUnJ
+	yFYgdwUJC7h+HI+seeK+KOH4w+ELZZbzy32WAAcqBHgZdJnE1+M4rzbcqTN39Tnj49v8Yl8ly7K
+	jPvDN26Pf868em8Tn2j4LbasdoQ1XXfYDWR0qzYye/R2xA8O2bJ4X2G+wXQISGXGsX41HfytIeU
+	jXglwBfL43M0cqL038MQ6lEjibe+pM0s1Vy5Y+jdXNPBWi4bVG36hhXqKF/EthmRwgmqTWWEqin
+	lT81JzTvyL9fzwMmAnCDCYwKwaqzJUSmvgaPShKKxQYCUtE/st1M/05Fz7ucjh/Y4HtGPSFS9kQ
+	ddnNsPRFJ9sLYW6cc8gheRvbXiaZLuyeYkUVnAquErxArZH20txR4Yb/TUICaDOhfiZfbDgGD8A
+	fCyBXadel3py0Ub8CBzpvx0cz+
+X-Received: by 2002:a05:600c:5490:b0:479:3876:22a8 with SMTP id 5b1f17b1804b1-47ee3356d5dmr36820375e9.16.1768396341643;
+        Wed, 14 Jan 2026 05:12:21 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5ee5e3sm48685590f8f.35.2026.01.14.00.44.13
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee54b8c9bsm27274065e9.3.2026.01.14.05.12.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 00:44:14 -0800 (PST)
-Date: Wed, 14 Jan 2026 09:44:11 +0100
+        Wed, 14 Jan 2026 05:12:21 -0800 (PST)
+Date: Wed, 14 Jan 2026 14:12:18 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -107,17 +107,17 @@ Cc: Richard Weinberger <richard@nod.at>,
 	sparclinux@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 03/19] printk: Drop flags argument from console_is_usable
-Message-ID: <aWdXW6ohfQ7_z2B_@pathway.suse.cz>
+Subject: Re: [PATCH 04/19] printk: Reintroduce consoles_suspended global state
+Message-ID: <aWeWMga1VaT0sYwj@pathway.suse.cz>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <20251227-printk-cleanup-part3-v1-3-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-4-21a291bcf197@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251227-printk-cleanup-part3-v1-3-21a291bcf197@suse.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-4-21a291bcf197@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260114_004416_943414_628EFD8E 
-X-CRM114-Status: GOOD (  20.39  )
+X-CRM114-CacheID: sfid-20260114_051225_276259_7165AA9F 
+X-CRM114-Status: GOOD (  23.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,73 +132,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat 2025-12-27 09:16:10, Marcos Paulo de Souza wrote:
-> The flags argument was also used to check if CON_NBCON was set, but their
-> usage was fixed in the last commit. All current users are reading the
-> variable just to call console_is_usable.
+On Sat 2025-12-27 09:16:11, Marcos Paulo de Souza wrote:
+> This change partially reverts commit 9e70a5e109a4
+> ("printk: Add per-console suspended state"). The intent of the original
+> commit was to move the management of the console suspended state to the
+> consoles themselves to be able to use SRCU instead of console lock.
 > 
-> By calling console_srcu_read_flags inside console_is_usable makes the
-> code cleaner and removes one argument from the function.
+> But having a global state is still useful when checking if the global
+> suspend was triggered by power management. This way, instead of setting
+> the state of each individual console, the code would only set/read from the
+> global state.
 > 
-> Along with it, create a variant called __console_is_usable that can be
-> used under console_list_lock(), like unregister_console_locked.
-> 
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -656,13 +656,8 @@ extern bool nbcon_kdb_try_acquire(struct console *con,
->  				  struct nbcon_write_context *wctxt);
->  extern void nbcon_kdb_release(struct nbcon_write_context *wctxt);
->  
-> -/*
-> - * Check if the given console is currently capable and allowed to print
-> - * records. Note that this function does not consider the current context,
-> - * which can also play a role in deciding if @con can be used to print
-> - * records.
-> - */
-> -static inline bool console_is_usable(struct console *con, short flags,
-> +/* Variant of console_is_usable() when the console_list_lock is held. */
+> Along with this change, two more fixes are necessary: change
+> console_{suspend,resume} to set/clear CON_SUSPEND instead of setting
+> CON_ENABLED and change show_cons_active to call __console_is_usable to
+> check console usefulness.
 
-Nit: The comment is a bit misleading because this function is called
-     also from console_is_usable() under console_srcu_read_lock().
+I would invert the logic a bit. I think that the main motivation
+is to replace CON_ENABLE -> CON_SUSPEND.
 
-     I would say something like:
+<proposal>
+The flag CON_ENABLE is cleared when serial drivers get suspended. This
+"hack" has been added by the commit 33c0d1b0c3ebb6 ("[PATCH] Serial
+driver stuff") back in v2.5.28.
 
-/*
- * The caller must ensure that @con can't disappear either by taking
- * console_list_lock() or console_srcu_read_lock(). See also
- * console_is_usable().
- */
-> +static inline bool __console_is_usable(struct console *con, short flags,
->  				     enum nbcon_write_cb nwc)
->  {
->  	if (!(flags & CON_ENABLED))
-> @@ -707,6 +702,18 @@ static inline bool console_is_usable(struct console *con, short flags,
->  	return true;
->  }
->  
-> +/*
-> + * Check if the given console is currently capable and allowed to print
-> + * records. Note that this function does not consider the current context,
-> + * which can also play a role in deciding if @con can be used to print
-> + * records.
+Stop hijacking CON_ENABLE flag and use the CON_SUSPEND flag instead.
 
-And I would add here something like:
+Still allow to distinguish when:
 
- *
- * Context: Must be called under console_srcu_read_lock().
+  - the backing device is being suspended, see console_suspend().
 
-> + */
-> +static inline bool console_is_usable(struct console *con,
-> +				     enum nbcon_write_cb nwc)
-> +{
-> +	return __console_is_usable(con, console_srcu_read_flags(con), nwc);
-> +}
-> +
->  #else
->  static inline void nbcon_cpu_emergency_enter(void) { }
->  static inline void nbcon_cpu_emergency_exit(void) { }
+  - the power management wants to calm down all consoles using
+    a big-hammer, see console_suspend_all().
 
-Otherwise, it looks good. It is a nice clean up.
+And restore the global "consoles_suspended" flag which was removed
+by the commit 9e70a5e109a4 ("printk: Add per-console suspended state").
+
+The difference is that accesses to the new global flag are
+synchronized the same way as to the CON_SUSPEND flag. It allows
+to read it under console_srcu_read_lock().
+
+Finally, use __console_is_usable() in show_cons_active(). It is the
+last location where the CON_ENABLED flag was checked directly.
+
+The patch should not change the existing behavior because all users check
+the state of the console using console_is_usable().
+</proposal>
+
+> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> index e2d92cf70eb7..7d2bded75b75 100644
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -3552,9 +3552,9 @@ static ssize_t show_cons_active(struct device *dev,
+>  	for_each_console(c) {
+>  		if (!c->device)
+>  			continue;
+> -		if (!(c->flags & CON_NBCON) && !c->write)
+> -			continue;
+> -		if ((c->flags & CON_ENABLED) == 0)
+> +		if (!__console_is_usable(c, c->flags,
+> +					 consoles_suspended,
+> +					 NBCON_USE_ANY))
+
+It would be better to move this into a separate patch.
+
+>  			continue;
+>  		cs[i++] = c;
+>  		if (i >= ARRAY_SIZE(cs))
+
+Otherwise, it looks good.
 
 Best Regards,
 Petr
