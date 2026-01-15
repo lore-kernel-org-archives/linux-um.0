@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58C27D4117D
-	for <linux-um@archiver.kernel.org>; Thu, 15 Jan 2026 12:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37606D44C7D
+	for <linux-um@archiver.kernel.org>; Thu, 15 Jan 2026 16:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ld+As4KXLNBvjLuNePKBkF4h3CZ3gGNkmAsVzP6KebE=; b=t474cXvBgNSHbJkc6mzv1xKbV4
-	DnC4CYXs78TPEJ+AWvURibe381YHVIwtQjmrc7NrkO7Y/oqSpdu9duXY/eqczRU8GidPHTWStjKn6
-	qnpQCXAVCaw/mICNaOwGY5XHHwvA8TP+P0iEdf3VcdtMgdF4Wc4bmQPHdxdPEPpHAfYsiTX3Z/YTe
-	+TFVVquwBIY75szyqYL4BMZRQ3zG7YmFiEwW4p/9wQ/Q6xUanQHNdjIYIhdzBE+cKVcaxzFVXFNI+
-	XoLWX1pAZSlKWe+c7PabtDN1/xdpa1olpOkL0tj305mmDvdmpwL+/RI4PMAPVKbM0anPhBeop2Jic
-	dGDb7U3A==;
+	bh=URJX5xTHolO9FC46ryjpGruJ5TGEDEyfrbwATuqwgLQ=; b=jh6RaMp/pVMrtG+zX8alzbqH0f
+	G9I9+QL5cgOkzPoN8lhQOR/k2nLaF8Hf12eIyzI5S9NZkUx9U/zZ+VIsqySY918VywwrU5ma8uGXa
+	xuXRZgdWB6ff172g3qbHShN5HnPGffn53yux5eeclm/wEWz6PMvptpA34Q5HrMzQ3Dsk/emp7EceT
+	hH3j+wqpdxackNtP6lzNO42/nHgsTV/ntz3APZ1UIpm+j+lmQpe1rdy37YCVs2CyW3G6i4DSb8APx
+	rOzXQIK3Rrk1hls9oIro/KSlfoqDrkBze1Iu9A0J9Rp/q93KXK9rJ+/1V0OljVgaEXewqt+lg8cR+
+	5yQoAs6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgMTx-0000000CKkG-3QVd;
-	Thu, 15 Jan 2026 12:29:45 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1vgQDN-0000000Ch2P-1325;
+	Thu, 15 Jan 2026 16:28:53 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vgMTu-0000000CKjU-2U2K
+	id 1vgQDK-0000000Ch12-2XqR
 	for linux-um@lists.infradead.org;
-	Thu, 15 Jan 2026 12:29:44 +0000
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-47d59da3d81so8025325e9.0
-        for <linux-um@lists.infradead.org>; Thu, 15 Jan 2026 04:29:42 -0800 (PST)
+	Thu, 15 Jan 2026 16:28:51 +0000
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-42fbc305914so725323f8f.0
+        for <linux-um@lists.infradead.org>; Thu, 15 Jan 2026 08:28:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768480181; x=1769084981; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1768494529; x=1769099329; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ld+As4KXLNBvjLuNePKBkF4h3CZ3gGNkmAsVzP6KebE=;
-        b=KVeqjiHHh54QX9uZG57LOrC463ScoL4YPVwv0NpK00H1B62FjXIT1QYfrVWY/LrCzF
-         fpKiESn7E/m8Qzf3QhGfKMO8PI16hc7AWpK9OlMYwT4DYSyFOJ7q9Hq5gxCTRexS5t71
-         2nWXW4gl2E4pzND5AYtZJmKXCx18BrpINw7MovVv0H3qffD/XXY7MJ+z03a10T/M3zyS
-         lLtaPJqc7wX3sOboM2j/p5L/tT3xxbyV1VfGL4iwUGkNUTi8tW/ScQKPZt5mqMsYsfOg
-         JyzLC94GgB4Sj2Bakua4Q8QSEekcMVEK0/JLElIBJmOkctCH8XQQqpUUF/R/cPNbQLsU
-         zZuA==
+        bh=URJX5xTHolO9FC46ryjpGruJ5TGEDEyfrbwATuqwgLQ=;
+        b=ALZOzStXIPkGagswmZPpSJpDPHck/uP3TMJADyIj6zYsevpH+4211o+B+qmY7+G/QS
+         RvfTRQ7qLds56ALcOlZOL0nV6Zfr/Gn29CMBA+GS5zVR2Su5H9Kg4Ye3lBSlGLXBbADP
+         Zt2VSVSUu377b/Z3DUbCldH1rRYcGFgvCWXJtLQNWrI0sWueJnf5uW0dLPWNWqp/tsWl
+         Z5t/dzY9gpkM9L1BJLJJyHXchyDk2l4QDeewjOpHAje8OAQcLMe8t7yb52bnZbBROQkH
+         HTtKkPYqmjyjx7M9H0AiMBwMwdV1kHw5ySynoX0ckphR8vD0/bck7VxRJTv/OSM1Qtr3
+         0Vwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768480181; x=1769084981;
+        d=1e100.net; s=20230601; t=1768494529; x=1769099329;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ld+As4KXLNBvjLuNePKBkF4h3CZ3gGNkmAsVzP6KebE=;
-        b=HZxGsmJM8rjw8vQdsGSHRfzfBQokAWafa92YKyMkSbYNfGLjCiw11OCGAPcW31jJYE
-         BlWj9Ep7GefYAVAPfiwAOKAWF1L8cNMbd1FkEA2w8UXcsqSwsq5R3XtRcuye9lANhado
-         JTgk8CUmWHtwzD2XvgjQBRl4Bh78NIg0q/yR2vQci+CF8MjtGW52QkOf/eX9GPnCokMa
-         cNJbrhaiCZDMtMLDtBqNnBAJCEqWNfpz8cOU7jfgCIzzRaaDLtwk0k/e/Xkh2uFgV2MM
-         9iGWL4efikUp8syv4T3lOV2R8chaNogPdD5GvqdNAn+/kM3D2koXqu4qUqjmPA5HryoD
-         CSXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmYV9ukIndcAs4lf5MhpH96eA+wVt8DukeqRqTIuCvTbvdg9SBZPVSGrF7uHZUKchlqPME5s5Fcw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz7xHC46j7ud1OVMBD8LulpSi/FnIGeXN8vpPN/ge6Y3sgIoR/D
-	+ucPsWstNzb+TZPuU9YHl+8geY3PXImbvfmjtOAEs5Xuh1Hj7Vh0861OzqFMKm6p4nc=
-X-Gm-Gg: AY/fxX7gBnHnLd0Woh8N6CXHKZ1qr3Ovyvm9y9X8a7GMLq91PsOe3UWf/cTBebdUP8O
-	yOuLbI7yoHlJIscvpG6ELqHRgdNlMbZoeKz3pT7rJJTXFtYYIoPqhTm8y/e9ddn/JlHL45yH4JK
-	z+kKjHR55G8eB5JUwSGoCPv+UZe/uqrgGGkQ3hTvsu6MWVxGVIqi3jvbWcnKm2RBCbd3D8DXqDC
-	K62xHpJni3S8pvtn3qCZei2ZmwZRwHt3MPTmH9uftKrqHI1XxWT4+jiZTVx6sSahuM6yn5qBwL3
-	O3MPJNBc4jhL+trsTr9zEgA6DmaokAGnsvI7kkS0OX/b4XMtPgU3PTI/UMRjbPmIgFj1rNvZugL
-	5AJ4tLpDtdoc3yomp868aZPv0gRAmf+rQK7pKqNwD9EcJZBF9T+ZjtZ1k3Flc1uEoKdTkPcGtI3
-	PSquRjldlWK9f80g==
-X-Received: by 2002:a05:6000:420a:b0:42f:f627:3a88 with SMTP id ffacd0b85a97d-434ce7324b4mr3823468f8f.4.1768480180633;
-        Thu, 15 Jan 2026 04:29:40 -0800 (PST)
+        bh=URJX5xTHolO9FC46ryjpGruJ5TGEDEyfrbwATuqwgLQ=;
+        b=ZkiHxNXTc/m7OcFnNPwWxQ8Gv9vBEi9e/xFdIMAs4Y280A13Kd6CTVdbnWJR0kxeEu
+         +VjenSeoQIehp0O02JGr/8iKuVQyfIntZ7azfRhB588+NxDMQFX2EOwuajCwnDthdZyf
+         pwuSd15Zlu+gGpdI7RxFuLQm+JLcTXaBXmcg6K3AJ3bd1bP0IODiL8+tieORiqceiwT6
+         E95KSpOnKC1j40JOLX555Lg/S3Xn+5WJSoFpwt9Wasj1I8rNuME9n3lbft+UNhZrFGkX
+         QlHfQryk5Aa9q8kbTLyxloAiJTTIrO6zHbn4JBbmdyr7Kvmontrvx92Qcf/qUVpqd6Tf
+         V5ew==
+X-Forwarded-Encrypted: i=1; AJvYcCWYxfkrhB8ANN/43KxIVtCkCqenl+rNX4um3HCfYM535L0yngax6b4SBl13tAZeBxClQsf8CEOQ2g==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyccAUIg+SFvq85mEGdsuS/ojpgIsxtQVPnhwFvOKlfNGzvSlmE
+	AxkBIVb/DE4NVwlcWBupR2Mtv9g462GaaAURbPbcyVRA3nN7ucyI5my0BW4eoSYIwEI=
+X-Gm-Gg: AY/fxX7tEwHxkfY0uQUShtvgXFNylTTbIlI33HcimTn2v2aqB9PK4MEIONuZ4PotimG
+	FRasLKmVVteZ1zOfR8RG19ksbOlhcRJzUGWViEwgPUSHVJ5oo/qvxBJNKCUTAAvmPlNXL4bqzFw
+	5AHq6FSn5CHdjFxhAfM6DobbhOpyj+q7MAZnbPlyXPaNoF6dV/nTHTfKUhwWEItpEUM+sXcUeDS
+	N00mx9yXii+pQqycDa7frXUcL9EI68lCQzpEc6NwAaNwIunakCbx0sy2YypbYePINwaScDNT146
+	hdfu32ROcqZjSVpAWbOL47fRtFw11FZCdNCknlnhLStXcltptBWciDksxgo0oxr3C/5gccFS+L7
+	R7By1Fc7JkT8mCAd7RDl0N9+HITChEVthOzJazGd0mf7ldqVWXZdTNd+/ycToXDAh8rP5YNa3hD
+	wg6CAwcU/uQcswLw==
+X-Received: by 2002:a5d:64c5:0:b0:430:fd0f:2910 with SMTP id ffacd0b85a97d-4342c501a57mr9777353f8f.26.1768494528600;
+        Thu, 15 Jan 2026 08:28:48 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af653576sm5965022f8f.17.2026.01.15.04.29.39
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af6e148bsm6604069f8f.33.2026.01.15.08.28.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 04:29:40 -0800 (PST)
-Date: Thu, 15 Jan 2026 13:29:37 +0100
+        Thu, 15 Jan 2026 08:28:47 -0800 (PST)
+Date: Thu, 15 Jan 2026 17:28:44 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -105,19 +105,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 14/19] drivers: hwtracing: stm: console.c: Migrate to
+Subject: Re: [PATCH 16/19] drivers: tty: serial: ma35d1_serial: Migrate to
  register_console_force helper
-Message-ID: <aWjdsbYev_5zfKEC@pathway.suse.cz>
+Message-ID: <aWkVvCu74HhV7W9s@pathway.suse.cz>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <20251227-printk-cleanup-part3-v1-14-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-16-21a291bcf197@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251227-printk-cleanup-part3-v1-14-21a291bcf197@suse.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-16-21a291bcf197@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260115_042942_675703_86E195E0 
-X-CRM114-Status: UNSURE (   8.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260115_082850_669349_6A2F8B98 
+X-CRM114-Status: GOOD (  23.88  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,7 +131,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat 2025-12-27 09:16:21, Marcos Paulo de Souza wrote:
+On Sat 2025-12-27 09:16:23, Marcos Paulo de Souza wrote:
 > The register_console_force function was introduced to register consoles
 > even on the presence of default consoles, replacing the CON_ENABLE flag
 > that was forcing the same behavior.
@@ -140,10 +139,102 @@ On Sat 2025-12-27 09:16:21, Marcos Paulo de Souza wrote:
 > No functional changes.
 > 
 > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  drivers/tty/serial/ma35d1_serial.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/ma35d1_serial.c b/drivers/tty/serial/ma35d1_serial.c
+> index 285b0fe41a86..d1e03dee5579 100644
+> --- a/drivers/tty/serial/ma35d1_serial.c
+> +++ b/drivers/tty/serial/ma35d1_serial.c
+> @@ -633,7 +633,7 @@ static struct console ma35d1serial_console = {
+>  	.write   = ma35d1serial_console_write,
+>  	.device  = uart_console_device,
+>  	.setup   = ma35d1serial_console_setup,
+> -	.flags   = CON_PRINTBUFFER | CON_ENABLED,
+> +	.flags   = CON_PRINTBUFFER,
+>  	.index   = -1,
+>  	.data    = &ma35d1serial_reg,
+>  };
+> @@ -657,7 +657,7 @@ static void ma35d1serial_console_init_port(void)
+>  static int __init ma35d1serial_console_init(void)
+>  {
+>  	ma35d1serial_console_init_port();
+> -	register_console(&ma35d1serial_console);
+> +	register_console_force(&ma35d1serial_console);
 
-LGTM, nice cleanup!
+Sigh, I am afraid that this is not enough.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+I double checked how "ma35d1serial_console" was used. I guess
+that it could get registered also via the generic uart device
+driver code. I see the following:
+
+#ifdef CONFIG_SERIAL_NUVOTON_MA35D1_CONSOLE
+[...]
+#define MA35D1SERIAL_CONSOLE    (&ma35d1serial_console)
+#else
+#define MA35D1SERIAL_CONSOLE    NULL
+#endif
+
+static struct uart_driver ma35d1serial_reg = {
+[...]
+	.cons         = MA35D1SERIAL_CONSOLE,
+[...]
+};
+
+static int __init ma35d1serial_init(void)
+{
+[...]
+	ret = uart_register_driver(&ma35d1serial_reg);
+[...]
+	ret = platform_driver_register(&ma35d1serial_driver);
+[...]
+}
+
+And the gneric code:
+
+uart_configure_port(struct uart_driver *drv, struct uart_state *state,
+		    struct uart_port *port)
+{
+[...]
+		/*
+		 * If this driver supports console, and it hasn't been
+		 * successfully registered yet, try to re-register it.
+		 * It may be that the port was not available.
+		 */
+		if (port->cons && !console_is_registered(port->cons))
+			register_console(port->cons);
+
+[...]
+}
+
+, which can called via from:
+
+  + mux_probe()
+    + uart_add_one_port()
+      + serial_ctrl_register_port()
+	+serial_core_register_port()
+	  + serial_core_add_one_port()
+	    + uart_configure_port()
+	      + register_console()
+
+
+Honestly, I am not 100% sure. The struct console is assigned to
+.cons in struct uart_driver. And uart_configure_port() function
+passes port->cons from struct uart_port *port. But I believe
+that they can get assigned somewhere in the maze of
+the init/probe code.
+
+I would feel more comfortable if we kept the information as
+as flag in struct console so that even the generic callbacks
+could use it.
+
+Anyway, it makes sense to create a sepate flag for this
+purpose, e.g. CON_FORCE or CON_FORCE_ENABLE.
+
+>  	return 0;
+>  }
+>  console_initcall(ma35d1serial_console_init);
 
 Best Regards,
 Petr
