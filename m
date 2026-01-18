@@ -4,78 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DD9EC9832F
-	for <linux-um@archiver.kernel.org>; Sun, 18 Jan 2026 08:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6550CD4A5F4
+	for <linux-um@archiver.kernel.org>; Sun, 18 Jan 2026 10:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=X+fhLmMt6EbvGWzllqZJVhmHGvaT37bdUz8irugZaMU=; b=eP9yh7BHmiCv5MJxKsAKX71YWn
-	9mUPv2FPM+ElxjlPqKUi6wnzMQG+jp0xeE3/h89G+8aQ6sbH8wgh2oN9YgNAXOPpheM3dA/xtPy2B
-	Xrm99NqOUv6LxpdgNIHeDRun3D4TFXC9lMWTXLydUYwT79SkoQnXg9sKZUlB/Ojw8u6cWfiVmfs0m
-	C/rr7KVcBNcVuYabN/XmcpvdoPeYyq6qO19JKjXTztOD3e6tRcqEDtEaYi+KnyRhQsBfxjz1rWCWv
-	mbbPwiqvSnkGdBCjvKVqfawglnnL8t6OkXN8jewTgiqkwkz+Som6CXnmKdH59Sgzi11/PFKQzn2vl
-	EZxczS2g==;
+	bh=/C00al6g6oPolPDWSn93FdlakxVTOB2fb9Nh4JRQcOA=; b=TBckO9HUXhwCN9pYbb83JrSNQk
+	PBM5iIBISwoKD31IeHw6hoB42eDIfJKmhvDhQFMenp+etLnV59jzlP5jdWTZbKbgt54t3IF6cop1D
+	nr/UEHgQmsq0fSM3QJw8A9jiyh4GFzOiHP4zxDhzpVOtGYbPIkleKb6H8ef0gNdLlbFXcu4ooN5Z6
+	9NQ6TJEvTKZPeCUGyMqx6zqXhKY3lUcC0hMucF6q8U2MRNbaHU8fZTk/sIZx8Q6vZ0EaLIuJ16CzZ
+	cmwkKBgWvmMcUt9T7kvAKIDMqa1GJluWyvHMR5VY++ZhkTftEBAFdpX4qIgZZq9p7ztwgIV4cJscn
+	kzKg41Fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhNvN-0000000H5a2-1QFH;
-	Sun, 18 Jan 2026 08:14:17 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1vhQNV-0000000HNRX-1aIx;
+	Sun, 18 Jan 2026 10:51:29 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhNvJ-0000000H5Ya-2Oma
-	for linux-um@lists.infradead.org;
-	Sun, 18 Jan 2026 08:14:15 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-29f0f875bc5so22991955ad.3
-        for <linux-um@lists.infradead.org>; Sun, 18 Jan 2026 00:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768724052; x=1769328852; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=X+fhLmMt6EbvGWzllqZJVhmHGvaT37bdUz8irugZaMU=;
-        b=mU+yxHr+cs7p+mnYYyAR67ePoxH2KjFbekYPdDW5HzqTPCNJCaJAIJKuTIOgyw/14F
-         Sl6egsypqhKFAYPPifLxVfELFX4JmSPpPOu4ui+KfOd7QzD99yUKX6XxX4f7+NkGHdWa
-         YGN44ui1Vw7p7zTD2++X3ti0kwoFN5cfaOBfJjwSfXSuVrHDpifLKt/by64lllzzFrd4
-         yrn+QsQMdX8MdOYRIJX1cPcXWPJ+bRzxe5+8mnFpLQXCMNQEmIgkIQI6UN9sj/NcM7Uj
-         2HiS+ccGEZHY18C/f3ruZBwpkTqpJlWYGFg38vre+M688uPl0fGTlyrTe795NJ20ePWO
-         2Owg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768724052; x=1769328852;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+fhLmMt6EbvGWzllqZJVhmHGvaT37bdUz8irugZaMU=;
-        b=A3F9SL8WZ/g3cAM8bUmDb245RVmTXFjHFtIM7Nz1z/aPMwoRJD+8GGtrkV2PoDQsEK
-         GcMGcL1tRXwSh/TFBl4kiPbLQlDRBjaZ/9gupGH7pezB5CEHQUVeZWxoBVQ1N3/HblrA
-         bGZQFjlFJrEvdPmMZn2netQ0Puv09Tt/mYaDvrWdMAq8qr0XYSkO5g4OMlSCmM5C2Qyn
-         H56l/NJr0WdkXkoaHTUdu+0fB5suSYHI4U7x0fq96uJKnTebKzsn8OF6Iu2wdXu0br0I
-         3/QoQSgdox6cxm+c4tTejF9D5ZGeNk1NC8AAR3EFhj9JzJDNOVhlrj2c/fw8FVVxMq7F
-         bvGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVey4+5nHz6X+aXKBSEYix7/pcXe2Eik7NWeEvrcjybZ+y1dEB95PidQEzL9HnfQE7EWgVRfH98kA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxXUzeLHYMHhLjxGgvJcb0y8eGDaT/f4BFTTtC9Ky2UaMZBJ4lz
-	3HVnHQowaSdmNjXt9A7fulJma+lYBb+Ef09AzkBdxbS2nQtuCmL/9YbE
-X-Gm-Gg: AY/fxX7qzaVXiK56fy0rMGstZhW/lDRuo3g6HOtbo8kGzTeh39fn6rDGYYABzLLMF0f
-	yz4aq0QBfDfi6JXVFE/l+7NZ/DJpOqqsUXkkCrgCsta8K1u+bG8Z3UjCf8qGmDaAh2NmHr8URrV
-	nxcQnVenAC+dv3bZK9q0xFJ7A3AVmkunb3OH4uUVG06yyLDvmPU3G2JUTXRccRlOMnU491eXxmw
-	gqk2okkNNmdr1I2FX9sAbvBumZDwB+xNekQ2dRpgpoUxVqHkCa74D8YQiiHkxjhEzS6mTjaRZIw
-	RhTIu5OVyXgLYwlUISrjtZCgdQLW/nBfsaTTKwdzE0leNDMR6vr1ErdRL0kKHkgSAFm/+guh+gH
-	r5wuooVS+vNpcQ4lFWw84/1Q61p4APgmE7NenUiFliiNSSmC9k2bRdnxhW763Ru46+lQxXGqrHA
-	CW2E0A8Hrf
-X-Received: by 2002:a17:903:40c5:b0:2a7:3dae:de9b with SMTP id d9443c01a7336-2a73daedf5fmr2287485ad.44.1768724051933;
-        Sun, 18 Jan 2026 00:14:11 -0800 (PST)
-Received: from [192.168.2.226] ([114.92.45.6])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7190abcf0sm63240195ad.12.2026.01.18.00.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jan 2026 00:14:11 -0800 (PST)
-Message-ID: <85a0be43-3598-435d-a50e-9403b7e963f7@gmail.com>
-Date: Sun, 18 Jan 2026 16:13:47 +0800
+	id 1vhQNP-0000000HNQB-2NWh;
+	Sun, 18 Jan 2026 10:51:24 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 8D15343FA8;
+	Sun, 18 Jan 2026 10:51:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB210C116D0;
+	Sun, 18 Jan 2026 10:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768733481;
+	bh=cRUnDqszYzqdtiCqFz8ReeBCDwhfi0apCW2AsbShb5k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Lh/W0wSuyD/3XxpnQZN74YCKsYSsPpd3jS1Q3r7AHgEO5xu2v3rSWtugLiHErSsAq
+	 4JpQxtNVF9al8cfXSw1DYrONPT7G8UsoJ77XHe6svoCRp/tW9Qfeji6jiFE7aHzsQH
+	 z/ZTnDUiA0wsPpzzE1vwt/IAY1BJ9VFLFNZv4BDnIfxxiIS8VdnNIqdVBYH/LrQFV3
+	 BWHp2W2iaokAL9JuD6rqhdXARUNaLG8q6Jb2XgJ0LlQ2ZObaymRkAkyImoQKx7BD6U
+	 AHBp/YjdIu4qjc7tm+BL9TbDFIM5qTw8uAjNTwjdQ0kHzePglSKWDfWKJkUR6zjvse
+	 qd7x6SKnbJnSw==
+Message-ID: <4fd1610b-acc5-4c17-a227-4d63272d3718@kernel.org>
+Date: Sun, 18 Jan 2026 11:51:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] mm/pgtable: convert pgtable_t to ptdesc pointer
-From: Alex Shi <seakeel@gmail.com>
-To: Matthew Wilcox <willy@infradead.org>
+To: Alex Shi <seakeel@gmail.com>, Matthew Wilcox <willy@infradead.org>
 Cc: Mike Rapoport <rppt@kernel.org>, alexs@kernel.org,
  Richard Henderson <richard.henderson@linaro.org>,
  Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
@@ -105,8 +76,7 @@ Cc: Mike Rapoport <rppt@kernel.org>, alexs@kernel.org,
  "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
  "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
  Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, David Hildenbrand <david@kernel.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Arnd Bergmann <arnd@arndb.de>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
  "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
  <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
  Michal Hocko <mhocko@suse.com>,
@@ -131,13 +101,58 @@ References: <20260107064642.15771-1-alexs@kernel.org>
  <080e493a-e4f1-4c97-a3e1-f76f126b5213@gmail.com>
  <aV5yIuGi9Ni5YP5E@casper.infradead.org>
  <1d110134-89ab-474b-bca6-cfbfd4b5057f@gmail.com>
+ <85a0be43-3598-435d-a50e-9403b7e963f7@gmail.com>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
 Content-Language: en-US
-In-Reply-To: <1d110134-89ab-474b-bca6-cfbfd4b5057f@gmail.com>
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+In-Reply-To: <85a0be43-3598-435d-a50e-9403b7e963f7@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260118_001413_727942_4EAD8BFE 
-X-CRM114-Status: GOOD (  20.36  )
+X-CRM114-CacheID: sfid-20260118_025123_667874_BFBE1485 
+X-CRM114-Status: GOOD (  16.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,62 +167,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 1/18/26 09:13, Alex Shi wrote:
+> 
+> 
+> On 2026/1/8 10:23, Alex Shi wrote:
+>>
+>>
+>> On 2026/1/7 22:48, Matthew Wilcox wrote:
+>>> On Wed, Jan 07, 2026 at 05:28:36PM +0800, Alex Shi wrote:
+>>>> Right, I will fix this. and sent the 2nd version.
+>>> No, the patch is stupid and wrong.  Don't send a v2.  You seem to have a
+>>> hairtrigger resend, so I'm trying to prevent a v2 being sent instead of
+>>> sending a patient reply.
+>>
+>> Hi Matthew,
+>>
+>> I hear you—no v2 will be sent.
+>> but sorry for a bit confusing, what's your expected fix? is the too
+>> quick resenting? or the direction to alignment pgtable_t with ptdesc is
+>> wrong?
+> 
+> Hi Willy, Do you mind to share the detailed concern for this patch?
 
+I think we recently had a discussion that we should much rather rework 
+core code to consistently make pgtable_t a pointer to the start of the 
+page table or something like that.
 
-On 2026/1/8 10:23, Alex Shi wrote:
-> 
-> 
-> On 2026/1/7 22:48, Matthew Wilcox wrote:
->> On Wed, Jan 07, 2026 at 05:28:36PM +0800, Alex Shi wrote:
->>> Right, I will fix this. and sent the 2nd version.
->> No, the patch is stupid and wrong.  Don't send a v2.  You seem to have a
->> hairtrigger resend, so I'm trying to prevent a v2 being sent instead of
->> sending a patient reply.
-> 
-> Hi Matthew,
-> 
-> I hear you—no v2 will be sent.
-> but sorry for a bit confusing, what's your expected fix? is the too 
-> quick resenting? or the direction to alignment pgtable_t with ptdesc is 
-> wrong?
+Because the way you change the code just means that we will not be able 
+to handle code that fits multiple pages tables into a single page 
+(s390x, ppc) consistently.
 
-Hi Willy, Do you mind to share the detailed concern for this patch?
+	arch/s390/include/asm/page.h:typedef pte_t *pgtable_t;
 
-Thanks
+-- 
+Cheers
 
-> 
-> If it's the first. the new change for review address Mike's concern.
-> diff --git a/arch/arm/include/asm/pgalloc.h b/arch/arm/include/asm/ 
-> pgalloc.h
-> index a17f01235c29..a204c3ac800a 100644
-> --- a/arch/arm/include/asm/pgalloc.h
-> +++ b/arch/arm/include/asm/pgalloc.h
-> @@ -94,13 +94,13 @@ pte_alloc_one_kernel(struct mm_struct *mm)
->   static inline pgtable_t
->   pte_alloc_one(struct mm_struct *mm)
->   {
-> -       struct page *pte;
-> +       struct ptdesc *pte;
-> 
->          pte = __pte_alloc_one(mm, GFP_PGTABLE_USER | PGTABLE_HIGHMEM);
->          if (!pte)
->                  return NULL;
-> -       if (!PageHighMem(pte))
-> -               clean_pte_table(page_address(pte));
-> +       if (!PageHighMem(ptdesc_page(pte)))
-> +               clean_pte_table(ptdesc_address(pte));
->          return pte;
->   }
-> 
-> @@ -141,7 +141,7 @@ pmd_populate(struct mm_struct *mm, pmd_t *pmdp, 
-> pgtable_t ptep)
->          else
->                  prot = _PAGE_USER_TABLE;
-> 
-> -       __pmd_populate(pmdp, page_to_phys(ptep), prot);
-> +       __pmd_populate(pmdp, page_to_phys(ptdesc_page(ptep)), prot);
->   }
-> 
->   #endif /* CONFIG_MMU */
-
+David
 
