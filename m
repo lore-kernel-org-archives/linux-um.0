@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF741CCF2D5
-	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 10:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE06ECCF2DB
+	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 10:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GpEfxgQgJH19fN10/GjA7dR7y5iNeQpprdp9wvrRXcQ=; b=Mz/JDQ479MA1O6PcUTVjJLDlEo
-	l1r9UIg3LQ5DE51KDWgG8RPVyK7VylRgg2e1CwxQN66/YrBKWC4fdtJcasmzzWGaLn2otN4hCBDlx
-	SS62003AKNmZ1KxjCd4O9F7d78JRXFuYnHhn+7IVn0STkzJ9gphMUV62IoBUb7qY5FvS/BdP74sh9
-	Vpq1No6LvCRAZOkAOLqUXy/cMxKTPwd5oTRG0VF4DWtv/gFIZHrtYIvNJjZ7KoCThgRNL/laEIfxY
-	7EjXtDeqf5X/s4loS/6QjkmT5ZEH0Zu1QYTXQ35HkztvDxjYaysQXZZA1QmwR5I2UwLFVO74UkqWg
-	lNNbPdaA==;
+	bh=AeXwYwnz7qLDfFEoaMRB4whAgP1Yo3U6h7g3p4bkyAI=; b=wHDBLLd9HmC0Yr2GT9T6ALGdva
+	xznXjeEyIe45PqH3R89O8Hph3JJsHeyGHFke2AZLJsR8aM3gTxPNipcvNepnkowuULISx1WNmtuhW
+	hhiFQdo43Eesd22bdQr7B6b8IqVPT8HgxihpJFqo1uPeImUq9h82L17Wrc3mgt1ZH1yh0OZ8Tq5xP
+	VFm/NPrml27dbIeqNlSdQBmoU7aAWMk56BJYP2Mbg28HKXY0aErvDsmdJ8gyFIw5v1Wib5IzJ3EZW
+	6Y1S3ZuVt0ujeAiweXjaLQTOuSWDBGJSBZ7iqRmvW8Pb8QjXvw/dfyh8Lhn+QHb+L4XZoxJPar+BV
+	rnYr7eCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhmFm-00000001jBL-22b5;
-	Mon, 19 Jan 2026 10:12:58 +0000
+	id 1vhmLg-00000001kCK-1f6p;
+	Mon, 19 Jan 2026 10:19:04 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhmFk-00000001jAb-2BJp
+	id 1vhmLc-00000001kAs-0w3i
 	for linux-um@lists.infradead.org;
-	Mon, 19 Jan 2026 10:12:57 +0000
+	Mon, 19 Jan 2026 10:19:03 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 30E694091A;
-	Mon, 19 Jan 2026 10:12:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7840C116C6;
-	Mon, 19 Jan 2026 10:12:51 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 7C34443303;
+	Mon, 19 Jan 2026 10:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34AFFC2BCB2;
+	Mon, 19 Jan 2026 10:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768817576;
-	bh=JzYfQ2HAxs4i1+wCNZ4YJF2miFvaY77kYkNH822rrWs=;
+	s=k20201202; t=1768817939;
+	bh=fChsW6zHlCrxmXpBWFm7rxfPs3w59SiQtBb4E9KHfFg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=me8+IGewGCeffwxGVagl70q+hrSe2opYVeA1iGHPxfp3jOTyA5Mb5KeeLkc/Xja14
-	 HfCoVgl4rWFfeV2WDNbJUF3aDkXBLFx+1M/3Kr8Mo/047Y4IUJprtnZUgHNC0AUUCr
-	 89z9nS4T9hLB1/EnWTxzIbJhlH1HocGK/UMOIYYxqsRRynUaByy3bX0BWBcPAUw7sy
-	 WQneEXcH6ogG6xNS1YOTkZw8XHe0vetHdKxlkRbStzTvr/D+mbvAndI4gRQBd2SP9L
-	 aPNuojOPQ0OHFPjwXGaM7HxgAP5LamThIQoakceGGuilMqy4wQEx6wGMh8/64SuQCD
-	 mHUCpaQBpY2lA==
-Message-ID: <74607439-5f52-4c03-904f-01c675e8bb06@kernel.org>
-Date: Mon, 19 Jan 2026 11:12:50 +0100
+	b=d7bFMmLq1M9B8AoeKJQ9vihTU2U179+WmU91kWylvHMAex0kvNr1DQu7ArTzlhgmn
+	 4pPAxBoFN99lPf4XxyZ7tKbta1qikb7XJrp4yQh6co8oYvuotYRIA1NvXdzUJZRifS
+	 FxhutMYG4Y4QWgPa5uqAQinVsFZ/C3a1U/Ly553bgwajDO3Eafz7qBAx+ZsgAtcKkO
+	 zZN7xdRM9KwgEZWJ72QmBNlK7I+iUWDUAFicFdjUCQSAPYwBG/CXF+M+t1L9sAxu1e
+	 JiR+7Xwrb5/DZiknvTj7tiHrF90zeuEV3qr6RB81V4uGa/vwe/R5dc7JkZ36tQyv3/
+	 F3k5MADrrYaOg==
+Message-ID: <d38fcbe5-8b4a-40bc-b8c8-1c49ccaa9964@kernel.org>
+Date: Mon, 19 Jan 2026 11:18:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 7/7] mm: make PT_RECLAIM depends on
  MMU_GATHER_RCU_TABLE_FREE
-To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
- npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
- akpm@linux-foundation.org, ioworker0@gmail.com, linmag7@gmail.com
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+To: Wei Yang <richard.weiyang@gmail.com>, Qi Zheng <qi.zheng@linux.dev>
+Cc: will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
+ peterz@infradead.org, dev.jain@arm.com, akpm@linux-foundation.org,
+ ioworker0@gmail.com, linmag7@gmail.com, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
  linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
  linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
 References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
  <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
- <bef9fc2c-c982-4b46-b16a-8ecbc9584d62@kernel.org>
- <24837e0e-db86-4c64-8387-243d94293b48@linux.dev>
+ <20251231094243.zmjs7kgflm7q6k73@master>
+ <a3a60bbb-70b7-49ed-abc6-937e6c13d681@linux.dev>
+ <20260101020715.45wqnjgcklvjcth3@master>
 From: "David Hildenbrand (Red Hat)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -104,12 +106,12 @@ Autocrypt: addr=david@kernel.org; keydata=
  cFAM8nBWrEmNU2vvIGJzjJ/NVYYIY0TgOc5bS9wh6jKHL2+chrfDW5neLJjY2x3snF8q7U9G
  EIbBfNHDlOV8SyhEjtX0DyKxQKioTYPOHcW9gdV5fhSz5tEv+ipqt4kIgWqBgzK8ePtDTqRM
  qZq457g1/SXSoSQi4jN+gsneqvlTJdzaEu1bJP0iv6ViVf15+qHuY5iojCz8fa0=
-In-Reply-To: <24837e0e-db86-4c64-8387-243d94293b48@linux.dev>
+In-Reply-To: <20260101020715.45wqnjgcklvjcth3@master>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260119_021256_596294_225CD679 
-X-CRM114-Status: GOOD (  25.08  )
+X-CRM114-CacheID: sfid-20260119_021902_005761_2B21174F 
+X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,125 +126,107 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 1/19/26 04:50, Qi Zheng wrote:
-> 
-> 
-> On 1/18/26 7:23 PM, David Hildenbrand (Red Hat) wrote:
->> On 12/17/25 10:45, Qi Zheng wrote:
->>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 1/1/26 03:07, Wei Yang wrote:
+> On Wed, Dec 31, 2025 at 05:52:57PM +0800, Qi Zheng wrote:
+>>
+>>
+>> On 12/31/25 5:42 PM, Wei Yang wrote:
+>>> On Wed, Dec 17, 2025 at 05:45:48PM +0800, Qi Zheng wrote:
+>>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>>
+>>>> The PT_RECLAIM can work on all architectures that support
+>>>> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
+>>>> MMU_GATHER_RCU_TABLE_FREE.
+>>>>
+>>>> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
+>>>> to turn it off.
+>>>>
+>>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>> ---
+>>>> arch/x86/Kconfig | 1 -
+>>>> mm/Kconfig       | 9 ++-------
+>>>> 2 files changed, 2 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>>> index 80527299f859a..0d22da56a71b0 100644
+>>>> --- a/arch/x86/Kconfig
+>>>> +++ b/arch/x86/Kconfig
+>>>> @@ -331,7 +331,6 @@ config X86
+>>>> 	select FUNCTION_ALIGNMENT_4B
+>>>> 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>>>> 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>>>> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
+>>>> 	select ARCH_SUPPORTS_SCHED_SMT		if SMP
+>>>> 	select SCHED_SMT			if SMP
+>>>> 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
+>>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>>> index bd0ea5454af82..fc00b429b7129 100644
+>>>> --- a/mm/Kconfig
+>>>> +++ b/mm/Kconfig
+>>>> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
+>>>> 	  The architecture has hardware support for userspace shadow call
+>>>>             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>>>>
+>>>> -config ARCH_SUPPORTS_PT_RECLAIM
+>>>> -	def_bool n
+>>>> -
+>>>> config PT_RECLAIM
+>>>> -	bool "reclaim empty user page table pages"
+>>>> -	default y
+>>>> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+>>>> -	select MMU_GATHER_RCU_TABLE_FREE
+>>>> +	def_bool y
+>>>> +	depends on MMU_GATHER_RCU_TABLE_FREE
+>>>> 	help
+>>>> 	  Try to reclaim empty user page table pages in paths other than munmap
+>>>> 	  and exit_mmap path.
 >>>
->>> The PT_RECLAIM can work on all architectures that support
->>> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
->>> MMU_GATHER_RCU_TABLE_FREE.
+>>> Hi, Qi
 >>>
->>> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
->>> to turn it off.
+>>> I am new to PT_RECLAIM, when reading related code I got one question.
 >>>
->>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>> ---
->>>    arch/x86/Kconfig | 1 -
->>>    mm/Kconfig       | 9 ++-------
->>>    2 files changed, 2 insertions(+), 8 deletions(-)
+>>> Before this patch,  we could have this config combination:
 >>>
->>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->>> index 80527299f859a..0d22da56a71b0 100644
->>> --- a/arch/x86/Kconfig
->>> +++ b/arch/x86/Kconfig
->>> @@ -331,7 +331,6 @@ config X86
->>>        select FUNCTION_ALIGNMENT_4B
->>>        imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->>>        select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
->>> -    select ARCH_SUPPORTS_PT_RECLAIM        if X86_64
->>>        select ARCH_SUPPORTS_SCHED_SMT        if SMP
->>>        select SCHED_SMT            if SMP
->>>        select ARCH_SUPPORTS_SCHED_CLUSTER    if SMP
->>> diff --git a/mm/Kconfig b/mm/Kconfig
->>> index bd0ea5454af82..fc00b429b7129 100644
->>> --- a/mm/Kconfig
->>> +++ b/mm/Kconfig
->>> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
->>>          The architecture has hardware support for userspace shadow call
->>>              stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->>> -config ARCH_SUPPORTS_PT_RECLAIM
->>> -    def_bool n
->>> -
->>>    config PT_RECLAIM
->>> -    bool "reclaim empty user page table pages"
->>> -    default y
->>> -    depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
->>> -    select MMU_GATHER_RCU_TABLE_FREE
->>> +    def_bool y
->>> +    depends on MMU_GATHER_RCU_TABLE_FREE
->>>        help
->>>          Try to reclaim empty user page table pages in paths other than
->>> munmap
->>>          and exit_mmap path.
+>>>       CONFIG_MMU_GATHER_RCU_TABLE_FREE & !CONFIG_PT_RECLAIM
+>>>
+>>> This means tlb_remove_table_free() is rcu version while tlb_remove_table_one()
+>>> is semi rcu version.
+>>>
+>>> I am curious could we use rcu version tlb_remove_table_one() for this case?
+>>> Use rcu version tlb_remove_table_one() if CONFIG_MMU_GATHER_RCU_TABLE_FREE. Is
+>>> there some limitation here?
 >>
->> This patch seems to make s390x compilations sometimes unhappy:
+>> I think there's no problem. The rcu version can also ensure that the
+>> fast GUP works well.
 >>
->> Unverified Warning (likely false positive, kindly check if interested):
 > 
-> I believe it is a false positive.
+> Thanks for your quick response :-)
 > 
->>
->>       mm/memory.c:1911 zap_pte_range() error: uninitialized symbol 'pmdval'.
->>
->> Warning ids grouped by kconfigs:
->>
->> recent_errors
->> `-- s390-randconfig-r072-20260117
->>       `-- mm-memory.c-zap_pte_range()-error:uninitialized-symbol-pmdval-.
->>
->> I assume the compiler is not able to figure out that only when
->> try_get_and_clear_pmd() returns false that pmdval could be uninitialized.
->>
->> Maybe it has to do with LTO?
->>
->>
->> After all, that function resides in a different compilation unit.
->>
->> Which makes me wonder whether we want to just move try_get_and_clear_pmd()
->> and reclaim_pt_is_enabled() to internal.h or even just memory.c?
->>
->> But then, maybe we could remove pt_reclaim.c completely and just have
->> try_to_free_pte() in memory.c as well?
->>
->>
->> I would just do the following cleanup:
->>
->>   From cfe97092f71fcc88f729f07ee0bc6816e3e398f0 Mon Sep 17 00:00:00 2001
->> From: "David Hildenbrand (Red Hat)" <david@kernel.org>
->> Date: Sun, 18 Jan 2026 12:20:55 +0100
->> Subject: [PATCH] mm: move pte table reclaim code to memory.c
->>
->> Let's move the code and clean it up a bit along the way.
->>
->> Signed-off-by: David Hildenbrand (Red Hat) <david@kernel.org>
->> ---
->>    MAINTAINERS     |  1 -
->>    mm/internal.h   | 18 -------------
->>    mm/memory.c     | 70 ++++++++++++++++++++++++++++++++++++++++++-----
->>    mm/pt_reclaim.c | 72 -------------------------------------------------
->>    4 files changed, 64 insertions(+), 97 deletions(-)
->>    delete mode 100644 mm/pt_reclaim.c
+> And Happy New Year
 > 
-> Make sense, and LGTM. The reason it was placed in mm/pt_reclaim.c before
-> was because there would be other paths calling these functions in the
-> future. However, it can be separated out or put into a header file when
-> there are actually such callers.
+> So my little suggestion is move the definition of __tlb_remove_table_one()
+> under CONFIG_MMU_GATHER_RCU_TABLE_FREE. Do you thinks this would be more
+> clear?
 
-Most relevant zapping better happens in memory.c :)
 
-There is, of course, zapping due to RMAP unmap, but that mostly targets 
-individual PTEs, and not a complete pte table.
+Do you mean
 
-Likely, if ever required, we should expose a proper zapping interface 
-from memory.c to other users, assuming the existing one is not suitable.
+diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
+index 2faa23d7f8d42..6aeba4bae68d2 100644
+--- a/mm/mmu_gather.c
++++ b/mm/mmu_gather.c
+@@ -319,7 +319,7 @@ static inline void tlb_table_invalidate(struct 
+mmu_gather *tlb)
+         }
+  }
 
-> 
-> would you be willing to send out an official patch?
+-#ifdef CONFIG_PT_RECLAIM
++#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+  static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
+  {
+         struct ptdesc *ptdesc;
 
-Yes, I can send one out, thanks.
+?
 
 -- 
 Cheers
