@@ -4,63 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE06ECCF2DB
-	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 10:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4615CCCF2D9
+	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 10:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AeXwYwnz7qLDfFEoaMRB4whAgP1Yo3U6h7g3p4bkyAI=; b=wHDBLLd9HmC0Yr2GT9T6ALGdva
-	xznXjeEyIe45PqH3R89O8Hph3JJsHeyGHFke2AZLJsR8aM3gTxPNipcvNepnkowuULISx1WNmtuhW
-	hhiFQdo43Eesd22bdQr7B6b8IqVPT8HgxihpJFqo1uPeImUq9h82L17Wrc3mgt1ZH1yh0OZ8Tq5xP
-	VFm/NPrml27dbIeqNlSdQBmoU7aAWMk56BJYP2Mbg28HKXY0aErvDsmdJ8gyFIw5v1Wib5IzJ3EZW
-	6Y1S3ZuVt0ujeAiweXjaLQTOuSWDBGJSBZ7iqRmvW8Pb8QjXvw/dfyh8Lhn+QHb+L4XZoxJPar+BV
-	rnYr7eCQ==;
+	bh=hQ9min3qWVodOa87w4DKEX0UUM0vB531hXuHy0gMwsE=; b=VUrmslioJnnhQI+TrFk9yjyre/
+	VenRbuJTdsOY+tqLZadRVs1WJVQnWWKnezo05rjVMDyQMZBp8gFl7tOaEIfpazyKq9AWCc8uVMNum
+	W6hSvLaHWBwNQVv52qgaVxe7zPEMdTyRdE0z1udoLPgJQLuO/AG1thCrAVnNLwkZtEvUBc+dV5a5L
+	0vf9KEF8CF4WSHWVQW3epjYnAD8hmULOFzshPrxNsUM7yJ/uMxXSswGKSHh5TadKnXiAmv+Dnu3+q
+	yE6LGs0H8UR7C9kcmtrapxKN1XGz07BPd179soAmEfViJG3bGFVM7B22yzsvgLiF2VSovmUIR3OfF
+	VYwqwmlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhmLg-00000001kCK-1f6p;
-	Mon, 19 Jan 2026 10:19:04 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vhmNX-00000001kqi-4AcF;
+	Mon, 19 Jan 2026 10:20:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhmLc-00000001kAs-0w3i
+	id 1vhmNP-00000001kpo-2uvr
 	for linux-um@lists.infradead.org;
-	Mon, 19 Jan 2026 10:19:03 +0000
+	Mon, 19 Jan 2026 10:20:59 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7C34443303;
-	Mon, 19 Jan 2026 10:18:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34AFFC2BCB2;
-	Mon, 19 Jan 2026 10:18:55 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 18B7560140;
+	Mon, 19 Jan 2026 10:20:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C777C116C6;
+	Mon, 19 Jan 2026 10:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768817939;
-	bh=fChsW6zHlCrxmXpBWFm7rxfPs3w59SiQtBb4E9KHfFg=;
+	s=k20201202; t=1768818050;
+	bh=O3CZH8Niuk4d+2faxjZDZylA2Qy1X04DLYp5vprOyBE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=d7bFMmLq1M9B8AoeKJQ9vihTU2U179+WmU91kWylvHMAex0kvNr1DQu7ArTzlhgmn
-	 4pPAxBoFN99lPf4XxyZ7tKbta1qikb7XJrp4yQh6co8oYvuotYRIA1NvXdzUJZRifS
-	 FxhutMYG4Y4QWgPa5uqAQinVsFZ/C3a1U/Ly553bgwajDO3Eafz7qBAx+ZsgAtcKkO
-	 zZN7xdRM9KwgEZWJ72QmBNlK7I+iUWDUAFicFdjUCQSAPYwBG/CXF+M+t1L9sAxu1e
-	 JiR+7Xwrb5/DZiknvTj7tiHrF90zeuEV3qr6RB81V4uGa/vwe/R5dc7JkZ36tQyv3/
-	 F3k5MADrrYaOg==
-Message-ID: <d38fcbe5-8b4a-40bc-b8c8-1c49ccaa9964@kernel.org>
-Date: Mon, 19 Jan 2026 11:18:52 +0100
+	b=UGJywINqQlP26oRRuhAQ30+JcvUZC+z/ghQV8udAX6B0OfOCG6e8Ee3Icuh7OauiH
+	 brY18ro3p1vlEEGM50AhTaFe1ByWTrAJrlkI+Vc38HMnwRyHBXLkBfwCUD7MKp+y1J
+	 wgkXJeBumJzByhtc7X5Nj8HKhbkG5+AfLAmweLY/u06veL1F8Lwy+yUwK+YFJp3deh
+	 eklC+rPkPsTDk+n5Ndj2/qMIzz7E5YVB0PVzHle+JUwuGqUOGr+SYadyycXj6/6TRQ
+	 gYM1iEnTf1YtwkHa+FFOYCTMh0B0qwRDcQgCJavPQE53rxebxOlIU+X92AH9h5z39s
+	 ingEnw2wBQ8eQ==
+Message-ID: <8e164e8b-1748-4570-822c-b973770e8fb7@kernel.org>
+Date: Mon, 19 Jan 2026 11:20:44 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 7/7] mm: make PT_RECLAIM depends on
  MMU_GATHER_RCU_TABLE_FREE
-To: Wei Yang <richard.weiyang@gmail.com>, Qi Zheng <qi.zheng@linux.dev>
-Cc: will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
- peterz@infradead.org, dev.jain@arm.com, akpm@linux-foundation.org,
- ioworker0@gmail.com, linmag7@gmail.com, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
+ npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
+ akpm@linux-foundation.org, ioworker0@gmail.com, linmag7@gmail.com
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
  linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
  linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
 References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
  <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
- <20251231094243.zmjs7kgflm7q6k73@master>
- <a3a60bbb-70b7-49ed-abc6-937e6c13d681@linux.dev>
- <20260101020715.45wqnjgcklvjcth3@master>
 From: "David Hildenbrand (Red Hat)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -106,12 +102,9 @@ Autocrypt: addr=david@kernel.org; keydata=
  cFAM8nBWrEmNU2vvIGJzjJ/NVYYIY0TgOc5bS9wh6jKHL2+chrfDW5neLJjY2x3snF8q7U9G
  EIbBfNHDlOV8SyhEjtX0DyKxQKioTYPOHcW9gdV5fhSz5tEv+ipqt4kIgWqBgzK8ePtDTqRM
  qZq457g1/SXSoSQi4jN+gsneqvlTJdzaEu1bJP0iv6ViVf15+qHuY5iojCz8fa0=
-In-Reply-To: <20260101020715.45wqnjgcklvjcth3@master>
+In-Reply-To: <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260119_021902_005761_2B21174F 
-X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,107 +119,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 1/1/26 03:07, Wei Yang wrote:
-> On Wed, Dec 31, 2025 at 05:52:57PM +0800, Qi Zheng wrote:
->>
->>
->> On 12/31/25 5:42 PM, Wei Yang wrote:
->>> On Wed, Dec 17, 2025 at 05:45:48PM +0800, Qi Zheng wrote:
->>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>>>
->>>> The PT_RECLAIM can work on all architectures that support
->>>> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
->>>> MMU_GATHER_RCU_TABLE_FREE.
->>>>
->>>> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
->>>> to turn it off.
->>>>
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>> ---
->>>> arch/x86/Kconfig | 1 -
->>>> mm/Kconfig       | 9 ++-------
->>>> 2 files changed, 2 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->>>> index 80527299f859a..0d22da56a71b0 100644
->>>> --- a/arch/x86/Kconfig
->>>> +++ b/arch/x86/Kconfig
->>>> @@ -331,7 +331,6 @@ config X86
->>>> 	select FUNCTION_ALIGNMENT_4B
->>>> 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->>>> 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
->>>> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
->>>> 	select ARCH_SUPPORTS_SCHED_SMT		if SMP
->>>> 	select SCHED_SMT			if SMP
->>>> 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
->>>> diff --git a/mm/Kconfig b/mm/Kconfig
->>>> index bd0ea5454af82..fc00b429b7129 100644
->>>> --- a/mm/Kconfig
->>>> +++ b/mm/Kconfig
->>>> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
->>>> 	  The architecture has hardware support for userspace shadow call
->>>>             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->>>>
->>>> -config ARCH_SUPPORTS_PT_RECLAIM
->>>> -	def_bool n
->>>> -
->>>> config PT_RECLAIM
->>>> -	bool "reclaim empty user page table pages"
->>>> -	default y
->>>> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
->>>> -	select MMU_GATHER_RCU_TABLE_FREE
->>>> +	def_bool y
->>>> +	depends on MMU_GATHER_RCU_TABLE_FREE
->>>> 	help
->>>> 	  Try to reclaim empty user page table pages in paths other than munmap
->>>> 	  and exit_mmap path.
->>>
->>> Hi, Qi
->>>
->>> I am new to PT_RECLAIM, when reading related code I got one question.
->>>
->>> Before this patch,  we could have this config combination:
->>>
->>>       CONFIG_MMU_GATHER_RCU_TABLE_FREE & !CONFIG_PT_RECLAIM
->>>
->>> This means tlb_remove_table_free() is rcu version while tlb_remove_table_one()
->>> is semi rcu version.
->>>
->>> I am curious could we use rcu version tlb_remove_table_one() for this case?
->>> Use rcu version tlb_remove_table_one() if CONFIG_MMU_GATHER_RCU_TABLE_FREE. Is
->>> there some limitation here?
->>
->> I think there's no problem. The rcu version can also ensure that the
->> fast GUP works well.
->>
+On 12/17/25 10:45, Qi Zheng wrote:
+> From: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> Thanks for your quick response :-)
+> The PT_RECLAIM can work on all architectures that support
+> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
+> MMU_GATHER_RCU_TABLE_FREE.
 > 
-> And Happy New Year
+> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
+> to turn it off.
+
+Right, and if there is ever a need to, I wonder whether that should be a 
+boottime/runtime toggle instead.
+
+So far we haven't heard of any relevant runtime overheads that causes 
+problems.
+
 > 
-> So my little suggestion is move the definition of __tlb_remove_table_one()
-> under CONFIG_MMU_GATHER_RCU_TABLE_FREE. Do you thinks this would be more
-> clear?
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>   arch/x86/Kconfig | 1 -
+>   mm/Kconfig       | 9 ++-------
+>   2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 80527299f859a..0d22da56a71b0 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -331,7 +331,6 @@ config X86
+>   	select FUNCTION_ALIGNMENT_4B
+>   	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>   	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
+>   	select ARCH_SUPPORTS_SCHED_SMT		if SMP
+>   	select SCHED_SMT			if SMP
+>   	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index bd0ea5454af82..fc00b429b7129 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
+>   	  The architecture has hardware support for userspace shadow call
+>             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>   
+> -config ARCH_SUPPORTS_PT_RECLAIM
+> -	def_bool n
+> -
+>   config PT_RECLAIM
+> -	bool "reclaim empty user page table pages"
+> -	default y
+> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+> -	select MMU_GATHER_RCU_TABLE_FREE
+> +	def_bool y
+> +	depends on MMU_GATHER_RCU_TABLE_FREE
+>   	help
+>   	  Try to reclaim empty user page table pages in paths other than munmap
+>   	  and exit_mmap path.
 
 
-Do you mean
+Nothing jumped at me. Hopefully we're not missing something important :)
 
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index 2faa23d7f8d42..6aeba4bae68d2 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -319,7 +319,7 @@ static inline void tlb_table_invalidate(struct 
-mmu_gather *tlb)
-         }
-  }
-
--#ifdef CONFIG_PT_RECLAIM
-+#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
-  static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
-  {
-         struct ptdesc *ptdesc;
-
-?
+Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
 
 -- 
 Cheers
