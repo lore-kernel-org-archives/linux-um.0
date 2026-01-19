@@ -4,48 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73855C98315
-	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 03:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF741CCF2D5
+	for <linux-um@archiver.kernel.org>; Mon, 19 Jan 2026 10:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OndFxxnVxJHEWV1Ai4YOkM1DVjpvrsGTOMshAUDXrrs=; b=FPAmJ76TdGfvqvufhUF/NrH4w8
-	ooaLag/AhaVNcHP/oWgOjw+ezIcpK0D+TL4BrZWXoWZRcy7/CpW8gWO8RorJynEe7eM5yND1E4jMh
-	49dfXGBJ1f224OCTaj8uhvNPpIma5509w86CPuP38lPiGxUEnc5TGYCUgaj1jhae9bWT+9LrnogP5
-	tMEfItZCgN8CHdIsmWqgU7vG8iALoox6qHNi2Cyras5WvZktAhSZjiL69gtuBBTijsyNoDlVjda5h
-	6pg2nd1p3fldcIPix2ywhybP2RdgsL84QCzB4ULeZyuYHys0vdEAEh3SDqfHWaKoh9LaWln4Vqldy
-	SVGm27nw==;
+	bh=GpEfxgQgJH19fN10/GjA7dR7y5iNeQpprdp9wvrRXcQ=; b=Mz/JDQ479MA1O6PcUTVjJLDlEo
+	l1r9UIg3LQ5DE51KDWgG8RPVyK7VylRgg2e1CwxQN66/YrBKWC4fdtJcasmzzWGaLn2otN4hCBDlx
+	SS62003AKNmZ1KxjCd4O9F7d78JRXFuYnHhn+7IVn0STkzJ9gphMUV62IoBUb7qY5FvS/BdP74sh9
+	Vpq1No6LvCRAZOkAOLqUXy/cMxKTPwd5oTRG0VF4DWtv/gFIZHrtYIvNJjZ7KoCThgRNL/laEIfxY
+	7EjXtDeqf5X/s4loS/6QjkmT5ZEH0Zu1QYTXQ35HkztvDxjYaysQXZZA1QmwR5I2UwLFVO74UkqWg
+	lNNbPdaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhgIO-00000001KdR-0UEH;
-	Mon, 19 Jan 2026 03:51:16 +0000
-Received: from out-182.mta1.migadu.com ([2001:41d0:203:375::b6])
+	id 1vhmFm-00000001jBL-22b5;
+	Mon, 19 Jan 2026 10:12:58 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhgIL-00000001Kcq-27aa
+	id 1vhmFk-00000001jAb-2BJp
 	for linux-um@lists.infradead.org;
-	Mon, 19 Jan 2026 03:51:14 +0000
-Message-ID: <24837e0e-db86-4c64-8387-243d94293b48@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768794657;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OndFxxnVxJHEWV1Ai4YOkM1DVjpvrsGTOMshAUDXrrs=;
-	b=hbybdNAt06yK3Ue9qz5tUkDDtYUIVbamganh0hpEQCf75muj99rryT85wDoTAZTEInAmI5
-	CHKqFtiG0pmhZ4aoDnrB9Eu3Rco9srP+y1Jcl1/m2NZZcWV/LkYhvfkXb6L7LloimZT5zp
-	byPLsUVK3GIoTWY1pccENgzenQny59E=
-Date: Mon, 19 Jan 2026 11:50:41 +0800
+	Mon, 19 Jan 2026 10:12:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 30E694091A;
+	Mon, 19 Jan 2026 10:12:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7840C116C6;
+	Mon, 19 Jan 2026 10:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768817576;
+	bh=JzYfQ2HAxs4i1+wCNZ4YJF2miFvaY77kYkNH822rrWs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=me8+IGewGCeffwxGVagl70q+hrSe2opYVeA1iGHPxfp3jOTyA5Mb5KeeLkc/Xja14
+	 HfCoVgl4rWFfeV2WDNbJUF3aDkXBLFx+1M/3Kr8Mo/047Y4IUJprtnZUgHNC0AUUCr
+	 89z9nS4T9hLB1/EnWTxzIbJhlH1HocGK/UMOIYYxqsRRynUaByy3bX0BWBcPAUw7sy
+	 WQneEXcH6ogG6xNS1YOTkZw8XHe0vetHdKxlkRbStzTvr/D+mbvAndI4gRQBd2SP9L
+	 aPNuojOPQ0OHFPjwXGaM7HxgAP5LamThIQoakceGGuilMqy4wQEx6wGMh8/64SuQCD
+	 mHUCpaQBpY2lA==
+Message-ID: <74607439-5f52-4c03-904f-01c675e8bb06@kernel.org>
+Date: Mon, 19 Jan 2026 11:12:50 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 7/7] mm: make PT_RECLAIM depends on
  MMU_GATHER_RCU_TABLE_FREE
-To: "David Hildenbrand (Red Hat)" <david@kernel.org>, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org,
- dev.jain@arm.com, akpm@linux-foundation.org, ioworker0@gmail.com,
- linmag7@gmail.com
+To: Qi Zheng <qi.zheng@linux.dev>, will@kernel.org, aneesh.kumar@kernel.org,
+ npiggin@gmail.com, peterz@infradead.org, dev.jain@arm.com,
+ akpm@linux-foundation.org, ioworker0@gmail.com, linmag7@gmail.com
 Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
  linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
@@ -53,15 +58,58 @@ Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
 References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
  <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
  <bef9fc2c-c982-4b46-b16a-8ecbc9584d62@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <bef9fc2c-c982-4b46-b16a-8ecbc9584d62@kernel.org>
+ <24837e0e-db86-4c64-8387-243d94293b48@linux.dev>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+In-Reply-To: <24837e0e-db86-4c64-8387-243d94293b48@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260118_195113_699330_1FD2437B 
-X-CRM114-Status: GOOD (  39.08  )
+X-CRM114-CacheID: sfid-20260119_021256_596294_225CD679 
+X-CRM114-Status: GOOD (  25.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,356 +124,128 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-On 1/18/26 7:23 PM, David Hildenbrand (Red Hat) wrote:
-> On 12/17/25 10:45, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 1/19/26 04:50, Qi Zheng wrote:
+> 
+> 
+> On 1/18/26 7:23 PM, David Hildenbrand (Red Hat) wrote:
+>> On 12/17/25 10:45, Qi Zheng wrote:
+>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>
+>>> The PT_RECLAIM can work on all architectures that support
+>>> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
+>>> MMU_GATHER_RCU_TABLE_FREE.
+>>>
+>>> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
+>>> to turn it off.
+>>>
+>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>> ---
+>>>    arch/x86/Kconfig | 1 -
+>>>    mm/Kconfig       | 9 ++-------
+>>>    2 files changed, 2 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>> index 80527299f859a..0d22da56a71b0 100644
+>>> --- a/arch/x86/Kconfig
+>>> +++ b/arch/x86/Kconfig
+>>> @@ -331,7 +331,6 @@ config X86
+>>>        select FUNCTION_ALIGNMENT_4B
+>>>        imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>>>        select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>>> -    select ARCH_SUPPORTS_PT_RECLAIM        if X86_64
+>>>        select ARCH_SUPPORTS_SCHED_SMT        if SMP
+>>>        select SCHED_SMT            if SMP
+>>>        select ARCH_SUPPORTS_SCHED_CLUSTER    if SMP
+>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index bd0ea5454af82..fc00b429b7129 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
+>>>          The architecture has hardware support for userspace shadow call
+>>>              stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>>> -config ARCH_SUPPORTS_PT_RECLAIM
+>>> -    def_bool n
+>>> -
+>>>    config PT_RECLAIM
+>>> -    bool "reclaim empty user page table pages"
+>>> -    default y
+>>> -    depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+>>> -    select MMU_GATHER_RCU_TABLE_FREE
+>>> +    def_bool y
+>>> +    depends on MMU_GATHER_RCU_TABLE_FREE
+>>>        help
+>>>          Try to reclaim empty user page table pages in paths other than
+>>> munmap
+>>>          and exit_mmap path.
 >>
->> The PT_RECLAIM can work on all architectures that support
->> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
->> MMU_GATHER_RCU_TABLE_FREE.
+>> This patch seems to make s390x compilations sometimes unhappy:
 >>
->> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
->> to turn it off.
+>> Unverified Warning (likely false positive, kindly check if interested):
+> 
+> I believe it is a false positive.
+> 
 >>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>       mm/memory.c:1911 zap_pte_range() error: uninitialized symbol 'pmdval'.
+>>
+>> Warning ids grouped by kconfigs:
+>>
+>> recent_errors
+>> `-- s390-randconfig-r072-20260117
+>>       `-- mm-memory.c-zap_pte_range()-error:uninitialized-symbol-pmdval-.
+>>
+>> I assume the compiler is not able to figure out that only when
+>> try_get_and_clear_pmd() returns false that pmdval could be uninitialized.
+>>
+>> Maybe it has to do with LTO?
+>>
+>>
+>> After all, that function resides in a different compilation unit.
+>>
+>> Which makes me wonder whether we want to just move try_get_and_clear_pmd()
+>> and reclaim_pt_is_enabled() to internal.h or even just memory.c?
+>>
+>> But then, maybe we could remove pt_reclaim.c completely and just have
+>> try_to_free_pte() in memory.c as well?
+>>
+>>
+>> I would just do the following cleanup:
+>>
+>>   From cfe97092f71fcc88f729f07ee0bc6816e3e398f0 Mon Sep 17 00:00:00 2001
+>> From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+>> Date: Sun, 18 Jan 2026 12:20:55 +0100
+>> Subject: [PATCH] mm: move pte table reclaim code to memory.c
+>>
+>> Let's move the code and clean it up a bit along the way.
+>>
+>> Signed-off-by: David Hildenbrand (Red Hat) <david@kernel.org>
 >> ---
->>   arch/x86/Kconfig | 1 -
->>   mm/Kconfig       | 9 ++-------
->>   2 files changed, 2 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 80527299f859a..0d22da56a71b0 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -331,7 +331,6 @@ config X86
->>       select FUNCTION_ALIGNMENT_4B
->>       imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->>       select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
->> -    select ARCH_SUPPORTS_PT_RECLAIM        if X86_64
->>       select ARCH_SUPPORTS_SCHED_SMT        if SMP
->>       select SCHED_SMT            if SMP
->>       select ARCH_SUPPORTS_SCHED_CLUSTER    if SMP
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index bd0ea5454af82..fc00b429b7129 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
->>         The architecture has hardware support for userspace shadow call
->>             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->> -config ARCH_SUPPORTS_PT_RECLAIM
->> -    def_bool n
->> -
->>   config PT_RECLAIM
->> -    bool "reclaim empty user page table pages"
->> -    default y
->> -    depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
->> -    select MMU_GATHER_RCU_TABLE_FREE
->> +    def_bool y
->> +    depends on MMU_GATHER_RCU_TABLE_FREE
->>       help
->>         Try to reclaim empty user page table pages in paths other than 
->> munmap
->>         and exit_mmap path.
+>>    MAINTAINERS     |  1 -
+>>    mm/internal.h   | 18 -------------
+>>    mm/memory.c     | 70 ++++++++++++++++++++++++++++++++++++++++++-----
+>>    mm/pt_reclaim.c | 72 -------------------------------------------------
+>>    4 files changed, 64 insertions(+), 97 deletions(-)
+>>    delete mode 100644 mm/pt_reclaim.c
 > 
-> This patch seems to make s390x compilations sometimes unhappy:
-> 
-> Unverified Warning (likely false positive, kindly check if interested):
+> Make sense, and LGTM. The reason it was placed in mm/pt_reclaim.c before
+> was because there would be other paths calling these functions in the
+> future. However, it can be separated out or put into a header file when
+> there are actually such callers.
 
-I believe it is a false positive.
+Most relevant zapping better happens in memory.c :)
+
+There is, of course, zapping due to RMAP unmap, but that mostly targets 
+individual PTEs, and not a complete pte table.
+
+Likely, if ever required, we should expose a proper zapping interface 
+from memory.c to other users, assuming the existing one is not suitable.
 
 > 
->      mm/memory.c:1911 zap_pte_range() error: uninitialized symbol 'pmdval'.
-> 
-> Warning ids grouped by kconfigs:
-> 
-> recent_errors
-> `-- s390-randconfig-r072-20260117
->      `-- mm-memory.c-zap_pte_range()-error:uninitialized-symbol-pmdval-.
-> 
-> I assume the compiler is not able to figure out that only when
-> try_get_and_clear_pmd() returns false that pmdval could be uninitialized.
-> 
-> Maybe it has to do with LTO?
-> 
-> 
-> After all, that function resides in a different compilation unit.
-> 
-> Which makes me wonder whether we want to just move try_get_and_clear_pmd()
-> and reclaim_pt_is_enabled() to internal.h or even just memory.c?
-> 
-> But then, maybe we could remove pt_reclaim.c completely and just have
-> try_to_free_pte() in memory.c as well?
-> 
-> 
-> I would just do the following cleanup:
-> 
->  From cfe97092f71fcc88f729f07ee0bc6816e3e398f0 Mon Sep 17 00:00:00 2001
-> From: "David Hildenbrand (Red Hat)" <david@kernel.org>
-> Date: Sun, 18 Jan 2026 12:20:55 +0100
-> Subject: [PATCH] mm: move pte table reclaim code to memory.c
-> 
-> Let's move the code and clean it up a bit along the way.
-> 
-> Signed-off-by: David Hildenbrand (Red Hat) <david@kernel.org>
-> ---
->   MAINTAINERS     |  1 -
->   mm/internal.h   | 18 -------------
->   mm/memory.c     | 70 ++++++++++++++++++++++++++++++++++++++++++-----
->   mm/pt_reclaim.c | 72 -------------------------------------------------
->   4 files changed, 64 insertions(+), 97 deletions(-)
->   delete mode 100644 mm/pt_reclaim.c
+> would you be willing to send out an official patch?
 
-Make sense, and LGTM. The reason it was placed in mm/pt_reclaim.c before
-was because there would be other paths calling these functions in the
-future. However, it can be separated out or put into a header file when
-there are actually such callers.
+Yes, I can send one out, thanks.
 
-would you be willing to send out an official patch?
+-- 
+Cheers
 
-Thanks,
-Qi
-
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 11720728d92f2..28e8e28bca3e5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16692,7 +16692,6 @@ R:    Shakeel Butt <shakeel.butt@linux.dev>
->   R:    Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
->   L:    linux-mm@kvack.org
->   S:    Maintained
-> -F:    mm/pt_reclaim.c
->   F:    mm/vmscan.c
->   F:    mm/workingset.c
-> 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 9508dbaf47cd4..ef71a1d9991f2 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -1745,24 +1745,6 @@ int walk_page_range_debug(struct mm_struct *mm, 
-> unsigned long start,
->                 unsigned long end, const struct mm_walk_ops *ops,
->                 pgd_t *pgd, void *private);
-> 
-> -/* pt_reclaim.c */
-> -bool try_get_and_clear_pmd(struct mm_struct *mm, pmd_t *pmd, pmd_t 
-> *pmdval);
-> -void free_pte(struct mm_struct *mm, unsigned long addr, struct 
-> mmu_gather *tlb,
-> -          pmd_t pmdval);
-> -void try_to_free_pte(struct mm_struct *mm, pmd_t *pmd, unsigned long addr,
-> -             struct mmu_gather *tlb);
-> -
-> -#ifdef CONFIG_PT_RECLAIM
-> -bool reclaim_pt_is_enabled(unsigned long start, unsigned long end,
-> -               struct zap_details *details);
-> -#else
-> -static inline bool reclaim_pt_is_enabled(unsigned long start, unsigned 
-> long end,
-> -                     struct zap_details *details)
-> -{
-> -    return false;
-> -}
-> -#endif /* CONFIG_PT_RECLAIM */
-> -
->   void dup_mm_exe_file(struct mm_struct *mm, struct mm_struct *oldmm);
->   int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm);
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index f2e9e05388743..a09226761a07f 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1824,11 +1824,68 @@ static inline int do_zap_pte_range(struct 
-> mmu_gather *tlb,
->       return nr;
->   }
-> 
-> +static bool pte_table_reclaim_enabled(unsigned long start, unsigned 
-> long end,
-> +        struct zap_details *details)
-> +{
-> +    if (!IS_ENABLED(CONFIG_PT_RECLAIM))
-> +        return false;
-> +    return details && details->reclaim_pt && (end - start >= PMD_SIZE);
-> +}
-> +
-> +static bool zap_empty_pte_table(struct mm_struct *mm, pmd_t *pmd, pmd_t 
-> *pmdval)
-> +{
-> +    spinlock_t *pml = pmd_lockptr(mm, pmd);
-> +
-> +    if (!spin_trylock(pml))
-> +        return false;
-> +
-> +    *pmdval = pmdp_get_lockless(pmd);
-> +    pmd_clear(pmd);
-> +    spin_unlock(pml);
-> +
-> +    return true;
-> +}
-> +
-> +static bool zap_pte_table_if_empty(struct mm_struct *mm, pmd_t *pmd,
-> +        unsigned long addr, pmd_t *pmdval)
-> +{
-> +    spinlock_t *pml, *ptl = NULL;
-> +    pte_t *start_pte, *pte;
-> +    int i;
-> +
-> +    pml = pmd_lock(mm, pmd);
-> +    start_pte = pte_offset_map_rw_nolock(mm, pmd, addr, pmdval, &ptl);
-> +    if (!start_pte)
-> +        goto out_ptl;
-> +    if (ptl != pml)
-> +        spin_lock_nested(ptl, SINGLE_DEPTH_NESTING);
-> +
-> +    for (i = 0, pte = start_pte; i < PTRS_PER_PTE; i++, pte++) {
-> +        if (!pte_none(ptep_get(pte)))
-> +            goto out_ptl;
-> +    }
-> +    pte_unmap(start_pte);
-> +
-> +    pmd_clear(pmd);
-> +
-> +    if (ptl != pml)
-> +        spin_unlock(ptl);
-> +    spin_unlock(pml);
-> +    return true;
-> +out_ptl:
-> +    if (start_pte)
-> +        pte_unmap_unlock(start_pte, ptl);
-> +    if (ptl != pml)
-> +        spin_unlock(pml);
-> +    return false;
-> +}
-> +
->   static unsigned long zap_pte_range(struct mmu_gather *tlb,
->                   struct vm_area_struct *vma, pmd_t *pmd,
->                   unsigned long addr, unsigned long end,
->                   struct zap_details *details)
->   {
-> +    bool can_reclaim_pt = pte_table_reclaim_enabled(addr, end, details);
->       bool force_flush = false, force_break = false;
->       struct mm_struct *mm = tlb->mm;
->       int rss[NR_MM_COUNTERS];
-> @@ -1837,7 +1894,6 @@ static unsigned long zap_pte_range(struct 
-> mmu_gather *tlb,
->       pte_t *pte;
->       pmd_t pmdval;
->       unsigned long start = addr;
-> -    bool can_reclaim_pt = reclaim_pt_is_enabled(start, end, details);
->       bool direct_reclaim = true;
->       int nr;
-> 
-> @@ -1878,7 +1934,7 @@ static unsigned long zap_pte_range(struct 
-> mmu_gather *tlb,
->        * from being repopulated by another thread.
->        */
->       if (can_reclaim_pt && direct_reclaim && addr == end)
-> -        direct_reclaim = try_get_and_clear_pmd(mm, pmd, &pmdval);
-> +        direct_reclaim = zap_empty_pte_table(mm, pmd, &pmdval);
-> 
->       add_mm_rss_vec(mm, rss);
->       lazy_mmu_mode_disable();
-> @@ -1907,10 +1963,12 @@ static unsigned long zap_pte_range(struct 
-> mmu_gather *tlb,
->       }
-> 
->       if (can_reclaim_pt) {
-> -        if (direct_reclaim)
-> -            free_pte(mm, start, tlb, pmdval);
-> -        else
-> -            try_to_free_pte(mm, pmd, start, tlb);
-> +        if (!direct_reclaim)
-> +            direct_reclaim = zap_pte_table_if_empty(mm, pmd, start, 
-> &pmdval);
-> +        if (direct_reclaim) {
-> +            pte_free_tlb(tlb, pmd_pgtable(pmdval), addr);
-> +            mm_dec_nr_ptes(mm);
-> +        }
->       }
-> 
->       return addr;
-> diff --git a/mm/pt_reclaim.c b/mm/pt_reclaim.c
-> deleted file mode 100644
-> index 46771cfff8239..0000000000000
-> --- a/mm/pt_reclaim.c
-> +++ /dev/null
-> @@ -1,72 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/hugetlb.h>
-> -#include <linux/pgalloc.h>
-> -
-> -#include <asm/tlb.h>
-> -
-> -#include "internal.h"
-> -
-> -bool reclaim_pt_is_enabled(unsigned long start, unsigned long end,
-> -               struct zap_details *details)
-> -{
-> -    return details && details->reclaim_pt && (end - start >= PMD_SIZE);
-> -}
-> -
-> -bool try_get_and_clear_pmd(struct mm_struct *mm, pmd_t *pmd, pmd_t 
-> *pmdval)
-> -{
-> -    spinlock_t *pml = pmd_lockptr(mm, pmd);
-> -
-> -    if (!spin_trylock(pml))
-> -        return false;
-> -
-> -    *pmdval = pmdp_get_lockless(pmd);
-> -    pmd_clear(pmd);
-> -    spin_unlock(pml);
-> -
-> -    return true;
-> -}
-> -
-> -void free_pte(struct mm_struct *mm, unsigned long addr, struct 
-> mmu_gather *tlb,
-> -          pmd_t pmdval)
-> -{
-> -    pte_free_tlb(tlb, pmd_pgtable(pmdval), addr);
-> -    mm_dec_nr_ptes(mm);
-> -}
-> -
-> -void try_to_free_pte(struct mm_struct *mm, pmd_t *pmd, unsigned long addr,
-> -             struct mmu_gather *tlb)
-> -{
-> -    pmd_t pmdval;
-> -    spinlock_t *pml, *ptl = NULL;
-> -    pte_t *start_pte, *pte;
-> -    int i;
-> -
-> -    pml = pmd_lock(mm, pmd);
-> -    start_pte = pte_offset_map_rw_nolock(mm, pmd, addr, &pmdval, &ptl);
-> -    if (!start_pte)
-> -        goto out_ptl;
-> -    if (ptl != pml)
-> -        spin_lock_nested(ptl, SINGLE_DEPTH_NESTING);
-> -
-> -    /* Check if it is empty PTE page */
-> -    for (i = 0, pte = start_pte; i < PTRS_PER_PTE; i++, pte++) {
-> -        if (!pte_none(ptep_get(pte)))
-> -            goto out_ptl;
-> -    }
-> -    pte_unmap(start_pte);
-> -
-> -    pmd_clear(pmd);
-> -
-> -    if (ptl != pml)
-> -        spin_unlock(ptl);
-> -    spin_unlock(pml);
-> -
-> -    free_pte(mm, addr, tlb, pmdval);
-> -
-> -    return;
-> -out_ptl:
-> -    if (start_pte)
-> -        pte_unmap_unlock(start_pte, ptl);
-> -    if (ptl != pml)
-> -        spin_unlock(pml);
-> -}
-
+David
 
