@@ -4,110 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED774D2ED0F
-	for <linux-um@archiver.kernel.org>; Tue, 20 Jan 2026 11:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D26D3EE66
+	for <linux-um@archiver.kernel.org>; Thu, 22 Jan 2026 14:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OFhodcvRDH7q+MwCRWTVNOvZ9XPVdXXYbq7DeVi+2lE=; b=2g6uzwuu28PGQkF3SqrLesjlvc
-	HUnuLfGbGcvjIP6Z6RrMXABLWnGHtSt+Bo3iSJlUWn0TuuD8KQd0Gc/z58K6u3ASBMM9k8kabxxxI
-	YbFSpPvd8xVvxk5WrL5t5MZ0xi9aE5VAA39nBEKSQR5bg2Kl68GZTuO5BR3MMTCbKdxWlpQi3zRhQ
-	+lSNKY8y1N6jTTLECx0wZzzyYoP0E9PREKiUCm6GrS+sxtUvcdVsE/Suuwh88MmFEMwFwYZ9i4HzO
-	0Q+uojHjsSO5KfAq7Id8sb3JlGsBZEvbj7npIgRC6PEqr8HsjqfI0opqHE8K4YtUARIg6mONXzOb5
-	pwxSYWsg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=KXXllTpn+4j3DQ+o0FpmjiZEdWUg34VA5GPm+3TDwac=; b=Wm1f1rLo546godmh4RMHRjfMj9
+	oagD+rK+bsdLI5+WZkKeG7HbnjQLyLto1z2G35b0EdtX2iK01V9PjVifr2W6NFyFxN8hovzO8SVUD
+	wLV0NdUhx9jN/ZvDDpBETM27NQq4+hFXTvZOmBuzmsKUHpCMTpRPE9jkXexQmJlOluVD9b9wRmdx5
+	T5Pyz5QIAmmo+Xv2izrjbCZKP96Gftu7HtFmtezYntb5dRcpRd5mqOjGcMZOj/908F4avsvegMThE
+	eGLvI+benUslV9s4G+kN7hA7p8wbByDnpXRE6LnZosFUZ4NfIbKrYyR0Flo4qefsvd5fJ5mzLXArs
+	mSK+Ysfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi9wY-00000003iTg-2eEy;
-	Tue, 20 Jan 2026 11:30:42 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vivEo-00000007CCY-0KOG;
+	Thu, 22 Jan 2026 14:00:42 +0000
+Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi9wX-00000003iTK-1PNz
-	for linux-um@bombadil.infradead.org;
-	Tue, 20 Jan 2026 11:30:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=OFhodcvRDH7q+MwCRWTVNOvZ9XPVdXXYbq7DeVi+2lE=; b=SOzMr+1VyHdoQrD9lujGLLqlH5
-	60ssjjMKXypiB8k22lVDe0DuuiJOoyxh7UuBFtAFB4136PAEUoqOo2HS4DyrkhW9XQ/9VQLjOSpSF
-	qendmcVoOs7Kn9+Kb7BAtQU3318sr7tiAm6IAnefLHG/LJgSmCt1J72khW3mnc4IT8RU/1NrV2CzL
-	PyOENq/fIBzkYmTe1EzUG00g7WDsJYDqewR80TfZ3E86v6zHi79f+LWV8LVNRfpiyLOOlzuAB5vl1
-	/txunw5N1f3tTehIdqCtQAu/y2a1qMq8wb5dvMndmJO6EtPh/UhfdpN5vfHeA8/VQIxLTc3eb/mo2
-	MxARbFhg==;
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi9wU-0000000Duzl-23y3
+	id 1vivEl-00000007CC1-02KV
 	for linux-um@lists.infradead.org;
-	Tue, 20 Jan 2026 11:30:40 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-34be2be4b7cso3189316a91.3
-        for <linux-um@lists.infradead.org>; Tue, 20 Jan 2026 03:30:37 -0800 (PST)
+	Thu, 22 Jan 2026 14:00:40 +0000
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-6505d3b84bcso1294773a12.3
+        for <linux-um@lists.infradead.org>; Thu, 22 Jan 2026 06:00:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768908636; x=1769513436; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1769090436; x=1769695236; darn=lists.infradead.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OFhodcvRDH7q+MwCRWTVNOvZ9XPVdXXYbq7DeVi+2lE=;
-        b=Z4CltRo65RReG6V2A5xvYTXdi8QVQkkG/6r9gXTCqYyTovGIrApy1rLNw/rtNq1IM/
-         8IcocsxR97ebj9Z2sEWKzLh/0o3agEsVKAZOznHAU9gX5hEIbQz2xQzoN6LfHxemUyTO
-         d1X7S18OXxtwyZMvHY+1ZF23Wi/Y0V3GrajGfoeyvlgcAlFPyGA03qZ/PinqaVJnxiVY
-         GxAKVuu43xXGXCVDsQxkSqtLo0Xy1BZwQNYPnZTYSvxix5+qncWg+7CiiI3CJBlgMdib
-         bqQT+iTVh+d0RzCwwLlZut/bvs/191OT6gyd5A+79/j8ufF6TBhKxpecpc2AdiNhjV4q
-         P0Ow==
+        bh=KXXllTpn+4j3DQ+o0FpmjiZEdWUg34VA5GPm+3TDwac=;
+        b=MW7nP2lfhZs1ZADvsC4ekVxLv/ZeZ7JoOanpXXjutZwUODCsjuD5ix188I98eWP0F0
+         Ffwl4wkROglU/uX9PKDMteDM8t6c4a/D1dIvzE4Ru+D9kigxCI4g3eXC2GquWkFnVs11
+         kXEijl+cBKzMzDA2M0gTVfNrw/4fl4UvjEudrggnxqTMW1thMfMJPHwL85wfhdt0U9+u
+         961pR4Mfb9XdbMkDlrxxka7/1ZmD5UfARN/dR2QBEdbx20U042zsDAtJrQ+Vu9rLdpYm
+         KroAxck07OJ801UvkgH3yKlbwNl3p6+uRrSOIZ918vnO31EnvIgMdbPnrFXnlznA6DCj
+         Ns8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768908636; x=1769513436;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=OFhodcvRDH7q+MwCRWTVNOvZ9XPVdXXYbq7DeVi+2lE=;
-        b=SVoA8bAe5K4BP4NSp/eHrah/cOQDHJSwYr2aH1sp2XUwi9sRaKKWOvT+wvPgYkAOWU
-         Wq0TTjWZZ1ZuiIL2/3/xUSg3mT22apGsCulVcoX4PF1Cc4rIOWffx42WMEJyIX/nN/1k
-         8ssEfXNryBi4rpkRv4IdgD24zQElgrJCsNOPVk5HoGFFnZDux+fY3YRnfU8U6+PmbA7d
-         DIxOLp7zP8/dmdKk2fDqZO9KAtgno2Q1XqeFBneDS18VY7puEm1KjRmlo9XVRobXm+sk
-         Ftpu+qu2HhSP/TzDv3ChMtloJnZ3xnwPdR9S21Q7ZJJ69/fyK4P8c2ZTwK9qJvu8zuMD
-         EPaQ==
-X-Gm-Message-State: AOJu0YzkBSqj7g5R2gHcSs6ZCgpb3UBNwBlkUIFaNPQUk7g5jMoaDVo1
-	ggyQssPUiiVvuX9mhgD7TddUdklDkpORnvJ7u47fG/RRvL5fMCqi5I6I
-X-Gm-Gg: AZuq6aIEs9Or94KcuFRw+bqRqzO8EqFo9iXTb8eCweGJM1wAHScm/4xepTTSomW91Go
-	nasCEM9Qrbig6l1FGi33hrXJFp+7kH24GKUz1LJ+EXmSaZEnz2+wF82wFJs3VwxljNcwoc8+2Hj
-	efcBjCG3Eu+RknfKv0//yYxb5jz31XdZTZe8EfzAMQa10NgLYudld+KowlvUi9iMxvutMpH6Jhd
-	maRURhP4FHN9+MrK350euQEzCzQ++XHVih6kp9hpU6UdQ0Il66TY28Vb8opWRdSv7IsguwV3kj+
-	0f4lzyFnhNLCCdLYPTI0daJ/aA9fpUMgCOlvOx8WS8KMh8oRXAu9KNQuVBJR7amBC5ihC7U/EZZ
-	iAIaoVRY2oxNpn58faNO1LzWu3mTqbRo5Ve2P74fHTFQnUSQUUu6LOKHs27pksTXQ6R37/nl9uR
-	PYkWNL680REPJEu6KvU6Fuutt2qINLgf+X44XLIeaT1NZIvuocediJrA==
-X-Received: by 2002:a17:90b:3f44:b0:341:315:f4ed with SMTP id 98e67ed59e1d1-352c3e4a4c3mr1362569a91.10.1768908636143;
-        Tue, 20 Jan 2026 03:30:36 -0800 (PST)
-Received: from nwang-tw.host.com ([124.127.58.139])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-352d57a56f2sm1045900a91.15.2026.01.20.03.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 03:30:35 -0800 (PST)
-From: iamhswang@gmail.com
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	akpm@linux-foundation.org,
-	dave.hansen@linux.intel.com,
-	tiwei.btw@antgroup.com,
-	rppt@kernel.org,
-	kevin.brodsky@arm.com,
-	snovitoll@gmail.com,
-	linux@weissschuh.net
-Cc: linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	iamhswang@gmail.com
-Subject: [PATCH 2/2] um: use uml_kmalloc_array() instead of uml_malloc()
-Date: Tue, 20 Jan 2026 19:28:55 +0800
-Message-ID: <20260120112938.463596-2-iamhswang@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260120112938.463596-1-iamhswang@gmail.com>
-References: <20260120112938.463596-1-iamhswang@gmail.com>
+        d=1e100.net; s=20230601; t=1769090436; x=1769695236;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KXXllTpn+4j3DQ+o0FpmjiZEdWUg34VA5GPm+3TDwac=;
+        b=E68aKVYl/gFxW5b3XhZiJY/Y0nY3nSYfH7d1lRCvioLVmVotkmLgKqVC4oPS/qyC76
+         UGnRinCow/wCf52wVmqZ5z1ziIZusB28u0zZVvnDqNCqSYPW/UmOBIY2Oy+B13oKqgqj
+         qerY5usv0GCz3izLuwjcMRLZ8R0cXcHi5V2eq91hsikTbheniBJetYr/B9qV6yfxXWAE
+         BnWap406lEDXAnPUlmjHjNn5UlcTAoAbsJPSVSHy2GNGrHIcBqqWD1hREh+oVfgozetz
+         CwFjlChA9TVWJGDAfClg/oGVgRQ/oGbfaLJPIxsP7hRRFd9pB8hsIZFAQDOD9CUYjHVy
+         0vgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVLlxiCsVXlIHyk+ouJLHtpIIVDNmftxc9ZaetzlfFmwrlP6QbrUmWywcSxL8qr2jqvfvAreYCvlQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzsOjfW2IgZyF1iYMvv0pXVIGcwg6Pu0vT9UZOg30ONAZ0gEb/P
+	+qzkL00qwvpjaASQWYHHtrFr8i7vyEJPaQnSpNx+oq1OBktSkwyB1/dU
+X-Gm-Gg: AZuq6aLGvhyn3B29TjvGDkcRRVbyMo8Uhuhy9y+iQptni+KsvBhgscvesjt2gcXx06y
+	wnLu35nOFm1/AX82EmIahpx2gR17skHdPoOf312jyV7Vjm8Z+dRD50Y99HDOnjmzWUQsghqSc+h
+	D1ub2goBkpe5g0qlMOplIFJ0b4EZiGJ86Yfy1qVi192T3bfWjpx1BRpFgdy7tL2Mlk/RhopdF+K
+	79blk/g4gB853QsXC6C89siSGmAKc1j4A3PUtEfQriB2U3buDxB5z24s9JLp3dMakayltsMD84a
+	IO7nUZ/RjvnEyzo4kX0eMWir4CRlJLKqBqlngyUpa1hE5BR4SX1HEFaMz/lgaWkMZPP4ZR56N6s
+	BD5q7wDGMIiy9bu2VBRPV//7rBr5V6+21NjATX3M9ZSdaR+qbJBYxFttv7hkoDwbLcNfyMtYmJY
+	TE25Dce3VroA==
+X-Received: by 2002:a17:907:84e:b0:b87:33f3:6042 with SMTP id a640c23a62f3a-b8792d3be6dmr1826205366b.9.1769090435585;
+        Thu, 22 Jan 2026 06:00:35 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b884006d3bbsm68748466b.32.2026.01.22.06.00.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 22 Jan 2026 06:00:35 -0800 (PST)
+Date: Thu, 22 Jan 2026 14:00:34 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>, Qi Zheng <qi.zheng@linux.dev>,
+	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
+	peterz@infradead.org, dev.jain@arm.com, akpm@linux-foundation.org,
+	ioworker0@gmail.com, linmag7@gmail.com, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-um@lists.infradead.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v3 7/7] mm: make PT_RECLAIM depends on
+ MMU_GATHER_RCU_TABLE_FREE
+Message-ID: <20260122140034.ymigrfppzwvmcjkr@master>
+References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
+ <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
+ <20251231094243.zmjs7kgflm7q6k73@master>
+ <a3a60bbb-70b7-49ed-abc6-937e6c13d681@linux.dev>
+ <20260101020715.45wqnjgcklvjcth3@master>
+ <d38fcbe5-8b4a-40bc-b8c8-1c49ccaa9964@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d38fcbe5-8b4a-40bc-b8c8-1c49ccaa9964@kernel.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260120_113038_565542_A6533C1C 
-X-CRM114-Status: GOOD (  11.30  )
+X-CRM114-CacheID: sfid-20260122_060039_081474_67C6015E 
+X-CRM114-Status: GOOD (  33.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,57 +108,128 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Haisu Wang <iamhswang@gmail.com>
+On Mon, Jan 19, 2026 at 11:18:52AM +0100, David Hildenbrand (Red Hat) wrote:
+>On 1/1/26 03:07, Wei Yang wrote:
+>> On Wed, Dec 31, 2025 at 05:52:57PM +0800, Qi Zheng wrote:
+>> > 
+>> > 
+>> > On 12/31/25 5:42 PM, Wei Yang wrote:
+>> > > On Wed, Dec 17, 2025 at 05:45:48PM +0800, Qi Zheng wrote:
+>> > > > From: Qi Zheng <zhengqi.arch@bytedance.com>
+>> > > > 
+>> > > > The PT_RECLAIM can work on all architectures that support
+>> > > > MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
+>> > > > MMU_GATHER_RCU_TABLE_FREE.
+>> > > > 
+>> > > > BTW, change PT_RECLAIM to be enabled by default, since nobody should want
+>> > > > to turn it off.
+>> > > > 
+>> > > > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> > > > ---
+>> > > > arch/x86/Kconfig | 1 -
+>> > > > mm/Kconfig       | 9 ++-------
+>> > > > 2 files changed, 2 insertions(+), 8 deletions(-)
+>> > > > 
+>> > > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> > > > index 80527299f859a..0d22da56a71b0 100644
+>> > > > --- a/arch/x86/Kconfig
+>> > > > +++ b/arch/x86/Kconfig
+>> > > > @@ -331,7 +331,6 @@ config X86
+>> > > > 	select FUNCTION_ALIGNMENT_4B
+>> > > > 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>> > > > 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>> > > > -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
+>> > > > 	select ARCH_SUPPORTS_SCHED_SMT		if SMP
+>> > > > 	select SCHED_SMT			if SMP
+>> > > > 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
+>> > > > diff --git a/mm/Kconfig b/mm/Kconfig
+>> > > > index bd0ea5454af82..fc00b429b7129 100644
+>> > > > --- a/mm/Kconfig
+>> > > > +++ b/mm/Kconfig
+>> > > > @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
+>> > > > 	  The architecture has hardware support for userspace shadow call
+>> > > >             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>> > > > 
+>> > > > -config ARCH_SUPPORTS_PT_RECLAIM
+>> > > > -	def_bool n
+>> > > > -
+>> > > > config PT_RECLAIM
+>> > > > -	bool "reclaim empty user page table pages"
+>> > > > -	default y
+>> > > > -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+>> > > > -	select MMU_GATHER_RCU_TABLE_FREE
+>> > > > +	def_bool y
+>> > > > +	depends on MMU_GATHER_RCU_TABLE_FREE
+>> > > > 	help
+>> > > > 	  Try to reclaim empty user page table pages in paths other than munmap
+>> > > > 	  and exit_mmap path.
+>> > > 
+>> > > Hi, Qi
+>> > > 
+>> > > I am new to PT_RECLAIM, when reading related code I got one question.
+>> > > 
+>> > > Before this patch,  we could have this config combination:
+>> > > 
+>> > >       CONFIG_MMU_GATHER_RCU_TABLE_FREE & !CONFIG_PT_RECLAIM
+>> > > 
+>> > > This means tlb_remove_table_free() is rcu version while tlb_remove_table_one()
+>> > > is semi rcu version.
+>> > > 
+>> > > I am curious could we use rcu version tlb_remove_table_one() for this case?
+>> > > Use rcu version tlb_remove_table_one() if CONFIG_MMU_GATHER_RCU_TABLE_FREE. Is
+>> > > there some limitation here?
+>> > 
+>> > I think there's no problem. The rcu version can also ensure that the
+>> > fast GUP works well.
+>> > 
+>> 
+>> Thanks for your quick response :-)
+>> 
+>> And Happy New Year
+>> 
+>> So my little suggestion is move the definition of __tlb_remove_table_one()
+>> under CONFIG_MMU_GATHER_RCU_TABLE_FREE. Do you thinks this would be more
+>> clear?
+>
+>
+>Do you mean
+>
+>diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
+>index 2faa23d7f8d42..6aeba4bae68d2 100644
+>--- a/mm/mmu_gather.c
+>+++ b/mm/mmu_gather.c
+>@@ -319,7 +319,7 @@ static inline void tlb_table_invalidate(struct mmu_gather
+>*tlb)
+>        }
+> }
+>
+>-#ifdef CONFIG_PT_RECLAIM
+>+#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
+> {
+>        struct ptdesc *ptdesc;
+>
+>?
 
-Replace uml_kmalloc() with uml_kmalloc_array() for multiplication.
+Sorry for the late reply.
 
-Signed-off-by: Haisu Wang <wanghs18@chinatelecom.cn>
----
- arch/um/drivers/vector_user.c | 4 ++--
- arch/um/drivers/vfio_user.c   | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Yes, and maybe we can move the definition to the 
+#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE code block above, then to be next to
+tlb_remove_table_free().
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 2ea67e6fd067..adc4280691cf 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -868,8 +868,8 @@ void *uml_vector_default_bpf(const void *mac)
- 	} else {
- 		return NULL;
- 	}
--	bpf = uml_kmalloc(
--		sizeof(struct sock_filter) * DEFAULT_BPF_LEN, UM_GFP_KERNEL);
-+	bpf = uml_kmalloc_array(DEFAULT_BPF_LEN, sizeof(struct sock_filter),
-+			UM_GFP_KERNEL);
- 	if (bpf) {
- 		bpf_prog->filter = bpf;
- 		/* ld	[8] */
-diff --git a/arch/um/drivers/vfio_user.c b/arch/um/drivers/vfio_user.c
-index 6a45d8e14582..4ad8c8c59e9d 100644
---- a/arch/um/drivers/vfio_user.c
-+++ b/arch/um/drivers/vfio_user.c
-@@ -194,7 +194,7 @@ int uml_vfio_user_setup_device(struct uml_vfio_user_device *dev,
- 	if (dev->num_regions > VFIO_PCI_CONFIG_REGION_INDEX + 1)
- 		dev->num_regions = VFIO_PCI_CONFIG_REGION_INDEX + 1;
- 
--	dev->region = uml_kmalloc(sizeof(*dev->region) * dev->num_regions,
-+	dev->region = uml_kmalloc_array(dev->num_regions, sizeof(*dev->region),
- 				  UM_GFP_KERNEL);
- 	if (!dev->region) {
- 		err = -ENOMEM;
-@@ -223,7 +223,7 @@ int uml_vfio_user_setup_device(struct uml_vfio_user_device *dev,
- 
- 	dev->irq_count = irq_info.count;
- 
--	dev->irqfd = uml_kmalloc(sizeof(int) * dev->irq_count, UM_GFP_KERNEL);
-+	dev->irqfd = uml_kmalloc_array(dev->irq_count, sizeof(int), UM_GFP_KERNEL);
- 	if (!dev->irqfd) {
- 		err = -ENOMEM;
- 		goto free_region;
+So that we always have rcu version when CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+
+>
+>-- 
+>Cheers
+>
+>David
+
 -- 
-2.52.0
-
+Wei Yang
+Help you, Help me
 
