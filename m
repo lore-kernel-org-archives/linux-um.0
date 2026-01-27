@@ -4,45 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DB1BC88E58
-	for <linux-um@archiver.kernel.org>; Mon, 26 Jan 2026 07:00:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76ADAD2D8FD
+	for <linux-um@archiver.kernel.org>; Tue, 27 Jan 2026 11:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hybAGJDtwUTQyBJLSE6cgT3x4CprzyvIGdy1i62DoMg=; b=T6cDqljOw3Cl3dusmO0s7FoiKE
-	a25PoTvKmQCC/CwPgBPH4pBVOqT/53Jui8lFuJ3N2uuu2hZaocy2QV2kwqVWnPtV+HRi8c8laLx+B
-	ENzECViOFRvdodiFYwMAtRblebTWMkY6K3wu7H5ENCDkwBC1VDeHuk/gffbcST8iV2gfBzrRhT9SJ
-	hRhNvutoUnTpfj7so6JY9Iykd8GRSEfHr57e1ogglpZIXAJK+Bz/U1/0EoFOpZdTATEtmWSmmCQvS
-	wJoQuqke/N0s2VtnLC38eChDZe/c9kmHboCar+sVL1SuXBAaC+QcLfqp5RgzmFkYUS+4ZN4DcInMr
-	6zULl+tw==;
+	bh=dHGDeL76OgeyKZ0N3uIB1eiHncq0xL3V3CYbTiY9KaM=; b=FuSqRH904p1XTY++rWafTLJ7N0
+	nf2FDSrz+koriifbUSLSMnnpqRhn8sDehodxLgbeKU9ylSCpIIfajl3EfqBy4mSrJYsMBJNViYc3A
+	1IXml8klNUdPJzR1xX/RzSDmadNZ9eeQeGOsYTZbFL+/je2spwh+H3mLYfxx7ENSnaVsdAA1lxkJK
+	lv7MHlF9iuTNE5T2IQSNDGlSuGLtg+SuWTns5Fii80IPWNscsu8mf09pzwou4YBvxNlpY9WS0n/RM
+	SOGXxXHpS7wzcNFdzeXojf6FQGSQsLvDIqXYespbyxq2FxNm6D8klf0QuG7hZpYVumKgCmS6DF8Qj
+	7qbh5j3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkGaD-0000000C0zk-0U4z;
-	Mon, 26 Jan 2026 07:00:21 +0000
-Received: from out-182.mta0.migadu.com ([91.218.175.182])
+	id 1vkhGm-0000000E9ss-0PFz;
+	Tue, 27 Jan 2026 11:30:04 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkGaA-0000000C0yW-0VxA
+	id 1vkhGl-0000000E9sl-2NyA
 	for linux-um@lists.infradead.org;
-	Mon, 26 Jan 2026 07:00:19 +0000
-Message-ID: <646d9b5c-453c-4db8-b578-0f343e170379@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769410802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hybAGJDtwUTQyBJLSE6cgT3x4CprzyvIGdy1i62DoMg=;
-	b=io0Jn+3NajuPHPI4XjqNt9sYHPn2FyPfP/1eLMYG5oEK9p8YQ2ayv0ii4eZsQi7AY5Kxh/
-	8bRt82NClUXSKr1V31d6I/GqCfQd+DB4Ux8EDoCg31zgpyKNNatRAU/WP75QWfFgYjHG7n
-	Oc4aJiIqhIpd+iDcwrxRH5wDMzgILbU=
-Date: Mon, 26 Jan 2026 14:59:43 +0800
+	Tue, 27 Jan 2026 11:30:03 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id A010160007;
+	Tue, 27 Jan 2026 11:30:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC14C16AAE;
+	Tue, 27 Jan 2026 11:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769513402;
+	bh=3MHBv5qz4r9u9+OGOCDEClZYEfFFg6c1ucfZG1KC7LY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RlhbehXugRDNE89V27O40PiZgmYwl8Axy1aRlayHkNTbaRn5r/3c0+37Ma5pvSeZe
+	 O7sTRbMiVAo07NKBxmafRF7t34czQjKMW/sq9HxMBYOiNR4Zl9dOee3g+V8Po9fTYZ
+	 2eEWEWiiO2wYWOCD/n4br4sozm5WAPlhI8RJLSKi5xKub3eJRYzzYG24jCmWiFcFUg
+	 IX53gmZo5JOszng/6q+mQgk6cziuIvl7M72wjS/cAlM3dob+Aq9bXSJHb4SvCJkg0K
+	 OIuTx+JPafcw9mUmlf668e0O1J0wyj+A1wI37rJX9dc3WwLqV1PBDLfji4UTmsHasY
+	 JFcuwUAZ5jnOQ==
+Message-ID: <b95f042f-8fc8-4b6c-b9db-b198efdd0973@kernel.org>
+Date: Tue, 27 Jan 2026 12:29:55 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 7/7] mm: make PT_RECLAIM depends on
  MMU_GATHER_RCU_TABLE_FREE
-To: Andreas Larsson <andreas@gaisler.com>, david@kernel.org
+To: Qi Zheng <qi.zheng@linux.dev>, Andreas Larsson <andreas@gaisler.com>
 Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
  linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
@@ -53,15 +59,55 @@ Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
 References: <cover.1765963770.git.zhengqi.arch@bytedance.com>
  <ac2bdb2a66da1edb24f60d1da1099e2a0b734880.1765963770.git.zhengqi.arch@bytedance.com>
  <9199f28e-e2b7-48c8-b61f-0b787e322443@gaisler.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <9199f28e-e2b7-48c8-b61f-0b787e322443@gaisler.com>
+ <646d9b5c-453c-4db8-b578-0f343e170379@linux.dev>
+From: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+In-Reply-To: <646d9b5c-453c-4db8-b578-0f343e170379@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260125_230018_469077_DA895077 
-X-CRM114-Status: GOOD (  19.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,128 +122,123 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-On 1/23/26 11:15 PM, Andreas Larsson wrote:
-> On 2025-12-17 10:45, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 1/26/26 07:59, Qi Zheng wrote:
+> 
+> 
+> On 1/23/26 11:15 PM, Andreas Larsson wrote:
+>> On 2025-12-17 10:45, Qi Zheng wrote:
+>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>
+>>> The PT_RECLAIM can work on all architectures that support
+>>> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
+>>> MMU_GATHER_RCU_TABLE_FREE.
+>>>
+>>> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
+>>> to turn it off.
+>>>
+>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>> ---
+>>>    arch/x86/Kconfig | 1 -
+>>>    mm/Kconfig       | 9 ++-------
+>>>    2 files changed, 2 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>> index 80527299f859a..0d22da56a71b0 100644
+>>> --- a/arch/x86/Kconfig
+>>> +++ b/arch/x86/Kconfig
+>>> @@ -331,7 +331,6 @@ config X86
+>>>    	select FUNCTION_ALIGNMENT_4B
+>>>    	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>>>    	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>>> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
+>>>    	select ARCH_SUPPORTS_SCHED_SMT		if SMP
+>>>    	select SCHED_SMT			if SMP
+>>>    	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
+>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index bd0ea5454af82..fc00b429b7129 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
+>>>    	  The architecture has hardware support for userspace shadow call
+>>>              stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
+>>>    
+>>> -config ARCH_SUPPORTS_PT_RECLAIM
+>>> -	def_bool n
+>>> -
+>>>    config PT_RECLAIM
+>>> -	bool "reclaim empty user page table pages"
+>>> -	default y
+>>> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
+>>> -	select MMU_GATHER_RCU_TABLE_FREE
+>>> +	def_bool y
+>>> +	depends on MMU_GATHER_RCU_TABLE_FREE
+>>>    	help
+>>>    	  Try to reclaim empty user page table pages in paths other than munmap
+>>>    	  and exit_mmap path.
 >>
->> The PT_RECLAIM can work on all architectures that support
->> MMU_GATHER_RCU_TABLE_FREE, so make PT_RECLAIM depends on
->> MMU_GATHER_RCU_TABLE_FREE.
+>> Hi,
 >>
->> BTW, change PT_RECLAIM to be enabled by default, since nobody should want
->> to turn it off.
+>> This patch unfortunately results in a WARN_ON_ONCE and unaligned
+>> accesses on sparc64:
 >>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   arch/x86/Kconfig | 1 -
->>   mm/Kconfig       | 9 ++-------
->>   2 files changed, 2 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 80527299f859a..0d22da56a71b0 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -331,7 +331,6 @@ config X86
->>   	select FUNCTION_ALIGNMENT_4B
->>   	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->>   	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
->> -	select ARCH_SUPPORTS_PT_RECLAIM		if X86_64
->>   	select ARCH_SUPPORTS_SCHED_SMT		if SMP
->>   	select SCHED_SMT			if SMP
->>   	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index bd0ea5454af82..fc00b429b7129 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -1447,14 +1447,9 @@ config ARCH_HAS_USER_SHADOW_STACK
->>   	  The architecture has hardware support for userspace shadow call
->>             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->>   
->> -config ARCH_SUPPORTS_PT_RECLAIM
->> -	def_bool n
->> -
->>   config PT_RECLAIM
->> -	bool "reclaim empty user page table pages"
->> -	default y
->> -	depends on ARCH_SUPPORTS_PT_RECLAIM && MMU && SMP
->> -	select MMU_GATHER_RCU_TABLE_FREE
->> +	def_bool y
->> +	depends on MMU_GATHER_RCU_TABLE_FREE
->>   	help
->>   	  Try to reclaim empty user page table pages in paths other than munmap
->>   	  and exit_mmap path.
+>> $ stress-ng --mmaphuge 20 -t 60
+>> stress-ng: info:  [559] setting to a 1 min run per stressor
+>> stress-ng: info:  [559] dispatching hogs: 20 mmaphuge
+>> [  560.592569] ------------[ cut here ]------------
+>> [  560.592663] WARNING: kernel/rcu/tree.c:3098 at __call_rcu_common.constprop.0+0x200/0x760, CPU#4: stress-ng-mmaph/568
+>> [  560.592777] CPU: 4 UID: 1000 PID: 568 Comm: stress-ng-mmaph Not tainted 6.19.0-rc5-00127-g62fc9f6ccb97 #8 VOLUNTARY
+>> [  560.592805] Call Trace:
+>> [  560.592812] [<00000000004368b8>] dump_stack+0x8/0x60
+>> [  560.592844] [<0000000000482a60>] __warn+0xe0/0x140
+>> [  560.592878] [<0000000000482b64>] warn_slowpath_fmt+0xa4/0x120
+>> [  560.592901] [<0000000000526a40>] __call_rcu_common.constprop.0+0x200/0x760
+>> [  560.592931] [<0000000000526fd0>] call_rcu+0x10/0x20
+>> [  560.592954] [<0000000000730838>] tlb_remove_table+0x98/0xc0
+>> [  560.592986] [<000000000071bec4>] free_pgd_range+0x224/0x4c0
+>> [  560.593021] [<000000000071c35c>] free_pgtables+0x1fc/0x240
+>> [  560.593042] [<000000000074a6f0>] vms_clear_ptes+0x110/0x140
+>> [  560.593068] [<000000000074c3dc>] vms_complete_munmap_vmas+0x5c/0x280
+>> [  560.593094] [<000000000074de5c>] do_vmi_align_munmap+0x1dc/0x260
+>> [  560.593117] [<000000000074df80>] do_vmi_munmap+0xa0/0x140
+>> [  560.593142] [<000000000074fb2c>] __vm_munmap+0x8c/0x160
+>> [  560.593168] [<000000000072cfd4>] vm_munmap+0x14/0x40
+>> [  560.593190] [<00000000004402a8>] sys_64_munmap+0x88/0xa0
+>> [  560.593221] [<0000000000406274>] linux_sparc_syscall+0x34/0x44
+>> [  560.593274] ---[ end trace 0000000000000000 ]---
+>> [  560.593960] log_unaligned: 209 callbacks suppressed
+>> [  560.593979] Kernel unaligned access at TPC[526a4c] __call_rcu_common.constprop.0+0x20c/0x760
+>> [  560.594121] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
+>> [  560.594198] Kernel unaligned access at TPC[52b3c4] rcu_segcblist_enqueue+0x24/0x40
+>> [  560.594275] Kernel unaligned access at TPC[526860] __call_rcu_common.constprop.0+0x20/0x760
+>> [  560.594360] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
+>> [  567.054127] log_unaligned: 1105 callbacks suppressed
+>> [  567.054167] Kernel unaligned access at TPC[526860] __call_rcu_common.constprop.0+0x20/0x760
+>> [  567.054331] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
+>> [  567.054410] Kernel unaligned access at TPC[52b3c4] rcu_segcblist_enqueue+0x24/0x40
 > 
-> Hi,
+> Thanks for your report!
 > 
-> This patch unfortunately results in a WARN_ON_ONCE and unaligned
-> accesses on sparc64:
-> 
-> $ stress-ng --mmaphuge 20 -t 60
-> stress-ng: info:  [559] setting to a 1 min run per stressor
-> stress-ng: info:  [559] dispatching hogs: 20 mmaphuge
-> [  560.592569] ------------[ cut here ]------------
-> [  560.592663] WARNING: kernel/rcu/tree.c:3098 at __call_rcu_common.constprop.0+0x200/0x760, CPU#4: stress-ng-mmaph/568
-> [  560.592777] CPU: 4 UID: 1000 PID: 568 Comm: stress-ng-mmaph Not tainted 6.19.0-rc5-00127-g62fc9f6ccb97 #8 VOLUNTARY
-> [  560.592805] Call Trace:
-> [  560.592812] [<00000000004368b8>] dump_stack+0x8/0x60
-> [  560.592844] [<0000000000482a60>] __warn+0xe0/0x140
-> [  560.592878] [<0000000000482b64>] warn_slowpath_fmt+0xa4/0x120
-> [  560.592901] [<0000000000526a40>] __call_rcu_common.constprop.0+0x200/0x760
-> [  560.592931] [<0000000000526fd0>] call_rcu+0x10/0x20
-> [  560.592954] [<0000000000730838>] tlb_remove_table+0x98/0xc0
-> [  560.592986] [<000000000071bec4>] free_pgd_range+0x224/0x4c0
-> [  560.593021] [<000000000071c35c>] free_pgtables+0x1fc/0x240
-> [  560.593042] [<000000000074a6f0>] vms_clear_ptes+0x110/0x140
-> [  560.593068] [<000000000074c3dc>] vms_complete_munmap_vmas+0x5c/0x280
-> [  560.593094] [<000000000074de5c>] do_vmi_align_munmap+0x1dc/0x260
-> [  560.593117] [<000000000074df80>] do_vmi_munmap+0xa0/0x140
-> [  560.593142] [<000000000074fb2c>] __vm_munmap+0x8c/0x160
-> [  560.593168] [<000000000072cfd4>] vm_munmap+0x14/0x40
-> [  560.593190] [<00000000004402a8>] sys_64_munmap+0x88/0xa0
-> [  560.593221] [<0000000000406274>] linux_sparc_syscall+0x34/0x44
-> [  560.593274] ---[ end trace 0000000000000000 ]---
-> [  560.593960] log_unaligned: 209 callbacks suppressed
-> [  560.593979] Kernel unaligned access at TPC[526a4c] __call_rcu_common.constprop.0+0x20c/0x760
-> [  560.594121] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
-> [  560.594198] Kernel unaligned access at TPC[52b3c4] rcu_segcblist_enqueue+0x24/0x40
-> [  560.594275] Kernel unaligned access at TPC[526860] __call_rcu_common.constprop.0+0x20/0x760
-> [  560.594360] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
-> [  567.054127] log_unaligned: 1105 callbacks suppressed
-> [  567.054167] Kernel unaligned access at TPC[526860] __call_rcu_common.constprop.0+0x20/0x760
-> [  567.054331] Kernel unaligned access at TPC[526864] __call_rcu_common.constprop.0+0x24/0x760
-> [  567.054410] Kernel unaligned access at TPC[52b3c4] rcu_segcblist_enqueue+0x24/0x40
+> On sparc64, pmd and pud levels are not of struct page:
 
-Thanks for your report!
+Can you elaborate, I don't understand what you mean :)
 
-On sparc64, pmd and pud levels are not of struct page:
+Is it also a problem on architectures like s390x and ppc, where we 
+squeeze multiple page tables into a physical pages?
 
-__pmd_free_tlb/__pud_free_tlb
---> pgtable_free_tlb(tlb, pud/pmd, false). <=== is_page == false
-     --> tlb_remove_table
-
-So in __tlb_remove_table_one(), the table cannot be treated as
-ptdesc because it does not have an pt_rcu_head member.
-
-Hi David, it seems we still need to keep ARCH_SUPPORTS_PT_RECLAIM?
-
-Thanks,
-Qi
-
-> ...
 > 
-> I bisected to this one on mm-unstable from approximately 2026-01-12.
+> __pmd_free_tlb/__pud_free_tlb
+> --> pgtable_free_tlb(tlb, pud/pmd, false). <=== is_page == false
+>       --> tlb_remove_table
 > 
-> The warning is from
+> So in __tlb_remove_table_one(), the table cannot be treated as
+> ptdesc because it does not have an pt_rcu_head member.
 > 
-> 	/* Misaligned rcu_head! */
-> 	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
-> 
-> in __call_rcu_common() and the unaligned accesses follows from there.
-> 
-> Regards,
-> Andreas
-> 
+> Hi David, it seems we still need to keep ARCH_SUPPORTS_PT_RECLAIM?
 
+Or we invert it and only disable it for the known-problematic architectures?
+
+-- 
+Cheers
+
+David
 
