@@ -4,63 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 816BAD35660
-	for <linux-um@archiver.kernel.org>; Wed, 28 Jan 2026 02:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9683E6BF1B
+	for <linux-um@archiver.kernel.org>; Fri, 30 Jan 2026 15:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n4t3b1mOfPtHigPq6Z2WHKbf3iNBrW17rXF/iuZKlWU=; b=3D8CL9uO/2C92z+ZoiKimQ9fhq
-	sfgzXMRzuwkVFl+7fp2K5+NM3zQKrUv241fdTVYXBxzoevfV7D2OSF4F5PZW4z39ATi82hJU8VW5R
-	duWPSdGv7r3NIGT+dumeJsSN2WqYCpSegC6s5wIlNowR/VF+r7121qYH5goP40V2xxtjq2JsarMZZ
-	3HzK2go6tL/mhSBFgq/Ps6aMSgaZ0+DQJQ0HupD2M8rI7SgjO/z/oP8eLeateh3NaHpKvJtM0y9YL
-	YsjV5EroB84WKniekcLhO3k3PydhX6qpTUSeY8konEuA5nGqs4tucHYKgaIOrz523zENN1XNfhoPi
-	BMdY2c9w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=vOa37cugu1e7NFG01Hi5lQxNeOFAbNhgF4zlCMpuWB0=; b=anrj2dcXaG/MuhE9q3ThMg3yDJ
+	Oy4cK1TodfomZfUvEdQ4GPUdQmR781a6kxGqJJQZOM2S6Vo3eRIuaUsJXkiHQE7tyH9XIkmGG75UH
+	Om2nqKP+h9/vXQeUqckVyqSc9JAQwfmUmvm+95FI99vu/4lqc8MRpeoO+BZAgSRaW5+OyHcdp6Tmb
+	8UPonc++BU/rGUSAZOkwwveB5v11d9dvp1zC7ZJfv2Y2Hu+x0wZ2Y36FpTiINZBVeplMi6hIL8LEX
+	PI2JywACQ+SK/ddk0S/8yPvQ2hrR6KO/VenEJ0mvRC9oRqcWnkCyci7hQxFCaK0/Ac2Ew6NRM14BH
+	ky7Knw0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkuyC-0000000FI1F-0Prz;
-	Wed, 28 Jan 2026 02:07:48 +0000
-Received: from out-171.mta0.migadu.com ([2001:41d0:1004:224b::ab])
+	id 1vlqTF-00000001ee3-1Poe;
+	Fri, 30 Jan 2026 15:31:41 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vkuy8-0000000FI0f-4484
-	for linux-um@lists.infradead.org;
-	Wed, 28 Jan 2026 02:07:46 +0000
-Message-ID: <4c171a25-e395-4f83-b767-18525fffbee3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769566051;
+	id 1vlqTC-00000001ecN-09Tv;
+	Fri, 30 Jan 2026 15:31:39 +0000
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1769787091;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n4t3b1mOfPtHigPq6Z2WHKbf3iNBrW17rXF/iuZKlWU=;
-	b=I3HQOiCHRK+ra8CKqHdI7J6UYtfRC6z7IH9vbCxNEd8HoqK7Tyx5NW2XzLCUbSdOwtEHCJ
-	PrvEUB70GyyRlx7g5xA0Csz7PDTqbdzG32WNgMGufhfuOIaPPVRKNpL+JiU8gfGGSpRv5N
-	IuXL9L87r74XS+4rqkFgpDIaGTmcayA=
-Date: Wed, 28 Jan 2026 10:07:22 +0800
+	bh=vOa37cugu1e7NFG01Hi5lQxNeOFAbNhgF4zlCMpuWB0=;
+	b=0KQp0ypVQ4kZaeO3mPHMfxJV+hK/54vG6DKBi+oQw7b2zUOdcXSHVjzGTkDhg+DII5BPUq
+	aN49RxuHT0Y324cEPE9hahaKdLHrEB12udzdH1NvAbslSIBaR+apFss0VpjAJQGlvJvNWz
+	Qkt0FDwz1uMiX4gq49nlr83YKlkc4clstGJ1Gn1qJZPTuOUjrQYGQ2og6q2aakCd23E2bK
+	j7QeXx4RcIyDXczvYB5hGiBrowZd2spJR3vfcC58o7tRoab9LXrUZs+RPcCpb6cx/pdJtb
+	HBe2qGa1jRaFKPPNxGpTtUqYNPr0BFkp5fHngur0T+mOUqFJcq3Nhz3k8u/Dpw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1769787091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vOa37cugu1e7NFG01Hi5lQxNeOFAbNhgF4zlCMpuWB0=;
+	b=tRQx2QeqDh72ig5xLjiaegMLqnl9AhaSG7GZod8dlzScFDOmHttRC8Fl88vJKoOCPg8W40
+	GHTlrnG5vPdq05BA==
+To: Petr Mladek <pmladek@suse.com>, Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jason Wessel <jason.wessel@windriver.com>,
+ Daniel Thompson <danielt@kernel.org>, Douglas Anderson
+ <dianders@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Breno Leitao <leitao@debian.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook
+ <kees@kernel.org>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
+ Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Andreas Larsson
+ <andreas@gaisler.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jacky Huang <ychuang3@nuvoton.com>,
+ Shan-Chun Hung <schung@nuvoton.com>, Laurentiu Tudor
+ <laurentiu.tudor@nxp.com>, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+ linux-serial@vger.kernel.org, netdev@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/19] printk/nbcon: Use an enum to specify the required
+ callback in console_is_usable()
+In-Reply-To: <aWZyEHsOJFLRLRKT@pathway.suse.cz>
+References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-1-21a291bcf197@suse.com>
+ <aWZyEHsOJFLRLRKT@pathway.suse.cz>
+Date: Fri, 30 Jan 2026 16:37:30 +0106
+Message-ID: <878qdf3ynh.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 0/8] enable PT_RECLAIM on more 64-bit architectures
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: david@kernel.org, andreas@gaisler.com, richard.weiyang@gmail.com,
- will@kernel.org, peterz@infradead.org, aneesh.kumar@kernel.org,
- npiggin@gmail.com, dev.jain@arm.com, ioworker0@gmail.com, linmag7@gmail.com,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1769515122.git.zhengqi.arch@bytedance.com>
- <20260127124642.480123beb01ebb487f986a09@linux-foundation.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <20260127124642.480123beb01ebb487f986a09@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260127_180745_251743_F07D98FC 
-X-CRM114-Status: GOOD (  20.11  )
+X-CRM114-CacheID: sfid-20260130_073138_215591_95136517 
+X-CRM114-Status: GOOD (  17.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,109 +101,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 2026-01-13, Petr Mladek <pmladek@suse.com> wrote:
+> On Sat 2025-12-27 09:16:08, Marcos Paulo de Souza wrote:
+>> The current usage of console_is_usable() is clumsy. The parameter
+>> @use_atomic is boolean and thus not self-explanatory. The function is
+>> called twice in situations when there are no-strict requirements.
+>> 
+>> Replace it with enum nbcon_write_cb which provides a more descriptive
+>> values for all 3 situations: atomic, thread or any.
+>> 
+>> Note that console_is_usable() checks only NBCON_USE_ATOMIC because
+>> .write_thread() callback is mandatory. But the other two values still
+>> make sense because they describe the intention of the caller.
+>> 
+>> --- a/include/linux/console.h
+>> +++ b/include/linux/console.h
+>> @@ -202,6 +202,19 @@ enum cons_flags {
+>>  	CON_NBCON_ATOMIC_UNSAFE	= BIT(9),
+>>  };
+>>  
+>> +/**
+>> + * enum nbcon_write_cb - Defines which nbcon write() callback must be used based
+>> + *                       on the caller context.
+>> + * @NBCON_USE_ATOMIC: Use con->write_atomic().
+>> + * @NBCON_USE_THREAD: Use con->write_thread().
+>> + * @NBCON_USE_ANY:    The caller does not have any strict requirements.
+>> + */
+>> +enum nbcon_write_cb {
+>> +	NBCON_USE_ATOMIC,
+>> +	NBCON_USE_THREAD,
+>> +	NBCON_USE_ANY,
+>
+> AFAIK, this would define NBCON_USE_ATOMIC as zero. See below.
 
+Yes, although the start value is not guaranteed. And anyway if is to be
+used as bits, it should be explicitly set so (such as with enum
+cons_flags).
 
-On 1/28/26 4:46 AM, Andrew Morton wrote:
-> On Tue, 27 Jan 2026 20:12:53 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
-> 
->> This series aims to enable PT_RECLAIM on more 64-bit architectures.
-> 
-> Thanks, I updated mm.git's mm-unstable branch to v4.
-> 
->> Changes in v4:
->>   - convert __HAVE_ARCH_TLB_REMOVE_TABLE to CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config
->>   - fix a WARN_ON_ONCE() on sparc64 (and on ppc)
->>     (reported by Andreas Larsson)
->>   - collect Acked-by (Hi David, I've kept your Acked-by, feel free to drop it)
->>   - rebase onto the v6.19-rc7
->>
-> 
-> Below is how v4 altered mm.git.
-> 
-> I'm not seeing the WARN_ON_ONCE() fix.  I assume that was due to the
-> Kconfig alterations?
+But in reality, we only care about NBCON_USE_ATOMIC and
+!NBCON_USE_ATOMIC, so I agree with your comments below about keeping it
+a simple enum and not caring about the numerical value.
 
-Yes, sparc64 and ppc will select HAVE_ARCH_TLB_REMOVE_TABLE, so
-PT_RECLAIM will not be enabled. This means it won't affect
-sparc64 and ppc, and will not trigger WARN_ON_ONCE().
+>> @@ -631,7 +645,7 @@ static inline bool console_is_usable(struct console *con, short flags, bool use_
+>>  		return false;
+>>  
+>>  	if (flags & CON_NBCON) {
+>> -		if (use_atomic) {
+>> +		if (nwc & NBCON_USE_ATOMIC) {
+>
+> Let's keep it defined by as zero and use here:
+>
+> 		if (nwc == NBCON_USE_ATOMIC) {
+>
+> Note that we do _not_ want to return "false" for "NBCON_USE_ANY"
+> when con->write_atomic does not exist.
 
-I don't have a testing environment for sparc64 and ppc, but I
-expect it should be able to fix the WARN_ON_ONCE().
+I agree.
 
-Thanks,
-Qi
+If changed to "nwc == NBCON_USE_ATOMIC":
 
-> 
-> 
-> 
-> --- a/arch/powerpc/include/asm/tlb.h~b
-> +++ a/arch/powerpc/include/asm/tlb.h
-> @@ -37,7 +37,6 @@ extern void tlb_flush(struct mmu_gather
->    */
->   #define tlb_needs_table_invalidate()	radix_enabled()
->   
-> -#define __HAVE_ARCH_TLB_REMOVE_TABLE
->   /* Get the generic bits... */
->   #include <asm-generic/tlb.h>
->   
-> --- a/arch/powerpc/Kconfig~b
-> +++ a/arch/powerpc/Kconfig
-> @@ -305,6 +305,7 @@ config PPC
->   	select LOCK_MM_AND_FIND_VMA
->   	select MMU_GATHER_PAGE_SIZE
->   	select MMU_GATHER_RCU_TABLE_FREE
-> +	select HAVE_ARCH_TLB_REMOVE_TABLE
->   	select MMU_GATHER_MERGE_VMAS
->   	select MMU_LAZY_TLB_SHOOTDOWN		if PPC_BOOK3S_64
->   	select MODULES_USE_ELF_RELA
-> --- a/arch/sparc/include/asm/tlb_64.h~b
-> +++ a/arch/sparc/include/asm/tlb_64.h
-> @@ -33,7 +33,6 @@ void flush_tlb_pending(void);
->   #define tlb_needs_table_invalidate()	(false)
->   #endif
->   
-> -#define __HAVE_ARCH_TLB_REMOVE_TABLE
->   #include <asm-generic/tlb.h>
->   
->   #endif /* _SPARC64_TLB_H */
-> --- a/arch/sparc/Kconfig~b
-> +++ a/arch/sparc/Kconfig
-> @@ -74,6 +74,7 @@ config SPARC64
->   	select HAVE_KRETPROBES
->   	select HAVE_KPROBES
->   	select MMU_GATHER_RCU_TABLE_FREE if SMP
-> +	select HAVE_ARCH_TLB_REMOVE_TABLE if SMP
->   	select MMU_GATHER_MERGE_VMAS
->   	select MMU_GATHER_NO_FLUSH_CACHE
->   	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
-> --- a/include/asm-generic/tlb.h~b
-> +++ a/include/asm-generic/tlb.h
-> @@ -213,7 +213,7 @@ struct mmu_table_batch {
->   #define MAX_TABLE_BATCH		\
->   	((PAGE_SIZE - sizeof(struct mmu_table_batch)) / sizeof(void *))
->   
-> -#ifndef __HAVE_ARCH_TLB_REMOVE_TABLE
-> +#ifndef CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
->   static inline void __tlb_remove_table(void *table)
->   {
->   	struct ptdesc *ptdesc = (struct ptdesc *)table;
-> --- a/mm/Kconfig~b
-> +++ a/mm/Kconfig
-> @@ -1448,9 +1448,12 @@ config ARCH_HAS_USER_SHADOW_STACK
->   	  The architecture has hardware support for userspace shadow call
->             stacks (eg, x86 CET, arm64 GCS or RISC-V Zicfiss).
->   
-> +config HAVE_ARCH_TLB_REMOVE_TABLE
-> +	def_bool n
-> +
->   config PT_RECLAIM
->   	def_bool y
-> -	depends on MMU_GATHER_RCU_TABLE_FREE
-> +	depends on MMU_GATHER_RCU_TABLE_FREE && !HAVE_ARCH_TLB_REMOVE_TABLE
->   	help
->   	  Try to reclaim empty user page table pages in paths other than munmap
->   	  and exit_mmap path.
-> _
-> 
-
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
