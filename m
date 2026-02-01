@@ -4,88 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79005E6BF32
-	for <linux-um@archiver.kernel.org>; Fri, 30 Jan 2026 17:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DCE4D172A6
+	for <linux-um@archiver.kernel.org>; Sun,  1 Feb 2026 22:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=o3M3i7fOsBJJ8QZ7iZoiOC82WHRYdzsj5QwfB37tvhM=; b=AyalFQmtIlNQ+X9CDUlbMMFc37
-	S2n3jiKprB8si9treTFJNkBZEJmlYRg0bu0weuXvp0H+mxaDC7oSWq/ZkZBzPDlJvgpbWByIRwPSc
-	nru1gbm7M2g6GBkBs90qZGzypc8EYEskhzJ2D8S1D4BVxL09m45tUcOLWMjlYckCiplthNgBIiSKL
-	gdFWzVuLIbVsgL5Gly90YkAEbFlOdrwxwy5rVxxVkjj05hYstiTeDh40wDZt7JgLmyGOppGDa87sy
-	lrPniHMN4TLXFCgLcZxqugzSs4Lt2EGlV6yCM544yTz5mhs8CvRuO3BOqQP2xbKtUQ0fvFnmX5lbT
-	RqkAw75A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=; b=aS4pHzvy6yI7cSEeNaVYUtPHE6
+	u9HG4gujF4tS2cQTwQH+YPckDs4W+dVXC2SOoD6W+vexpQAKeBtvYMHMQHM8h0r+elVYYTqg/2ZIS
+	Je62qx0qcB+AK6UsBd2hm28RSULdFlGzI2BOVEuV7ZKePEuSBMb+WY+vyJA7IzLkaB+ns6H3Vaqxr
+	c4ZoW20hHKm0QA4lK0nAjoJeu1LijvQ1thO80I7DJStS/kBGLf4Ahe63/SPEno8NntGbmLQB+LorW
+	xmU6Un09KJZ+IdT8Wxt115CumWBsJ+jaVc6eQiM3VRYfkELqezyJys/0K1os4v8rFjd4J4bnwVvyu
+	M9qePNOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlsHP-00000001lRG-0Byh;
-	Fri, 30 Jan 2026 17:27:35 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1vmfVs-00000004BvU-1C7D;
+	Sun, 01 Feb 2026 22:01:48 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vlsHL-00000001lQ3-3q2C;
-	Fri, 30 Jan 2026 17:27:33 +0000
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1769794048;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o3M3i7fOsBJJ8QZ7iZoiOC82WHRYdzsj5QwfB37tvhM=;
-	b=4vjFnCIdprQ4bapgrR0W30E28e5XqGnWTzlLJRIchP5KT0mQiU7C2HocIuX1Kdz8pUDo0Y
-	qc+5Orpl1l1vZoFNRQKL24RKcgRr4rbqO02DrPCVc+5aUzHom7b8+oniEw+b53sZSdrxJg
-	+9kDxpq15AQ1xIFUPYwfQgdiBumRwsh+faRgD4dNJMyLkXr/A+P3jXB+CHRA0Hld9eIR+Y
-	7xvqnLxeTCF6EQZwTVn1wPEr2oy9Q/+88+eiC8F7PD8kB/n3dpKOZdgpjEsqUgdQZXqqI6
-	yQRXOGphajl9ppYkFrEud4nWZdOCa3/Ob9kGErESIR3cRVjE/LChlCPSJd3YTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1769794048;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o3M3i7fOsBJJ8QZ7iZoiOC82WHRYdzsj5QwfB37tvhM=;
-	b=520kqiApVkDPFPboRTL5PTkP4fVPei7/H7ecnPwf1SVFxrBJQEXzDTADXeZGZGuaQ0gr4c
-	ZZ61wAzhpOPpFsDw==
-To: Marcos Paulo de Souza <mpdesouza@suse.com>, Richard Weinberger
- <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes
- Berg <johannes@sipsolutions.net>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jason Wessel <jason.wessel@windriver.com>,
- Daniel Thompson <danielt@kernel.org>, Douglas Anderson
- <dianders@chromium.org>, Petr Mladek <pmladek@suse.com>, Steven Rostedt
- <rostedt@goodmis.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, Jiri
- Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Kees Cook <kees@kernel.org>, Tony Luck
- <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Andreas Larsson
- <andreas@gaisler.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jacky Huang <ychuang3@nuvoton.com>,
- Shan-Chun Hung <schung@nuvoton.com>, Laurentiu Tudor
- <laurentiu.tudor@nxp.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
- kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
- netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- sparclinux@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH 05/19] printk: Add more context to suspend/resume functions
-In-Reply-To: <20251227-printk-cleanup-part3-v1-5-21a291bcf197@suse.com>
-References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <20251227-printk-cleanup-part3-v1-5-21a291bcf197@suse.com>
-Date: Fri, 30 Jan 2026 18:33:27 +0106
-Message-ID: <87343n3ta8.fsf@jogness.linutronix.de>
+	id 1vmfVo-00000004Bv9-1sFN
+	for linux-um@lists.infradead.org;
+	Sun, 01 Feb 2026 22:01:46 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-65808d08423so5662559a12.1
+        for <linux-um@lists.infradead.org>; Sun, 01 Feb 2026 14:01:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769983302; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DUPmWj5UbfW8yc9405b2R8SfiZktwD0FiJ0dFK1LgzJVUHQdTJMFGWJ5govx3mOTf/
+         W4N34GEj9yNOZtBBY2fvzHlg09i9YuIj68oFsOmmKPujdn8/iOukA+U3aR7zfeIc52IF
+         ONp7u+BcWo6pmNXweRy1rawzYIEfpSgiiM1NbEIIQ5/GK0Zk57vtomDHYcxvsPe5kVEm
+         eLh0vi3ibkivJO0QNFPJJ7TthFAFfeWYs+yxC0s373DrNgpFQNf7V1o0qDs9zh4msL55
+         PmYYfMriayUw0YirSnM5eYcXLC+8oY7vqMfQ/8P79HnFv/Yd52kVV7/8LhQhQKigIKRb
+         e36g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
+        fh=zYI1s2KnELN7K+g58MIFK4L57pwtoTaY46GG1b7lmqQ=;
+        b=WjjjID/fGTUF4IQiw/o5fSw68cHuIB1OgPRp1WUabb8lTXcDrAoy6wVcyMq7WqJXtv
+         UH2WvRpv9Rd9B7EX9jYLla6ZAQz/v9eIEbFEChWKCJ4Kk8Vpk03mxZNBfax1EFMWdphV
+         //WCjNquZimwvNA2ufXiMqremzjRz+VPlAy+45qaF7CtYG9Xu5ksg7bIfmSMpgJUrjRz
+         fpJobCeLgYBEu7uqxbI4rL/DKI8jC7wERsMKUgpqiUXNZh3vTL+zBFRsF1BS5Zh1du0b
+         96bMNOcPnGpojLsJLyhEmwZmAUjCaCIza6RmERQ2yhbg5b/VN1B19EttDVmcz9KXKgGC
+         rAlg==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769983302; x=1770588102; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
+        b=fQma6iQb9IIW2glXIFqH2RN2D0S2upALw1IhNNv/Ltt/nS/egYI5WfyW1nrJmx+9FU
+         g/nXcAmckY+PB9yAxoKJMB1zxL5Djur2ypJfYxc5lfZE5Wu08ALyMfDVazPBN7qOyKzI
+         YttI5GjFrdwOcXit3TkzKKLBEJV85TaWaSupKNVyDWH++AdEfC1haLdCYvNVF/MW0yhM
+         vGeRgsjqi1zjij3ygzkKBmi8kt0E/1NOfZ87VGmisyY2s9ARwFoc9nzIJWhTNU8vNs60
+         l7NK5/NsKg24XFsvKjteTJ4b0oYB9wQZ+BnpoxpHD54b+wS9b4XgKhvQZgS479Pzfa3R
+         XlPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769983302; x=1770588102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
+        b=UylR2CiZvsErUCcr5SsO3DyRf8nvhb1pHA5IhtCBJwDY3RyGLJQSlw6ehT0+y7h4/F
+         exhJXFiPWNCgol/hYrLzK4Bas/at8c69SlXBHGkAyVMOgGxmTBF7JQqvuhrNup7Y6F0O
+         I7sVT3d4SdOMUt90k9vBmGRwTfHkSwV0fVDdqm2HjNjAX4yOhkXKh70sgq4ZRe+vndU7
+         E+XTj44tWFXpz+d71BdAW/Y+8bPNc9v2LhIm39YMIXUGotpmQ82pXHjlzbemvCzgdfH2
+         csSlbCSnsS+w0biifVwgu2gvJQ/UUdjRvZMoXgLfbPjTEWUTs+mY2rpMHGQBI+5PbxM8
+         hCHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWC6AcyLuchSklWWexFo20SBR1fuvo9fFNdE1kU8z11LN5S1QLZ6I/iM+N4oLimooZzAsaFRO3NkA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz6mY4TkQ7YTKzH+7/q1raqSObHVAjRyn6VxKSk50zzpFXy8Lzn
+	P3eNc5aUVSvG96E7DbeR0+BYTr8o52kXsNiq4YQyKbTk5fOuCG27v/AppUbHZZUoVpPMEuzjYQH
+	imorsRqJoUdilAAqXvzPWJFQ1WR/VfPI=
+X-Gm-Gg: AZuq6aLBztOI9NTBB+wlm/aYesS9gn3qXaS7fnsYYwFODAasnfSCdaG2yX0qkadOW0I
+	4qopPqnnsnWhNFAOKJKvPFRy0olXs0ZfNNR/pKR5sbYhaIyULvyLm7j879O6wnZhc6EW+J5ooXT
+	AgNeDM1sGqkhn/01pFJ5pc9JrW3+40MJwlFS/NMN6vv3QHzhIBkzbOZOla8zaRLe1W/0PcTCUPc
+	vltZ3NNX7ENI6UUdocI/tlbxVAwxco8LHKGaF8oiZuDS9drBel7taAdVcHuC55DWyPtfchrIBhn
+	kj1rV236Y9xI82P3MgZFG/EWQaEF
+X-Received: by 2002:a05:6402:90b:b0:64c:9e19:9858 with SMTP id
+ 4fb4d7f45d1cf-658de58d61fmr5598076a12.22.1769983301701; Sun, 01 Feb 2026
+ 14:01:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.1769515122.git.zhengqi.arch@bytedance.com> <3380f40a89b73c488202c85f9a8abf99fb08543b.1769515122.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <3380f40a89b73c488202c85f9a8abf99fb08543b.1769515122.git.zhengqi.arch@bytedance.com>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Sun, 1 Feb 2026 23:01:30 +0100
+X-Gm-Features: AZwV_Qj9VNkT5OuGD6ka3IvGbnZ780_iMCZkDjCZeudKZ-RrGhxplhYBmunMjcY
+Message-ID: <CA+=Fv5RhxvyxKr2t+pHd1tbGrK57P-+b3pGe1nVaK_OLiFt2wg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/8] alpha: mm: enable MMU_GATHER_RCU_TABLE_FREE
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: david@kernel.org, andreas@gaisler.com, richard.weiyang@gmail.com, 
+	will@kernel.org, peterz@infradead.org, aneesh.kumar@kernel.org, 
+	npiggin@gmail.com, dev.jain@arm.com, ioworker0@gmail.com, 
+	akpm@linux-foundation.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-alpha@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, 
+	sparclinux@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260130_092732_098177_F881F456 
-X-CRM114-Status: GOOD (  16.24  )
+X-CRM114-CacheID: sfid-20260201_140144_505651_44FDC6C9 
+X-CRM114-Status: GOOD (  15.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,56 +123,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2025-12-27, Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
-> The new comments clarifies from where the functions are supposed to be
-> called.
+On Tue, Jan 27, 2026 at 1:16=E2=80=AFPM Qi Zheng <qi.zheng@linux.dev> wrote=
+:
 >
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>
+> On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of
+> empty PTE page table pages (such as 100GB+). To resolve this problem,
+> first enable MMU_GATHER_RCU_TABLE_FREE to prepare for enabling the
+> PT_RECLAIM feature, which resolves this problem.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Cc: Richard Henderson <richard.henderson@linaro.org>
+> Cc: Matt Turner <mattst88@gmail.com>
 > ---
->  kernel/printk/printk.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+>  arch/alpha/Kconfig           | 1 +
+>  arch/alpha/include/asm/tlb.h | 6 +++---
+>  2 files changed, 4 insertions(+), 3 deletions(-)
 >
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 173c14e08afe..85a8b6521d9e 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2734,7 +2734,8 @@ MODULE_PARM_DESC(console_no_auto_verbose, "Disable console loglevel raise to hig
->  /**
->   * console_suspend_all - suspend the console subsystem
->   *
-> - * This disables printk() while we go into suspend states
-> + * This disables printk() while we go into suspend states. Called by the power
-> + * management subsystem.
+> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+> index 80367f2cf821c..6c7dbf0adad62 100644
+> --- a/arch/alpha/Kconfig
+> +++ b/arch/alpha/Kconfig
+> @@ -38,6 +38,7 @@ config ALPHA
+>         select OLD_SIGSUSPEND
+>         select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
+>         select MMU_GATHER_NO_RANGE
+> +       select MMU_GATHER_RCU_TABLE_FREE
+>         select SPARSEMEM_EXTREME if SPARSEMEM
+>         select ZONE_DMA
+>         help
+> diff --git a/arch/alpha/include/asm/tlb.h b/arch/alpha/include/asm/tlb.h
+> index 4f79e331af5ea..ad586b898fd6b 100644
+> --- a/arch/alpha/include/asm/tlb.h
+> +++ b/arch/alpha/include/asm/tlb.h
+> @@ -4,7 +4,7 @@
+>
+>  #include <asm-generic/tlb.h>
+>
+> -#define __pte_free_tlb(tlb, pte, address)              pte_free((tlb)->m=
+m, pte)
+> -#define __pmd_free_tlb(tlb, pmd, address)              pmd_free((tlb)->m=
+m, pmd)
+> -
+> +#define __pte_free_tlb(tlb, pte, address)      tlb_remove_ptdesc((tlb), =
+page_ptdesc(pte))
+> +#define __pmd_free_tlb(tlb, pmd, address)      tlb_remove_ptdesc((tlb), =
+virt_to_ptdesc(pmd))
+> +
+>  #endif
+> --
+> 2.20.1
+>
 
-Since you are touching this comment, I would prefer to make it
-technically accurate. It is not printk() that is disabled, it is console
-printing that is disabled. Perhaps something like:
+Looks good from an Alpha perspective.
 
- * Block all console printing while the system goes into suspend state.
- * Called by the power management subsystem.
-   
->   */
->  void console_suspend_all(void)
->  {
-> @@ -2766,6 +2767,12 @@ void console_suspend_all(void)
->  	synchronize_srcu(&console_srcu);
->  }
->  
-> +/**
-> + * console_resume_all - resume the console subsystem
-> + *
-> + * This resumes printk() when the system is being restored. Called by the power
-> + * management subsystem.
-
-And something similar here:
-
- * Allow all console printing when the system resumes from suspend. Called by
- * the power management system.
- 
-> + */
->  void console_resume_all(void)
->  {
->  	struct console_flush_type ft;
-
-John Ogness
+Acked-by: Magnus Lindholm <linmag7@gmail.com>
 
