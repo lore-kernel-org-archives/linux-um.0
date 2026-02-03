@@ -4,111 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DCE4D172A6
-	for <linux-um@archiver.kernel.org>; Sun,  1 Feb 2026 22:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A4FBD172C2
+	for <linux-um@archiver.kernel.org>; Tue,  3 Feb 2026 10:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=; b=aS4pHzvy6yI7cSEeNaVYUtPHE6
-	u9HG4gujF4tS2cQTwQH+YPckDs4W+dVXC2SOoD6W+vexpQAKeBtvYMHMQHM8h0r+elVYYTqg/2ZIS
-	Je62qx0qcB+AK6UsBd2hm28RSULdFlGzI2BOVEuV7ZKePEuSBMb+WY+vyJA7IzLkaB+ns6H3Vaqxr
-	c4ZoW20hHKm0QA4lK0nAjoJeu1LijvQ1thO80I7DJStS/kBGLf4Ahe63/SPEno8NntGbmLQB+LorW
-	xmU6Un09KJZ+IdT8Wxt115CumWBsJ+jaVc6eQiM3VRYfkELqezyJys/0K1os4v8rFjd4J4bnwVvyu
-	M9qePNOg==;
+	bh=bIz4RVwkv6KARy4MwQOhUdd22JeZFr0fFrNF7J4bRPM=; b=sJebV7BR7a4yeXsgY0FdwDoxt1
+	CMgqf8duBrc5zrqVE0FlmDQv6ewPfX43vKEFfMuvIeqOIR5P8eVYVnEjl6NxcGkSI9EPjAUPBm80L
+	WRQvffSShGrxfuoqZ95/UjQlrnVzN31iBNRh5KtMN3Sb7oJrDq7srEksQ1zIZuVCjrLCDZUsRKOJB
+	Swpob4lAaXUgv3r+JxsdcKEQyuGZE8nt6wDRV1MJd1sho4R2oenlDCMc+M3MFiboA0H7KSV2AasAY
+	TzIDOtfQoA5PCvBiUfMCAx9r8UW6oXZCA6sZuntP867lJkSKh19dBJCN6TK9Wv7DIdPwACJCCgxvM
+	d86v4kXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vmfVs-00000004BvU-1C7D;
-	Sun, 01 Feb 2026 22:01:48 +0000
-Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+	id 1vnDTI-00000006Sar-0m7j;
+	Tue, 03 Feb 2026 10:17:24 +0000
+Received: from smtp-out3.simply.com ([94.231.106.210])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vmfVo-00000004Bv9-1sFN
-	for linux-um@lists.infradead.org;
-	Sun, 01 Feb 2026 22:01:46 +0000
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-65808d08423so5662559a12.1
-        for <linux-um@lists.infradead.org>; Sun, 01 Feb 2026 14:01:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769983302; cv=none;
-        d=google.com; s=arc-20240605;
-        b=DUPmWj5UbfW8yc9405b2R8SfiZktwD0FiJ0dFK1LgzJVUHQdTJMFGWJ5govx3mOTf/
-         W4N34GEj9yNOZtBBY2fvzHlg09i9YuIj68oFsOmmKPujdn8/iOukA+U3aR7zfeIc52IF
-         ONp7u+BcWo6pmNXweRy1rawzYIEfpSgiiM1NbEIIQ5/GK0Zk57vtomDHYcxvsPe5kVEm
-         eLh0vi3ibkivJO0QNFPJJ7TthFAFfeWYs+yxC0s373DrNgpFQNf7V1o0qDs9zh4msL55
-         PmYYfMriayUw0YirSnM5eYcXLC+8oY7vqMfQ/8P79HnFv/Yd52kVV7/8LhQhQKigIKRb
-         e36g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
-        fh=zYI1s2KnELN7K+g58MIFK4L57pwtoTaY46GG1b7lmqQ=;
-        b=WjjjID/fGTUF4IQiw/o5fSw68cHuIB1OgPRp1WUabb8lTXcDrAoy6wVcyMq7WqJXtv
-         UH2WvRpv9Rd9B7EX9jYLla6ZAQz/v9eIEbFEChWKCJ4Kk8Vpk03mxZNBfax1EFMWdphV
-         //WCjNquZimwvNA2ufXiMqremzjRz+VPlAy+45qaF7CtYG9Xu5ksg7bIfmSMpgJUrjRz
-         fpJobCeLgYBEu7uqxbI4rL/DKI8jC7wERsMKUgpqiUXNZh3vTL+zBFRsF1BS5Zh1du0b
-         96bMNOcPnGpojLsJLyhEmwZmAUjCaCIza6RmERQ2yhbg5b/VN1B19EttDVmcz9KXKgGC
-         rAlg==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769983302; x=1770588102; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
-        b=fQma6iQb9IIW2glXIFqH2RN2D0S2upALw1IhNNv/Ltt/nS/egYI5WfyW1nrJmx+9FU
-         g/nXcAmckY+PB9yAxoKJMB1zxL5Djur2ypJfYxc5lfZE5Wu08ALyMfDVazPBN7qOyKzI
-         YttI5GjFrdwOcXit3TkzKKLBEJV85TaWaSupKNVyDWH++AdEfC1haLdCYvNVF/MW0yhM
-         vGeRgsjqi1zjij3ygzkKBmi8kt0E/1NOfZ87VGmisyY2s9ARwFoc9nzIJWhTNU8vNs60
-         l7NK5/NsKg24XFsvKjteTJ4b0oYB9wQZ+BnpoxpHD54b+wS9b4XgKhvQZgS479Pzfa3R
-         XlPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769983302; x=1770588102;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nxxXeMZ2Mj2NhEcakAGevZjWJ8Zk/OwUaMBA61xjWow=;
-        b=UylR2CiZvsErUCcr5SsO3DyRf8nvhb1pHA5IhtCBJwDY3RyGLJQSlw6ehT0+y7h4/F
-         exhJXFiPWNCgol/hYrLzK4Bas/at8c69SlXBHGkAyVMOgGxmTBF7JQqvuhrNup7Y6F0O
-         I7sVT3d4SdOMUt90k9vBmGRwTfHkSwV0fVDdqm2HjNjAX4yOhkXKh70sgq4ZRe+vndU7
-         E+XTj44tWFXpz+d71BdAW/Y+8bPNc9v2LhIm39YMIXUGotpmQ82pXHjlzbemvCzgdfH2
-         csSlbCSnsS+w0biifVwgu2gvJQ/UUdjRvZMoXgLfbPjTEWUTs+mY2rpMHGQBI+5PbxM8
-         hCHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWC6AcyLuchSklWWexFo20SBR1fuvo9fFNdE1kU8z11LN5S1QLZ6I/iM+N4oLimooZzAsaFRO3NkA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz6mY4TkQ7YTKzH+7/q1raqSObHVAjRyn6VxKSk50zzpFXy8Lzn
-	P3eNc5aUVSvG96E7DbeR0+BYTr8o52kXsNiq4YQyKbTk5fOuCG27v/AppUbHZZUoVpPMEuzjYQH
-	imorsRqJoUdilAAqXvzPWJFQ1WR/VfPI=
-X-Gm-Gg: AZuq6aLBztOI9NTBB+wlm/aYesS9gn3qXaS7fnsYYwFODAasnfSCdaG2yX0qkadOW0I
-	4qopPqnnsnWhNFAOKJKvPFRy0olXs0ZfNNR/pKR5sbYhaIyULvyLm7j879O6wnZhc6EW+J5ooXT
-	AgNeDM1sGqkhn/01pFJ5pc9JrW3+40MJwlFS/NMN6vv3QHzhIBkzbOZOla8zaRLe1W/0PcTCUPc
-	vltZ3NNX7ENI6UUdocI/tlbxVAwxco8LHKGaF8oiZuDS9drBel7taAdVcHuC55DWyPtfchrIBhn
-	kj1rV236Y9xI82P3MgZFG/EWQaEF
-X-Received: by 2002:a05:6402:90b:b0:64c:9e19:9858 with SMTP id
- 4fb4d7f45d1cf-658de58d61fmr5598076a12.22.1769983301701; Sun, 01 Feb 2026
- 14:01:41 -0800 (PST)
+	id 1vnDTD-00000006SXt-1KZj;
+	Tue, 03 Feb 2026 10:17:21 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4f4ztd00Nsz1FDXZ;
+	Tue,  3 Feb 2026 11:17:13 +0100 (CET)
+Received: from [10.10.15.18] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4f4ztY1CK4z1DHbc;
+	Tue,  3 Feb 2026 11:17:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=simplycom2; t=1770113832;
+	bh=bIz4RVwkv6KARy4MwQOhUdd22JeZFr0fFrNF7J4bRPM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=lUAE2uVqAzYhZ1sm97fYuqy+vlFYURoO/ESgRDOLYwoPcj+AJLYcKftxzXr+4y/HX
+	 2YOyDda3zoXt+26+AX8pMM7QHh5T+XJuM4W03HRzJukix5g8rdsb/fjilKm09oxzSx
+	 tBwy+nern6bg1a50/KfLMYddppMeG7txUbC4/AmsAXT1tuu3+smPwBXiUUqokjSpVv
+	 UUsrhLX04O7HNQNLLVmIA6iNk0y72m91fWDt4UXVjn71WutyJfQfTM3K8uFvvtoUBz
+	 jIXUHdgIYTlrZQBjHS4KV4lgMsEWYt8Uw9Kgk+K14XLmF28umAniXCSL8090kqia/S
+	 lC0jknJm/j/RQ==
+Message-ID: <ec965a79-dad8-4358-a8e9-ebc9f330b67b@gaisler.com>
+Date: Tue, 3 Feb 2026 11:17:08 +0100
 MIME-Version: 1.0
-References: <cover.1769515122.git.zhengqi.arch@bytedance.com> <3380f40a89b73c488202c85f9a8abf99fb08543b.1769515122.git.zhengqi.arch@bytedance.com>
-In-Reply-To: <3380f40a89b73c488202c85f9a8abf99fb08543b.1769515122.git.zhengqi.arch@bytedance.com>
-From: Magnus Lindholm <linmag7@gmail.com>
-Date: Sun, 1 Feb 2026 23:01:30 +0100
-X-Gm-Features: AZwV_Qj9VNkT5OuGD6ka3IvGbnZ780_iMCZkDjCZeudKZ-RrGhxplhYBmunMjcY
-Message-ID: <CA+=Fv5RhxvyxKr2t+pHd1tbGrK57P-+b3pGe1nVaK_OLiFt2wg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/8] alpha: mm: enable MMU_GATHER_RCU_TABLE_FREE
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: david@kernel.org, andreas@gaisler.com, richard.weiyang@gmail.com, 
-	will@kernel.org, peterz@infradead.org, aneesh.kumar@kernel.org, 
-	npiggin@gmail.com, dev.jain@arm.com, ioworker0@gmail.com, 
-	akpm@linux-foundation.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-alpha@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-um@lists.infradead.org, 
-	sparclinux@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Borislav Petkov
+ <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
+ Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+ Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20260124095628.668870-1-rppt@kernel.org>
+ <2157220c-0394-40fa-9918-a8514171bd10@gaisler.com>
+ <aXj_x5CyUeys7ONM@kernel.org>
+Content-Language: en-US
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <aXj_x5CyUeys7ONM@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260201_140144_505651_44FDC6C9 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20260203_021719_732740_18644D07 
+X-CRM114-Status: GOOD (  25.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,60 +105,124 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 27, 2026 at 1:16=E2=80=AFPM Qi Zheng <qi.zheng@linux.dev> wrote=
-:
->
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
->
-> On a 64-bit system, madvise(MADV_DONTNEED) may cause a large number of
-> empty PTE page table pages (such as 100GB+). To resolve this problem,
-> first enable MMU_GATHER_RCU_TABLE_FREE to prepare for enabling the
-> PT_RECLAIM feature, which resolves this problem.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Cc: Richard Henderson <richard.henderson@linaro.org>
-> Cc: Matt Turner <mattst88@gmail.com>
-> ---
->  arch/alpha/Kconfig           | 1 +
->  arch/alpha/include/asm/tlb.h | 6 +++---
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-> index 80367f2cf821c..6c7dbf0adad62 100644
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -38,6 +38,7 @@ config ALPHA
->         select OLD_SIGSUSPEND
->         select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
->         select MMU_GATHER_NO_RANGE
-> +       select MMU_GATHER_RCU_TABLE_FREE
->         select SPARSEMEM_EXTREME if SPARSEMEM
->         select ZONE_DMA
->         help
-> diff --git a/arch/alpha/include/asm/tlb.h b/arch/alpha/include/asm/tlb.h
-> index 4f79e331af5ea..ad586b898fd6b 100644
-> --- a/arch/alpha/include/asm/tlb.h
-> +++ b/arch/alpha/include/asm/tlb.h
-> @@ -4,7 +4,7 @@
->
->  #include <asm-generic/tlb.h>
->
-> -#define __pte_free_tlb(tlb, pte, address)              pte_free((tlb)->m=
-m, pte)
-> -#define __pmd_free_tlb(tlb, pmd, address)              pmd_free((tlb)->m=
-m, pmd)
-> -
-> +#define __pte_free_tlb(tlb, pte, address)      tlb_remove_ptdesc((tlb), =
-page_ptdesc(pte))
-> +#define __pmd_free_tlb(tlb, pmd, address)      tlb_remove_ptdesc((tlb), =
-virt_to_ptdesc(pmd))
+On 2026-01-27 19:11, Mike Rapoport wrote:
+> On Tue, Jan 27, 2026 at 05:02:39PM +0100, Andreas Larsson wrote:
+>> On 2026-01-24 10:56, Mike Rapoport wrote:
+>>
+>>> Every architecture defines empty_zero_page that way or another, but for the
+>>> most of them it is always a page aligned page in BSS and most definitions
+>>> of ZERO_PAGE do virt_to_page(empty_zero_page).
+>>
+>> Running this in an LDOM on an UltraSparc T4 sparc64, the entire LDOM
+>> hangs after a while during boot.
+>>
+>>> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+>>> index c2d19c9a9244..2bd99944176d 100644
+>>> --- a/arch/sparc/mm/init_64.c
+>>> +++ b/arch/sparc/mm/init_64.c
+>>> @@ -177,9 +177,6 @@ extern unsigned long sparc_ramdisk_image64;
+>>>  extern unsigned int sparc_ramdisk_image;
+>>>  extern unsigned int sparc_ramdisk_size;
+>>>  
+>>> -struct page *mem_map_zero __read_mostly;
+>>> -EXPORT_SYMBOL(mem_map_zero);
+>>> -
+>>>  unsigned int sparc64_highest_unlocked_tlb_ent __read_mostly;
+>>>  
+>>>  unsigned long sparc64_kern_pri_context __read_mostly;
+>>> @@ -2506,18 +2503,6 @@ void __init mem_init(void)
+>>>  	 */
+>>>  	register_page_bootmem_info();
+>>>  
+>>> -	/*
+>>> -	 * Set up the zero page, mark it reserved, so that page count
+>>> -	 * is not manipulated when freeing the page from user ptes.
+>>> -	 */
+>>> -	mem_map_zero = alloc_pages(GFP_KERNEL|__GFP_ZERO, 0);
+>>> -	if (mem_map_zero == NULL) {
+>>> -		prom_printf("paging_init: Cannot alloc zero page.\n");
+>>> -		prom_halt();
+>>> -	}
+>>> -	mark_page_reserved(mem_map_zero);
+>>> -
+>>> -
+>>>  	if (tlb_type == cheetah || tlb_type == cheetah_plus)
+>>>  		cheetah_ecache_flush_init();
+>>>  }
+>>
+>> This just removes the mark_page_reserved(mem_map_zero) without 
+>> replacing it with something corresponding to that. Perhaps part
+>> of the problem?
+> 
+> I don't think so, empty_zero_page is in BSS now an it's reserved as a part
+> of the kernel image.
+> 
+> I suspect that virt_to_page() does not work BSS symbols on sparc64. Can you
+> please try with this patch:
+> 
+> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+> index 74ede706fb32..0578c5172d4e 100644
+> --- a/arch/sparc/include/asm/pgtable_64.h
+> +++ b/arch/sparc/include/asm/pgtable_64.h
+> @@ -22,6 +22,7 @@
+>  #include <asm/adi.h>
+>  #include <asm/page.h>
+>  #include <asm/processor.h>
+> +#include <asm/vaddrs.h>
+>  
+>  /* The kernel image occupies 0x4000000 to 0x6000000 (4MB --> 96MB).
+>   * The page copy blockops can use 0x6000000 to 0x8000000.
+> @@ -210,6 +211,11 @@ extern unsigned long _PAGE_CACHE;
+>  extern unsigned long pg_iobits;
+>  extern unsigned long _PAGE_ALL_SZ_BITS;
+>  
+> +extern unsigned long kern_base;
+> +#define ZERO_PAGE(vaddr)						   \
+> +	(virt_to_page(empty_zero_page + ((unsigned long)__va(kern_base)) - \
+> +		      ((unsigned long)KERNBASE)))
 > +
->  #endif
-> --
-> 2.20.1
->
+>  /* PFNs are real physical page numbers.  However, mem_map only begins to record
+>   * per-page information starting at pfn_base.  This is to handle systems where
+>   * the first physical page in the machine is at some huge physical address,
+> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+> index 2bd99944176d..d2d724ba4f83 100644
+> --- a/arch/sparc/mm/init_64.c
+> +++ b/arch/sparc/mm/init_64.c
+> @@ -170,6 +170,8 @@ static void __init read_obp_memory(const char *property,
+>  
+>  /* Kernel physical address base and size in bytes.  */
+>  unsigned long kern_base __read_mostly;
+> +EXPORT_SYMBOL(kern_base);
+> +
+>  unsigned long kern_size __read_mostly;
+>  
+>  /* Initial ramdisk setup */
+Hi,
 
-Looks good from an Alpha perspective.
+Unfortunately, that does not help. The LDOM goes down in the same fashion.
 
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
+In QEMU, with or without this extra patch, I get this:
+
+[    3.310674] BUG: Bad page map in process mount  pte:ffffc800016436b0
+[    3.310778] pgd:027dc000 p4d:027dc000 pud:027d8000 pmd:0269a000
+[    3.311686] addr:000001000020a000 vm_flags:00100077 anon_vma:fffff80002688548 mapping:0000000000000000 index:8000105
+[    3.312449] file:(null) fault:0x0 mmap:0x0 mmap_prepare: 0x0 read_folio:0x0
+[    3.313622] CPU: 0 UID: 0 PID: 46 Comm: mount Not tainted 6.19.0-rc5-00269-g28acabacf9b0 #22 VOLUNTARY 
+[    3.314056] Call Trace:
+[    3.314182] [<00000000005e822c>] print_bad_page_map+0x10c/0x260
+[    3.314375] [<00000000005e9f30>] vm_normal_page+0x70/0x80
+[    3.314400] [<00000000005ea5a8>] unmap_page_range+0x4e8/0x13c0
+[    3.314421] [<00000000005eb54c>] unmap_vmas+0x2c/0x120
+[    3.314440] [<00000000005f781c>] exit_mmap+0xdc/0x440
+[    3.314457] [<000000000047193c>] mmput+0x3c/0x100
+[    3.314477] [<0000000000479e94>] do_exit+0x1f4/0xa00
+[    3.314494] [<000000000047a83c>] do_group_exit+0x1c/0xa0
+[    3.314511] [<0000000000489b28>] get_signal+0x8a8/0x8e0
+[    3.314529] [<000000000043be24>] do_notify_resume+0xa4/0x5a0
+[    3.314549] [<0000000000404b48>] __handle_signal+0xc/0x30
+[    3.314687] Disabling lock debugging due to kernel taint
+
+Cheers,
+Andreas
+
 
