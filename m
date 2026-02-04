@@ -4,69 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB63E9536D
-	for <linux-um@archiver.kernel.org>; Wed,  4 Feb 2026 10:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2A09EA7947
+	for <linux-um@archiver.kernel.org>; Wed,  4 Feb 2026 20:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
-	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MYBuTu5OB75A6/GrlgsR5Q1v5/fZBHf5I/RU1z8ZZiE=; b=tk3ZLPtNvcImFj
-	PR4XhNcpz8kyoOUShDmT/4QkLqCs9R56vU4cbJLtiX5DOCQPUwJjdZ3ZpJPNN4kI/bZZO0jpB/BHm
-	fX6gXkjFv41MHTevokbxPYf8trBqmuR+53FhhGLWiZBF7lYBx8q/rIl23DBlUnrE94HqYBjC3kSDC
-	jZlQ+4hkIuI+UmPk34jkia1FVJzbXpHxFZDDVJDQg5S/lnAyrHVS2YDkWlmnDRi14s57eZf3d4bV+
-	MeGFr/9Z52ivv7Kze7jZCBFzpkzOk+tSJ3WjoDo6xdEARl13Y2Jgxp3la5NDWx9hG8F7a+YsSPk5p
-	IO/0i2rZvTzSCPwn0JbQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JE9K9cnxHEioD0bY/0SBJmhMUUNEI8hO7Ksv7scdRCc=; b=2Mi4NOYaSSIz8ujK9bDpJm5xVx
+	PI+iLoYVDw/RnlMCt5ASeFwzz8uSrk0fRfFMBYtOxuFC8eYpt4M6kQGjX2D2dAJI1e7u3QIYRIlVv
+	LpxQrzSGxr7qvbZEPKgmQvTBaSyKXY6fVPserIXW7HnSOgsYYIpgLVklIs3nCmNup4Dnciz7apPrh
+	MoqP4PUOvdgDzSoSqn+c7HBfc+EpCrmYpBS8z6eYid3xAUDOkaigO6nKLVC1hKYGnhQkVgU1TxJ4O
+	BRp6kuIBq4vn8V8zr+RExg1/HOu2MeQ4Lx6fiyvuqGUxGxnsCgQVSJn/6t4WGAzn4C6ox8j4m1HmA
+	TUXvb52Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vna3c-00000008Hfp-2tVH;
-	Wed, 04 Feb 2026 10:24:24 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vnjme-000000094ED-19IZ;
+	Wed, 04 Feb 2026 20:47:32 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vna3b-00000008HfZ-1Kn2
-	for linux-um@bombadil.infradead.org;
-	Wed, 04 Feb 2026 10:24:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=MYBuTu5OB75A6/GrlgsR5Q1v5/fZBHf5I/RU1z8ZZiE=; b=PMBPvYmrS/PnuTYBJUHp4kP7R1
-	SiCFlm+vJeIa1pjYmGLGsfsU5zy4m3e/ch1mYokATJ3WHB8gIB6wQQfpnsbh40/7qKHGvWUB1duSh
-	9VTHbkPqKg/S5YVGrl34gy7+cChnRTBbeFzSGWzWs46bOmh5YYoU/2UXmmQ5d1cmKHiF7/OQVwgSe
-	a/f1Mwm15bNNuVuXRIOMWkqMRKWlvLaECvn6+6Lrm4rqMR8MF+e1SRPrUKcxSjhYeKa2bcrbKTOWm
-	VPdeC51k/ZUBZiMO5UzZ7uf9eehxtgMEX+QJx+S/4wdhWnynmaruSzJDn0Wf1BLd5EOMlGEnNT6WL
-	J17vgh0Q==;
-Received: from mail.central-kino-rottweil.de ([85.214.227.4])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vna3Y-00000000IsG-3Btd
-	for linux-um@lists.infradead.org;
-	Wed, 04 Feb 2026 10:24:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=central-kino-rottweil.de;
-	s=2020; t=1770198433; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=MYBuTu5OB75A6/GrlgsR5Q1v5/fZBHf5I/RU1z8ZZiE=;
-	b=Bdjv2WDRqdy8jnJxZNEKZvVdHxz4MmQk6KKZTaSAJTFnW97hUS0CHL83haWeqIx+rHUtDb
-	v5TetEvFKl41AvZCARGPPlknzJLczOdIG4fyccL6E1AvXKjVMf4BwkknzXJw9iyK6QG3gk
-	ZLw533KrqKi5Ibv+vpye9jvGLLJLjEzT4JTJ0ILWye0rVkd7hszEJ9wZRSYx60HF7yV/fj
-	YrXwGLf4jHLZFyyXENvRbP7FFbG5uD9O0XuwFcBK5p7dpcIglYvxpzzUTPk1Zbuxwwe1uq
-	USOLfqkkzWK7pNM6MzggUkxANrucpj6ENzNUKPn3DXHdMoCEcpcsfBljS/a7Ng==
-From: fsj@central-kino-rottweil.de
-To: linux-um@lists.infradead.org
-Subject: /KXM/
-Date: 4 Feb 2026 01:47:12 -0800
-Message-ID: <20260204014711.5A3928BDC262ADE5@central-kino-rottweil.de>
+	id 1vnjmc-000000094Dj-2quo;
+	Wed, 04 Feb 2026 20:47:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 591C560010;
+	Wed,  4 Feb 2026 20:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6EFC4CEF7;
+	Wed,  4 Feb 2026 20:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770238049;
+	bh=M6F4r+8xqCKwYdWkmNuqBBLFmaH1X62wessV5kAOjaY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ceImbz8Ehfv99L+KpKZmE6O02UITPIW3Q3unzHK6ZvZ03KKVV9vd0o/zcMuSR8I/T
+	 H1Ir3pkRy/Ac8NihhmQc2XLTMSvLY7g8u6dkzpUWxLGR59JnhG3WFIY+0sjN6+ny7L
+	 OA5yX5VUcxDkJ35fbSlJkf7gZPNX9n4UDZ49V6CXYwaJng3pK5jMKjC8bZQ49jWrDJ
+	 mh81ww5c4mKrrXjIQs9nNyAtjUxe+jiJJyDGCyhHXV8PWeMF/uLi6iv05wTvaTDa01
+	 /w1na7IgsBIyj8KXiazPHDVq2pFYUxDfVF0755O+BReCpOPHi91jybdC/Nf+ItlP65
+	 sGqFAAkbH50Hw==
+Message-ID: <36511161-6fb0-4928-a0ed-9b5e03b50a27@kernel.org>
+Date: Wed, 4 Feb 2026 21:47:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=fsj@central-kino-rottweil.de smtp.mailfrom=fsj@central-kino-rottweil.de
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260204_102420_861222_DDAAB1D0 
-X-CRM114-Status: UNSURE (  -0.98  )
-X-CRM114-Notice: Please train this message.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
+ Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
+ Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+ Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20260124095628.668870-1-rppt@kernel.org>
+From: "David Hildenbrand (arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260124095628.668870-1-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,23 +136,100 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: info.superenalotto@gmail.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 1/24/26 10:56, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
+> ZERO_PAGE() to 4.
+> 
+> Every architecture defines empty_zero_page that way or another, but for the
+> most of them it is always a page aligned page in BSS and most definitions
+> of ZERO_PAGE do virt_to_page(empty_zero_page).
+> 
+> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
+> core MM and drop these definitions in architectures that do not implement
+> colored zero page (MIPS and s390).
+> 
+> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
+> inline causes severe pain in header dependencies.
 
+That's just what I wanted to ask after looking at it :)
 
-Wir freuen uns, Ihnen mitteilen zu k=C3=B6nnen, dass Sie zu den=20
-Gewinnern der letzten SuperEnalotto-Ziehung in Zusammenarbeit mit=20
-Lotto24 geh=C3=B6ren. EuroMillions und Powerball sind ebenfalls=20
-enthalten. Sie haben einen einmaligen Gewinn von =E2=82=AC3.850.000  in=20
-der zweiten Gewinnklasse erzielt. Um Ihren Gewinn zu bearbeiten,=20
-senden Sie uns bitte die folgenden Informationen per E-Mail:
+> 
+> For the most part the change is mechanical, with these being noteworthy:
+> 
+> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
+>    parameters. Switching to a generic empty_zero_page removes the aliasing
+>    and keeps ZERO_PGE for boot parameters only
+> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
+>    ZERO_PAGE() is kept intact.
+> * m68k/parisc/sparc64/um: allocated empty_zero_page from memblock,
+>    although they do not support zero page coloring and having it in BSS
+>    will work fine.
+> * sh: used empty_zero_page for boot parameters at the very early boot.
+>    Rename the parameters page to boot_params_page and let sh use the generic
+>    empty_zero_page.
+> * hexagon: had an amusing comment about empty_zero_page
+> 
+> 	/* A handy thing to have if one has the RAM. Declared in head.S */
+> 
+>    that unfortunately had to go :)
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
-Vollst=C3=A4ndiger Name: Land: Adresse: Alter: Geschlecht: Beruf:=20
-Mobilnummer: WhatsApp- und Telegram-Nummer.
+[...]
 
-Im Namen der Online-Lotterie-Abteilung SuperEnalotto gratulieren=20
-wir Ihnen herzlich zu Ihrem wohlverdienten EuroMillions- und=20
-Powerball-Gewinn!
+>   
+> +#ifndef __HAVE_COLOR_ZERO_PAGE
+> +extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+> +#endif
+> +
+> +#ifndef ZERO_PAGE
+> +#define ZERO_PAGE(vaddr) ((void)(vaddr),virt_to_page(empty_zero_page))
+
+Took me a second ...
+
+> +#endif
+> +
+>   #endif /* !__ASSEMBLY__ */
+>   
+>   #if !defined(MAX_POSSIBLE_PHYSMEM_BITS) && !defined(CONFIG_64BIT)
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 1a29a719af58..8ea5b76f317f 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -53,6 +53,15 @@ EXPORT_SYMBOL(mem_map);
+>   void *high_memory;
+>   EXPORT_SYMBOL(high_memory);
+>   
+> +#ifndef __HAVE_COLOR_ZERO_PAGE
+> +/*
+> + * ZERO_PAGE is a global shared page that is always zero: used
+> + * for zero-mapped memory areas etc..
+> + */
+
+I am not so sure of how much value that comment here is.
+
+... and in particular, why it is not next to ZERO_PAGE in pgtable.h? ;)
+
+> +unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
+
+Is there a good (or historic) reason why this is not simply
+
+uint8_t empty_zero_page[PAGE_SIZE] __page_aligned_bss;
+
+Almost looks to simple, right? So there must be some problem with it :)
+
+> +EXPORT_SYMBOL(empty_zero_page);
+> +#endif
+
+Nothing else jumped at me, nice cleanup ... if you get sparc to work :P
+
+-- 
+Cheers,
+
+David
 
