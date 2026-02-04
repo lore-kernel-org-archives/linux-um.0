@@ -4,93 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A4FBD172C2
-	for <linux-um@archiver.kernel.org>; Tue,  3 Feb 2026 10:17:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7497AE8B383
+	for <linux-um@archiver.kernel.org>; Wed,  4 Feb 2026 02:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bIz4RVwkv6KARy4MwQOhUdd22JeZFr0fFrNF7J4bRPM=; b=sJebV7BR7a4yeXsgY0FdwDoxt1
-	CMgqf8duBrc5zrqVE0FlmDQv6ewPfX43vKEFfMuvIeqOIR5P8eVYVnEjl6NxcGkSI9EPjAUPBm80L
-	WRQvffSShGrxfuoqZ95/UjQlrnVzN31iBNRh5KtMN3Sb7oJrDq7srEksQ1zIZuVCjrLCDZUsRKOJB
-	Swpob4lAaXUgv3r+JxsdcKEQyuGZE8nt6wDRV1MJd1sho4R2oenlDCMc+M3MFiboA0H7KSV2AasAY
-	TzIDOtfQoA5PCvBiUfMCAx9r8UW6oXZCA6sZuntP867lJkSKh19dBJCN6TK9Wv7DIdPwACJCCgxvM
-	d86v4kXw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=kJkMVLe2+DCycBWmWyFKZjZwsfNmF8nUVM1iT9rHo9s=; b=I0FVfPV//TZWn09V1xGMy1lEkS
+	8/MGVJi3LPDMH/d+qvDKhA22DrjWeaOfAXI4Y08tHMmqYCtbu5qhKpWeRcjRRCM/KWNC3RzXbwQYM
+	PCE0lVwhvqpEEoMiTndAv9pfIZkcEE8CSMyVF8SQXnH6snm/PTuUDOFTs+++lHSwUjaep+Tn26hEe
+	SEvyxuh9gh2QsfBSoUrOSLKoyOkx8VsZc/3DrW44uVqPvpHPsMXJbht165cH+BWg6NssU+b3EZN4V
+	Zh6AN1M4Vy4amNvmmpk0hwmN5ihLOivujOCuENxollx20iHHEmSRs96WplkoUe+qPOWcqlOMI6KWU
+	KF1L9VVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnDTI-00000006Sar-0m7j;
-	Tue, 03 Feb 2026 10:17:24 +0000
-Received: from smtp-out3.simply.com ([94.231.106.210])
+	id 1vnScv-00000007m2U-3A3o;
+	Wed, 04 Feb 2026 02:28:21 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnDTD-00000006SXt-1KZj;
-	Tue, 03 Feb 2026 10:17:21 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4f4ztd00Nsz1FDXZ;
-	Tue,  3 Feb 2026 11:17:13 +0100 (CET)
-Received: from [10.10.15.18] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4f4ztY1CK4z1DHbc;
-	Tue,  3 Feb 2026 11:17:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=simplycom2; t=1770113832;
-	bh=bIz4RVwkv6KARy4MwQOhUdd22JeZFr0fFrNF7J4bRPM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=lUAE2uVqAzYhZ1sm97fYuqy+vlFYURoO/ESgRDOLYwoPcj+AJLYcKftxzXr+4y/HX
-	 2YOyDda3zoXt+26+AX8pMM7QHh5T+XJuM4W03HRzJukix5g8rdsb/fjilKm09oxzSx
-	 tBwy+nern6bg1a50/KfLMYddppMeG7txUbC4/AmsAXT1tuu3+smPwBXiUUqokjSpVv
-	 UUsrhLX04O7HNQNLLVmIA6iNk0y72m91fWDt4UXVjn71WutyJfQfTM3K8uFvvtoUBz
-	 jIXUHdgIYTlrZQBjHS4KV4lgMsEWYt8Uw9Kgk+K14XLmF28umAniXCSL8090kqia/S
-	 lC0jknJm/j/RQ==
-Message-ID: <ec965a79-dad8-4358-a8e9-ebc9f330b67b@gaisler.com>
-Date: Tue, 3 Feb 2026 11:17:08 +0100
+	id 1vnSct-00000007m1b-2POm
+	for linux-um@lists.infradead.org;
+	Wed, 04 Feb 2026 02:28:20 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-2a09d981507so2834235ad.1
+        for <linux-um@lists.infradead.org>; Tue, 03 Feb 2026 18:28:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770172098; x=1770776898; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kJkMVLe2+DCycBWmWyFKZjZwsfNmF8nUVM1iT9rHo9s=;
+        b=ldClhlna3EzFTzXjCptUcVmFu6tjo/FG2Z0ViFjqVD6OO6rrG0jlT53ga/Yz71bTqB
+         4fyBRiQJzuyN+vCb6ilXE9dbpW39TXpXhG/AtqNc+dIwEB6Ij7Fa6I/hBA69gXlfSaUE
+         XPoqXZ9YN0Q/Tn0qn7V7quc0g7OyKRvF8ucsjb9QvP5KnPcrEQ0DxYQVyZPsyw6Wc8fb
+         KgdZw1p3mo9E4xQSCcB9APQ+wFklYJ+8JRgbHz3uxuTl0oX+vBqS8TOUOAoLRRfhUDaM
+         5/728hFuEGH5gg2RhcEemhd0xjh0kbFUAtUPl5e2EW2S4Lv8apeu5BGyZNAi0dZ6rNyP
+         5Qow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770172098; x=1770776898;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kJkMVLe2+DCycBWmWyFKZjZwsfNmF8nUVM1iT9rHo9s=;
+        b=RO24uuegYAtZzsWcJzT6+KmlnUTt8C2NuGekxF8R4ue6BGFtV1AUT0vXJ+cyaXzg+W
+         EnkUwOjQH87ATutgav45IY2Bbznr+ApwLixT5ABQscBnlmzUo/funNXBoVjBWq21Ql2V
+         LA4UPzHkHheqDM90Dqx7idBRZJVYdq+4eqMRUMy6tj9E1lPbfwQW+Uh3uP4Pp9Uv5I2T
+         YLfa3yrSE5QxiFW6J+M3ZPrZpjVefHi5S6TmsQGhIO6JOYHCeKuePuh08B524qu625Kr
+         5DagTTg74W5CDm1ZHuBlQap/zZie6FLZp9t6Wh3vrC4C3m2njMbu2QpSgY+xp7FrT8qr
+         zGZQ==
+X-Gm-Message-State: AOJu0YwZbWBH9wFWjqDhe/TfbytalN9D2fgY7JFLQACxJXWXt1dJCy7Y
+	yBRjWRq05wFWpyUOcAFmUilnNwmvTfcrx1xSfbcqSiiL2sbHVb5h1Bh0
+X-Gm-Gg: AZuq6aKAZ1plthOxn03eSGjJCQm6WGGBt29Hrhzw8I6CXd/oPBk6s2gN68ATmxM3R0t
+	sQNnkmvKSHS2SUVn2kfB2uwl3tX/1EpAJ56AiQ32Fyzze0LA7lhwsqwypGpkUuqgVTSTAfFewGv
+	MdHTUQobYCO12yHwPODy1N8lumA0yqEl5eHHEzINnUANUTvqicmu7i8gq3XgabH7qIF2A5t9oVV
+	9WUnLqXdLDDVQLGcPvv5VfZVwJg0bxcJ6i3BLElr21xq/G112sX7G6ZbFUSHPZs/x0PH9LGwbdW
+	/r9oIUaw79445uj2Bd1KS9yMcqO26bhuEyd3ETT1sv+TOWS/jHSwK2fgnGTr5l3ELVbORd2zHr1
+	OOO20PY+VtT2ZHbOhbJTyVgkjD7tYIUtinVUJy7yf2tH+ONMhneiZVa79w6KKJvZabZHw013VmC
+	Oho6k8Df1RkT9JpSAR5NgtqAoENUxY6AN3HxrfNj8OITbCnbhEReiInAIx/IrIiIlPKLyiw00+j
+	2giUeGrMijbb+43
+X-Received: by 2002:a17:903:3a8b:b0:2a8:ec3c:f326 with SMTP id d9443c01a7336-2a93397caadmr13191305ad.21.1770172098145;
+        Tue, 03 Feb 2026 18:28:18 -0800 (PST)
+Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a933870b22sm7091985ad.26.2026.02.03.18.28.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Feb 2026 18:28:17 -0800 (PST)
+Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
+	id A8D2D1200C2F; Wed,  4 Feb 2026 11:28:15 +0900 (JST)
+From: Hajime Tazaki <thehajime@gmail.com>
+To: linux-um@lists.infradead.org
+Cc: thehajime@gmail.com,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v14 00/13] nommu UML
+Date: Wed,  4 Feb 2026 11:27:58 +0900
+Message-ID: <cover.1770170302.git.thehajime@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Borislav Petkov
- <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- "David S. Miller" <davem@davemloft.net>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
- Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
- Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
- Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-mm@kvack.org, x86@kernel.org
-References: <20260124095628.668870-1-rppt@kernel.org>
- <2157220c-0394-40fa-9918-a8514171bd10@gaisler.com>
- <aXj_x5CyUeys7ONM@kernel.org>
-Content-Language: en-US
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <aXj_x5CyUeys7ONM@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260203_021719_732740_18644D07 
-X-CRM114-Status: GOOD (  25.54  )
+X-CRM114-CacheID: sfid-20260203_182819_620970_DFFCC5B2 
+X-CRM114-Status: GOOD (  23.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,124 +99,205 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2026-01-27 19:11, Mike Rapoport wrote:
-> On Tue, Jan 27, 2026 at 05:02:39PM +0100, Andreas Larsson wrote:
->> On 2026-01-24 10:56, Mike Rapoport wrote:
->>
->>> Every architecture defines empty_zero_page that way or another, but for the
->>> most of them it is always a page aligned page in BSS and most definitions
->>> of ZERO_PAGE do virt_to_page(empty_zero_page).
->>
->> Running this in an LDOM on an UltraSparc T4 sparc64, the entire LDOM
->> hangs after a while during boot.
->>
->>> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
->>> index c2d19c9a9244..2bd99944176d 100644
->>> --- a/arch/sparc/mm/init_64.c
->>> +++ b/arch/sparc/mm/init_64.c
->>> @@ -177,9 +177,6 @@ extern unsigned long sparc_ramdisk_image64;
->>>  extern unsigned int sparc_ramdisk_image;
->>>  extern unsigned int sparc_ramdisk_size;
->>>  
->>> -struct page *mem_map_zero __read_mostly;
->>> -EXPORT_SYMBOL(mem_map_zero);
->>> -
->>>  unsigned int sparc64_highest_unlocked_tlb_ent __read_mostly;
->>>  
->>>  unsigned long sparc64_kern_pri_context __read_mostly;
->>> @@ -2506,18 +2503,6 @@ void __init mem_init(void)
->>>  	 */
->>>  	register_page_bootmem_info();
->>>  
->>> -	/*
->>> -	 * Set up the zero page, mark it reserved, so that page count
->>> -	 * is not manipulated when freeing the page from user ptes.
->>> -	 */
->>> -	mem_map_zero = alloc_pages(GFP_KERNEL|__GFP_ZERO, 0);
->>> -	if (mem_map_zero == NULL) {
->>> -		prom_printf("paging_init: Cannot alloc zero page.\n");
->>> -		prom_halt();
->>> -	}
->>> -	mark_page_reserved(mem_map_zero);
->>> -
->>> -
->>>  	if (tlb_type == cheetah || tlb_type == cheetah_plus)
->>>  		cheetah_ecache_flush_init();
->>>  }
->>
->> This just removes the mark_page_reserved(mem_map_zero) without 
->> replacing it with something corresponding to that. Perhaps part
->> of the problem?
-> 
-> I don't think so, empty_zero_page is in BSS now an it's reserved as a part
-> of the kernel image.
-> 
-> I suspect that virt_to_page() does not work BSS symbols on sparc64. Can you
-> please try with this patch:
-> 
-> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-> index 74ede706fb32..0578c5172d4e 100644
-> --- a/arch/sparc/include/asm/pgtable_64.h
-> +++ b/arch/sparc/include/asm/pgtable_64.h
-> @@ -22,6 +22,7 @@
->  #include <asm/adi.h>
->  #include <asm/page.h>
->  #include <asm/processor.h>
-> +#include <asm/vaddrs.h>
->  
->  /* The kernel image occupies 0x4000000 to 0x6000000 (4MB --> 96MB).
->   * The page copy blockops can use 0x6000000 to 0x8000000.
-> @@ -210,6 +211,11 @@ extern unsigned long _PAGE_CACHE;
->  extern unsigned long pg_iobits;
->  extern unsigned long _PAGE_ALL_SZ_BITS;
->  
-> +extern unsigned long kern_base;
-> +#define ZERO_PAGE(vaddr)						   \
-> +	(virt_to_page(empty_zero_page + ((unsigned long)__va(kern_base)) - \
-> +		      ((unsigned long)KERNBASE)))
-> +
->  /* PFNs are real physical page numbers.  However, mem_map only begins to record
->   * per-page information starting at pfn_base.  This is to handle systems where
->   * the first physical page in the machine is at some huge physical address,
-> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-> index 2bd99944176d..d2d724ba4f83 100644
-> --- a/arch/sparc/mm/init_64.c
-> +++ b/arch/sparc/mm/init_64.c
-> @@ -170,6 +170,8 @@ static void __init read_obp_memory(const char *property,
->  
->  /* Kernel physical address base and size in bytes.  */
->  unsigned long kern_base __read_mostly;
-> +EXPORT_SYMBOL(kern_base);
-> +
->  unsigned long kern_size __read_mostly;
->  
->  /* Initial ramdisk setup */
-Hi,
+This patchset is another spin of nommu mode addition to UML.  It would
+be nice to hear about your opinions on that.
 
-Unfortunately, that does not help. The LDOM goes down in the same fashion.
+UML has been built with CONFIG_MMU since day 0.  The patchset
+introduces the nommu mode on UML in a different angle in order to
+cover broader code to be executed over UML.
 
-In QEMU, with or without this extra patch, I get this:
+More details are in the document which are included in this patchset.
 
-[    3.310674] BUG: Bad page map in process mount  pte:ffffc800016436b0
-[    3.310778] pgd:027dc000 p4d:027dc000 pud:027d8000 pmd:0269a000
-[    3.311686] addr:000001000020a000 vm_flags:00100077 anon_vma:fffff80002688548 mapping:0000000000000000 index:8000105
-[    3.312449] file:(null) fault:0x0 mmap:0x0 mmap_prepare: 0x0 read_folio:0x0
-[    3.313622] CPU: 0 UID: 0 PID: 46 Comm: mount Not tainted 6.19.0-rc5-00269-g28acabacf9b0 #22 VOLUNTARY 
-[    3.314056] Call Trace:
-[    3.314182] [<00000000005e822c>] print_bad_page_map+0x10c/0x260
-[    3.314375] [<00000000005e9f30>] vm_normal_page+0x70/0x80
-[    3.314400] [<00000000005ea5a8>] unmap_page_range+0x4e8/0x13c0
-[    3.314421] [<00000000005eb54c>] unmap_vmas+0x2c/0x120
-[    3.314440] [<00000000005f781c>] exit_mmap+0xdc/0x440
-[    3.314457] [<000000000047193c>] mmput+0x3c/0x100
-[    3.314477] [<0000000000479e94>] do_exit+0x1f4/0xa00
-[    3.314494] [<000000000047a83c>] do_group_exit+0x1c/0xa0
-[    3.314511] [<0000000000489b28>] get_signal+0x8a8/0x8e0
-[    3.314529] [<000000000043be24>] do_notify_resume+0xa4/0x5a0
-[    3.314549] [<0000000000404b48>] __handle_signal+0xc/0x30
-[    3.314687] Disabling lock debugging due to kernel taint
+There are still several limitations/issues which we already found;
+here is the list of those issues.
 
-Cheers,
-Andreas
+- memory mapped by loadable modules are not distinguished from
+  userspace memory.
+- CONFIG_SMP is disabled as host_fs handling doesn't work with thread
+  local storage.
+
+-- Hajime
+
+v14:
+- rebase with the latest uml/next branch
+- clean up fs register manipulation code ([07/13])
+- fix compilation issue when time-travel mode is enabled ([02/13])
+- refresh document to clarify the goals ([12/13])
+
+v13:
+- rebase with the latest uml/next branch, fixing a conflict ([06/13])
+- https://lore.kernel.org/all/cover.1762588860.git.thehajime@gmail.com/
+
+v12:
+- rebase with the latest uml/next branch
+- disable SMP and tls as those doesn't work with host_fs handling ([11/13])
+- https://lore.kernel.org/all/cover.1762075876.git.thehajime@gmail.com/
+
+v11:
+- clean up userspace return routine and integrate to userspace() ([04/13])
+- fix direction flag issue on using nolibc memcpy ([04/13])
+- fix a crash issue when using usermode helper ([06/13])
+- test with out-of-tree kunit-uapi patches (which uses umh)
+ - https://lore.kernel.org/all/20250626-kunit-kselftests-v4-0-48760534fef5@linutronix.de/
+ - https://lore.kernel.org/all/20250626195714.2123694-3-benjamin@sipsolutions.net/
+- https://lore.kernel.org/all/cover.1758181109.git.thehajime@gmail.com/
+
+v10:
+- fix wrong comment on gs register handling ([09/13])
+- remove unnecessary code of early syscall implementation ([04/13])
+- https://lore.kernel.org/all/cover.1750594487.git.thehajime@gmail.com/
+
+v9:
+- rebase with the latest uml/next branch
+- add performance numbers of new SECCOMP mode, and update results ([12/13])
+- add a workaround for upstream change on MMU depedency to PCI drivers ([10/13])
+- https://lore.kernel.org/all/cover.1750294482.git.thehajime@gmail.com/
+
+v8:
+- rebase with the latest uml/next branch
+- clean up segv_handler to align with the latest uml ([9/12])
+- https://lore.kernel.org/all/cover.1745980082.git.thehajime@gmail.com/
+
+v7:
+- properly handle FP register upon signal delivery [10/13]
+- update benchmark result with new FP register handling [12/13]
+- fix arch_has_single_step() for !MMU case [07/13]
+- revert stack alignment as it is in uml/fixes tree [10/13]
+- https://lore.kernel.org/all/cover.1737348399.git.thehajime@gmail.com/
+
+v6:
+- rebase to the latest uml/next tree
+- more clean up on mmu/nommu for signal handling [10/13]
+- rename functions of mcontext routines [06,10/13]
+- added Acked-by tag for binfmt_elf_fdpic [02/13]
+- https://lore.kernel.org/linux-um/cover.1736853925.git.thehajime@gmail.com/
+
+v5:
+- clean up stack manipulation code [05,06,07,10/13]
+- https://lore.kernel.org/linux-um/cover.1733998168.git.thehajime@gmail.com/
+
+v4:
+- add arch/um/nommu, arch/x86/um/nommu to contain !MMU specific codes
+- remove zpoline patch
+- drop binfmt_elf_fdpic patch
+- reduce ifndef CONFIG_MMU if possible
+- split to elf header cleanup patch [01/13]
+- fix kernel test robot warnings [06/13]
+- fix coding styles [07/13]
+- move task_top_of_stack definition [05/13]
+- https://lore.kernel.org/linux-um/cover.1733652929.git.thehajime@gmail.com/
+
+v3:
+- https://lore.kernel.org/linux-um/cover.1733199769.git.thehajime@gmail.com/
+- add seccomp-based syscall hook in addition to zpoline [06/13]
+- remove RFC, add a line to MAINTAINERS file
+- fix kernel test robot warnings [02/13,08/13,10/13]
+- add base-commit tag to cover letter
+- pull the latest uml/next
+- clean up SIGSEGV handling [10/13]
+- detect fsgsbase availability with elf aux vector [08/13]
+- simplify vdso code with macros [09/13]
+
+RFC v2:
+- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
+- base branch is now uml/linux.git instead of torvalds/linux.git.
+- reorganize the patch series to clean up
+- fixed various coding styles issues
+- clean up exec code path [07/13]
+- fixed the crash/SIGSEGV case on userspace programs [10/13]
+- add seccomp filter to limit syscall caller address [06/13]
+- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
+- removes unrelated changes
+- removes unneeded ifndef CONFIG_MMU
+- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
+- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
+  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
+
+RFC:
+- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
+
+Hajime Tazaki (13):
+  x86/um: nommu: elf loader for fdpic
+  um: decouple MMU specific code from the common part
+  um: nommu: memory handling
+  x86/um: nommu: syscall handling
+  um: nommu: seccomp syscalls hook
+  x86/um: nommu: process/thread handling
+  um: nommu: configure fs register on host syscall invocation
+  x86/um/vdso: nommu: vdso memory update
+  x86/um: nommu: signal handling
+  um: change machine name for uname output
+  um: nommu: disable SMP on nommu UML
+  um: nommu: add documentation of nommu UML
+  um: nommu: plug nommu code into build system
+
+ Documentation/virt/uml/nommu-uml.rst   | 181 ++++++++++++++++++++++
+ MAINTAINERS                            |   1 +
+ arch/um/Kconfig                        |  14 +-
+ arch/um/Makefile                       |  10 ++
+ arch/um/configs/x86_64_nommu_defconfig |  54 +++++++
+ arch/um/include/asm/futex.h            |   4 +
+ arch/um/include/asm/mmu.h              |   8 +
+ arch/um/include/asm/mmu_context.h      |   2 +
+ arch/um/include/asm/ptrace-generic.h   |   8 +-
+ arch/um/include/asm/uaccess.h          |   7 +-
+ arch/um/include/shared/kern_util.h     |   6 +
+ arch/um/include/shared/os.h            |  16 ++
+ arch/um/kernel/Makefile                |   5 +-
+ arch/um/kernel/mem-pgtable.c           |  55 +++++++
+ arch/um/kernel/mem.c                   |  38 +----
+ arch/um/kernel/process.c               |  38 +++++
+ arch/um/kernel/skas/process.c          |  37 -----
+ arch/um/kernel/um_arch.c               |   3 +
+ arch/um/nommu/Makefile                 |   3 +
+ arch/um/nommu/os-Linux/Makefile        |   7 +
+ arch/um/nommu/os-Linux/seccomp.c       |  87 +++++++++++
+ arch/um/nommu/os-Linux/signal.c        |  24 +++
+ arch/um/nommu/trap.c                   | 201 +++++++++++++++++++++++++
+ arch/um/os-Linux/Makefile              |   3 +-
+ arch/um/os-Linux/internal.h            |   8 +
+ arch/um/os-Linux/mem.c                 |   4 +
+ arch/um/os-Linux/process.c             | 139 ++++++++++++++++-
+ arch/um/os-Linux/signal.c              |  11 +-
+ arch/um/os-Linux/skas/process.c        | 128 +---------------
+ arch/um/os-Linux/start_up.c            |  25 ++-
+ arch/um/os-Linux/util.c                |   3 +-
+ arch/x86/um/Kconfig                    |   2 +-
+ arch/x86/um/Makefile                   |   4 +
+ arch/x86/um/asm/elf.h                  |   8 +-
+ arch/x86/um/asm/syscall.h              |   6 +
+ arch/x86/um/nommu/Makefile             |   8 +
+ arch/x86/um/nommu/do_syscall_64.c      |  49 ++++++
+ arch/x86/um/nommu/entry_64.S           | 114 ++++++++++++++
+ arch/x86/um/nommu/os-Linux/Makefile    |   6 +
+ arch/x86/um/nommu/os-Linux/mcontext.c  |  26 ++++
+ arch/x86/um/nommu/syscalls.h           |  19 +++
+ arch/x86/um/nommu/syscalls_64.c        |  86 +++++++++++
+ arch/x86/um/shared/sysdep/mcontext.h   |   5 +
+ arch/x86/um/shared/sysdep/ptrace.h     |   2 +-
+ arch/x86/um/syscalls_64.c              |   2 +-
+ arch/x86/um/vdso/vma.c                 |  17 ++-
+ fs/Kconfig.binfmt                      |   2 +-
+ 47 files changed, 1263 insertions(+), 223 deletions(-)
+ create mode 100644 Documentation/virt/uml/nommu-uml.rst
+ create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+ create mode 100644 arch/um/kernel/mem-pgtable.c
+ create mode 100644 arch/um/nommu/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/um/nommu/os-Linux/seccomp.c
+ create mode 100644 arch/um/nommu/os-Linux/signal.c
+ create mode 100644 arch/um/nommu/trap.c
+ create mode 100644 arch/x86/um/nommu/Makefile
+ create mode 100644 arch/x86/um/nommu/do_syscall_64.c
+ create mode 100644 arch/x86/um/nommu/entry_64.S
+ create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
+ create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
+ create mode 100644 arch/x86/um/nommu/syscalls.h
+ create mode 100644 arch/x86/um/nommu/syscalls_64.c
+
+
+base-commit: 68e25613ed4d06c987a42b0589f54ce88c13477c
+-- 
+2.43.0
 
 
