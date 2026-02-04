@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EBA5E8B383
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B381EE8B38B
 	for <linux-um@archiver.kernel.org>; Wed,  4 Feb 2026 02:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,82 +12,82 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6ipAR8Fz6rCIEqHC+jf7avJINpUheKc7NzcjSyRooHM=; b=Jof7Yru3M+xKCWHseXSk3yj6Hd
-	Bdj2GnTq3ZlkVUJqS98c7mbGOYyuV9DA6a7lr8hWIRWlFb3EJo1oYnqBnkVFy2GedJY5enPLOjZqj
-	GT5r+PffFnVRN2j2b2VjuHarDCUI0wa9/9gMM1L2sYJPYaUe8sySve/PxbAKLaCl7GjRXBKdLPCGd
-	BGUdTRjYkhGvxYwK6GbdrPZefbmqwCfXCf413H+fI8TxzGgSWep9GE1OWfWNG23HZbYN2svYPHaSl
-	ImravwWqUEJWRdEr5vz/OE+szZ5dgLlQZtpQ0ZZ+6PF9VR0NXmfO/Dm6hIhj889SeTpgHMks3KlTN
-	kbmgF4qQ==;
+	bh=St31LvF0IHppIozPj48TTmhG2uWfbbDiPNVwz27B6eo=; b=2yScky9wHyaKnlzQ5eXPu6CB7u
+	DLfsoMZ4y8H9XvGGgt2RKlPO31cm7mweDi+NNrQJ91Bt1CmVGyzF03rjg1483amG5pYlfCBlF8+cz
+	enpQDjKzrRdfGdTWQ/ICInjayg+s0aIdWPz3IhE/wxj4dkIjZJ8UZiylp8tG2S1P0v7VR04v2f0gS
+	V4ZfZLjywolPyL0EZbsQ69Oomn9FONKKzdrzfupWwx+KYu/hDudeCA4IqYC2YVC1rGdotsHkYWdZt
+	M93GAY87LsFiiCpJ5O2sdU8ZoUW5WYOPlexIFj5lLET+Hmj1yQDjZVrq9bgJS09RUpDAhvqVcoeL3
+	JrxIYzpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnSdG-00000007mKA-3EsJ;
-	Wed, 04 Feb 2026 02:28:42 +0000
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
+	id 1vnSdH-00000007mKg-1Ufo;
+	Wed, 04 Feb 2026 02:28:43 +0000
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnSdB-00000007mFm-1TJt
+	id 1vnSdC-00000007mHB-42pL
 	for linux-um@lists.infradead.org;
-	Wed, 04 Feb 2026 02:28:40 +0000
-Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-823075fed75so221013b3a.1
-        for <linux-um@lists.infradead.org>; Tue, 03 Feb 2026 18:28:37 -0800 (PST)
+	Wed, 04 Feb 2026 02:28:41 +0000
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-81f39438187so3706762b3a.2
+        for <linux-um@lists.infradead.org>; Tue, 03 Feb 2026 18:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770172116; x=1770776916; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1770172118; x=1770776918; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6ipAR8Fz6rCIEqHC+jf7avJINpUheKc7NzcjSyRooHM=;
-        b=M8kSR5d2+0Ez8vqcoAXTUZ3w6DA578Ci3x5pTekjZUxOZ8qDKWKx2fO+KFfDYhvLN9
-         gY3LtuVkrnz51S0f3O1PcdlmoKnYf9L/z1f3ttdp/Ml5v1et4vZwatO//1m/hs2r1I5t
-         tZwcCDPcElY8vrza3v8tJPD/qiSzrNPVgieNgbJLJgutDlPxyUAVPEHMu6x62kkctDvS
-         Q8FSlmCKOkcs0LDD52jAnmucBCfwqIeK0oVhrAgQMcL8cl+xZqG1eIu93Z3v7uuaGPHr
-         AvalImZcfxjTDvHlgECyCQ24BAfb1edAh+EE5WSTncKZCRRJ27ttElFprIyKQHB0rc9b
-         9Jrg==
+        bh=St31LvF0IHppIozPj48TTmhG2uWfbbDiPNVwz27B6eo=;
+        b=KjY6z8pRmEHj338LvlacqLxVcT2WW/YFt0m+eocxxWrapBoOiF6L+a+XORbdqwk8gp
+         IL+O+w9DUwmwY+cvZZwmJNczBCW8Fkr16g9fari99DUPt6H1MiOZFfCa69ggezqa9pve
+         fVA5jKxWEmOCvo2QvtVbOgAgYckjbT+doeI1oikLddRAGc3lIanJTgjm3LZ+D3MZRb4w
+         KThlHrYcxEanRDxnSLf7TpmMiVo/LowneNTgzhgh/KHAUEKxRg2KhTlEGMo+jjLDE/Gi
+         5dWp9X0q3RrLtgWVwVyj/Zo/aNWnigVqRvAS+vE11QNZu+eq7XgGOQz9tKO1uEJwRSq9
+         Wo3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770172116; x=1770776916;
+        d=1e100.net; s=20230601; t=1770172118; x=1770776918;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=6ipAR8Fz6rCIEqHC+jf7avJINpUheKc7NzcjSyRooHM=;
-        b=Bo+kEP/+7oZKF/ODt0irSMzWCIv9k0HLH3PPMIH88rbnLaZVbZhCQQzrEyAmaPhOUE
-         dr+TmDuBLcne8M7m4gRKlIC3vHcXDnv8EkjYzvFVssr0ddP+zifEXvx1Tezz617cEPQ8
-         Z62gWm04y0jHFucPiJdHH6EPBxlqez8dSeOSQ5jNCw2541MiSHBvd7INvpCcu2leVyc6
-         YzA6+Q0W++Piibj2ieI13xWf1LxqCJCj9grfLJjz1gpfOIZwNzf2k0rIkTG9/3GWpCCF
-         MWkMDw8EEjt6pj6xxxW9tc+Ik6pXFg5FbHD9l1sE4yb2wOSfI7J4IMagnshAECytPm/o
-         sAOw==
-X-Gm-Message-State: AOJu0YwcSjXfLxnSj3dlfNYeBZH86Ecf4k04Pi2D4NtNeXIQjO36/6lz
-	Ktye6pv4kEgGzLAj+a6SdBtB8RCd1E7+eBfbB+gfnWdoEkxnGU5qXt2/AcwQxQvDBHw=
-X-Gm-Gg: AZuq6aJNuvsPlpycT5fKzGsUClIpIzHuccMrttN+8Ao0n1EkryRtFwHuxLJ0hh5Imi+
-	OHt2ocrIuK2Pxl78rnmerPvpBUEXkZouCyzaQskILYLZwFgMxhJJ+HeLXHq6YLc+rjPDxRuX4MY
-	2xwBy9cybcYr3/k7LoRgo1n2JPhGBLMoL/e6K/IzStpbeg4I/07k/7lcsl+OYwv1pqPfvXHDTuP
-	9E1kxjbQMrKXYlPMhBKh3SmBfubrksUbkWSZmYcJG6iWmZjvFuVef7MmSpOrc7x8qo0mTiIkxHF
-	x15KoTwGSAe4/C7foMviigbn0POK21bXI0kwRrC+hzvRCBGUv3wHOjm4UszQnhb11ubrvuVx1Tr
-	3ZmJuBzYJsL58yfP/P+Lj4amyaiFyNeqgTrfaneprEjI52AGPcHBr2jG3vF3DY9vOlB6+bisrMI
-	QHo1whzakPHOwfEKvVNQnsGTTUa46j/fXE6r1zeVcfqpQoUBG/YH9vTAbifxG37uIA4hWiJtoVi
-	dnMAtGRfqs72I84
-X-Received: by 2002:a05:6a00:3927:b0:81f:be27:8d16 with SMTP id d2e1a72fcca58-8241c676169mr1501741b3a.21.1770172116190;
-        Tue, 03 Feb 2026 18:28:36 -0800 (PST)
+        bh=St31LvF0IHppIozPj48TTmhG2uWfbbDiPNVwz27B6eo=;
+        b=l3tFgwqC0lpWmpgQ/ZzaKrL0fyOMS4bxhjDAd186d8yhQXryWXUo2eKTWttmBkuYC7
+         tPcWhvwOy5+9/85M5HjA7xUjn1XUJGo/Ax8uMnBechhIJ8bzSDYeTx0qUnRmhoMgRsTD
+         Hg0F/XjcKWBmW7bpYIlHYQpzUt+aHYWOqjUpFu5dmfbqhhfOVaU5jzwKaD2bbJlw8+Ll
+         c6vs0rzp9Za4no4rZLZ36ey4p+i5q2/fzNfGGIXYQsgpaVz3WMdKFXyoPT9UCsHEyx23
+         oPzOLlg2P/vprWE/uP1/MdMwvshOwRFTlR0KhcN7trjd/aC/y0Gb2U94yvrHLV/mqIGd
+         gVsA==
+X-Gm-Message-State: AOJu0YxrE6KXwoCPM1RgB1ElOKE22TBuKLfBL4o5Wy591brNtpl9VRS8
+	GvolpVLkwXo6rRkpiMe8f6zNnPJWnFiPcI9iTpZF4s9rBSX33SA6WIIt
+X-Gm-Gg: AZuq6aJz3TaiftDT2qojcL5PQoE1ej75jn8klwrvVCtjAWHHf2o5INoAmiy6ahVe9BK
+	b3E/srsBpmoSzLudaGx10ZnQrM6XH0ANw5XyzRsXHlGXeYYw0ePTJcRAe6fAQ0zFtxHLhMoNtzK
+	+btfsrj7Nn73p35HDmwYH/xxB88WRVQbl/Qs+1t2ggXWRmtf3iIxkNj9fLollDUQnS3EXpX/rHG
+	+4pNgrOrwErJnLhCgR1seFNntIK6O/hGxxxHKBEeXoh4+cGFLY5AH30xMykF84AGZU/8DhWH7je
+	ItJ+fCtsQy4Xkg6uSpDLPlMfvX9nsSqTDaB8iaxQMtrk+pBOslMSiZDBADMLsdkiYGMngfNpL3b
+	us7uVugldItD7w1B9xjUFj51W2t9mHh+H9H06pgumPxXPZuepqOMpJcen3KmCP+LXVw5EgSbunM
+	2bURYBDq/CO+X1r9HdJnTb/6ECspNndMpLn0jB5Yni7/oxyyvJ6Jz4MVGOk27eXu/VoAE2AweSd
+	Mzg7cc1IY4MRJLvpUgStt6nEoY=
+X-Received: by 2002:a05:6a00:4b4a:b0:81f:3d13:e07b with SMTP id d2e1a72fcca58-8241c5efb68mr1330656b3a.43.1770172117824;
+        Tue, 03 Feb 2026 18:28:37 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8241d47b875sm682709b3a.55.2026.02.03.18.28.34
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8241d478975sm628857b3a.52.2026.02.03.18.28.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 18:28:34 -0800 (PST)
+        Tue, 03 Feb 2026 18:28:36 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id D1AE91200C47; Wed,  4 Feb 2026 11:28:33 +0900 (JST)
+	id 8BE061200C49; Wed,  4 Feb 2026 11:28:35 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v14 12/13] um: nommu: add documentation of nommu UML
-Date: Wed,  4 Feb 2026 11:28:10 +0900
-Message-ID: <950680efa307cd1512ffb029c6d04abb0eed4deb.1770170302.git.thehajime@gmail.com>
+Subject: [PATCH v14 13/13] um: nommu: plug nommu code into build system
+Date: Wed,  4 Feb 2026 11:28:11 +0900
+Message-ID: <d6057e2fb8584671e259fbc2d94959e2b04117db.1770170302.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1770170302.git.thehajime@gmail.com>
 References: <cover.1770170302.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260203_182838_283288_0C6E9FAE 
-X-CRM114-Status: GOOD (  24.07  )
+X-CRM114-CacheID: sfid-20260203_182840_651069_6F5A17B4 
+X-CRM114-Status: GOOD (  13.17  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,214 +102,118 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This commit adds an initial documentation for !MMU mode of UML.
+Add nommu kernel for um build.  defconfig is also provided.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- Documentation/virt/uml/nommu-uml.rst | 181 +++++++++++++++++++++++++++
- MAINTAINERS                          |   1 +
- 2 files changed, 182 insertions(+)
- create mode 100644 Documentation/virt/uml/nommu-uml.rst
+ arch/um/Kconfig                        | 14 ++++++-
+ arch/um/configs/x86_64_nommu_defconfig | 54 ++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+ create mode 100644 arch/um/configs/x86_64_nommu_defconfig
 
-diff --git a/Documentation/virt/uml/nommu-uml.rst b/Documentation/virt/uml/nommu-uml.rst
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 8415d39b0d43..1c90e3efef2e 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -35,16 +35,19 @@ config UML
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select TRACE_IRQFLAGS_SUPPORT
+ 	select TTY # Needed for line.c
+-	select HAVE_ARCH_VMAP_STACK
++	select HAVE_ARCH_VMAP_STACK if MMU
+ 	select HAVE_RUST
+ 	select ARCH_HAS_UBSAN
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select THREAD_INFO_IN_TASK
+ 	select SPARSE_IRQ
++	select UACCESS_MEMCPY if !MMU
++	select GENERIC_STRNLEN_USER if !MMU
++	select GENERIC_STRNCPY_FROM_USER if !MMU
+ 
+ config MMU
+-	bool
++	bool "MMU-based Paged Memory Management Support" if 64BIT
+ 	default y
+ 
+ config UML_DMA_EMULATION
+@@ -226,8 +229,15 @@ config MAGIC_SYSRQ
+ 	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
+ 	  unless you really know what this hack does.
+ 
++config ARCH_FORCE_MAX_ORDER
++	int "Order of maximal physically contiguous allocations" if EXPERT
++	default "10" if MMU
++	default "16" if !MMU
++
+ config KERNEL_STACK_ORDER
+ 	int "Kernel stack size order"
++	default 3 if !MMU
++	range 3 10 if !MMU
+ 	default 2 if 64BIT
+ 	range 2 10 if 64BIT
+ 	default 1 if !64BIT
+diff --git a/arch/um/configs/x86_64_nommu_defconfig b/arch/um/configs/x86_64_nommu_defconfig
 new file mode 100644
-index 000000000000..b359af1155bb
+index 000000000000..02cb87091c9f
 --- /dev/null
-+++ b/Documentation/virt/uml/nommu-uml.rst
-@@ -0,0 +1,181 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+UML has been built with CONFIG_MMU since day 0.  The patchset
-+introduces the nommu mode on UML in a different angle in order to
-+cover broader code to be executed over UML.
-+
-+.. contents:: :local:
-+
-+What is it for ?
-+================
-+
-+- To exercises nommu code over UML (and over KUnit)
-+- Reduce syscall latency triggered with the interactions of multiple
-+  processes
-+
-+
-+How it works ?
-+==============
-+
-+To illustrate how this feature works, the below shows how syscalls are
-+called under nommu/UML environment.
-+
-+- boot kernel, install seccomp filter if ``syscall`` instructions are
-+  called from userspace memory based on the address of instruction
-+  pointer
-+- (userspace starts)
-+- calls ``vfork``/``execve`` syscalls
-+- ``SIGSYS`` signal raised, handler calls syscall entry point ``__kernel_vsyscall``
-+- call handler function in ``sys_call_table[]`` and follow how UML syscall
-+  works
-+- return to userspace
-+
-+
-+What are the differences from MMU-full UML ?
-+============================================
-+
-+The current nommu implementation adds 3 different functions which
-+MMU-full UML doesn't have:
-+
-+- kernel address space can directly be accessible from userspace
-+  - so, ``uaccess()`` always returns 1
-+  - generic implementation of memcpy/strcpy/futex is also used
-+- alternate syscall entrypoint
-+- alternate syscall hook with a different seccomp filter
-+
-+With those modifications, it allows us to use unmodified userspace
-+binaries with nommu UML.
-+
-+
-+History
-+=======
-+
-+This feature was originally introduced by Ricardo Koller at Open
-+Source Summit NA 2020, then integrated with the syscall translation
-+functionality with the clean up to the original code.
-+
-+Building and run
-+================
-+
-+::
-+
-+   make ARCH=um x86_64_nommu_defconfig
-+   make ARCH=um
-+
-+will build UML with ``CONFIG_MMU=n`` applied.
-+
-+Kunit tests can run with the following command::
-+
-+   ./tools/testing/kunit/kunit.py run --kconfig_add CONFIG_MMU=n --kconfig_add CONFIG_KUNIT_UML_PCI=n
-+
-+To run a typical Linux distribution, we need nommu-aware userspace.
-+We can use a stock version of Alpine Linux with nommu-built version of
-+busybox and musl-libc, which are available as additional packages.
-+
-+
-+Preparing root filesystem
-+=========================
-+
-+nommu UML requires to use a specific standard library which is aware
-+of nommu kernel.  We have tested custom-build musl-libc and busybox,
-+both of which have built-in support for nommu kernels.
-+
-+There are no available Linux distributions for nommu under x86_64
-+architecture, so we need to prepare our own image for the root
-+filesystem.  We use Alpine Linux as a base distribution and replace
-+busybox and musl-libc on top of that.  The following are the step to
-+prepare the filesystem for the quick start::
-+
-+     container_id=$(docker create ghcr.io/thehajime/alpine:3.20.3-um-nommu)
-+     docker start $container_id
-+     docker wait $container_id
-+     docker export $container_id > alpine.tar
-+     docker rm $container_id
-+
-+     mnt=$(mktemp -d)
-+     dd if=/dev/zero of=alpine.ext4 bs=1 count=0 seek=1G
-+     sudo chmod og+wr "alpine.ext4"
-+     yes 2>/dev/null | mkfs.ext4 "alpine.ext4" || true
-+     sudo mount "alpine.ext4" $mnt
-+     sudo tar -xf alpine.tar -C $mnt
-+     sudo umount $mnt
-+
-+This will create a file image, ``alpine.ext4``, which contains busybox
-+and musl with nommu build on the Alpine Linux root filesystem.  The
-+file can be specified to the argument ``ubd0=`` to the UML command line::
-+
-+  ./vmlinux ubd0=./alpine.ext4 rw mem=1024m loglevel=8 init=/sbin/init
-+
-+We plan to upstream the apk packages for busybox and musl so that we
-+can follow the proper procedure to set up the root filesystem.
-+
-+
-+Quick start with docker
-+=======================
-+
-+There is a docker image that you can quickly start with a simple step::
-+
-+  docker run -it -v /dev/shm:/dev/shm --rm ghcr.io/thehajime/alpine:3.20.3-um-nommu
-+
-+This will launch a UML instance with an pre-configured root filesystem.
-+
-+Benchmark
-+=========
-+
-+The below shows an example of performance measurement conducted with
-+lmbench and (self-crafted) getpid benchmark (with v6.17-rc5 uml/next
-+tree).
-+
-+.. csv-table:: lmbench (usec)
-+  :header: ,native,um,um-mmu(s),um-nommu(s)
-+
-+  select-10    ,0.5319,36.1214,24.2795,2.9174
-+  select-100   ,1.6019,34.6049,28.8865,3.8080
-+  select-1000  ,12.2588,43.6838,48.7438,12.7872
-+  syscall      ,0.1644,35.0321,53.2119,2.5981
-+  read         ,0.3055,31.5509,45.8538,2.7068
-+  write        ,0.2512,31.3609,29.2636,2.6948
-+  stat         ,1.8894,43.8477,49.6121,3.1908
-+  open/close   ,3.2973,77.5123,68.9431,6.2575
-+  fork+sh      ,1110.3000,7359.5000,4618.6667,439.4615
-+  fork+execve  ,510.8182,2834.0000,2461.1667,139.7848
-+
-+.. csv-table:: do_getpid bench (nsec)
-+  :header: ,native,um,um-mmu(s),um-nommu(s)
-+
-+  getpid , 161 , 34477 , 26242 , 2599
-+
-+(um-nommu(s) is with seccomp syscall hook, um-mmu(s) is SECCOMP mode,
-+respectively)
-+
-+Limitations
-+===========
-+
-+generic nommu limitations
-+-------------------------
-+Since this port is a kernel of nommu architecture, the implementation
-+inherits the characteristics of other nommu kernels (riscv, arm, etc),
-+described below.
-+
-+- vfork(2) should be used instead of fork(2)
-+- ELF loader only loads PIE (position independent executable) binaries
-+- processes share the address space among others
-+- mmap(2) offers a subset of functionalities (e.g., unsupported
-+  MAP_FIXED)
-+
-+Thus, we have limited options to userspace programs.  We have tested
-+Alpine Linux with musl-libc, which has a support nommu kernel.
-+
-+supported architecture
-+----------------------
-+The current implementation of nommu UML only works on x86_64 SUBARCH.
-+We have not tested with 32-bit environment.
-+
-+
-+Further readings about NOMMU UML
-+================================
-+
-+- NOMMU UML (original code by Ricardo Koller)
-+ - https://static.sched.com/hosted_files/ossna2020/ec/kollerr_linux_um_nommu.pdf
-+- introduction at FOSDEM 2026
-+ - https://fosdem.org/2026/schedule/event/HWLQDV-nommu-uml-thehajime/
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0d044a58cbfe..00912c1a70c5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -27195,6 +27195,7 @@ USER-MODE LINUX (UML)
- M:	Richard Weinberger <richard@nod.at>
- M:	Anton Ivanov <anton.ivanov@cambridgegreys.com>
- M:	Johannes Berg <johannes@sipsolutions.net>
-+M:	Hajime Tazaki <thehajime@gmail.com>
- L:	linux-um@lists.infradead.org
- S:	Maintained
- W:	http://user-mode-linux.sourceforge.net
++++ b/arch/um/configs/x86_64_nommu_defconfig
+@@ -0,0 +1,54 @@
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_NO_HZ=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BSD_PROCESS_ACCT=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_LOG_BUF_SHIFT=14
++CONFIG_CGROUPS=y
++CONFIG_BLK_CGROUP=y
++CONFIG_CGROUP_SCHED=y
++CONFIG_CGROUP_DEVICE=y
++CONFIG_CGROUP_CPUACCT=y
++# CONFIG_PID_NS is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++# CONFIG_MMU is not set
++CONFIG_HOSTFS=y
++CONFIG_MAGIC_SYSRQ=y
++CONFIG_SSL=y
++CONFIG_NULL_CHAN=y
++CONFIG_PORT_CHAN=y
++CONFIG_PTY_CHAN=y
++CONFIG_TTY_CHAN=y
++CONFIG_CON_CHAN="pts"
++CONFIG_SSL_CHAN="pts"
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++CONFIG_IOSCHED_BFQ=m
++CONFIG_BINFMT_MISC=m
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_INET=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_BLK_DEV_UBD=y
++CONFIG_BLK_DEV_LOOP=m
++CONFIG_BLK_DEV_NBD=m
++CONFIG_DUMMY=m
++CONFIG_TUN=m
++CONFIG_PPP=m
++CONFIG_SLIP=m
++CONFIG_LEGACY_PTY_COUNT=32
++CONFIG_UML_RANDOM=y
++CONFIG_EXT4_FS=y
++CONFIG_QUOTA=y
++CONFIG_AUTOFS_FS=m
++CONFIG_ISO9660_FS=m
++CONFIG_JOLIET=y
++CONFIG_NLS=y
++CONFIG_DEBUG_KERNEL=y
++CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
++CONFIG_FRAME_WARN=1024
++CONFIG_IPV6=y
 -- 
 2.43.0
 
