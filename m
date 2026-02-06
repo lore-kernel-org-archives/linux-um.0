@@ -4,79 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2A09EA7947
-	for <linux-um@archiver.kernel.org>; Wed,  4 Feb 2026 20:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D3DEE2084
+	for <linux-um@archiver.kernel.org>; Fri,  6 Feb 2026 11:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JE9K9cnxHEioD0bY/0SBJmhMUUNEI8hO7Ksv7scdRCc=; b=2Mi4NOYaSSIz8ujK9bDpJm5xVx
-	PI+iLoYVDw/RnlMCt5ASeFwzz8uSrk0fRfFMBYtOxuFC8eYpt4M6kQGjX2D2dAJI1e7u3QIYRIlVv
-	LpxQrzSGxr7qvbZEPKgmQvTBaSyKXY6fVPserIXW7HnSOgsYYIpgLVklIs3nCmNup4Dnciz7apPrh
-	MoqP4PUOvdgDzSoSqn+c7HBfc+EpCrmYpBS8z6eYid3xAUDOkaigO6nKLVC1hKYGnhQkVgU1TxJ4O
-	BRp6kuIBq4vn8V8zr+RExg1/HOu2MeQ4Lx6fiyvuqGUxGxnsCgQVSJn/6t4WGAzn4C6ox8j4m1HmA
-	TUXvb52Q==;
+	bh=swMtx99+ng93HYvdrYd1nTUeGrPslWx90vUU4ljumHY=; b=fh0dOiVyT/GClBSx0ZlpuEoju5
+	7jvfrrzQq6R0n4tZ4DdsnBAntRFOK6Q4HLEbPIPtw1S8yscu9tN6YT8IZMR8c5kUe008F32OFaDwL
+	LTo+5yKXOG+qypq1XsVdzbuBvyiwT6r477rw9xfWnlGGDqBJ+8h1LtJZj7bhNxqHPaZQg5KW58VKP
+	Fof24YNwT+wYf64P57+Sg0TghYVBqVR4dVVf3gC8SaSGpXV4kIbtkiW5Yn67BAnmc9CbiTYHxf3p3
+	WCZPDbYUa7yoISxmk1w3mX+uoUGj63ljrcOVHfixkqKE00fJgW3s0I4GpM5te8C08TDmVWSZP34Kz
+	CEDTtLww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnjme-000000094ED-19IZ;
-	Wed, 04 Feb 2026 20:47:32 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1voJfc-0000000BDhD-4AUm;
+	Fri, 06 Feb 2026 11:06:40 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vnjmc-000000094Dj-2quo;
-	Wed, 04 Feb 2026 20:47:30 +0000
+	id 1voJfZ-0000000BDga-0U2H
+	for linux-um@lists.infradead.org;
+	Fri, 06 Feb 2026 11:06:37 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 591C560010;
-	Wed,  4 Feb 2026 20:47:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6EFC4CEF7;
-	Wed,  4 Feb 2026 20:47:15 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7928060051;
+	Fri,  6 Feb 2026 11:06:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E49FC116C6;
+	Fri,  6 Feb 2026 11:06:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770238049;
-	bh=M6F4r+8xqCKwYdWkmNuqBBLFmaH1X62wessV5kAOjaY=;
+	s=k20201202; t=1770375996;
+	bh=FfLhWVGDPHejmrWqxyZFCbJibVEgdoAEGrtSIPxShgc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ceImbz8Ehfv99L+KpKZmE6O02UITPIW3Q3unzHK6ZvZ03KKVV9vd0o/zcMuSR8I/T
-	 H1Ir3pkRy/Ac8NihhmQc2XLTMSvLY7g8u6dkzpUWxLGR59JnhG3WFIY+0sjN6+ny7L
-	 OA5yX5VUcxDkJ35fbSlJkf7gZPNX9n4UDZ49V6CXYwaJng3pK5jMKjC8bZQ49jWrDJ
-	 mh81ww5c4mKrrXjIQs9nNyAtjUxe+jiJJyDGCyhHXV8PWeMF/uLi6iv05wTvaTDa01
-	 /w1na7IgsBIyj8KXiazPHDVq2pFYUxDfVF0755O+BReCpOPHi91jybdC/Nf+ItlP65
-	 sGqFAAkbH50Hw==
-Message-ID: <36511161-6fb0-4928-a0ed-9b5e03b50a27@kernel.org>
-Date: Wed, 4 Feb 2026 21:47:13 +0100
+	b=PocMkmj7+7sN8yXHuhV/63yFz8Ku98DVQk6ZAMCytQnKdG6p6j+k3QriS+8Zmiur/
+	 YO5L+sacJmF/7mrYHzJTvVLTaaB6d6nN6vO1fB1Mh9Ci76/g/f9TyRv3kISd60numH
+	 EVGD7oVOT8ClRWYUpxU16WOKi7A40bZDccyIpOEciwiIr+m0e5xzsuGmzw2txucZjn
+	 KJLQR2TzAidtcunf1WZXUkcjtM7Ipn5pYEPhzxUBNaAX7Hrv9rPb3+RNrz9ydFZTTv
+	 afYQ5iWZHwlXPol/+rICg1T/1ZV/Cu3fagguZZnihVZWFTHM9xht08M/kJrHDBYPFP
+	 9fXuNssE74guQ==
+Message-ID: <a404e9ec-35ff-44b1-b321-9cc4fbf72060@kernel.org>
+Date: Fri, 6 Feb 2026 12:06:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- "David S. Miller" <davem@davemloft.net>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
- Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
- Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
- Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-mm@kvack.org, x86@kernel.org
-References: <20260124095628.668870-1-rppt@kernel.org>
-From: "David Hildenbrand (arm)" <david@kernel.org>
+Subject: Re: [PATCH v4 7/8] mm: convert __HAVE_ARCH_TLB_REMOVE_TABLE to
+ CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config
+To: Qi Zheng <qi.zheng@linux.dev>, andreas@gaisler.com,
+ richard.weiyang@gmail.com, will@kernel.org, peterz@infradead.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dev.jain@arm.com,
+ ioworker0@gmail.com, linmag7@gmail.com, akpm@linux-foundation.org
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1769515122.git.zhengqi.arch@bytedance.com>
+ <5ebfa3d4b56e63c6906bda5eccaa9f7194d3a86b.1769515122.git.zhengqi.arch@bytedance.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -122,7 +105,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260124095628.668870-1-rppt@kernel.org>
+In-Reply-To: <5ebfa3d4b56e63c6906bda5eccaa9f7194d3a86b.1769515122.git.zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -139,94 +122,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 1/24/26 10:56, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+On 1/27/26 13:13, Qi Zheng wrote:
+> From: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
-> ZERO_PAGE() to 4.
+> For architectures that define __HAVE_ARCH_TLB_REMOVE_TABLE, the page
+> tables at the pmd/pud level are generally not of struct ptdesc type, and
+> do not have pt_rcu_head member, thus these architectures cannot support
+> PT_RECLAIM.
 > 
-> Every architecture defines empty_zero_page that way or another, but for the
-> most of them it is always a page aligned page in BSS and most definitions
-> of ZERO_PAGE do virt_to_page(empty_zero_page).
+> In preparation for enabling PT_RECLAIM on more architectures, convert
+> __HAVE_ARCH_TLB_REMOVE_TABLE to CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config,
+> so that we can make conditional judgments in Kconfig.
 > 
-> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
-> core MM and drop these definitions in architectures that do not implement
-> colored zero page (MIPS and s390).
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>   arch/powerpc/Kconfig            | 1 +
+>   arch/powerpc/include/asm/tlb.h  | 1 -
+>   arch/sparc/Kconfig              | 1 +
+>   arch/sparc/include/asm/tlb_64.h | 1 -
+>   include/asm-generic/tlb.h       | 2 +-
+>   mm/Kconfig                      | 3 +++
+>   6 files changed, 6 insertions(+), 3 deletions(-)
 > 
-> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
-> inline causes severe pain in header dependencies.
-
-That's just what I wanted to ask after looking at it :)
-
-> 
-> For the most part the change is mechanical, with these being noteworthy:
-> 
-> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
->    parameters. Switching to a generic empty_zero_page removes the aliasing
->    and keeps ZERO_PGE for boot parameters only
-> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
->    ZERO_PAGE() is kept intact.
-> * m68k/parisc/sparc64/um: allocated empty_zero_page from memblock,
->    although they do not support zero page coloring and having it in BSS
->    will work fine.
-> * sh: used empty_zero_page for boot parameters at the very early boot.
->    Rename the parameters page to boot_params_page and let sh use the generic
->    empty_zero_page.
-> * hexagon: had an amusing comment about empty_zero_page
-> 
-> 	/* A handy thing to have if one has the RAM. Declared in head.S */
-> 
->    that unfortunately had to go :)
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-
-[...]
-
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 9537a61ebae02..b47aa8fd62742 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -304,6 +304,7 @@ config PPC
+>   	select LOCK_MM_AND_FIND_VMA
+>   	select MMU_GATHER_PAGE_SIZE
+>   	select MMU_GATHER_RCU_TABLE_FREE
+> +	select HAVE_ARCH_TLB_REMOVE_TABLE
+>   	select MMU_GATHER_MERGE_VMAS
+>   	select MMU_LAZY_TLB_SHOOTDOWN		if PPC_BOOK3S_64
+>   	select MODULES_USE_ELF_RELA
+> diff --git a/arch/powerpc/include/asm/tlb.h b/arch/powerpc/include/asm/tlb.h
+> index 2058e8d3e0138..1ca7d4c4b90db 100644
+> --- a/arch/powerpc/include/asm/tlb.h
+> +++ b/arch/powerpc/include/asm/tlb.h
+> @@ -37,7 +37,6 @@ extern void tlb_flush(struct mmu_gather *tlb);
+>    */
+>   #define tlb_needs_table_invalidate()	radix_enabled()
 >   
-> +#ifndef __HAVE_COLOR_ZERO_PAGE
-> +extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-> +#endif
-> +
-> +#ifndef ZERO_PAGE
-> +#define ZERO_PAGE(vaddr) ((void)(vaddr),virt_to_page(empty_zero_page))
-
-Took me a second ...
-
-> +#endif
-> +
->   #endif /* !__ASSEMBLY__ */
+> -#define __HAVE_ARCH_TLB_REMOVE_TABLE
+>   /* Get the generic bits... */
+>   #include <asm-generic/tlb.h>
 >   
->   #if !defined(MAX_POSSIBLE_PHYSMEM_BITS) && !defined(CONFIG_64BIT)
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 1a29a719af58..8ea5b76f317f 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -53,6 +53,15 @@ EXPORT_SYMBOL(mem_map);
->   void *high_memory;
->   EXPORT_SYMBOL(high_memory);
->   
-> +#ifndef __HAVE_COLOR_ZERO_PAGE
-> +/*
-> + * ZERO_PAGE is a global shared page that is always zero: used
-> + * for zero-mapped memory areas etc..
-> + */
+> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+> index a630d373e6453..25fa2908d6152 100644
+> --- a/arch/sparc/Kconfig
+> +++ b/arch/sparc/Kconfig
+> @@ -74,6 +74,7 @@ config SPARC64
+>   	select HAVE_KRETPROBES
+>   	select HAVE_KPROBES
+>   	select MMU_GATHER_RCU_TABLE_FREE if SMP
+> +	select HAVE_ARCH_TLB_REMOVE_TABLE if SMP
 
-I am not so sure of how much value that comment here is.
+Why the SMP? At least in tlb_64.h, it was not protected by SMP IIUC.
 
-... and in particular, why it is not next to ZERO_PAGE in pgtable.h? ;)
-
-> +unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
-
-Is there a good (or historic) reason why this is not simply
-
-uint8_t empty_zero_page[PAGE_SIZE] __page_aligned_bss;
-
-Almost looks to simple, right? So there must be some problem with it :)
-
-> +EXPORT_SYMBOL(empty_zero_page);
-> +#endif
-
-Nothing else jumped at me, nice cleanup ... if you get sparc to work :P
+Apart from that LGTM.
 
 -- 
 Cheers,
