@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEBB6EA8126
-	for <linux-um@archiver.kernel.org>; Tue, 10 Feb 2026 15:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C22DEA812C
+	for <linux-um@archiver.kernel.org>; Tue, 10 Feb 2026 15:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7x+sepqJzaiGguFJGDA2SGdYnfQz0dZUriOf1q/rtrY=; b=njI54g0HegGFoFTNqGgMY8yr/1
-	p/O3H/oTKk2/Tt83GNunKMKQY1RgtU4FC6K5SOxIiwlcUszXtjD/k6fmqDBrVWGPgQEUAIER+k63k
-	yFAN5hYzcoPIkCjWXw8K1kCOOzEbv8gVszbIJc96tNVMUFwa33FeztxLeKmU0mLKOPJQa1R6r8tG6
-	Sqons0YA7g7TMpzrDMzruoB7N8rjFIwSxAdR+/dBjgb21xsS//YqUw2o1MGUb5D6hkkob2m6FmB67
-	vKKVPejjdfoGVCHN4NaKFVVtUQ4yRhxCV9tXNvUmGH6vq5hUyQt63WreaoUx0Z0Ci4eTB786b5VFj
-	nrvdA2BQ==;
+	bh=sOFu981r064UEV4nZdYzmU+/xsnUioQlrTOeHah7SXY=; b=nxoufXkc39hlOXwBYaKVRfxaY0
+	+rs4ssSW/VMTrT4uK4HeSJLnGSpewbc2axxKo+MBZ7ASZMQ9ykcEHpDhLvr+wwkBNWVOyviWcmgzq
+	BoNLEkXAFw5WW+CxXVWHWeIWig9H47IohAtU11+cIqv1mqj/KvCSFc9/XgHFl+xbCDNWPjL5Nsg9i
+	udjlQ+jhK3akCFqxGYmaxExPBvFD/ODJ6rt5o8SYBblcVbKRSjhc8/6E8RZg1bS44hx4XWD5jrsMN
+	O6vEhB1+qDJ/GuN98hLJ7OCMkjhOCgHkWjV/oeT+9zWNSwNG8SMGGlF/xLKc2T5Z3JDPVy0BrIFN1
+	aYk0mxFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vppE7-0000000H5H2-0OFw;
-	Tue, 10 Feb 2026 15:00:31 +0000
+	id 1vppKU-0000000H5zU-2GHb;
+	Tue, 10 Feb 2026 15:07:06 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vppDy-0000000H5Er-2q1E;
-	Tue, 10 Feb 2026 15:00:23 +0000
+	id 1vppKR-0000000H5yE-0G2F;
+	Tue, 10 Feb 2026 15:07:04 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3B86339;
-	Tue, 10 Feb 2026 07:00:14 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83A22150C;
+	Tue, 10 Feb 2026 07:06:54 -0800 (PST)
 Received: from arm.com (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8D253F63F;
-	Tue, 10 Feb 2026 07:00:13 -0800 (PST)
-Date: Tue, 10 Feb 2026 15:00:11 +0000
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B054A3F63F;
+	Tue, 10 Feb 2026 07:06:53 -0800 (PST)
+Date: Tue, 10 Feb 2026 15:06:51 +0000
 From: Catalin Marinas <catalin.marinas@arm.com>
 To: Mike Rapoport <rppt@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -71,17 +71,18 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH v2 3/4] arch, mm: consolidate empty_zero_page
-Message-ID: <aYtH-466xOfghuck@arm.com>
+Subject: Re: [PATCH v2 4/4] mm: cache struct page for empty_zero_page and
+ return it from ZERO_PAGE()
+Message-ID: <aYtJi4uNcpoCTK_x@arm.com>
 References: <20260209144058.2092871-1-rppt@kernel.org>
- <20260209144058.2092871-4-rppt@kernel.org>
+ <20260209144058.2092871-5-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260209144058.2092871-4-rppt@kernel.org>
+In-Reply-To: <20260209144058.2092871-5-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260210_070022_902786_269B537C 
-X-CRM114-Status: GOOD (  19.83  )
+X-CRM114-CacheID: sfid-20260210_070703_133928_DB4722F5 
+X-CRM114-Status: GOOD (  13.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,49 +97,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 09, 2026 at 04:40:56PM +0200, Mike Rapoport wrote:
+On Mon, Feb 09, 2026 at 04:40:57PM +0200, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
-> ZERO_PAGE() to 4.
+> For most architectures every invocation of ZERO_PAGE() does
+> virt_to_page(empty_zero_page). But empty_zero_page is in BSS and it is
+> enough to get its struct page once at initialization time and then use
+> it whenever a zero page should be accessed.
 > 
-> Every architecture defines empty_zero_page that way or another, but for the
-> most of them it is always a page aligned page in BSS and most definitions
-> of ZERO_PAGE do virt_to_page(empty_zero_page).
+> Add yet another __zero_page variable that will be initialized as
+> virt_to_page(empty_zero_page) for most architectures in a weak
+> arch_setup_zero_pages() function.
 > 
-> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
-> core MM and drop these definitions in architectures that do not implement
-> colored zero page (MIPS and s390).
+> For architectures that use colored zero pages (MIPS and s390) rename their
+> setup_zero_pages() to arch_setup_zero_pages() and make it global rather
+> than static.
 > 
-> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
-> inline causes severe pain in header dependencies.
+> For architectures that cannot use virt_to_page() for BSS (arm64 and
+> sparc64) add override of arch_setup_zero_pages().
 > 
-> For the most part the change is mechanical, with these being noteworthy:
-> 
-> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
->   parameters. Switching to a generic empty_zero_page removes the aliasing
->   and keeps ZERO_PGE for boot parameters only
-> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
->   ZERO_PAGE() is kept intact.
-> * m68k/parisc/um: allocated empty_zero_page from memblock,
->   although they do not support zero page coloring and having it in BSS
->   will work fine.
-> * sparc64 can have empty_zero_page in BSS rather allocate it, but it
->   can't use virt_to_page() for BSS. Keep it's definition of ZERO_PAGE()
->   but instead of allocating it, make mem_map_zero point to
->   empty_zero_page.
-> * sh: used empty_zero_page for boot parameters at the very early boot.
->   Rename the parameters page to boot_params_page and let sh use the generic
->   empty_zero_page.
-> * hexagon: had an amusing comment about empty_zero_page
-> 
-> 	/* A handy thing to have if one has the RAM. Declared in head.S */
-> 
->   that unfortunately had to go :)
-> 
-> Acked-by: Helge Deller <deller@gmx.de>   # parisc
-> Tested-by: Helge Deller <deller@gmx.de>  # parisc
-> Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
 For arm64:
