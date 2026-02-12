@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 148B7EB48EC
-	for <linux-um@archiver.kernel.org>; Thu, 12 Feb 2026 09:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E24C6EB48ED
+	for <linux-um@archiver.kernel.org>; Thu, 12 Feb 2026 09:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ztokAIoCYpkBlx7T8Bsk0Xjj5MaU1sWiBBOC3dSH5QU=; b=kqpgfRS0h3QciQo6E8moYLC69a
-	x9eBNOVXidFDABaIGjn9Zan6b/dx3/saqJvVa2rrg6iBRjF2L5RNgMRIm/AwYWTK9Sq0GnVWOIEXz
-	6iZ58rr/jfdKQvlpf3i1vK+lOvZDbFQFxq6zmWnN/yMWmZpA7QFVsMSepbZ4bmqimy+eIG0nJaHA5
-	4GLEzS/cKq4fhIXzIStWwPu2wmCFvMzrpPg34GNYxLxrB/U+fTDJcPQa9uE6htF6ZeI/kWbDpmIhm
-	OXAQNb7cdcFElty/70rTc4Xi/VgN3S1+tCGm1qIUDZJiw/IB0x8PVz5oFTPRmDq8HSjKDHbOfaTPC
-	Iz64mCUw==;
+	bh=PDxX4Bl5Xr/BgdWguC8kIXgQbO6qTM/fd2AbuaAVfA4=; b=qVaDIlTMzR5v49quxFo0rvn4qj
+	37AiM+fpym2SUkpdi/nuzcZsLIBRWeh61uObEr4nIhkM/5GcRTElLfLR9zyxQ+cWw9dEkqAXbeINg
+	SSNjCXlJCEMHIq9/yRkdGpKDWYbuXQ3xEpNSDtm/Nx/Vu4EN2/14hbrAl3uSHqMvNGorq1hhMpcqM
+	bUGLFL2MWBQgeP6ePBUT9SxAvwre/mizWUWf8aeNe1bO/veT4SVpUTQw+Pdz0qU+WIAw9d0GcZxpF
+	3Zba6FMp6qVJyp3KbgKU3zBq79Z5s5ieYOXeSkssIPUDQarZG3IL8rZyWKIJX5uwYQk7idiONihYz
+	aypHMTaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqSaA-00000001nWS-2EIB;
-	Thu, 12 Feb 2026 09:01:54 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vqScb-00000001o6E-3XRi;
+	Thu, 12 Feb 2026 09:04:25 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqSa5-00000001nVG-2uiG;
-	Thu, 12 Feb 2026 09:01:51 +0000
+	id 1vqScZ-00000001o5D-0X22;
+	Thu, 12 Feb 2026 09:04:24 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3A70941980;
-	Thu, 12 Feb 2026 09:01:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B128C4CEF7;
-	Thu, 12 Feb 2026 09:01:32 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 8D21A43674;
+	Thu, 12 Feb 2026 09:04:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71D11C4CEF7;
+	Thu, 12 Feb 2026 09:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770886907;
-	bh=mbeyKAvym1Evnd03SXCqu1tAKf52BxUCYkSrs6de9OY=;
+	s=k20201202; t=1770887062;
+	bh=YEYpkZLUlFlbKqsflfJtNOc0Ggxqs/f6W1To9Vfn59U=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EzC7pZZ31+AvqkeNbZ+v1uBdrrQu/Ug8+evZxdKrZiDdRxVQ9FJ6YzrNMAOjK6l1l
-	 lmA2Vqe7Yd2Y1fOK/Gf/bHij4F99vPL/NoVeb/p4w5i3b0ZJOx0+iUhnJYpQoDl79S
-	 vvU8wl5F2oYQ0e22bB7hT79dtpzdPxIQO89tikEAnB0VTGRwU2yhWdh4sD6hFlZMj8
-	 HpUICv7+9ultjVQRagyYsoL6VB2fxPVVT5hFfxy0PlrOl41v9xEYNuIAuSVc1vAmlJ
-	 JDfwSZ+HNeo4rjkOTyrcFsmfy2SUffMK2Adtr7i2FrD0mIutj8T5KgIQM6xp8QRIZa
-	 Mu5waAMtsSfSw==
-Message-ID: <74103a51-cada-4645-91d3-e0807b32c2a7@kernel.org>
-Date: Thu, 12 Feb 2026 10:01:27 +0100
+	b=bNnfeoAtLa0hXzqKvIHyMr+ZKSt/lTaoozr8i/6qDMdX4Qr32k5vitKFWpZlh6DUL
+	 oczE+Hxh/xEnDXFfN75yR2w3uM7CES3YXY+JPyKSIeq2VOME6/iAhIfRixWe2Rdadh
+	 m/AZVkOqqAKmd94qCKEq7WAenzya93vkXzxgMvl0UN23v/bMwExSikhLVZ8nbVOzxZ
+	 hs0J0u9sH20XFuQm0shKmxoYkayELZlvDkHTH3V8ZK9dVNOT7TDHe+AD+hVj4+Ir0K
+	 Jiil+G/E0XS9gXCgcx7aaQbCEAvbEQCHcOb8Su7LVvRbbF7CmIgrxOnRops3vHvHY+
+	 CXFHXEkFDaAcw==
+Message-ID: <79b41762-fb76-4443-9f38-98be1045322f@kernel.org>
+Date: Thu, 12 Feb 2026 10:04:03 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] mm: rename my_zero_pfn() to zero_pfn()
+Subject: Re: [PATCH v3 3/4] arch, mm: consolidate empty_zero_page
 To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
  Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
@@ -77,7 +77,7 @@ Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
  sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
  linux-mm@kvack.org, x86@kernel.org
 References: <20260211103141.3215197-1-rppt@kernel.org>
- <20260211103141.3215197-3-rppt@kernel.org>
+ <20260211103141.3215197-4-rppt@kernel.org>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -124,13 +124,12 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260211103141.3215197-3-rppt@kernel.org>
+In-Reply-To: <20260211103141.3215197-4-rppt@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260212_010149_795608_3ED2BBA0 
-X-CRM114-Status: UNSURE (   9.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260212_010423_208671_B8D2422B 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,14 +147,48 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 On 2/11/26 11:31, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> my_zero_pfn() is a silly name.
+> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
+> ZERO_PAGE() to 4.
 > 
-> Rename zero_pfn variable to zero_page_pfn and my_zero_pfn() function to
-> zero_pfn().
+> Every architecture defines empty_zero_page that way or another, but for the
+> most of them it is always a page aligned page in BSS and most definitions
+> of ZERO_PAGE do virt_to_page(empty_zero_page).
 > 
-> While on it, move extern declarations of zero_page_pfn outside the
-> functions that use it and add a comment about what ZERO_PAGE is.
+> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
+> core MM and drop these definitions in architectures that do not implement
+> colored zero page (MIPS and s390).
 > 
+> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
+> inline causes severe pain in header dependencies.
+> 
+> For the most part the change is mechanical, with these being noteworthy:
+> 
+> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
+>    parameters. Switching to a generic empty_zero_page removes the aliasing
+>    and keeps ZERO_PGE for boot parameters only
+> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
+>    ZERO_PAGE() is kept intact.
+> * m68k/parisc/um: allocated empty_zero_page from memblock,
+>    although they do not support zero page coloring and having it in BSS
+>    will work fine.
+> * sparc64 can have empty_zero_page in BSS rather allocate it, but it
+>    can't use virt_to_page() for BSS. Keep it's definition of ZERO_PAGE()
+>    but instead of allocating it, make mem_map_zero point to
+>    empty_zero_page.
+> * sh: used empty_zero_page for boot parameters at the very early boot.
+>    Rename the parameters page to boot_params_page and let sh use the generic
+>    empty_zero_page.
+> * hexagon: had an amusing comment about empty_zero_page
+> 
+> 	/* A handy thing to have if one has the RAM. Declared in head.S */
+> 
+>    that unfortunately had to go :)
+> 
+> Acked-by: Helge Deller <deller@gmx.de>   # parisc
+> Tested-by: Helge Deller <deller@gmx.de>  # parisc
+> Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 > ---
 
