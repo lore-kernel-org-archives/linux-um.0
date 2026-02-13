@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B5BEDF158
-	for <linux-um@archiver.kernel.org>; Fri, 13 Feb 2026 12:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7E6EEF99D3
+	for <linux-um@archiver.kernel.org>; Fri, 13 Feb 2026 20:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=cyURfzZXcDJlyfiLuFT336iclIxhJDZmcMNiSLcaYew=; b=C2S5G/F+zlsu1H3qSO8ZUk05jK
-	DTBNGRQ8U8yT5fFJcH1gbKGbPN3mBQTCWDXicibXZTmTGiXsW6nWAQ9IpU0yT2XH0ghgvADKpHDHc
-	cIuZtIh9hkRlWHZTZW+eJLA6oVdFPMukew7X9+xBcOOpD8bsvKt9hH0ZoGUOKsieTuwH/ksDnntBG
-	cRds9SPt5nPWmsYjLQMluJ7wiCcvNG7vIh8+h5j7fQ+QJv+7DXmO25er/+kvHxOEvcMbJkYl9v9ll
-	pWjxVACtAujT9AQN7KAjiCcEaX5ydfkpx+fg6SkgVg+w4F2Lqp48CuunZOO0RWiHWaHRpHkeAHZgo
-	P+ItndTg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kCmlHjZPWHr4Q6FfX8MSuVG9rvC9hDZfYafBy+WxPWA=; b=P7BvBnlyIvG+/qX/FuitKwtmqE
+	v8FsYvvLwaV76KCfRd9G36ZtD0A7M5qSDaTI2aMtoQd8Tj/L4IOGzN5mxFzfY/p4RAad9I6blvXGw
+	P9wYWmPdEfKSQjlBzRwrMTCvgwUHHiAXMBKSdGgMG4OYU4xEptmMti1QlpdJb5VhkfsqzbtyNZXFT
+	D44wPFxqiccSXjS0IdUFY5Pwlpew4bN4lY6kyqiR5DZ6uqWQAD74SZWyYpNn6GnVh890lfIXGTdrr
+	wz/v4FzJ65aZ3ypLOcQskREwfNO9V7fhNeGZ0BxMmFaJGYM7mJdY6KyV4bF7yvi3MDC5vTCffsh5P
+	W6fd2WPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqsKv-00000003RoC-1RDI;
-	Fri, 13 Feb 2026 12:31:53 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1vqzbk-00000003t9R-1RaI;
+	Fri, 13 Feb 2026 20:17:44 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqsKm-00000003RnV-1GgX
+	id 1vqzbj-00000003t9A-1syu
 	for linux-um@lists.infradead.org;
-	Fri, 13 Feb 2026 12:31:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=cyURfzZXcDJlyfiLuFT336iclIxhJDZmcMNiSLcaYew=; t=1770985904; x=1772195504; 
-	b=tNDLyya3Dzr6raS8PZYK0O1tU3AQ3qELBAdrAirSsVnYVVTZQvPGIt34VILmAZb+YDiLJL7ou6K
-	tBvsOCY6hRVSOm1N529nu/bEujKTJ+7Zkoi3lpqlgdAcqLu7nGLGsw48M2W8nLJSRHBiQlte2FaEM
-	MxY/kwzMrP9tybuDI2h+Qg0jIkM7EipALU3g7O9mf9n2heFV6rGg5j8IEJip8rO6caBq51HeuCWtg
-	q9g9l7cmBL+QarIjGjy7RvQORt/ZE/9QwJNDLYBs4CV+KlS5lujHpETwTnHzMaNNqFd0+zfDW9ZE7
-	BYoOmKA/dMBX+3Ui+2N+q3KQ3GOxsAwuOOVw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1vqsKh-00000007RZU-31Tj;
-	Fri, 13 Feb 2026 13:31:39 +0100
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [GIT PULL] uml-for-7.0-rc1
-Date: Fri, 13 Feb 2026 13:31:09 +0100
-Message-ID: <20260213123137.677786-3-johannes@sipsolutions.net>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260213_043144_366605_49206447 
-X-CRM114-Status: UNSURE (   6.71  )
-X-CRM114-Notice: Please train this message.
+	Fri, 13 Feb 2026 20:17:43 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 94BE66001A;
+	Fri, 13 Feb 2026 20:17:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE21C116C6;
+	Fri, 13 Feb 2026 20:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771013862;
+	bh=IrGBpiJtGpzDBXtniUHN0wQs7r0Ku6x098eT3g2/3lk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=bM++nmrGB95yY4vgMu0oGcYAm3kNNNnuC5l9QkmxByYyPzZm5sSHpufqa1DyUimeE
+	 83thnqZnIWOJjRoxhJXjaON+iBpEt71orAaaS+1NVanQ10wnWT/8L7DKlFBfDAwFcO
+	 Q9EDP/pxcX7i8P649CyaTTtHV4Xbz7JcgwCcik5baNDmzdRBnQpqilg3bBHkP+RiyR
+	 hr750/ZRfT/IJKXColr0wCHzNgH7T03Chmf5zQzAyi4faf7iY1qvQvW9loXxJingT1
+	 6W8Tid8e2a6n8ZDYB2ZXvjhTZjY/kfeF6aZhog38De0tau98bmdq67FgwwVG3H9E2+
+	 RbctqgBP9Ty5Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 483643811A44;
+	Fri, 13 Feb 2026 20:17:37 +0000 (UTC)
+Subject: Re: [GIT PULL] uml-for-7.0-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260213123137.677786-3-johannes@sipsolutions.net>
+References: <20260213123137.677786-3-johannes@sipsolutions.net>
+X-PR-Tracked-List-Id: <linux-um.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20260213123137.677786-3-johannes@sipsolutions.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.0-rc1
+X-PR-Tracked-Commit-Id: 68e25613ed4d06c987a42b0589f54ce88c13477c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c87c79345ea8ff917354e9223d44034e4aef2690
+Message-Id: <177101385572.2542361.14196241526683314595.pr-tracker-bot@kernel.org>
+Date: Fri, 13 Feb 2026 20:17:35 +0000
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,47 +74,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+The pull request you sent on Fri, 13 Feb 2026 13:31:09 +0100:
 
-UML was _really_ quiet, with just four small commits,
-but there there are anyway.
+> https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.0-rc1
 
-Please pull and let us know if there's any problem.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c87c79345ea8ff917354e9223d44034e4aef2690
 
-Thanks,
-johannes
+Thank you!
 
-
-
-The following changes since commit 0f61b1860cc3f52aef9036d7235ed1f017632193:
-
-  Linux 6.19-rc5 (2026-01-11 17:03:14 -1000)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.0-rc1
-
-for you to fetch changes up to 68e25613ed4d06c987a42b0589f54ce88c13477c:
-
-  arch/um: remove unused varible err in remove_files_and_dir() (2026-01-13 19:43:41 +0100)
-
-----------------------------------------------------------------
-Just a very few minor things:
- - two signal handling fixes
- - dynamic addition of virtio devices
- - and a single code cleanup
-
-----------------------------------------------------------------
-Alex Shi (1):
-      arch/um: remove unused varible err in remove_files_and_dir()
-
-Tiwei Bie (3):
-      um: Preserve errno within signal handler
-      um: Handle SIGCHLD in seccomp mode like other IRQ signals
-      um: virtio_uml: Support adding devices via mconsole
-
- arch/um/drivers/virtio_uml.c | 51 +++++++++++++++++++++++++++++++++++++++++++-
- arch/um/os-Linux/signal.c    |  9 +++++---
- arch/um/os-Linux/umid.c      |  3 +--
- 3 files changed, 57 insertions(+), 6 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
