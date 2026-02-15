@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F54EF587E
-	for <linux-um@archiver.kernel.org>; Sun, 15 Feb 2026 14:28:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52172EF586E
+	for <linux-um@archiver.kernel.org>; Sun, 15 Feb 2026 14:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+ABeDiezQDLnVh+YeCRm+MqNQxddgh777bvsSpmm8Jk=; b=k+6c6X2+li9z5Wg+JXNfxea7yP
-	IzOEqc6x7JflLyjdAH97Z/LzSLJMIaPn6kYNPV0GPkc7N2jNdTJNUzsmcoHsWQ9AQyLrzpwZYdy/K
-	tAQE1kOiRkiFFAj4d4bET+YWDlf6/hBTNlYJtptl9pWlLBSyl7ZnTostuJ42SxPX69wPcUmwBUC65
-	yBKA5vLOqNPvTmhyv5ZFjMEZlfEDbNwFGhLk6epwONgxZei9HLXibOGbgY9FrRHbUXXs9+sG7bx0a
-	IBDb72HOi6WBm+b6sOkk5wErpWvHTXU1HrEVpUTt+MX5TkzQrTguy6AkN/WUetM3fksoX1HDJmfFZ
-	WNz++2LA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=sWjl7HPGBvhnIjt2NDHXlQWtF6bLS3V03uS6JDUla/0=; b=GqVmnokFYoSDb5afXlXw3TQVLb
+	ArRP3jTvig6WI34Itw63082Kubh5foEAUaRuOHGxQhE62u4mHHvW/KzQn/GoVxAwF9NoGP48lGyKg
+	amfEEINKztTbD3zb0KSOaHy6GbSkdM2d/f6LwAOT2t1SRmNOESJ/MIQ0VoZiuL43TxbVGGVYZDBph
+	FIs1Nm2qZZl94kgQIEmizgbUx5xZoSxb68Vu8l2pQXrsVq0K1b+7faIpIhq0vq0YiPkgABAQ+xf7k
+	hR4e5ZyLucGYnKtCFzTxw4Lpv3kzwq3A3BKUO0B1GkIbuZOeynB5eljKrEyDpWORcGJyBKBCATlVD
+	pxhGZoeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrd6l-00000005RRK-3IXw;
-	Sun, 15 Feb 2026 14:28:23 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1vrd6j-00000005RQy-21rj;
+	Sun, 15 Feb 2026 14:28:21 +0000
+Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vrd6i-00000005RQe-46Ty
+	id 1vrd6h-00000005RQO-2cbr
 	for linux-um@lists.infradead.org;
-	Sun, 15 Feb 2026 14:28:22 +0000
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-2a929245b6aso26014115ad.0
-        for <linux-um@lists.infradead.org>; Sun, 15 Feb 2026 06:28:20 -0800 (PST)
+	Sun, 15 Feb 2026 14:28:20 +0000
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-c2dd0c24e5cso898394a12.3
+        for <linux-um@lists.infradead.org>; Sun, 15 Feb 2026 06:28:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771165700; x=1771770500; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+ABeDiezQDLnVh+YeCRm+MqNQxddgh777bvsSpmm8Jk=;
-        b=k5Ql++5rcinf/9O5FK1gW2drP9T6NRbH53biI9O1sKSoP84fRexOYru1wiq8oAO2gT
-         Pq7GFRaIIB7hYQQVdGCnLJCmHVV6YTPdqmy36LnKZvbw+L7TGor6il3Ii2izgDEUH3UH
-         dP20lJGFPWNchTNo1xJybbJvvxcEO8Bdf+s3mDB7/CnQHQfSKGcewRIFKB3ti7SsgLoK
-         TbZqnHlXOeQfZXp9a5ZH7jRkZ99OoR/FhJG7FFnI3r1uiWGqsl4IXD2TeUI3KvAuD5Ik
-         yOqZ/tRB6k0FtMJZbvB9s2oio3aSI3NbtIxHQ+JhI/oIay7GVqjT3IUSs5cCJG10tUIY
-         KbhQ==
+        d=gmail.com; s=20230601; t=1771165698; x=1771770498; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sWjl7HPGBvhnIjt2NDHXlQWtF6bLS3V03uS6JDUla/0=;
+        b=d2YYEMA23haGWO/Fe27mnjE/j73EzByRxJt86H0ON5P/pzojCTtefE3bGWJRy27RPw
+         /1UrqCEUCEWD7gbuUnStA7MOqnaO3S9+o25syGc7ffmizQ6nm75a2coXXy6LUUr6AFJT
+         K+LPmvBFEdzQatnC4Z77P3woWIV5kHRcBs/z1gAFLLOL1RSyqSuBtv4Pe9ySx2ht8owL
+         lD1dhyNxzSEuBRq3MiPGpss9XYO7TagcsXOVAxr/z48MY3n3b0NiQN0IzZuXtuANyjVL
+         nolrqmJa6R6X2Pcx/UBkQQzt1Ae2H4IJsEpfemaHiuSFGLgSv5z5z5BLHMC6LQ4KJF+I
+         /foA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771165700; x=1771770500;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=+ABeDiezQDLnVh+YeCRm+MqNQxddgh777bvsSpmm8Jk=;
-        b=PMRF4het8Smh8ktHEzbDMiKF+ecQ5XYkIyeeA6PuphAF4VyYgwop0z4aepD2BI8fKe
-         rcGYAvZOGwCAX6XbGkrH7XN1vtc2Lz/9ou76ORQaOpP8wrYrOm98ZIfTyUv9MUxxGHrt
-         2n4y0Muk0MGWZK6wSA672hHVneqiEuhXx4DUZ+0uy+E8vUActcLwvvP4Hq3EdyPtyRX7
-         gFB4wsP7YbeBAdA6l1kV5d2N3rKQwTLANX7oplP41QpfbrzyaWaXoRCJXGQZfs9cplkt
-         bJqyZdx3J0ulsx0MOt52ULVvWB1MXiBnH3KJ0cWxkLWs+vd9PIClK1UkiiOy700yheKE
-         HWZQ==
-X-Gm-Message-State: AOJu0YxG9kPmS5Z8Mgni7gppbtWT4dJAuJWpoy41x9C1QaDbASxGvYgq
-	xhu+55WDuoAqT/y9rG86U2b+YhIsnWbppItZnu9jzgbYNqmMbOJQ95p5
-X-Gm-Gg: AZuq6aLAnYgAR+qotXUT13aZjMpWr6pMjD3GdN4UWxYnhyQrg3mPDs9lG5kr4O5vHNZ
-	6H6GJef7kY1w0dNvh/29aagxNWrUjvqaVyHkhEyBwdXcpss8XwiOqbTHSwy8tr8jZE7DYfDLpfn
-	a2hc1FpsCYdHk8D2f+DZK9XMx9fxPNAqLWKZqW7BEQKl4Bc+qlqD9GwSEGL4wepvTQZAzynJ/H1
-	LC2Lf1gs3I+sOtbgoZxC+0U61WsUyfzHqfxv2jQ9Fdnf/iV6r9XAcJDkl1Ug+c3oj18Ok4Te86a
-	m8NpxxGiXrJ3l/ParZiBLvvtJwKgXoMYlUjotW6CcDZ1lWcdQYa8xDz0EULJ7A+N0eY3mlAmive
-	EY2mTDXLLfWJJ66/oUpcSzZl+orjGld5l3iqw4gNAwdImxx+Igjvc6Xe4VEbRHc8kRHjhB5YJET
-	ks09fvd6t05auVBYjZDrtrk/7AS/tYV2M9sKckq+T0WaQ+9HORw7wChEjI
-X-Received: by 2002:a17:903:1b67:b0:2a0:c35c:572e with SMTP id d9443c01a7336-2ad17501af0mr57032485ad.30.1771165699900;
-        Sun, 15 Feb 2026 06:28:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1771165698; x=1771770498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sWjl7HPGBvhnIjt2NDHXlQWtF6bLS3V03uS6JDUla/0=;
+        b=VKENje8+l4OrKaqGHSzrnTOTTdC9CP4Dg24P5dL9fKZBRH99MugaNDiZcJFhyoX132
+         zCQwxy2eF9UQoWLHbVmmT4pC0j0Gry3XgxFpCcZoUeGG5StNqwesqePi+3a6b+p++/jV
+         wdq3NnKhMDJyKrm7rPLiLivYc2s+Hl0qaQHOCXnbmqFr5S1TjXKx7oVJMwUJRCHoYlyN
+         wP3MkwDFwSM9FPLWc1WTuw1e1OIrqEbZysCreouzCtDva3E7mTLdbFjhHI/9vp7MXZY5
+         KrUbZGo3gAWIrtJo4YwNPXAnM+QKUGkMEa0E0b6wGJ/nrgMY6r5vZk7wn67yEgZ7FPsB
+         sKuQ==
+X-Gm-Message-State: AOJu0YyUgmsaMfVqKzMUy6faHUGdwpmlABPtUC7OEk5zTD1T7ydzb0I8
+	hsHFz7JbVZEwVef7DinpgSqo8hvfazEeGzp2QTm55oHn4H2HURsTTYPW
+X-Gm-Gg: AZuq6aLUgS+jvsnLtEfy06UNZxS2GZew2qDabtRKaRQSZ7x5WR+Yy92/8rbVHoAwJ+J
+	nrUOC63F0qzKA9aoiusSaN6Mjz5q4i8bS5Khx9Hw3eEO3uFA6vAiV+BeCTGaXr+Jr9wjAhLhg9H
+	fHN56EClxRKHs45dohnNKvWmNjfGjejeG3URvATG68W9JMq98FQV9HGUMO8hnbEdri0H8kI95t1
+	WkPRQtylCyEn36PIK8xFayVkGihEtOy3a3T08lJnU+tElHXZqB8y3jl6MaWxpHq1MEswJCO89vp
+	l84xGv6EnQYvQgAFb9VYr3x7sBxWB5iuWMdGT/GL8BceO0wb4MS3v4VNN8tQhYwmZZxaHmoXkoD
+	m4eIXBfGY6pBR4F71Lg3oztJsSUnMzbUeB0xSn50qc/m/VhbzOudy01KUbRCJfE6SsPrJArQ5rt
+	WShV1P/t2ufMe88ukpT4IIwT7h2G+qm9e78Ct2ZywSTsZ+H73n1JfqNFfJ
+X-Received: by 2002:a17:902:ce89:b0:2a9:ebc0:cce2 with SMTP id d9443c01a7336-2ab50558599mr73616455ad.18.1771165697939;
+        Sun, 15 Feb 2026 06:28:17 -0800 (PST)
 Received: from speedy3.lan ([116.197.216.237])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad1ace5bd1sm45617415ad.90.2026.02.15.06.28.18
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad1ace5bd1sm45617415ad.90.2026.02.15.06.28.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Feb 2026 06:28:19 -0800 (PST)
+        Sun, 15 Feb 2026 06:28:17 -0800 (PST)
 From: "Marcel W. Wysocki" <maci.stgn@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -75,17 +74,15 @@ To: Richard Weinberger <richard@nod.at>,
 Cc: linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	"Marcel W . Wysocki" <maci.stgn@gmail.com>
-Subject: [PATCH 2/2] um: avoid struct sigcontext redefinition with musl
-Date: Sun, 15 Feb 2026 22:28:03 +0800
-Message-ID: <20260215142803.1455757-2-maci.stgn@gmail.com>
+Subject: [PATCH 1/2] um: fix address-of CMSG_DATA() rvalue in stub
+Date: Sun, 15 Feb 2026 22:28:02 +0800
+Message-ID: <20260215142803.1455757-1-maci.stgn@gmail.com>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260215142803.1455757-1-maci.stgn@gmail.com>
-References: <20260215142803.1455757-1-maci.stgn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260215_062821_016576_67AB5096 
-X-CRM114-Status: GOOD (  10.44  )
+X-CRM114-CacheID: sfid-20260215_062819_668208_BEF956A5 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,50 +97,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-mcontext.c includes both <sys/ucontext.h> and <asm/sigcontext.h>.
-With musl libc, this causes a struct sigcontext redefinition error:
+The UML stub takes the address of CMSG_DATA(fd_msg):
 
-  <sys/ucontext.h> pulls in musl's <bits/signal.h>, which defines
-  struct sigcontext directly.  The kernel's <asm/sigcontext.h> then
-  provides a second, conflicting definition of the same struct.
+    fd_map = (void *)&CMSG_DATA(fd_msg);
 
-With glibc this does not conflict because glibc's signal headers
-source their struct sigcontext from the kernel's own UAPI headers,
-so the include guard in <asm/sigcontext.h> makes the second
-inclusion a no-op.
+CMSG_DATA() is specified by POSIX to return unsigned char *.  Taking
+its address is semantically wrong -- the intent is to get a pointer
+to the control message data, which is exactly what CMSG_DATA()
+already returns.
 
-mcontext.c does not actually use struct sigcontext by name -- it
-only needs the FP-state types (_fpstate, _xstate, etc.) that are
-defined in <asm/sigcontext.h> independently of the sigcontext
-struct.
+This happens to compile with glibc because glibc's primary
+CMSG_DATA definition accesses a flexible array member:
 
-Temporarily rename sigcontext to __kernel_sigcontext during the
-inclusion of <asm/sigcontext.h> so that the kernel's definition
-does not collide with musl's.  The #undef restores normal name
-resolution immediately afterward.
+    #define CMSG_DATA(cmsg) ((cmsg)->__cmsg_data)
+
+An array lvalue can have its address taken, and &array yields the
+same address as array.  However, glibc also has an alternative
+definition that uses pointer arithmetic (returning an rvalue), and
+musl's definition always uses pointer arithmetic:
+
+    /* musl */
+    #define CMSG_DATA(cmsg) \
+        ((unsigned char *)(((struct cmsghdr *)(cmsg)) + 1))
+
+Taking the address of an rvalue is a hard error in C, so the
+current code fails to compile with musl libc.
+
+Remove the erroneous & operator.  The resulting code is correct
+regardless of the CMSG_DATA implementation -- it simply assigns the
+data pointer, which is what the subsequent code (fd_map[--num_fds])
+expects.
 
 No functional change with glibc; fixes the build with musl.
 
 Signed-off-by: Marcel W. Wysocki <maci.stgn@gmail.com>
 ---
- arch/x86/um/os-Linux/mcontext.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/um/kernel/skas/stub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
---- a/arch/x86/um/os-Linux/mcontext.c
-+++ b/arch/x86/um/os-Linux/mcontext.c
-@@ -4,7 +4,13 @@
- #include <linux/string.h>
- #include <sys/ucontext.h>
- #include <asm/ptrace.h>
-+/*
-+ * musl defines struct sigcontext in <bits/signal.h>.  Rename the kernel's
-+ * copy to avoid redefinition while keeping the FP-state types available.
-+ */
-+#define sigcontext __kernel_sigcontext
- #include <asm/sigcontext.h>
-+#undef sigcontext
- #include <sysdep/ptrace.h>
- #include <sysdep/mcontext.h>
- #include <arch.h>
+diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
+--- a/arch/um/kernel/skas/stub.c
++++ b/arch/um/kernel/skas/stub.c
+@@ -146,7 +146,7 @@
+ 		/* Receive the FDs */
+ 		num_fds = 0;
+ 		fd_msg = msghdr.msg_control;
+-		fd_map = (void *)&CMSG_DATA(fd_msg);
++		fd_map = (void *)CMSG_DATA(fd_msg);
+ 		if (res == iov.iov_len && msghdr.msg_controllen > sizeof(struct cmsghdr))
+ 			num_fds = (fd_msg->cmsg_len - CMSG_LEN(0)) / sizeof(int);
+ 
 
