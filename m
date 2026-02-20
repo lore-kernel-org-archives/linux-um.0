@@ -4,64 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32D8FE7BDB8
-	for <linux-um@archiver.kernel.org>; Mon, 16 Feb 2026 13:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0BDEC531E4
+	for <linux-um@archiver.kernel.org>; Fri, 20 Feb 2026 04:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:From:
-	To:Cc:Subject:Message-Id:Date:Content-Type:Content-Transfer-Encoding:
-	Mime-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wq+Zr6L88Web7nSkY4eKcKCq9RujjgnqldokSx/qmRA=; b=m3gtuc0dz8UsYme3XkV07fDzm5
-	8VPCvA/jXTfFu8SWSDOReSmSqtNLbuOHerCoc53SlANbSuFlO8cUPkV2hjnTuTFOFW3c5ODTjQoUn
-	2lCH019h8n0CnbelzgXKooMcbSnrwvBH/RDQZOcgh4u71lsFVLRw6LjJRZ4al+riMJKhFxfhT5p//
-	iqld7H1+Knw0D7ma3sAxBTLMhU7EB+Es2nzLZKys5uFS8tUy6EiyLXyC3qK/zFl3wv1945f5GcVAT
-	4UEHnWufSC8lAR2sRhXT5XF3d3YDL5j4VIHWRLCpy0u22bs0vXkdi2K4XMW/xleGl9sG42ZpZpeId
-	OjNI9Uog==;
+	bh=UmtwuF9rplNR1YcI1IPERFnu/d2QeRotv3msVVu+S8Y=; b=eqm4IBvrJyGa7FxEy74V4+67Gf
+	g3gXcIjvJxLpaVLQ7Zp8QWnIfz0orhrbwrq/Gp9+dqB6zDEvJO3bdIIBqL02vJzh/b3l88CnUZUMg
+	mgZGPd+6e3LyJe7L0ckYgZzOdnzM141NFpFEvKCHr6ratBhw92yzHofuEkREfMYB/wZ4mun5KwPEv
+	b51tRMlbuHLujgI3Ur8Eim87pv9BcC4N6AwOpXVXMyGlIOAYLuMsrLXTBT5D/njDj/sFWr2FKEOl8
+	LS57OGfuy8UOuuwgU/FMh9n8qCgLR33VhiyvmEVDvFbEubEM7tqC40AdzAporhfEKr4RrDNO5o1kk
+	PDAPnMWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vryYa-00000006eJb-3h64;
-	Mon, 16 Feb 2026 13:22:32 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1vtHqk-0000000DCKI-1OD9;
+	Fri, 20 Feb 2026 04:10:42 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vryYY-00000006eJG-0VmM
-	for linux-um@lists.infradead.org;
-	Mon, 16 Feb 2026 13:22:31 +0000
+	id 1vtHqd-0000000DCG5-0ot4;
+	Fri, 20 Feb 2026 04:10:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9D56E4342B;
-	Mon, 16 Feb 2026 13:22:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8765CC116C6;
-	Mon, 16 Feb 2026 13:22:24 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4DD1061853;
+	Fri, 20 Feb 2026 04:10:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E068FC116D0;
+	Fri, 20 Feb 2026 04:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771248146;
-	bh=wq+Zr6L88Web7nSkY4eKcKCq9RujjgnqldokSx/qmRA=;
-	h=Date:Subject:Cc:To:From:References:In-Reply-To:From;
-	b=frRDEktTVlJUto0BcqBtYAJGbVuzLzbUuaBjm/ndTovt7+86WajDsEmpOaJoX7xAK
-	 xTuwIxVxoQlu5fSVLLaaHyXm2GDSE/HyLg2wrKJDxDzpaasnXFZ2FVOH248N/z6uMI
-	 0wNjy2OX1hksnkGA2pvBOU/GUcP6A3k5S3lERUUJ9EAqnN23B1t09kzEL2gxgHHUl2
-	 LlFtWvMTOg8qwCAEOmPYl1B2EKR7tk/AqnFSLM5hr9/RedmP4Q6TTomHQYX57FzzaH
-	 g57X2Our9caSrPyL3BzddhAwD3BftWxAdtsR70fIQcoup19/YNrBB6YL5gq1utdI0L
-	 +Lz7BIEH9Jt6g==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 16 Feb 2026 14:22:22 +0100
-Message-Id: <DGGF2BKJP4BS.1CZFWVQTK144G@kernel.org>
-Subject: Re: Mainline UML Rust stable io.rs unused imports
-Cc: "David Gow" <davidgow@google.com>, "Alice Ryhl" <aliceryhl@google.com>,
- "Daniel Almeida" <daniel.almeida@collabora.com>, "Richard Weinberger"
- <richard@nod.at>, "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>, <driver-core@lists.linux.dev>,
- "linux-um" <linux-um@lists.infradead.org>, "rust-for-linux"
- <rust-for-linux@vger.kernel.org>
-To: "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>
-From: "Danilo Krummrich" <dakr@kernel.org>
-References: <CANiq72khOYkt6t5zwMvSiyZvWWHMZuNCMERXu=7K=_5tT-8Pgg@mail.gmail.com> <DGGBI4DU4J4U.2JOBHL5IFUCTL@kernel.org>
-In-Reply-To: <DGGBI4DU4J4U.2JOBHL5IFUCTL@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260216_052230_184492_652FF4A7 
-X-CRM114-Status: UNSURE (   3.03  )
-X-CRM114-Notice: Please train this message.
+	s=k20201202; t=1771560633;
+	bh=im5T2AhfGDyXaPXyhpLfgJGQ91DbQgM5VZmwKBunt1A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BY31bXLuYwaDNUvbU0KhmqMJP3M/Awj2XilOUUrqfd5tse5Bs+Sof47ei7f2ySnfn
+	 tFNi7q7K9gluSvI0HlMVWVeaLxpkyoeKBDi/rrNOewr0OuAFpDC7j/iRqwMKPlJ5Wa
+	 P3ScJYlX18vFMmmARgpPLIChzrvUE2kp6Q3jnE9jYkAe7srv3PTOOcxMtCzqbU7qAw
+	 IToOjDmvHez/A8mTg3Q3sBsLUBSNAWxLa0iZsksGoJ/G/rax+WVfDfh7lH4OceXS15
+	 qVM1jLAxgENfoZP8fJU+Wp+4V3bOt53kAg6T75fF/G3mbGiObvL/fXyvhcTJ2XNYm0
+	 uwW0QrKe9zoGw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7CFE83809A88;
+	Fri, 20 Feb 2026 04:10:43 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 00/29] arch, mm: consolidate hugetlb early reservation
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: <177156064229.189817.6698956997773300471.git-patchwork-notify@kernel.org>
+Date: Fri, 20 Feb 2026 04:10:42 +0000
+References: <20260111082105.290734-1-rppt@kernel.org>
+In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-riscv@lists.infradead.org, akpm@linux-foundation.org,
+ alexs@kernel.org, agordeev@linux.ibm.com, andreas@gaisler.com, bp@alien8.de,
+ bcain@kernel.org, chleroy@kernel.org, catalin.marinas@arm.com,
+ davem@davemloft.net, dave.hansen@linux.intel.com, david@kernel.org,
+ dinguyen@kernel.org, geert@linux-m68k.org, guoren@kernel.org,
+ hca@linux.ibm.com, deller@gmx.de, chenhuacai@kernel.org, mingo@redhat.com,
+ johannes@sipsolutions.net, glaubitz@physik.fu-berlin.de, corbet@lwn.net,
+ klarasmodin@gmail.com, Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com,
+ linmag7@gmail.com, mattst88@gmail.com, jcmvbkbc@gmail.com,
+ mpe@ellerman.id.au, mhocko@suse.com, monstr@monstr.eu, muchun.song@linux.dev,
+ osalvador@suse.de, palmer@dabbelt.com, pratyush@kernel.org, richard@nod.at,
+ ritesh.list@gmail.com, linux@armlinux.org.uk, shorne@gmail.com,
+ surenb@google.com, tsbogend@alpha.franken.de, tglx@linutronix.de,
+ gor@linux.ibm.com, vgupta@kernel.org, vbabka@suse.cz, will@kernel.org,
+ x86@kernel.org, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, sparclinux@vger.kernel.org
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,8 +92,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon Feb 16, 2026 at 11:34 AM CET, Danilo Krummrich wrote:
-> I will send a fix soon.
+Hello:
 
-https://lore.kernel.org/driver-core/20260216131534.65008-1-dakr@kernel.org/
+This series was applied to riscv/linux.git (fixes)
+by Andrew Morton <akpm@linux-foundation.org>:
+
+On Sun, 11 Jan 2026 10:20:34 +0200 you wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Hi,
+> 
+> Order in which early memory reservation for hugetlb happens depends on
+> architecture, on configuration options and on command line parameters.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,01/29] alpha: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/ba1c86874e25
+  - [v3,02/29] arc: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/7988e8518904
+  - [v3,03/29] arm: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/30a66f8a8cd3
+  - [v3,04/29] arm: make initialization of zero page independent of the memory map
+    https://git.kernel.org/riscv/c/18b7cc70dea8
+  - [v3,05/29] arm64: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/60b35af0a6aa
+  - [v3,06/29] csky: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/37318eb97f23
+  - [v3,07/29] hexagon: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/934afdf7f4cc
+  - [v3,08/29] loongarch: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/63cadcb731c9
+  - [v3,09/29] m68k: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/41b08a7abf89
+  - [v3,10/29] microblaze: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/2ce38c9ae840
+  - [v3,11/29] mips: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/f61385e29444
+  - [v3,12/29] nios2: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/3b1b0e5797bd
+  - [v3,13/29] openrisc: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/1d28b1142383
+  - [v3,14/29] parisc: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/950696afe400
+  - [v3,15/29] powerpc: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/27bebe446f8d
+  - [v3,16/29] riscv: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/db8cdb0ad603
+  - [v3,17/29] s390: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/76c4c463bbc0
+  - [v3,18/29] sh: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/8bfa6c2259f4
+  - [v3,19/29] sparc: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/6ad7ea22cf6f
+  - [v3,20/29] um: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/531de7f02d51
+  - [v3,21/29] x86: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/34f6b9c6e417
+  - [v3,22/29] xtensa: introduce arch_zone_limits_init()
+    https://git.kernel.org/riscv/c/2d3c8c5f33e0
+  - [v3,23/29] arch, mm: consolidate initialization of nodes, zones and memory map
+    https://git.kernel.org/riscv/c/d49004c5f0c1
+  - [v3,24/29] arch, mm: consolidate initialization of SPARSE memory model
+    https://git.kernel.org/riscv/c/4267739cabb8
+  - [v3,25/29] mips: drop paging_init()
+    https://git.kernel.org/riscv/c/5dea39496c68
+  - [v3,26/29] x86: don't reserve hugetlb memory in setup_arch()
+    https://git.kernel.org/riscv/c/6632314fddc4
+  - [v3,27/29] mm, arch: consolidate hugetlb CMA reservation
+    https://git.kernel.org/riscv/c/9fac145b6d3f
+  - [v3,28/29] mm/hugetlb: drop hugetlb_cma_check()
+    https://git.kernel.org/riscv/c/7a9c0bf0aec6
+  - [v3,29/29] Revert "mm/hugetlb: deal with multiple calls to hugetlb_bootmem_alloc"
+    https://git.kernel.org/riscv/c/743758ccf8be
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
