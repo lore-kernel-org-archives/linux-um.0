@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CDA7EFD208
-	for <linux-um@archiver.kernel.org>; Wed, 25 Feb 2026 08:16:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1BB7EFD208
+	for <linux-um@archiver.kernel.org>; Wed, 25 Feb 2026 08:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4hnbGAm/9+0AQuOsI/z6/MObWdWASDtilCdbwr5t2xI=; b=PaWhDTDFv6MliaENPjO+YO7bTg
-	Uk/Z1iNSSvKVL1pgdNPpzzZRHcLJ3IVbFV+wxNX9YPiV1+kh9zOOOQqRz1a+MHGnCCORjWFmoWBES
-	xNnfaSee7CfEvW0bsz2VcksYH9NdmeLcMxAuAeGX/CbCDwTuNFMNph39kiEQ2AiMl+brCKhcDfVMW
-	PGgFMqYDNhOCBQa15qoNAImVQSWSsUV9bD+rdLODagKjugbKQVcZU0mO4Of2qEhqdT7OiyL4oYm/x
-	7XS3PbBpSlvdL1igjmOj9erPeYwGzd/F0kgptBtIwEgfB6QX/MvfDb22kA55Hr1UhOaz7w9RPqC5i
-	qtP22quQ==;
+	bh=oT83zYbQb0MMseAk5Xm5Eaz7XNiK7MPHbcs4LQizA5Y=; b=r7ao83vTkhWZY7CgTwghPOieLK
+	9egav7XySkZ6PUXdbqWKYgCVD3JtCUcxeOHjRjemmEGkGuRUaUWUvAhi4v/QtWyUvWXwN8R7EurLA
+	1ApyeJl/dJHom3Fszdm+oCFxjlY6PvcJHO4o1V5NN5KiFKaqjxOj6J0I3zQQMRF6Uv/dxMdMJQPF8
+	tUl3UdqvUjJG8Ew4wGu6dYyOIMbpISNPyaZ+O201hGRaPI20SgpfptrAIDWRzIEUAyO191Grj2W/z
+	74aMv/jzpzkrXcJGyYTkfJHNm37B97hUQzULX5Gx8v2bI1+GMLdF+5dDPAX+YUz5ue2+qwzqdG9WJ
+	F79WFErw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvA4m-00000003W7g-05xn;
-	Wed, 25 Feb 2026 08:16:56 +0000
+	id 1vvA5D-00000003We7-2VeZ;
+	Wed, 25 Feb 2026 08:17:23 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvA4k-00000003W4q-2X7O
+	id 1vvA57-00000003WUj-0SAJ
 	for linux-um@bombadil.infradead.org;
-	Wed, 25 Feb 2026 08:16:54 +0000
+	Wed, 25 Feb 2026 08:17:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-type:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=4hnbGAm/9+0AQuOsI/z6/MObWdWASDtilCdbwr5t2xI=; b=vHhRVxhe2bKs8iYTThtvMnQRnE
-	793Nbp2ZH71POOErwO3h5HURsxQxpMOwixITerObI+GEirDAzdd/NSHRo8M8CMio1bV4Jp9FCkgLb
-	aMJc1XzUGOnQbcryoCF9Bo2K1vCfWIwzo4ZVH6/3Xo+zdbdnU4wPio+ZOtsuw3N5dBb34GTs3130J
-	YayCrJuiCt+kHVASFrSn0vVj5U1/yfUxGKWIxvSxKhVL1d6J5bJiIYbPSL4zuwN0sL0x7myqZuPcv
-	P1jMK4o0y7oOo9DKzf9SW0a5lIBZm6UlJywCT4UKMCerV9Gb3de9QLgDCFS0APpt2upx1XC6pO5/K
-	gPrM/4xg==;
+	bh=oT83zYbQb0MMseAk5Xm5Eaz7XNiK7MPHbcs4LQizA5Y=; b=Jps04HtGO2vwCw1FL/DOeqBFSs
+	zQTbsd2Q1Vikui7GQGUW3NOBnUs07JRuSMyr1B3fzPSXHFqVWWF/TrtJwdNn/VKb8xI/nZCHqGkOn
+	JDbHYI9Ivxy/7zfY76jqseZz1KgnOAFyFZF4rIb/6Y/WJZfIlLYh66nkcoF+V/ol4KQaMxX5msqdO
+	4ognpCuLH3xNsRQbnidm4fv7Soa4TlAN9nr1VHrD48Bwle8f7Rdo5hYFamqecCXFheai+8c+O9mfs
+	p7R0Lew4wEzMs0AQzU8FkH4NuONFWS+NfzyB094MUJUKNRRf5UsreKdmUUAqDSsG5DaM0jbS6JaBd
+	GdXfJLTg==;
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvA4g-00000000jYy-1bwq
+	id 1vvA53-00000000jgP-0sqY
 	for linux-um@lists.infradead.org;
-	Wed, 25 Feb 2026 08:16:53 +0000
+	Wed, 25 Feb 2026 08:17:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772007409;
+	s=mimecast20190719; t=1772007431;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4hnbGAm/9+0AQuOsI/z6/MObWdWASDtilCdbwr5t2xI=;
-	b=CstRHfmzJW0SAxDBPeC8ZrG0UQEVnejWHsT7+J6zBnovr3XL6d49DauJKhaz0IgqFNeuDJ
-	DU9rwxvTwFZH6qTLcBApGqxhQlUbYi5dT8J1vLN5Nq3/ZuIj7q1SzYvHvSt3Fy4j65menh
-	a22Uzgw9wwAS5YqRE6kpiUKCeFNa+vo=
+	bh=oT83zYbQb0MMseAk5Xm5Eaz7XNiK7MPHbcs4LQizA5Y=;
+	b=HF6ceENmCOMyeQ8LrLa/o7C9DvtoQJB/T9BxRnGUVzm3w8DKP5Tm/WZ+EgfEhZv1cD2HmZ
+	qEuHAkGtSUzy5yPDVZwm2XIkvf/qfGxGGwd+3/aKdKC6HoxVN4GRFhk+/LFSA4Q4fBpLLz
+	LE3S5VzBhtzVUItTcVhnoakc9tjTBrs=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772007409;
+	s=mimecast20190719; t=1772007432;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4hnbGAm/9+0AQuOsI/z6/MObWdWASDtilCdbwr5t2xI=;
-	b=CstRHfmzJW0SAxDBPeC8ZrG0UQEVnejWHsT7+J6zBnovr3XL6d49DauJKhaz0IgqFNeuDJ
-	DU9rwxvTwFZH6qTLcBApGqxhQlUbYi5dT8J1vLN5Nq3/ZuIj7q1SzYvHvSt3Fy4j65menh
-	a22Uzgw9wwAS5YqRE6kpiUKCeFNa+vo=
+	bh=oT83zYbQb0MMseAk5Xm5Eaz7XNiK7MPHbcs4LQizA5Y=;
+	b=JQtmvt+COuzA8DtSwaCujo+BvxxvbGJ+GQ5fxNULM8N3uluR98ONiM2U/jzTMfVfBHdghh
+	c0sXzoKgozUe0L34LdlMMd0CKi8JJqKSrq60UgMl6NjxzbJf6ZROJ04dDf+dRg04Y54REX
+	MJgvXM12AGn6ggZCarrGwfs5lzxWve8=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772007409;
+	s=mimecast20190719; t=1772007432;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4hnbGAm/9+0AQuOsI/z6/MObWdWASDtilCdbwr5t2xI=;
-	b=CstRHfmzJW0SAxDBPeC8ZrG0UQEVnejWHsT7+J6zBnovr3XL6d49DauJKhaz0IgqFNeuDJ
-	DU9rwxvTwFZH6qTLcBApGqxhQlUbYi5dT8J1vLN5Nq3/ZuIj7q1SzYvHvSt3Fy4j65menh
-	a22Uzgw9wwAS5YqRE6kpiUKCeFNa+vo=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+	bh=oT83zYbQb0MMseAk5Xm5Eaz7XNiK7MPHbcs4LQizA5Y=;
+	b=JQtmvt+COuzA8DtSwaCujo+BvxxvbGJ+GQ5fxNULM8N3uluR98ONiM2U/jzTMfVfBHdghh
+	c0sXzoKgozUe0L34LdlMMd0CKi8JJqKSrq60UgMl6NjxzbJf6ZROJ04dDf+dRg04Y54REX
+	MJgvXM12AGn6ggZCarrGwfs5lzxWve8=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-354-kB3PHjUANFi-zOP_mIJF6w-1; Wed,
- 25 Feb 2026 03:16:43 -0500
-X-MC-Unique: kB3PHjUANFi-zOP_mIJF6w-1
-X-Mimecast-MFC-AGG-ID: kB3PHjUANFi-zOP_mIJF6w_1772007401
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-68--PGROTGBN1uM5wyFliyqng-1; Wed,
+ 25 Feb 2026 03:17:06 -0500
+X-MC-Unique: -PGROTGBN1uM5wyFliyqng-1
+X-Mimecast-MFC-AGG-ID: -PGROTGBN1uM5wyFliyqng_1772007423
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A6D5A19560A7;
-	Wed, 25 Feb 2026 08:16:41 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AA092195609D;
+	Wed, 25 Feb 2026 08:17:03 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.55])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8570F1800465;
-	Wed, 25 Feb 2026 08:16:32 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2EF4E1800465;
+	Wed, 25 Feb 2026 08:16:52 +0000 (UTC)
 From: Baoquan He <bhe@redhat.com>
 To: kasan-dev@googlegroups.com
 Cc: linux-mm@kvack.org,
@@ -107,20 +107,20 @@ Cc: linux-mm@kvack.org,
 	linux-s390@vger.kernel.org,
 	hca@linux.ibm.com,
 	Baoquan He <bhe@redhat.com>
-Subject: [PATCH v5 12/15] arch/xtensa: don't initialize kasan if it's disabled
-Date: Wed, 25 Feb 2026 16:14:09 +0800
-Message-ID: <20260225081412.76502-13-bhe@redhat.com>
+Subject: [PATCH v5 14/15] mm/kasan: add document into kernel-parameters.txt
+Date: Wed, 25 Feb 2026 16:14:11 +0800
+Message-ID: <20260225081412.76502-15-bhe@redhat.com>
 In-Reply-To: <20260225081412.76502-1-bhe@redhat.com>
 References: <20260225081412.76502-1-bhe@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Mimecast-MFC-PROC-ID: kgirDAlCtkfDugyB5VkafJEyCXeOy1cmJ-KQdMa9ZIM_1772007401
+X-Mimecast-MFC-PROC-ID: XgFaHtUZOiTXaXi8oi8fgbObU7Bbxx-wFA2wM1jU1Lg_1772007423
 X-Mimecast-Originator: redhat.com
 Content-type: text/plain
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260225_081650_537828_10B65E17 
-X-CRM114-Status: UNSURE (   8.52  )
+X-CRM114-CacheID: sfid-20260225_081713_532182_BD4D6367 
+X-CRM114-Status: UNSURE (   7.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,48 +136,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Here, kasan is disabled if specified 'kasan=off' in kernel cmdline.
-
-And also call jump_label_init() early in setup_arch() so that later
-kasan_init() can enable static key kasan_flag_enabled. Put
-jump_label_init() beofre parse_early_param() as other architectures
-do.
+And also remove the relevant description in dev-tools/kasan.rst
+which is hw_tags specificially.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
 ---
- arch/xtensa/kernel/setup.c  | 1 +
- arch/xtensa/mm/kasan_init.c | 4 ++++
- 2 files changed, 5 insertions(+)
+ Documentation/admin-guide/kernel-parameters.txt | 4 ++++
+ Documentation/dev-tools/kasan.rst               | 2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
-index f72e280363be..aabeb23f41fa 100644
---- a/arch/xtensa/kernel/setup.c
-+++ b/arch/xtensa/kernel/setup.c
-@@ -352,6 +352,7 @@ void __init setup_arch(char **cmdline_p)
- 	mem_reserve(__pa(_SecondaryResetVector_text_start),
- 		    __pa(_SecondaryResetVector_text_end));
- #endif
-+	jump_label_init();
- 	parse_early_param();
- 	bootmem_init();
- 	kasan_init();
-diff --git a/arch/xtensa/mm/kasan_init.c b/arch/xtensa/mm/kasan_init.c
-index 0524b9ed5e63..eb367b801218 100644
---- a/arch/xtensa/mm/kasan_init.c
-+++ b/arch/xtensa/mm/kasan_init.c
-@@ -70,6 +70,10 @@ void __init kasan_init(void)
- {
- 	int i;
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb850e5290c2..e0115fad9e60 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2899,6 +2899,10 @@ Kernel parameters
+ 	js=		[HW,JOY] Analog joystick
+ 			See Documentation/input/joydev/joystick.rst.
  
-+	/* If KASAN is disabled via command line, don't initialize it. */
-+	if (kasan_arg_disabled)
-+		return;
++	kasan=		[KNL] controls whether KASAN is enabled.
++			Format: off | on
++			default: on
 +
- 	BUILD_BUG_ON(KASAN_SHADOW_OFFSET != KASAN_SHADOW_START -
- 		     (KASAN_START_VADDR >> KASAN_SHADOW_SCALE_SHIFT));
- 	BUILD_BUG_ON(VMALLOC_START < KASAN_START_VADDR);
+ 	kasan_multi_shot
+ 			[KNL] Enforce KASAN (Kernel Address Sanitizer) to print
+ 			report on every invalid memory access. Without this
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index a034700da7c4..eaae83fcb5e4 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -129,8 +129,6 @@ Hardware Tag-Based KASAN mode is intended for use in production as a security
+ mitigation. Therefore, it supports additional boot parameters that allow
+ disabling KASAN altogether or controlling its features:
+ 
+-- ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
+-
+ - ``kasan.mode=sync``, ``=async`` or ``=asymm`` controls whether KASAN
+   is configured in synchronous, asynchronous or asymmetric mode of
+   execution (default: ``sync``).
 -- 
 2.52.0
 
