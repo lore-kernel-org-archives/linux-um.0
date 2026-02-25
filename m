@@ -4,72 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D82F6EEC296
-	for <linux-um@archiver.kernel.org>; Mon, 23 Feb 2026 21:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ECAEF5545D
+	for <linux-um@archiver.kernel.org>; Wed, 25 Feb 2026 05:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=23EdARInHQbn9UQZ4Ze1RUj9umLs+AsB6ZkBrB7Nyg8=; b=OVh/m5zB+UW2RjD40u6rVBhR6T
-	S+565dz/OoApdLjXrpcU/7k8OGmCoHzKUNY8dEsQ6nGOmtCdCPN8VtH1ZeGAIMKJNaDsJbJAULPk5
-	ZS6tVvALpb9EBQVx0jOb6zVCbGZWaeD7OC1dwGoW4W9aDLDtRZ9yydovMzs9jXs68zORTYQlBWr6Y
-	bE8cjYF4jLcLE1K+gFa8Lcmf/oEtjtGmvojFy+c7L++kyBCr/9IB5tTOiavoxZd6xBhbS29Foskdm
-	eh+gCSkW23G6x6Ibx6DI4IDSFkTH+T6W4hWc8x9kVPr50mnx+7t0GGDlrHMSCSqCnsf1v5NN7SFGt
-	0TpvTLkQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=d3wtTwTG1KNrTlOiUEKRONaqf46vu4shf9EW634K5b0=; b=yzByvbb3WZWk0xa654eC32N7Rf
+	ekvHYjufrbSYsUXS8Qv2NSwHNEVM+n49uDD7UYi7YgKc0UtSsRcDG1W/KYgbFozqBIERhSaioM+Ua
+	dSIZ7lZXbLiIbvZJtjDb5ClZDIM4pZ9MzOyz9Ec6rSFrLvGDDRG1zEx229Ynh0AxwFNzqdioxID00
+	fojE7kZICw5FjHynNXrcfz8qfcY3+qV206Jv9hKx26yeCn9nU7UYprt2/g4bp4IgPykO7JbRrctLR
+	NbrW71uiokYKpi/oRAidjrU6WgwQP+xDmWb1o1ivUMA2mc8EbHvfYtKVwNfNSAFthh05h7iEjzpGI
+	XKgGQg8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vudrc-000000014yF-29Y2;
-	Mon, 23 Feb 2026 21:53:12 +0000
-Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vudrZ-000000014xn-2ugV
-	for linux-um@lists.infradead.org;
-	Mon, 23 Feb 2026 21:53:11 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 08D87244B24;
-	Mon, 23 Feb 2026 22:52:57 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id T9J9XODYy7yM; Mon, 23 Feb 2026 22:52:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id B31AA244B26;
-	Mon, 23 Feb 2026 22:52:55 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Wy8rytRbA5QY; Mon, 23 Feb 2026 22:52:55 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 4DAC5244B24;
-	Mon, 23 Feb 2026 22:52:55 +0100 (CET)
-Date: Mon, 23 Feb 2026 22:52:54 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Kees Cook <kees@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-	anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	Jens Axboe <axboe@kernel.dk>, Hannes Reinecke <hare@suse.de>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Tiwei Bie <tiwei.btw@antgroup.com>, 
-	linux-um <linux-um@lists.infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-hardening <linux-hardening@vger.kernel.org>
-Message-ID: <905832921.1560.1771883574809.JavaMail.zimbra@nod.at>
-In-Reply-To: <20260223214341.work.846-kees@kernel.org>
-References: <20260223214341.work.846-kees@kernel.org>
-Subject: Re: [PATCH] ubd: Use pointer-to-pointers for io_thread_req arrays
+	id 1vv7kc-00000003GAP-1sLz;
+	Wed, 25 Feb 2026 05:47:58 +0000
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vv7kZ-00000003G9x-1kmX;
+	Wed, 25 Feb 2026 05:47:55 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Jeff Chang <jeff_chang@richtek.com>,
+	Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: [PATCH v2] regulator: RT5133: add missing HAS_IOMEM dependency
+Date: Tue, 24 Feb 2026 21:47:53 -0800
+Message-ID: <20260225054753.227535-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF147 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Use pointer-to-pointers for io_thread_req arrays
-Thread-Index: G+WYJ58A7oYNOlTL/FXMTchaZRbPMg==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260223_135309_926620_A303FFDE 
-X-CRM114-Status: UNSURE (   8.53  )
-X-CRM114-Notice: Please train this message.
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,51 +56,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "Kees Cook" <kees@kernel.org>
-> An: "richard" <richard@nod.at>
-> CC: "Kees Cook" <kees@kernel.org>, "Nathan Chancellor" <nathan@kernel.org=
->, "Guenter Roeck" <linux@roeck-us.net>, "anton
-> ivanov" <anton.ivanov@cambridgegreys.com>, "Johannes Berg" <johannes@sips=
-olutions.net>, "Jens Axboe" <axboe@kernel.dk>,
-> "Hannes Reinecke" <hare@suse.de>, "Martin K. Petersen" <martin.petersen@o=
-racle.com>, "Tiwei Bie"
-> <tiwei.btw@antgroup.com>, "linux-um" <linux-um@lists.infradead.org>, "Al =
-Viro" <viro@zeniv.linux.org.uk>,
-> "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-hardening" <linux-h=
-ardening@vger.kernel.org>
-> Gesendet: Montag, 23. Februar 2026 22:43:45
-> Betreff: [PATCH] ubd: Use pointer-to-pointers for io_thread_req arrays
+When building on ARCH=um (which does not set HAS_IOMEM), kconfig
+reports an unmet dependency caused by REGULATOR_RT5133. It selects
+OF_GPIO, which depends on HAS_IOMEM. To stop this warning,
+REGULATOR_RT5133 should also depend on HAS_IOMEM.
 
-> Having an unbounded array for irq_req_buffer and io_req_buffer doesn't
-> provide any bounds safety, and confuses the needed allocation type,
-> which is returning a pointer to pointers. Instead of the implicit cast,
-> switch the variable types.
->=20
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Closes:
-> https://lore.kernel.org/all/b04b6c13-7d0e-4a89-9e68-b572b6c686ac@roeck-us=
-.net
-> Fixes: 69050f8d6d07 ("treewide: Replace kmalloc with kmalloc_obj for non-=
-scalar
-> types")
-> Signed-off-by: Kees Cook <kees@kernel.org>
-> ---
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Hannes Reinecke <hare@suse.de>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: Tiwei Bie <tiwei.btw@antgroup.com>
-> Cc: <linux-um@lists.infradead.org>
-> ---
-> arch/um/drivers/ubd_kern.c | 10 +++++-----
-> 1 file changed, 5 insertions(+), 5 deletions(-)
+kconfig warning:
+WARNING: unmet direct dependencies detected for OF_GPIO
+  Depends on [n]: GPIOLIB [=y] && OF [=y] && HAS_IOMEM [=n]
+  Selected by [y]:
+  - REGULATOR_RT5133 [=y] && REGULATOR [=y] && I2C [=y] && GPIOLIB [=y] && OF [=y]
 
-Acked-by: Richard Weinberger <richard@nod.at>
+Fixes: 714165e1c4b0 ("regulator: rt5133: Add RT5133 PMIC regulator Support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+v2: verify still needed, rebase, add Cc:s
 
-Thanks,
-//richard
+Cc: Jeff Chang <jeff_chang@richtek.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+
+ drivers/regulator/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-next-20260224.orig/drivers/regulator/Kconfig
++++ linux-next-20260224/drivers/regulator/Kconfig
+@@ -1330,6 +1330,7 @@ config REGULATOR_RT5120
+ config REGULATOR_RT5133
+ 	tristate "Richtek RT5133 PMIC Regulators"
+ 	depends on I2C && GPIOLIB && OF
++	depends on HAS_IOMEM
+ 	select REGMAP
+ 	select CRC8
+ 	select OF_GPIO
 
