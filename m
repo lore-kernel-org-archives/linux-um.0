@@ -4,88 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BB03FD9E1A
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 22:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C5ABFD9E19
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 22:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3ilvamkoK822H0OMpkLt0O2v/cHCUl9aKFe1v6Kcca4=; b=OnTpQgf2lo0LCjE4SL8IzBur+J
-	e78j+hEz/3S4qpGLvNV1ADc2Rb1In49XMcsX6ZI4sYRTPpDfVu2CjYPCc1MjxjORtd723sbjHvv0M
-	nRllB0k6aqvKA3PNXdONAf/W9TTx2NmdgwiAQfu2x5O014FW9O/UbiOuxNEku5CepjWPSwNFXwekB
-	WkpIwx7ACtlndvU+zA+wm7lMgNF+KmmRCGugJbMcol81f9faJInTrLZiU7Wp6rM5NQEpw9ItV5J+f
-	QC80cpMiT4XhJNMdhZZzwCoHcUjBPvDISz3IGy09sLD5biHhUsz6eXstHpdNYpVuCCU1902+OOU6C
-	5DMwmx1Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=E2VTeQ3C2cQkljrZGq8S36jL6ptQw/xTjrmx61gZgJI=; b=Z0iaxwd7xJKLb11Dx7MzNU0RD/
+	MmSUzTDSa02XntOGti+clg4UqRXsQSCATl6C338fnA4vKEHSr+9z7/Je8qnssWiTiK2xNJONSjzj7
+	Q8yaQYjLHHGpZ32pDrOiZZFeQKsEjG1jpL9qQNXuoryUu6XaWla9qzw6aSd6UYApRPFb+1j2+WNFk
+	X3p2it+YQYN3wWyiO0A266e5egyGpE3z09+vBtZBJP7wsXfAzuqOgnxzvoW6k8zMMwpDDWhgbEMgW
+	RA6KQTWx+GMUv4chTY6WUbtaKc2Tk5Uw6S0AZVn0buKOFJtOYH69eL2vcSeeqdH6olOmM1oo8O0OP
+	9gfX3mrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvjPh-00000007HL9-43F1;
-	Thu, 26 Feb 2026 22:00:53 +0000
-Received: from verein.lst.de ([213.95.11.211])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvjPe-00000007HKe-3ho6;
-	Thu, 26 Feb 2026 22:00:52 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 3731168C4E; Thu, 26 Feb 2026 23:00:39 +0100 (CET)
-Date: Thu, 26 Feb 2026 23:00:38 +0100
-From: hch <hch@lst.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: hch <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>, will <will@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>, davem <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	anton ivanov <anton.ivanov@cambridgegreys.com>,
+	id 1vvjZk-00000007Hmy-1rHk;
+	Thu, 26 Feb 2026 22:11:16 +0000
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vvjZh-00000007Hmm-1SH2;
+	Thu, 26 Feb 2026 22:11:13 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>, mingo <mingo@redhat.com>,
-	bp <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>,
-	x86 <x86@kernel.org>, hpa <hpa@zytor.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	dan j williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
-	Li Nan <linan122@huawei.com>,
-	linux-alpha <linux-alpha@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	loongarch <loongarch@lists.linux.dev>,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	sparclinux <sparclinux@vger.kernel.org>,
-	linux-um <linux-um@lists.infradead.org>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	linux-arch <linux-arch@vger.kernel.org>,
-	linux-raid <linux-raid@vger.kernel.org>
-Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
-Message-ID: <20260226220038.GA15172@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-4-hch@lst.de> <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
+	linux-um@lists.infradead.org
+Subject: [PATCH] um: time-travel: clean up kernel-doc warnings
+Date: Thu, 26 Feb 2026 14:11:12 -0800
+Message-ID: <20260226221112.1042008-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260226_140051_067374_DC1ABC15 
-X-CRM114-Status: GOOD (  15.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,23 +53,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 26, 2026 at 10:45:26PM +0100, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
-> > Von: "hch" <hch@lst.de>
-> > XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
-> > ifdef'ery doesn't do anything.  With our without this, the time travel
-> > mode should work fine on CPUs that support AVX2, as the AVX2
-> > implementation is forced in this case, and won't work otherwise.
-> 
-> IIRC Johannes added XOR_SELECT_TEMPLATE() here to skip
-> the template selection logic because it didn't work with time travel mode.
-> 
-> Johannes, can you please test whether this change does not break
-> time travel mode?
+Repair all kernel-doc warnings in um_timetravel.h:
+- add one enum description
+- mark "reserve" as private
+- use a leading '@' on current_time
 
-I'm pretty sure that was the intent, but as I wrote above it worked
-and still works on AVX-supporting CPUs by chance, and already doesn't
-on older CPUs, and unless my git blaming went wrong someewhere already
-didn't when this was originally added.
+Warning: include/uapi/linux/um_timetravel.h:59 Enum value
+ 'UM_TIMETRAVEL_SHARED_MAX_FDS' not described in enum
+ 'um_timetravel_shared_mem_fds'
+Warning: include/uapi/linux/um_timetravel.h:245 union member 'reserve'
+ not described in 'um_timetravel_schedshm_client'
+Warning: include/uapi/linux/um_timetravel.h:288 struct member
+ 'current_time' not described in 'um_timetravel_schedshm'
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+
+ include/uapi/linux/um_timetravel.h |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- linux-next-20260226.orig/include/uapi/linux/um_timetravel.h
++++ linux-next-20260226/include/uapi/linux/um_timetravel.h
+@@ -56,6 +56,9 @@ enum um_timetravel_shared_mem_fds {
+ 	 *	in the control message
+ 	 */
+ 	UM_TIMETRAVEL_SHARED_LOGFD,
++	/**
++	 * @UM_TIMETRAVEL_SHARED_MAX_FDS: number of fds listed here
++	 */
+ 	UM_TIMETRAVEL_SHARED_MAX_FDS,
+ };
+ 
+@@ -242,6 +245,7 @@ union um_timetravel_schedshm_client {
+ 		__u64 req_time;
+ 		__u64 name;
+ 	};
++	/* private: */
+ 	char reserve[128]; /* reserved for future usage */
+ };
+ 
+@@ -264,7 +268,7 @@ union um_timetravel_schedshm_client {
+  *	is made by any client. Clients also must update this value when they
+  *	insert/update an own request into the shared memory while not running
+  *	themselves, and the new request is before than the current value.
+- * current_time: Current time, can only be set by the client in running state
++ * @current_time: Current time, can only be set by the client in running state
+  *	(indicated by @running_id), though that client may only run until @free_until,
+  *	so it must remain smaller than @free_until.
+  * @running_id: The current client in state running, set before a client is
 
