@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B593FD8FC7
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7C1BFD8FC5
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uWVTxVXofLMNGO7crXJ27khW3O1RifHdgil+Iut8nqA=; b=VS7vceiiX0/fkWQzUeR8M27Wf5
-	oAcmg/h0NxhXfIhWiOH2IuCneUchhP42wqH9Aus93xkKoXNwg0IeLebgnDf2rIJeAUitvaPL/pNjM
-	9a1RnAOj/W7k4CJfDIfT7xxuLlLqdkLwTOG/fqGjkivSx8f3dzvWH2jJPy+3Uykx4/MpT8oZLhEtE
-	dln+PKgFl/T+GGLDfEk4WlBXzT9O/sp3kHRaJWYnrg/u7RI0l9+iixURdvl4ckg76FT7P7tgayicc
-	XZHOheuGV/Wi07uG+7Kii9GD+NbWcLuNXu+4e3XffQCRluiigWKXi3OFVLSezJG+2NfjIFNmBRv1v
-	/J0r93aQ==;
+	bh=5Q4WO2fmqU3XVJCOHArp4PLeLItyndyIBgJVZQfhExI=; b=cCdwqPaC3P09FghbhcwOr4v9W/
+	l4HiMvri2zCgisAFW/+Lfk8jXbFpEQ3UiYBLCFpYso5PjKSOqYITfcvwxZCqoa/G2rzZdjJvnup6N
+	xtRwM1PieRkbQg/+zzAxoIaoWy79WOROKKPIuoPpbk43xWXiS4NM84cRC83qI0LH3kTEwOyXT3cjK
+	T3dp2NdG0H+NEVrGbQJrhlCkg3jJRpAd38gQUucUpsCMf9pqc57XA3PUy5zylIo75eE4L5hCk2RfL
+	BpxfpMggENodIj7BVuFNOSKllSTLX0mbkouwFtJEM8T83LdXvnMChSBlaK4IDiWRN83UjBv9mxuvU
+	BI25ldHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1K-00000006Q5S-3uds;
-	Thu, 26 Feb 2026 15:11:18 +0000
+	id 1vvd1J-00000006Q3T-1ww9;
+	Thu, 26 Feb 2026 15:11:17 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1F-00000006PyU-0jJQ;
-	Thu, 26 Feb 2026 15:11:13 +0000
+	id 1vvd1C-00000006PyB-3SQX;
+	Thu, 26 Feb 2026 15:11:10 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 04/25] xor: move to lib/raid/
-Date: Thu, 26 Feb 2026 07:10:16 -0800
-Message-ID: <20260226151106.144735-5-hch@lst.de>
+Subject: [PATCH 02/25] arm/xor: remove in_interrupt() handling
+Date: Thu, 26 Feb 2026 07:10:14 -0800
+Message-ID: <20260226151106.144735-3-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -103,107 +103,94 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Move the RAID XOR code to lib/raid/ as it has nothing to do with the
-crypto API.
+xor_blocks can't be called from interrupt context, so remove the
+handling for that.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- crypto/Kconfig                          | 2 --
- crypto/Makefile                         | 1 -
- lib/Kconfig                             | 1 +
- lib/Makefile                            | 2 +-
- lib/raid/Kconfig                        | 3 +++
- lib/raid/Makefile                       | 2 ++
- lib/raid/xor/Makefile                   | 5 +++++
- crypto/xor.c => lib/raid/xor/xor-core.c | 0
- 8 files changed, 12 insertions(+), 4 deletions(-)
- create mode 100644 lib/raid/Kconfig
- create mode 100644 lib/raid/Makefile
- create mode 100644 lib/raid/xor/Makefile
- rename crypto/xor.c => lib/raid/xor/xor-core.c (100%)
+ arch/arm/include/asm/xor.h | 41 +++++++++++---------------------------
+ 1 file changed, 12 insertions(+), 29 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index e2b4106ac961..5cdb1b25ae87 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -2,8 +2,6 @@
- #
- # Generic algorithms support
- #
--config XOR_BLOCKS
--	tristate
+diff --git a/arch/arm/include/asm/xor.h b/arch/arm/include/asm/xor.h
+index 934b549905f5..bca2a6514746 100644
+--- a/arch/arm/include/asm/xor.h
++++ b/arch/arm/include/asm/xor.h
+@@ -4,7 +4,6 @@
+  *
+  *  Copyright (C) 2001 Russell King
+  */
+-#include <linux/hardirq.h>
+ #include <asm-generic/xor.h>
+ #include <asm/hwcap.h>
+ #include <asm/neon.h>
+@@ -156,13 +155,9 @@ static void
+ xor_neon_2(unsigned long bytes, unsigned long * __restrict p1,
+ 	   const unsigned long * __restrict p2)
+ {
+-	if (in_interrupt()) {
+-		xor_arm4regs_2(bytes, p1, p2);
+-	} else {
+-		kernel_neon_begin();
+-		xor_block_neon_inner.do_2(bytes, p1, p2);
+-		kernel_neon_end();
+-	}
++	kernel_neon_begin();
++	xor_block_neon_inner.do_2(bytes, p1, p2);
++	kernel_neon_end();
+ }
  
- #
- # async_tx api: hardware offloaded memory transfer/transform support
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 04e269117589..795c2eea51fe 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -196,7 +196,6 @@ obj-$(CONFIG_CRYPTO_ECRDSA) += ecrdsa_generic.o
- #
- # generic algorithms and the async_tx api
- #
--obj-$(CONFIG_XOR_BLOCKS) += xor.o
- obj-$(CONFIG_ASYNC_CORE) += async_tx/
- obj-$(CONFIG_ASYMMETRIC_KEY_TYPE) += asymmetric_keys/
- crypto_simd-y := simd.o
-diff --git a/lib/Kconfig b/lib/Kconfig
-index 0f2fb9610647..5be57adcd454 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -138,6 +138,7 @@ config TRACE_MMIO_ACCESS
+ static void
+@@ -170,13 +165,9 @@ xor_neon_3(unsigned long bytes, unsigned long * __restrict p1,
+ 	   const unsigned long * __restrict p2,
+ 	   const unsigned long * __restrict p3)
+ {
+-	if (in_interrupt()) {
+-		xor_arm4regs_3(bytes, p1, p2, p3);
+-	} else {
+-		kernel_neon_begin();
+-		xor_block_neon_inner.do_3(bytes, p1, p2, p3);
+-		kernel_neon_end();
+-	}
++	kernel_neon_begin();
++	xor_block_neon_inner.do_3(bytes, p1, p2, p3);
++	kernel_neon_end();
+ }
  
- source "lib/crc/Kconfig"
- source "lib/crypto/Kconfig"
-+source "lib/raid/Kconfig"
+ static void
+@@ -185,13 +176,9 @@ xor_neon_4(unsigned long bytes, unsigned long * __restrict p1,
+ 	   const unsigned long * __restrict p3,
+ 	   const unsigned long * __restrict p4)
+ {
+-	if (in_interrupt()) {
+-		xor_arm4regs_4(bytes, p1, p2, p3, p4);
+-	} else {
+-		kernel_neon_begin();
+-		xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
+-		kernel_neon_end();
+-	}
++	kernel_neon_begin();
++	xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
++	kernel_neon_end();
+ }
  
- config XXHASH
- 	tristate
-diff --git a/lib/Makefile b/lib/Makefile
-index 1b9ee167517f..84da412a044f 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -120,7 +120,7 @@ endif
- obj-$(CONFIG_DEBUG_INFO_REDUCED) += debug_info.o
- CFLAGS_debug_info.o += $(call cc-option, -femit-struct-debug-detailed=any)
+ static void
+@@ -201,13 +188,9 @@ xor_neon_5(unsigned long bytes, unsigned long * __restrict p1,
+ 	   const unsigned long * __restrict p4,
+ 	   const unsigned long * __restrict p5)
+ {
+-	if (in_interrupt()) {
+-		xor_arm4regs_5(bytes, p1, p2, p3, p4, p5);
+-	} else {
+-		kernel_neon_begin();
+-		xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
+-		kernel_neon_end();
+-	}
++	kernel_neon_begin();
++	xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
++	kernel_neon_end();
+ }
  
--obj-y += math/ crc/ crypto/ tests/ vdso/
-+obj-y += math/ crc/ crypto/ tests/ vdso/ raid/
- 
- obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
- obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
-diff --git a/lib/raid/Kconfig b/lib/raid/Kconfig
-new file mode 100644
-index 000000000000..4b720f3454a2
---- /dev/null
-+++ b/lib/raid/Kconfig
-@@ -0,0 +1,3 @@
-+
-+config XOR_BLOCKS
-+	tristate
-diff --git a/lib/raid/Makefile b/lib/raid/Makefile
-new file mode 100644
-index 000000000000..382f2d1694bd
---- /dev/null
-+++ b/lib/raid/Makefile
-@@ -0,0 +1,2 @@
-+
-+obj-y				+= xor/
-diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
-new file mode 100644
-index 000000000000..7bca0ce8e90a
---- /dev/null
-+++ b/lib/raid/xor/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_XOR_BLOCKS)	+= xor.o
-+
-+xor-y				+= xor-core.o
-diff --git a/crypto/xor.c b/lib/raid/xor/xor-core.c
-similarity index 100%
-rename from crypto/xor.c
-rename to lib/raid/xor/xor-core.c
+ static struct xor_block_template xor_block_neon = {
 -- 
 2.47.3
 
