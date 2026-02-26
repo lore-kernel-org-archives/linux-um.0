@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62DB1FD8FC5
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9853CFD8FC3
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H2vQZ0n6ApADqlHQBkKJl8JvR6Rc+huPC8RGmru6TyA=; b=QB5jdiDNoKwObvjryCdvonssb9
-	T9rIyyyrrPrG7vg0FW0PN6STppfnstO6ImCYymCbGh7nXDNQU2INIFW1tfESndoQKQDYlyFvs2pAY
-	jmz5LeEBFjq3kZXcl5/XmSGKfAstvY01eIxWv+cYD6elJqTGWZRgguIbOpF+7UgwgaYFd4XwmYCt1
-	/4KdajiWCY+SI681caGkJaeW7B+5PEc6Sm7IQcmUpW9jqhqzY3PYX5Ho6VrlIQAjJPHG83sbrPEYy
-	mPoCpOXetzm8XoNeNzaRVE643GkiuuxFz6TlhNa7Hlw2BT62HZI6gpX4JydULX58q1/xQ8mvTDzDJ
-	jlTpOSzA==;
+	bh=dnAqm1mQgBL7YCaDnwjea9MVbvJi6fB59bRdgxzHRfQ=; b=AKWesbBUbjv/wHwFI3ewDs1J5e
+	b7Rr1wDV4451M8BnLwqGkcK/KJnqcSWuLjLGAJZBax9DOyqvEcKdB6tdFOfq1pJlppG8zov/R9XwW
+	/o/CfOtfjPWtxaDFa6wrdu9m8kGGC3gqcIm/8SU/+sNmB866H1QKFRzwEsI6eVpDqufz8T4taU9jW
+	B4T7K5qSCHdMWH8qW7a9u4WKllcxOLolRxsmiE9L+kdKT62CSS423BBu42Jr81WDSt/XAoM6MFyaj
+	nJBO6KSpDQVBeBEHTKtquxvX2WLgh+yy3mglQ09kIXMzMzvMUyB8ATa0AZU+iuuPcu4Qqz0H42dbz
+	EtZNGOkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd2I-00000006Red-2JeR;
-	Thu, 26 Feb 2026 15:12:18 +0000
+	id 1vvd2N-00000006Rnv-33PC;
+	Thu, 26 Feb 2026 15:12:23 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1m-00000006Qm8-2Nf0;
-	Thu, 26 Feb 2026 15:11:46 +0000
+	id 1vvd1q-00000006Qsd-3Nhg;
+	Thu, 26 Feb 2026 15:11:50 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 23/25] btrfs: use xor_gen
-Date: Thu, 26 Feb 2026 07:10:35 -0800
-Message-ID: <20260226151106.144735-24-hch@lst.de>
+Subject: [PATCH 25/25] xor: use static_call for xor_gen
+Date: Thu, 26 Feb 2026 07:10:37 -0800
+Message-ID: <20260226151106.144735-26-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -103,74 +103,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Use the new xor_gen helper instead of open coding the loop around
-xor_blocks.  This helper is very similar to the existing run_xor helper
-in btrfs, except that the destination buffer is passed explicitly.
+Avoid the indirect call for xor_generation by using a static_call.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/raid56.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+ lib/raid/xor/xor-32regs.c |  2 +-
+ lib/raid/xor/xor-core.c   | 29 ++++++++++++++---------------
+ lib/raid/xor/xor_impl.h   |  4 ++++
+ 3 files changed, 19 insertions(+), 16 deletions(-)
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index b4511f560e92..dab07442f634 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -617,26 +617,6 @@ static void cache_rbio(struct btrfs_raid_bio *rbio)
- 	spin_unlock(&table->cache_lock);
+diff --git a/lib/raid/xor/xor-32regs.c b/lib/raid/xor/xor-32regs.c
+index acb4a10d1e95..759a31f76414 100644
+--- a/lib/raid/xor/xor-32regs.c
++++ b/lib/raid/xor/xor-32regs.c
+@@ -209,7 +209,7 @@ xor_32regs_5(unsigned long bytes, unsigned long * __restrict p1,
+ 	} while (--lines > 0);
  }
  
--/*
-- * helper function to run the xor_blocks api.  It is only
-- * able to do MAX_XOR_BLOCKS at a time, so we need to
-- * loop through.
-- */
--static void run_xor(void **pages, int src_cnt, ssize_t len)
--{
--	int src_off = 0;
--	int xor_src_cnt = 0;
--	void *dest = pages[src_cnt];
--
--	while(src_cnt > 0) {
--		xor_src_cnt = min(src_cnt, MAX_XOR_BLOCKS);
--		xor_blocks(xor_src_cnt, len, dest, pages + src_off);
--
--		src_cnt -= xor_src_cnt;
--		src_off += xor_src_cnt;
--	}
--}
--
- /*
-  * Returns true if the bio list inside this rbio covers an entire stripe (no
-  * rmw required).
-@@ -1434,7 +1414,8 @@ static void generate_pq_vertical_step(struct btrfs_raid_bio *rbio, unsigned int
- 	} else {
- 		/* raid5 */
- 		memcpy(pointers[rbio->nr_data], pointers[0], step);
--		run_xor(pointers + 1, rbio->nr_data - 1, step);
-+		xor_gen(pointers[rbio->nr_data], pointers + 1, rbio->nr_data - 1,
-+				step);
- 	}
- 	for (stripe = stripe - 1; stripe >= 0; stripe--)
- 		kunmap_local(pointers[stripe]);
-@@ -2034,7 +2015,7 @@ static void recover_vertical_step(struct btrfs_raid_bio *rbio,
- 		pointers[rbio->nr_data - 1] = p;
+-DO_XOR_BLOCKS(32regs, xor_32regs_2, xor_32regs_3, xor_32regs_4, xor_32regs_5);
++__DO_XOR_BLOCKS(32regs, xor_32regs_2, xor_32regs_3, xor_32regs_4, xor_32regs_5);
  
- 		/* Xor in the rest */
--		run_xor(pointers, rbio->nr_data - 1, step);
-+		xor_gen(p, pointers, rbio->nr_data - 1, step);
+ struct xor_block_template xor_block_32regs = {
+ 	.name		= "32regs",
+diff --git a/lib/raid/xor/xor-core.c b/lib/raid/xor/xor-core.c
+index f18dcc57004b..2ab03dd294bf 100644
+--- a/lib/raid/xor/xor-core.c
++++ b/lib/raid/xor/xor-core.c
+@@ -11,10 +11,14 @@
+ #include <linux/raid/xor.h>
+ #include <linux/jiffies.h>
+ #include <linux/preempt.h>
++#include <linux/static_call.h>
+ #include "xor_impl.h"
+ 
+-/* The xor routine to use.  */
+-static struct xor_block_template *active_template;
++/*
++ * Provide a temporary default until the fastest or forced implementation is
++ * picked.
++ */
++DEFINE_STATIC_CALL(xor_gen_impl, xor_gen_32regs);
+ 
+ /**
+  * xor_gen - generate RAID-style XOR information
+@@ -32,13 +36,13 @@ static struct xor_block_template *active_template;
+ void xor_gen(void *dest, void **srcs, unsigned int src_cnt, unsigned int bytes)
+ {
+ 	WARN_ON_ONCE(in_interrupt());
+-	active_template->xor_gen(dest, srcs, src_cnt, bytes);
++	static_call(xor_gen_impl)(dest, srcs, src_cnt, bytes);
+ }
+ EXPORT_SYMBOL(xor_gen);
+ 
+ /* Set of all registered templates.  */
+ static struct xor_block_template *__initdata template_list;
+-static int __initdata xor_forced = false;
++static struct xor_block_template *forced_template;
+ 
+ /**
+  * xor_register - register a XOR template
+@@ -64,7 +68,7 @@ void __init xor_register(struct xor_block_template *tmpl)
+  */
+ void __init xor_force(struct xor_block_template *tmpl)
+ {
+-	active_template = tmpl;
++	forced_template = tmpl;
+ }
+ 
+ #define BENCH_SIZE	4096
+@@ -106,7 +110,7 @@ static int __init calibrate_xor_blocks(void)
+ 	void *b1, *b2;
+ 	struct xor_block_template *f, *fastest;
+ 
+-	if (xor_forced)
++	if (forced_template)
+ 		return 0;
+ 
+ 	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
+@@ -123,7 +127,7 @@ static int __init calibrate_xor_blocks(void)
+ 		if (f->speed > fastest->speed)
+ 			fastest = f;
+ 	}
+-	active_template = fastest;
++	static_call_update(xor_gen_impl, fastest->xor_gen);
+ 	pr_info("xor: using function: %s (%d MB/sec)\n",
+ 	       fastest->name, fastest->speed);
+ 
+@@ -151,21 +155,16 @@ static int __init xor_init(void)
+ 	 * If this arch/cpu has a short-circuited selection, don't loop through
+ 	 * all the possible functions, just use the best one.
+ 	 */
+-	if (active_template) {
++	if (forced_template) {
+ 		pr_info("xor: automatically using best checksumming function   %-10s\n",
+-			active_template->name);
+-		xor_forced = true;
++			forced_template->name);
++		static_call_update(xor_gen_impl, forced_template->xor_gen);
+ 		return 0;
  	}
  
- cleanup:
-@@ -2664,7 +2645,7 @@ static bool verify_one_parity_step(struct btrfs_raid_bio *rbio,
- 	} else {
- 		/* RAID5. */
- 		memcpy(pointers[nr_data], pointers[0], step);
--		run_xor(pointers + 1, nr_data - 1, step);
-+		xor_gen(pointers[nr_data], pointers + 1, nr_data - 1, step);
- 	}
+ #ifdef MODULE
+ 	return calibrate_xor_blocks();
+ #else
+-	/*
+-	 * Pick the first template as the temporary default until calibration
+-	 * happens.
+-	 */
+-	active_template = template_list;
+ 	return 0;
+ #endif
+ }
+diff --git a/lib/raid/xor/xor_impl.h b/lib/raid/xor/xor_impl.h
+index 968dd07df627..f11910162b08 100644
+--- a/lib/raid/xor/xor_impl.h
++++ b/lib/raid/xor/xor_impl.h
+@@ -50,6 +50,10 @@ extern struct xor_block_template xor_block_32regs;
+ extern struct xor_block_template xor_block_8regs_p;
+ extern struct xor_block_template xor_block_32regs_p;
  
- 	/* Check scrubbing parity and repair it. */
++/* default call until updated */
++void xor_gen_32regs(void *dest, void **srcs, unsigned int src_cnt,
++		unsigned int bytes);
++
+ void __init xor_register(struct xor_block_template *tmpl);
+ void __init xor_force(struct xor_block_template *tmpl);
+ 
 -- 
 2.47.3
 
