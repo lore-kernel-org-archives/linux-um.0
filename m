@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 434F4FD8FC3
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07448FD8FC6
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=m4ayfmFYYtqrGOXIclOKbiQTeTqUKuYg7HFlN9ZR6FU=; b=jWVBGQIPXagx9GDYYlH3yX5WDx
-	U5V3F9hx08sLagd4zlbLw5nM24LLaWoFGznsdmIG4Xaa8N8k2KBIYMBYyUI00ZxggST3tXccf+f1y
-	kAdXya+PApcDlrFKd8YsvnFg+x48p/hgy/Vf4Ot9msS5pWI2Rf4sd7+KZcilDFqggJMCKZMRlzJcT
-	d744fexgsY7dYBct1mF07Vzse3PtRPb3DTeFBgstZRLjICJP4dYR+gTlC2iafPcauMMT4EqF0XCPp
-	T20pesyYnL3a14MrWAdm0Yecc0FXwG+vr16Rns+73AjWnZTcckKfwDg4mMXZeP7lO7sKJpJRgJdYL
-	Ht6cRVUA==;
+	bh=tBP3lqkLvZbHCNzBRHSEX4EeHgIBly3cDjq7DhgYF64=; b=PT87IwMKR4V+GoEDpo3LUOBMzL
+	nu9mqefYrjwVEVI+i6CDsSjqbNYSTeYlErr+HgXwLvc0scKWjQ0C5wxhGIR2Np6VHmV/Yj5jIX+lG
+	8OIF3XOuInhgaVM2hkS5g0IKEtA8BRoMUpiQJBAayiFaKznJiKYAKe1tu/0RpxN8qnl5d5VHzbdnW
+	k/Ix3jq2mkSCiPqXuyn1298OiL3nEY63bgTg+s4M12jNLMmdC/ZYnAqGGKnWWTQKg9NEywXS6dmG9
+	T7wSGsw3FCBMNDDxnXxU0CiZ6FjZrOOD1+Uq5S5pTOutgcHTt+rhrSX0dpNzNPn/tdgQh+gQlXwJW
+	7gEUvwCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1O-00000006QBT-3jZA;
-	Thu, 26 Feb 2026 15:11:22 +0000
+	id 1vvd1Q-00000006QE3-12F6;
+	Thu, 26 Feb 2026 15:11:24 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1G-00000006Pyx-1Wx4;
-	Thu, 26 Feb 2026 15:11:14 +0000
+	id 1vvd1H-00000006Q0A-2PJD;
+	Thu, 26 Feb 2026 15:11:15 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 05/25] xor: small cleanups
-Date: Thu, 26 Feb 2026 07:10:17 -0800
-Message-ID: <20260226151106.144735-6-hch@lst.de>
+Subject: [PATCH 06/25] xor: cleanup registration and probing
+Date: Thu, 26 Feb 2026 07:10:18 -0800
+Message-ID: <20260226151106.144735-7-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -103,34 +103,178 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the to of file comment to be correct and non-redundant, and drop
-the unused BH_TRACE define.
+Originally, the XOR code benchmarked all algorithms at load time, but
+it has since then been hacked multiple times to allow forcing an
+algorithm, and then commit 524ccdbdfb52 ("crypto: xor - defer load time
+benchmark to a later time") changed the logic to a two-step process
+or registration and benchmarking, but only when built-in.
+
+Rework this, so that the XOR_TRY_TEMPLATES macro magic now always just
+deals with adding the templates to the list, and benchmarking is always
+done in a second pass; for modular builds from module_init, and for the
+built-in case using a separate init call level.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- lib/raid/xor/xor-core.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ lib/raid/xor/xor-core.c | 98 ++++++++++++++++++++---------------------
+ 1 file changed, 48 insertions(+), 50 deletions(-)
 
 diff --git a/lib/raid/xor/xor-core.c b/lib/raid/xor/xor-core.c
-index 864f3604e867..28aa654c288d 100644
+index 28aa654c288d..a2c529d7b7c2 100644
 --- a/lib/raid/xor/xor-core.c
 +++ b/lib/raid/xor/xor-core.c
-@@ -1,14 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * xor.c : Multiple Devices driver for Linux
-- *
-  * Copyright (C) 1996, 1997, 1998, 1999, 2000,
-  * Ingo Molnar, Matti Aarnio, Jakub Jelinek, Richard Henderson.
-  *
-- * Dispatch optimized RAID-5 checksumming functions.
-+ * Dispatch optimized XOR parity functions.
-  */
+@@ -52,29 +52,14 @@ EXPORT_SYMBOL(xor_blocks);
  
--#define BH_TRACE 0
- #include <linux/module.h>
- #include <linux/gfp.h>
- #include <linux/raid/xor.h>
+ /* Set of all registered templates.  */
+ static struct xor_block_template *__initdata template_list;
++static int __initdata xor_forced = false;
+ 
+-#ifndef MODULE
+ static void __init do_xor_register(struct xor_block_template *tmpl)
+ {
+ 	tmpl->next = template_list;
+ 	template_list = tmpl;
+ }
+ 
+-static int __init register_xor_blocks(void)
+-{
+-	active_template = XOR_SELECT_TEMPLATE(NULL);
+-
+-	if (!active_template) {
+-#define xor_speed	do_xor_register
+-		// register all the templates and pick the first as the default
+-		XOR_TRY_TEMPLATES;
+-#undef xor_speed
+-		active_template = template_list;
+-	}
+-	return 0;
+-}
+-#endif
+-
+ #define BENCH_SIZE	4096
+ #define REPS		800U
+ 
+@@ -85,9 +70,6 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 	unsigned long reps;
+ 	ktime_t min, start, t0;
+ 
+-	tmpl->next = template_list;
+-	template_list = tmpl;
+-
+ 	preempt_disable();
+ 
+ 	reps = 0;
+@@ -111,63 +93,79 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 	pr_info("   %-16s: %5d MB/sec\n", tmpl->name, speed);
+ }
+ 
+-static int __init
+-calibrate_xor_blocks(void)
++static int __init calibrate_xor_blocks(void)
+ {
+ 	void *b1, *b2;
+ 	struct xor_block_template *f, *fastest;
+ 
+-	fastest = XOR_SELECT_TEMPLATE(NULL);
+-
+-	if (fastest) {
+-		printk(KERN_INFO "xor: automatically using best "
+-				 "checksumming function   %-10s\n",
+-		       fastest->name);
+-		goto out;
+-	}
++	if (xor_forced)
++		return 0;
+ 
+ 	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
+ 	if (!b1) {
+-		printk(KERN_WARNING "xor: Yikes!  No memory available.\n");
++		pr_info("xor: Yikes!  No memory available.\n");
+ 		return -ENOMEM;
+ 	}
+ 	b2 = b1 + 2*PAGE_SIZE + BENCH_SIZE;
+ 
+-	/*
+-	 * If this arch/cpu has a short-circuited selection, don't loop through
+-	 * all the possible functions, just test the best one
+-	 */
+-
+-#define xor_speed(templ)	do_xor_speed((templ), b1, b2)
+-
+-	printk(KERN_INFO "xor: measuring software checksum speed\n");
+-	template_list = NULL;
+-	XOR_TRY_TEMPLATES;
++	pr_info("xor: measuring software checksum speed\n");
+ 	fastest = template_list;
+-	for (f = fastest; f; f = f->next)
++	for (f = template_list; f; f = f->next) {
++		do_xor_speed(f, b1, b2);
+ 		if (f->speed > fastest->speed)
+ 			fastest = f;
+-
++	}
++	active_template = fastest;
+ 	pr_info("xor: using function: %s (%d MB/sec)\n",
+ 	       fastest->name, fastest->speed);
+ 
++	free_pages((unsigned long)b1, 2);
++	return 0;
++}
++
++static int __init xor_init(void)
++{
++	/*
++	 * If this arch/cpu has a short-circuited selection, don't loop through
++	 * all the possible functions, just use the best one.
++	 */
++	active_template = XOR_SELECT_TEMPLATE(NULL);
++	if (active_template) {
++		pr_info("xor: automatically using best checksumming function   %-10s\n",
++			active_template->name);
++		xor_forced = true;
++		return 0;
++	}
++
++#define xor_speed	do_xor_register
++	XOR_TRY_TEMPLATES;
+ #undef xor_speed
+ 
+-	free_pages((unsigned long)b1, 2);
+-out:
+-	active_template = fastest;
++#ifdef MODULE
++	return calibrate_xor_blocks();
++#else
++	/*
++	 * Pick the first template as the temporary default until calibration
++	 * happens.
++	 */
++	active_template = template_list;
+ 	return 0;
++#endif
+ }
+ 
+-static __exit void xor_exit(void) { }
++static __exit void xor_exit(void)
++{
++}
+ 
+ MODULE_DESCRIPTION("RAID-5 checksumming functions");
+ MODULE_LICENSE("GPL");
+ 
++/*
++ * When built-in we must register the default template before md, but we don't
++ * want calibration to run that early as that would delay the boot process.
++ */
+ #ifndef MODULE
+-/* when built-in xor.o must initialize before drivers/md/md.o */
+-core_initcall(register_xor_blocks);
++__initcall(calibrate_xor_blocks);
+ #endif
+-
+-module_init(calibrate_xor_blocks);
++core_initcall(xor_init);
+ module_exit(xor_exit);
 -- 
 2.47.3
 
