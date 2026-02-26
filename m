@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47A27FD8FC4
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33088FD8FC3
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YPyANLqg5hqrVsVOEPNjtS+GLiKI++rSSPuBBCl9deQ=; b=soCjhxi2yHIxcfnNKICH9ZfNnp
-	FLlxFbyuz9xthgVkakfPR3L5Nxk3abd0HyoK4pegRBaB4NAykNeIpQQWiin/njNcgIqQa9IExVw+F
-	JJxnCHSWKjfqqdPR+zRbUhgiFiT2M5XVRTXZVeVyDpo8qLDqmwxtJ9fHs14PTgZA0b4OLeItgYXI/
-	+uoaVGAbH0g/LeK3DFPk48fHDeNjrNEWv7/QSXfChHlWpvaKcKcLk8GY2uYVOWeK68R+XucgoMCva
-	OGc3UK5IUxz27l6ctVPPIhxq0uPUAqhH7I24k0VGTBqAyJ5ih+hWRboAX85z0OfL4H8wbxrkWfFUb
-	Xi+CVnow==;
+	bh=vwKqUvKDtSm4UWQCjM0gAMoI+iHppoMDTf59idSkcFk=; b=jKZVplHopNMihw60tlXPQbJ/sK
+	wI7DXu2hN57S+CL4JjK87/eojk+F8ACrY5DPXtg5qniWIdXiVkpUj3bDNQjlUE/2UI5Ttjqc78HeA
+	u+0K9QCDI5ejQes7EDjzMHFrAaoNasNfNkqFetc7BiGO1QWbb8pLoIv5UC05t7kaTbN23m7GnsDtL
+	JPBkupvedxMTHbHN+DesNc2Q7N+Q1H90ZmUGR3pXXDPNK9yGnOk19QmKxb5A19c1qAquDeH2R509v
+	EmuMwi3F/o9ZjnAN9CUI5jL8Pw24Y+FqN4stU983TCLlpObD5+riGhY2iqw6EMrmktMHE7C0v0V5c
+	O0kZNMMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1r-00000006Qve-07p8;
-	Thu, 26 Feb 2026 15:11:51 +0000
+	id 1vvd1t-00000006R00-40gZ;
+	Thu, 26 Feb 2026 15:11:53 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1T-00000006QJ4-3NQ8;
-	Thu, 26 Feb 2026 15:11:27 +0000
+	id 1vvd1V-00000006QLl-0jhv;
+	Thu, 26 Feb 2026 15:11:29 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 14/25] powerpc: move the XOR code to lib/raid/
-Date: Thu, 26 Feb 2026 07:10:26 -0800
-Message-ID: <20260226151106.144735-15-hch@lst.de>
+Subject: [PATCH 15/25] riscv: move the XOR code to lib/raid/
+Date: Thu, 26 Feb 2026 07:10:27 -0800
+Message-ID: <20260226151106.144735-16-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -108,264 +108,170 @@ instead of always building it into the main kernel image.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/powerpc/include/asm/xor.h                | 17 +----
- arch/powerpc/include/asm/xor_altivec.h        | 22 ------
- arch/powerpc/lib/Makefile                     |  5 --
- arch/powerpc/lib/xor_vmx_glue.c               | 63 -----------------
- lib/raid/xor/Makefile                         |  5 ++
- .../lib => lib/raid/xor/powerpc}/xor_vmx.c    |  0
- .../lib => lib/raid/xor/powerpc}/xor_vmx.h    |  0
- lib/raid/xor/powerpc/xor_vmx_glue.c           | 67 +++++++++++++++++++
- 8 files changed, 74 insertions(+), 105 deletions(-)
- delete mode 100644 arch/powerpc/include/asm/xor_altivec.h
- delete mode 100644 arch/powerpc/lib/xor_vmx_glue.c
- rename {arch/powerpc/lib => lib/raid/xor/powerpc}/xor_vmx.c (100%)
- rename {arch/powerpc/lib => lib/raid/xor/powerpc}/xor_vmx.h (100%)
- create mode 100644 lib/raid/xor/powerpc/xor_vmx_glue.c
+ arch/riscv/include/asm/xor.h                 | 54 +------------------
+ arch/riscv/lib/Makefile                      |  1 -
+ lib/raid/xor/Makefile                        |  1 +
+ lib/raid/xor/riscv/xor-glue.c                | 56 ++++++++++++++++++++
+ {arch/riscv/lib => lib/raid/xor/riscv}/xor.S |  0
+ 5 files changed, 59 insertions(+), 53 deletions(-)
+ create mode 100644 lib/raid/xor/riscv/xor-glue.c
+ rename {arch/riscv/lib => lib/raid/xor/riscv}/xor.S (100%)
 
-diff --git a/arch/powerpc/include/asm/xor.h b/arch/powerpc/include/asm/xor.h
-index 30224c5279c4..3293ac87181c 100644
---- a/arch/powerpc/include/asm/xor.h
-+++ b/arch/powerpc/include/asm/xor.h
-@@ -8,24 +8,11 @@
- #ifndef _ASM_POWERPC_XOR_H
- #define _ASM_POWERPC_XOR_H
+diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
+index ed5f27903efc..614d9209d078 100644
+--- a/arch/riscv/include/asm/xor.h
++++ b/arch/riscv/include/asm/xor.h
+@@ -2,60 +2,10 @@
+ /*
+  * Copyright (C) 2021 SiFive
+  */
+-
+-#include <linux/hardirq.h>
+-#include <asm-generic/xor.h>
+-#ifdef CONFIG_RISCV_ISA_V
+ #include <asm/vector.h>
+-#include <asm/switch_to.h>
+-#include <asm/asm-prototypes.h>
+-
+-static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
+-			 const unsigned long *__restrict p2)
+-{
+-	kernel_vector_begin();
+-	xor_regs_2_(bytes, p1, p2);
+-	kernel_vector_end();
+-}
+-
+-static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
+-			 const unsigned long *__restrict p2,
+-			 const unsigned long *__restrict p3)
+-{
+-	kernel_vector_begin();
+-	xor_regs_3_(bytes, p1, p2, p3);
+-	kernel_vector_end();
+-}
+-
+-static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
+-			 const unsigned long *__restrict p2,
+-			 const unsigned long *__restrict p3,
+-			 const unsigned long *__restrict p4)
+-{
+-	kernel_vector_begin();
+-	xor_regs_4_(bytes, p1, p2, p3, p4);
+-	kernel_vector_end();
+-}
+-
+-static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
+-			 const unsigned long *__restrict p2,
+-			 const unsigned long *__restrict p3,
+-			 const unsigned long *__restrict p4,
+-			 const unsigned long *__restrict p5)
+-{
+-	kernel_vector_begin();
+-	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
+-	kernel_vector_end();
+-}
++#include <asm-generic/xor.h>
  
--#ifdef CONFIG_ALTIVEC
--
--#include <asm/cputable.h>
- #include <asm/cpu_has_feature.h>
--#include <asm/xor_altivec.h>
--
--static struct xor_block_template xor_block_altivec = {
--	.name = "altivec",
--	.do_2 = xor_altivec_2,
--	.do_3 = xor_altivec_3,
--	.do_4 = xor_altivec_4,
--	.do_5 = xor_altivec_5,
+-static struct xor_block_template xor_block_rvv = {
+-	.name = "rvv",
+-	.do_2 = xor_vector_2,
+-	.do_3 = xor_vector_3,
+-	.do_4 = xor_vector_4,
+-	.do_5 = xor_vector_5
 -};
--#endif /* CONFIG_ALTIVEC */
--
--/* Also try the generic routines. */
- #include <asm-generic/xor.h>
+-#endif /* CONFIG_RISCV_ISA_V */
++extern struct xor_block_template xor_block_rvv;
  
-+extern struct xor_block_template xor_block_altivec;
-+
  #define arch_xor_init arch_xor_init
  static __always_inline void __init arch_xor_init(void)
- {
-diff --git a/arch/powerpc/include/asm/xor_altivec.h b/arch/powerpc/include/asm/xor_altivec.h
-deleted file mode 100644
-index 294620a25f80..000000000000
---- a/arch/powerpc/include/asm/xor_altivec.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_POWERPC_XOR_ALTIVEC_H
--#define _ASM_POWERPC_XOR_ALTIVEC_H
--
--#ifdef CONFIG_ALTIVEC
--void xor_altivec_2(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2);
--void xor_altivec_3(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3);
--void xor_altivec_4(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3,
--		   const unsigned long * __restrict p4);
--void xor_altivec_5(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3,
--		   const unsigned long * __restrict p4,
--		   const unsigned long * __restrict p5);
--
--#endif
--#endif /* _ASM_POWERPC_XOR_ALTIVEC_H */
-diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
-index f14ecab674a3..002edc3f01d5 100644
---- a/arch/powerpc/lib/Makefile
-+++ b/arch/powerpc/lib/Makefile
-@@ -73,9 +73,4 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
- 
- obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
- 
--obj-$(CONFIG_ALTIVEC)	+= xor_vmx.o xor_vmx_glue.o
--CFLAGS_xor_vmx.o += -mhard-float -maltivec $(call cc-option,-mabi=altivec)
--# Enable <altivec.h>
--CFLAGS_xor_vmx.o += -isystem $(shell $(CC) -print-file-name=include)
--
- obj-$(CONFIG_PPC64) += $(obj64-y)
-diff --git a/arch/powerpc/lib/xor_vmx_glue.c b/arch/powerpc/lib/xor_vmx_glue.c
-deleted file mode 100644
-index 35d917ece4d1..000000000000
---- a/arch/powerpc/lib/xor_vmx_glue.c
-+++ /dev/null
-@@ -1,63 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Altivec XOR operations
-- *
-- * Copyright 2017 IBM Corp.
-- */
--
--#include <linux/preempt.h>
--#include <linux/export.h>
--#include <linux/sched.h>
--#include <asm/switch_to.h>
--#include <asm/xor_altivec.h>
--#include "xor_vmx.h"
--
--void xor_altivec_2(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2)
--{
--	preempt_disable();
--	enable_kernel_altivec();
--	__xor_altivec_2(bytes, p1, p2);
--	disable_kernel_altivec();
--	preempt_enable();
--}
--EXPORT_SYMBOL(xor_altivec_2);
--
--void xor_altivec_3(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3)
--{
--	preempt_disable();
--	enable_kernel_altivec();
--	__xor_altivec_3(bytes, p1, p2, p3);
--	disable_kernel_altivec();
--	preempt_enable();
--}
--EXPORT_SYMBOL(xor_altivec_3);
--
--void xor_altivec_4(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3,
--		   const unsigned long * __restrict p4)
--{
--	preempt_disable();
--	enable_kernel_altivec();
--	__xor_altivec_4(bytes, p1, p2, p3, p4);
--	disable_kernel_altivec();
--	preempt_enable();
--}
--EXPORT_SYMBOL(xor_altivec_4);
--
--void xor_altivec_5(unsigned long bytes, unsigned long * __restrict p1,
--		   const unsigned long * __restrict p2,
--		   const unsigned long * __restrict p3,
--		   const unsigned long * __restrict p4,
--		   const unsigned long * __restrict p5)
--{
--	preempt_disable();
--	enable_kernel_altivec();
--	__xor_altivec_5(bytes, p1, p2, p3, p4, p5);
--	disable_kernel_altivec();
--	preempt_enable();
--}
--EXPORT_SYMBOL(xor_altivec_5);
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index bbc031124974..e220c35764eb 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -16,5 +16,4 @@ lib-$(CONFIG_MMU)	+= uaccess.o
+ lib-$(CONFIG_64BIT)	+= tishift.o
+ lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+-lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+ lib-$(CONFIG_RISCV_ISA_V)	+= riscv_v_helpers.o
 diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
-index fafd131cef27..3df9e04a1a9b 100644
+index 3df9e04a1a9b..c939fad43735 100644
 --- a/lib/raid/xor/Makefile
 +++ b/lib/raid/xor/Makefile
-@@ -17,6 +17,7 @@ xor-$(CONFIG_KERNEL_MODE_NEON)	+= arm64/xor-neon.o arm64/xor-neon-glue.o
- endif
+@@ -18,6 +18,7 @@ endif
  xor-$(CONFIG_CPU_HAS_LSX)	+= loongarch/xor_simd.o
  xor-$(CONFIG_CPU_HAS_LSX)	+= loongarch/xor_simd_glue.o
-+xor-$(CONFIG_ALTIVEC)		+= powerpc/xor_vmx.o powerpc/xor_vmx_glue.o
+ xor-$(CONFIG_ALTIVEC)		+= powerpc/xor_vmx.o powerpc/xor_vmx_glue.o
++xor-$(CONFIG_RISCV_ISA_V)	+= riscv/xor.o riscv/xor-glue.o
  
  
  CFLAGS_arm/xor-neon.o		+= $(CC_FLAGS_FPU)
-@@ -24,3 +25,7 @@ CFLAGS_REMOVE_arm/xor-neon.o	+= $(CC_FLAGS_NO_FPU)
- 
- CFLAGS_arm64/xor-neon.o		+= $(CC_FLAGS_FPU)
- CFLAGS_REMOVE_arm64/xor-neon.o	+= $(CC_FLAGS_NO_FPU)
-+
-+CFLAGS_powerpc/xor_vmx.o	+= -mhard-float -maltivec \
-+				   $(call cc-option,-mabi=altivec) \
-+				   -isystem $(shell $(CC) -print-file-name=include)
-diff --git a/arch/powerpc/lib/xor_vmx.c b/lib/raid/xor/powerpc/xor_vmx.c
-similarity index 100%
-rename from arch/powerpc/lib/xor_vmx.c
-rename to lib/raid/xor/powerpc/xor_vmx.c
-diff --git a/arch/powerpc/lib/xor_vmx.h b/lib/raid/xor/powerpc/xor_vmx.h
-similarity index 100%
-rename from arch/powerpc/lib/xor_vmx.h
-rename to lib/raid/xor/powerpc/xor_vmx.h
-diff --git a/lib/raid/xor/powerpc/xor_vmx_glue.c b/lib/raid/xor/powerpc/xor_vmx_glue.c
+diff --git a/lib/raid/xor/riscv/xor-glue.c b/lib/raid/xor/riscv/xor-glue.c
 new file mode 100644
-index 000000000000..c41e38340700
+index 000000000000..11666a4b6b68
 --- /dev/null
-+++ b/lib/raid/xor/powerpc/xor_vmx_glue.c
-@@ -0,0 +1,67 @@
++++ b/lib/raid/xor/riscv/xor-glue.c
+@@ -0,0 +1,56 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Altivec XOR operations
-+ *
-+ * Copyright 2017 IBM Corp.
++ * Copyright (C) 2021 SiFive
 + */
 +
-+#include <linux/preempt.h>
-+#include <linux/sched.h>
 +#include <linux/raid/xor_impl.h>
++#include <asm/vector.h>
 +#include <asm/switch_to.h>
++#include <asm/asm-prototypes.h>
 +#include <asm/xor.h>
-+#include "xor_vmx.h"
 +
-+static void xor_altivec_2(unsigned long bytes, unsigned long * __restrict p1,
-+		const unsigned long * __restrict p2)
++static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2)
 +{
-+	preempt_disable();
-+	enable_kernel_altivec();
-+	__xor_altivec_2(bytes, p1, p2);
-+	disable_kernel_altivec();
-+	preempt_enable();
++	kernel_vector_begin();
++	xor_regs_2_(bytes, p1, p2);
++	kernel_vector_end();
 +}
 +
-+static void xor_altivec_3(unsigned long bytes, unsigned long * __restrict p1,
-+		const unsigned long * __restrict p2,
-+		const unsigned long * __restrict p3)
++static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3)
 +{
-+	preempt_disable();
-+	enable_kernel_altivec();
-+	__xor_altivec_3(bytes, p1, p2, p3);
-+	disable_kernel_altivec();
-+	preempt_enable();
++	kernel_vector_begin();
++	xor_regs_3_(bytes, p1, p2, p3);
++	kernel_vector_end();
 +}
 +
-+static void xor_altivec_4(unsigned long bytes, unsigned long * __restrict p1,
-+		const unsigned long * __restrict p2,
-+		const unsigned long * __restrict p3,
-+		const unsigned long * __restrict p4)
++static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3,
++			 const unsigned long *__restrict p4)
 +{
-+	preempt_disable();
-+	enable_kernel_altivec();
-+	__xor_altivec_4(bytes, p1, p2, p3, p4);
-+	disable_kernel_altivec();
-+	preempt_enable();
++	kernel_vector_begin();
++	xor_regs_4_(bytes, p1, p2, p3, p4);
++	kernel_vector_end();
 +}
 +
-+static void xor_altivec_5(unsigned long bytes, unsigned long * __restrict p1,
-+		const unsigned long * __restrict p2,
-+		const unsigned long * __restrict p3,
-+		const unsigned long * __restrict p4,
-+		const unsigned long * __restrict p5)
++static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
++			 const unsigned long *__restrict p2,
++			 const unsigned long *__restrict p3,
++			 const unsigned long *__restrict p4,
++			 const unsigned long *__restrict p5)
 +{
-+	preempt_disable();
-+	enable_kernel_altivec();
-+	__xor_altivec_5(bytes, p1, p2, p3, p4, p5);
-+	disable_kernel_altivec();
-+	preempt_enable();
++	kernel_vector_begin();
++	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
++	kernel_vector_end();
 +}
 +
-+struct xor_block_template xor_block_altivec = {
-+	.name = "altivec",
-+	.do_2 = xor_altivec_2,
-+	.do_3 = xor_altivec_3,
-+	.do_4 = xor_altivec_4,
-+	.do_5 = xor_altivec_5,
++struct xor_block_template xor_block_rvv = {
++	.name = "rvv",
++	.do_2 = xor_vector_2,
++	.do_3 = xor_vector_3,
++	.do_4 = xor_vector_4,
++	.do_5 = xor_vector_5
 +};
+diff --git a/arch/riscv/lib/xor.S b/lib/raid/xor/riscv/xor.S
+similarity index 100%
+rename from arch/riscv/lib/xor.S
+rename to lib/raid/xor/riscv/xor.S
 -- 
 2.47.3
 
