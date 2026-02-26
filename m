@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7C1BFD8FC5
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 434F4FD8FC3
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5Q4WO2fmqU3XVJCOHArp4PLeLItyndyIBgJVZQfhExI=; b=cCdwqPaC3P09FghbhcwOr4v9W/
-	l4HiMvri2zCgisAFW/+Lfk8jXbFpEQ3UiYBLCFpYso5PjKSOqYITfcvwxZCqoa/G2rzZdjJvnup6N
-	xtRwM1PieRkbQg/+zzAxoIaoWy79WOROKKPIuoPpbk43xWXiS4NM84cRC83qI0LH3kTEwOyXT3cjK
-	T3dp2NdG0H+NEVrGbQJrhlCkg3jJRpAd38gQUucUpsCMf9pqc57XA3PUy5zylIo75eE4L5hCk2RfL
-	BpxfpMggENodIj7BVuFNOSKllSTLX0mbkouwFtJEM8T83LdXvnMChSBlaK4IDiWRN83UjBv9mxuvU
-	BI25ldHQ==;
+	bh=m4ayfmFYYtqrGOXIclOKbiQTeTqUKuYg7HFlN9ZR6FU=; b=jWVBGQIPXagx9GDYYlH3yX5WDx
+	U5V3F9hx08sLagd4zlbLw5nM24LLaWoFGznsdmIG4Xaa8N8k2KBIYMBYyUI00ZxggST3tXccf+f1y
+	kAdXya+PApcDlrFKd8YsvnFg+x48p/hgy/Vf4Ot9msS5pWI2Rf4sd7+KZcilDFqggJMCKZMRlzJcT
+	d744fexgsY7dYBct1mF07Vzse3PtRPb3DTeFBgstZRLjICJP4dYR+gTlC2iafPcauMMT4EqF0XCPp
+	T20pesyYnL3a14MrWAdm0Yecc0FXwG+vr16Rns+73AjWnZTcckKfwDg4mMXZeP7lO7sKJpJRgJdYL
+	Ht6cRVUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1J-00000006Q3T-1ww9;
-	Thu, 26 Feb 2026 15:11:17 +0000
+	id 1vvd1O-00000006QBT-3jZA;
+	Thu, 26 Feb 2026 15:11:22 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1C-00000006PyB-3SQX;
-	Thu, 26 Feb 2026 15:11:10 +0000
+	id 1vvd1G-00000006Pyx-1Wx4;
+	Thu, 26 Feb 2026 15:11:14 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 02/25] arm/xor: remove in_interrupt() handling
-Date: Thu, 26 Feb 2026 07:10:14 -0800
-Message-ID: <20260226151106.144735-3-hch@lst.de>
+Subject: [PATCH 05/25] xor: small cleanups
+Date: Thu, 26 Feb 2026 07:10:17 -0800
+Message-ID: <20260226151106.144735-6-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -103,94 +103,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-xor_blocks can't be called from interrupt context, so remove the
-handling for that.
+Update the to of file comment to be correct and non-redundant, and drop
+the unused BH_TRACE define.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm/include/asm/xor.h | 41 +++++++++++---------------------------
- 1 file changed, 12 insertions(+), 29 deletions(-)
+ lib/raid/xor/xor-core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/arm/include/asm/xor.h b/arch/arm/include/asm/xor.h
-index 934b549905f5..bca2a6514746 100644
---- a/arch/arm/include/asm/xor.h
-+++ b/arch/arm/include/asm/xor.h
-@@ -4,7 +4,6 @@
+diff --git a/lib/raid/xor/xor-core.c b/lib/raid/xor/xor-core.c
+index 864f3604e867..28aa654c288d 100644
+--- a/lib/raid/xor/xor-core.c
++++ b/lib/raid/xor/xor-core.c
+@@ -1,14 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * xor.c : Multiple Devices driver for Linux
+- *
+  * Copyright (C) 1996, 1997, 1998, 1999, 2000,
+  * Ingo Molnar, Matti Aarnio, Jakub Jelinek, Richard Henderson.
   *
-  *  Copyright (C) 2001 Russell King
+- * Dispatch optimized RAID-5 checksumming functions.
++ * Dispatch optimized XOR parity functions.
   */
--#include <linux/hardirq.h>
- #include <asm-generic/xor.h>
- #include <asm/hwcap.h>
- #include <asm/neon.h>
-@@ -156,13 +155,9 @@ static void
- xor_neon_2(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p2)
- {
--	if (in_interrupt()) {
--		xor_arm4regs_2(bytes, p1, p2);
--	} else {
--		kernel_neon_begin();
--		xor_block_neon_inner.do_2(bytes, p1, p2);
--		kernel_neon_end();
--	}
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_2(bytes, p1, p2);
-+	kernel_neon_end();
- }
  
- static void
-@@ -170,13 +165,9 @@ xor_neon_3(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p2,
- 	   const unsigned long * __restrict p3)
- {
--	if (in_interrupt()) {
--		xor_arm4regs_3(bytes, p1, p2, p3);
--	} else {
--		kernel_neon_begin();
--		xor_block_neon_inner.do_3(bytes, p1, p2, p3);
--		kernel_neon_end();
--	}
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_3(bytes, p1, p2, p3);
-+	kernel_neon_end();
- }
- 
- static void
-@@ -185,13 +176,9 @@ xor_neon_4(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p3,
- 	   const unsigned long * __restrict p4)
- {
--	if (in_interrupt()) {
--		xor_arm4regs_4(bytes, p1, p2, p3, p4);
--	} else {
--		kernel_neon_begin();
--		xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
--		kernel_neon_end();
--	}
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
-+	kernel_neon_end();
- }
- 
- static void
-@@ -201,13 +188,9 @@ xor_neon_5(unsigned long bytes, unsigned long * __restrict p1,
- 	   const unsigned long * __restrict p4,
- 	   const unsigned long * __restrict p5)
- {
--	if (in_interrupt()) {
--		xor_arm4regs_5(bytes, p1, p2, p3, p4, p5);
--	} else {
--		kernel_neon_begin();
--		xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
--		kernel_neon_end();
--	}
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
-+	kernel_neon_end();
- }
- 
- static struct xor_block_template xor_block_neon = {
+-#define BH_TRACE 0
+ #include <linux/module.h>
+ #include <linux/gfp.h>
+ #include <linux/raid/xor.h>
 -- 
 2.47.3
 
