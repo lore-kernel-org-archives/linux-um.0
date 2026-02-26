@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BCD2FD8FC3
-	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F04E9FD8FC6
+	for <linux-um@archiver.kernel.org>; Thu, 26 Feb 2026 15:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FL7hvoLUY2bMRMbRRlVqvQioL9cWbtICIXJOfzPCsUY=; b=SqIs2LhKqVpfOqvNH15jK4b+gJ
-	vzQNso/Knv++vIzOaDBHHUBv4ES+lC5Xs4sMcUJQe0uiUBPIoBlTGtcVAdL9ZTTRooNl2OgFiZQRA
-	Bjpzd7H2gfo9ibgMQdfCYMLayS9e2BQkUgUW3OK1HQcn0TC4+pm5y2nelbyyGZqvUerTQs0TdCJda
-	yMew+qKYhLHWCsO7LF9S4upj+3c0udwqfNPFP91DYM03lxuf8d9ZYLky8JuETg3kASGtchUFBEilo
-	Du1JgwKYBcfGaXwjSfVi/6L852qYg25cA6gCoDOtcAAeI3bZmXQS6q1gDO+GzjjxF9JBHRXaf65sQ
-	fuCIF+rg==;
+	bh=8SFAAXJP1oJfa/3lZX/8e4dND94zooHILcdc+qXS2PE=; b=qkg7pEq6GYEEt5NDHKBBPoD0hC
+	MW7JYTvN8Gsi8/lAKfcB7TJRtEaBF06X98So65G3b8cCzsNEbmJb1lbcqhG3mnqRBx/45/1akLbg3
+	92hsHzhXCrGI1eCCBrmPnpY0TIN9NIwOOTXOVap3qewye8n1JHDRdQIaMW1xtJykRrBPDdnnPIvmJ
+	rS87p1U8CxiguzXmDncxe4DDz3nb+2GjbAfyq3YmgEM80LbJPMS24Qbs2noBHnT0eScOOreNxNXHq
+	M1NgB3k0YtJ3xlyBxNrw0MPwzJF/gFeXp1UzQwztTmbO/KBprT2zqEM3MqBJseqJ3r8rHo2Xk9U7V
+	8uFvskLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1J-00000006Q2b-0fAU;
-	Thu, 26 Feb 2026 15:11:17 +0000
+	id 1vvd1K-00000006Q4p-2ZtS;
+	Thu, 26 Feb 2026 15:11:18 +0000
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1B-00000006Pxy-2BGc;
-	Thu, 26 Feb 2026 15:11:09 +0000
+	id 1vvd1D-00000006PyK-4AqV;
+	Thu, 26 Feb 2026 15:11:12 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -81,9 +81,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 01/25] xor: assert that xor_blocks is not called from interrupt context
-Date: Thu, 26 Feb 2026 07:10:13 -0800
-Message-ID: <20260226151106.144735-2-hch@lst.de>
+Subject: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
+Date: Thu, 26 Feb 2026 07:10:15 -0800
+Message-ID: <20260226151106.144735-4-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -103,30 +103,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Most of the optimized xor_blocks versions require FPU/vector registers,
-which generally are not supported in interrupt context.
-
-Both callers already are in user context, so enforce this at the highest
-level.
+XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
+ifdef'ery doesn't do anything.  With our without this, the time travel
+mode should work fine on CPUs that support AVX2, as the AVX2
+implementation is forced in this case, and won't work otherwise.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- crypto/xor.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/um/include/asm/xor.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/crypto/xor.c b/crypto/xor.c
-index f39621a57bb3..864f3604e867 100644
---- a/crypto/xor.c
-+++ b/crypto/xor.c
-@@ -28,6 +28,8 @@ xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
- {
- 	unsigned long *p1, *p2, *p3, *p4;
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 647fae200c5d..c9ddedc19301 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -4,21 +4,11 @@
  
-+	WARN_ON_ONCE(in_interrupt());
-+
- 	p1 = (unsigned long *) srcs[0];
- 	if (src_count == 1) {
- 		active_template->do_2(bytes, dest, p1);
+ #ifdef CONFIG_64BIT
+ #undef CONFIG_X86_32
+-#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
+ #else
+ #define CONFIG_X86_32 1
+-#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
+ #endif
+ 
+ #include <asm/cpufeature.h>
+ #include <../../x86/include/asm/xor.h>
+-#include <linux/time-internal.h>
+-
+-#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+-#undef XOR_SELECT_TEMPLATE
+-/* pick an arbitrary one - measuring isn't possible with inf-cpu */
+-#define XOR_SELECT_TEMPLATE(x)	\
+-	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x)
+-#endif
+ 
+ #endif
 -- 
 2.47.3
 
