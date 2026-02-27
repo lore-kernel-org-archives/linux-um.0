@@ -4,35 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D49C5FEFB57
-	for <linux-um@archiver.kernel.org>; Fri, 27 Feb 2026 14:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D91FEFB56
+	for <linux-um@archiver.kernel.org>; Fri, 27 Feb 2026 14:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=80IGNiXGyIprTB+8xmwgbrN0mmksY+0aJKX1jK1vpHw=; b=qwnBOwetqD0BSO232OboTciXpg
-	Y2nIb/nulKmSBW/YQgRYLoGvzdETFE5yWf7UnwkrCLcv4t1tFKarwC4nyyR0Byg1Ljqsp+ztRLiGK
-	nRk9DohHHuwRh8Vd5uS0RaqMs1snEaW4Vu3YhUJdJjW/tPDjr8KXHpRfBjxL4Wxd3tlwmNZ3N93ZL
-	1gUzQjsD4qKA1MjZaZUSNz61ZlhVnQQsIqVtGUZRMJeTSnNdsDCbKf/cDnETlla901o+aZdGcHSu7
-	EXZaRAqodszTI+OhLWyoWOd4TtEFWXXOELdLFr3ds+my/yjbXA8ASUaxUwYS3CGLAgbj+y7gGhssB
-	24GxnUyA==;
+	bh=o6ZWpyn/MjJkdaBZy6gODZpYyrBchUC+wEMbuu42Faw=; b=cK3PCJlAFuMz0mlGBtCclJxuhp
+	cLKFB5WgmCFXcb2zi5kgunNyAsOA2FdPVpnjxURUxzR+UeWtbky2GvQKdB2aQRYeeYbY6lmglViI0
+	CAp3w1V5YfElwp+yD+fjGIIfEPLQ3oS01stW7EKd6cqrAbX7NMUvLrHpDVW148jcJAzLbr/Fckr1g
+	SWrzh3PDUGPuQu2+hjUE7bhyT7JkaEDJuNN1xXvwNIPHgadCRCRTW+C2MQQtn7q4emB9tobCKbtW/
+	WOawMXg6F5sTHkOJ/iRoH2J2AtGHBGj5AwMnIR3rGYkU1MoF2Wn67ScvPgFa4FRUtvwx0Ip3goGpn
+	0ly0iyGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvyan-00000008Tmc-0nxc;
-	Fri, 27 Feb 2026 14:13:21 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1vvymE-00000008Ue8-2FPZ;
+	Fri, 27 Feb 2026 14:25:10 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvyaj-00000008Tlr-2A4u;
-	Fri, 27 Feb 2026 14:13:19 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 5A9ED68B05; Fri, 27 Feb 2026 15:13:11 +0100 (CET)
-Date: Fri, 27 Feb 2026 15:13:11 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	id 1vvymB-00000008UdP-1PgA;
+	Fri, 27 Feb 2026 14:25:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=o6ZWpyn/MjJkdaBZy6gODZpYyrBchUC+wEMbuu42Faw=; b=eFgHsKQ+KSgZZob+IdOva2FCfE
+	kLQjynnpuGU37l8q2Oi/PRPjQ5ANV8aqZ1ql627/w7R7dhGHjJAqpZlmjkYgUTFUlaqfdZCnysmcA
+	X8aSt8kWlfzbJ6Q+KFAEOlFWxBInredcuLjvKEmm3mdeIdVWoNW5XaYUDovc2UCVv+jNoAYbJ46Wr
+	TLjSa0l/5GVtAhjpu+lf/7hmyNebW/a2EXlmnh8o2dFWjpIwJBXmfaJOheM6GEY15qbGiougaX/pz
+	QYsT1e9dM5SR/w2q7Vak/puzsLgBTmqQI6E5yqjKXdW03Bwtf06v9pLFpT6HnW17WZQAoCyDsY2v9
+	KcHYLOHg==;
+Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vvym0-00000004hAN-2UPQ;
+	Fri, 27 Feb 2026 14:24:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 6FDB4300CDE; Fri, 27 Feb 2026 15:24:55 +0100 (CET)
+Date: Fri, 27 Feb 2026 15:24:55 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Richard Henderson <richard.henderson@linaro.org>,
 	Matt Turner <mattst88@gmail.com>,
 	Magnus Lindholm <linmag7@gmail.com>,
@@ -46,6 +59,7 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
 	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
 	Vasily Gorbik <gor@linux.ibm.com>,
 	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>,
@@ -70,17 +84,15 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 17/25] s390: move the XOR code to lib/raid/
-Message-ID: <20260227141311.GA22216@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-18-hch@lst.de> <20260227090959.10882Af7-hca@linux.ibm.com>
+Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
+ interrupt context
+Message-ID: <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+References: <20260226151106.144735-1-hch@lst.de>
+ <20260226151106.144735-2-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227090959.10882Af7-hca@linux.ibm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260227_061317_707109_212447EF 
-X-CRM114-Status: GOOD (  17.15  )
+In-Reply-To: <20260226151106.144735-2-hch@lst.de>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,18 +107,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 27, 2026 at 10:09:59AM +0100, Heiko Carstens wrote:
-> However, I just had a look at the s390 implementation and just saw that the
-> inline assembly constraints for xor_xc_2() are incorrect. "bytes", "p1",
-> and "p2" are input operands, while all three of them are modified within
-> the inline assembly. Given that the function consists only of this inline
-> assembly I doubt that this causes any harm, however I still want to fix
-> this now; but your patch should apply fine with or without this fixed.
+On Thu, Feb 26, 2026 at 07:10:13AM -0800, Christoph Hellwig wrote:
+> Most of the optimized xor_blocks versions require FPU/vector registers,
+> which generally are not supported in interrupt context.
+> 
+> Both callers already are in user context, so enforce this at the highest
+> level.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  crypto/xor.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/crypto/xor.c b/crypto/xor.c
+> index f39621a57bb3..864f3604e867 100644
+> --- a/crypto/xor.c
+> +++ b/crypto/xor.c
+> @@ -28,6 +28,8 @@ xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
+>  {
+>  	unsigned long *p1, *p2, *p3, *p4;
+>  
+> +	WARN_ON_ONCE(in_interrupt());
 
-Two comments on that: I thin kin the long run simply moving the
-implementation to a pure assembly file might be easier to maintain.
+Your changelog makes it sound like you want:
 
-Also with this series you can now optimize for more than 5 stripes,
-which should be the mormal case.  I'll try to make sure we'll get
-units tests to help with that.
+	WARN_ON_ONCE(!in_task());
+
+But perhaps something like so:
+
+	lockdep_assert_preempt_enabled();
+
+Would do? That ensures we are in preemptible context, which is much the
+same. That also ensures the cost of this assertion is only paid on debug
+kernels.
+
+
+>  	p1 = (unsigned long *) srcs[0];
+>  	if (src_count == 1) {
+>  		active_template->do_2(bytes, dest, p1);
+> -- 
+> 2.47.3
+> 
 
