@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0DF4FEE4C4
-	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 04:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46045FEE4C4
+	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 04:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=a4/HdkUFGu6SFVOsDJPzYjExpCDKt+qABe3apagq8N4=; b=rfOx9S+RdOWHKsFHDeQeXYdZ17
-	ep0Xd5NTcPWBh6oAFw2qAwIcaojj0nLoqmP7IFgWwGGcpBgycUeCs4mHQrMBSiFTTmaRTeZhHgKZT
-	COpyDK6gAWnGbrMrJejuTUE+/zMKLR1u5Ucb49vjFa2YINJE7EchcLpvtdT0cs2Q0g+ea7Zmcq8ug
-	W6Vo5JHw8Vmb64wHbQQtP2Vc3n0q1d35RU4xa5srwwR42m1TBwnhF7P0/3nrPvAjeC7QTHhJXsUIg
-	3JK3Pqit2j7gqOY6MHwEFXl6GAQIYzD3sfOteZIrPi/yyWeREoqjBW2dFOpDMLU3NxP9yn5N4x0un
-	MRniE/yQ==;
+	bh=Y3L+qGVzTsCJQnoG5TCi8Lc0DlEfyMFXUAiYCFvEtfs=; b=iYANKaUj5PBiuDHIbVpbJnVP+9
+	nXSECYW1QCnY61eQC3Gdu6++vqRFxRFucqGp2LvsPJbDmra8uo3TGszb/Yt/Wy+tfDUdh+M1QZxhS
+	KjiWc7Ht8YVcdwDg/hNwVFaIUnWk4hZ4XNbHlIeT50EYXuM8m1/zwJCJu9ytfYfj7Q0AVmqZJqegF
+	FUJswyl/HGSlsiMCz/cv5EN0tWD4GkBAhftUHylBDhLcUsjFQSW7OVXvQr4Qw9pOHCmBgJdQMvJR9
+	bEcFExxUiOFyRXW96W9pjNYeDuLib+EGTNnEwxs6nEhtgBwv+t2FoY0zgO0D97O+ODEzodn+SVogj
+	mIk+mzOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwC3B-00000009UHR-3giT;
-	Sat, 28 Feb 2026 04:35:33 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1vwC9L-00000009UeV-1hVz;
+	Sat, 28 Feb 2026 04:41:55 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwC38-00000009UGt-1Qrv;
-	Sat, 28 Feb 2026 04:35:31 +0000
+	id 1vwC9G-00000009Ue3-0QZ4;
+	Sat, 28 Feb 2026 04:41:53 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7D89B43B42;
-	Sat, 28 Feb 2026 04:35:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69FD3C116D0;
-	Sat, 28 Feb 2026 04:35:25 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id F247640067;
+	Sat, 28 Feb 2026 04:41:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A79C116D0;
+	Sat, 28 Feb 2026 04:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772253327;
-	bh=7zmaVKtAh2Ji/dO9zQKMopZe2cxR3kulm8/sTdUvOcA=;
+	s=k20201202; t=1772253708;
+	bh=GTl5b4pj52hP0KVBkFlgMlumLNdyDtznBRe/1mAWWQw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jvLMWT5QPfWf5fqwCu0b6jyf1JkY8VhTv+hzjbPZJIShl575Kc/hb2XB6K7qkymfN
-	 qwBqh029UG4QDt1k4o+yWv6HUuKWpWsplNNhaICJZz2k0ORPmJLnhkHAyONmX7M+TQ
-	 zDX6zjqvLirKpTtriXBUSdvtk9Yk8/30R2kYnR4XhUkO0qR3hMOqza11uJQ08QFz4S
-	 oQboCK+Z7P0MYthrxKSIcy3roPsAHLbVtIrOmNmHcNMgysOz0VoIhFow1SEkkuFGuP
-	 DaFupym5qTt9eY/XGsZgNFTL4RRcp5VoPtcdKHWNHmTzORlfM9TjONCOU+EFM4pkgz
-	 p45HIHdqNKblg==
-Date: Fri, 27 Feb 2026 20:35:23 -0800
+	b=rOKkIgOdBSzVWSzHxw5DOhxNn03a0Ygaw1woVlTjin4KLowyLELOm+OVhIowZs3Mi
+	 dqJMT1De+b8BARm6gDQusg4IahSRzGUQaRpIL79MWyistCvbIiMZ6GQa64miu3ZcRZ
+	 cmMCGr06kdASJAnWQFN5T5HEhrn2CSG3d0wt7lfBrAFCfHwD8AHIT6zDjcjgyWpudZ
+	 1T16tuC8Ef/5l0VtYfOtBa3/4cAwxmH1U8wP9gZSK6LcugatbAZqq7cuamim+FKLGl
+	 QGX36uRgBg/t7BIN5Yg+65x2RyzeJ36b/t9uuoaV9NMPtIM82r7BkkP953pZJg4x7P
+	 1Tdp6OJiWNiZw==
+Date: Fri, 27 Feb 2026 20:41:43 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -83,17 +83,18 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 04/25] xor: move to lib/raid/
-Message-ID: <20260228043523.GB65277@quark>
+Subject: Re: [PATCH 06/25] xor: cleanup registration and probing
+Message-ID: <20260228044143.GC65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-5-hch@lst.de>
+ <20260226151106.144735-7-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-5-hch@lst.de>
+In-Reply-To: <20260226151106.144735-7-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260227_203530_540892_8805D601 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20260227_204152_121694_9D25AF9D 
+X-CRM114-Status: UNSURE (   9.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,41 +109,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 26, 2026 at 07:10:16AM -0800, Christoph Hellwig wrote:
-> diff --git a/lib/Kconfig b/lib/Kconfig
-> index 0f2fb9610647..5be57adcd454 100644
-> --- a/lib/Kconfig
-> +++ b/lib/Kconfig
-> @@ -138,6 +138,7 @@ config TRACE_MMIO_ACCESS
->  
->  source "lib/crc/Kconfig"
->  source "lib/crypto/Kconfig"
-> +source "lib/raid/Kconfig"
+On Thu, Feb 26, 2026 at 07:10:18AM -0800, Christoph Hellwig wrote:
+>  /* Set of all registered templates.  */
+>  static struct xor_block_template *__initdata template_list;
+> +static int __initdata xor_forced = false;
 
-This adds lib/raid/ alongside the existing lib/raid6/ directory.  Is
-that the intended final state, or is the intent for the code in
-lib/raid6/ to eventually be moved to a subdirectory of lib/raid/
-(alongside the "xor" subdirectory)?
+bool instead of int
 
-> diff --git a/lib/raid/Kconfig b/lib/raid/Kconfig
-> new file mode 100644
-> index 000000000000..4b720f3454a2
-> --- /dev/null
-> +++ b/lib/raid/Kconfig
-> @@ -0,0 +1,3 @@
-> +
-> +config XOR_BLOCKS
-> +	tristate
-> diff --git a/lib/raid/Makefile b/lib/raid/Makefile
-> new file mode 100644
-> index 000000000000..382f2d1694bd
-> --- /dev/null
-> +++ b/lib/raid/Makefile
-> @@ -0,0 +1,2 @@
-> +
-> +obj-y				+= xor/
+>  	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
+>  	if (!b1) {
+> -		printk(KERN_WARNING "xor: Yikes!  No memory available.\n");
+> +		pr_info("xor: Yikes!  No memory available.\n");
 
-Probably should add an SPDX-License-Identifier to these new files.
+pr_warn() instead of pr_info()
 
 - Eric
 
