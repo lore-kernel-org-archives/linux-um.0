@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08A75FEFB6F
-	for <linux-um@archiver.kernel.org>; Fri, 27 Feb 2026 23:55:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5CADFEE4C3
+	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 04:30:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OapKvdiEwQYu8NOR3j/Rtm7Hb+46RUg9fRdsdH5rsws=; b=Hlt7bisJK3Bb06T9xC2rM7altr
-	WmmBQbeb1RLpQfX7+jeT37Vo2DF1vGdcHYS87AbvRq6+l82GyNI2SXdlYg4VSJNcO11mrYQWIMecU
-	1zLbJx1tGBF/P85F1ixbze6BdPAzw5mqATpgDeCv8woE+DCAIdOX5/OMH4kt47pb6i5g0xoShpx3c
-	8LDnAB6lMu+3frlLrIcflGMP/Rp38lGE+8fNPMDM5FBZ4KPKbtx7I2EtDwdarGlc9qp3CLTssvCSh
-	NqqFPBBHbccbD+B4w3lWVaVLo74eVLzlarDKvJM2U9MQOPO0foOwVXmBk4nJmB+C1HwwBcfeqjeXM
-	6O/bED0w==;
+	bh=HxHllU4ceXSYzkZVN7jXp5kDkLsJe3gAM2lgZ6PCW3Q=; b=O+QC9pEaNvlrHzL2gy8n08D7vu
+	F161vTG+tR/uxragszHiivuswbpEGJa6e0M4jwiQx+UIMWvRjbWfC428LjG0/2briIIj23lAzXv4S
+	+F9jnNPPjOm/WhYeZRSkZo25v7iqAoqBBXwBAyMvYueP47f4NEfsZp3Z7E+np5kIsDLmLKhdMqWv0
+	mAhsLUp86NSn3JMZC8u4khAh8Jrl8JvGjI0mqXkRFLgEfr0WREs56pMtTXjn8qViTLlAXyDWtOhoW
+	0qcZdnmqhM/nsdtNRuvrp/R6Nz82oelROd+mdjki+bM5Dm4CQMfLYML5dTBbQMTWsGc/olImHQlij
+	HlwoP4Vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw7gG-00000009Hpx-0oQP;
-	Fri, 27 Feb 2026 23:55:36 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1vwByN-00000009U3u-3vYj;
+	Sat, 28 Feb 2026 04:30:35 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vw7gE-00000009HpL-0nQL;
-	Fri, 27 Feb 2026 23:55:34 +0000
+	id 1vwBy5-00000009U3A-12Td;
+	Sat, 28 Feb 2026 04:30:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9859C6111B;
-	Fri, 27 Feb 2026 23:55:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97119C116C6;
-	Fri, 27 Feb 2026 23:55:30 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3A6BB4388D;
+	Sat, 28 Feb 2026 04:30:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 198B3C116D0;
+	Sat, 28 Feb 2026 04:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772236532;
-	bh=9epsKT1Tqv7365SBQ+LgdgBkS+QLvJq0YDfqzGCQppg=;
+	s=k20201202; t=1772253010;
+	bh=NxIyVYtgLysk+spkHOyEoka9HT1s3BaoNbqWwqQmPXE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XVTF8TDa48poxgWx9OMrHOWcWeX+DIvF8W0Cz9PzVZzIIYVyeCBp8CVqVCQqnKv6k
-	 5zzYRJst/PHEWqq92j85maQBi7plq+GNVhfHcc+9Pog+YMNqi1zTL7+4Ehtq9UJ7o9
-	 QJHa0cD62wS9Zi36AMnb9/VkZXXyv/qc0FNC/OF8hsDCWgrlGfX7gqqn/VNAfN6Fee
-	 CkNTC4E/BHSyzLgTwiN6IqzHfjJo9okaT9JcgxYGTsEHUQc31er3WUHfK/2Gx865yY
-	 ogRz41c7RbSVwCM0hpH/O2zyx2nKKDpUW5eh/FdyMQPRe2Q68ih/qS1f7bbUEX5IYc
-	 3kMoxNtkaet5g==
-Date: Fri, 27 Feb 2026 15:55:29 -0800
+	b=Fyh0YCjcPmsVmzz5h+F1Yy8gWejjphUUrGeKnqhIxGQ+qjYtEztmeP1kaQL7ddsRN
+	 jdkA6zr3qARSLzOxvszanCJtbGe6MxgPdM+Z6+dhb7aZQXTNmMRzbGAktPG2fY5fUl
+	 TBJYgxI6xb9qhwF67ngcAYU9OKtc/uqzcX+3yEYAKMVGlX0rGBTQLNzUCfh3Qw8tog
+	 0VEAgqbQJ3xpTSjCyP3w5YgI628hkJaD1By1DZb0TabsJZRA6BOO4+elbK3T8jYutF
+	 xqGj5SaKcx64Foh0YOFWYjXkw2x5ciOjaB0TEjg5I3513gVMPITkGZ7CF1NbrQ8JTi
+	 72nJ1I+TSmVTQ==
+Date: Fri, 27 Feb 2026 20:30:06 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Richard Henderson <richard.henderson@linaro.org>,
 	Matt Turner <mattst88@gmail.com>,
 	Magnus Lindholm <linmag7@gmail.com>,
@@ -84,15 +83,17 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 18/25] x86: move the XOR code to lib/raid/
-Message-ID: <20260227235529.GA31321@quark>
+Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
+Message-ID: <20260228043006.GA65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-19-hch@lst.de>
- <20260227143016.GH1282955@noisy.programming.kicks-ass.net>
+ <20260226151106.144735-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227143016.GH1282955@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260226151106.144735-4-hch@lst.de>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260227_203017_369682_D82C1B09 
+X-CRM114-Status: GOOD (  18.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,39 +108,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 27, 2026 at 03:30:16PM +0100, Peter Zijlstra wrote:
-> On Thu, Feb 26, 2026 at 07:10:30AM -0800, Christoph Hellwig wrote:
-> > Move the optimized XOR code out of line into lib/raid.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  arch/x86/include/asm/xor.h                    | 518 ++----------------
-> >  arch/x86/include/asm/xor_64.h                 |  32 --
-> >  lib/raid/xor/Makefile                         |   8 +
-> >  .../xor_avx.h => lib/raid/xor/x86/xor-avx.c   |  14 +-
-> >  .../xor_32.h => lib/raid/xor/x86/xor-mmx.c    |  60 +-
-> >  lib/raid/xor/x86/xor-sse.c                    | 476 ++++++++++++++++
+On Thu, Feb 26, 2026 at 07:10:15AM -0800, Christoph Hellwig wrote:
+> XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
+> ifdef'ery doesn't do anything.  With our without this, the time travel
+> mode should work fine on CPUs that support AVX2, as the AVX2
+> implementation is forced in this case, and won't work otherwise.
 > 
-> I gotta ask, why lib/raid/xor/$arch/ instead of something like
-> arch/$arch/lib/xor ?
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/um/include/asm/xor.h | 10 ----------
+>  1 file changed, 10 deletions(-)
+> 
+> diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+> index 647fae200c5d..c9ddedc19301 100644
+> --- a/arch/um/include/asm/xor.h
+> +++ b/arch/um/include/asm/xor.h
+> @@ -4,21 +4,11 @@
+>  
+>  #ifdef CONFIG_64BIT
+>  #undef CONFIG_X86_32
+> -#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
+>  #else
+>  #define CONFIG_X86_32 1
+> -#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
+>  #endif
+>  
+>  #include <asm/cpufeature.h>
+>  #include <../../x86/include/asm/xor.h>
+> -#include <linux/time-internal.h>
+> -
+> -#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+> -#undef XOR_SELECT_TEMPLATE
+> -/* pick an arbitrary one - measuring isn't possible with inf-cpu */
+> -#define XOR_SELECT_TEMPLATE(x)	\
+> -	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x)
+> -#endif
 
-Similar to lib/crypto/ and lib/crc/, it allows the translation units
-(either .c or .S files) containing architecture-optimized XOR code to be
-included directly in the xor.ko module, where they should be.
-
-Previously, these were always built into the core kernel even if
-XOR_BLOCKS was 'n' or 'm', or they were built into a separate module
-xor-neon.ko which xor.ko depended on.  So either the code was included
-unnecessarily, or there was an extra module.
-
-Technically we could instead have the lib makefile compile stuff in
-arch/, but that would be unusual.  It's much cleaner to have the
-directory structure match the build system.
-
-If we made this code always built-in, like memcpy(), then we could put
-it anywhere.  But (like many of the crypto and CRC algorithms) many
-kernels don't need this code, and even if they do it may be needed only
-by 'm' code.  So it makes sense to support tristate.
+I'm not following this change.  Previously, in TT_MODE_INFCPU mode,
+XOR_SELECT_TEMPLATE(NULL) returned &xor_block_avx, &xor_block_sse_pf64,
+or &xor_block_8regs, causing the benchmark to be skipped.  After this
+change, the benchmark starts being done on CPUs that don't support AVX.
 
 - Eric
 
