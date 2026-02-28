@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEB06FEE4CA
-	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 06:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED77DFEE4C6
+	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 06:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=X3j0hnt2JP/KFdQ4c7HYEW0UCDX2N/3z8ziNkQTinCU=; b=zuiCi3N3VY7v6ahAOPHNNCCGH/
-	0NjcarPn3DRxoNREfiQ6k+OGZBo6fvB+xB10L1NsOQxK7v12bbkkQVSa19EnJSFobm0+rnFhZ3Bb0
-	HYOuFrv60b3PvJLQ0EqDWqBaK1PKZ8cDJ2gXahtxmjCRslTsDODEScD2ZUSU1ZdHb2yjKPE40tqfR
-	2DQUybgnuyAS9CPBoNyLH75eAEURqkGsCfQ80+WfXm6xmQmyW3sijMwkrdigQISqYyn2VvaWIfh/o
-	Ef44Xf0JIkgLJVvtSGnU2WPAcoPrFaKB40m4DAso9N06Ij4h998uB5XXnrhSIcPSFBxNXP63r6XFQ
-	MJVHh4/g==;
+	bh=wQMyDOvMSNktzNNveysU2n4Fnu4+Lg8kOQ3nNBMOreA=; b=ZE1uRleQZVo0D9bFYspzyr/nIp
+	+/6UsE+4v86taebR36yUqwwPbe5LTDcJ3f2UATmcWexSkt6qZvI2lOXyXsuVZZgAi+CXV4gboOApf
+	EHXW/XCdTIukQ7jSgeJ3V//J6bhwgtEmZRX6CB7XJMfQRFqBy871yi8Myi7YKjKWTQyV1Bfv7XdLY
+	iqR+wkF9ntEd0f2kmE3MkgoUqiaxkM5iJ5TTD2gnlkFQER3heT//VbnmEscdHROGV+2vlwkONTou6
+	Q0HWpJl1xqscU5eosGS+hT/OMyp9xBUIue5xKM9OOOrXf1oe8WNzfuuEQk/Pbo7+ydwiXPdgSjh69
+	SoLNmjpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwEA1-00000009ZQd-0Yte;
-	Sat, 28 Feb 2026 06:50:45 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1vwEEy-00000009ZfZ-0slS;
+	Sat, 28 Feb 2026 06:55:52 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwE9z-00000009ZQN-3yud;
-	Sat, 28 Feb 2026 06:50:44 +0000
+	id 1vwEEu-00000009ZeV-3V5y;
+	Sat, 28 Feb 2026 06:55:49 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3CCA96001D;
-	Sat, 28 Feb 2026 06:50:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F92C116D0;
-	Sat, 28 Feb 2026 06:50:40 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 9C63540830;
+	Sat, 28 Feb 2026 06:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A1AC116D0;
+	Sat, 28 Feb 2026 06:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772261441;
-	bh=vPTEPlrxe6ytedqa6Me+M+hZkV+rGO8rrN4LIEvszKU=;
+	s=k20201202; t=1772261747;
+	bh=b4wWycMp/qA51ETIBAMbd3c8O+W0qcQO/Vfxz7HjaAs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iTFfr8ocKEvs3vXYRewYWPSFe2kL3EkPqlXMH9SFlbuxla7B1++TfbbR29cAr/T69
-	 8RlajaFDOInAOiN+ZK7veFCGRmxjx3J7bE/ObG1rUVu/wJzBNzB68455fQxxkndpm2
-	 Tm8vLFnkUPRX5ZN0PkWUIEMTd4tfYl/XR8pSy9Z/UPR0Qpq83+piDFPoy0+TgckjTx
-	 fIBVNpnimUABvVb4nGDJC3hmwuwMOJKdRSInNWdlSTmxsPRa6fXgS00DoHU0JgsDRW
-	 lp50vbyxlZIuxosoVMrxCRj/2aCgMhGTMqw6gfvTpMznmcYFwDNIHqHcgooJXMIogZ
-	 UhhsWMu+jeEcw==
-Date: Fri, 27 Feb 2026 22:50:38 -0800
+	b=psiiY+mjJy9NDUUzgU6LpECxATrYP6E6WdOer+42b5zCn8ow/eyJXB/ug0mExA9cv
+	 6ePYSGlmoaHtHOi7qoSg0Q3QsHkOGGPNWPHKY6G4BOjm8G543wF1gbRSWkuG2NNNoX
+	 iKjLmRNvDQFISHuKPxgVP1X34FieZC9G4odogCmXjbvadUHK8R5eStFkTiEhfNFMtU
+	 4FNEJ616kUSHbRZxM+m3jm1NVk176WszihcTfvBODu+/0eL6+UG2HnIgUPOZLNLSj1
+	 WxX5AcZXlMJ9kqMb4ogEhdlpTjXL93m1Gw4Fm2Ba2sZDjbueHKzehZlPdBX5J/XiRb
+	 igjWvy5k/xF5A==
+Date: Fri, 27 Feb 2026 22:55:43 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -83,14 +83,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 21/25] xor: add a better public API
-Message-ID: <20260228065038.GH65277@quark>
+Subject: Re: [PATCH 22/25] async_xor: use xor_gen
+Message-ID: <20260228065543.GI65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-22-hch@lst.de>
+ <20260226151106.144735-23-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-22-hch@lst.de>
+In-Reply-To: <20260226151106.144735-23-hch@lst.de>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260227_225548_895243_73D617ED 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,70 +108,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 26, 2026 at 07:10:33AM -0800, Christoph Hellwig wrote:
-> xor_blocks is very annoying to use, because it is limited to 4 + 1
-> sources / destinations, has an odd argument order and is completely
-> undocumented.
-> 
-> Lift the code that loops around it from btrfs and async_tx/async_xor into
-> common code under the name xor_gen and properly document it.
+On Thu, Feb 26, 2026 at 07:10:34AM -0800, Christoph Hellwig wrote:
+> Replace use of the loop around xor_blocks with the easier to use xor_gen
+> API.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  include/linux/raid/xor.h |  3 +++
->  lib/raid/xor/xor-core.c  | 28 ++++++++++++++++++++++++++++
->  2 files changed, 31 insertions(+)
-> 
-> diff --git a/include/linux/raid/xor.h b/include/linux/raid/xor.h
-> index 02bda8d99534..4735a4e960f9 100644
-> --- a/include/linux/raid/xor.h
-> +++ b/include/linux/raid/xor.h
-> @@ -7,4 +7,7 @@
->  extern void xor_blocks(unsigned int count, unsigned int bytes,
->  	void *dest, void **srcs);
->  
-> +void xor_gen(void *dest, void **srcss, unsigned int src_cnt,
-> +		unsigned int bytes);
+>  crypto/async_tx/async_xor.c | 16 ++--------------
+>  1 file changed, 2 insertions(+), 14 deletions(-)
 
-srcss => srcs
-
-Ideally the source vectors would be 'const' as well.
-
-> +/**
-> + * xor_gen - generate RAID-style XOR information
-> + * @dest:	destination vector
-> + * @srcs:	source vectors
-> + * @src_cnt:	number of source vectors
-> + * @bytes:	length in bytes of each vector
-> + *
-> + * Performs bit-wise XOR operation into @dest for each of the @src_cnt vectors
-> + * in @srcs for a length of @bytes bytes.
-> + *
-> + * Note: for typical RAID uses, @dest either needs to be zeroed, or filled with
-> + * the first disk, which then needs to be removed from @srcs.
-> + */
-> +void xor_gen(void *dest, void **srcs, unsigned int src_cnt, unsigned int bytes)
-> +{
-> +	unsigned int src_off = 0;
-> +
-> +	while (src_cnt > 0) {
-> +		unsigned int this_cnt = min(src_cnt, MAX_XOR_BLOCKS);
-> +
-> +		xor_blocks(this_cnt, bytes, dest, srcs + src_off);
-> +
-> +		src_cnt -= this_cnt;
-> +		src_off += this_cnt;
-> +	}
-> +}
-> +EXPORT_SYMBOL(xor_gen);
-
-The alignment requirements on the vectors should be documented, as
-should which values of bytes are accepted.  It looks like, at the very
-least, the vectors have to be 32-byte aligned and the length has to be a
-nonzero multiple of 512 bytes.  But I didn't check every implementation.
-
-Also, the requirement on the calling context (e.g. !is_interrupt())
-should be documented as well.
+There are still comments in this file that refer to xor_blocks.
 
 - Eric
 
