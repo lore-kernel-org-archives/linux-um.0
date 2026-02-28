@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46045FEE4C4
-	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 04:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90D18FEE4C5
+	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 04:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y3L+qGVzTsCJQnoG5TCi8Lc0DlEfyMFXUAiYCFvEtfs=; b=iYANKaUj5PBiuDHIbVpbJnVP+9
-	nXSECYW1QCnY61eQC3Gdu6++vqRFxRFucqGp2LvsPJbDmra8uo3TGszb/Yt/Wy+tfDUdh+M1QZxhS
-	KjiWc7Ht8YVcdwDg/hNwVFaIUnWk4hZ4XNbHlIeT50EYXuM8m1/zwJCJu9ytfYfj7Q0AVmqZJqegF
-	FUJswyl/HGSlsiMCz/cv5EN0tWD4GkBAhftUHylBDhLcUsjFQSW7OVXvQr4Qw9pOHCmBgJdQMvJR9
-	bEcFExxUiOFyRXW96W9pjNYeDuLib+EGTNnEwxs6nEhtgBwv+t2FoY0zgO0D97O+ODEzodn+SVogj
-	mIk+mzOQ==;
+	bh=hTTnDcnDoYmcoNie9tHbMTIizvVqtd87Tnc3PFg/feQ=; b=ncxTZfn+J+72EkBFbZYI1B2Ka1
+	CdnyRzkEajZ73YVH9U7HbpF+mxGPVr3hPy9EK8nynPIZeaofMTvCo0XEZnZDnqYEGmceRwmv4X9Or
+	M8ZmjYK7MUDHwRX2pHHpw4c1A/HJ0lHdYDHnHXlvq0qRjAtS2m3qUKSHrvugoda8PWBE1OdmLcUhw
+	SuagphL63mlsmQAd5xfqeg54ccUDkzNUdwjgC7y3ZVRJczPn5WJfgLmoML5BWrOjdj5Cg4YgrP9iX
+	bRAvR2oNQh1xeSiRlO+V+vwVH+hzmx0D/XMRgRyuLbSKohLU70NvOhaWVgVQQe78Oei0VBQn7pQ5+
+	Z7QmsMrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwC9L-00000009UeV-1hVz;
-	Sat, 28 Feb 2026 04:41:55 +0000
+	id 1vwCBN-00000009Uox-3Xtu;
+	Sat, 28 Feb 2026 04:44:01 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwC9G-00000009Ue3-0QZ4;
-	Sat, 28 Feb 2026 04:41:53 +0000
+	id 1vwCBL-00000009Unn-34wK;
+	Sat, 28 Feb 2026 04:44:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id F247640067;
-	Sat, 28 Feb 2026 04:41:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A79C116D0;
-	Sat, 28 Feb 2026 04:41:44 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id AF29C438ED;
+	Sat, 28 Feb 2026 04:43:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B7EC116D0;
+	Sat, 28 Feb 2026 04:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772253708;
-	bh=GTl5b4pj52hP0KVBkFlgMlumLNdyDtznBRe/1mAWWQw=;
+	s=k20201202; t=1772253838;
+	bh=yQS8EYr1F4rANaBe7v+3inxmWJU0zVKQEOlUsxymw4k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rOKkIgOdBSzVWSzHxw5DOhxNn03a0Ygaw1woVlTjin4KLowyLELOm+OVhIowZs3Mi
-	 dqJMT1De+b8BARm6gDQusg4IahSRzGUQaRpIL79MWyistCvbIiMZ6GQa64miu3ZcRZ
-	 cmMCGr06kdASJAnWQFN5T5HEhrn2CSG3d0wt7lfBrAFCfHwD8AHIT6zDjcjgyWpudZ
-	 1T16tuC8Ef/5l0VtYfOtBa3/4cAwxmH1U8wP9gZSK6LcugatbAZqq7cuamim+FKLGl
-	 QGX36uRgBg/t7BIN5Yg+65x2RyzeJ36b/t9uuoaV9NMPtIM82r7BkkP953pZJg4x7P
-	 1Tdp6OJiWNiZw==
-Date: Fri, 27 Feb 2026 20:41:43 -0800
+	b=PuoEPD5dGKM2iOhSW+0my0D/f4VLvinBi2jt5Kbxbd81P1k+jWi0+KVciBAPrpL/g
+	 r4r2NT2v38o9qtnIhfBxVgmjQSQJywLVObj3muDNlyHJqSESQCTZhmJe/6Rzsk2R9M
+	 8ZnzLPFYGLtie7deDR1V8Pnkzre6yCwdaC1qBSQ9wNIL1XaAUgCSzSUwN7lW5l11mD
+	 VW2gjQBqijiFVLqfxqw/TTKXHQthqIgVue3hQeJ64rdHrmcizqorwLbqqoBbwNSZH4
+	 QorQ2T+BBBGPZMVwQBEeX4nOyWDWoKOqpyMPTJ5mdi+JknVW5oDrCxr9Qb4qEoWrJm
+	 UhY0/KMibUBXA==
+Date: Fri, 27 Feb 2026 20:43:55 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -83,18 +83,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 06/25] xor: cleanup registration and probing
-Message-ID: <20260228044143.GC65277@quark>
+Subject: Re: [PATCH 07/25] xor: split xor.h
+Message-ID: <20260228044355.GD65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-7-hch@lst.de>
+ <20260226151106.144735-8-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-7-hch@lst.de>
+In-Reply-To: <20260226151106.144735-8-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260227_204152_121694_9D25AF9D 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260227_204359_796975_5BA8CD5E 
+X-CRM114-Status: GOOD (  13.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,19 +108,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 26, 2026 at 07:10:18AM -0800, Christoph Hellwig wrote:
->  /* Set of all registered templates.  */
->  static struct xor_block_template *__initdata template_list;
-> +static int __initdata xor_forced = false;
+On Thu, Feb 26, 2026 at 07:10:19AM -0800, Christoph Hellwig wrote:
+> Keep xor.h for the public API, and split the struct xor_block_template
+> definition that is only needed by the xor.ko core and
+> architecture-specific optimizations into a separate xor_impl.h header.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/arm/lib/xor-neon.c       |  1 +
+>  arch/s390/lib/xor.c           |  2 +-
+>  include/linux/raid/xor.h      | 22 +---------------------
+>  include/linux/raid/xor_impl.h | 25 +++++++++++++++++++++++++
+>  lib/raid/xor/xor-core.c       |  1 +
+>  5 files changed, 29 insertions(+), 22 deletions(-)
+>  create mode 100644 include/linux/raid/xor_impl.h
 
-bool instead of int
-
->  	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
->  	if (!b1) {
-> -		printk(KERN_WARNING "xor: Yikes!  No memory available.\n");
-> +		pr_info("xor: Yikes!  No memory available.\n");
-
-pr_warn() instead of pr_info()
+arch/arm64/lib/xor-neon.c needs to be updated to include xor_impl.h.
 
 - Eric
 
