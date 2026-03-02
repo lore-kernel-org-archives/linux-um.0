@@ -4,97 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75F26FEE4E8
-	for <linux-um@archiver.kernel.org>; Sat, 28 Feb 2026 10:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2538D58E73
+	for <linux-um@archiver.kernel.org>; Mon,  2 Mar 2026 07:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TMfQFraLliTO9OYi4VnvV7gf7AjKPxIluxE2boSfq9E=; b=DaDmrnS0Wc3uJ59Kz8DOBQKi8q
-	dy8biP8d6RkzLk0yTA3Qzypb+uEm5B3qrmXYUcIIxmsAGZ0RQhqXT0czkvTLxqAKL5jPhskF+nbKQ
-	V2v0sJ3+WqGGQzAuFxXcP8aNX3G6tlXHbnxVmP9MXFN9gUhSAY9hNE6ibq81vjegmA5iLqGG9mV9j
-	0w8TNGKwDFoXQN7X/fFqCsj2ibeNDhPOuJIAIc2AUhbSPbEvOuQy9IGq1x5Emxta2s4LQnZvf1ihb
-	paWIAcvvAMkyDgG/Wg7wKN/DMnWA9WyizR4VpnSAmG92y0v0TsTtvffrpXyQpSqJ1Ay2OmLaNv4v5
-	mgMK0j9A==;
+	bh=s0B14b5FSBUEgAk+L55J5WroPPngMpauRKzhBytrof4=; b=LJLDixhVTEkyyR81QA3FDXQH0/
+	JfhAfWiu/pM24evDhZVNvh9Lk5sQxwPsoeOUj968KaW4qLpbQdQcpOJKFkUZLsq3B3o3KYUvtLKD6
+	Fge6sqEQLWsGqErsu6ZvlqEDBjxzSiHKvqvDwe9zzE/bQWB60Hh6FH+4PHcM0fKoADTFnDvaWgffU
+	mHc6B1B/I4/Yig6dBnLh9BlwHvw5fAnYGNtGGXSvNcws54nnCK05w1feR2wy3us0oaMHxutJjsxiA
+	Nm6ISBHrZ/6oWwOYHFJaj7BXZuDfv+M2cwYwAGyha/jcLAIIBSRqUNl38PbI+g9FuNVmiVFI+GTzb
+	390KWamw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwHbf-00000009jmU-1BeO;
-	Sat, 28 Feb 2026 10:31:31 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vwxsS-0000000CQfo-4Aej;
+	Mon, 02 Mar 2026 07:39:40 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwHbc-00000009jmD-0sEe;
-	Sat, 28 Feb 2026 10:31:29 +0000
+	id 1vwxsQ-0000000CQf8-1bya;
+	Mon, 02 Mar 2026 07:39:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=TMfQFraLliTO9OYi4VnvV7gf7AjKPxIluxE2boSfq9E=; b=Ihs5Yf5HVrcI20Hvh5VGWrIGtj
-	w539I2X4jBa2jKtS495tj7OW6yzhUvsPzuvYxap8QuwZoigJhFPba8v5sdtkPlsa6ID6C16CNvr3D
-	fYcDuOEFbymUfK08ZwvafhxK/cQQqT8fuyE87FJ8bLSaBRcRuE1oHdJ8cGt5ahL8RttPyiMxygm7n
-	mt+sFX75z3hVeBiEagfvPL++3zVOztglGmkatawM3oQt9uFpQqkNr4WQvFkrT+2czFsf7HwHxTWyD
-	ed2+E9lBjpxNLnaogre7bAMexNOCdGPm1iLI1kQQI6WFzJBF95/QpTcsQabK0eral+I71Lj4w+g8Q
-	gLUIf0SA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vwHbS-0000000EUcv-1pQT;
-	Sat, 28 Feb 2026 10:31:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2ADC430066A; Sat, 28 Feb 2026 11:31:17 +0100 (CET)
-Date: Sat, 28 Feb 2026 11:31:17 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
-	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 18/25] x86: move the XOR code to lib/raid/
-Message-ID: <20260228103117.GK1282955@noisy.programming.kicks-ass.net>
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=s0B14b5FSBUEgAk+L55J5WroPPngMpauRKzhBytrof4=;
+	t=1772437178; x=1773646778; b=GYcBMok1DL44WP+KYBsA0AB73Qda1UX8oQuMUWHvDLcILsM
+	4VHCx51eIielzkeCkO2Sia7bAf3fHggAQP+GmN9QcMH6IgWCSwNcOpz5JnBOyM9M1cSF8uR4UAYjp
+	WZopfLoU0OcxI6vMVmYAJgHxBJotx5LkesU4WsDwaF1rZi6hDPgXhs7qUX8YClqIGg/H52wb1jPYH
+	j36Vqy592QUCSWVYMJZ4XjYBZTLpwHek40K/UYfuGe1noqCp7x3UEFAOhPRolfvljgtZgWtvMcykY
+	XCDNkitE1CcwLl4l7QFGewrScn7ZJskUyBKyFRGD+MM/LNKkjlvseknf6UcBt+gQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1vwxrd-00000005zul-3cbJ;
+	Mon, 02 Mar 2026 08:38:50 +0100
+Message-ID: <3e3f46aca653cf99799111279fc554b4ca31f6b7.camel@sipsolutions.net>
+Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Eric Biggers <ebiggers@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Richard Henderson	
+ <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, Magnus
+ Lindholm <linmag7@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin
+ Marinas	 <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai
+ Chen	 <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Madhavan
+ Srinivasan	 <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin	 <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
+ <chleroy@kernel.org>,  Paul Walmsley	 <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou	 <aou@eecs.berkeley.edu>, Alexandre Ghiti
+ <alex@ghiti.fr>, Heiko Carstens	 <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>, Alexander Gordeev	 <agordeev@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>,  Sven Schnelle
+ <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Andreas
+ Larsson	 <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, Anton
+ Ivanov	 <anton.ivanov@cambridgegreys.com>, Thomas Gleixner
+ <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen	 <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,  Herbert Xu
+ <herbert@gondor.apana.org.au>, Dan Williams <dan.j.williams@intel.com>,
+ Chris Mason	 <clm@fb.com>, David Sterba <dsterba@suse.com>, Arnd Bergmann
+ <arnd@arndb.de>,  Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+ Li Nan <linan122@huawei.com>, 	linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, 	linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, 	linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, 	linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, 	linux-btrfs@vger.kernel.org,
+ linux-arch@vger.kernel.org, 	linux-raid@vger.kernel.org
+Date: Mon, 02 Mar 2026 08:38:47 +0100
+In-Reply-To: <20260228043006.GA65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-19-hch@lst.de>
- <20260227143016.GH1282955@noisy.programming.kicks-ass.net>
- <20260227235529.GA31321@quark>
+	 <20260226151106.144735-4-hch@lst.de> <20260228043006.GA65277@quark>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260227235529.GA31321@quark>
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260301_233938_445126_6FAB5517 
+X-CRM114-Status: GOOD (  18.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,38 +99,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 27, 2026 at 03:55:29PM -0800, Eric Biggers wrote:
-> On Fri, Feb 27, 2026 at 03:30:16PM +0100, Peter Zijlstra wrote:
-> > On Thu, Feb 26, 2026 at 07:10:30AM -0800, Christoph Hellwig wrote:
-> > > Move the optimized XOR code out of line into lib/raid.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >  arch/x86/include/asm/xor.h                    | 518 ++----------------
-> > >  arch/x86/include/asm/xor_64.h                 |  32 --
-> > >  lib/raid/xor/Makefile                         |   8 +
-> > >  .../xor_avx.h => lib/raid/xor/x86/xor-avx.c   |  14 +-
-> > >  .../xor_32.h => lib/raid/xor/x86/xor-mmx.c    |  60 +-
-> > >  lib/raid/xor/x86/xor-sse.c                    | 476 ++++++++++++++++
-> > 
-> > I gotta ask, why lib/raid/xor/$arch/ instead of something like
-> > arch/$arch/lib/xor ?
-> 
-> Similar to lib/crypto/ and lib/crc/, it allows the translation units
-> (either .c or .S files) containing architecture-optimized XOR code to be
-> included directly in the xor.ko module, where they should be.
-> 
-> Previously, these were always built into the core kernel even if
-> XOR_BLOCKS was 'n' or 'm', or they were built into a separate module
-> xor-neon.ko which xor.ko depended on.  So either the code was included
-> unnecessarily, or there was an extra module.
-> 
-> Technically we could instead have the lib makefile compile stuff in
-> arch/, but that would be unusual.  It's much cleaner to have the
-> directory structure match the build system.
+On Fri, 2026-02-27 at 20:30 -0800, Eric Biggers wrote:
+> On Thu, Feb 26, 2026 at 07:10:15AM -0800, Christoph Hellwig wrote:
+> > XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all th=
+e
+> > ifdef'ery doesn't do anything.  With our without this, the time travel
+> > mode should work fine on CPUs that support AVX2, as the AVX2
+> > implementation is forced in this case, and won't work otherwise.
+>=20
+[snip]
 
-Hmm, I suppose. Its just weird that we now have to look in both
-arch/$foo and lib/*/$foo/ to find all arch code.
+> I'm not following this change.  Previously, in TT_MODE_INFCPU mode,
+> XOR_SELECT_TEMPLATE(NULL) returned &xor_block_avx, &xor_block_sse_pf64,
+> or &xor_block_8regs, causing the benchmark to be skipped.  After this
+> change, the benchmark starts being done on CPUs that don't support AVX.
 
-And I don't suppose symlinks would make it better?
+Yeah the commit message is confusing - the change itself is really
+trading one (potential?) issue (CPUs w/o AVX) against another old issue
+(benchmark never terminates in TT_MODE_INFCPU).
+
+However, since commit c055e3eae0f1 ("crypto: xor - use ktime for
+template benchmarking") the latter issue doesn't even exist any more, so
+it now works without it, though it doesn't really benchmark anything.
+But that's fine too, nobody is going to be overly concerned about the
+performance here, I think, and if so there's really no good way to fix
+that other than providing a config option for an individual
+implementation.
+
+johannes
 
