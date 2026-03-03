@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB489EDA697
-	for <linux-um@archiver.kernel.org>; Tue,  3 Mar 2026 16:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DED26EDA68D
+	for <linux-um@archiver.kernel.org>; Tue,  3 Mar 2026 16:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Lk4PzyXylTYCrnMWAQQqmCxuYxMfjTTHimhDc4LOZko=; b=Oq6oN+azUjeyKKpvBmaXrBO45p
-	mTTWjFzlT1srU79CR4pkK6MrawPxIzdmLJJlGzu2I/3tDCkm0P/pU1KO7dP2FD+y+FOowXp1i39+O
-	GgqA2xo0XVeCN310fSO50hNFqNLfKpD675J42XkAOd+DADnkxqjHjrWRThxvc7zE5K4WPcwZOHk58
-	HVeUCk7VvnoVP073Za07UWPDTff15bRFPFe4HjACH174QHqbbUXyZk3T2taoRYDba1c2fluwVrTgM
-	8SZRgwWBn6xtNozG9/aQOLmAaaez+J/Zf5+aVoVFkysxBWZjKu4LIgPye1uNTI3i9Y4UwXHVP1IQ/
-	KMP+iCRg==;
+	bh=5eUFAVXspYmb7lZ0IOgQoxvm7X2pGYG60wLel41MAyk=; b=XjTy/NtGly0etwfUV4fEHo7sHn
+	j9OM+R8yST1qc+3lYLessYBTDu3ZnI2xgskHlhXeXWzVU4GoGN1FXma9+18i3LTbJMYQzIKMKhaGR
+	UO8P4/xeoRlWN6r5Ikc1JN76jAQ7PAH+hzIas9JzkPbGQKTyhx4eLgK659Zb4yi5yzUwaYpyBer10
+	Nfikgymh8ScL+o1NTLTWSHUTyvLdBwSdDVi0nAesrIetSeUsvWO4Fkt2/PIVx78bKyHpSTII8sCFN
+	R7EpNS3Z31xAU+ynu7p4yfypyFM/zM8ORKgGGDXsBiySWnUPPVEhDIYmEiOVJj2g16e2oDCVPObDc
+	QnOJm/ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxSBG-0000000FV6A-0sse;
-	Tue, 03 Mar 2026 16:01:06 +0000
+	id 1vxSC1-0000000FVCl-2BkS;
+	Tue, 03 Mar 2026 16:01:53 +0000
 Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxSBC-0000000FV5e-1YHU;
-	Tue, 03 Mar 2026 16:01:03 +0000
+	id 1vxSBx-0000000FVBN-3KQK;
+	Tue, 03 Mar 2026 16:01:51 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 89BBD68BFE; Tue,  3 Mar 2026 17:00:51 +0100 (CET)
-Date: Tue, 3 Mar 2026 17:00:50 +0100
+	id E4F5368BFE; Tue,  3 Mar 2026 17:01:45 +0100 (CET)
+Date: Tue, 3 Mar 2026 17:01:45 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: Peter Zijlstra <peterz@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
 Cc: Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Richard Henderson <richard.henderson@linaro.org>,
@@ -71,18 +71,17 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
- interrupt context
-Message-ID: <20260303160050.GB7021@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH 04/25] xor: move to lib/raid/
+Message-ID: <20260303160145.GC7021@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-5-hch@lst.de> <20260228043523.GB65277@quark>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260228043523.GB65277@quark>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260303_080102_580947_DC1EECD2 
-X-CRM114-Status: GOOD (  15.34  )
+X-CRM114-CacheID: sfid-20260303_080149_977703_A5692C07 
+X-CRM114-Status: GOOD (  14.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,25 +96,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 27, 2026 at 03:24:55PM +0100, Peter Zijlstra wrote:
-> >  	unsigned long *p1, *p2, *p3, *p4;
-> >  
-> > +	WARN_ON_ONCE(in_interrupt());
-> 
-> Your changelog makes it sound like you want:
-> 
-> 	WARN_ON_ONCE(!in_task());
-> 
-> But perhaps something like so:
-> 
-> 	lockdep_assert_preempt_enabled();
-> 
-> Would do? That ensures we are in preemptible context, which is much the
-> same. That also ensures the cost of this assertion is only paid on debug
-> kernels.
+On Fri, Feb 27, 2026 at 08:35:23PM -0800, Eric Biggers wrote:
+> This adds lib/raid/ alongside the existing lib/raid6/ directory.  Is
+> that the intended final state, or is the intent for the code in
+> lib/raid6/ to eventually be moved to a subdirectory of lib/raid/
+> (alongside the "xor" subdirectory)?
 
-No idea honestly.  The kernel FPU/vector helpers generally don't work
-from irq context, and I want to assert that.  Happy to do whatever
-version works best for that.
+Yes, the raid6 code will get a dutup and move after this.  And we'll
+also plan to add a library for more than 2 parities eventually.
 
 
