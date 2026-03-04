@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0048EF8FF4
-	for <linux-um@archiver.kernel.org>; Wed,  4 Mar 2026 15:16:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DE2EF8FF8
+	for <linux-um@archiver.kernel.org>; Wed,  4 Mar 2026 15:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6YOM2WbXA6Qkgtapqxkvfve9MfkbbU3JEb7qOmomVt8=; b=d+GTXuHY/+tKYeBj7H+NS2cqN3
-	ZUXTN7Ep9qDa8nw2P2Bcrn9Ce1XunPurEAIqs/WUwu4WS3GVsY+3daKGQ5f2aNyP3uUWIJ+WkvNT/
-	QritHQfb4a3PsZoD8IVU18Ba/TIrm5Oay8tPNPm7Z//XRMGoxiXyXq153Mb7NPJ9phFrhQo8CFVOu
-	ecTC0ZHAJ1BcAt1jpTFB9NbV6uwAfyfJOpdsapckMYNh9Y2QLMBLlQqSQvZfWMiCOmR5UusXcZP46
-	bkumkGzp3dr7ZM6jeO6ODGIhUhMUE8w/OiWOTnZ0uMlraBfoQzU2+LxAakth7mtW/qRS2OU5qEe9v
-	nI3WbNzg==;
+	bh=dozotgLjCkx6YfloJbc2dUGdgLVASeazqMNufNecUOk=; b=0bL41Q0ohSCL+1aZgIgxy7SuKi
+	kCz9EWowBZo1ZDF4Oep74A4p+L6z4u03E+ruzvydVPZ5fOd8hpPuo2mmns2aKDVw3UoNKRnWh6EI4
+	TdmE3wCkUxHzdoIcaQ1GUBdGyUMvRP8nh4fIuILQlOCdq4cNYOeCPAVuM0dHeMzElrpvbOYZ1t7hR
+	E2b6CPFqtU/hk6/oS4uFZ9xgMznrmxN+bWFDmUgYVEmI1JBQwv0jv/qX9EKft0EJmttbBFvXPaaOu
+	lM3YbVRpML0u5hSGTL/cLZqRniBUfJh4FbYk8fHmaRfmVPCxLuckzfFfjjS9CkUgnaZfGRK8VhyE7
+	lkDNmVtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxnxF-0000000HWmv-0MMi;
-	Wed, 04 Mar 2026 15:16:05 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1vxoNA-0000000Hb2r-1tMU;
+	Wed, 04 Mar 2026 15:42:52 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxnxD-0000000HWmR-0rpt;
-	Wed, 04 Mar 2026 15:16:03 +0000
+	id 1vxoN8-0000000Hb2J-158T;
+	Wed, 04 Mar 2026 15:42:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=6YOM2WbXA6Qkgtapqxkvfve9MfkbbU3JEb7qOmomVt8=; b=q1J4oN1pPBSexJBFfjtr2VdcfT
-	cPjNy395v4gDWuxsi/ha9yDNRWUDE6LFqfzn4Yd1LrI2S8TpWPL9z3MhAmoIER+ZDJyxwPon5M1aZ
-	AskUH2Doi34eCDyGezZO7dFjB0MasMnhHu+waAlY2mSgI1X8HVcdj0ldXYJVqOQJGTHaRlrHebAgJ
-	7wxEvMsC0Uv8vstvbUoelynHMruTuwwfR7BfY5x5rRwbRWYnr5u0aOyOekToDV4C2BditkWs1U/DG
-	GZMgOgAqSwHzeMa0C5li6urfh2f+Xx0KFGH88a+OERM2YwXtwihCtup0aktg8uAV14j68e34o5DP6
-	1F2fSdZQ==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxnwz-0000000DTMB-31pq;
-	Wed, 04 Mar 2026 15:15:49 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 20C7A300FB6; Wed, 04 Mar 2026 16:15:48 +0100 (CET)
-Date: Wed, 4 Mar 2026 16:15:48 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>,
+	bh=dozotgLjCkx6YfloJbc2dUGdgLVASeazqMNufNecUOk=; b=YV9ctmTco1BeitXxs/aCgHAR3R
+	8xV6ldv972mxVnFDyj0uwchrv8YiTY+3snMYgluKmNackBY7/QtYTkHkKnsxuQ9+madk/IqtO1w5w
+	qV0rRUujDgQ6XL6OyMkn5zBVrcqnVTlPJ7NPAzEGWwa85jNrKM6m+MKkW9EWFVpspSBz5DsFmwbhh
+	WfjQXOvyPv1oi9Ynjg95d5t472bLozGmWdbPxD/y81EVWvm8oCWQQ8cn4hfrlh4mYduM2YCcJ277T
+	Iz1W7ldTvWuQZYv0XJAiAgQbHRrM8RLIvk1p4DObxaQQRzRKfEZXJE0c4p8csE+8uxUmtXJfXZ6Dl
+	R2zAH9CA==;
+Received: from verein.lst.de ([213.95.11.211])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vxoN5-00000004ybx-1G4q;
+	Wed, 04 Mar 2026 15:42:48 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 7375068AFE; Wed,  4 Mar 2026 16:42:41 +0100 (CET)
+Date: Wed, 4 Mar 2026 16:42:41 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Richard Henderson <richard.henderson@linaro.org>,
 	Matt Turner <mattst88@gmail.com>,
@@ -87,17 +87,16 @@ Cc: Eric Biggers <ebiggers@kernel.org>,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
 Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
  interrupt context
-Message-ID: <20260304151548.GN1395266@noisy.programming.kicks-ass.net>
-References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-2-hch@lst.de>
- <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
- <20260303160050.GB7021@lst.de>
- <20260303195517.GC2846@sol>
- <20260304145134.GA21983@lst.de>
+Message-ID: <20260304154241.GA26451@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net> <20260303160050.GB7021@lst.de> <20260303195517.GC2846@sol> <20260304145134.GA21983@lst.de> <20260304151548.GN1395266@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260304145134.GA21983@lst.de>
+In-Reply-To: <20260304151548.GN1395266@noisy.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260304_154247_490447_DC57DC7B 
+X-CRM114-Status: GOOD (  17.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,14 +111,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 04, 2026 at 03:51:34PM +0100, Christoph Hellwig wrote:
-
-> > How about "WARN_ON_ONCE(!preemptible())"?  I think that covers the union
-> > of the context restrictions correctly.  (Compared to in_task(), it
-> > handles the cases where hardirqs or softirqs are disabled.)
+On Wed, Mar 04, 2026 at 04:15:48PM +0100, Peter Zijlstra wrote:
+> On Wed, Mar 04, 2026 at 03:51:34PM +0100, Christoph Hellwig wrote:
 > 
-> Good enough I guess.  Peter?
+> > > How about "WARN_ON_ONCE(!preemptible())"?  I think that covers the union
+> > > of the context restrictions correctly.  (Compared to in_task(), it
+> > > handles the cases where hardirqs or softirqs are disabled.)
+> > 
+> > Good enough I guess.  Peter?
+> 
+> Sure. The only caveat with that is that for PREEMPT_COUNT=n this might
+> not work, it unconditionally returns 0.
 
-Sure. The only caveat with that is that for PREEMPT_COUNT=n this might
-not work, it unconditionally returns 0.
+That's a pretty good argument for the lockdep version...
 
