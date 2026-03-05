@@ -4,99 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DE2EF8FF8
-	for <linux-um@archiver.kernel.org>; Wed,  4 Mar 2026 15:42:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96FA8EFCE4D
+	for <linux-um@archiver.kernel.org>; Thu,  5 Mar 2026 00:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dozotgLjCkx6YfloJbc2dUGdgLVASeazqMNufNecUOk=; b=0bL41Q0ohSCL+1aZgIgxy7SuKi
-	kCz9EWowBZo1ZDF4Oep74A4p+L6z4u03E+ruzvydVPZ5fOd8hpPuo2mmns2aKDVw3UoNKRnWh6EI4
-	TdmE3wCkUxHzdoIcaQ1GUBdGyUMvRP8nh4fIuILQlOCdq4cNYOeCPAVuM0dHeMzElrpvbOYZ1t7hR
-	E2b6CPFqtU/hk6/oS4uFZ9xgMznrmxN+bWFDmUgYVEmI1JBQwv0jv/qX9EKft0EJmttbBFvXPaaOu
-	lM3YbVRpML0u5hSGTL/cLZqRniBUfJh4FbYk8fHmaRfmVPCxLuckzfFfjjS9CkUgnaZfGRK8VhyE7
-	lkDNmVtg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5ADx2RpP+mm1y1LiRTs4S1QSiTNxoV3tLrVytq4DK3g=; b=LcV0JOjT9i6Xcyi6YPdlMHV7mL
+	YlgxJyukquranZ61SdjgvnDtshCWRwV5Tg2VeL8fCZ65nf3/dy+JkgWWbk3qVltmFgoOblyaYmrBl
+	HXSWVAll4Cp+TN774O69WBbDTphVv1WcBh00I/zW4tVWq11/nJdxfSZ6AXO5jf/RemEyGg1IiUaQB
+	jgvPKbh/3xIFx/92GmV1NHIH2FVJ8viTie2B1Qcwc58oFoCkR4Ue1vLfbWamLdK878LWzPIxzPt6Q
+	D2iwjOqolnfJK9WhVkXiMkgKjMf+tOAOxGsJ2MAKbJfTQMbJQs6/rF8/q6us+9FB7W1BbGR5993bc
+	6V3fn0CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxoNA-0000000Hb2r-1tMU;
-	Wed, 04 Mar 2026 15:42:52 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1vxwht-00000000huv-3cUf;
+	Thu, 05 Mar 2026 00:36:49 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxoN8-0000000Hb2J-158T;
-	Wed, 04 Mar 2026 15:42:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dozotgLjCkx6YfloJbc2dUGdgLVASeazqMNufNecUOk=; b=YV9ctmTco1BeitXxs/aCgHAR3R
-	8xV6ldv972mxVnFDyj0uwchrv8YiTY+3snMYgluKmNackBY7/QtYTkHkKnsxuQ9+madk/IqtO1w5w
-	qV0rRUujDgQ6XL6OyMkn5zBVrcqnVTlPJ7NPAzEGWwa85jNrKM6m+MKkW9EWFVpspSBz5DsFmwbhh
-	WfjQXOvyPv1oi9Ynjg95d5t472bLozGmWdbPxD/y81EVWvm8oCWQQ8cn4hfrlh4mYduM2YCcJ277T
-	Iz1W7ldTvWuQZYv0XJAiAgQbHRrM8RLIvk1p4DObxaQQRzRKfEZXJE0c4p8csE+8uxUmtXJfXZ6Dl
-	R2zAH9CA==;
-Received: from verein.lst.de ([213.95.11.211])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxoN5-00000004ybx-1G4q;
-	Wed, 04 Mar 2026 15:42:48 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 7375068AFE; Wed,  4 Mar 2026 16:42:41 +0100 (CET)
-Date: Wed, 4 Mar 2026 16:42:41 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
-	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
- interrupt context
-Message-ID: <20260304154241.GA26451@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net> <20260303160050.GB7021@lst.de> <20260303195517.GC2846@sol> <20260304145134.GA21983@lst.de> <20260304151548.GN1395266@noisy.programming.kicks-ass.net>
+	id 1vxwhq-00000000hu0-1McT;
+	Thu, 05 Mar 2026 00:36:47 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id D54F2403ED;
+	Thu,  5 Mar 2026 00:36:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70C0CC4CEF7;
+	Thu,  5 Mar 2026 00:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772671004;
+	bh=dufxbUIyr7d8ExFT8JscxBc90VyX6BXpvMXaMHirGFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=KToGiCmvRjrVNqFH9bmGJHeZ38P88LzG7roLZL+LfIaWcpEiN2r+2cd8LeoKKP35z
+	 U1kZMnp2GF5lnZ/nU+B3HGi0hmJYpifkPnaIttjOzC0p4MJWgdE7whcAtStb71A/hR
+	 PWMEoeZUETbXXgqKLd947UqscZTCqE7PdSGVXWHEJVzdsA5P/GL+TYntigcrzmPu9S
+	 bwFDNJowrmaquHt0GQepYaacF/aqErDIPLaR1+ZJBBxnDoRwltgCLkyg6X/do1S70f
+	 /t3wS/hkSXMAn5Ptc3L2X59NGkKMvuLeUJNxpcdH9xAkM1JdLfqBeN7u7tjz5Udo9K
+	 2yvhogx3J8MSA==
+From: Nathan Chancellor <nathan@kernel.org>
+To: Nicolas Schier <nsc@kernel.org>, Nathan Chancellor <nathan@kernel.org>
+Cc: Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+ Vineet Gupta <vgupta@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
+ Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
+ WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Sam Creasey <sammy@sammy.net>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Kees Cook <kees@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+ Masahiro Yamada <masahiroy@kernel.org>, Alexey Gladkov <legion@kernel.org>, 
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, 
+ stable@vger.kernel.org, Ed W <lists@wildgooses.com>
+In-Reply-To: <20260225-separate-modinfo-from-elf-details-v1-1-387ced6baf4b@kernel.org>
+References: <20260225-separate-modinfo-from-elf-details-v1-1-387ced6baf4b@kernel.org>
+Subject: Re: [PATCH] kbuild: Split .modinfo out from ELF_DETAILS
+Message-Id: <177267099220.1730256.13119170390082704508.b4-ty@kernel.org>
+Date: Wed, 04 Mar 2026 17:36:32 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260304151548.GN1395266@noisy.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260304_154247_490447_DC57DC7B 
-X-CRM114-Status: GOOD (  17.87  )
+X-CRM114-CacheID: sfid-20260304_163646_411626_4EA18CE8 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,17 +111,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 04, 2026 at 04:15:48PM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 04, 2026 at 03:51:34PM +0100, Christoph Hellwig wrote:
+On Wed, 25 Feb 2026 15:02:51 -0700, Nathan Chancellor wrote:
+> Commit 3e86e4d74c04 ("kbuild: keep .modinfo section in
+> vmlinux.unstripped") added .modinfo to ELF_DETAILS while removing it
+> from DISCARDS, as it was needed in vmlinux.unstripped and ELF_DETAILS
+> was present in all architecture specific vmlinux linker scripts. While
+> this shuffle is fine for vmlinux, ELF_DETAILS and DISCARDS may be used
+> by other linker scripts, such as the s390 and x86 compressed boot
+> images, which may not expect to have a modinfo section. In certain
+> circumstances, this could result in a bootloader failing to load the
+> compressed kernel [1].
 > 
-> > > How about "WARN_ON_ONCE(!preemptible())"?  I think that covers the union
-> > > of the context restrictions correctly.  (Compared to in_task(), it
-> > > handles the cases where hardirqs or softirqs are disabled.)
-> > 
-> > Good enough I guess.  Peter?
-> 
-> Sure. The only caveat with that is that for PREEMPT_COUNT=n this might
-> not work, it unconditionally returns 0.
+> [...]
 
-That's a pretty good argument for the lockdep version...
+Applied to
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kbuild/linux.git kbuild-fixes
+
+Thanks!
+
+[1/1] kbuild: Split .modinfo out from ELF_DETAILS
+      https://git.kernel.org/kbuild/c/8678591b47469
+
+Please look out for regression or issue reports or other follow up
+comments, as they may result in the patch/series getting dropped or
+reverted. Patches applied to an "unstable" branch are accepted pending
+wider testing in -next and any post-commit review; they will generally
+be moved to the main branch in a week if no issues are found.
+
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
+
 
