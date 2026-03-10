@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C4CFCC9D1
-	for <linux-um@archiver.kernel.org>; Tue, 10 Mar 2026 06:58:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84385FD2D9C
+	for <linux-um@archiver.kernel.org>; Tue, 10 Mar 2026 14:00:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0Ah7Wu2DCLVKZbjG52xH4VxSemU6UyDO7HEM5lRKrUc=; b=P3eDOHFrLLTq7VIadU/PQMNrTZ
-	0U+z4oTvDbLkqVE4QscKsS5E9Zw/wMKOYRxhaI+mklDazXQT85ov0e0gLbLrFYIJ9FH7Lq1gc0BK8
-	BS/RQCCLpcM8wHuPkQPCzHUZJ1K3mus2Dty/mqLkhnUxRvhtHkWJPnxqKjyEOBwl8cS/wKZmqfPtT
-	g/QsjUQY8qgdX9bOfHog62p5t2ddx6fb7EiUGSUt+gHCFPyJpj8VWqZD77D5xe0en+5DNQhGnoN7G
-	SU8RPh6scDeTTGInGppzSMJs+l2/aZrJPys80Jq9+TRNjQs3/xWiosrMpgIzsQbAWudUu6pqX1S53
-	vaZNy3Kw==;
+	bh=KBtM6FHB1Hg+j/uC6YjMuSNyq8zYoksAvnYz45W3iLo=; b=OnvD8k8+GBXBMnXHgFME+vW8JK
+	vBrQzbBPPrT27FrcJs0ALRjoeh7qpdWOmIw+U+j7q+dzQC79hChhtPvpHN6E6cGOa46DZLqlXhr/a
+	SCS65bN7D/X7vfoHBjLsPz4bw0HeBkwftMZZ65ibnDk08sCFtY/a67G3bbzNQ8jlRJ0nYrdNuw0QB
+	meFVRzuuRhYsgk106781K0tsxGD2Y/cwzxLJ2az2uB8+pkfGcgfeo7jg2b+BeL0wQFaSEhbtEDREF
+	YrA82PQpQzz9qsbksMUh0XWiO6hmeuBrcGbvR+jjAk4BhHcOXieOmilNDdLnC0K4PWT6+xjfQlIb7
+	Pe6Q1VmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzr3Q-00000008pG1-28qq;
-	Tue, 10 Mar 2026 06:58:56 +0000
+	id 1vzxdU-00000009eBg-2mSY;
+	Tue, 10 Mar 2026 14:00:36 +0000
 Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vzr3N-00000008pFP-1IPT;
-	Tue, 10 Mar 2026 06:58:54 +0000
+	id 1vzxdR-00000009eB4-0oRA;
+	Tue, 10 Mar 2026 14:00:34 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 7056668AFE; Tue, 10 Mar 2026 07:58:40 +0100 (CET)
-Date: Tue, 10 Mar 2026 07:58:40 +0100
+	id 9EFDD68C4E; Tue, 10 Mar 2026 15:00:21 +0100 (CET)
+Date: Tue, 10 Mar 2026 15:00:20 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Eric Biggers <ebiggers@kernel.org>
 Cc: Christoph Hellwig <hch@lst.de>,
@@ -71,17 +71,18 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 21/25] xor: add a better public API
-Message-ID: <20260310065840.GA10296@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-22-hch@lst.de> <20260228065038.GH65277@quark>
+Subject: Re: [PATCH 09/25] xor: move generic implementations out of
+ asm-generic/xor.h
+Message-ID: <20260310140020.GA8490@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-10-hch@lst.de> <20260228071521.GK65277@quark> <20260303160911.GI7021@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260228065038.GH65277@quark>
+In-Reply-To: <20260303160911.GI7021@lst.de>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260309_235853_494793_57C1EB56 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20260310_070033_376541_C91BEA33 
+X-CRM114-Status: GOOD (  13.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,17 +97,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 27, 2026 at 10:50:38PM -0800, Eric Biggers wrote:
-> > +void xor_gen(void *dest, void **srcss, unsigned int src_cnt,
-> > +		unsigned int bytes);
-> 
-> srcss => srcs
-> 
-> Ideally the source vectors would be 'const' as well.
+On Tue, Mar 03, 2026 at 05:09:11PM +0100, Christoph Hellwig wrote:
+> And earlier version did this, but it's a bit ugly.  What I might
+> consider is to require architectures that provide optimized version
+> to opt into any generic one they want to use.  This would require
+> extra kconfig symbols, but be a lot cleaner overall.
 
-I looked at the constification, and it's a bit painful because the
-same source arrays are also passed to the raid6 code by the callers.
-I'll clean up the raid6 API first, and then will give it another
-spin.
-
+I looked into this, but because the static_call requires a default
+version I gave up on it for now.  In theory we could build just
+a single generic one for that and make the others optional, but
+that feels a bit odd.
 
