@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7683EFD063E
-	for <linux-um@archiver.kernel.org>; Wed, 11 Mar 2026 07:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B35CBFD063E
+	for <linux-um@archiver.kernel.org>; Wed, 11 Mar 2026 07:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1VXN+qrgKMOjOg8SbRK828N8SoZ2yyHUM4r1hhkUxmw=; b=GlHUY9h0x1hN6kmR29ibLBJr2k
-	+hu+Q3gS/B6zKZQtbq+97sl0W4rqn/7JPE+GLyFxkr74JBZCWE8kxYCAZ8rYDLTs8DAWu3on7dgJP
-	LVknsSlMgAMuQSrIrj1Uu+2RgJh/l2w9mEx1Fx94Yes78uBTcY/tWKWN32Fg46YKK3p62270P8lHw
-	2Kczi5Ix0UhNDyvpWk0d2MJlOXPf/6HhNPHXcT0qvqxRu0p+BLeAY7W9CHmgYIg4Qj9iRPbBttQpi
-	R/8LkFe7lu4fkw6K1aQdw8Agff1Tbccrbt13e9qznKDSnbCS9G8J65QJSDrWEP/jMY7DHW+nPF/rY
-	7Q3KhL6g==;
+	bh=EDWCo5cE2aEVpTui5bFdNy+9+SZiFj1BIITbfBYcjoU=; b=UnL70o09WUo0HgipCedJlVwoCM
+	4m8fPNyrNax0X/7bU6QKbIXn7fjoZuWNhqd0fDQmaen1vEvx7TjNhmCREaqSXlzXBMf5hfLXIwbVk
+	WirkndqOFIdQDT6SkcTjen9V0ilWgERos0IhvldtyT5QCbZbRmim9JgMT3dHi+nN9OaQB6c4Jox9s
+	QEhEei75PObZODm97U6hT9Mml8lL1+BIr460Pb9OZ3xZNh2VrtBicCbK4v10fPq6gp3fvhd7hD9X8
+	W71uCsC3pkTUzW64N6+uncyKsaVdtNs4waL6ktJ9bc6Fh/Cp0vvPntd8wfMArQTycIvcUp1z2zj6v
+	fu9JdYQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0Dhx-0000000B1cz-0quv;
-	Wed, 11 Mar 2026 07:10:17 +0000
+	id 1w0DiA-0000000B1nc-1MGd;
+	Wed, 11 Mar 2026 07:10:30 +0000
 Received: from [212.243.42.10] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0Dht-0000000B1RQ-2myS;
-	Wed, 11 Mar 2026 07:10:14 +0000
+	id 1w0Di7-0000000B1bE-3GZS;
+	Wed, 11 Mar 2026 07:10:28 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -83,9 +83,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 25/27] xor: use static_call for xor_gen
-Date: Wed, 11 Mar 2026 08:03:57 +0100
-Message-ID: <20260311070416.972667-26-hch@lst.de>
+Subject: [PATCH 26/27] random: factor out a __limit_random_u32_below helper
+Date: Wed, 11 Mar 2026 08:03:58 +0100
+Message-ID: <20260311070416.972667-27-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260311070416.972667-1-hch@lst.de>
 References: <20260311070416.972667-1-hch@lst.de>
@@ -105,132 +105,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Avoid the indirect call for xor_generation by using a static_call.
+Factor out the guts of __get_random_u32_below into a new helper,
+so that callers with their own prng state can reuse this code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- lib/raid/xor/xor-32regs.c |  2 +-
- lib/raid/xor/xor-core.c   | 29 ++++++++++++++---------------
- lib/raid/xor/xor_impl.h   |  4 ++++
- 3 files changed, 19 insertions(+), 16 deletions(-)
+ drivers/char/random.c  | 26 +++++++++++++++-----------
+ include/linux/random.h |  1 +
+ 2 files changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/lib/raid/xor/xor-32regs.c b/lib/raid/xor/xor-32regs.c
-index acb4a10d1e95..759a31f76414 100644
---- a/lib/raid/xor/xor-32regs.c
-+++ b/lib/raid/xor/xor-32regs.c
-@@ -209,7 +209,7 @@ xor_32regs_5(unsigned long bytes, unsigned long * __restrict p1,
- 	} while (--lines > 0);
- }
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 7ff4d29911fd..23b5addf02fb 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -544,18 +544,16 @@ DEFINE_BATCHED_ENTROPY(u16)
+ DEFINE_BATCHED_ENTROPY(u32)
+ DEFINE_BATCHED_ENTROPY(u64)
  
--DO_XOR_BLOCKS(32regs, xor_32regs_2, xor_32regs_3, xor_32regs_4, xor_32regs_5);
-+__DO_XOR_BLOCKS(32regs, xor_32regs_2, xor_32regs_3, xor_32regs_4, xor_32regs_5);
- 
- struct xor_block_template xor_block_32regs = {
- 	.name		= "32regs",
-diff --git a/lib/raid/xor/xor-core.c b/lib/raid/xor/xor-core.c
-index c3523f92ab83..331da1afc0e4 100644
---- a/lib/raid/xor/xor-core.c
-+++ b/lib/raid/xor/xor-core.c
-@@ -11,10 +11,14 @@
- #include <linux/raid/xor.h>
- #include <linux/jiffies.h>
- #include <linux/preempt.h>
-+#include <linux/static_call.h>
- #include "xor_impl.h"
- 
--/* The xor routine to use.  */
--static struct xor_block_template *active_template;
+-u32 __get_random_u32_below(u32 ceil)
 +/*
-+ * Provide a temporary default until the fastest or forced implementation is
-+ * picked.
++ * This is the slow path for variable ceil. It is still fast, most of the time,
++ * by doing traditional reciprocal multiplication and opportunistically
++ * comparing the lower half to ceil itself, before falling back to computing a
++ * larger bound, and then rejecting samples whose lower half would indicate a
++ * range indivisible by ceil. The use of `-ceil % ceil` is analogous to `2^32 %
++ * ceil`, but is computable in 32-bits.
 + */
-+DEFINE_STATIC_CALL(xor_gen_impl, xor_gen_32regs);
- 
- /**
-  * xor_gen - generate RAID-style XOR information
-@@ -36,13 +40,13 @@ void xor_gen(void *dest, void **srcs, unsigned int src_cnt, unsigned int bytes)
- 	lockdep_assert_preemption_enabled();
- 	WARN_ON_ONCE(bytes & 511);
- 
--	active_template->xor_gen(dest, srcs, src_cnt, bytes);
-+	static_call(xor_gen_impl)(dest, srcs, src_cnt, bytes);
- }
- EXPORT_SYMBOL(xor_gen);
- 
- /* Set of all registered templates.  */
- static struct xor_block_template *__initdata template_list;
--static bool __initdata xor_forced = false;
-+static struct xor_block_template *forced_template;
- 
- /**
-  * xor_register - register a XOR template
-@@ -68,7 +72,7 @@ void __init xor_register(struct xor_block_template *tmpl)
-  */
- void __init xor_force(struct xor_block_template *tmpl)
++u32 __limit_random_u32_below(u32 ceil, u32 rand)
  {
--	active_template = tmpl;
-+	forced_template = tmpl;
- }
- 
- #define BENCH_SIZE	4096
-@@ -110,7 +114,7 @@ static int __init calibrate_xor_blocks(void)
- 	void *b1, *b2;
- 	struct xor_block_template *f, *fastest;
- 
--	if (xor_forced)
-+	if (forced_template)
- 		return 0;
- 
- 	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
-@@ -127,7 +131,7 @@ static int __init calibrate_xor_blocks(void)
- 		if (f->speed > fastest->speed)
- 			fastest = f;
- 	}
--	active_template = fastest;
-+	static_call_update(xor_gen_impl, fastest->xor_gen);
- 	pr_info("xor: using function: %s (%d MB/sec)\n",
- 	       fastest->name, fastest->speed);
- 
-@@ -155,21 +159,16 @@ static int __init xor_init(void)
- 	 * If this arch/cpu has a short-circuited selection, don't loop through
- 	 * all the possible functions, just use the best one.
- 	 */
--	if (active_template) {
-+	if (forced_template) {
- 		pr_info("xor: automatically using best checksumming function   %-10s\n",
--			active_template->name);
--		xor_forced = true;
-+			forced_template->name);
-+		static_call_update(xor_gen_impl, forced_template->xor_gen);
- 		return 0;
- 	}
- 
- #ifdef MODULE
- 	return calibrate_xor_blocks();
- #else
 -	/*
--	 * Pick the first template as the temporary default until calibration
--	 * happens.
+-	 * This is the slow path for variable ceil. It is still fast, most of
+-	 * the time, by doing traditional reciprocal multiplication and
+-	 * opportunistically comparing the lower half to ceil itself, before
+-	 * falling back to computing a larger bound, and then rejecting samples
+-	 * whose lower half would indicate a range indivisible by ceil. The use
+-	 * of `-ceil % ceil` is analogous to `2^32 % ceil`, but is computable
+-	 * in 32-bits.
 -	 */
--	active_template = template_list;
- 	return 0;
+-	u32 rand = get_random_u32();
+ 	u64 mult;
+ 
+ 	/*
+@@ -577,6 +575,12 @@ u32 __get_random_u32_below(u32 ceil)
+ 	}
+ 	return mult >> 32;
+ }
++EXPORT_SYMBOL_GPL(__limit_random_u32_below);
++
++u32 __get_random_u32_below(u32 ceil)
++{
++	return __limit_random_u32_below(ceil, get_random_u32());
++}
+ EXPORT_SYMBOL(__get_random_u32_below);
+ 
+ #ifdef CONFIG_SMP
+diff --git a/include/linux/random.h b/include/linux/random.h
+index 8a8064dc3970..54401dd53f68 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -50,6 +50,7 @@ static inline unsigned long get_random_long(void)
  #endif
  }
-diff --git a/lib/raid/xor/xor_impl.h b/lib/raid/xor/xor_impl.h
-index 09ae2916f71e..59c801777219 100644
---- a/lib/raid/xor/xor_impl.h
-+++ b/lib/raid/xor/xor_impl.h
-@@ -50,6 +50,10 @@ extern struct xor_block_template xor_block_32regs;
- extern struct xor_block_template xor_block_8regs_p;
- extern struct xor_block_template xor_block_32regs_p;
  
-+/* default call until updated */
-+void xor_gen_32regs(void *dest, void **srcs, unsigned int src_cnt,
-+		unsigned int bytes);
-+
- void __init xor_register(struct xor_block_template *tmpl);
- void __init xor_force(struct xor_block_template *tmpl);
++u32 __limit_random_u32_below(u32 ceil, u32 rand);
+ u32 __get_random_u32_below(u32 ceil);
  
+ /*
 -- 
 2.47.3
 
