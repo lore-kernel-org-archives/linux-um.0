@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45184106ACD6
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 19:17:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EAA8106ACD6
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 19:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vPhRODiUmhApdZ9nninHZXaKw/32D++OFungj9CnSis=; b=iwOpn/UlqKbs94fYJsGv0IOoq4
-	Joi/Hx6T4uJdAn/532Uw/IGXJrJJt+BokmRP/Wr+TYvI+rRjbb2t/t5o+2yhDsREBIgr93KvQdh8x
-	Vdjl5d/1tyfCWsnwhzc5ETxGqGGzxIbFsU7dInEpEwE2GiYDLIdx7i11NHTmqU53hVhQudaBBZj5x
-	4aWAGcVxEUoSKgFhZw3nF/IyaNO4EWRcgB1tWRXpg9D4w18EUqzkGJK4hq4DMvcChCiPlqsZ4q0Ys
-	dZlUUTeJ7tLGDwn0zukvEYqHTnlHMS+dZPPzu9GAPBl/kjeITSUCwnh9tQyN7Wah1Ser6U5gU7w9E
-	ztu0QCsQ==;
+	bh=fhMnv5mmN2PItMUZRkAdo/GwoeVKV/dEwdSk9XVYG6M=; b=x+euORgOgS4Y6+wCjhiI+eL/Yh
+	X/2eqADnjr8RTJH/OPKcR5F/P6NnmO7FcUNiscj93U7LoRagj8qOwggowyRJZjqCYXsOd/OlNFpIk
+	vmuK23k+pMBDvFBsjw9B6LnSCwXUJWz686U6V2C2L1VzcYi27c7UH3BiAl1jnBORCki8s7Tzq2AqV
+	8+jlnUqypGh8Nc665mdt6ao83+jaCOSDumTilmLt1iucS2cDZ+uuuFbK01TO+53OFVSx0XLiWJOxl
+	f70Zag393JUdAphDATHhbXECihY2psnurd+ZotjgKMUEXTtiV6mbXzftTox5OlH9v2dYlJI+vbuw7
+	9RdxBChg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0lXN-0000000F20d-2L0E;
-	Thu, 12 Mar 2026 19:17:37 +0000
+	id 1w0lXS-0000000F28b-1qPJ;
+	Thu, 12 Mar 2026 19:17:42 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0lWx-0000000F1OX-3wWf;
-	Thu, 12 Mar 2026 19:17:16 +0000
+	id 1w0lX2-0000000F1Vp-2ZhQ;
+	Thu, 12 Mar 2026 19:17:18 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3A2C2435E2;
-	Thu, 12 Mar 2026 19:17:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91370C2BC87;
-	Thu, 12 Mar 2026 19:17:10 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id D270444532;
+	Thu, 12 Mar 2026 19:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13B21C2BC86;
+	Thu, 12 Mar 2026 19:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773343031;
-	bh=Rovsmd7IqTNzI5EcVU23ecGwNpd7/HeY2RA96JWK1G4=;
+	s=k20201202; t=1773343035;
+	bh=7VXWMMb8aKJSoBfGPrIqO8IUEnKlulnIJYLzAvN6j+w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oiFVSSWh2OUxe+IRR3rnmTy8nxwzuzVDRNi+ROq8s04X0N0PeqKlBjCJMmANJda4O
-	 dGBvn2t4JqWT8XRLnm7gqFwQr3Ib+D6vdBYLCDQrscdAew48i/qQ79WgO1WaOCs1Ek
-	 Uef4CcGMrvESwh2/7ZyrUZ/jikb5cfXIP6DhGpvR1DUKe4+IGexmTb1I8ojluvK0su
-	 ZiGKKueX7fbrX15WrU4TqUkVZWJnXZDbQwaVolX/lK3hHBgzPeg0b24sxN9C7D7an8
-	 XPVMwN3uY3elSHAWnR6Nuscs7fK0+H9tzU5FWYEBIYY4bYJtaSdZGD+0325r8cQLEw
-	 pJyC4jXOP5boA==
+	b=S6biTYW5jbYbTepby7X/BkqorLcHBb04qPmImr1kZ3nSuHLOZ/ZrHAZMp7JPqfDIU
+	 93qlU0/T7LPgAQM4z9toGawMEUM2zu9NNeM1y8fElbpKwQ1pcdqqqVlyJhZ5zp9jxx
+	 eHYm4l+oIEImlYHb7YnIskEY0EsKtxwm9wnq27GBF3d02vQNa6HpL1wbvyJOYyt9ho
+	 YJkN95McMgQtPBs1+M5qUXxKitxLXHTtQ72b3LaNkYsE/k2D+DjqvMxtmI4DovAmUt
+	 hU5vyYvKqDoNkCdwzA1gU88jk950A5cER++yK28TcRIsoA7mCT6fbLdmO9EyS5xnK+
+	 aanewocyJ2dxA==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,17 +104,17 @@ Cc: David Hildenbrand <david@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org,
 	selinux@vger.kernel.org
-Subject: [PATCH 15/20] tools/testing/vma: update VMA flag tests to test vma_test[_any_mask]()
-Date: Thu, 12 Mar 2026 19:16:13 +0000
-Message-ID: <693d6e7333f5c8859593753e682a5e7169551b84.1773342102.git.ljs@kernel.org>
+Subject: [PATCH 17/20] tools/testing/vma: update VMA tests to test vma_clear_flags[_mask]()
+Date: Thu, 12 Mar 2026 19:16:15 +0000
+Message-ID: <c391ce76c41eef0941d3e6c2e51fec73994a8316.1773342102.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773342102.git.ljs@kernel.org>
 References: <cover.1773342102.git.ljs@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_121712_092187_83479704 
-X-CRM114-Status: GOOD (  12.34  )
+X-CRM114-CacheID: sfid-20260312_121716_764572_37B14E3F 
+X-CRM114-Status: GOOD (  11.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,44 +129,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the existing test logic to assert that vma_test(), vma_test_any()
-and vma_test_any_mask() (implicitly tested via vma_test_any()) are
-functioning correctly.
+The test have existing flag clearing logic, so simply expand this to use
+the new VMA-specific flag clearing helpers.
 
-We already have tests for other variants like this, so it's simply a matter
-of expanding those tests to also include tests for the VMA-specific
-helpers.
+Also correctly some trivial formatting issue in a macro define.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- tools/testing/vma/tests/vma.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/testing/vma/tests/vma.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
 diff --git a/tools/testing/vma/tests/vma.c b/tools/testing/vma/tests/vma.c
-index 1fae25170ff7..1395d55a1e02 100644
+index 1395d55a1e02..340eb3119730 100644
 --- a/tools/testing/vma/tests/vma.c
 +++ b/tools/testing/vma/tests/vma.c
-@@ -183,13 +183,18 @@ static bool test_vma_flags_test(void)
- 	struct vm_area_desc desc = {
- 		.vma_flags = flags,
- 	};
-+	struct vm_area_struct vma = {
-+		.flags = flags,
-+	};
- 
- #define do_test(_flag)					\
- 	ASSERT_TRUE(vma_flags_test(&flags, _flag));	\
-+	ASSERT_TRUE(vma_test(&vma, _flag));		\
- 	ASSERT_TRUE(vma_desc_test(&desc, _flag))
- 
- #define do_test_false(_flag)				\
- 	ASSERT_FALSE(vma_flags_test(&flags, _flag));	\
-+	ASSERT_FALSE(vma_test(&vma, _flag));		\
- 	ASSERT_FALSE(vma_desc_test(&desc, _flag))
- 
- 	do_test(VMA_READ_BIT);
-@@ -219,15 +224,17 @@ static bool test_vma_flags_test_any(void)
- 					       , 64, 65
+@@ -330,19 +330,21 @@ static bool test_vma_flags_clear(void)
+ 					, 64
  #endif
  		);
 -	struct vm_area_struct vma;
@@ -181,14 +159,43 @@ index 1fae25170ff7..1395d55a1e02 100644
 +		.vma_flags = flags,
 +	};
  
- #define do_test(...)						\
- 	ASSERT_TRUE(vma_flags_test_any(&flags, __VA_ARGS__));	\
--	ASSERT_TRUE(vma_desc_test_any(&desc, __VA_ARGS__))
-+	ASSERT_TRUE(vma_desc_test_any(&desc, __VA_ARGS__));	\
-+	ASSERT_TRUE(vma_test_any(&vma, __VA_ARGS__));
+ 	/* Cursory check of _mask() variant, as the helper macros imply. */
+ 	vma_flags_clear_mask(&flags, mask);
+ 	vma_flags_clear_mask(&vma.flags, mask);
+ 	vma_desc_clear_flags_mask(&desc, mask);
+ #if NUM_VMA_FLAG_BITS > 64
++	vma_clear_flags_mask(&vma, mask);
+ 	ASSERT_FALSE(vma_flags_test_any(&flags, VMA_EXEC_BIT, 64));
+-	ASSERT_FALSE(vma_flags_test_any(&vma.flags, VMA_EXEC_BIT, 64));
++	ASSERT_FALSE(vma_test_any(&vma, VMA_EXEC_BIT, 64));
+ 	ASSERT_FALSE(vma_desc_test_any(&desc, VMA_EXEC_BIT, 64));
+ 	/* Reset. */
+ 	vma_flags_set(&flags, VMA_EXEC_BIT, 64);
+@@ -354,15 +356,15 @@ static bool test_vma_flags_clear(void)
+ 	 * Clear the flags and assert clear worked, then reset flags back to
+ 	 * include specified flags.
+ 	 */
+-#define do_test_and_reset(...)					\
+-	vma_flags_clear(&flags, __VA_ARGS__);			\
+-	vma_flags_clear(&vma.flags, __VA_ARGS__);		\
+-	vma_desc_clear_flags(&desc, __VA_ARGS__);		\
+-	ASSERT_FALSE(vma_flags_test_any(&flags, __VA_ARGS__));	\
+-	ASSERT_FALSE(vma_flags_test_any(&vma.flags, __VA_ARGS__));	\
+-	ASSERT_FALSE(vma_desc_test_any(&desc, __VA_ARGS__));	\
+-	vma_flags_set(&flags, __VA_ARGS__);			\
+-	vma_set_flags(&vma, __VA_ARGS__);			\
++#define do_test_and_reset(...)						\
++	vma_flags_clear(&flags, __VA_ARGS__);				\
++	vma_clear_flags(&vma, __VA_ARGS__);				\
++	vma_desc_clear_flags(&desc, __VA_ARGS__);			\
++	ASSERT_FALSE(vma_flags_test_any(&flags, __VA_ARGS__));		\
++	ASSERT_FALSE(vma_test_any(&vma, __VA_ARGS__));			\
++	ASSERT_FALSE(vma_desc_test_any(&desc, __VA_ARGS__));		\
++	vma_flags_set(&flags, __VA_ARGS__);				\
++	vma_set_flags(&vma, __VA_ARGS__);				\
+ 	vma_desc_set_flags(&desc, __VA_ARGS__)
  
- #define do_test_all_true(...)					\
- 	ASSERT_TRUE(vma_flags_test_all(&flags, __VA_ARGS__));	\
+ 	/* Single flags. */
 -- 
 2.53.0
 
