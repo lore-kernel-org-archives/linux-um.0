@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A2C3106FD61
-	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45BA9106FD62
+	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=j63R+vGSqFIeC0SCj0jcb9BcsciO20wok4YExEEnIuU=; b=aRQkZiqQTkYtYg4Gf6hVFqLGwl
-	ehPsy1BEAPvSTY8i6kZztTPsrSUq49/esIBywwfc8NuieingTfmA16G+J/YR4XC/vFL0hPkWY4Q+i
-	7MM2LMyFdfQoOfXvM2zs+jqYAGzChLWaL0G45BCnBNVuCKCM4xhLP3snrAdyQXLInyJynIEAZJ3gs
-	Lz3MD+GZOB9epXOfPDkgRtsBK01/WWdiFQGBUazCwlGfXjt1NDDBB9iMaShJXoLceZUEGTV8AJHXr
-	tzGm8FKqGg7ZpZxy9cfRvMzUvcXuu814e/GNM4e4VZjrnZk/s/W+JDC+CX3Ot2M3SFQhL/Q6RI00n
-	2ivcjEww==;
+	bh=EchxTXDSTALGT/SYRwTZVf/wCe3kGgvEe9z67tw1N/I=; b=m1ybix3MSwvV3OrKiIMQglqH+S
+	AXC7y8twKA+hdGBO9LbjKCStsLdpfNCXZLmtU2bigvxSZLEFhX1zlSHkqrm1cqzkMEUxtINb+sBKz
+	M50v0daq3OiECmBkq3KsIgmr+8marhQ1gnEjPJUTRx8CnfsNohuq7kgt8UZ5sgDbGEj3jOzrFXmIV
+	GcB0DTTixS9Ye+hHOpKL8cMdWy7aUhq6L5Dde8tv88AD0Qg5G1oR3MFAh0nj2ntaHkZA1Ukl6DGyh
+	5sn39vdsbzKx3f88uoa9HjcUxds+qs0xx0tw8TWjUh7DniTgsJuaTy6fASqWFXQDW2l24rbbNKLEL
+	qLGAmPXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qdM-0000000Fy3b-0cvL;
-	Fri, 13 Mar 2026 00:44:08 +0000
+	id 1w0qdc-0000000Fy8U-2yUH;
+	Fri, 13 Mar 2026 00:44:24 +0000
 Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qdJ-0000000Fy2w-37vv;
-	Fri, 13 Mar 2026 00:44:06 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id 9997B1301B2F;
-	Thu, 12 Mar 2026 20:44:03 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Thu, 12 Mar 2026 20:44:05 -0400
+	id 1w0qdb-0000000Fy7i-00jx;
+	Fri, 13 Mar 2026 00:44:24 +0000
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailflow.stl.internal (Postfix) with ESMTP id 1C1651301B36;
+	Thu, 12 Mar 2026 20:44:21 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Thu, 12 Mar 2026 20:44:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362643;
-	 x=1773369843; bh=j63R+vGSqFIeC0SCj0jcb9BcsciO20wok4YExEEnIuU=; b=
-	eCvS91w+DhWkcI9jjJdNUADcxRGhElzytgMJasgIzKJtuooXaIh3KKja0pUFfX6O
-	fgYAReRrX9HpVO7F12hftQ0cSIl24yo01gvuoWwgQ+0LBkoLFsR05RvwjsbQ/xGe
-	TARIB8LZx92xUD+U+XYJVZBaPlMp/mwNUr6o9DINS6+42ydzcFDjycZgH68WWE6o
-	C3GjVtvxBt81M8NGL0of9lLYsOHaaCljR0612e0zlQfV27RuAQZNtF61tH98aa3Y
-	SztxAesntkfAUiZ3e07BF5twMFIeG7LcYeif3ZUiOH9o5O91dPmpaZ9mcvHyC7F5
-	pzd5Q75S3kEWTz9D7gVIYw==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362660;
+	 x=1773369860; bh=EchxTXDSTALGT/SYRwTZVf/wCe3kGgvEe9z67tw1N/I=; b=
+	HtGyc6qG86oz5kPvVFKloxRAiiPrdOpKU8L6wLUUYdjZZtzmK8nkkRoRc4Ob/zDE
+	ygWeDDQ7jByf/H36cgdfqD2YT8xrlT5AnRfqLG6YYDduADlVEQcPZKFCOFEq7efp
+	W0PV4tzGLYO7R7+Bi8QoTHgftdcdAbG2cmbRdSq7IiPJrej/xGh8Sis7vcSb5NUp
+	8p9RKdBEfwd8U9POVkTHLrI8JD7f/jqhMlJETvpWzrtU+xKrqH6+DdkWl9BZAf3N
+	0STPIxH4lQraZKks4fXTtb9nzvy+JFzG89W3Fsfemen70/tWjCFitTexXEMl+aF6
+	MdwcnBbmpBgBWkwcmrlWrQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773362643; x=1773369843; bh=j
-	63R+vGSqFIeC0SCj0jcb9BcsciO20wok4YExEEnIuU=; b=VOKUtq/0Ox3dCym8N
-	La/hchRjt+rNU/iyTLG4kwEHuMKD4y3a/JkwzJH9LuB11f5JIetBBVHMt9ViJypU
-	UjyLlnUHckM8bh9QjAY4Jyd/C7N5jwudw1JHDUa9iXFd7am+GANyEnLlgi/obehc
-	ULSfiEhaSLtneM7w7UNW2TpbgbwcaZ5Y83VVFAz+dm25dDXamEX/5/azTn0wR4rH
-	T5eikG9cF+xC+X5DUfa2srcny2SiEQpjWf7Wv50KDnPD1IC+BRLh5gtaUkd0Xqxn
-	q7lCrpBBSd1OGWFQIKyOZeBKLnQT8rrdPD3KtmKkTnMRm+b0/M3MehJ+STL1Wogh
-	t4YJw==
-X-ME-Sender: <xms:012zaShtjFWHYv9HOGnqTxWKzw1vnA7StjckJwiN2A5XojBB-F9JCA>
-    <xme:012zact3Dt6TPh_zjEgrQwDsyr4DDxrfYJ6cn9riTs_e14ePaC1C59ywk8575wtIx
-    oCoyXSmpvc2QJ7FHiKkN9vyQBEYv-8vxOZoFw9Pf5SKSJTBfw>
-X-ME-Received: <xmr:012zaRBDZsBNJH0PilDgngT1D_tzQ8ozHN_bDcdw-FMo3b04ruKTCh0syXRWeolXCoApwXWT2_5U1Kk96nnuomeQn0TR05_drdDWBLwveY1h>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773362660; x=1773369860; bh=E
+	chxTXDSTALGT/SYRwTZVf/wCe3kGgvEe9z67tw1N/I=; b=cGZE7jMy2SV9uoVbT
+	q+IZzNuzXM+hYp7X/7RyEelmnM4UrPJGwKgU90XEnptRogSnhLgrodnjWWKRdW6V
+	AQ2OpzAPnuid/OLVu+UcDPlHx8xARolg4F09VwR1VkrdXcXUZU3U5Q/ecPnnrOZf
+	SYXSxRBpzCG7sc8smUlxY8lKJ6slf1JpRJFSI4EJH5Sn6FJIQ9W0S72D+0grR2eW
+	eRAGsh4DDkSU9EgUFpYcUsAr3jEhGPLkD/lIXTiZxQR15ET1AfwNhG2Uyk8kFZEA
+	eJf1QWHbL/Mhmx2NzRvIensmEAwQ5KJ9/ygKBb3mV2toMoGumq2oOmUfpqyuBCg1
+	QIv+A==
+X-ME-Sender: <xms:5F2zaVHI984ELvb6xSRaFU9eCeKsAQjeZVnzdbb6spa-5onhWibOxw>
+    <xme:5F2zaUAed5wK-zCYjIohFxTpHOZodN1QK5v6gSu9aBbq6YkW49INvwK2H8WSlxuUj
+    0AINAGwpWxmYYyrWgs6QEljfIuLf1lidnihAI7NxZBlett3>
+X-ME-Received: <xmr:5F2zaeFAXsLgutzseRttIHJSIZrQBg4HQsn-pgvOFbN2jRZuZJQaVAifygamFXGvvWGzpvACE4zAmDQPT3U028PwiKjFjFm6UlAj5yjyJwko>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhephffvvefufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpefpvghilheu
     rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
     epveevkeffudeuvefhieeghffgudektdelkeejiedtjedugfeukedvkeffvdefvddunecu
-    vehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
     esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohephedupdhmohguvgepshhmthhp
     ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
     hrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
@@ -77,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdehucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:012zafUKwyL0OuJClu15Puc2ys4KgwTiMGJwcET4JsKEaucWrW0l3Q>
-    <xmx:012zafJP8iVeo9UK7ccWbWNQm9a4nXPYhx2VbUK7ny3vfppuOu7x9A>
-    <xmx:012zaYXOH9KU6qbd-du9diTet8tT6m4DrmZSp1YTRJNc9aQpNYykwQ>
-    <xmx:012zaYRD_17YWDi-EKB18x17U_SFvVAUAN1Enot0fJD4HVRO11zFbw>
-    <xmx:012zaYIlDd2v2et1x5yz_VJ7tc4OmMkzO-PwjDx9T6vNixAjsjCKsyLB>
+X-ME-Proxy: <xmx:5F2zafLiDwJI8AsohNmCqUWhx66u5JznxXNAP9db1X9x-LHxraRvUQ>
+    <xmx:5F2zaauU88YwyeOeYB86_WfHys66FW-d63rSeocswtoECd66SdtGHA>
+    <xmx:5F2zaUpH9EvuwjTwbaCT-kN4TE4nurgxpwZqmfL5VKPrPKKsZvNp0w>
+    <xmx:5F2zaWWtk05otDk_d1bqcAfIJnfbAsyYAIR11Xd5Jqwl9RmTh_ZPSw>
+    <xmx:5F2zaZWxNVGF8w3Grc8V634dTGW1lFtEASW9xYbi3dSM4mcL6-JNsBIK>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 20:43:49 -0400 (EDT)
+ 12 Mar 2026 20:44:07 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -127,18 +127,17 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 34/53] tracefs: stop using d_add().
-Date: Fri, 13 Mar 2026 08:12:21 +1100
-Message-ID: <20260312214330.3885211-35-neilb@ownmail.net>
+Subject: [PATCH 33/53] ext4: use on-stack dentries in ext4_fc_replay_link_internal()
+Date: Fri, 13 Mar 2026 08:12:20 +1100
+Message-ID: <20260312214330.3885211-34-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_174405_847985_3A24645C 
-X-CRM114-Status: UNSURE (   8.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260312_174423_104406_FEBC6EB1 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,39 +155,93 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-"Best practice" is to use d_splice_alias() at the end of a ->lookup
-function.  d_add() often works and is not incorrect in tracefs, but as
-it is planned to remove d_add(), change to use d_splice_alias().
+ext4_fc_replay_link_internal() uses two dentries to simply code-reuse
+when replaying a "link" operation.  It does not need to interact with
+the dcache and removes the dentries shortly after adding them.
+
+They are passed to __ext4_link() which only performs read accesses on
+these dentries and only uses the name and parent of dentry_inode (plus
+checking a flag is unset) and only uses the inode of the parent.
+
+So instead of allocating dentries and adding them to the dcache, allocat
+two dentries on the stack, set up the required fields, and pass these to
+__ext4_link().
+
+This substantially simplifies the code and removes on of the few uses of
+d_alloc() - preparing for its removal.
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/tracefs/event_inode.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/ext4/fast_commit.c | 40 ++++++++--------------------------------
+ 1 file changed, 8 insertions(+), 32 deletions(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 8e5ac464b328..c30567b5331e 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -393,8 +393,7 @@ static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
- 	// Files have their parent's ei as their fsdata
- 	dentry->d_fsdata = get_ei(parent_ei);
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 2a5daf1d9667..e3593bb90a62 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1446,8 +1446,6 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+ 				struct inode *inode)
+ {
+ 	struct inode *dir = NULL;
+-	struct dentry *dentry_dir = NULL, *dentry_inode = NULL;
+-	struct qstr qstr_dname = QSTR_INIT(darg->dname, darg->dname_len);
+ 	int ret = 0;
  
--	d_add(dentry, inode);
--	return NULL;
-+	return d_splice_alias(inode, dentry);
- };
+ 	dir = ext4_iget(sb, darg->parent_ino, EXT4_IGET_NORMAL);
+@@ -1457,28 +1455,14 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+ 		goto out;
+ 	}
  
- /**
-@@ -424,8 +423,7 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
+-	dentry_dir = d_obtain_alias(dir);
+-	if (IS_ERR(dentry_dir)) {
+-		ext4_debug("Failed to obtain dentry");
+-		dentry_dir = NULL;
+-		goto out;
+-	}
++	{
++		struct dentry dentry_dir = { .d_inode = dir };
++		const struct dentry dentry_inode = {
++			.d_parent = &dentry_dir,
++			.d_name = QSTR_LEN(darg->dname, darg->dname_len),
++		};
  
- 	dentry->d_fsdata = get_ei(ei);
+-	dentry_inode = d_alloc(dentry_dir, &qstr_dname);
+-	if (!dentry_inode) {
+-		ext4_debug("Inode dentry not created.");
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ihold(inode);
+-	inc_nlink(inode);
+-	ret = __ext4_link(dir, inode, dentry_inode);
+-	if (ret) {
+-		drop_nlink(inode);
+-		iput(inode);
+-	} else {
+-		d_instantiate(dentry_inode, inode);
++		ret = __ext4_link(dir, inode, &dentry_inode);
+ 	}
+ 	/*
+ 	 * It's possible that link already existed since data blocks
+@@ -1493,16 +1477,8 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
  
--	d_add(dentry, inode);
--	return NULL;
-+	return d_splice_alias(inode, dentry);
+ 	ret = 0;
+ out:
+-	if (dentry_dir) {
+-		d_drop(dentry_dir);
+-		dput(dentry_dir);
+-	} else if (dir) {
++	if (dir)
+ 		iput(dir);
+-	}
+-	if (dentry_inode) {
+-		d_drop(dentry_inode);
+-		dput(dentry_inode);
+-	}
+ 
+ 	return ret;
  }
- 
- static inline struct eventfs_inode *init_ei(struct eventfs_inode *ei, const char *name)
 -- 
 2.50.0.107.gf914562f5916.dirty
 
