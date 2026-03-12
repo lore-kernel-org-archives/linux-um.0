@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EA1C106FD60
-	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C315106FD60
+	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=qP97D44pd+bD4JWGG2Q7TQgjFc
-	QXmXIFPsagq7VmichCwYXtrderMa+QKgrBy4VIDiB+2ck+BOAs+iwfCqwoU05ZFgeEbf8PckM7F2T
-	w2cL0vigo1lzFPOZngzzZgyigCXOaKXCYXJEkBWamiC3ukpJnaLhQ4fQo64J/0C9aNzxe4cGc0vTO
-	kA625avwCsyBT4gsUY2RPsMBwDUJ2STfu04O52j6q+LZTGExL8qNNPZy5MHynejdYUyJu7xXwyV0O
-	iEw/E5CRykVmhhvbQdHwy6XZFqEpzDfvTIz/+fAVbB1pnZ/tJD8cSInjhUJ68UmeynKLmsBHIyacE
-	/NmWjy9A==;
+	bh=Qz44r/cI/H+P66r7rjgQTu2SyU7wjlJxbU1IwzedCr8=; b=WqHlpVVmUqbNAJtfvV3uniguNb
+	eWfNQy3TQTW0c6qlj+Cx/x4E5iHtkeJKn3bzjoYBXRctVjWl4CF1nF3Im/06P8nqZasPA34R6eKNq
+	qOt/KZKMZ8U1qMPe38PZGwX6fXBA0YqJY61G/nUeHVHqSQog6g9upWKRMwFe/OL949I/1dtMV9Yjj
+	Lx5qKAQjyQ6kXxMEVE8BEOZHniIwaTIYP4EscWmKhr3RxAjlPsDzleP0wrIDBucPKe735DqvLR4mE
+	Jr8OcsHc+8kJNCR40qB+89S7zJwY58eL3OxGo9NoW1jrv8pvifBUmuVZdXphcOWA2Y1n0YBgDPJQk
+	X10mZvwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qg7-0000000Fynm-1eEC;
-	Fri, 13 Mar 2026 00:46:59 +0000
+	id 1w0qgO-0000000Fysh-3E3N;
+	Fri, 13 Mar 2026 00:47:16 +0000
 Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qg5-0000000FynF-0pAn;
-	Fri, 13 Mar 2026 00:46:58 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id 605B01300BDB;
-	Thu, 12 Mar 2026 20:46:55 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Thu, 12 Mar 2026 20:46:56 -0400
+	id 1w0qgM-0000000Fys0-35fS;
+	Fri, 13 Mar 2026 00:47:15 +0000
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailflow.stl.internal (Postfix) with ESMTP id B9F1C1301B6E;
+	Thu, 12 Mar 2026 20:47:12 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Thu, 12 Mar 2026 20:47:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362815;
-	 x=1773370015; bh=K3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=
-	RNXQe8RCRsLKMGTZv3GRKZahOC0IxxlJic/ko0MFy4a1ctyXK6vvz4ReaSk7Wtb/
-	mAzGCuXrdmdZBQIRLvL9TgyL2qlc45O0kQ3l8qXW16jE7P6d9LqJCqRvPWC/uzxz
-	Fg4Z9KDdzbQTjvMOHVIfVhzYLGcWWMkbkuEXMLMZZKzxUaOV6SPZtD3+P7r4CdlO
-	YReiac+iMDhQdyLzaO6kSMLbrOxlDborVcCeQAMrmsrVMTfxIzMeSF5US+w16WfM
-	ACO2ucwH/a+sdYpvVApyX2BOUWYS4NgQgEXOKZ4Urg3/g1TPjzQe8VBcsJ455SzX
-	9KAVhZnChtKP/WL+6dyBwQ==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362832;
+	 x=1773370032; bh=Qz44r/cI/H+P66r7rjgQTu2SyU7wjlJxbU1IwzedCr8=; b=
+	IpsMpfFevA+mEhkdruCUf1Vu9FEmLzrEWAtb4IDHjustVcc660x5nQzIEH+zM7+n
+	F7xem84KPhj9hWFRzoN31Jzl2kLAcLz5C41k8KF8DDc2o4mfWEEH6308fDzSejrk
+	AorOd82znIkjc2rhRbi8CcLttXgvES5I5n9aRJa1sym6k9LnaGvmiOPtg4JaoClH
+	E0GZdfUMmErgqYA2F+MxWkHZOVdGxA5gC99x4eWzvtHdwM3bSZVia7h1wLflwgGX
+	KQHLoziyxbJHp75VC9zMqgFzhJDRW4bSOVnZITlnR83AmG4HdVrOomHAmHpQJLkD
+	HBP2qOLbjyiF5zP3BpxzQg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773362815; x=1773370015; bh=K
-	3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=wfskezN6avTEhR19Y
-	nyFK8EjU0/MMk1mTZsKRrgviM3fKXxJNJu1JVFZMcMVBW/OhFGdzQV2zxrvMHOyI
-	+wsRPzWoNSHHCaB3Uz6Z2Z50+4HPTAToivoCuItoC7GdStbUhlwIos6CNfKYetOs
-	dtWj4+DVfGt5fqQnqBjG1Dqg+KH1ydv5G4O84e2/iXhc9Ryvf0hXvivBdRiWWVUz
-	ln4nRLs8aYjEr1bv8aqsemzU1pcoJrsa+DX022p8AWsPy7cwqUau5yZRIa7kTqSX
-	KkLiJjVMjxGllDLHldeMf1HfZBS49/IiohaDFc6csqGAyWyuyBEkdFBLfaeltNSp
-	jBt2A==
-X-ME-Sender: <xms:fl6zafe3S7X84lJOJFdshQFEOSrbddVEHmr1mw6S46GpGR2i6woJ8A>
-    <xme:fl6zaczFa49e0KK0S015j6JpoR_5P68FmUDqY6WEQHX1cWMiUDEH-T7HQAfY5J6od
-    qM5cWDNETWONPUtRpmNWTVHJCOl1xZ2rv7QmzJHE25REqnBVQ>
-X-ME-Received: <xmr:fl6zaVfYsIubTYkOgpCpYFaYitUZ5oYFrWfnd5ZTirmi7nP4J0c0z79jLMuEwIr_H465ON1BCgxcqIa4aTJ0nwCIZ9blq-QRFlXrRlcGC-hU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdeiucetufdoteggodetrf
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773362832; x=1773370032; bh=Q
+	z44r/cI/H+P66r7rjgQTu2SyU7wjlJxbU1IwzedCr8=; b=G8JHmFu5KQLBpNeDN
+	zld/gBCZXli4GS4wIem/PbJqdIIhih3tiaKE/N90l8FUrwJW8+gU2YeDvGTUBthJ
+	rkgMGcdPlD1fIWMo1biHaQo9/WLjEYSr4vVAu27PxvDXdpU++7hfY7L//0Jwh1vH
+	tzV6BPqgVS3EsG8sXh4xhvpy93GmQMFAKAaTw03Y5NAL6DAPPg5Wqs5sjjStPu0f
+	cLxuKrZDYNCr9qnEHNk94ODc/hUxWL67t8Fh7zQzN0r9Wm/zV2Yq30KwIEHJu9yc
+	t/JWWAUZfgxJ26ZwGO6uIfjpuQTO8vMuyP8XPTU8suyyC2YPRzT8hE/YRgFJTBwT
+	ND/vQ==
+X-ME-Sender: <xms:j16zaYNqiENq37Q88rVFgJaCOvTJoUm1h2SEBH6kM7EqWOTDRHmc2A>
+    <xme:j16zaYoZ3REtyM9VfSMjEIDxBMUKaiHvdWMBpAfpNKCvDvCxoo2Qze54PpjQVZobJ
+    WRkvp_JemW5lzrlTb4vGsMKrrdw7teaVORNkzNbZ_AH4lnd0A>
+X-ME-Received: <xmr:j16zaWO7xjK010jo-nA47C_4dYeAJwZ_N6uvslo1KsUNxaUr2oh3YspcqtKGGcTzoVpio9l4SKeKi4FzhdaorN2yMS4jRgR7n5YPp67PZbLn>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhephffvvefufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpefpvghilheu
     rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
     epveevkeffudeuvefhieeghffgudektdelkeejiedtjedugfeukedvkeffvdefvddunecu
-    vehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
     esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohephedupdhmohguvgepshhmthhp
     ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
     hrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
@@ -77,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdeiucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:fl6zae4dK9r668Qiw8CvZFQjfZ31XTfKNmbrp9eUDoDMrazoXyD0fw>
-    <xmx:fl6zaVaKGWkKJVt8deNozJ9QBXJAphfRuD5nuPx9CFBo8ryZkkpqgg>
-    <xmx:fl6zaTzrXRucFOWhgAsf8iS1wX5cATadJaq7iOpt6RIngHxauV71uQ>
-    <xmx:fl6zaSQ4lRJXRVAygVyvKtYoYqFXXoBXTgOtSlESq2KNF1VJOQLY9g>
-    <xmx:f16zaVIP2rSOzehLw3_PK25GCy-IcS721ulaHNjDv3drFOKshm3Pavwn>
+X-ME-Proxy: <xmx:j16zaUzYdGgFWNlQYTElED9rnjSSFh5w-f45gvQomTKe5mqutsfuIw>
+    <xmx:j16zaf3nVk-q_uhqBESJnPqXZCkqcke1PsMYuH1SmSZD0xMezqCrmA>
+    <xmx:j16zaTRtsoaSs1r-htZVOscRdBLq7DVWFnEqHhe2Q1hzILsaqY_XHQ>
+    <xmx:j16zaQcOUgemLNPo4bCCmDOXDChgryenKb1HF8fIilO_1ferY7gLGw>
+    <xmx:kF6zaedyr8sLQAReYz8TwH3TKulUCUC0YXzRK_d6K-utN3FzIFWDtrCh>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 20:46:41 -0400 (EDT)
+ 12 Mar 2026 20:46:58 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -127,18 +127,17 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 24/53] afs: use d_duplicate()
-Date: Fri, 13 Mar 2026 08:12:11 +1100
-Message-ID: <20260312214330.3885211-25-neilb@ownmail.net>
+Subject: [PATCH 23/53] afs: lookup_atsys to drop and reclaim lock.
+Date: Fri, 13 Mar 2026 08:12:10 +1100
+Message-ID: <20260312214330.3885211-24-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_174657_277261_A5E79B7D 
-X-CRM114-Status: UNSURE (   9.28  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260312_174714_840292_1368F6A5 
+X-CRM114-Status: GOOD (  16.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,38 +155,87 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-To prepare for d_alloc_parallel() being permitted without a directory
-lock, use d_duplicate() when duplicating a dentry in order to create a
-whiteout.
+If afs is asked to lookup a name ending with @sys, it needs to look up
+a different name for which is allocates a dentry with
+d_alloc_parallel().
+This is done while the parent lock is held which will be a problem in
+a future patch where the ordering of the parent lock and
+d_alloc_parallel() locking is reversed.
+
+There is no actual need to hold the lock while d_alloc_parallel() is
+called, so with this patch we drop the lock and reclaim it.
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/afs/dir.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/afs/dir.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
 diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index c195ee851191..b5c593f50079 100644
+index 1e472768e1f1..c195ee851191 100644
 --- a/fs/afs/dir.c
 +++ b/fs/afs/dir.c
-@@ -2047,6 +2047,8 @@ static void afs_rename_put(struct afs_operation *op)
- 	if (op->rename.unblock)
- 		store_release_wake_up(&op->rename.unblock->d_fsdata, NULL);
- 	store_release_wake_up(&op->dentry->d_fsdata, NULL);
-+	if (op->rename.tmp)
-+		d_lookup_done(op->rename.tmp);
- 	dput(op->rename.tmp);
- }
+@@ -908,12 +908,14 @@ static struct inode *afs_do_lookup(struct inode *dir, struct dentry *dentry)
+ /*
+  * Look up an entry in a directory with @sys substitution.
+  */
+-static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
++static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry,
++				       unsigned int flags)
+ {
+ 	struct afs_sysnames *subs;
+ 	struct afs_net *net = afs_i2net(dir);
+ 	struct dentry *ret;
+ 	char *buf, *p, *name;
++	struct qstr nm;
+ 	int len, i;
  
-@@ -2175,8 +2177,7 @@ static int afs_rename(struct mnt_idmap *idmap, struct inode *old_dir,
- 			if (d_count(new_dentry) > 2) {
- 				spin_unlock(&new_dentry->d_lock);
- 				/* copy the target dentry's name */
--				op->rename.tmp = d_alloc(new_dentry->d_parent,
--							 &new_dentry->d_name);
-+				op->rename.tmp = d_duplicate(new_dentry);
- 				if (!op->rename.tmp) {
- 					afs_op_nomem(op);
- 					goto error;
+ 	_enter("");
+@@ -933,6 +935,13 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
+ 	refcount_inc(&subs->usage);
+ 	read_unlock(&net->sysnames_lock);
+ 
++	/* Calling d_alloc_parallel() while holding parent locked is undesirable.
++	 * We don't really need the lock any more.
++	 */
++	if (flags & LOOKUP_SHARED)
++		inode_unlock_shared(dir);
++	else
++		inode_unlock(dir);
+ 	for (i = 0; i < subs->nr; i++) {
+ 		name = subs->subs[i];
+ 		len = dentry->d_name.len - 4 + strlen(name);
+@@ -942,7 +951,10 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
+ 		}
+ 
+ 		strcpy(p, name);
+-		ret = lookup_noperm(&QSTR(buf), dentry->d_parent);
++		nm = QSTR(buf);
++		ret = try_lookup_noperm(&nm, dentry->d_parent);
++		if (!ret)
++			ret = d_alloc_parallel(dentry->d_parent, &nm);
+ 		if (IS_ERR(ret) || d_is_positive(ret))
+ 			goto out_s;
+ 		dput(ret);
+@@ -953,6 +965,10 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
+ 	 */
+ 	ret = NULL;
+ out_s:
++	if (flags & LOOKUP_SHARED)
++		inode_lock_shared(dir);
++	else
++		inode_lock_nested(dir, I_MUTEX_PARENT);
+ 	afs_put_sysnames(subs);
+ 	kfree(buf);
+ out_p:
+@@ -998,7 +1014,7 @@ static struct dentry *afs_lookup(struct inode *dir, struct dentry *dentry,
+ 	    dentry->d_name.name[dentry->d_name.len - 3] == 's' &&
+ 	    dentry->d_name.name[dentry->d_name.len - 2] == 'y' &&
+ 	    dentry->d_name.name[dentry->d_name.len - 1] == 's')
+-		return afs_lookup_atsys(dir, dentry);
++		return afs_lookup_atsys(dir, dentry, flags);
+ 
+ 	afs_stat_v(dvnode, n_lookup);
+ 	inode = afs_do_lookup(dir, dentry);
 -- 
 2.50.0.107.gf914562f5916.dirty
 
