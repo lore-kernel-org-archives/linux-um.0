@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2E3C106FD61
-	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56415106FD61
+	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mtJ/saZCLiCxFDNQljniHYoFSU4uzdwtWsgXO8zNDIk=; b=BDwXKfyTRj6sMYEmrGWhtdrGZP
-	36MalE62EOxnx3I3gLSAQh8LARwbGD2eJcYt09U/6DdKoLw1B31NLCAr1MG3vXW4A8VM0e+OF7CK4
-	NLWSCyupORkN9njPKr+1SEilm4qlo7TgAEfX+4TjE1N5YF7h7b5116SfCn6Bi7P/56rf2/75J8Wvn
-	XHXHwl+3isBm0YfXmt/rLP7/Urcvm0liToEx++4IMBTsRQu36bu3NEiz4d1upaEOePqgh3Q20arJj
-	TIs6xxLkSYlIcasYCpV10+IU2cD4RhkpW6QMRs2JU12b8GtNygpbVQd37EFz3k2ENPAPTm/lLhMcl
-	iKI4l3Pg==;
+	bh=8aHffWYVzxlbvh037JlVhR8ERE/IxGWBZRv5qHj7bJk=; b=p22Wyhh7zUKvh2i/9WJJe5Bt41
+	MmKh4CxHHv+mF+3nKdxbV1qDIyWFgBWFG2DAN5IxZABFEV538sr1f5vR0lAYCgWF/LRIL1rLWK/X7
+	XDjrst0mA7S7EowVd8CazYPZoPjOruQ/adsg7WawrltGxPbCjmMVMu7aBXVY5l3PKZhzMDArMyJea
+	P4G/qZtQ5mh+h/HlxK+q3GFkd0jmsHIddaOSVn1D6Hgy0gLeRMX7rlyrUB6cmSbAjO0I77H4qc82j
+	UsKjGNNDNbA3mcmQEbYVdMy/dRQ1yukNkCPDF+LAz2X2SvFJBEZgHiklFY/j1n60bhJJNf5WJFXo8
+	SSHJ0d0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qcX-0000000Fxpr-0N8v;
-	Fri, 13 Mar 2026 00:43:17 +0000
+	id 1w0qcn-0000000Fxte-0Nmd;
+	Fri, 13 Mar 2026 00:43:33 +0000
 Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qcU-0000000FxpE-3Lyw;
-	Fri, 13 Mar 2026 00:43:15 +0000
+	id 1w0qck-0000000Fxso-2zQ8;
+	Fri, 13 Mar 2026 00:43:31 +0000
 Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id 1863C1301B1D;
-	Thu, 12 Mar 2026 20:43:10 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 12 Mar 2026 20:43:13 -0400
+	by mailflow.stl.internal (Postfix) with ESMTP id DDA261301B24;
+	Thu, 12 Mar 2026 20:43:28 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Thu, 12 Mar 2026 20:43:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362590;
-	 x=1773369790; bh=mtJ/saZCLiCxFDNQljniHYoFSU4uzdwtWsgXO8zNDIk=; b=
-	evZBO/FT5uLkrmbp/p/bKHGn86ivpuWIB8uwzomHLGU6kH6lhmmlCRwiDJoWV39q
-	TXhehd3v184kz2tKDZFnYt3nMYpGYs0FHIDP5P1WpT7DuL/s4rQw/xsDTsgE9QLg
-	/164043xlTxtGbkRkgPLxopa5nRZXLGdKExiyrVeEWQB7Z6SjppifuMa+H+nAnt/
-	Y9UIllgVcpdMC3ryQir69hasMs4sAzed4op96lB/0i6WUn6Uhf0fVcGFEXiSJozk
-	InAA9BqTgm3htPeeddGMpXgGFTZior38m4S57df0DQ4nN26Wz6Bnup7omFSZuA/V
-	bXDsxk1oRwy+oBWG8yzDjw==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362608;
+	 x=1773369808; bh=8aHffWYVzxlbvh037JlVhR8ERE/IxGWBZRv5qHj7bJk=; b=
+	WX7c3DKPx+tVVhFVjUW8//0VWvS4las6XMedU6aTYpr242woaOIcqjdZZVJ4yVnC
+	P88WJrijdCqh71ZQjfLl+xhjGoQMg/F8wZ7GNOHUOS+3PK7l64Z9RcJfHzu3EJx+
+	9kiGTP3jc4KeZly7RqBISMFoHeUWIhyiLSOgatDGNqU+ils1tsCxI9p7zB3O39nq
+	cROINYPyREvgD1SKVCYqH32NWAcedBFxE+Wuyiva088VcFlPPudW1EKncv3fsuaA
+	BShtlQMTfihkHb/wYJyVBjIX251wX3ueq3TmnmoWiRxo/NGW66kYiWp2sylnh++s
+	bFkFlicATpGbeU9QOA95Jw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773362590; x=1773369790; bh=m
-	tJ/saZCLiCxFDNQljniHYoFSU4uzdwtWsgXO8zNDIk=; b=tlm7pJXgvMRnwrzqw
-	361ob53tdiymOgQgABOTedImHhfzfyXrgBfCei5K7ic4kOntEU7/s+f5sGh5Urct
-	yi6RhxZa9AKNdjteFK4EVVHFzPhf0rBHY7+D36NQKzOYqyDZTXwjWo75g7RIoUOt
-	+1Y24Dtef108V7gC/hPAOKuoKHxLQb6ez/GO9OthDEETcJ7ke8mp144qJcMLu188
-	7QoX5KdxhtTAeNLGhB9EFu+7bHr1B8GbxO8xT5UwDkDbvUE6Kv/LXlywzoVIfx8H
-	5/sPhbm9H87cFjM4xoYFeNlJ51RwpxBUAAY7/b3qCojyfoXALXgP5SiZxeMBLz3U
-	TvcfA==
-X-ME-Sender: <xms:nV2zaf-NnCpb3HI-jpnIeaMEX78RNQjZehsLTDQASvyJLmVZkQdgfg>
-    <xme:nV2zafZJ7mvrmpO-gcToxfMKwcMc5Q_rFX10NZl8_LR-rje39CCVNCfpHij589i8x
-    F8Ot_R8pRFhAt1hFRsQ_wy6CVw51XS3cVTIlX1zcPm_ZZvJPw>
-X-ME-Received: <xmr:nV2zaYGPAoTTcGmEks6mZrihRO7DEzSJQTLVP_2o9xNxWYeVqZvQjDfXGA3yqw1n6XZ5fGvyGTUhxFiRqIqqc-pGG5s2HTIOOgdySI1Z0kbM>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773362608; x=1773369808; bh=8
+	aHffWYVzxlbvh037JlVhR8ERE/IxGWBZRv5qHj7bJk=; b=TKoMfHHkIQcef4oL9
+	WCvsrpW+mTxjtA3eu9J9hQdlSACakLolIy62RydRB3PnAitR2M2UBSxOg6u41jAQ
+	orR8E5pfwsu4X5hri4xNT6JK2donC1MWsL/u0WbE7rRdrQQpndWHCmOLcrn85w5q
+	SI+HqYSuDNwoKNY/0GBR6Pi4KU3xLzz6Q+JVFC40HVtSP3UyiF03OUmeTa8dDPt6
+	DcuHCt92Cd2YJ7SYU+vMYMh3KnIdv8pfwE/90UpO7I3xohC3Jy56VaPbigBQF9ob
+	6qBILVQxLXuHVd9mMl4KuNfCKXc+3cO+4irgJurxJUSavrvBRuwB40RYu4N6E0i6
+	RGNjg==
+X-ME-Sender: <xms:sF2zafwU5O7EET5F6K-aQw7jkWz_ixnHMn4V0xMGQaiLTVepCp0tRw>
+    <xme:sF2zae02wD0x5bh-9IIDWH0SxbeC0VpY18ApLPS8IXDYBqpRjLeeJzPqp01_9lfY7
+    8Jv0uyAVrBjp1-Aj-tSe7O8R_xxkSMDF1paMjxYStXEtm2zyrM>
+X-ME-Received: <xmr:sF2zaQ5u5MiWf_c7DuHg5fbpvIKQer-qUWUomzqvDd3cFUmdR7Z_2wQrinuTZ7IkyU0CpPNKTH5Q0vb0CvuRdpmuwc7ZgXvaIhhtyMu5Yb9C>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhephffvvefufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpefpvghilheu
     rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
     epveevkeffudeuvefhieeghffgudektdelkeejiedtjedugfeukedvkeffvdefvddunecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    vehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
     esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohephedupdhmohguvgepshhmthhp
     ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
     hrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
@@ -77,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdehucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:nV2zaY7faWbXQHLIpd0SYafA-iMAWHAFfnW2ShinVhLAUGrEfx07iA>
-    <xmx:nV2zaZvgDZlHyejqPasp60C6LyxeD80AFwab7f1aj4miUyVx-K4aCA>
-    <xmx:nV2zaaBryqgkdrCkCXjeDM2uqFf7SAUNres7R_12QlIkQ3RduF7YvQ>
-    <xmx:nV2zaZvraRlGVqoe9uMDqj0rk0wlwP-X2N2IrOVEi5yN04lSuh4s-Q>
-    <xmx:nl2zadJN25sW9Jik8_kJDmuvga-QlrXGx2xisz4qYzgk4C1wnxRkBwfU>
+X-ME-Proxy: <xmx:sF2zaZf3Per3LZEdp2WRei0ix5aAERTBM0In42j2nkjtAIqVFKBUPA>
+    <xmx:sF2zacZtEAEXc0iiBzy42igNRtM_Pt7PbdtzWmXxrPKB5Q8Y4_JQgw>
+    <xmx:sF2zaTF4c7hbyoPU2SzpbJB5q6gWv9QUr2hNyV-ZxscAn7v4SDrPRA>
+    <xmx:sF2zad0qxF5Ms1PY3l5bG_FSgiwxJyCVizNYRzREyDx2EYRsA7FshQ>
+    <xmx:sF2zacNj0BpnAMzEYFy9m-DUQPdAneviKyB1uWslBDL8eNGoPKzEt0nM>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 20:42:56 -0400 (EDT)
+ 12 Mar 2026 20:43:15 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -127,17 +127,17 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 37/53] cephfs: Use d_alloc_noblock() in ceph_readdir_prepopulate()
-Date: Fri, 13 Mar 2026 08:12:24 +1100
-Message-ID: <20260312214330.3885211-38-neilb@ownmail.net>
+Subject: [PATCH 36/53] cephfs: remove d_alloc from CEPH_MDS_OP_LOOKUPNAME handling in ceph_fill_trace()
+Date: Fri, 13 Mar 2026 08:12:23 +1100
+Message-ID: <20260312214330.3885211-37-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_174314_883938_AF9AE068 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20260312_174330_796712_0DEC0EB4 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,110 +155,78 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-cephfs uses the results of readdir to prime the dcache.  Using d_alloc()
-is no longer safe, even with an exclusive lock on the parent, as
-d_alloc_parallel() will be allowed to run unlocked.  The safe interface
-is d_alloc_noblock().  In the rare case that this blocks because there
-is a concurrent lookup for the same name there is little cost in not
-completing the allocating in the directory code.
+When performing a get_name export_operation, ceph sends a LOOKUPNAME op
+to the server.  When it gets a reply it tries to look up the name
+locally and if the name exists in the dcache with the wrong inode, it
+discards the result and tries again.
 
-It it still possible to create an inode at this point so we do that even
-when there is no dentry.
+If it doesn't find the name in the dcache it will allocate a new dentry
+and never make any use of it.  The dentry is never instantiated and is
+assigned to ->r_dentry which is then freed by post-op cleanup.
 
-So change to use d_alloc_noblock() and handle -EWOULDBLOCK.  Also use
-QSTR_LEN() to initialise dname, and try_lookup_noperm instead of
-full_name_hash() and d_lookup().
+As this is a waste, and as there is a plan to remove d_alloc(), this
+code is discarded.
+
+Also try_lookup_noperm() is used in place of full_name_hash() and
+d_lookup(), and QSTR_LEN() is used to initialise dname.
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/ceph/inode.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ fs/ceph/inode.c | 29 +++++++----------------------
+ 1 file changed, 7 insertions(+), 22 deletions(-)
 
 diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 0982fbda2a82..8557b207d337 100644
+index 59f9f6948bb2..0982fbda2a82 100644
 --- a/fs/ceph/inode.c
 +++ b/fs/ceph/inode.c
-@@ -2011,9 +2011,7 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
- 		struct ceph_mds_reply_dir_entry *rde = rinfo->dir_entries + i;
- 		struct ceph_vino tvino;
+@@ -15,6 +15,7 @@
+ #include <linux/sort.h>
+ #include <linux/iversion.h>
+ #include <linux/fscrypt.h>
++#include <linux/namei.h>
  
--		dname.name = rde->name;
--		dname.len = rde->name_len;
--		dname.hash = full_name_hash(parent, dname.name, dname.len);
-+		dname = QSTR_LEN(rde->name, rde->name_len);
- 
- 		tvino.ino = le64_to_cpu(rde->inode.in->ino);
- 		tvino.snap = le64_to_cpu(rde->inode.in->snapid);
-@@ -2029,20 +2027,24 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
- 		}
- 
- retry_lookup:
--		dn = d_lookup(parent, &dname);
-+		dn = try_lookup_noperm(&dname, parent);
- 		doutc(cl, "d_lookup on parent=%p name=%.*s got %p\n",
- 		      parent, dname.len, dname.name, dn);
--
--		if (!dn) {
--			dn = d_alloc(parent, &dname);
--			doutc(cl, "d_alloc %p '%.*s' = %p\n", parent,
-+		if (IS_ERR(dn)) {
-+			err = PTR_ERR(dn);
-+			goto out;
-+		} else if (!dn) {
-+			dn = d_alloc_noblock(parent, &dname);
-+			doutc(cl, "d_alloc_noblock %p '%.*s' = %p\n", parent,
- 			      dname.len, dname.name, dn);
--			if (!dn) {
--				doutc(cl, "d_alloc badness\n");
--				err = -ENOMEM;
-+			if (dn == ERR_PTR(-EWOULDBLOCK)) {
-+				/* Just handle the inode info */
-+				dn = NULL;
-+			} else if (IS_ERR(dn)) {
-+				doutc(cl, "d_alloc_noblock badness\n");
-+				err = PTR_ERR(dn);
- 				goto out;
--			}
--			if (rde->is_nokey) {
-+			} else if (rde->is_nokey) {
- 				spin_lock(&dn->d_lock);
- 				dn->d_flags |= DCACHE_NOKEY_NAME;
- 				spin_unlock(&dn->d_lock);
-@@ -2069,7 +2071,7 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
- 		}
- 
- 		/* inode */
--		if (d_really_is_positive(dn)) {
-+		if (dn && d_really_is_positive(dn)) {
- 			in = d_inode(dn);
- 		} else {
- 			in = ceph_get_inode(parent->d_sb, tvino, NULL);
-@@ -2087,21 +2089,22 @@ int ceph_readdir_prepopulate(struct ceph_mds_request *req,
- 		if (ret < 0) {
- 			pr_err_client(cl, "badness on %p %llx.%llx\n", in,
- 				      ceph_vinop(in));
--			if (d_really_is_negative(dn)) {
-+			if (!dn || d_really_is_negative(dn)) {
- 				if (inode_state_read_once(in) & I_NEW) {
- 					ihold(in);
- 					discard_new_inode(in);
- 				}
- 				iput(in);
+ #include "super.h"
+ #include "mds_client.h"
+@@ -1623,33 +1624,17 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req)
+ 				ceph_fname_free_buffer(parent_dir, &oname);
+ 				goto done;
  			}
--			d_drop(dn);
-+			if (dn)
-+				d_drop(dn);
- 			err = ret;
- 			goto next_item;
- 		}
- 		if (inode_state_read_once(in) & I_NEW)
- 			unlock_new_inode(in);
- 
--		if (d_really_is_negative(dn)) {
-+		if (d_in_lookup(dn) || d_really_is_negative(dn)) {
- 			if (ceph_security_xattr_deadlock(in)) {
- 				doutc(cl, " skip splicing dn %p to inode %p"
- 				      " (security xattr deadlock)\n", dn, in);
+-			dname.name = oname.name;
+-			dname.len = oname.len;
+-			dname.hash = full_name_hash(parent, dname.name, dname.len);
++			dname = QSTR_LEN(oname.name, oname.len);
+ 			tvino.ino = le64_to_cpu(rinfo->targeti.in->ino);
+ 			tvino.snap = le64_to_cpu(rinfo->targeti.in->snapid);
+ retry_lookup:
+-			dn = d_lookup(parent, &dname);
++			dn = try_lookup_noperm(&dname, parent);
+ 			doutc(cl, "d_lookup on parent=%p name=%.*s got %p\n",
+ 			      parent, dname.len, dname.name, dn);
+-
+-			if (!dn) {
+-				dn = d_alloc(parent, &dname);
+-				doutc(cl, "d_alloc %p '%.*s' = %p\n", parent,
+-				      dname.len, dname.name, dn);
+-				if (!dn) {
+-					dput(parent);
+-					ceph_fname_free_buffer(parent_dir, &oname);
+-					err = -ENOMEM;
+-					goto done;
+-				}
+-				if (is_nokey) {
+-					spin_lock(&dn->d_lock);
+-					dn->d_flags |= DCACHE_NOKEY_NAME;
+-					spin_unlock(&dn->d_lock);
+-				}
+-				err = 0;
+-			} else if (d_really_is_positive(dn) &&
++			if (IS_ERR(dn))
++				/* should be impossible */
++				dn = NULL;
++			if (dn && d_really_is_positive(dn) &&
+ 				   (ceph_ino(d_inode(dn)) != tvino.ino ||
+ 				    ceph_snap(d_inode(dn)) != tvino.snap)) {
+ 				doutc(cl, " dn %p points to wrong inode %p\n",
 -- 
 2.50.0.107.gf914562f5916.dirty
 
