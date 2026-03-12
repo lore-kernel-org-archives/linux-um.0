@@ -4,119 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBFA7FED2EB
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 08:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8CFA105A585
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 11:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tXrAFYR5bIhSumOFjuc1G0swOeqj6K0Pq1d0oWdhjWU=; b=KoFK0sB6gfjyc4QCHw3QtioNKL
-	s5FMuAio6+iaY4pSsCSVRhylaDLF1HIOEXtr0nB3eVUaRMmj39LrNoPbcSiGq/LsmHegGhrmX5Pvo
-	1yf7G7ov4wUzqxq6bHpLy1ZhWoWh0yapLdfLSMIPH7lNaSvHar2wnalVwUytS8Eobys1kK6h5CrhY
-	MSdG0cM2A8UsgywqshxCz7E5lmqIgOjqV0ExQiAdjMElQxayvSgI+Fymx/SuSeXKFkw9R5mzUWZPb
-	dN6wMTJMsVeO79s5CJUiM7fVuRc4wZZ6KAqMv6x3g07hRFtSjr7mwvfKJxVisArWJyfZH1pnCYZny
-	OmN92rnw==;
+	bh=qFwb11X0zrrF96hDRnrNne+UfFUOQp/uf8JCpdTCVwI=; b=KgMHfC+HQZQgHfU/m8P4zTgZZI
+	j1zGvCbJH0/2Ufk5ff7y3aE3j0POTrmlwbVTxJMhy4aza+82wpme4loOAg1mPPrcy9aXBkUTulkJD
+	recipAhGpWKGmxDqAtRtDc1fnwaQBHmaHkd903FA2we+qLJz1ilFQ8TLZIdA8fSK3FlhjRBuXSP4X
+	k9vERJV4+J2tKZ1vCCjJQtcMsRiuWqxylEQ/YPO7m9wqInHZ3+4Khe3weJdmd68KIGRTj8dMSIS9q
+	CcrL88B1xXcg2BNRQkmgb+rdCDKrIhDx+yOEZExfvjGSq4fHMocmJwUWViXtsI32y1UuRZ6q4n9wI
+	gX5Wy5MQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0bZO-0000000DeSj-1B01;
-	Thu, 12 Mar 2026 08:39:02 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1w0dyR-0000000DvAw-2Kpn;
+	Thu, 12 Mar 2026 11:13:03 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0bZL-0000000DeRO-14qD
-	for linux-um@lists.infradead.org;
-	Thu, 12 Mar 2026 08:39:01 +0000
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-48374014a77so7748165e9.3
-        for <linux-um@lists.infradead.org>; Thu, 12 Mar 2026 01:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773304736; x=1773909536; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tXrAFYR5bIhSumOFjuc1G0swOeqj6K0Pq1d0oWdhjWU=;
-        b=kWXVmDGOrEI/c0dfGsKm/XXJFuYc1x/lnyO+3N/5VLpeCHtXRjuwJRmyfiL3pOzOHF
-         xmBeLEkngRGDzecE4mkaac6NrrilKw51bHgItokf3gHXUFAf/56RyB5aTlJPsHMzDCUJ
-         8eze2Dt8k46mcEnC9YEdiAirVgSZHKMEnVpaP6mCZD4KVILxeX3MgsWjTqdr00w26HMY
-         0Q7qH9M0BX7562RTR+7lq0KjhPsQQ8nhFmo8nl0ZWRL+N1le2Tc3jJr0JdX7J6WirTso
-         SpHkC2ZCPA4miolQWr8BTE1hUiHd78K9eHAl7OykfckSkOXGEm8OhN9fdYNgxRwwltFS
-         MMew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773304736; x=1773909536;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tXrAFYR5bIhSumOFjuc1G0swOeqj6K0Pq1d0oWdhjWU=;
-        b=avNNJQuQgP/iklyh+1OPk2N2xSUAFh5vA33A9rJTSG92Kd+ymmyn2YrfX3j0xcPCbD
-         NXsnaQC8JTR/xYP5WAD8kaf5JlyyBDITcY8fr18Yesfs0V7QX6Ur4JikTUNid58mj8oa
-         zHgYPqa94SISPH3TcXB3wPFHsF9hTRDfIkt6smX+xgRrlEBYtOEYXrgvy12x4JdophTn
-         WzK0eR7OK4gK6X5VhE/3VrxdT3jWfvdZysoTivU97JzDnvZ6a3Rg4MP6+9fpAJBRjL0R
-         mRU1C87fut5BHOXf5JaQ8JXlB3YXBxk+0lNCvKx8iulo28x7Z+obD5CWM9Ak0iirOMz+
-         cW1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWy4DC9Rh5a7IX3lZNYmOlJYd7p/fIWrMD+tE5gROD9H9zU1n8uMO/WwlAecSSVbIV5tOdNH0elsw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzw25kf3wIMHs8AEsALmEzhXeAsSOJVabDCPWCysGQTt7WcCOgu
-	s1OV8vAFEtsalotgxmZP9ZUEB8qwgJOgiA6BIpdl1YUkL3AdIc3AQcv5
-X-Gm-Gg: ATEYQzxAB3BdMInZnfWblzKLBzCaUXOwIyFafNQ7Q8aINhUkbPWwuqojiCNJldX7LAv
-	A+HbBaGuKf/hVUiO5YJh0AQ6FwMPfBtYra+rS8hCyLs/XteoYpx+uLTnur86uP4xNjkGYlVX/Qt
-	AVLjFs4d9PUQzOB9OENswB/ui7cpcNOAKvqqUnkM/1uuzU5HQaFNdGGGqrHcKeb8pWSnM3eaLLc
-	EAdu3R9AjPCePOfWnf7mBPaT+be0sRJSK8/SujINF97vdkB11jnz2xuPfRfRIZgnHV2ErIBaVye
-	3XRhLAooEhZkCYpY9coCd0FEqozBx7p7/O1AprqYNPY3wy172D+tQ95uGRgiLocez75eZVoVuUV
-	MrUFCat66Fdaaq91o5wgQOjH6CxdP8d+w9ndgdRM93fHulHLcrHTaQVXsijdg2kgZy9rCiHGR1l
-	zapRGQUmBSwQTK7oFjYSsK8J6M5SOYi95ep1ka7Hfu7Mm79p+5rZVBXqWX/56OWbXT
-X-Received: by 2002:a05:600c:3551:b0:477:7b16:5fb1 with SMTP id 5b1f17b1804b1-4854b0cbe81mr96719315e9.7.1773304735965;
-        Thu, 12 Mar 2026 01:38:55 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4854b5f6bb4sm111774365e9.4.2026.03.12.01.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2026 01:38:55 -0700 (PDT)
-Date: Thu, 12 Mar 2026 08:38:53 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Andrew Morton
- <akpm@linux-foundation.org>, Richard Henderson
- <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, Magnus
- Lindholm <linmag7@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Huacai
- Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
- <chleroy@kernel.org>, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti
- <alex@ghiti.fr>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Andreas
- Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, Anton
- Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Herbert Xu <herbert@gondor.apana.org.au>, Dan Williams
- <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>, David Sterba
- <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>, Song Liu
- <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>, Li Nan
- <linan122@huawei.com>, Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld"
- <Jason@zx2c4.com>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 26/27] random: factor out a __limit_random_u32_below
- helper
-Message-ID: <20260312083853.01dc18d3@pumpkin>
-In-Reply-To: <20260311222935.GA3161@quark>
-References: <20260311070416.972667-1-hch@lst.de>
-	<20260311070416.972667-27-hch@lst.de>
-	<20260311222935.GA3161@quark>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	id 1w0dyP-0000000DvAG-0kq1;
+	Thu, 12 Mar 2026 11:13:02 +0000
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62BMWPq02279397;
+	Thu, 12 Mar 2026 11:12:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=qFwb11
+	X0zrrF96hDRnrNne+UfFUOQp/uf8JCpdTCVwI=; b=CkvJemL88mOKrQnUYcuUw9
+	v/lgsBx8TN5vdU6h/SIF8Ldu3K8Ug6D+Yp5oOpfuyZmsQt8w7UWAJS27LWxzO2AB
+	qJiJZKWL+I2Ssbtc0opT3qdsA44BKHuwAaYqVM6g7nsQbGEODsco5l+huQ5I+xxx
+	BZauCHcdzpBAr+cc4WxU22UEDZypALbDY+VCjW8DLlk/6wxbAXi1ZFzuAYIAmh+O
+	k+3Slj+7c9xAMUhN9xjLSefjQUt4axPosk4bfZ0jp7bigiV9LjFIJtfSfaUqWV/p
+	lktUd/dgHUAUJ+cXeQbwo7JBL0aKhao8/lM1CDSj9CGS2NQB30kI8Vv4JtgGvZwA
+	==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cuh91jb9v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Mar 2026 11:12:53 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62C9aRxI014797;
+	Thu, 12 Mar 2026 11:12:52 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cuha8a1xj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Mar 2026 11:12:51 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62CBCoTr36503948
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 12 Mar 2026 11:12:50 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F28362004B;
+	Thu, 12 Mar 2026 11:12:49 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1A21220040;
+	Thu, 12 Mar 2026 11:12:47 +0000 (GMT)
+Received: from [9.109.204.116] (unknown [9.109.204.116])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 12 Mar 2026 11:12:46 +0000 (GMT)
+Message-ID: <71921cca-b890-41c4-93e9-957d3f647ffa@linux.ibm.com>
+Date: Thu, 12 Mar 2026 16:42:45 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 09/15] arch/powerpc: don't initialize kasan if it's
+ disabled
+To: Baoquan He <bhe@redhat.com>, kasan-dev@googlegroups.com
+Cc: linux-mm@kvack.org, andreyknvl@gmail.com, ryabinin.a.a@gmail.com,
+        glider@google.com, dvyukov@google.com, linux-kernel@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org, chris@zankel.net,
+        jcmvbkbc@gmail.com, linux-s390@vger.kernel.org, hca@linux.ibm.com
+References: <20260225081412.76502-1-bhe@redhat.com>
+ <20260225081412.76502-10-bhe@redhat.com>
+Content-Language: en-US
+From: Sourabh Jain <sourabhjain@linux.ibm.com>
+In-Reply-To: <20260225081412.76502-10-bhe@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-GUID: sK4H9fwZp-KLt_Uh6QEN1FURiK-VcUay
+X-Authority-Analysis: v=2.4 cv=E6/AZKdl c=1 sm=1 tr=0 ts=69b29fb5 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=20KFwNOVAAAA:8
+ a=voM4FWlXAAAA:8 a=VnNF1IyMAAAA:8 a=e6XaAvPcIE9lEXRYuwcA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=IC2XNlieTeVoXbcui8wp:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzEyMDA4NyBTYWx0ZWRfX/mtfNCEYEuc6
+ WHnW4p9iVwWYhz47Or92vnI3HCFHwJtfujDrjNzVlJPrH+HNMFrM5rei+tcs68Z8xKbUMLW4OGS
+ nCC3o1olVSQZigyKu8dPplVewbl+wRYHv9pug6m4GgXDTxjkx/bFrguphZ3UlQo8DTuZgOK7pT7
+ XoX/Pn2toTKs0nsYAIR0bSRishOkQI7WvgwwfqCbulME6FSQeiA+c1uiCQVkk5pmlyfJAVn0xAp
+ Pd2bmli4VyUJXDxXTGZdXRFpkSuVHPAXPQU/E02hIaN/9uTz9550KWyukcPEC/RWPfdtgQaWvnT
+ dA5KdZMWC431ZuagttMr9l48fgf2ZsGNNBHZ778481DcVjv3LdLN4uwlF7NKiDY3IpRloCGz839
+ sR9Hlsf9U+wi24kTc7YK1aOscBc/I0desU0vcau1oECfMdpaWfrggI5bqsG8fSprzOHFsV0rdAa
+ 5fL4EVBZVPzrPv5kKmA==
+X-Proofpoint-ORIG-GUID: appgZUPYvO44oILc1-ob_bhU232DA-fp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-11_02,2026-03-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 impostorscore=0 clxscore=1011 malwarescore=0 phishscore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603120087
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_013859_337014_C16EBDF0 
-X-CRM114-Status: GOOD (  25.24  )
+X-CRM114-CacheID: sfid-20260312_041301_224130_C5E8F653 
+X-CRM114-Status: GOOD (  20.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,51 +126,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 11 Mar 2026 15:29:35 -0700
-Eric Biggers <ebiggers@kernel.org> wrote:
 
-> On Wed, Mar 11, 2026 at 08:03:58AM +0100, Christoph Hellwig wrote:
-> > Factor out the guts of __get_random_u32_below into a new helper,
-> > so that callers with their own prng state can reuse this code.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>  
-> 
-> I think I'd prefer that the test just uses the mod operation instead,
-> like many of the existing tests do:
-> 
->     prandom_u32_state(&rng) % ceil
 
-Or possibly what the old code used:
-	(prandom_u32_state(&rnd) * (u64)ceil) >> 32
+On 25/02/26 13:44, Baoquan He wrote:
+> Here, kasan is disabled if specified 'kasan=off' in kernel cmdline.
+>
+> This includes 32bit, book3s/64 and book3e/64.
+>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> ---
+>   arch/powerpc/mm/kasan/init_32.c        | 6 +++++-
+>   arch/powerpc/mm/kasan/init_book3e_64.c | 4 ++++
+>   arch/powerpc/mm/kasan/init_book3s_64.c | 4 ++++
+>   3 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/mm/kasan/init_32.c b/arch/powerpc/mm/kasan/init_32.c
+> index 1d083597464f..0ea2a636c992 100644
+> --- a/arch/powerpc/mm/kasan/init_32.c
+> +++ b/arch/powerpc/mm/kasan/init_32.c
+> @@ -141,6 +141,10 @@ void __init kasan_init(void)
+>   	u64 i;
+>   	int ret;
+>   
+> +	/* If KASAN is disabled via command line, don't initialize it. */
+> +	if (kasan_arg_disabled)
+> +		return;
+> +
+>   	for_each_mem_range(i, &base, &end) {
+>   		phys_addr_t top = min(end, total_lowmem);
+>   
+> @@ -170,7 +174,7 @@ void __init kasan_init(void)
+>   
+>   void __init kasan_late_init(void)
+>   {
+> -	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+> +	if (IS_ENABLED(CONFIG_KASAN_VMALLOC) && kasan_enabled())
+>   		kasan_unmap_early_shadow_vmalloc();
+>   }
+>   
+> diff --git a/arch/powerpc/mm/kasan/init_book3e_64.c b/arch/powerpc/mm/kasan/init_book3e_64.c
+> index 0d3a73d6d4b0..fbe4c9a7e460 100644
+> --- a/arch/powerpc/mm/kasan/init_book3e_64.c
+> +++ b/arch/powerpc/mm/kasan/init_book3e_64.c
+> @@ -111,6 +111,10 @@ void __init kasan_init(void)
+>   	u64 i;
+>   	pte_t zero_pte = pfn_pte(virt_to_pfn(kasan_early_shadow_page), PAGE_KERNEL_RO);
+>   
+> +	/* If KASAN is disabled via command line, don't initialize it. */
+> +	if (kasan_arg_disabled)
+> +		return;
+> +
+>   	for_each_mem_range(i, &start, &end)
+>   		kasan_init_phys_region(phys_to_virt(start), phys_to_virt(end));
+>   
+> diff --git a/arch/powerpc/mm/kasan/init_book3s_64.c b/arch/powerpc/mm/kasan/init_book3s_64.c
+> index dcafa641804c..f7906f9ef9be 100644
+> --- a/arch/powerpc/mm/kasan/init_book3s_64.c
+> +++ b/arch/powerpc/mm/kasan/init_book3s_64.c
+> @@ -54,6 +54,10 @@ void __init kasan_init(void)
+>   	u64 i;
+>   	pte_t zero_pte = pfn_pte(virt_to_pfn(kasan_early_shadow_page), PAGE_KERNEL);
+>   
+> +	/* If KASAN is disabled via command line, don't initialize it. */
+> +	if (kasan_arg_disabled)
+> +		return;
+> +
+>   	if (!early_radix_enabled()) {
+>   		pr_warn("KASAN not enabled as it requires radix!");
+>   		return;
 
-Which distributes the values evenly across the range although
-some values happen 1 more time than others.
-I suspect that is good enough for a lot of the users of the cryptographic
-random number generator as well.
+Should we log in the kernel log buffer that KASAN is disabled?
 
-	David
+Right now, I don't see the kernel advertising the same.
 
-> 
-> Yes, when ceil isn't a power of 2 the result isn't uniformly
-> distributed.  But that's perfectly fine for these tests, especially with
-> the values of ceil being used being far smaller than U32_MAX.
-> 
-> There's been an effort to keep the cryptographic random number generator
-> (drivers/char/random.c and include/linux/random.h) separate from the
-> non-cryptographic random number generator (lib/random32.c and
-> include/linux/prandom.h).  This patch feels like it's going in a
-> slightly wrong direction, where random.c gains a function that's used
-> with both cryptographic and non-cryptographic random numbers.
-> 
-> And if someone actually needs a fully unform distribution, then they'd
-> probably want cryptographic random numbers as well.
-> 
-> So I'm not sure the proposed combination of "fully uniform
-> non-cryptographic random numbers" makes much sense.
-> 
-> Plus the '% ceil' implementation is much easier to understand.
-> 
-> - Eric
-> 
+$ dmesg | grep -i kasan
+[    0.000000] Kernel command line: 
+BOOT_IMAGE=(ieee1275//vdevice/v-scsi@30000070/disk@8100000000000000,msdos2)/vmlinuz-7.0.0-rc3+ 
+crashkernel=2G kasan=off
 
+Tested this series on powerpc Pseries platform.
+So feel free to add:
+Tested-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+
+- Sourabh Jain
 
