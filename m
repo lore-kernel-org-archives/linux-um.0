@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB5E2103E2EA
-	for <linux-um@archiver.kernel.org>; Wed, 11 Mar 2026 22:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ADE7103E2FA
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 00:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RikSZ/qDz/BbXcsdorYocnARDwttAwV1n5wEGZVbyw4=; b=sJVsr/Zawhq1up6a/2KL5j7igp
-	sT3HxHUXE7EKNm6HSkJgHwt62FMRuuqWPVotwoVOmhleKG5qoheIHXh5Sf43i9lEy4rlqsgQMls4y
-	2c2kPgcnofs0uP0P/ZyQd49BbG4ONkTLUXchAC/kmWAlkqmYXF6EvGXW+fMYLldNzCSXoNLUobsDM
-	widkeLfDZ8PPMtrMHu7Hk8L7SZKFIAjmglXx4mrSWIqc4Fqj1T7/22NzHrfN+Gu/6WNHsCj72YO37
-	MM5WaHx16vj4IqAZ6z6AcxGo9O/MzKldDRqm/x1+NI59wVcw6YEG9wwo5XxIZw516ylel/WQ3qyOd
-	O3fcW6lA==;
+	bh=AA3YpPGupFXiGoJEdVKbgTeymtkmsk7BQRU+oZnU6Bo=; b=Jxd4DjMQiEKjCNcljlPoOZw6pC
+	Nvz+r/X6J9rY0dD1PgpuNM9z9HxEjBPmwTha/dUt4zsVq2OuCdmof0xxBW5Truw2trEO3Fw1G5/dx
+	Ob/GoFgI63Bh/91lTh37SUzC9wH4FBEoELncT5inOTI5Dx/ZZ+Tg0qfZNs6ZYiL9y+LdS+4tSnKb/
+	PXGctvG0SjucdMtAG0h+jvy2nYCImHYyYDMoqR6KzgqYw0bwTMk8gyLI9UtE6K45l3QXs5Mf4r54J
+	7/yNJxTkrGaL481PE8+2FX8+34ZDm+DFqP0k+DFoXDTMcS6OMfFL0ahQtEZKFwcGd+S3VOIVxjU6H
+	vt/85Xyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0S3o-0000000Cfyc-0ppt;
-	Wed, 11 Mar 2026 22:29:48 +0000
+	id 1w0UKB-0000000CyKE-29pL;
+	Thu, 12 Mar 2026 00:54:51 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0S3m-0000000Cfxx-2Wnk;
-	Wed, 11 Mar 2026 22:29:46 +0000
+	id 1w0UK9-0000000CyJx-2xHd;
+	Thu, 12 Mar 2026 00:54:49 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 09C1160137;
-	Wed, 11 Mar 2026 22:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDE76C4CEF7;
-	Wed, 11 Mar 2026 22:29:38 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 77C6460054;
+	Thu, 12 Mar 2026 00:54:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC1C9C4CEF7;
+	Thu, 12 Mar 2026 00:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773268184;
-	bh=FgOgwczmQ2Bn8aQ6V7k6mV2cKfvqhgutLP2bKVPQV1Y=;
+	s=k20201202; t=1773276888;
+	bh=SuqAhThH82+S6Gh7IKidJqQh0WkKbmHEI0mLdj41Lhs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XVPRVNpvrEBCZfWDW7blZ/upwHpfW8r44adFDbQ9bqeAbE8tC29oaEaQ8vjeQ+tPU
-	 mARZBZJPJk6kFf9lwAhvGI5tLCuVe7+kxaw2+PA6JC27+0GnVdnSnTLyyUBGR4Znih
-	 Lefvu2tkgKCMq9MOzDesAIoaw9j5jxb0bMeShkfuCzECCfCa7va+9Rr9WWMzBI4sLU
-	 yaVBgR/l4aivWBLEYBYBUfr1ZDHxJqaH8qoXXfscfY8+2H/qsRA/Z+s3gZNwp/2o4c
-	 9dpn+BpceXOQVRRjDdqUqLKCA1GjUs5fm7wevN7gzXqGXlu5b/ClrM3m7JL3NeMrNJ
-	 XLRZxZaMD4nlg==
-Date: Wed, 11 Mar 2026 15:29:35 -0700
+	b=QYtQvxRUl11pl5l03BQKBUEhgz56QONgnc2kaGayekmZntDuW/DKkgurHrtCHVzzs
+	 jpzzJjdAShhodIdN30vG9BPjCGnog9HpZIv3Ee0j42lQ55g9wf0ey8DeyUwaZkDcUo
+	 4IvGmBikopdR5eDiCqVY5kEdfVy5EMQqlCxr0Rm08gOIgv6qvhtdqONByqr1wqOCXa
+	 ZSAEynUTw1U5vN3Lh/xfYRtxUECIxa4mzvwmHHsLJDVTH87rKEV1Ydpjtj8g8OkqPM
+	 cpwxJ3lGXlQMEM5y7yL+b70SoAEJHFaitkwrhg6zFleNIqac+qEk2ZzSAvW9Vp85Y9
+	 y03Osm7E2M0kw==
+Date: Wed, 11 Mar 2026 17:54:44 -0700
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -84,15 +84,14 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 26/27] random: factor out a __limit_random_u32_below
- helper
-Message-ID: <20260311222935.GA3161@quark>
+Subject: Re: [PATCH 27/27] xor: add a kunit test case
+Message-ID: <20260312005444.GA31906@quark>
 References: <20260311070416.972667-1-hch@lst.de>
- <20260311070416.972667-27-hch@lst.de>
+ <20260311070416.972667-28-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260311070416.972667-27-hch@lst.de>
+In-Reply-To: <20260311070416.972667-28-hch@lst.de>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,35 +106,156 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 11, 2026 at 08:03:58AM +0100, Christoph Hellwig wrote:
-> Factor out the guts of __get_random_u32_below into a new helper,
-> so that callers with their own prng state can reuse this code.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Wed, Mar 11, 2026 at 08:03:59AM +0100, Christoph Hellwig wrote:
+> diff --git a/lib/raid/Kconfig b/lib/raid/Kconfig
+> index 4359971ebd04..97c123806466 100644
+> --- a/lib/raid/Kconfig
+> +++ b/lib/raid/Kconfig
+> @@ -6,3 +6,14 @@ config XOR_BLOCKS
+>  # selected by architectures that provide an optimized XOR implementation
+>  config XOR_BLOCKS_ARCH
+>  	bool
+> +
+> +config XOR_KUNIT_TEST
+> +	tristate "KUnit tests for xor_gen" if !KUNIT_ALL_TESTS
+> +	depends on KUNIT
+> +	default KUNIT_ALL_TESTS
+> +	select XOR_BLOCKS
+> +	help
+> +	  Unit tests for the XOR library functions.
+> +
+> +	  This is intended to help people writing architecture-specific
+> +	  optimized versions.  If unsure, say N.
 
-I think I'd prefer that the test just uses the mod operation instead,
-like many of the existing tests do:
+The convention for KUnit tests is actually to depend on the code they
+test, not select it, so that it's easy to enable only the tests that are
+relevant to a particular kernel build.  So instead of
+"select XOR_BLOCKS", this should use "depends on KUNIT && XOR_BLOCKS".
 
-    prandom_u32_state(&rng) % ceil
+(Yes, I got this wrong in the crypto and CRC tests.  I recently fixed it
+in the crypto tests, and I have pending patches that fix the CRC test.)
 
-Yes, when ceil isn't a power of 2 the result isn't uniformly
-distributed.  But that's perfectly fine for these tests, especially with
-the values of ceil being used being far smaller than U32_MAX.
+There should also be a lib/raid/.kunitconfig file containing something
+like:
 
-There's been an effort to keep the cryptographic random number generator
-(drivers/char/random.c and include/linux/random.h) separate from the
-non-cryptographic random number generator (lib/random32.c and
-include/linux/prandom.h).  This patch feels like it's going in a
-slightly wrong direction, where random.c gains a function that's used
-with both cryptographic and non-cryptographic random numbers.
+    CONFIG_KUNIT=y
+    CONFIG_BTRFS_FS=y
+    CONFIG_XOR_KUNIT_TEST=y
 
-And if someone actually needs a fully unform distribution, then they'd
-probably want cryptographic random numbers as well.
+(CONFIG_BTRFS_FS is there because it's one of the visible symbols that
+select the hidden symbol XOR_BLOCKS.)
 
-So I'm not sure the proposed combination of "fully uniform
-non-cryptographic random numbers" makes much sense.
+> +static u32 rand32(void)
+> +{
+> +	return prandom_u32_state(&rng);
+> +}
+> +
+> +static u32 rand32_below(u32 ceil)
+> +{
+> +	return __limit_random_u32_below(ceil, prandom_u32_state(&rng));
+> +}
+> +
+[...]
+> +
+> +/* Generate a random length that is a multiple of 512. */
+> +static unsigned int generate_random_length(unsigned int max_length)
+> +{
+> +	return (rand32_below(max_length / 512) + 1) * 512;
+> +}
+> +
+> +/* Generate a random alignment that is a multiple of 32. */
+> +static unsigned int generate_random_alignment(unsigned int max_alignment)
+> +{
+> +	return (rand32_below((max_alignment + 1) / 32)) * 32;
+> +}
 
-Plus the '% ceil' implementation is much easier to understand.
+As per my comment on patch 26, these should just use a simple mod
+operations so that the new random.c helper function (which conflates
+cryptographic and non-cryptographic random numbers) isn't needed.
+
+Maybe:
+
+        return (rand32() % (max_length + 1)) & ~511;
+
+and
+
+        return (rand32() % (max_alignment + 1)) & ~63;
+
+> +/* Test that xor_gen gives the same result as a reference implementation. */
+> +static void xor_test(struct kunit *test)
+> +{
+> +	void *aligned_buffers[XOR_KUNIT_MAX_BUFFERS];
+> +	size_t i;
+> +
+> +	for (i = 0; i < XOR_KUNIT_NUM_TEST_ITERS; i++) {
+> +		unsigned int nr_buffers =
+> +			rand32_below(XOR_KUNIT_MAX_BUFFERS) + 1;
+> +		unsigned int len = generate_random_length(XOR_KUNIT_MAX_BYTES);
+> +		unsigned int max_alignment, align = 0;
+> +		void *buffers;
+> +
+> +		if (rand32() % 8 == 0)
+> +			/* Refresh the data occasionally. */
+> +			xor_generate_random_data();
+> +
+> +		/*
+> +		 * If we're not using the entire buffer size, inject randomize
+> +		 * alignment into the buffer.
+> +		 */
+> +		max_alignment = XOR_KUNIT_MAX_BYTES - len;
+> +		if (max_alignment) {
+> +			int j;
+> +
+> +			align = generate_random_alignment(max_alignment);
+> +			for (j = 0; j < nr_buffers; j++)
+> +				aligned_buffers[j] = test_buffers[j] +
+> +					generate_random_alignment(max_alignment);
+> +			buffers = aligned_buffers;
+> +		} else {
+> +			buffers = test_buffers;
+> +		}
+
+This isn't taking advantage of the guard pages properly, since it rarely
+selects buffers that go all the way up to the guard page.
+
+If the guard page testing is going to be included (which is a good idea;
+the crypto and CRC tests have it and they already caught a bug using
+it), then the data should be placed at the very end of the buffers more
+often, like what the CRC test does.
+
+> +		/*
+> +		 * Compute the XOR, and verify that it equals the XOR computed
+> +		 * by a simple byte-at-a-time reference implementation.
+> +		 */
+> +		xor_ref(test_ref + align, buffers, nr_buffers, len);
+> +		xor_gen(test_dest + align, buffers, nr_buffers, len);
+> +		KUNIT_EXPECT_MEMEQ_MSG(test, test_ref, test_dest, len,
+> +				"Wrong result with buffers=%u, len=%u, align=%s",
+> +				nr_buffers, len, str_yes_no(max_alignment));
+
+When align != 0, this does the comparison at the wrong offset.
+
+The message also shows "align=no" if fully aligned buffers were used and
+"align=yes" if they were not, which is a bit confusing.  Maybe replace
+align=%s with randalign=%s.
+
+> +MODULE_DESCRIPTION("Unit tests and benchmarks for the XOR library functions");
+
+There's no benchmark included (yet), so that should be left out of the
+description.
+
+Also, I tried running this test on different architectures, and in
+qemu-system-sparc64 it crashes with an alignment fault in xor_vis_5().
+
+It goes away if the minimum tested alignment is increased from 32 bytes
+to 64 bytes.  lib/raid/xor/sparc/xor-sparc64.S has a comment that
+documents a requirement of "!(((long)dest | (long)sourceN) & (64 - 1))",
+i.e. 64-byte alignment.
+
+So, it seems the assumption that 32 bytes is the maximum required
+alignment over all architectures is not correct.  The tested alignment
+will need to be increased to 64 bytes, and the kerneldoc for xor_gen()
+will need to be updated as well.
 
 - Eric
 
