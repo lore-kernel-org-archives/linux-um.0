@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8296106ACEF
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 21:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E96F5106ACEC
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 21:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=I6CnyQAkwuxPKlDMQnXc9c5lwIeZ633Jm64d8FHO8OQ=; b=dBPoQsMo1Z9hY9+tJADUmlBwJE
-	Y1EXAocRP9azSbaZk1NDbHKUyhwjg37Byr9zO2/3pDHgZvOnCd089Ab8s8+VSpDSULz9w1HRAbb3Z
-	cOi1ryQ0Ytp53Q2qlePDobEX7bmH6kQLSweYSHD+61Oz2Q+Hyou9uTIwyFUbI8z1AgnvamvltBQ8m
-	GvdfQtLQ7Cmv/lMYtELz63wFFEJ0BUSta/3UNE0ZOqqAG7kK//WeTlsfUVmU5vJIn8Z+aJ9UbSDMJ
-	G7fLoMzXv2f1RfVN58g47dkvgN6EhDdw1xNwUAwZwmLAmiqwfgiZRS9+q+OyBFVEsMDR7VAWLB5P6
-	zghOT2xw==;
+	bh=hNooXh8tukAy53X73o1gk7dQ7zysETg4G5i0zUIVsso=; b=NSyJ0JdzgYYyNqpEnC3ppdnQB6
+	7sLZINIDk2tiSdaEvPZrT306eBzUqg25r0E+SCi9BoQWP8n0akrgYIbG5pYxK7HkU4Kj4WrMuZ3oY
+	QcgdDFI6UY/4Dncs9TbvvjWS4/RMoXel4fjQ2ZdPwoajpVJk7cuq0CmmO3+N3fwyKHuR9zJArvLVt
+	yracK8QMAr8hsEaiBDYh3ZQ0WjaCcdu+F5TEheV60WYNGkrbPm2ZAfcdPkCTqu1Vt4zqqFWgP/duU
+	xTSJDKJH/TKTFoUf5J8+/K4n1M8xmT+e/mNMD5I1JG+9lrJdQ2DytJLmVUNj7FWA2gDAyxDL1GRGu
+	1LO0IYFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0o0n-0000000FYZX-2J9w;
-	Thu, 12 Mar 2026 21:56:09 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0o0l-0000000FYYs-1CHw;
-	Thu, 12 Mar 2026 21:56:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Reply-To:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:
-	Content-Type:Content-ID:Content-Description;
-	bh=I6CnyQAkwuxPKlDMQnXc9c5lwIeZ633Jm64d8FHO8OQ=; b=iErH8ghZtwb8FdR0qv4Plzjk6m
-	zwuhESyxo0MYxpu1OQCFtN+XoTS2J1S5MTh4jEusX47eh+Dvj/RKXDdDCXVT3VYG01tp65mAf9L/0
-	ztI7JwVEMzPVY5PHIDVNfx/0A2UXSzEm4gcgajsh23sCyZAmttNSvXAA0GpDvrnbwhaVjddzsw9qB
-	CZN1NC69tVe6n8jGzYkSMZObiqJzltGvjVW+j52IL88Fpw3PLLWdEYV3Os4NCiekp6Qjl6hoUIRSE
-	usDw64/9otPRLi7eFpqKoo19RMQSN0JfE2gQF2QfjfEnR3EfHBqWiyAtjiCJYS2e92B+dBJobx40P
-	HB5oA9JQ==;
+	id 1w0o0w-0000000FYci-23ei;
+	Thu, 12 Mar 2026 21:56:18 +0000
 Received: from flow-b6-smtp.messagingengine.com ([202.12.124.141])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0o0d-000000029GR-1CmU;
-	Thu, 12 Mar 2026 21:56:02 +0000
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w0o0t-0000000FYbc-2E76;
+	Thu, 12 Mar 2026 21:56:16 +0000
 Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailflow.stl.internal (Postfix) with ESMTP id 0347F1301BBC;
-	Thu, 12 Mar 2026 17:55:56 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Thu, 12 Mar 2026 17:55:58 -0400
+	by mailflow.stl.internal (Postfix) with ESMTP id 8DFA81301BBC;
+	Thu, 12 Mar 2026 17:56:13 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Thu, 12 Mar 2026 17:56:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773352556;
-	 x=1773359756; bh=I6CnyQAkwuxPKlDMQnXc9c5lwIeZ633Jm64d8FHO8OQ=; b=
-	V8DLV4wcDGzhYebZPH4WK6E6cnXp1js2ckOETA/mb3gtKYUj8AtiU53pW8X5+uwx
-	xh/Uo66CpTtUtZ4jmkXHAQhGC4g6P4sRJXtaWRNrdNLwnuZ5n5RNAsWDL4ky8tBQ
-	w/VWSQ8ARbp+TTDBFg1VsxOtUfZiPyg4tlmEPKgESKCF4WIdXQ7cNpBcnaZg18/r
-	NbDqlQl08OCTnlmB7CBOXZ+sKDVWJoDSNdAUKfQorFSUOlBf2VJ63I8JUboZYz4y
-	sYVGOC28gblJ6pAGHKCTtDhMiB3lAojFXsfrVjP9t/rpcJ8NBgxsTkxpogTSS/Jk
-	NyUn2RHykhm1Zeb6v7POLQ==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773352573;
+	 x=1773359773; bh=hNooXh8tukAy53X73o1gk7dQ7zysETg4G5i0zUIVsso=; b=
+	U98BFMApU8sYPYQ7CogFDzIo34fTbwL3/llQtmzYPZfV0pgMqsNO+ST5FrQoK5D4
+	MoEqSp37f3Ei/nvhh9gnzQ0Vj/dJ+HGBU1MPmSCSms/pLVOoHo3pYMHID/m1+mT6
+	9aGOMWmkzPKRnfmBMXDMCQwGUY3khdFrwEnVLosiNx0qu0sFoGPySVfbV3/3hJpW
+	VyBVlf2kOBR/TXmXdeKGHAcYZkzvQi1I4xDgBdvOz8abEkZU06o2QQM70xCkKIH0
+	Nw0rDMrPWZhx2wVPJUKPNXNp6cRn7jvsDB+AcIp52fzIkt6gcOhQ2zcmMdBhejxQ
+	zm50aAYFzBWFIWO7hUiU6w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773352556; x=1773359756; bh=I
-	6CnyQAkwuxPKlDMQnXc9c5lwIeZ633Jm64d8FHO8OQ=; b=4sXEIXuXZzpHdzsHY
-	PI2r+pAeLO3D1p9t181hTerhmfrg1ujOX7AFVzgJlZAcUkevJbGyuacKaowYC42F
-	kdrHTycOi5y9e88M4rq8+FOkXdbfBVGkRwOttka4u9t3gG9suHxbCZlzQ4HZf/fX
-	cMzdXresl/Tkvk+CBFO67YH8oWWSjLVZfiA8dtQvrx+Pl1/0kBZJlHs++PpApXtf
-	RkpDy4SrMA7h42gvYoK3MPokpoC5AnexXDVLyOxJsVhsRP4aCVl63NbiK/xmBzYP
-	UsHcxRBRy/yDgJXHMafRUDiKl/NYzkWF4nJppx9bDb/T5j5kpS9zlYtGSAwheDR+
-	c8bMg==
-X-ME-Sender: <xms:bDazaZrV28pidytb2CYdFve-dYh4A17kCWOK2uAL1o4fmx--K3xe7g>
-    <xme:bDazafUIGe5MYqXQD20ERLM0fjljLJS1qLyRBTW1m1z7XOTTBabu4SUJ7K4f5F3ag
-    UlNbuIMnuD6VD0QNIHGQEP5HYfEuFFkMrQuosAE9lik0RuvSg>
-X-ME-Received: <xmr:bDazaRT84owQtzmu1E0sWlHYeRbIptXgWxDzjLQfhyeWsMzpDUz0FxZfOYGz-by_i908pb9VVQdmsTc4utEjIGAT_GSE4xivjUQziUP-OuUx>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773352573; x=1773359773; bh=h
+	NooXh8tukAy53X73o1gk7dQ7zysETg4G5i0zUIVsso=; b=Uq1hO5IhWegU28BI8
+	tdXhi/CPmkZ7mOz+LkShu1oU2Xm2IdFVdV4/D9Cyu9c1dhFr6h1RwH8jyC39NHe9
+	qWOS6s9Ci7FAcAYKjUGYJMM1qhTr7ZgUE8IQMq5yMA6kvK9cth7XAx8hSg8Hy/6O
+	k8Gcv3JWxxdyfq6ZTwBlR8gmACl9067HX6Fr7XX0c1f2F9RYRFIRgdSedLKqQK4m
+	bp2TDf5cQZsusRq5sp6pLqDfjaTZYakjOcWktAW4cJWMVPfXhQszFLr1NOsdh8dz
+	p3Cb8COwX/iQRC5GlV6uaTyYfCvVeH10Fyw+vNSnfAsjFuzFbMTASPxaaKt8yEh3
+	en+RQ==
+X-ME-Sender: <xms:fTazaQCvKcgOfPynB2vf2syc47sQUi2N9jdtJmrJM51J6B5sgGFB_g>
+    <xme:fTazaWM9mJfHxSvtWo8a2w1VRBJQjDxKJoImPoKNo68DwB56LTEqeGxvqYDzGPbuw
+    vsyDoYLMaQJABne1iik5He1UY_vg3gahZXR4SM2cqZlRmCCoQ>
+X-ME-Received: <xmr:fTazaeoij7oInvObC8rUmBYgYIJGpebYDqRsuuvwdJ1yQ9pNnase93-zXmbllRm9ZNS8J6ffsfpojXwGL3AAs6RWhUXb64ImzsbftBjg7AvM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeejleduucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhephffvvefufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpefpvghilheu
     rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
     epveevkeffudeuvefhieeghffgudektdelkeejiedtjedugfeukedvkeffvdefvddunecu
-    vehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    vehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
     esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohephedupdhmohguvgepshhmthhp
     ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
     hrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
@@ -91,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeejleduucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:bDazaSUsCGEjzBteuH5vkHe0hneFVXDir_IRGQ5mVK1VCyydF7QpDw>
-    <xmx:bDazaeYmeBRieWGQHtvJip14aHkEz2FCB_NvPB9keh2Yshf6AzVEDw>
-    <xmx:bDazaY-7VYc2D1GPJaWbiimtqzocm9ZyVp3WLpcNsYY3sAaV8eu4Ug>
-    <xmx:bDazaV6u3_amBzfCr8zxdPKXl0rmxXcDwGlJnKOJ4bx25fBZdOe-8Q>
-    <xmx:bDazaR3pE1IGQUmm0mhqqjDrKLG1FXrx_IG_1fXiekIIHnyGeXtkG-Ex>
+X-ME-Proxy: <xmx:fTazaUP5gN-D4lirA6LzmVOxfRZGzc8xsfDoXI4j2DA06LwGD9K3Vw>
+    <xmx:fTazaaxw2JFlHPp2G5UFctx4YbNX13W2oSSzCLuF5kZ31EyaL7jmkQ>
+    <xmx:fTazad0IJSKp27f5u7czcE8bAcKqoY3ohFQ7Mceoya3vC3gwqf_nzw>
+    <xmx:fTazaZSsfwh--nJBWI6X4a6YKlJKFc9VFs4ZjV-kDQLuqpQDRWNbIg>
+    <xmx:fTazaeOsjXzpD9DbHcSr0M06EtmY5_eqE1q4W6iQ7ZsyUg4g1i2_xqDY>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 17:55:43 -0400 (EDT)
+ 12 Mar 2026 17:56:00 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -141,17 +127,18 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 43/53] fuse: Use d_alloc_noblock() in fuse_direntplus_link()
-Date: Fri, 13 Mar 2026 08:12:30 +1100
-Message-ID: <20260312214330.3885211-44-neilb@ownmail.net>
+Subject: [PATCH 44/53] hostfs: don't d_drop() before d_splice_alias() in hostfs_mkdir()
+Date: Fri, 13 Mar 2026 08:12:31 +1100
+Message-ID: <20260312214330.3885211-45-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_215601_031114_BCCD9C63 
-X-CRM114-Status: GOOD (  14.75  )
+X-CRM114-CacheID: sfid-20260312_145615_652448_7C82ED20 
+X-CRM114-Status: UNSURE (   9.29  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -169,61 +156,28 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-fuse uses the results of readdir to prime the dcache.  Using
-d_alloc_parallel() can block if there is a concurrent lookup.  Blocking
-in that case is pointless as the lookup will add info to the dcache and
-there is no value in the readdir waiting to see if it should add the
-info too.
-
-Also this call to d_alloc_parallel() is made while the parent
-directory is locked.  A proposed change to locking will lock the parent
-later, after d_alloc_parallel().  This means it won't be safe to wait in
-d_alloc_parallel() while holding the directory lock.
-
-So change to use d_alloc_noblock(), and use try_lookup_noperm() rather
-than full_name_hash and d_lookup.
+hostfs_mkdir() uses d_drop() and d_splice_alias() to ensure it has the
+right dentry after a mkdir.
+d_drop() is no longer needed here and will cause problem for future
+changes to directory locking.  So remove the d_drop().
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/fuse/readdir.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ fs/hostfs/hostfs_kern.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
-index f588252891af..400a1a24f659 100644
---- a/fs/fuse/readdir.c
-+++ b/fs/fuse/readdir.c
-@@ -12,6 +12,7 @@
- #include <linux/posix_acl.h>
- #include <linux/pagemap.h>
- #include <linux/highmem.h>
-+#include <linux/namei.h>
- 
- static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
- {
-@@ -192,14 +193,18 @@ static int fuse_direntplus_link(struct file *file,
- 	fc = get_fuse_conn(dir);
- 	epoch = atomic_read(&fc->epoch);
- 
--	name.hash = full_name_hash(parent, name.name, name.len);
--	dentry = d_lookup(parent, &name);
-+	dentry = try_lookup_noperm(&name, parent);
- 	if (!dentry) {
- retry:
--		dentry = d_alloc_parallel(parent, &name);
--		if (IS_ERR(dentry))
--			return PTR_ERR(dentry);
-+		dentry = d_alloc_noblock(parent, &name);
-+	}
-+	if (IS_ERR(dentry)) {
-+		if (PTR_ERR(dentry) == -EWOULDBLOCK)
-+			/* harmless */
-+			return 0;
-+		return PTR_ERR(dentry);
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index abe86d72d9ef..f737f99710d5 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -700,7 +700,6 @@ static struct dentry *hostfs_mkdir(struct mnt_idmap *idmap, struct inode *ino,
+ 		dentry = ERR_PTR(err);
+ 	} else {
+ 		inode = hostfs_iget(dentry->d_sb, file);
+-		d_drop(dentry);
+ 		dentry = d_splice_alias(inode, dentry);
  	}
-+
- 	if (!d_in_lookup(dentry)) {
- 		struct fuse_inode *fi;
- 		inode = d_inode(dentry);
+ 	__putname(file);
 -- 
 2.50.0.107.gf914562f5916.dirty
 
