@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA3B106FD60
-	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EA1C106FD60
+	for <linux-um@archiver.kernel.org>; Fri, 13 Mar 2026 00:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uW0rtLXFkbaBWXfGN4/JFrVlhcpfsZme8A1/pyxgR7Q=; b=Rr59h7rN0LqNoeSKMVcDjDwc/N
-	55gxBIpYj8e0dOBoKwUSdnAsPoc7/gfrXKHbkzAFxx1LrQhPJMhi1a//SvUOoCHi5MhxvnPd0BXNB
-	6zLtOCEdJ/nkfUqt4MJFKtcbaUHhVceMccbE+b/1JeefNNFBdJ8jjmah9TMWsZZwg1i90vzmpemWu
-	jF9EFBVrWRoghD/phXa0qoT93Cy8DaHvdgr+jG83zxpBr/dnkcor9sBKvgtVhIWBH7Swq2+sXpl4o
-	P/mcEhhceAJocH9qrPTis0o95fAUf43QehDvKWqUeueXRH8rsfn3GJa7gtChmzppXk/1RwNWYc4fE
-	vY/Nh+3w==;
+	bh=K3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=qP97D44pd+bD4JWGG2Q7TQgjFc
+	QXmXIFPsagq7VmichCwYXtrderMa+QKgrBy4VIDiB+2ck+BOAs+iwfCqwoU05ZFgeEbf8PckM7F2T
+	w2cL0vigo1lzFPOZngzzZgyigCXOaKXCYXJEkBWamiC3ukpJnaLhQ4fQo64J/0C9aNzxe4cGc0vTO
+	kA625avwCsyBT4gsUY2RPsMBwDUJ2STfu04O52j6q+LZTGExL8qNNPZy5MHynejdYUyJu7xXwyV0O
+	iEw/E5CRykVmhhvbQdHwy6XZFqEpzDfvTIz/+fAVbB1pnZ/tJD8cSInjhUJ68UmeynKLmsBHIyacE
+	/NmWjy9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qfq-0000000Fyj3-1lBy;
-	Fri, 13 Mar 2026 00:46:42 +0000
+	id 1w0qg7-0000000Fynm-1eEC;
+	Fri, 13 Mar 2026 00:46:59 +0000
 Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0qfo-0000000FyiR-0S85;
-	Fri, 13 Mar 2026 00:46:41 +0000
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailflow.stl.internal (Postfix) with ESMTP id 36F521301B63;
-	Thu, 12 Mar 2026 20:46:38 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Thu, 12 Mar 2026 20:46:39 -0400
+	id 1w0qg5-0000000FynF-0pAn;
+	Fri, 13 Mar 2026 00:46:58 +0000
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.stl.internal (Postfix) with ESMTP id 605B01300BDB;
+	Thu, 12 Mar 2026 20:46:55 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Thu, 12 Mar 2026 20:46:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362798;
-	 x=1773369998; bh=uW0rtLXFkbaBWXfGN4/JFrVlhcpfsZme8A1/pyxgR7Q=; b=
-	mRnZ0YGCx3gLm0wWBHdN72SdQLIjJRWNHgfmRzo1EeqngvhpXsIr4of+UqGu9OeW
-	pUmJLqiIiGQHyeSyktpTCMTAETBXWvPA3OSWBncolVh/nheFGMbFXBXOVYOkqc7j
-	FlCEobV9Mp281to+TUFV3T7YHeRK8mPY35N/T7oIyDl6/vfGeOlanFxYy27FByF0
-	Wz8wZEy8G8xWc1POLg6uW+P54Kao4gR50BRmV33zpljxSDZ2XKTOWwnbzyaHHJgQ
-	q/l/0Jn3R6TRw9lfxXdwBt4cADGARrgvooLknBc3Pk8nLE8+yFY5yj8xeo7zbuLn
-	MvAJD9QttjXchwHdcv0txA==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773362815;
+	 x=1773370015; bh=K3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=
+	RNXQe8RCRsLKMGTZv3GRKZahOC0IxxlJic/ko0MFy4a1ctyXK6vvz4ReaSk7Wtb/
+	mAzGCuXrdmdZBQIRLvL9TgyL2qlc45O0kQ3l8qXW16jE7P6d9LqJCqRvPWC/uzxz
+	Fg4Z9KDdzbQTjvMOHVIfVhzYLGcWWMkbkuEXMLMZZKzxUaOV6SPZtD3+P7r4CdlO
+	YReiac+iMDhQdyLzaO6kSMLbrOxlDborVcCeQAMrmsrVMTfxIzMeSF5US+w16WfM
+	ACO2ucwH/a+sdYpvVApyX2BOUWYS4NgQgEXOKZ4Urg3/g1TPjzQe8VBcsJ455SzX
+	9KAVhZnChtKP/WL+6dyBwQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773362798; x=1773369998; bh=u
-	W0rtLXFkbaBWXfGN4/JFrVlhcpfsZme8A1/pyxgR7Q=; b=Viy4tpkswwmJzmT/i
-	EILuXqKRFNSgtS2iM9oKc6cjwsKTDd4DN8r1iNUHTfMZqZQOoA27qlLOy+aNCqfl
-	scyU5vWIq+dNNVGQzb6L4jTw0gApXgrVxp0OlD5OFr2m2WRVBn5F82cAVUn53wKR
-	Rh8CbSYEov+8EEP9iox4dX9pctgJyfOQIu8fkTixZcVobtZOl9otr4gzkcB2LYhN
-	q62Ie+fo1atQQJKNJwG6CvWqL3NiRqbZG2j0AlP0L1gKhb7vwzLiXxVsR9jCHSo4
-	JHgWRp7aaCFWITa39njjDD5hka9V7wBP3GzeawT/o7YxiSRL8CvJFxM180AOUpkX
-	pAkMA==
-X-ME-Sender: <xms:bV6zaZ0TCkmKV2ZwVBToDWEWC4jOzc_x0nlMkb5ni-SVAxCRUXniGg>
-    <xme:bV6zaTwiRPiTv8mpE101Dr3w-YJr9yJbIee2tX-EQt8kF4ZvwO3Zlwv1PTpAtIv7y
-    dWWpP-Hwshx3Zru2-rj7xWwVkSg7R7ang8JVWd7UAdgm8sy>
-X-ME-Received: <xmr:bV6zaU-JZnk6IIzo2_kDBG8GVZQm_eDRGKO2eDo6ChrnCuVTi-nTfMPX7AJOwVLG82zOMWUbhwJWVQ6lhxLICbUADyYaBqXAGM4vtSBppUFL>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773362815; x=1773370015; bh=K
+	3IStrNmQd52sbuvLJgTXGgXoqLBL9Wr3QWVkKkzQVI=; b=wfskezN6avTEhR19Y
+	nyFK8EjU0/MMk1mTZsKRrgviM3fKXxJNJu1JVFZMcMVBW/OhFGdzQV2zxrvMHOyI
+	+wsRPzWoNSHHCaB3Uz6Z2Z50+4HPTAToivoCuItoC7GdStbUhlwIos6CNfKYetOs
+	dtWj4+DVfGt5fqQnqBjG1Dqg+KH1ydv5G4O84e2/iXhc9Ryvf0hXvivBdRiWWVUz
+	ln4nRLs8aYjEr1bv8aqsemzU1pcoJrsa+DX022p8AWsPy7cwqUau5yZRIa7kTqSX
+	KkLiJjVMjxGllDLHldeMf1HfZBS49/IiohaDFc6csqGAyWyuyBEkdFBLfaeltNSp
+	jBt2A==
+X-ME-Sender: <xms:fl6zafe3S7X84lJOJFdshQFEOSrbddVEHmr1mw6S46GpGR2i6woJ8A>
+    <xme:fl6zaczFa49e0KK0S015j6JpoR_5P68FmUDqY6WEQHX1cWMiUDEH-T7HQAfY5J6od
+    qM5cWDNETWONPUtRpmNWTVHJCOl1xZ2rv7QmzJHE25REqnBVQ>
+X-ME-Received: <xmr:fl6zaVfYsIubTYkOgpCpYFaYitUZ5oYFrWfnd5ZTirmi7nP4J0c0z79jLMuEwIr_H465ON1BCgxcqIa4aTJ0nwCIZ9blq-QRFlXrRlcGC-hU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdeiucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhephffvvefufffkofgjfhhrggfgsedtkeertdertddtnecuhfhrohhmpefpvghilheu
     rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
     epveevkeffudeuvefhieeghffgudektdelkeejiedtjedugfeukedvkeffvdefvddunecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    vehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
     esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohephedupdhmohguvgepshhmthhp
     ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
     hrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
@@ -77,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeekvdeiucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:bV6zaURQUqK7qStcEfBYEQoAD1P18ucpMwXvlr-DL_YTmyo7L2VCEQ>
-    <xmx:bV6zaRliEawSSwBZEwMHHG8pZKoVeVe6fhRQtiX7dooLuJttvoGjrw>
-    <xmx:bV6zaUbCx4vBc_niiX7uOGRwHKN2ZFDRChpwvluVOhl7nwRzhzSSXA>
-    <xmx:bV6zaUn0KDBxgyFjvzFEL1i1RlIoxe2Y3rIXUnDbkfKcTMCUjOAtEA>
-    <xmx:bl6zaTDkJoQfeWw1TkJRJdYZcxYzB-qvjzkaSUG4eGEgydjZFqIno2Zg>
+X-ME-Proxy: <xmx:fl6zae4dK9r668Qiw8CvZFQjfZ31XTfKNmbrp9eUDoDMrazoXyD0fw>
+    <xmx:fl6zaVaKGWkKJVt8deNozJ9QBXJAphfRuD5nuPx9CFBo8ryZkkpqgg>
+    <xmx:fl6zaTzrXRucFOWhgAsf8iS1wX5cATadJaq7iOpt6RIngHxauV71uQ>
+    <xmx:fl6zaSQ4lRJXRVAygVyvKtYoYqFXXoBXTgOtSlESq2KNF1VJOQLY9g>
+    <xmx:f16zaVIP2rSOzehLw3_PK25GCy-IcS721ulaHNjDv3drFOKshm3Pavwn>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 20:46:24 -0400 (EDT)
+ 12 Mar 2026 20:46:41 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -127,17 +127,18 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 25/53] smb/client: use d_time to store a timestamp in dentry, not d_fsdata
-Date: Fri, 13 Mar 2026 08:12:12 +1100
-Message-ID: <20260312214330.3885211-26-neilb@ownmail.net>
+Subject: [PATCH 24/53] afs: use d_duplicate()
+Date: Fri, 13 Mar 2026 08:12:11 +1100
+Message-ID: <20260312214330.3885211-25-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_174640_249314_BB768D6E 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20260312_174657_277261_A5E79B7D 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,39 +156,38 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-smb/client uses d_fsdata is exactly the way that d_time is intended to
-be used.  It previous used d_time but this was changed in
-  Commit: a00be0e31f8d ("cifs: don't use ->d_time")
-without any reason being given.
+To prepare for d_alloc_parallel() being permitted without a directory
+lock, use d_duplicate() when duplicating a dentry in order to create a
+whiteout.
 
-This patch effectively reverts that patch (though it doesn't remove the
-helpers) so that d_fsdata can be used for something more generic.
-
-Cc: Miklos Szeredi <miklos@szeredi.hu>
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/smb/client/cifsfs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/afs/dir.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/smb/client/cifsfs.h b/fs/smb/client/cifsfs.h
-index e320d39b01f5..5153e811c50b 100644
---- a/fs/smb/client/cifsfs.h
-+++ b/fs/smb/client/cifsfs.h
-@@ -30,12 +30,12 @@ cifs_uniqueid_to_ino_t(u64 fileid)
- 
- static inline void cifs_set_time(struct dentry *dentry, unsigned long time)
- {
--	dentry->d_fsdata = (void *) time;
-+	dentry->d_time = time;
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index c195ee851191..b5c593f50079 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -2047,6 +2047,8 @@ static void afs_rename_put(struct afs_operation *op)
+ 	if (op->rename.unblock)
+ 		store_release_wake_up(&op->rename.unblock->d_fsdata, NULL);
+ 	store_release_wake_up(&op->dentry->d_fsdata, NULL);
++	if (op->rename.tmp)
++		d_lookup_done(op->rename.tmp);
+ 	dput(op->rename.tmp);
  }
  
- static inline unsigned long cifs_get_time(struct dentry *dentry)
- {
--	return (unsigned long) dentry->d_fsdata;
-+	return dentry->d_time;
- }
- 
- extern struct file_system_type cifs_fs_type, smb3_fs_type;
+@@ -2175,8 +2177,7 @@ static int afs_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 			if (d_count(new_dentry) > 2) {
+ 				spin_unlock(&new_dentry->d_lock);
+ 				/* copy the target dentry's name */
+-				op->rename.tmp = d_alloc(new_dentry->d_parent,
+-							 &new_dentry->d_name);
++				op->rename.tmp = d_duplicate(new_dentry);
+ 				if (!op->rename.tmp) {
+ 					afs_op_nomem(op);
+ 					goto error;
 -- 
 2.50.0.107.gf914562f5916.dirty
 
