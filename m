@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0188E106ACEF
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 21:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90992106ACEC
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 21:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4l/tn7wsmdY2E32uQtjREu4g7D5gEVnge4bbDSwghlw=; b=sjUbgDQIL6Q3pJX7mQRuOCjZfU
-	DuDgnCWGVQIBqFjB8tf5XHGxoSZdwCndFPjMhLv+E6N4i+LWcdtjCMJQeLyWlHjQsFkg++oqApNXH
-	OURfa//b5HQiavt2BQq9BLEY7E2265RMxlpvnvLV8BEcqn0Rvt0Mvh6O3sseRUl3a0sggZysIRL1s
-	P34o3hUFZ8ztz2xFrjqoMLp08HhVk5FrT5jUNiDyfXntmc4xu/5o6vlcBUwZNov9l6ROh6uH9d8Em
-	OxTy4nuLwZZE+lBvLY6/qLzRKUYYgVJMOIUoP5hVdZOQYbgBn7ym/3h/OrIB2E7nA9GvnG/iZOda6
-	11E4q5lg==;
+	bh=TcDuCufZRxJixrcfGFygV+aETR7o0fZBVzJe26rF96E=; b=jRk0nx08BzeGNoZnXIOMhTVJoN
+	6wcXgyVWFEhp8pE+7rEhcdQ2qPDu9Sn/56JY+myaATZV4MDxzoRfMuajbK8P3Z7C4+cQTyWgOev+x
+	jTgLblFu+Ki10yRLAbn51SY3mwekhWJkx1hBEl4z3mhVG5vsJDC1vcN+tP+1hUI3HSbTMhoyjQHr4
+	dxiH+Sw2K0qBBAkZ8WVY0lceS3VLBwnqtjqUOehaCqqN4TmjYojhZwcFd1F2EcqTMXV63VlY7FYOF
+	u+4+xY0XfsUAleHlugnDAM5gPxVKPStNWJRTRJP6m0NWHSQCYnthBuY938noBd8FKKa3Wqn9a03Qg
+	WGoKuAeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0o1k-0000000FYqi-36C4;
-	Thu, 12 Mar 2026 21:57:08 +0000
+	id 1w0o21-0000000FYvH-164H;
+	Thu, 12 Mar 2026 21:57:25 +0000
 Received: from flow-b6-smtp.messagingengine.com ([202.12.124.141])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0o1i-0000000FYq1-1ydn;
-	Thu, 12 Mar 2026 21:57:07 +0000
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailflow.stl.internal (Postfix) with ESMTP id 8997E1300F6C;
-	Thu, 12 Mar 2026 17:57:04 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Thu, 12 Mar 2026 17:57:05 -0400
+	id 1w0o1z-0000000FYum-37KE;
+	Thu, 12 Mar 2026 21:57:24 +0000
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailflow.stl.internal (Postfix) with ESMTP id 8380A1301B63;
+	Thu, 12 Mar 2026 17:57:21 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-10.internal (MEProxy); Thu, 12 Mar 2026 17:57:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773352624;
-	 x=1773359824; bh=4l/tn7wsmdY2E32uQtjREu4g7D5gEVnge4bbDSwghlw=; b=
-	BW9wEqW3sDh/FtKsI2oZym4cN8gfqO7PI+1QZkzeYlyvzzvl6g5EeSeOVu2oQtk6
-	PwPCa0pocxA0zzebqej9hV8+MTj4mW3U1OzGT1coekfj64HMKjiyXojEgdUSfnKR
-	Df6eFbO4K8hWvuP6o0waZ4SVFdfPcjZ7D+C0sJjdqiTmUTmlwI+pXNafNv00dWc+
-	O0BVOVD6z9gx+eoRdkYV7FRCKsnyeYvYtoaEJmptNiWxetbag5RW+Ctd2uja0vfe
-	v/0ZReqHwz02Av+es2ehMtnHwBvblWlCyOd+zaOQ8hfvOrqwfKTb6BsB9u6fjrkN
-	H6TNzQH7wj5p2FUyypeOZA==
+	:reply-to:reply-to:subject:subject:to:to; s=fm1; t=1773352641;
+	 x=1773359841; bh=TcDuCufZRxJixrcfGFygV+aETR7o0fZBVzJe26rF96E=; b=
+	nvIfh2aV2uCnP5fbNBD0+p+cy5dGDLvwuz7s3Y2ug0pE9ASziUJZDIeLE56guz56
+	/o5mTdgRuBry13nfhP1Q6ljFE8dK90mkT3TGfExLnEDQmbbJ4Dd5dIswurNNrHRG
+	qGYhyGNzBYe1eg7Wv4tqzkAxFgmyldVz0qJd1mhHWbQli6lUFt9JSJiI5gyfnnfm
+	57b4oV9ELFNsGFG3SMNAeCDK4TTz5aO3+SYbXmhxZKK0+IiiAUY8/N6+jkCPR+pd
+	4dpuFNZj/O88RcKYROJtoFUZ9hP5f5ew2YzSgcaYhUFxonj7LcTlhEjqBbo59CfP
+	1Bx00rDdV5Kc8MhWJ7JNLw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1773352624; x=1773359824; bh=4
-	l/tn7wsmdY2E32uQtjREu4g7D5gEVnge4bbDSwghlw=; b=dpUIJhtEj1cBj3j9H
-	unyZT0sMz9m0PJa4w9ml8U0zTMyPTdFWoMrhP+PqHlnb46PZTAI4xBzf/94OZ8au
-	HMMYdpzclow79eg8cITbo/HF3XL3lV3pJvLrnH+UHhYGWNABwaDUEiiSyBi+p058
-	AIT72AIiSjFv8C24PGRRqioFgMW/bXDjAmwY1r7O83Dgv8bls44ABJ3Gy3mhaPVZ
-	p5sA4LBrZzneMleY4pIfAQbq2VSFXST6n79auOxftmCpBxOkbEmLk++Su9Eqt6tE
-	9xo9Ukyjllk9zko/7dVAbA5+W8pX2MGic1YtvXJIew/ovNUl8pHZGrIke+e8ed4X
-	zHmhQ==
-X-ME-Sender: <xms:rzazafHgq5kkJNLQXJ5MsMZvA5C7KDN9tUQQwQNXLndrPr-KUTr36A>
-    <xme:rzazaWBaxSyrDQlnqQ7fCszhaC7GOWJXr034oAZHf9f5Ln_XAnrlsy8lJHZqhtcCa
-    24RJDo5YwjWbYzhkh95fWMs6HGsmK17CJ_FCEE3A2bRWLgAE-E>
-X-ME-Received: <xmr:rzazaYGaMqtlyBo5Byt15BG5PspFOkSK_oM_1CAORCyOKtV1Z5vCxW9Wv0QrAIBd0dvvztUHaL61rYcyjKGMWRqFwlWMac7pDS4ZI1dvlQHE>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1773352641; x=1773359841; bh=T
+	cDuCufZRxJixrcfGFygV+aETR7o0fZBVzJe26rF96E=; b=xlwDjQbH9C1hyWYTk
+	qKwHe5IPsQr+iN4dxQjz1i3OO4hnW9JvPTqO9DlXAuYx/EU4usiTZf+yBPoL8+fp
+	v/v6ZaEjHOByIDbkNYrbdJWbNWeuewez+R4OXr/Xw9Qyo+x/FkLR79SrLLtJK3d3
+	3mf0I+ElHTZ5v25Gr2YAJD3rYwupgT1B6fSTpAvQYmWkEZXCpYWUVl/GMo584Do+
+	OCWpoJvv3lLzJ5rwqiPmcnhbTPLew/JpKRHjScaMdrDKoT/wZLzFfO4XO/ABZ5D/
+	u0cy237zNWkEclRAhZkLsXOULDttuM2SX9t6Y/c5mpNLkRskDDrpctYmuSOGGgpj
+	IdArg==
+X-ME-Sender: <xms:wDazafdO_sWmGhWD6154c9XN-js9DNlJSejXhjsPLSLhzF2tW7ppPA>
+    <xme:wDazae6WP7w6MULrdQaFCcRVtULw3Y7MWcWXAitpbINf0gpHinB9l76NFAp9R3ud6
+    RB4dpzj87qnkxj_U4OdBaVw3In1ut-s--0rHPkEKyshYsCY>
+X-ME-Received: <xmr:wDazaff2jYtQMUMv9jiPp3U3_pL_Qyu4MAGP1jAbw-8ts5m8XsCM-D0VpPenhsz9BGYuWjErsQG9g397hHc0xvCSqiukdGirvqWJ27D7kx7s>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeejledvucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
@@ -77,14 +77,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeejledvucetufdote
     hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
     vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvghfihesvhhgvghrrdhkvghrnhgvlh
     drohhrgh
-X-ME-Proxy: <xmx:rzazaRLMf0xCbH9DskN6cbfxaFyHjsXPa01ypMC44vm_7j42GQo-XQ>
-    <xmx:rzazaUuXjK3pWNOdt_IrXzDfMiNIFLihdDLGV0rzQsKjCfilR3Fziw>
-    <xmx:rzazaWol9h7ePjrj3Za7I73W-xCiRO1lEYFki_qD-TJ6bQYulpiMtg>
-    <xmx:rzazaQUBcFkXeR7RUWU1cUXNQ1HJd2AgmIhU03afXZwQTCNgbw326Q>
-    <xmx:sDazaWf3sZUuzWbO4fKYzxinLNZ9SCRYKi3Wbk1TTyoldl1UNbQP0RC5>
+X-ME-Proxy: <xmx:wDazaVAuQHn5C2dPy2Z6RtnXGYui5i3IkWQro_KarsGBRGti7OYaQA>
+    <xmx:wDazabEf4uiVOaOx62aACayZTusJrh-zsFGKwToEWfSjuae36C7qtg>
+    <xmx:wDazadjc9GxUmAxpfWyoSqBYdHbU04U8SCrZ2NeJ1FBeztiTngr6VQ>
+    <xmx:wDazadvuGOVPBQxad0umw1vk5OPWk8rux78NWpwYaI80YZgoEPwTig>
+    <xmx:wTazadWAt_VLN_gSlwcbgrDREjkhIl2uauPOa9jebByPwtSF2xeXUZZx>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Mar 2026 17:56:51 -0400 (EDT)
+ 12 Mar 2026 17:57:07 -0400 (EDT)
 From: NeilBrown <neilb@ownmail.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -127,17 +127,18 @@ Cc: linux-fsdevel@vger.kernel.org,
 	gfs2@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH 47/53] VFS: make d_alloc() local to VFS.
-Date: Fri, 13 Mar 2026 08:12:34 +1100
-Message-ID: <20260312214330.3885211-48-neilb@ownmail.net>
+Subject: [PATCH 48/53] VFS: remove d_add()
+Date: Fri, 13 Mar 2026 08:12:35 +1100
+Message-ID: <20260312214330.3885211-49-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20260312214330.3885211-1-neilb@ownmail.net>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_145706_620613_927F732F 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20260312_145723_894217_8DC4F385 
+X-CRM114-Status: UNSURE (   9.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,71 +156,58 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: NeilBrown <neil@brown.name>
 
-d_alloc() is not useful.  d_alloc_name() is a better interface for
-those cases where it is safe to allocate a dentry without
-synchronisation with the VFS, and d_alloc_parallel() or
-d_alloc_noblock() shoudl be used when synchronisation is needed.
+d_add() has been supplanted by d_splice_alias(), d_make_persistent() and
+others.  It is no longer used and can be discarded
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- Documentation/filesystems/porting.rst | 8 ++++++++
- fs/dcache.c                           | 1 -
- fs/internal.h                         | 1 +
- include/linux/dcache.h                | 1 -
- 4 files changed, 9 insertions(+), 2 deletions(-)
+ fs/dcache.c            | 19 -------------------
+ include/linux/dcache.h |  2 --
+ 2 files changed, 21 deletions(-)
 
-diff --git a/Documentation/filesystems/porting.rst b/Documentation/filesystems/porting.rst
-index 6a507c508ccf..4712403fd98e 100644
---- a/Documentation/filesystems/porting.rst
-+++ b/Documentation/filesystems/porting.rst
-@@ -1381,3 +1381,11 @@ longer available.  Use start_renaming() or similar.
- 
- d_alloc_parallel() no longer requires a waitqueue_head.  It uses one
- from an internal table when needed.
-+
-+---
-+
-+**mandatory**
-+
-+d_alloc() is no longer exported as its use can be racy.  Use d_alloc_name()
-+when object creation is controlled separately from standard filesystem interface,
-+and d_alloc_parallel() or d_alloc_noblock() when standard interfaces can be used.
 diff --git a/fs/dcache.c b/fs/dcache.c
-index 9a6139013367..23f04fa05778 100644
+index 23f04fa05778..4ebbbcc5aec4 100644
 --- a/fs/dcache.c
 +++ b/fs/dcache.c
-@@ -1830,7 +1830,6 @@ struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
- 
- 	return dentry;
+@@ -2979,25 +2979,6 @@ static inline void __d_add(struct dentry *dentry, struct inode *inode,
+ 		spin_unlock(&inode->i_lock);
  }
--EXPORT_SYMBOL(d_alloc);
  
- /**
-  * d_duplicate: duplicate a dentry for combined atomic operation
-diff --git a/fs/internal.h b/fs/internal.h
-index cbc384a1aa09..9c637e2d18ef 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -223,6 +223,7 @@ bool sync_lazytime(struct inode *inode);
- /*
-  * dcache.c
-  */
-+struct dentry *d_alloc(struct dentry * parent, const struct qstr *name);
- extern int d_set_mounted(struct dentry *dentry);
- extern long prune_dcache_sb(struct super_block *sb, struct shrink_control *sc);
- extern struct dentry *d_alloc_cursor(struct dentry *);
+-/**
+- * d_add - add dentry to hash queues
+- * @entry: dentry to add
+- * @inode: The inode to attach to this dentry
+- *
+- * This adds the entry to the hash queues and initializes @inode.
+- * The entry was actually filled in earlier during d_alloc().
+- */
+-
+-void d_add(struct dentry *entry, struct inode *inode)
+-{
+-	if (inode) {
+-		security_d_instantiate(entry, inode);
+-		spin_lock(&inode->i_lock);
+-	}
+-	__d_add(entry, inode, NULL);
+-}
+-EXPORT_SYMBOL(d_add);
+-
+ struct dentry *d_make_persistent(struct dentry *dentry, struct inode *inode)
+ {
+ 	WARN_ON(!hlist_unhashed(&dentry->d_u.d_alias));
 diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 3b12577ddfbb..18242f9598dc 100644
+index 18242f9598dc..31b4a831ecdb 100644
 --- a/include/linux/dcache.h
 +++ b/include/linux/dcache.h
-@@ -242,7 +242,6 @@ extern void d_drop(struct dentry *dentry);
- extern void d_delete(struct dentry *);
- 
- /* allocate/de-allocate */
--extern struct dentry * d_alloc(struct dentry *, const struct qstr *);
- extern struct dentry * d_alloc_anon(struct super_block *);
- extern struct dentry * d_alloc_parallel(struct dentry *, const struct qstr *);
- extern struct dentry * d_alloc_noblock(struct dentry *, struct qstr *);
+@@ -282,8 +282,6 @@ extern int path_has_submounts(const struct path *);
+  */
+ extern void d_rehash(struct dentry *);
+  
+-extern void d_add(struct dentry *, struct inode *);
+-
+ /* used for rename() and baskets */
+ extern void d_move(struct dentry *, struct dentry *);
+ extern void d_exchange(struct dentry *, struct dentry *);
 -- 
 2.50.0.107.gf914562f5916.dirty
 
