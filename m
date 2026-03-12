@@ -4,95 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 181C1105A594
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 12:53:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CECBE105A59F
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 13:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ky7U0hmCeNi6OyUrf2MxogfDAlaxZWXxIQIvc2Y9k8Y=; b=kXuRM6nnpjVJu/LCCm7tjBO/YP
-	T5tUz7B4qrPSjrMP9GBExLk/pRkb3ANM0jaOOAVsvqk0GN94pLnsUXMlwRjwomp5WG4AVjDUL5wEV
-	g3UnpdS3ZOV7pAthjNj7BByBWQIOU0O5PR/2ptJoCICi7PU0YtLwz7aUAouBQKHosBoOotUQ0IcGE
-	2RV8ji+FkMNNu5MFx7FizTGTOkmRFwZC9GCBph2GX5EfMBut4dxNrYAL6JvW2ilusRGppkD7LlJCM
-	qjr2iPGfjzVNxOZvuO+Gge9aOb0IfwEyjdEC1x2WQVkLQwc9pSLGNWND1VmxMch4Iu1JHeh6fE5tX
-	auCFYcqw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=l8xdTzfmFI9blWnX69yppRL0CTG4tWAVHoV5RzxnJ4M=; b=PmbhtytWngpCKzbg+9vZWdlqW7
+	w25KHJzOUREc8SIRF82oduOMoSaqG6lwr/yjFi7hGuToMwizFvOWk2NKz+Le66D6AdhS+AIQ90bYb
+	Kh+ilkD9wrdRBZc3xdXWYLv/fkoqb9xGUkIKzbhgIQaKZrnEnc0Su6SrpsqVETsb0yId2V6qBO8pY
+	g6qSQDlCLwHKjjpgYefjV9mFATN2WaYcrGg5S0aWxmpwk/7GAlFj7JgExoBnaonbkatzD37b9MvM2
+	0+Ju9F3goGYGf7ZkaJxrYXdRh8+bsBZRvVAB57L4GGiadWW1Rt2SasCe0EEQ6dea4LY6axBcOq45x
+	dGU/yhiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0fY2-0000000E51k-2iuX;
-	Thu, 12 Mar 2026 12:53:54 +0000
-Received: from mail-oa1-x2f.google.com ([2001:4860:4864:20::2f])
+	id 1w0gNL-0000000E9bv-0x2V;
+	Thu, 12 Mar 2026 13:46:55 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0fXu-0000000E4yw-3e8X
-	for linux-um@lists.infradead.org;
-	Thu, 12 Mar 2026 12:53:49 +0000
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-4043b27ddeaso637494fac.1
-        for <linux-um@lists.infradead.org>; Thu, 12 Mar 2026 05:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1773320025; x=1773924825; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ky7U0hmCeNi6OyUrf2MxogfDAlaxZWXxIQIvc2Y9k8Y=;
-        b=PqKx9b8gCq1X4S5smoMl8y9rJhMPkJWPaAbrXVvWDmsnPs4tUnMako8OB+pUeId1eE
-         7hVu8O6udJf/FOiFcNn6OdZCI8Th2KAKOAL5GscD75vh8H7wtOEo0rmv2MdsnaurOhb9
-         kJr22L1Nxjw8UCfTn82G0B0lz8su5MWy68nURKKpNkryEhavSRp+MTJqzxHdUYOqp8WE
-         XvVwwrsBIgu9NwNkHo1j+RBY1dRr3WOuV8f0ixBnXPZQFboAsPsITPzw2++37PjR1uqN
-         zzuiW3E932+orTLSpT8roXMh5IpJW+LAIZ/IqDzSWKjrUCHMD9gImWCgOWF1yi+2sCJM
-         wFhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773320025; x=1773924825;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ky7U0hmCeNi6OyUrf2MxogfDAlaxZWXxIQIvc2Y9k8Y=;
-        b=a8UIW2to6q/Muq2G1OY/1AgqGujHNjMhIHB9FnT3DqiThkEm/ZFBkvN0/NRIgNcCxX
-         YcbNv4g5Woxg0bio6PpISYliPdAX0P4FoDN4ADaQFD/sZo0QzXciwfgCz2vnU9wkXKiA
-         5YBgFMxvlI519CmD6515XmUcC6zd/pR14ErJximQcBkV7Labe8IUVWXDhv5KpWElPzgs
-         AOLfKawOM9EI72F6Dyg29hwAvQIp9q7vfXgtWha2AXAmvLlQncoguSkZByEpwo6ZWfUW
-         SR2mIXe/axPfjt5bIFw1QUDewETLNeYydAOgwHeuIvYvHeHb+OD0TzdGzTu/exEn6zk8
-         khfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmxfU2po5HrI02hrFduOB+Y11YWdNLBG+Yn06Ndyi7b6myVUm4kRGke2zoAyDq/2zrxwSkU2zoiw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzh1U4AAFw1sYIbIxplWA/Un0pCNtn2Gp0hu62LPp0nZqzEhqEt
-	ZmYvI+YQkdETOohDhy5IKrjfdLWZJvCVKTTt0gNpfH3D2XwT4yrTNYeufgFYclW40rA=
-X-Gm-Gg: ATEYQzxiQK2TZjW6fTV7xgW/hk5i0XhTRfjtnKwmkggCWTA+flXhpZ/0h3V7loU6vrw
-	WcZWu1slJQzIQZO9VAn3DxLE2XeWim0bI6h3izUcZ76wLI8boIMrtK7pJjgPWyoxJLi+4kNFwjZ
-	m4fQz4AYYS4L30H5Gihd9nrUDNXmB7BoC9CapfMVLLRWktqx4QkpXdoeQQiM6O/FLdkc4K0o3Nu
-	UAvWXlpMdDS0/x37Kx+yaUDGQ0LPhXs50dDgyP6HL21vX/dEkdSPOlb7QWGh61EXqD/gsTTlHho
-	fuU04LCnTWWUbBtkYFEuSI1sqw5JUmahzkI303iiT11nx60ipykdarLeNXtakoAShVx060kbiSH
-	l4TTopWQVglBK+H64YqxV6c1C85lwkyY2LvxAVgFncEbgn5O9vVgyHAL0MhO7Wvch4/U265g8tN
-	rO8NHlkScuXCB/hJ+8yQWTf7DCEPhlUkrbLHUmdwo=
-X-Received: by 2002:a05:6870:649f:b0:409:74c7:1cbb with SMTP id 586e51a60fabf-4177c6f1d08mr3392540fac.7.1773320024820;
-        Thu, 12 Mar 2026 05:53:44 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.103.0])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41791432d87sm3765785fac.1.2026.03.12.05.53.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2026 05:53:44 -0700 (PDT)
-Message-ID: <f7054184-dca2-4c7c-9e2e-4a5e3e1c81da@sifive.com>
-Date: Thu, 12 Mar 2026 07:53:42 -0500
+	id 1w0gNI-0000000E9bU-3dXi;
+	Thu, 12 Mar 2026 13:46:53 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 0023060145;
+	Thu, 12 Mar 2026 13:46:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0435C4CEF7;
+	Thu, 12 Mar 2026 13:46:46 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aNowo7eU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1773323205;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l8xdTzfmFI9blWnX69yppRL0CTG4tWAVHoV5RzxnJ4M=;
+	b=aNowo7eUwaDEsiVlTqmEAkItMBfiAqnQpwNdW5+Iir3vEvTnk82QibP2d05ImlF0a165mh
+	nmvWlvpeFzo1/3YJJgy9A68B3kA75iz0ORvDTg44s5evgsV+Q5arPoARsc9Mpj0kc03vTo
+	y0krEtMS6grTzTv7HePJJwYz8b+7S/w=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d18605ad (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 12 Mar 2026 13:46:44 +0000 (UTC)
+Date: Thu, 12 Mar 2026 14:46:39 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-crypto@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-raid@vger.kernel.org
+Subject: Re: [PATCH 26/27] random: factor out a __limit_random_u32_below
+ helper
+Message-ID: <abLDvwa7c3OXm_e2@zx2c4.com>
+References: <20260311070416.972667-1-hch@lst.de>
+ <20260311070416.972667-27-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 14/15] mm/kasan: add document into
- kernel-parameters.txt
-To: Baoquan He <bhe@redhat.com>, kasan-dev@googlegroups.com
-Cc: linux-mm@kvack.org, andreyknvl@gmail.com, ryabinin.a.a@gmail.com,
- glider@google.com, dvyukov@google.com, linux-kernel@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, x86@kernel.org, chris@zankel.net,
- jcmvbkbc@gmail.com, linux-s390@vger.kernel.org, hca@linux.ibm.com
-References: <20260225081412.76502-1-bhe@redhat.com>
- <20260225081412.76502-15-bhe@redhat.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-Content-Language: en-US
-In-Reply-To: <20260225081412.76502-15-bhe@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_055346_951386_CBEC47C6 
-X-CRM114-Status: GOOD (  16.07  )
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260311070416.972667-27-hch@lst.de>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,53 +110,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Baoquan,
+On Wed, Mar 11, 2026 at 08:03:58AM +0100, Christoph Hellwig wrote:
+> Factor out the guts of __get_random_u32_below into a new helper,
+> so that callers with their own prng state can reuse this code.
 
-On 2026-02-25 2:14 AM, Baoquan He wrote:
-> And also remove the relevant description in dev-tools/kasan.rst
-> which is hw_tags specificially.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 4 ++++
->  Documentation/dev-tools/kasan.rst               | 2 --
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index cb850e5290c2..e0115fad9e60 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2899,6 +2899,10 @@ Kernel parameters
->  	js=		[HW,JOY] Analog joystick
->  			See Documentation/input/joydev/joystick.rst.
->  
-> +	kasan=		[KNL] controls whether KASAN is enabled.
-> +			Format: off | on
-> +			default: on
-> +
->  	kasan_multi_shot
->  			[KNL] Enforce KASAN (Kernel Address Sanitizer) to print
->  			report on every invalid memory access. Without this
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index a034700da7c4..eaae83fcb5e4 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -129,8 +129,6 @@ Hardware Tag-Based KASAN mode is intended for use in production as a security
->  mitigation. Therefore, it supports additional boot parameters that allow
->  disabling KASAN altogether or controlling its features:
-
-The sentence above is now incorrect as well. I would recommend documenting the
-parameter earlier in the "Boot parameters" section instead of removing it from
-this document entirely.
-
-Regards,
-Samuel
-
->  
-> -- ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
-> -
->  - ``kasan.mode=sync``, ``=async`` or ``=asymm`` controls whether KASAN
->    is configured in synchronous, asynchronous or asymmetric mode of
->    execution (default: ``sync``).
-
+What Eric said. random.c is not "some library code" meant to be pulled
+apart like this. If you think there are some good general purpose
+arithmetic functions, by all means develop shared infrastructure in the
+right place. But I think for this super simple/trivial _below function,
+you can probably just place it additionally where you're using it,
+without needing to touch random.c.
 
