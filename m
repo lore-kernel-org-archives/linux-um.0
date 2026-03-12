@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48A99106ACE4
-	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 19:16:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C68C106ACE0
+	for <linux-um@archiver.kernel.org>; Thu, 12 Mar 2026 19:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=McqqJ/O8xeq2UYW4/r1rFqCQDgZ0JT5zmWWDDok3uPA=; b=o443JArKf28NJKS6ULH7xx5l/B
-	YAQ55+J1E8EZqEiC+Q7sG7a4Z9MV20mZIJBDtNN6TPNpyRBA+NpDXGI9BfJNb0il+OwPVaHfxFAe+
-	T778DbgmwrEc1cpFNA6aoeN4cnUP/i2sXg+9Ksm/cLaOupH9rKfpftwbsExExiKTkhahEBzz5IO5v
-	H0XXs49ljCdzQ2r1HrLn3QXpV8rhnh8gBtfd6vdqAcKDySnB9cC5bUPMzkXqcjeRgb0idj7Wvlszv
-	05RviBmlpzgmrzZ8N6r2l2jHX3Eo2FUaAupZpTNnbFk5Tb/ChPOr6mCvCZq0X8bxis4NSi3v5Uk2k
-	N66/9SUg==;
+	bh=EyNOJRFBn6GYecjz/uIi6J1r7bpamrPl/8rZmvXcRyc=; b=Re/aDvcOormpgvDVYm9GK7xLPB
+	J1UBTMWOhxreP3RL4dlG1XZ2uyCO6SIVSUOc971Otv+82pS+LU12g7ATYgthWPSFdMJrkFNf0o8Lm
+	sQhx80NWY5Qc7gg2H8TN3ppFhBTS/obFy7WGxwQOwn8MUcSgnqF2o/q/U8y9GeuWpmsQ7GQJmnsP3
+	i1ykYFeM1Cj/VpPdJIcY7RFI0WKF2QTIu0cn/6zfF0arSHDQsts6ieO9iq4s/wEzKmr06rN6d0Uc0
+	+SvNgcfyz53Awe7rN7ZTK252+8YmkmiT6NHQTaKugH7THjmxMtrI536SMT3x2pfUUiaQAgnFrrq6Q
+	sSGiAfBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0lWV-0000000F0jz-2pwl;
-	Thu, 12 Mar 2026 19:16:43 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w0lWY-0000000F0oH-3RZI;
+	Thu, 12 Mar 2026 19:16:46 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w0lWS-0000000F0f6-0Kcd;
-	Thu, 12 Mar 2026 19:16:41 +0000
+	id 1w0lWU-0000000F0hg-1PKW;
+	Thu, 12 Mar 2026 19:16:43 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 203C243846;
-	Thu, 12 Mar 2026 19:16:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B16C4CEF7;
-	Thu, 12 Mar 2026 19:16:38 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id C91E944504;
+	Thu, 12 Mar 2026 19:16:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E70C2BC86;
+	Thu, 12 Mar 2026 19:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773342999;
-	bh=dOhA+5iQB+SVk3yKxpjhcrfP4J4hd8DO2zJWxNY1VQw=;
+	s=k20201202; t=1773343001;
+	bh=bmvUDjwEogjDbOSJi1Au4cu8FeNepAROkOURcG3tLdk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fZVl7VhP+ZhdqtYKU95GS3nRBzwKOP5dwpy7OeaQgaWYInVFoyC/DFoBv7wF/Jh30
-	 mcDQDXSTkq2ibPeX5Zb+GgvEsvxPTgeyEThEZ++xP6qftVS9O8qNvRGns+sGAZs+BN
-	 L/Y1HdYaSVaSrAYWcTasLl3A+yku/gOuQfmEQVsYeZek+ouroxSo/33jJLbGwCytU9
-	 7/rqz/f1SLProBktpoAz20+C6zFH2Sfj6o9msoS71nwiTxlN3h5h3TLapL5qyjG45M
-	 d7ZVFRig357jA8G32biuKQkqqEBP9Qgmhr+19SQ6FseLCX3+x953NX/CxxrMJfuWBL
-	 w68pcaPc5NuTw==
+	b=mD8due7j6LcH1JQ77FvTm2O64To7W0qOMNPmhfFPikEgImXxT3veeh3L41ScCRDBh
+	 hmg4qqqniVoHcKkT7m8O5H+mumGm8N4zmYge7Opsa8Ce/9GDHTedwhM9/CUSKMWgwY
+	 IU6e/CBYw2NRKVOVFqQ2bgGlpInKV5G+fS4rkhtPIgTgj/deO9vmVz7mlvAjgVC+y0
+	 7ims1tNWR6jHJF5nM+CJQxylOO6k9izJWD84PHMXlW2lamVOJSdsyjSiiiJAPNBn3k
+	 Gtips/dqUFGzguPMfBbLSaJzhO9FYdS+kBwGG+aI/v6lVZ5+gEbRp5AK402grOd7TP
+	 H8o+1/QbaQGqw==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,17 +104,17 @@ Cc: David Hildenbrand <david@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org,
 	selinux@vger.kernel.org
-Subject: [PATCH 02/20] tools/testing/vma: add unit tests for vma_flags_[empty, diff_pair, and]()
-Date: Thu, 12 Mar 2026 19:16:00 +0000
-Message-ID: <87517d01b3973aa43f874164d0741d02cb123537.1773340636.git.ljs@kernel.org>
+Subject: [PATCH 03/20] mm/vma: add further vma_flags_t unions
+Date: Thu, 12 Mar 2026 19:16:01 +0000
+Message-ID: <cd3f6777c6a11a425ce5e249a5d315448e954b46.1773342102.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <cover.1773340636.git.ljs@kernel.org>
-References: <cover.1773340636.git.ljs@kernel.org>
+In-Reply-To: <cover.1773342102.git.ljs@kernel.org>
+References: <cover.1773342102.git.ljs@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260312_121640_182740_F0DB8FF9 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20260312_121642_429953_20AA33CD 
+X-CRM114-Status: GOOD (  12.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,231 +129,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add VMA unit tests to assert that:
+In order to utilise the new vma_flags_t type, we currently place it in
+union with legacy vm_flags fields of type vm_flags_t to make the transition
+smoother.
 
-* vma_flags_empty()
-* vma_flags_diff_pair()
-* vma_flags_and_mask()
-* vma_flags_and()
+Add vma_flags_t union entries for mm->def_flags and vmg->vm_flags -
+mm->def_vma_flags and vmg->vma_flags respectively.
 
-All function as expected.
+Once the conversion is complete, these will be replaced with vma_flags_t
+entries alone.
 
-In additional to the added tests, in order to make testing easier, add
-vma_flags_same_mask() and vma_flags_same() for testing only. If/when these
-are required in kernel code, they can be moved over.
-
-Also add ASSERT_FLAGS_[NOT_]SAME[_MASK](), ASSERT_FLAGS_[NON]EMPTY() test
-helpers to make asserting flag state easier and more convenient.
+Also update the VMA tests to reflect the change.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- tools/testing/vma/include/custom.h |  12 +++
- tools/testing/vma/shared.h         |  18 ++++
- tools/testing/vma/tests/vma.c      | 137 +++++++++++++++++++++++++++++
- 3 files changed, 167 insertions(+)
+ include/linux/mm_types.h        | 6 +++++-
+ mm/vma.h                        | 6 +++++-
+ tools/testing/vma/include/dup.h | 5 ++++-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/vma/include/custom.h b/tools/testing/vma/include/custom.h
-index 833ff4d7f799..ce056e790817 100644
---- a/tools/testing/vma/include/custom.h
-+++ b/tools/testing/vma/include/custom.h
-@@ -118,3 +118,15 @@ static __always_inline vma_flags_t __mk_vma_flags(size_t count,
- 			vma_flags_set_flag(&flags, bits[i]);
- 	return flags;
- }
-+
-+/* Place here until needed in the kernel code. */
-+static __always_inline bool vma_flags_same_mask(vma_flags_t *flags,
-+						vma_flags_t flags_other)
-+{
-+	const unsigned long *bitmap = flags->__vma_flags;
-+	const unsigned long *bitmap_other = flags_other.__vma_flags;
-+
-+	return bitmap_equal(bitmap, bitmap_other, NUM_VMA_FLAG_BITS);
-+}
-+#define vma_flags_same(flags, ...) \
-+	vma_flags_same_mask(flags, mk_vma_flags(__VA_ARGS__))
-diff --git a/tools/testing/vma/shared.h b/tools/testing/vma/shared.h
-index 6c64211cfa22..e2e5d6ef6bdd 100644
---- a/tools/testing/vma/shared.h
-+++ b/tools/testing/vma/shared.h
-@@ -35,6 +35,24 @@
- #define ASSERT_EQ(_val1, _val2) ASSERT_TRUE((_val1) == (_val2))
- #define ASSERT_NE(_val1, _val2) ASSERT_TRUE((_val1) != (_val2))
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index ad414ff2d815..ea76821c01e3 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -1262,7 +1262,11 @@ struct mm_struct {
+ 		unsigned long data_vm;	   /* VM_WRITE & ~VM_SHARED & ~VM_STACK */
+ 		unsigned long exec_vm;	   /* VM_EXEC & ~VM_WRITE & ~VM_STACK */
+ 		unsigned long stack_vm;	   /* VM_STACK */
+-		vm_flags_t def_flags;
++		union {
++			/* Temporary while VMA flags are being converted. */
++			vm_flags_t def_flags;
++			vma_flags_t def_vma_flags;
++		};
  
-+#define ASSERT_FLAGS_SAME_MASK(_flags, _flags_other) \
-+	ASSERT_TRUE(vma_flags_same_mask((_flags), (_flags_other)))
-+
-+#define ASSERT_FLAGS_NOT_SAME_MASK(_flags, _flags_other) \
-+	ASSERT_FALSE(vma_flags_same_mask((_flags), (_flags_other)))
-+
-+#define ASSERT_FLAGS_SAME(_flags, ...) \
-+	ASSERT_TRUE(vma_flags_same(_flags, __VA_ARGS__))
-+
-+#define ASSERT_FLAGS_NOT_SAME(_flags, ...) \
-+	ASSERT_FALSE(vma_flags_same(_flags, __VA_ARGS__))
-+
-+#define ASSERT_FLAGS_EMPTY(_flags) \
-+	ASSERT_TRUE(vma_flags_empty(_flags))
-+
-+#define ASSERT_FLAGS_NONEMPTY(_flags) \
-+	ASSERT_FALSE(vma_flags_empty(_flags))
-+
- #define IS_SET(_val, _flags) ((_val & _flags) == _flags)
+ 		/**
+ 		 * @write_protect_seq: Locked when any thread is write
+diff --git a/mm/vma.h b/mm/vma.h
+index eba388c61ef4..cf8926558bf6 100644
+--- a/mm/vma.h
++++ b/mm/vma.h
+@@ -98,7 +98,11 @@ struct vma_merge_struct {
+ 	unsigned long end;
+ 	pgoff_t pgoff;
  
- extern bool fail_prealloc;
-diff --git a/tools/testing/vma/tests/vma.c b/tools/testing/vma/tests/vma.c
-index f6edd44f4e9e..4a7b11a8a285 100644
---- a/tools/testing/vma/tests/vma.c
-+++ b/tools/testing/vma/tests/vma.c
-@@ -363,6 +363,140 @@ static bool test_vma_flags_clear(void)
- 	return true;
- }
+-	vm_flags_t vm_flags;
++	union {
++		/* Temporary while VMA flags are being converted. */
++		vm_flags_t vm_flags;
++		vma_flags_t vma_flags;
++	};
+ 	struct file *file;
+ 	struct anon_vma *anon_vma;
+ 	struct mempolicy *policy;
+diff --git a/tools/testing/vma/include/dup.h b/tools/testing/vma/include/dup.h
+index 2f53c27ddb21..faaf1239123d 100644
+--- a/tools/testing/vma/include/dup.h
++++ b/tools/testing/vma/include/dup.h
+@@ -33,7 +33,10 @@ struct mm_struct {
+ 	unsigned long exec_vm;	   /* VM_EXEC & ~VM_WRITE & ~VM_STACK */
+ 	unsigned long stack_vm;	   /* VM_STACK */
  
-+/* Ensure that vma_flags_empty() works correctly. */
-+static bool test_vma_flags_empty(void)
-+{
-+	vma_flags_t flags = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT,
-+					 VMA_EXEC_BIT, 64, 65);
-+
-+	ASSERT_FLAGS_NONEMPTY(&flags);
-+	vma_flags_clear(&flags, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+#if NUM_VMA_FLAG_BITS > 64
-+	ASSERT_FLAGS_NONEMPTY(&flags);
-+	vma_flags_clear(&flags, 64, 65);
-+	ASSERT_FLAGS_EMPTY(&flags);
-+#else
-+	ASSERT_FLAGS_EMPTY(&flags);
-+#endif
-+
-+	return true;
-+}
-+
-+/* Ensure that vma_flags_diff_pair() works correctly. */
-+static bool test_vma_flags_diff(void)
-+{
-+	vma_flags_t flags1 = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT,
-+					  VMA_EXEC_BIT, 64, 65);
-+	vma_flags_t flags2 = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT,
-+					  VMA_EXEC_BIT, VMA_MAYWRITE_BIT,
-+					  VMA_MAYEXEC_BIT, 64, 65, 66, 67);
-+	vma_flags_t diff = vma_flags_diff_pair(&flags1, &flags2);
-+
-+#if NUM_VMA_FLAG_BITS > 64
-+	ASSERT_FLAGS_SAME(&diff, VMA_MAYWRITE_BIT, VMA_MAYEXEC_BIT, 66, 67);
-+#else
-+	ASSERT_FLAGS_SAME(&diff, VMA_MAYWRITE_BIT, VMA_MAYEXEC_BIT);
-+#endif
-+	/* Should be the same even if re-ordered. */
-+	diff = vma_flags_diff_pair(&flags2, &flags1);
-+#if NUM_VMA_FLAG_BITS > 64
-+	ASSERT_FLAGS_SAME(&diff, VMA_MAYWRITE_BIT, VMA_MAYEXEC_BIT, 66, 67);
-+#else
-+	ASSERT_FLAGS_SAME(&diff, VMA_MAYWRITE_BIT, VMA_MAYEXEC_BIT);
-+#endif
-+
-+	/* Should be no difference when applied against themselves. */
-+	diff = vma_flags_diff_pair(&flags1, &flags1);
-+	ASSERT_FLAGS_EMPTY(&diff);
-+	diff = vma_flags_diff_pair(&flags2, &flags2);
-+	ASSERT_FLAGS_EMPTY(&diff);
-+
-+	/* One set of flags against an empty one should equal the original. */
-+	flags2 = EMPTY_VMA_FLAGS;
-+	diff = vma_flags_diff_pair(&flags1, &flags2);
-+	ASSERT_FLAGS_SAME_MASK(&diff, flags1);
-+
-+	/* A subset should work too. */
-+	flags2 = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT);
-+	diff = vma_flags_diff_pair(&flags1, &flags2);
-+#if NUM_VMA_FLAG_BITS > 64
-+	ASSERT_FLAGS_SAME(&diff, VMA_EXEC_BIT, 64, 65);
-+#else
-+	ASSERT_FLAGS_SAME(&diff, VMA_EXEC_BIT);
-+#endif
-+
-+	return true;
-+}
-+
-+/* Ensure that vma_flags_and() and friends work correctly. */
-+static bool test_vma_flags_and(void)
-+{
-+	vma_flags_t flags1 = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT,
-+					  VMA_EXEC_BIT, 64, 65);
-+	vma_flags_t flags2 = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT,
-+					  VMA_EXEC_BIT, VMA_MAYWRITE_BIT,
-+					  VMA_MAYEXEC_BIT, 64, 65, 66, 67);
-+	vma_flags_t flags3 = mk_vma_flags(VMA_IO_BIT, VMA_MAYBE_GUARD_BIT,
-+					  68, 69);
-+	vma_flags_t and = vma_flags_and_mask(&flags1, flags2);
-+
-+#if NUM_VMA_FLAG_BITS > 64
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			  64, 65);
-+#else
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+#endif
-+
-+	and = vma_flags_and_mask(&flags1, flags1);
-+	ASSERT_FLAGS_SAME_MASK(&and, flags1);
-+
-+	and = vma_flags_and_mask(&flags2, flags2);
-+	ASSERT_FLAGS_SAME_MASK(&and, flags2);
-+
-+	and = vma_flags_and_mask(&flags1, flags3);
-+	ASSERT_FLAGS_EMPTY(&and);
-+	and = vma_flags_and_mask(&flags2, flags3);
-+	ASSERT_FLAGS_EMPTY(&and);
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT);
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT);
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+
-+#if NUM_VMA_FLAG_BITS > 64
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			    64);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT, 64);
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			    64, 65);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT, 64,
-+			  65);
-+#endif
-+
-+	/* And against some missing values. */
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			    VMA_IO_BIT);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			    VMA_IO_BIT, VMA_RAND_READ_BIT);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+
-+#if NUM_VMA_FLAG_BITS > 64
-+	and = vma_flags_and(&flags1, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT,
-+			    VMA_IO_BIT, VMA_RAND_READ_BIT, 69);
-+	ASSERT_FLAGS_SAME(&and, VMA_READ_BIT, VMA_WRITE_BIT, VMA_EXEC_BIT);
-+#endif
-+
-+	return true;
-+}
-+
- static void run_vma_tests(int *num_tests, int *num_fail)
- {
- 	TEST(copy_vma);
-@@ -372,4 +506,7 @@ static void run_vma_tests(int *num_tests, int *num_fail)
- 	TEST(vma_flags_test);
- 	TEST(vma_flags_test_any);
- 	TEST(vma_flags_clear);
-+	TEST(vma_flags_empty);
-+	TEST(vma_flags_diff);
-+	TEST(vma_flags_and);
- }
+-	unsigned long def_flags;
++	union {
++		vm_flags_t def_flags;
++		vma_flags_t def_vma_flags;
++	};
+ 
+ 	mm_flags_t flags; /* Must use mm_flags_* helpers to access */
+ };
 -- 
 2.53.0
 
