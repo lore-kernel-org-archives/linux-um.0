@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1A00F53D6F
-	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 16:17:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAA0EF53D71
+	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 16:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SiSRMwyGXPxDjFg+D5WWlFGeHW2UEWfaogDpHaDui1s=; b=rZPc6DmFAlFi34n56eyrm47jjR
-	fgByJre1Nyf2Y1KQDbCOsAf6WO+mefz6aWR18R2A2Jt7U4NL2IauJJR6bXNU7mypeZzMCN0cUj4yj
-	57KOMfRrMkDHk+5sjwwtB954L1/Uszt9fBMhNgdPoixvvHU4qcpE8yydEtxUaWPgw6Yv5JLUM9whB
-	kZA/0s3oYi4GzAAnkLgT4YyB3mfL9Onkgo5OiLfOd15llv6KObnRUfi7xmN3MxKGnjLBsJ3j960cR
-	g69LsSRTuQUDFee9Ut3J3wo5a8qRIvdMsofLb7pBFv8nzDgD42MHsIdgrjsCMHiv7rlGx7Bo4v6aZ
-	Q0zi+bDQ==;
+	bh=hfGtXfbpPdwas3QjdGehFHPv4zwj1YVVlL17/dmAXWY=; b=03K0M/tm4nk+QdqdEFjngWh04+
+	MAjdxwyZkMKICBW0PpdaR82n51+N5+7i/avZi3Dq23ZKQswP4AqvkXdl04q4GEHnTDuJZPbUQ7f42
+	+ebel4DccQwofrttb2IFZVIKIBTffr8z6spY29hptDSezAFiioq/L+QeStpLf7kDfp/XaLBsKeKMa
+	zxcaLTJYn587Z8i0Tfrwq+Tb/Kwjn8mI7D+e0LrQq2WbOPdoIC+1jxmGfU6W/tbZZgUZQ/BsGMEXW
+	iPR8Swjf65z+nXkGqnlDyc43L3Dfy1YroXZng121BF6rYLaw/iT4kpw9epvrr2rBmOpPAETqo7pyw
+	/5jXT/8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Acy-00000004Qx4-075D;
-	Mon, 16 Mar 2026 16:17:12 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1w2AhS-00000004RUn-0x6B;
+	Mon, 16 Mar 2026 16:21:50 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2Acu-00000004Qvv-2Izq;
-	Mon, 16 Mar 2026 16:17:09 +0000
+	id 1w2AhP-00000004RU8-29dp;
+	Mon, 16 Mar 2026 16:21:47 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 544DE439D2;
-	Mon, 16 Mar 2026 16:17:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52FBAC19421;
-	Mon, 16 Mar 2026 16:17:05 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 76B8260097;
+	Mon, 16 Mar 2026 16:21:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D22C19421;
+	Mon, 16 Mar 2026 16:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1773677827;
-	bh=piGtJoQS85x055Jj6a8BM+ONk4RlzPnFJWtiG0/1/40=;
+	s=korg; t=1773678106;
+	bh=T+QCEG7rS4slK+eGQWKuSmiAa6E+o4G10P1NpOZ/x3k=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=L29wqMAsUJ+kd0X9h7g849lKpqLxCfCPG0hoLd+WtnJ50ZCOkgcNxIONjg5Cqui/L
-	 XCAUjTPqdwvcgvUKcOIyocy046LFIx0+L2G9uLv5ICqCsBhbaAsDvCluEeycwL6k+7
-	 sLjEpI9to3sgq/yF8A1DWAUyiyt23UTdiAafOEOE=
-Date: Mon, 16 Mar 2026 09:17:04 -0700
+	b=C78b3RInQ6E9r2o5eQWhKAKKyMjBu8BuYuFLtQb2c4U384vA029N6GED42iVwexvs
+	 Qy02HSzj4wC9NG5ChI3KVHgChg8X9Mmh5uG9/p43xcgZK3sY2KpRjz4FNz2ddxVAic
+	 WH+xVUhU8+zr+WxlOE3+Sik0WbkV22WKcpegZwQQ=
+Date: Mon, 16 Mar 2026 09:21:43 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 Cc: David Hildenbrand <david@kernel.org>, "Liam R . Howlett"
@@ -75,16 +75,13 @@ Cc: David Hildenbrand <david@kernel.org>, "Liam R . Howlett"
  selinux@vger.kernel.org
 Subject: Re: [PATCH v2 00/23] mm/vma: convert vm_flags_t to vma_flags_t in
  vma code
-Message-Id: <20260316091704.24d7f8230ad57e8b7d18e9f8@linux-foundation.org>
+Message-Id: <20260316092143.8b21650c803eb99511395b83@linux-foundation.org>
 In-Reply-To: <cover.1773665966.git.ljs@kernel.org>
 References: <cover.1773665966.git.ljs@kernel.org>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_091708_634989_EDFC2FE8 
-X-CRM114-Status: GOOD (  10.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,7 +101,5 @@ On Mon, 16 Mar 2026 13:07:49 +0000 "Lorenzo Stoakes (Oracle)" <ljs@kernel.org> w
 > This series converts a lot of the existing use of the legacy vm_flags_t
 > data type to the new vma_flags_t type which replaces it.
 
-This series assumes the non-presence of your series "mm: expand
-mmap_prepare functionality and usage".  Seems that series is due for a
-respin so I'll drop v1.
+Thanks, added to mm-new.  I suppressed the usual email storm.
 
