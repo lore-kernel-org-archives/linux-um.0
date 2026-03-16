@@ -4,43 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D63EF506D0
-	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 13:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 663F8F506CD
+	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 13:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vPhRODiUmhApdZ9nninHZXaKw/32D++OFungj9CnSis=; b=W34bQXuaJW+ZIYeMugv/qPkiEa
-	0Thmx4GXLW4pVisyhE4WW0JyWVq73UyRDC1/+J7fgrvX1IkpPtnFIjVqN20HAmImPwZxuIJL3TX7a
-	qSRXtmIi17FDj50RenUnTGp+CLlr8Z8IZWUNCn+9Tew0Kh7zZQM2a1/PKKlX/+jKvBCwfFglF6Vrh
-	Yl9e6hgvc8fXee+WNlxwCEvnc4hlg2spo5SEcw5jOyadutsOeu+4KHPBbd6+8ZRYRKCi8Q1Vk9rnG
-	mbxx9kvqOdkdGF+xhrGLitM4D+6sl8bMfZoQAQOorixk9MzBGsMunHa/Nj2M2iHxnw/UMU/TyLS4a
-	/cnK5oGQ==;
+	bh=5K7eKfDaNC8F0R4YEvVj595iph2zwfv8FNQbISthhlI=; b=H6hpFbUOiQlC+zqxX18rdrZQ/i
+	533yEsPsHtV2VLIGf7GGWswDpPyb9/JxwgjO+DqVfKXk9Ym6n6QlkmJscFT8+65RwErzIPXJ7Ec+m
+	J1hUUr+AShiA1Iz2Wp0LfV0ENq6XBXkjtGCza3OWb6rRPtJEo5lmnZp3bZ9BbMq9eI1XAnYr2wKZE
+	vz8aplbZDulaiFIzJstKnEXDHEBFA4uRuTB0VagFM25VqDCwNwvTT0p423PupTNlfi3Q1ansTg3A/
+	lscdBPwN4QlVeruLFDlfWeOT39zuSx6dQ+sKJE1tiruhnHBspu+WUPpVQBR9gE4E4oHLj2r1JP3iS
+	KlIHGDiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w27hb-000000041J8-0OwP;
-	Mon, 16 Mar 2026 13:09:47 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w27hf-000000041QB-0LZW;
+	Mon, 16 Mar 2026 13:09:51 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w27hO-0000000410H-40gr;
+	id 1w27hQ-00000004123-2b2W;
 	Mon, 16 Mar 2026 13:09:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=5K7eKfDaNC8F0R4YEvVj595iph2zwfv8FNQbISthhlI=; b=bnjKSp5oQL4/AMdf0qkR67bycQ
+	GOypCZD1qEzoQl5+g4M4R0tbNyVFSWdESi4qjCQZwhgxysnPHydMHdEVGcRC6NVqTuhHckMqll4MH
+	AZO6WjZACCiyCnQbukR4ZktN/NR8t40b7ADmqdonTC0dQS9eCrs8j8+OovdtTKCPzQCTyHkKPyK70
+	HBwEOkw88SMj0A2YazlGFA2CgQaPqqvSFpLs4xhSTiYNXeYhQx/kv385INLPAC2r66SdjaxCWJcXf
+	t/FFyBU351dTB2Ks78NZKXB6yKxIFKPeEONCGfXuTV1r2i2SdkyLP9XT+zFRWW9SpU17G8UG77R9Z
+	ka0lxjHQ==;
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w27hK-000000010vJ-2DzA;
+	Mon, 16 Mar 2026 13:09:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6927540022;
-	Mon, 16 Mar 2026 13:09:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A24FCC19424;
-	Mon, 16 Mar 2026 13:09:33 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id A4A904459E;
+	Mon, 16 Mar 2026 13:09:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5F1C19424;
+	Mon, 16 Mar 2026 13:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773666574;
-	bh=Rovsmd7IqTNzI5EcVU23ecGwNpd7/HeY2RA96JWK1G4=;
+	s=k20201202; t=1773666568;
+	bh=LrLBS64c+lmBUJM2XbvLHLJnGjK9/zMfbb5TL2UTCws=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=juiQJPuZfc9e5wy1LHgzPcJMKjyytYu8YDhD+rkUcOHfZ++HnboPrPs2YO0Ft9ix7
-	 qyOyvKZw6U3TdXhU1+ZQ8rmaW9ZvOCCszAK44XjdsPQ/A/sGni4fIuKY/qM1x8jWK+
-	 84Rty8AQjyFmsuRlkSKxEBig3RI4/typwyJxITDJ+dOjfizmIP5yRxN7XDkiadZcvM
-	 mECermzA+YJNLkvKRqGPQ/gvxI6nJMyXtUkSsHKF1xbQn/1K9+qiE5JOPSbz4PidN2
-	 6jWyHX9Q5MlslBfNynomb5OViTOuvMt3T5QY0+Y2CX/4QrKPBhDLRZcbH39Rn0JKvJ
-	 NR3xw++7nlksw==
+	b=Lfxg9CkE3XOoc6lXpgYy2pcAO6Hc6ib8/1Qy1xhOw+VHHgoC4ldZaAz5MKdUunLwk
+	 evL0sHn+qUhum9zmcrNTCgtUpSE5CQ4CGNRa+00XBCSchPYXd/xWLfqxqYJ9skmE9K
+	 CX3Ww9RSRfWEGkTZ6eiJijkz9wIFZ61HqUkhV7WD8hwlK523wPS1op1w9qmYFyA7qG
+	 FJxsyW1CCw8XR7ax4KyCGwl3ZM0UKR9G6704RJ/9qqFcsQLVtG8dDN0s1e3aStfj+Z
+	 w3h7n/urDNIwuIScJ6XZgrH4/EcLdtsWhdHxvyM993b8PDpgqF9DMcTLvAZYv1YIFp
+	 WGnfsx1Vg/+6A==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,17 +118,17 @@ Cc: David Hildenbrand <david@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org,
 	selinux@vger.kernel.org
-Subject: [PATCH v2 14/23] tools/testing/vma: update VMA flag tests to test vma_test[_any_mask]()
-Date: Mon, 16 Mar 2026 13:08:03 +0000
-Message-ID: <ecd6e0134c4495310d6914b8177e99886e17d22f.1773665966.git.ljs@kernel.org>
+Subject: [PATCH v2 12/23] tools/testing/vma: test that legacy flag helpers work correctly
+Date: Mon, 16 Mar 2026 13:08:01 +0000
+Message-ID: <4f1956b7e1e15293f75bffb5eda3d967a1da6f5d.1773665966.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773665966.git.ljs@kernel.org>
 References: <cover.1773665966.git.ljs@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_060935_096227_190CA6AF 
-X-CRM114-Status: GOOD (  12.19  )
+X-CRM114-CacheID: sfid-20260316_130930_876974_1D9D64ED 
+X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,66 +143,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the existing test logic to assert that vma_test(), vma_test_any()
-and vma_test_any_mask() (implicitly tested via vma_test_any()) are
-functioning correctly.
-
-We already have tests for other variants like this, so it's simply a matter
-of expanding those tests to also include tests for the VMA-specific
-helpers.
+Update the existing compare_legacy_flags() predicate function to assert
+that legacy_to_vma_flags() and vma_flags_to_legacy() behave as expected.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- tools/testing/vma/tests/vma.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/testing/vma/tests/vma.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/tools/testing/vma/tests/vma.c b/tools/testing/vma/tests/vma.c
-index 1fae25170ff7..1395d55a1e02 100644
+index 98e465fb1bf2..1fae25170ff7 100644
 --- a/tools/testing/vma/tests/vma.c
 +++ b/tools/testing/vma/tests/vma.c
-@@ -183,13 +183,18 @@ static bool test_vma_flags_test(void)
- 	struct vm_area_desc desc = {
- 		.vma_flags = flags,
- 	};
-+	struct vm_area_struct vma = {
-+		.flags = flags,
-+	};
+@@ -5,6 +5,7 @@ static bool compare_legacy_flags(vm_flags_t legacy_flags, vma_flags_t flags)
+ 	const unsigned long legacy_val = legacy_flags;
+ 	/* The lower word should contain the precise same value. */
+ 	const unsigned long flags_lower = flags.__vma_flags[0];
++	vma_flags_t converted_flags;
+ #if NUM_VMA_FLAG_BITS > BITS_PER_LONG
+ 	int i;
  
- #define do_test(_flag)					\
- 	ASSERT_TRUE(vma_flags_test(&flags, _flag));	\
-+	ASSERT_TRUE(vma_test(&vma, _flag));		\
- 	ASSERT_TRUE(vma_desc_test(&desc, _flag))
+@@ -17,6 +18,11 @@ static bool compare_legacy_flags(vm_flags_t legacy_flags, vma_flags_t flags)
  
- #define do_test_false(_flag)				\
- 	ASSERT_FALSE(vma_flags_test(&flags, _flag));	\
-+	ASSERT_FALSE(vma_test(&vma, _flag));		\
- 	ASSERT_FALSE(vma_desc_test(&desc, _flag))
+ 	static_assert(sizeof(legacy_flags) == sizeof(unsigned long));
  
- 	do_test(VMA_READ_BIT);
-@@ -219,15 +224,17 @@ static bool test_vma_flags_test_any(void)
- 					       , 64, 65
- #endif
- 		);
--	struct vm_area_struct vma;
--	struct vm_area_desc desc;
--
--	vma.flags = flags;
--	desc.vma_flags = flags;
-+	struct vm_area_struct vma = {
-+		.flags = flags,
-+	};
-+	struct vm_area_desc desc = {
-+		.vma_flags = flags,
-+	};
++	/* Assert that legacy flag helpers work correctly. */
++	converted_flags = legacy_to_vma_flags(legacy_flags);
++	ASSERT_FLAGS_SAME_MASK(&converted_flags, flags);
++	ASSERT_EQ(vma_flags_to_legacy(flags), legacy_flags);
++
+ 	return legacy_val == flags_lower;
+ }
  
- #define do_test(...)						\
- 	ASSERT_TRUE(vma_flags_test_any(&flags, __VA_ARGS__));	\
--	ASSERT_TRUE(vma_desc_test_any(&desc, __VA_ARGS__))
-+	ASSERT_TRUE(vma_desc_test_any(&desc, __VA_ARGS__));	\
-+	ASSERT_TRUE(vma_test_any(&vma, __VA_ARGS__));
- 
- #define do_test_all_true(...)					\
- 	ASSERT_TRUE(vma_flags_test_all(&flags, __VA_ARGS__));	\
 -- 
 2.53.0
 
