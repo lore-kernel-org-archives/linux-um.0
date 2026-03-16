@@ -4,83 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9508FF30262
-	for <linux-um@archiver.kernel.org>; Sun, 15 Mar 2026 14:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F995F506CF
+	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 13:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=skGShgRopWYLAHQVMA1zpv2Nb5W8Z646MfW2V64tqwk=; b=wiyCz5n3spehED4ujRq2lFDH6k
-	rAvU+u5g3GvpRFun3ORw87SWZWZVPz4c204TPKq8FX7XrMWCpqHvIIcBkvvN5m75pVwgxd5n/aDYW
-	m1a3guenTQFdDRR3pUqGCAVm0juBJ79vHBgdDliUt6EQEt6YTzuKg3O1b3/zQBxwGaZ0yVuUU/6Iq
-	Pl7m7NPzo+b/U4SzYDbH0Jeb/oZJXoZFL7iEHAb2Kh98/lzpV/pSDT33mN/6oqA89W82ww32WHs9C
-	wd6jMEEOsKvmQm6Xl3XE/QAjoDoSvCLJNpeMgwwpnnLx4guI5mvJPeK31DI/6Qqs12Zj+1yjST9Nx
-	SJr0QAAg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=s1eQtq6dWyvx1NxUFkPPUGIduGG6xk+09TKijId19iU=; b=NUn57WO8uaNaD8Mf0NxaPkjEyp
+	mxuztw2K4JRdksgBtG28qHM6lexeYVKssFOGgCw/G0znsFPqwY8Cjt20PhmXkY0CZYhiPBDr4/GwD
+	9VI7fT3zJrtfrI2soEpTILJdo7lWCX7YpMir+sGQd8dcfMQxGoVAu1n/mLPcjch7X+uG1oRJvE/RO
+	oYdYW7Y4HU267uxdSuwZXQ3JZFvrKAQeciBUZ/kuP0zq57Si9RCiHdM+qNMgipWp2p/CfF3UnA3T7
+	4x191NFpEWtPID9AVsLysPVU5q9nlUpAUwP+GZfh4MTjqp5Fa3YV+EaDKYkfPwFqSkRUNJPIa/sZi
+	GInE8rVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w1mGJ-00000002ehW-2CYv;
-	Sun, 15 Mar 2026 14:16:11 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1w27go-000000040MX-0kK1;
+	Mon, 16 Mar 2026 13:08:58 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w1mGG-00000002eh5-3vnd
-	for linux-um@lists.infradead.org;
-	Sun, 15 Mar 2026 14:16:10 +0000
+	id 1w27gk-000000040L9-2ow4;
+	Mon, 16 Mar 2026 13:08:54 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E0D074411F;
-	Sun, 15 Mar 2026 14:15:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF01C4CEF7;
-	Sun, 15 Mar 2026 14:15:59 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A043D60018;
+	Mon, 16 Mar 2026 13:08:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BFFC19421;
+	Mon, 16 Mar 2026 13:08:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773584159;
-	bh=agFxp7/+DmzOfwyTxuEGMhbMU3mctxR6EiAxomWVZjA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=roL1M/sncI7syFKC+9EAQl1eCZCHmJRgd6pDWPCUMZ1EXZw6eMIBYdBqGlooV8+Cz
-	 WG3hLBXqLVlZAyHyTeksN6hrbhZxwYTrK7Wd4q8RIbgN1JcM0aQkL0CIRTAxbnky/N
-	 llZEm7aaanH9Q+Arg3PCOb5TdJxe8lOcuZ9t2ijKVqCKiy04H4pgFLSfDUtojc9k84
-	 4MyFWx4I3cT5s7XGmir14ybXW295nx5o76Zy7Dtz1gMlHGjQhEZSFXCwkwP5OrFRgK
-	 kkqBIrGUBwc5g+NXoR9z7J1yP9qE+pYk0UY42I+bT0OuTv4iqeWqi3wwSlE1yzF+3m
-	 2I9oF3TCISnKw==
-Date: Sun, 15 Mar 2026 10:15:58 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Chuck Wolber <chuck@wolber.net>, nathan@kernel.org,
-	Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
-	andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
-	ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
-	chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
-	dvyukov@google.com, hpa@zytor.com, jinghao7@illinois.edu,
-	johannes@sipsolutions.net, jpoimboe@kernel.org,
-	justinstitt@google.com, kees@kernel.org, kent.overstreet@linux.dev,
-	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
-	masahiroy@kernel.org, maskray@google.com,
-	mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
-	mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
-	ndesaulniers@google.com, oberpar@linux.ibm.com, paulmck@kernel.org,
-	richard@nod.at, rostedt@goodmis.org, samitolvanen@google.com,
-	samuel.sarkisian@boeing.com, steven.h.vanderleest@boeing.com,
-	tglx@linutronix.de, tingxur@illinois.edu, tyxu@illinois.edu,
-	wentaoz5@illinois.edu, x86@kernel.org
-Subject: Re: [RFC PATCH 0/4] Enable Clang's Source-based Code Coverage and
- MC/DC for x86-64
-Message-ID: <aba_HgSbzLGm6VBQ@laps>
-References: <20250829181007.GA468030@ax162>
- <20251014232639.673260-1-sashal@kernel.org>
- <20251015073701.GZ3419281@noisy.programming.kicks-ass.net>
- <DDIR4HE5C74G.1U5TA0KDN9O5J@wolber.net>
- <20251015092145.GB3419281@noisy.programming.kicks-ass.net>
+	s=k20201202; t=1773666533;
+	bh=M8qB2Yi8G2KCxfalR2Xs/y9ReUIwgZw5xpyPQq7wYBo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=T9pvKSi4Tc2nnuQeD5Yvlyhi0UufdXQgMYoOn7BC5uSu03NjdqzIGTm1Tdv3TLSYa
+	 ZRhnhmQn0LEOOHogL294cpBY4Hx5wgcJH61d4VVf2CMkbG7Wp+svFxCaUrMrjKOILL
+	 +xyfGn6+4PetNtIu9y56emsCH1Vnr9u4Qi/SLG8O+zqXlH4mU2LEP+6fFZopPPQTBc
+	 iZl4h9qxTnhFE2aS1oMHmnUrqCtcGbnwO+i/lb2cVUuSq9zoi2n0QoFqUzeabs7zyP
+	 tbVtZbTy1UNWsliQt5qBdzNaCAJVWNqdZf7BNdfGttMzyLm6no5mzEMaXrnEoGyX8L
+	 yFaroSc0+vdhA==
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@kernel.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Jann Horn <jannh@google.com>,
+	Pedro Falcato <pfalcato@suse.de>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Kees Cook <kees@kernel.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Brian Cain <bcain@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Xu Xin <xu.xin16@zte.com.cn>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Michal Hocko <mhocko@suse.com>,
+	Paul Moore <paul@paul-moore.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	selinux@vger.kernel.org
+Subject: [PATCH v2 00/23] mm/vma: convert vm_flags_t to vma_flags_t in vma code
+Date: Mon, 16 Mar 2026 13:07:49 +0000
+Message-ID: <cover.1773665966.git.ljs@kernel.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20251015092145.GB3419281@noisy.programming.kicks-ass.net>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260315_071609_023911_261AD23E 
-X-CRM114-Status: UNSURE (   9.37  )
-X-CRM114-Notice: Please train this message.
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,24 +124,164 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 15, 2025 at 11:21:45AM +0200, Peter Zijlstra wrote:
->On Wed, Oct 15, 2025 at 08:26:50AM +0000, Chuck Wolber wrote:
->> Optimization makes it nearly impossible to correlate GCov results back to
->> actual lines of source. llvm-cov instruments at the AST level which enables
->> precise mapping back to source code regardless of optimization level.
->>
->>
->> A detailed rundown on this issue can be found here[1], with the most relevant
->> excerpt reproduced here:
->
->Yes read and understand this, but that doesn't mean you have to have 3
->different kernel interfaces for all of this, right?
+This series converts a lot of the existing use of the legacy vm_flags_t
+data type to the new vma_flags_t type which replaces it.
 
-To clarify, are you suggesting that we'll have something like a single
-/sys/kernel/debug/coverage interface that is producing the same structured
-output whether we use gcov or llvm?
+In order to do so it adds a number of additional helpers:
 
--- 
-Thanks,
-Sasha
+* vma_flags_empty() - Determines whether a vma_flags_t value has no bits
+  set.
+
+* vma_flags_and() - Performs a bitwise AND between two vma_flags_t values.
+
+* vma_flags_diff_pair() - Determines which flags are not shared between a
+  pair of VMA flags (typically non-constant values)
+
+* append_vma_flags() - Similar to mk_vma_flags(), but allows a vma_flags_t
+  value to be specified (typically a constant value) which will be copied
+  and appended to to create a new vma_flags_t value, with additional flags
+  specified to append to it.
+
+* vma_flags_same() - Determines if a vma_flags_t value is exactly equal to
+  a set of VMA flags.
+
+* vma_flags_same_mask() - Determines if a vma_flags_t value is eactly equal
+  to another vma_flags_t value (typically constant).
+
+* vma_flags_same_pair() - Determines if a pair of vma_flags_t values are
+  exactly equal to one another (typically both non-constant).
+
+* vma_flags_to_legacy() - Converts a vma_flags_t value to a vm_flags_t
+  value, used to enable more iterative introduction of the use of
+  vma_flags_t.
+
+* legacy_to_vma_flags() - Converts a vm_flags_t value to a vma_flags-t
+  value, for the same purpose.
+
+* vma_flags_test_single_mask() - Tests whether a vma_flags_t value contain
+  the single flag specified in an input vma_flags_t flag mask, or if that
+  flag mask is empty, is defined to return false. Useful for
+  config-predicated VMA flag mask defines.
+
+* vma_test() - Tests whether a VMA's flags contain a specific singular VMA
+  flag.
+
+* vma_test_any() - Tests whether a VMA's flags contain any of a set of VMA
+  flags.
+
+* vma_test_any_mask() - Tests whether a VMA's flags contain any of the
+  flags specified in another, typically constant, vma_flags_t value.
+
+* vma_test_single_mask() - Tests whether a VMA's flags contain the single
+  flag specified in an input vma_flags_t flag mask, or if that flag mask is
+  empty, is defined to return false. Useful for config-predicated VMA flag
+  mask defines.
+
+* vma_clear_flags() - Clears a specific set of VMA flags from a vma_flags_t
+  value.
+
+* vma_clear_flags_mask() - Clears those flag set in a vma_flags_t value
+  (typically constant) from a (typically not constant) vma_flags_t value.
+
+The series mostly focuses on the the VMA specific code, especially that
+contained in mm/vma.c and mm/vma.h.
+
+It updates both brk() and mmap() logic to utils vma_flags_t values as much
+as is practiaclly possible at this point, changing surrounding logic to be
+able to do so.
+
+It also updates the vma_modify_xxx() functions where they interact with VMA
+flags directly to use vm_flags_t values where possible.
+
+There is extensive testing added in the VMA userland tests to assert that
+all of these new VMA flag functions work correctly.
+
+
+v2:
+* Rebased on mm-unstable.
+* Added vma_flags_count() and vma[_flags]_test_single_mask() for testing whether
+  flags have a single flag set depending on an input flag mask, returning false
+  if the flag mask is empty.
+* Added tests for vma_flags_count() and vma[_flags]_test_single_mask().
+* Updated the KSM VMA_DROPPABLE test to use vma_flags_test_single_mask().
+* Updated the newly-introduced-since-rebase vma_supports_mlock() to use
+  vma_flags_t.
+
+v1:
+https://lore.kernel.org/linux-mm/cover.1773342102.git.ljs@kernel.org/
+
+Lorenzo Stoakes (Oracle) (23):
+  mm/vma: add vma_flags_empty(), vma_flags_and(), vma_flags_diff_pair()
+  tools/testing/vma: add unit tests flag empty, diff_pair, and[_mask]
+  mm/vma: add further vma_flags_t unions
+  tools/testing/vma: convert bulk of test code to vma_flags_t
+  mm/vma: use new VMA flags for sticky flags logic
+  tools/testing/vma: fix VMA flag tests
+  mm/vma: add append_vma_flags() helper
+  tools/testing/vma: add simple test for append_vma_flags()
+  mm: unexport vm_brk_flags() and eliminate vm_flags parameter
+  mm/vma: introduce vma_flags_same[_mask/_pair]()
+  mm/vma: introduce [vma_flags,legacy]_to_[legacy,vma_flags]() helpers
+  tools/testing/vma: test that legacy flag helpers work correctly
+  mm/vma: introduce vma_test[_any[_mask]](), and make inlining
+    consistent
+  tools/testing/vma: update VMA flag tests to test vma_test[_any_mask]()
+  mm: introduce vma_flags_count() and vma[_flags]_test_single_mask()
+  tools/testing/vma: test vma_flags_count,vma[_flags]_test_single_mask
+  mm: convert do_brk_flags() to use vma_flags_t
+  mm: update vma_supports_mlock() to use new VMA flags
+  mm/vma: introduce vma_clear_flags[_mask]()
+  tools/testing/vma: update VMA tests to test vma_clear_flags[_mask]()
+  mm/vma: convert as much as we can in mm/vma.c to vma_flags_t
+  mm/vma: convert vma_modify_flags[_uffd]() to use vma_flags_t
+  mm/vma: convert __mmap_region() to use vma_flags_t
+
+ arch/arc/include/asm/page.h        |   2 +-
+ arch/arm/include/asm/page.h        |   2 +-
+ arch/arm64/include/asm/page.h      |   3 +-
+ arch/hexagon/include/asm/page.h    |   2 +-
+ arch/loongarch/include/asm/page.h  |   2 +-
+ arch/mips/include/asm/page.h       |   2 +-
+ arch/nios2/include/asm/page.h      |   2 +-
+ arch/powerpc/include/asm/page.h    |   4 +-
+ arch/powerpc/include/asm/page_32.h |   2 +-
+ arch/powerpc/include/asm/page_64.h |  12 +-
+ arch/riscv/include/asm/page.h      |   2 +-
+ arch/s390/include/asm/page.h       |   2 +-
+ arch/x86/include/asm/page_types.h  |   2 +-
+ arch/x86/um/asm/vm-flags.h         |   4 +-
+ fs/binfmt_elf.c                    |   3 +-
+ include/linux/ksm.h                |  10 +-
+ include/linux/mm.h                 | 328 ++++++++++++++++++++------
+ include/linux/mm_types.h           |  52 ++++-
+ include/linux/mman.h               |  49 ----
+ include/linux/userfaultfd_k.h      |   3 +
+ mm/internal.h                      |   7 +-
+ mm/ksm.c                           |  43 ++--
+ mm/madvise.c                       |  10 +-
+ mm/mlock.c                         |  38 +--
+ mm/mmap.c                          |  19 +-
+ mm/mprotect.c                      |  53 +++--
+ mm/mremap.c                        |   6 +-
+ mm/mseal.c                         |  10 +-
+ mm/userfaultfd.c                   |  21 +-
+ mm/vma.c                           | 210 ++++++++++-------
+ mm/vma.h                           |  86 ++++++-
+ mm/vma_exec.c                      |   5 +-
+ security/selinux/hooks.c           |   4 +-
+ tools/include/linux/bitmap.h       |  13 ++
+ tools/lib/bitmap.c                 |  10 +
+ tools/testing/vma/include/custom.h |  25 --
+ tools/testing/vma/include/dup.h    | 277 ++++++++++++++++------
+ tools/testing/vma/include/stubs.h  |  11 +-
+ tools/testing/vma/shared.c         |   8 +-
+ tools/testing/vma/shared.h         |  22 +-
+ tools/testing/vma/tests/merge.c    | 311 +++++++++++++------------
+ tools/testing/vma/tests/mmap.c     |  18 +-
+ tools/testing/vma/tests/vma.c      | 358 ++++++++++++++++++++++++++---
+ tools/testing/vma/vma_internal.h   |   6 +
+ 44 files changed, 1423 insertions(+), 636 deletions(-)
+
+--
+2.53.0
 
