@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 663F8F506CD
-	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 13:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBF50F506CC
+	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 13:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5K7eKfDaNC8F0R4YEvVj595iph2zwfv8FNQbISthhlI=; b=H6hpFbUOiQlC+zqxX18rdrZQ/i
-	533yEsPsHtV2VLIGf7GGWswDpPyb9/JxwgjO+DqVfKXk9Ym6n6QlkmJscFT8+65RwErzIPXJ7Ec+m
-	J1hUUr+AShiA1Iz2Wp0LfV0ENq6XBXkjtGCza3OWb6rRPtJEo5lmnZp3bZ9BbMq9eI1XAnYr2wKZE
-	vz8aplbZDulaiFIzJstKnEXDHEBFA4uRuTB0VagFM25VqDCwNwvTT0p423PupTNlfi3Q1ansTg3A/
-	lscdBPwN4QlVeruLFDlfWeOT39zuSx6dQ+sKJE1tiruhnHBspu+WUPpVQBR9gE4E4oHLj2r1JP3iS
-	KlIHGDiQ==;
+	bh=IYQ0iEUJRCcUoUm4iywAAJHG11kXnFUGwYQELynhV6I=; b=Boq/gzI0JGKaK2o3aAc0VdBPun
+	GN7UCCvdRb6cT8eV/fX1t8uWMnnPSVYzyRPPDlDWBRk/qEuiOPArl5QaXN/aZk0OrgjYTi8iJcfld
+	nRIUipzgsPrjli02YnbQpTY5E4GJVtlsqLi7VbqgeAzbsOAWdJ2P+770GX38j2u7ODslNT/Wf+SAM
+	L2K4N78eess3UYoh6SVqxxjEspRX0QDGYr2cBxjzCPJI5Um7PMOYx6sb74hWteAGg+DSDryOITGHC
+	yOe/zDcfXdMcN2W6h/BSvBcRiIFy4j//hcgQHBWEPE1FayO5PdMcUhL4KyXeXe7ZBDzcszsh4FFD6
+	cRqvK68g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w27hf-000000041QB-0LZW;
-	Mon, 16 Mar 2026 13:09:51 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1w27hg-000000041SB-1f2Q;
+	Mon, 16 Mar 2026 13:09:52 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w27hQ-00000004123-2b2W;
-	Mon, 16 Mar 2026 13:09:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=5K7eKfDaNC8F0R4YEvVj595iph2zwfv8FNQbISthhlI=; b=bnjKSp5oQL4/AMdf0qkR67bycQ
-	GOypCZD1qEzoQl5+g4M4R0tbNyVFSWdESi4qjCQZwhgxysnPHydMHdEVGcRC6NVqTuhHckMqll4MH
-	AZO6WjZACCiyCnQbukR4ZktN/NR8t40b7ADmqdonTC0dQS9eCrs8j8+OovdtTKCPzQCTyHkKPyK70
-	HBwEOkw88SMj0A2YazlGFA2CgQaPqqvSFpLs4xhSTiYNXeYhQx/kv385INLPAC2r66SdjaxCWJcXf
-	t/FFyBU351dTB2Ks78NZKXB6yKxIFKPeEONCGfXuTV1r2i2SdkyLP9XT+zFRWW9SpU17G8UG77R9Z
-	ka0lxjHQ==;
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by casper.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w27hK-000000010vJ-2DzA;
-	Mon, 16 Mar 2026 13:09:35 +0000
+	id 1w27hS-0000000415K-0R0r;
+	Mon, 16 Mar 2026 13:09:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id A4A904459E;
-	Mon, 16 Mar 2026 13:09:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5F1C19424;
-	Mon, 16 Mar 2026 13:09:27 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 5F85260097;
+	Mon, 16 Mar 2026 13:09:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D16C2BCB0;
+	Mon, 16 Mar 2026 13:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773666568;
-	bh=LrLBS64c+lmBUJM2XbvLHLJnGjK9/zMfbb5TL2UTCws=;
+	s=k20201202; t=1773666577;
+	bh=0yi2AdYhzlQaYc4Yt2SZxuxCx2MWGBbtnvun8B/4hkw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Lfxg9CkE3XOoc6lXpgYy2pcAO6Hc6ib8/1Qy1xhOw+VHHgoC4ldZaAz5MKdUunLwk
-	 evL0sHn+qUhum9zmcrNTCgtUpSE5CQ4CGNRa+00XBCSchPYXd/xWLfqxqYJ9skmE9K
-	 CX3Ww9RSRfWEGkTZ6eiJijkz9wIFZ61HqUkhV7WD8hwlK523wPS1op1w9qmYFyA7qG
-	 FJxsyW1CCw8XR7ax4KyCGwl3ZM0UKR9G6704RJ/9qqFcsQLVtG8dDN0s1e3aStfj+Z
-	 w3h7n/urDNIwuIScJ6XZgrH4/EcLdtsWhdHxvyM993b8PDpgqF9DMcTLvAZYv1YIFp
-	 WGnfsx1Vg/+6A==
+	b=o1cv3LY2qoJ49LoF1okR/CSrMcE9SA+tjX05vCTw44rp4nOvrnv3h1A1hV52tEuEy
+	 fhGj2PT/sTz+Ru0YdTFpcSfn9kotI2ZKr76Hg1hlrQsqvDbK8soX45tc7vEW6Yn23O
+	 qhtgO7dRsTmdmMI7XMJvp567zPNdAL3vO0artZuNVLNjRnnQ3I+orUEL+4RDS228K1
+	 zfiKp12igFcrUPkOhQHKfokLoQybcJcBrUsprNAop1+a6GXRlGVZBhzvY0R5RASBMl
+	 SlFKhuAGP0lT18NKxEoN1UyrhhC6TMAumQBddToBRKc76X4Z5ejrVx1XwuQX3ri3K5
+	 QbBizd0XbR6Eg==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -118,17 +104,14 @@ Cc: David Hildenbrand <david@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org,
 	selinux@vger.kernel.org
-Subject: [PATCH v2 12/23] tools/testing/vma: test that legacy flag helpers work correctly
-Date: Mon, 16 Mar 2026 13:08:01 +0000
-Message-ID: <4f1956b7e1e15293f75bffb5eda3d967a1da6f5d.1773665966.git.ljs@kernel.org>
+Subject: [PATCH v2 15/23] mm: introduce vma_flags_count() and vma[_flags]_test_single_mask()
+Date: Mon, 16 Mar 2026 13:08:04 +0000
+Message-ID: <96e7481026067766bfd7f2d4e395dd89ce845ab2.1773665966.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1773665966.git.ljs@kernel.org>
 References: <cover.1773665966.git.ljs@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_130930_876974_1D9D64ED 
-X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,38 +126,190 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the existing compare_legacy_flags() predicate function to assert
-that legacy_to_vma_flags() and vma_flags_to_legacy() behave as expected.
+vma_flags_count() determines how many bits are set in VMA flags, using
+bitmap_weight().
+
+vma_flags_test_single_mask() determines if a vma_flags_t set of flags
+contains a single flag specified as another vma_flags_t value, or if the
+sought flag mask is empty, it is defined to return false.
+
+This is useful when we want to declare a VMA flag as optionally a single
+flag in a mask or empty depending on kernel configuration.
+
+This allows us to have VM_NONE-like semantics when checking whether the
+flag is set.
+
+In a subsequent patch, we introduce the use of VMA_DROPPABLE of type
+vma_flags_t using precisely these semantics.
+
+It would be actively confusing to use vma_flags_test_any_single_mask() for
+this (and vma_flags_test_all_mask() is not correct to use here, as it
+trivially returns true when tested against an empty vma flags mask).
+
+We introduce vma_flags_count() to be able to assert that the compared flag
+mask is singular or empty, checked when CONFIG_DEBUG_VM is enabled.
+
+Also update the VMA tests as part of this change.
 
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- tools/testing/vma/tests/vma.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/mm.h                 | 46 ++++++++++++++++++++++++++++++
+ tools/testing/vma/include/custom.h |  6 ----
+ tools/testing/vma/include/dup.h    | 21 ++++++++++++++
+ tools/testing/vma/vma_internal.h   |  6 ++++
+ 4 files changed, 73 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/vma/tests/vma.c b/tools/testing/vma/tests/vma.c
-index 98e465fb1bf2..1fae25170ff7 100644
---- a/tools/testing/vma/tests/vma.c
-+++ b/tools/testing/vma/tests/vma.c
-@@ -5,6 +5,7 @@ static bool compare_legacy_flags(vm_flags_t legacy_flags, vma_flags_t flags)
- 	const unsigned long legacy_val = legacy_flags;
- 	/* The lower word should contain the precise same value. */
- 	const unsigned long flags_lower = flags.__vma_flags[0];
-+	vma_flags_t converted_flags;
- #if NUM_VMA_FLAG_BITS > BITS_PER_LONG
- 	int i;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 47bf9f166924..324b6e8a66fa 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1083,6 +1083,14 @@ static __always_inline vma_flags_t __mk_vma_flags(vma_flags_t flags,
+ #define append_vma_flags(flags, ...) __mk_vma_flags(flags,			\
+ 		COUNT_ARGS(__VA_ARGS__), (const vma_flag_t []){__VA_ARGS__})
  
-@@ -17,6 +18,11 @@ static bool compare_legacy_flags(vm_flags_t legacy_flags, vma_flags_t flags)
- 
- 	static_assert(sizeof(legacy_flags) == sizeof(unsigned long));
- 
-+	/* Assert that legacy flag helpers work correctly. */
-+	converted_flags = legacy_to_vma_flags(legacy_flags);
-+	ASSERT_FLAGS_SAME_MASK(&converted_flags, flags);
-+	ASSERT_EQ(vma_flags_to_legacy(flags), legacy_flags);
++/* Calculates the number of set bits in the specified VMA flags. */
++static __always_inline int vma_flags_count(const vma_flags_t *flags)
++{
++	const unsigned long *bitmap = flags->__vma_flags;
 +
- 	return legacy_val == flags_lower;
- }
++	return bitmap_weight(bitmap, NUM_VMA_FLAG_BITS);
++}
++
+ /*
+  * Test whether a specific VMA flag is set, e.g.:
+  *
+@@ -1158,6 +1166,26 @@ static __always_inline bool vma_flags_test_all_mask(const vma_flags_t *flags,
+ #define vma_flags_test_all(flags, ...) \
+ 	vma_flags_test_all_mask(flags, mk_vma_flags(__VA_ARGS__))
  
++/*
++ * Helper to test that a flag mask of type vma_flags_t has a SINGLE flag set
++ * (returning false if flagmask has no flags set).
++ *
++ * This is defined to make the semantics clearer when testing an optionally
++ * defined VMA flags mask, e.g.:
++ *
++ * if (vma_flags_test_single_mask(&flags, VMA_DROPPABLE)) { ... }
++ *
++ * When VMA_DROPPABLE is defined if available, or set to EMPTY_VMA_FLAGS
++ * otherwise.
++ */
++static __always_inline bool vma_flags_test_single_mask(const vma_flags_t *flags,
++		vma_flags_t flagmask)
++{
++	VM_WARN_ON_ONCE(vma_flags_count(&flagmask) > 1);
++
++	return vma_flags_test_any_mask(flags, flagmask);
++}
++
+ /* Set each of the to_set flags in flags, non-atomically. */
+ static __always_inline void vma_flags_set_mask(vma_flags_t *flags,
+ 		vma_flags_t to_set)
+@@ -1286,6 +1314,24 @@ static __always_inline bool vma_test_all_mask(const struct vm_area_struct *vma,
+ #define vma_test_all(vma, ...) \
+ 	vma_test_all_mask(vma, mk_vma_flags(__VA_ARGS__))
+ 
++/*
++ * Helper to test that a flag mask of type vma_flags_t has a SINGLE flag set
++ * (returning false if flagmask has no flags set).
++ *
++ * This is useful when a flag needs to be either defined or not depending upon
++ * kernel configuration, e.g.:
++ *
++ * if (vma_test_single_mask(vma, VMA_DROPPABLE)) { ... }
++ *
++ * When VMA_DROPPABLE is defined if available, or set to EMPTY_VMA_FLAGS
++ * otherwise.
++ */
++static __always_inline bool
++vma_test_single_mask(const struct vm_area_struct *vma, vma_flags_t flagmask)
++{
++	return vma_flags_test_single_mask(&vma->flags, flagmask);
++}
++
+ /*
+  * Helper to set all VMA flags in a VMA.
+  *
+diff --git a/tools/testing/vma/include/custom.h b/tools/testing/vma/include/custom.h
+index 2c498e713fbd..b7d9eb0a44e4 100644
+--- a/tools/testing/vma/include/custom.h
++++ b/tools/testing/vma/include/custom.h
+@@ -15,12 +15,6 @@ extern unsigned long dac_mmap_min_addr;
+ #define dac_mmap_min_addr	0UL
+ #endif
+ 
+-#define VM_WARN_ON(_expr) (WARN_ON(_expr))
+-#define VM_WARN_ON_ONCE(_expr) (WARN_ON_ONCE(_expr))
+-#define VM_WARN_ON_VMG(_expr, _vmg) (WARN_ON(_expr))
+-#define VM_BUG_ON(_expr) (BUG_ON(_expr))
+-#define VM_BUG_ON_VMA(_expr, _vma) (BUG_ON(_expr))
+-
+ #define TASK_SIZE ((1ul << 47)-PAGE_SIZE)
+ 
+ /*
+diff --git a/tools/testing/vma/include/dup.h b/tools/testing/vma/include/dup.h
+index ccf539b42e72..d4149d9837fb 100644
+--- a/tools/testing/vma/include/dup.h
++++ b/tools/testing/vma/include/dup.h
+@@ -903,6 +903,13 @@ static __always_inline vma_flags_t __mk_vma_flags(vma_flags_t flags,
+ #define append_vma_flags(flags, ...) __mk_vma_flags(flags,			\
+ 		COUNT_ARGS(__VA_ARGS__), (const vma_flag_t []){__VA_ARGS__})
+ 
++static __always_inline int vma_flags_count(const vma_flags_t *flags)
++{
++	const unsigned long *bitmap = flags->__vma_flags;
++
++	return bitmap_weight(bitmap, NUM_VMA_FLAG_BITS);
++}
++
+ static __always_inline bool vma_flags_test(const vma_flags_t *flags,
+ 		vma_flag_t bit)
+ {
+@@ -950,6 +957,14 @@ static __always_inline bool vma_flags_test_all_mask(const vma_flags_t *flags,
+ #define vma_flags_test_all(flags, ...) \
+ 	vma_flags_test_all_mask(flags, mk_vma_flags(__VA_ARGS__))
+ 
++static __always_inline bool vma_flags_test_single_mask(const vma_flags_t *flags,
++						vma_flags_t flagmask)
++{
++	VM_WARN_ON_ONCE(vma_flags_count(&flagmask) > 1);
++
++	return vma_flags_test_any_mask(flags, flagmask);
++}
++
+ static __always_inline void vma_flags_set_mask(vma_flags_t *flags, vma_flags_t to_set)
+ {
+ 	unsigned long *bitmap = flags->__vma_flags;
+@@ -1029,6 +1044,12 @@ static __always_inline bool vma_test_all_mask(const struct vm_area_struct *vma,
+ #define vma_test_all(vma, ...) \
+ 	vma_test_all_mask(vma, mk_vma_flags(__VA_ARGS__))
+ 
++static __always_inline bool
++vma_test_single_mask(const struct vm_area_struct *vma, vma_flags_t flagmask)
++{
++	return vma_flags_test_single_mask(&vma->flags, flagmask);
++}
++
+ static __always_inline void vma_set_flags_mask(struct vm_area_struct *vma,
+ 		vma_flags_t flags)
+ {
+diff --git a/tools/testing/vma/vma_internal.h b/tools/testing/vma/vma_internal.h
+index 0e1121e2ef23..e12ab2c80f95 100644
+--- a/tools/testing/vma/vma_internal.h
++++ b/tools/testing/vma/vma_internal.h
+@@ -51,6 +51,12 @@ typedef unsigned long	pgprotval_t;
+ typedef struct pgprot { pgprotval_t pgprot; } pgprot_t;
+ typedef __bitwise unsigned int vm_fault_t;
+ 
++#define VM_WARN_ON(_expr) (WARN_ON(_expr))
++#define VM_WARN_ON_ONCE(_expr) (WARN_ON_ONCE(_expr))
++#define VM_WARN_ON_VMG(_expr, _vmg) (WARN_ON(_expr))
++#define VM_BUG_ON(_expr) (BUG_ON(_expr))
++#define VM_BUG_ON_VMA(_expr, _vma) (BUG_ON(_expr))
++
+ #include "include/stubs.h"
+ #include "include/dup.h"
+ #include "include/custom.h"
 -- 
 2.53.0
 
