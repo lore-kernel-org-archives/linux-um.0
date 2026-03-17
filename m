@@ -4,97 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DABFB5EA8
-	for <linux-um@archiver.kernel.org>; Tue, 17 Mar 2026 03:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9863F3382B
+	for <linux-um@archiver.kernel.org>; Tue, 17 Mar 2026 09:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5VINWEtY9aZvz9HaKBZW/WHE45MWpLM833fNP+ydNw4=; b=s3R0Yz0VYJzAPMixWMXp2bGF9A
-	bVhm3fbJMTymm9cMJ2Hv8m5cjywMD11UItilUn7IpW6rNvXX6i+EhO6uBcbIHmER2+kmQUlFIixF9
-	40nBsoYvaBusemTJAqw0MnXjxZyFYOQ9h7omqBzIzMoHHSkxD9tctpMStihc+TPJ3kODmGaYDLI+Y
-	7I+he+709CmJXH+z2hZJb1Nz92gVaQ42xMR/VCfwmb7+X6lkmJqfezUof2I8nZNF4AQ+2DUz5ddHH
-	eUFfggpDyXeclL38ikEuIv84mYVaVMWiAifiQe4MF3XYA9k3vJ+/whApI69nKTBzZ1wzlFZi8s5ED
-	hMygBBfQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=; b=2Oh3y9ElrWaYOMEQut2FlMbsGx
+	wRMIWMsS65UY9WQBmzNmqcUwSMcef+fJF4dBoHinvwCjOkEqDq1K6IoNWd+TsXGli6FH3U5bc7vLr
+	vCscrLHZ4kEcrBkzfAFdEIOB7siuQdmvm40o1li6ee4/vH6Z96i7fVJhAfnvxV6Zc+OZXNcSxMYY9
+	MkWOHIVzdtZwIs09xNhqBvJVzUnwGuc1KAIbuOlGpPY9vOpV/HsxEnQWzRxYSp4b3lta7swRSlOyd
+	IM13jvq0M/KDHLdriGdt1JPxttPE2+MaaRUp5HW/BA1f5YUnSWmElYTrtHy7RaWkXsCOlvyKi3mvC
+	NAORJTeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2LRO-00000005LVl-0J4h;
-	Tue, 17 Mar 2026 03:49:58 +0000
-Received: from mail-oa1-x2c.google.com ([2001:4860:4864:20::2c])
+	id 1w2QsF-00000005uFq-1AFQ;
+	Tue, 17 Mar 2026 09:38:03 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2LRL-00000005LUi-3pn8
+	id 1w2QsC-00000005uDT-27NJ
 	for linux-um@lists.infradead.org;
-	Tue, 17 Mar 2026 03:49:57 +0000
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-41576c5c01cso3285779fac.3
-        for <linux-um@lists.infradead.org>; Mon, 16 Mar 2026 20:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1773719394; x=1774324194; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5VINWEtY9aZvz9HaKBZW/WHE45MWpLM833fNP+ydNw4=;
-        b=lzLBcAPYnTiT1ISF0rqDLliP4H64evqAf9iCHHeKm0m8d6Le0zErv6wHYHxzN4PDyF
-         18GAV7a2HgPcE1KchOu3YobuEti0IESM6xy4FpE3o+C/UZf6sxSeMurtk5osV1wGEpQz
-         Qgjsy7QWHfPgb2t3dt5Eae8KrHhA3XVj9YjFkmpnTMwHnmnSK3GtVO03IAfQUUMTkfLW
-         VMPiWc4o/CPLQ/pdHPaF4QuRTXuI+J7Av3sn0a0L85nZOYw1Q4H0HI+N1pHfGAWafXhe
-         1nc7lKAnWiz5YTKXez3oMaeMlgazBRhOYTPidKNldzmKKwYkDcEValsKg/QbFrOy9x+H
-         wLtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773719394; x=1774324194;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5VINWEtY9aZvz9HaKBZW/WHE45MWpLM833fNP+ydNw4=;
-        b=rH7D/m23vwSOcniXmngONBVqMPZ+q6OzpmW1PztSyU2lmGHugDKWParAg0YxOeGe1E
-         UtmjOkTHCRd1dphd0kcm58twGp0vSS+5OGe4Jprl29MpB8MT9/mjGMhZgjTKcy5BC2oo
-         tk4+JznSQeRbNsOkhUJzA0PH5PP2Wx7Jg0Ro8ivj5Dpp0tfrdHqI3IrK42gNNdLzAMmi
-         uQebc4AjAIa5E9OUjvqCcYL/yBp/vWcmASpF4LNNH7o9Ks3eSwMrOHjO82GHxOn7Jsyy
-         GOH04Rzhn5oT0ZjV/z7ls7kl/BcH9nfnAJfuEbvwyeguGE8owSXLnNOPMkBkOPslDnXL
-         xPfA==
-X-Forwarded-Encrypted: i=1; AJvYcCXn8muxAlbHVCQGc6z/bVfmaFJgGowqQnQZQpbfnqVJ0vL7OwPZ49pKGDy9golY8lCPN3XU0SvHAg==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz4xDwXlsk4auiw09VXb7go5blyw/026kBRfb7B0tsKLEDAU/RS
-	6Ui8jTS4G02tzt8zAxJ3xzIYWqJrx7vADEL+TAGezfx3uw4Cwuz8frKARt51+itbEBM=
-X-Gm-Gg: ATEYQzxiNNm6RQNj7TgxHM93hk64WZHSq4IzmR7u1fwlDCrP814DkMgL9Q7KChHh7mr
-	cwO/E4EcH7bQi60/R67j/PELCLeRZW1ngAgp0ZDRbPhmw8sjbHVK+OlbAX2gK984SZw7FL1IFxw
-	484DZrJdHjOgWo4R5g4sAMlC16IK/oETYnua4aAACahlJwDNO5dGqLo9nqsJkG8d+QaPECaKDBs
-	lx5FLlzoXZ8oZkAuOwZduM+KEqiH5NQAVttF+RvGIUKHCcHhr/qUzrZKZ9UTBjYVvE6RdkymMIq
-	huetRxR56fwS8qVIqaIazraHHJMWvpTxVP4PlGmYi1ozHOXLnnYAw23Ua8SOL5NAhyqEa5nBTsx
-	Q9+sVKgW3grFiGXT7fpfgvABAO+1yoMmtXifMZRoVNDDiP/QeFogetgUEIY5FvzmFSGOyb43Qox
-	Q53qEv+HvpC/CJjcZ3LaGkwWva
-X-Received: by 2002:a05:6870:d406:b0:409:74c7:1cbb with SMTP id 586e51a60fabf-417b906d206mr9213737fac.7.1773719394528;
-        Mon, 16 Mar 2026 20:49:54 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.103.33])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4177e6ae0e3sm19148337fac.16.2026.03.16.20.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Mar 2026 20:49:54 -0700 (PDT)
-Message-ID: <da8c8b57-6d5e-461a-83b3-9339a712aca4@sifive.com>
-Date: Mon, 16 Mar 2026 22:49:52 -0500
+	Tue, 17 Mar 2026 09:38:01 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F3F85BD96;
+	Tue, 17 Mar 2026 09:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1773740275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
+	b=A+0DMHAbfbhM8MnlBUqVL+W87T4tqLjqUGgvxNRqk88xckeEeRm82e+ypnsFgad4/XiqOe
+	eFQnLDIV+dM8cXwaoMX9AvcuSz0XaJOKBqB0bzHsm6RA5PfmHqn2hYLlC9HiNT/X/xWX3q
+	BqIvjViI9CtSct4EF5Es0QJY/LKW1HI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1773740275;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
+	b=xmUefSO9ArclnNvP01TmJwVa9hwB1H9Ezy/G04E5yEHJeukkDoWlTMUncfdfe52pgfQsy2
+	oR1nH2U5mzv18+CA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1773740274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
+	b=HfXH0TzA0f1d2CSbAyldJl2xl9aWzYbpw10loZV1kNcn1txaCSCXzrSvfKHAIHGI00VNao
+	b//U5Itged1fc1C/uxZj0ysYyWI8ysEt0UM5ZsojSOhxVbgzKeS+lof0B9W59LS9IUq6E2
+	yDhoArHhElh4lGLUjlD4eJXEl3bpa6o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1773740274;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
+	b=JOi5WNGRhJfP08gEJXjzmktG0GqpaBSxSS7XTpG6foqsalkoejj3JitKc4S0PHtQ5wznJC
+	I5D56EajKt5gebCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D7054273B;
+	Tue, 17 Mar 2026 09:37:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Cg+ZHvIguWnvMwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Mar 2026 09:37:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 43970A0AB1; Tue, 17 Mar 2026 10:37:54 +0100 (CET)
+Date: Tue, 17 Mar 2026 10:37:54 +0100
+From: Jan Kara <jack@suse.cz>
+To: NeilBrown <neil@brown.name>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jeff Layton <jlayton@kernel.org>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Carlos Maiolino <cem@kernel.org>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Jan Harkes <jaharkes@cs.cmu.edu>, Hugh Dickins <hughd@google.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Steve French <sfrench@samba.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+	Yuezhang Mo <yuezhang.mo@sony.com>, Andreas Hindborg <a.hindborg@kernel.org>, 
+	Breno Leitao <leitao@debian.org>, Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, 
+	Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
+	Tyler Hicks <code@tyhicks.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, coda@cs.cmu.edu, linux-mm@kvack.org, 
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, ceph-devel@vger.kernel.org, 
+	ecryptfs@vger.kernel.org, gfs2@lists.linux.dev, linux-um@lists.infradead.org, 
+	linux-efi@vger.kernel.org
+Subject: Re: [PATCH 33/53] ext4: use on-stack dentries in
+ ext4_fc_replay_link_internal()
+Message-ID: <pb664u5mzlaqthyhwfsio66wgv2hwuqazzbrtzunnja76khowi@v7l5o4xkzci2>
+References: <20260312214330.3885211-1-neilb@ownmail.net>
+ <20260312214330.3885211-34-neilb@ownmail.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 14/15] mm/kasan: add document into
- kernel-parameters.txt
-To: Baoquan He <bhe@redhat.com>
-Cc: kasan-dev@googlegroups.com, linux-mm@kvack.org, andreyknvl@gmail.com,
- ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- x86@kernel.org, chris@zankel.net, jcmvbkbc@gmail.com,
- linux-s390@vger.kernel.org, hca@linux.ibm.com
-References: <20260225081412.76502-1-bhe@redhat.com>
- <20260225081412.76502-15-bhe@redhat.com>
- <f7054184-dca2-4c7c-9e2e-4a5e3e1c81da@sifive.com> <abjMP58VdUu_eElh@fedora>
-From: Samuel Holland <samuel.holland@sifive.com>
-Content-Language: en-US
-In-Reply-To: <abjMP58VdUu_eElh@fedora>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260312214330.3885211-34-neilb@ownmail.net>
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,zeniv.linux.org.uk,kernel.org,suse.cz,szeredi.hu,gmail.com,cs.cmu.edu,google.com,linux.alibaba.com,redhat.com,auristor.com,samba.org,samsung.com,sony.com,debian.org,mit.edu,dilger.ca,goodmis.org,dubeyko.com,tyhicks.com,nod.at,cambridgegreys.com,sipsolutions.net,ozlabs.org,vger.kernel.org,kvack.org,lists.infradead.org,lists.linux.dev];
+	R_RATELIMIT(0.00)[to_ip_from(RLyaw51ggmke6bkcxeyajg5whq)];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[52];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_204955_974130_643C58E9 
-X-CRM114-Status: GOOD (  26.03  )
+X-CRM114-CacheID: sfid-20260317_023800_746979_2C7DCB59 
+X-CRM114-Status: GOOD (  28.14  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,101 +155,107 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2026-03-16 10:36 PM, Baoquan He wrote:
-> On 03/12/26 at 07:53am, Samuel Holland wrote:
->> Hi Baoquan,
->>
->> On 2026-02-25 2:14 AM, Baoquan He wrote:
->>> And also remove the relevant description in dev-tools/kasan.rst
->>> which is hw_tags specificially.
->>>
->>> Signed-off-by: Baoquan He <bhe@redhat.com>
->>> ---
->>>  Documentation/admin-guide/kernel-parameters.txt | 4 ++++
->>>  Documentation/dev-tools/kasan.rst               | 2 --
->>>  2 files changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->>> index cb850e5290c2..e0115fad9e60 100644
->>> --- a/Documentation/admin-guide/kernel-parameters.txt
->>> +++ b/Documentation/admin-guide/kernel-parameters.txt
->>> @@ -2899,6 +2899,10 @@ Kernel parameters
->>>  	js=		[HW,JOY] Analog joystick
->>>  			See Documentation/input/joydev/joystick.rst.
->>>  
->>> +	kasan=		[KNL] controls whether KASAN is enabled.
->>> +			Format: off | on
->>> +			default: on
->>> +
->>>  	kasan_multi_shot
->>>  			[KNL] Enforce KASAN (Kernel Address Sanitizer) to print
->>>  			report on every invalid memory access. Without this
->>> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
->>> index a034700da7c4..eaae83fcb5e4 100644
->>> --- a/Documentation/dev-tools/kasan.rst
->>> +++ b/Documentation/dev-tools/kasan.rst
->>> @@ -129,8 +129,6 @@ Hardware Tag-Based KASAN mode is intended for use in production as a security
->>>  mitigation. Therefore, it supports additional boot parameters that allow
->>>  disabling KASAN altogether or controlling its features:
->>
->> The sentence above is now incorrect as well. I would recommend documenting the
->> parameter earlier in the "Boot parameters" section instead of removing it from
->> this document entirely.
+On Fri 13-03-26 08:12:20, NeilBrown wrote:
+> From: NeilBrown <neil@brown.name>
 > 
-> Good catch and the suggestion is good to me. Thanks.
+> ext4_fc_replay_link_internal() uses two dentries to simply code-reuse
+> when replaying a "link" operation.  It does not need to interact with
+> the dcache and removes the dentries shortly after adding them.
 > 
-> Is below change OK to you?
+> They are passed to __ext4_link() which only performs read accesses on
+> these dentries and only uses the name and parent of dentry_inode (plus
+> checking a flag is unset) and only uses the inode of the parent.
 > 
+> So instead of allocating dentries and adding them to the dcache, allocat
+> two dentries on the stack, set up the required fields, and pass these to
+> __ext4_link().
 > 
-> From 317be48b9c1bf9d33b8d8fff5e401e3155531d81 Mon Sep 17 00:00:00 2001
-> From: Baoquan He <bhe@redhat.com>
-> Date: Tue, 17 Mar 2026 11:28:39 +0800
-> Subject: [PATCH] mm/kasan: adjust documentation
+> This substantially simplifies the code and removes on of the few uses of
+> d_alloc() - preparing for its removal.
+> 
+> Signed-off-by: NeilBrown <neil@brown.name>
 
-I'd suggest something a bit more specific, maybe like "mm/kasan: document kasan=
-for all modes".
+Looks good to me. Feel free to add:
 
-> Content-type: text/plain
-> 
-> To reflect the change of kasan=on|off.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  Documentation/dev-tools/kasan.rst | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  fs/ext4/fast_commit.c | 40 ++++++++--------------------------------
+>  1 file changed, 8 insertions(+), 32 deletions(-)
 > 
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index a034700da7c4..8e65bc04dbcd 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -103,6 +103,9 @@ Boot parameters
->  KASAN is affected by the generic ``panic_on_warn`` command line parameter.
->  When it is enabled, KASAN panics the kernel after printing a bug report.
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 2a5daf1d9667..e3593bb90a62 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -1446,8 +1446,6 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+>  				struct inode *inode)
+>  {
+>  	struct inode *dir = NULL;
+> -	struct dentry *dentry_dir = NULL, *dentry_inode = NULL;
+> -	struct qstr qstr_dname = QSTR_INIT(darg->dname, darg->dname_len);
+>  	int ret = 0;
 >  
-> +The generic ``kasan=off`` or ``=on`` command line parameter controls
-> +whether KASAN is enabled (default: ``on``).
-> +
-
-This is in the middle of paragraphs describing the fault reporting options. I'd
-suggest to move it to the beginning of the section.
-
-With those fixes, you can add
-
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-
->  By default, KASAN prints a bug report only for the first invalid memory access.
->  With ``kasan_multi_shot``, KASAN prints a report on every invalid access. This
->  effectively disables ``panic_on_warn`` for KASAN reports.
-> @@ -127,9 +130,7 @@ modes below) support altering stack trace collection behavior:
+>  	dir = ext4_iget(sb, darg->parent_ino, EXT4_IGET_NORMAL);
+> @@ -1457,28 +1455,14 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+>  		goto out;
+>  	}
 >  
->  Hardware Tag-Based KASAN mode is intended for use in production as a security
->  mitigation. Therefore, it supports additional boot parameters that allow
-> -disabling KASAN altogether or controlling its features:
+> -	dentry_dir = d_obtain_alias(dir);
+> -	if (IS_ERR(dentry_dir)) {
+> -		ext4_debug("Failed to obtain dentry");
+> -		dentry_dir = NULL;
+> -		goto out;
+> -	}
+> +	{
+> +		struct dentry dentry_dir = { .d_inode = dir };
+> +		const struct dentry dentry_inode = {
+> +			.d_parent = &dentry_dir,
+> +			.d_name = QSTR_LEN(darg->dname, darg->dname_len),
+> +		};
+>  
+> -	dentry_inode = d_alloc(dentry_dir, &qstr_dname);
+> -	if (!dentry_inode) {
+> -		ext4_debug("Inode dentry not created.");
+> -		ret = -ENOMEM;
+> -		goto out;
+> -	}
 > -
-> -- ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
-> +controlling its features:
+> -	ihold(inode);
+> -	inc_nlink(inode);
+> -	ret = __ext4_link(dir, inode, dentry_inode);
+> -	if (ret) {
+> -		drop_nlink(inode);
+> -		iput(inode);
+> -	} else {
+> -		d_instantiate(dentry_inode, inode);
+> +		ret = __ext4_link(dir, inode, &dentry_inode);
+>  	}
+>  	/*
+>  	 * It's possible that link already existed since data blocks
+> @@ -1493,16 +1477,8 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
 >  
->  - ``kasan.mode=sync``, ``=async`` or ``=asymm`` controls whether KASAN
->    is configured in synchronous, asynchronous or asymmetric mode of
-
+>  	ret = 0;
+>  out:
+> -	if (dentry_dir) {
+> -		d_drop(dentry_dir);
+> -		dput(dentry_dir);
+> -	} else if (dir) {
+> +	if (dir)
+>  		iput(dir);
+> -	}
+> -	if (dentry_inode) {
+> -		d_drop(dentry_inode);
+> -		dput(dentry_inode);
+> -	}
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.50.0.107.gf914562f5916.dirty
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
