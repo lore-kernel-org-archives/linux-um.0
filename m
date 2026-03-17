@@ -4,82 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9863F3382B
-	for <linux-um@archiver.kernel.org>; Tue, 17 Mar 2026 09:38:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F538F33830
+	for <linux-um@archiver.kernel.org>; Tue, 17 Mar 2026 10:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=; b=2Oh3y9ElrWaYOMEQut2FlMbsGx
-	wRMIWMsS65UY9WQBmzNmqcUwSMcef+fJF4dBoHinvwCjOkEqDq1K6IoNWd+TsXGli6FH3U5bc7vLr
-	vCscrLHZ4kEcrBkzfAFdEIOB7siuQdmvm40o1li6ee4/vH6Z96i7fVJhAfnvxV6Zc+OZXNcSxMYY9
-	MkWOHIVzdtZwIs09xNhqBvJVzUnwGuc1KAIbuOlGpPY9vOpV/HsxEnQWzRxYSp4b3lta7swRSlOyd
-	IM13jvq0M/KDHLdriGdt1JPxttPE2+MaaRUp5HW/BA1f5YUnSWmElYTrtHy7RaWkXsCOlvyKi3mvC
-	NAORJTeQ==;
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=; b=UV708GxELD9kwWT01BxJ1wPy5L
+	iUp+sLhTB9vRvlPyDqGceBsEnail60LcXA5pJr/73mZBIES4/2+frsxRg04No/Rq7ZRsBa+2GdoOg
+	wtoZchnaxtbVJnV8gSuZ5OrjKq8P/PVf6t2qPJ/z+pSC80jARNiy1Mq0PRhsCGqYOehHjrGdUH+aF
+	2FA3seD7JV/aY9eTL20z1er+5/HajXoWP/4l2BibRh5030eVBXJRfgQ5256RzWUHLIIdRnnzKJUQR
+	Bdvg5NhGYB6up0A30l9Zhw0xfIrJ7vsgRmEG+rT14XLK+67+tEUdXq6XbMvpzH4KkDazLpp1y0sfO
+	zBZJgV2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2QsF-00000005uFq-1AFQ;
-	Tue, 17 Mar 2026 09:38:03 +0000
-Received: from smtp-out2.suse.de ([195.135.223.131])
+	id 1w2REN-00000005wWS-3yoB;
+	Tue, 17 Mar 2026 10:00:55 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2QsC-00000005uDT-27NJ
+	id 1w2REN-00000005wVv-0Aky
+	for linux-um@bombadil.infradead.org;
+	Tue, 17 Mar 2026 10:00:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=; b=cVaNKBoPMrHa0cPjloEzJmANT2
+	nheD9pQ2J8eP9JWcAFQh5e8e/rlAMd5MF6fO9m1CrjB/OxknwY4BBfZk7XNTxt+6/gUDEjhNn1x8O
+	NikboSwgzLzzjIFn+SPRDWbVZXyzjq3Oa1+F0+gDiDxrlL38DErgWEoe5847VrbMOI6zAYasEdHAD
+	LwEli9dPtgsBkzzRVjRVyeXrYcmCdTl7GM8yDrkCsL43hWBPr/wpurgklt3gGVx3v6cpK8wnscLHB
+	Z2v6Nw14oRJCe57/5EdpezK9XzhmAI1IhAZfHa4ZyAXn5rZ3TVTKO3wjCtSWxXQBctsnLohU/FjVl
+	9jp7+Iiw==;
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w2REJ-00000008d7g-2gVH
 	for linux-um@lists.infradead.org;
-	Tue, 17 Mar 2026 09:38:01 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	Tue, 17 Mar 2026 10:00:53 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F3F85BD96;
-	Tue, 17 Mar 2026 09:37:54 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9C3725BDB1;
+	Tue, 17 Mar 2026 10:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1773740275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1773741643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
-	b=A+0DMHAbfbhM8MnlBUqVL+W87T4tqLjqUGgvxNRqk88xckeEeRm82e+ypnsFgad4/XiqOe
-	eFQnLDIV+dM8cXwaoMX9AvcuSz0XaJOKBqB0bzHsm6RA5PfmHqn2hYLlC9HiNT/X/xWX3q
-	BqIvjViI9CtSct4EF5Es0QJY/LKW1HI=
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=;
+	b=oZJ3/cY6ydGUBsEkcn4dEP5dVa8+6N5TCpbl/uoiRyk4zmmW7J9KBCWw5LYg5qJ9sSUBYN
+	kDXicji+Mmuu83eTS1GuU5bfaeUnybdFqqkL+Jwnv/gBugxmNyvsnLCjytkBMSabdBzeo2
+	pLuxV3JV9Bq7GlVOwyPPk0QMnb/TzHw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1773740275;
+	s=susede2_ed25519; t=1773741643;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
-	b=xmUefSO9ArclnNvP01TmJwVa9hwB1H9Ezy/G04E5yEHJeukkDoWlTMUncfdfe52pgfQsy2
-	oR1nH2U5mzv18+CA==
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=;
+	b=z8+9L0n+2BvyNILizCEGBPcuF7FXAXX68hzMw03OLmlBtux01ucO78gQQUP6lspoRnVAHU
+	fjJTL+Fs+WzbkkBg==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=CX35RV4c;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="t/jEKk2C"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1773740274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1773741638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
-	b=HfXH0TzA0f1d2CSbAyldJl2xl9aWzYbpw10loZV1kNcn1txaCSCXzrSvfKHAIHGI00VNao
-	b//U5Itged1fc1C/uxZj0ysYyWI8ysEt0UM5ZsojSOhxVbgzKeS+lof0B9W59LS9IUq6E2
-	yDhoArHhElh4lGLUjlD4eJXEl3bpa6o=
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=;
+	b=CX35RV4cPd92rVX9pIFlpypFdx5RdDbqy0m6JgL3N9BAb1bDqCFP/C0Zs6abuDaJbL268b
+	RKMPUfa+HwHLtaL4MRvpjsvnT/cJx39tZuQLpkJt2PNatB2G8g6k6iWLCggoPL5w+fPupt
+	OQrs5XNahoIFDxhNI9Hmnmsh9lYPs30=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1773740274;
+	s=susede2_ed25519; t=1773741638;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XMAS/3KJsstwA3paQv6TW+kjF9gkITW3NZUnc7bZnuU=;
-	b=JOi5WNGRhJfP08gEJXjzmktG0GqpaBSxSS7XTpG6foqsalkoejj3JitKc4S0PHtQ5wznJC
-	I5D56EajKt5gebCw==
+	bh=3NxxYZ0Z73C+D6nMp9RM66Emm5gr807GrvA6Zh/dc0A=;
+	b=t/jEKk2CCIPbv8gHZqK1jU4ncUvF5g0vCKqzpoNhRGjc3w+LQQ99i+VJ4D9TTFrf362JNo
+	vbna+wrOzVfO1uAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D7054273B;
-	Tue, 17 Mar 2026 09:37:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 833EB4273C;
+	Tue, 17 Mar 2026 10:00:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Cg+ZHvIguWnvMwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 17 Mar 2026 09:37:54 +0000
+	id ZhkGIEYmuWn0SwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Mar 2026 10:00:38 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 43970A0AB1; Tue, 17 Mar 2026 10:37:54 +0100 (CET)
-Date: Tue, 17 Mar 2026 10:37:54 +0100
+	id 40DE4A0AB1; Tue, 17 Mar 2026 11:00:34 +0100 (CET)
+Date: Tue, 17 Mar 2026 11:00:34 +0100
 From: Jan Kara <jack@suse.cz>
 To: NeilBrown <neil@brown.name>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
@@ -105,42 +121,52 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, ceph-devel@vger.kernel.org, 
 	ecryptfs@vger.kernel.org, gfs2@lists.linux.dev, linux-um@lists.infradead.org, 
 	linux-efi@vger.kernel.org
-Subject: Re: [PATCH 33/53] ext4: use on-stack dentries in
- ext4_fc_replay_link_internal()
-Message-ID: <pb664u5mzlaqthyhwfsio66wgv2hwuqazzbrtzunnja76khowi@v7l5o4xkzci2>
+Subject: Re: [PATCH 32/53] ext4: move dcache modifying code out of
+ __ext4_link()
+Message-ID: <imo3cvhqtvginngr2ofsotmrsxixutn2jagbkj6322cfgxm3lj@wosdq3xvlym5>
 References: <20260312214330.3885211-1-neilb@ownmail.net>
- <20260312214330.3885211-34-neilb@ownmail.net>
+ <20260312214330.3885211-33-neilb@ownmail.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260312214330.3885211-34-neilb@ownmail.net>
-X-Spamd-Result: default: False [-2.30 / 50.00];
+In-Reply-To: <20260312214330.3885211-33-neilb@ownmail.net>
+X-Spamd-Result: default: False [-2.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,zeniv.linux.org.uk,kernel.org,suse.cz,szeredi.hu,gmail.com,cs.cmu.edu,google.com,linux.alibaba.com,redhat.com,auristor.com,samba.org,samsung.com,sony.com,debian.org,mit.edu,dilger.ca,goodmis.org,dubeyko.com,tyhicks.com,nod.at,cambridgegreys.com,sipsolutions.net,ozlabs.org,vger.kernel.org,kvack.org,lists.infradead.org,lists.linux.dev];
-	R_RATELIMIT(0.00)[to_ip_from(RLyaw51ggmke6bkcxeyajg5whq)];
-	FROM_EQ_ENVFROM(0.00)[];
+	MX_GOOD(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[linux-foundation.org,zeniv.linux.org.uk,kernel.org,suse.cz,szeredi.hu,gmail.com,cs.cmu.edu,google.com,linux.alibaba.com,redhat.com,auristor.com,samba.org,samsung.com,sony.com,debian.org,mit.edu,dilger.ca,goodmis.org,dubeyko.com,tyhicks.com,nod.at,cambridgegreys.com,sipsolutions.net,ozlabs.org,vger.kernel.org,kvack.org,lists.infradead.org,lists.linux.dev];
+	DKIM_TRACE(0.00)[suse.cz:+];
 	TO_MATCH_ENVRCPT_SOME(0.00)[];
 	RCPT_COUNT_GT_50(0.00)[52];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	ASN(0.00)[asn:32098, ipnet:2800::/6, country:US];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL51pwup9t9rrf6fhpcri3z6a5)];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9C3725BDB1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260317_023800_746979_2C7DCB59 
-X-CRM114-Status: GOOD (  28.14  )
+X-CRM114-CacheID: sfid-20260317_100051_889773_3E33A055 
+X-CRM114-Status: GOOD (  20.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,106 +181,96 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri 13-03-26 08:12:20, NeilBrown wrote:
-> From: NeilBrown <neil@brown.name>
-> 
-> ext4_fc_replay_link_internal() uses two dentries to simply code-reuse
-> when replaying a "link" operation.  It does not need to interact with
-> the dcache and removes the dentries shortly after adding them.
-> 
-> They are passed to __ext4_link() which only performs read accesses on
-> these dentries and only uses the name and parent of dentry_inode (plus
-> checking a flag is unset) and only uses the inode of the parent.
-> 
-> So instead of allocating dentries and adding them to the dcache, allocat
-> two dentries on the stack, set up the required fields, and pass these to
-> __ext4_link().
-> 
-> This substantially simplifies the code and removes on of the few uses of
-> d_alloc() - preparing for its removal.
-> 
-> Signed-off-by: NeilBrown <neil@brown.name>
-
-Looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/fast_commit.c | 40 ++++++++--------------------------------
->  1 file changed, 8 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 2a5daf1d9667..e3593bb90a62 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1446,8 +1446,6 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
->  				struct inode *inode)
->  {
->  	struct inode *dir = NULL;
-> -	struct dentry *dentry_dir = NULL, *dentry_inode = NULL;
-> -	struct qstr qstr_dname = QSTR_INIT(darg->dname, darg->dname_len);
->  	int ret = 0;
+On Fri 13-03-26 08:12:19, NeilBrown wrote:
+...
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index a1219b446b74..c48337d95f9a 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -358,7 +358,7 @@ static inline int dname_external(const struct dentry *dentry)
+>  	return dentry->d_name.name != dentry->d_shortname.string;
+>  }
 >  
->  	dir = ext4_iget(sb, darg->parent_ino, EXT4_IGET_NORMAL);
-> @@ -1457,28 +1455,14 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+> -void take_dentry_name_snapshot(struct name_snapshot *name, struct dentry *dentry)
+> +void take_dentry_name_snapshot(struct name_snapshot *name, const struct dentry *dentry)
+>  {
+>  	unsigned seq;
+>  	const unsigned char *s;
+
+The constification of take_dentry_name_snapshot() should probably be a
+separate patch? Also I'd note that this constification (and the
+constification of __ext4_fc_track_link()) isn't really needed here because
+ext4_fc_track_link() will immediately bail through ext4_fc_disabled() when
+fast commit replay is happening so __ext4_fc_track_link() never gets called
+in that case - more about that below.
+
+> @@ -1471,7 +1471,15 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
 >  		goto out;
 >  	}
 >  
-> -	dentry_dir = d_obtain_alias(dir);
-> -	if (IS_ERR(dentry_dir)) {
-> -		ext4_debug("Failed to obtain dentry");
-> -		dentry_dir = NULL;
-> -		goto out;
-> -	}
-> +	{
-> +		struct dentry dentry_dir = { .d_inode = dir };
-> +		const struct dentry dentry_inode = {
-> +			.d_parent = &dentry_dir,
-> +			.d_name = QSTR_LEN(darg->dname, darg->dname_len),
-> +		};
->  
-> -	dentry_inode = d_alloc(dentry_dir, &qstr_dname);
-> -	if (!dentry_inode) {
-> -		ext4_debug("Inode dentry not created.");
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -
-> -	ihold(inode);
-> -	inc_nlink(inode);
-> -	ret = __ext4_link(dir, inode, dentry_inode);
-> -	if (ret) {
-> -		drop_nlink(inode);
-> -		iput(inode);
-> -	} else {
-> -		d_instantiate(dentry_inode, inode);
-> +		ret = __ext4_link(dir, inode, &dentry_inode);
->  	}
+> +	ihold(inode);
+> +	inc_nlink(inode);
+>  	ret = __ext4_link(dir, inode, dentry_inode);
+> +	if (ret) {
+> +		drop_nlink(inode);
+> +		iput(inode);
+> +	} else {
+> +		d_instantiate(dentry_inode, inode);
+> +	}
 >  	/*
 >  	 * It's possible that link already existed since data blocks
-> @@ -1493,16 +1477,8 @@ static int ext4_fc_replay_link_internal(struct super_block *sb,
+>  	 * for the dir in question got persisted before we crashed OR
+...
+> @@ -3460,8 +3460,6 @@ int __ext4_link(struct inode *dir, struct inode *inode, struct dentry *dentry)
+>  		ext4_handle_sync(handle);
 >  
->  	ret = 0;
->  out:
-> -	if (dentry_dir) {
-> -		d_drop(dentry_dir);
-> -		dput(dentry_dir);
-> -	} else if (dir) {
-> +	if (dir)
->  		iput(dir);
-> -	}
-> -	if (dentry_inode) {
-> -		d_drop(dentry_inode);
-> -		dput(dentry_inode);
-> -	}
+>  	inode_set_ctime_current(inode);
+> -	ext4_inc_count(inode);
+> -	ihold(inode);
 >  
->  	return ret;
+>  	err = ext4_add_entry(handle, dentry, inode);
+>  	if (!err) {
+> @@ -3471,11 +3469,7 @@ int __ext4_link(struct inode *dir, struct inode *inode, struct dentry *dentry)
+>  		 */
+>  		if (inode->i_nlink == 1)
+>  			ext4_orphan_del(handle, inode);
+> -		d_instantiate(dentry, inode);
+> -		ext4_fc_track_link(handle, dentry);
+> -	} else {
+> -		drop_nlink(inode);
+> -		iput(inode);
+> +		__ext4_fc_track_link(handle, inode, dentry);
+
+This looks wrong. If fastcommit replay is running, we must skip calling
+__ext4_fc_track_link(). Similarly if the filesystem is currently
+inelligible for fastcommit (due to some complex unsupported operations
+running in parallel). Why did you change ext4_fc_track_link() to
+__ext4_fc_track_link()?
+
+> @@ -3504,7 +3498,16 @@ static int ext4_link(struct dentry *old_dentry,
+>  	err = dquot_initialize(dir);
+>  	if (err)
+>  		return err;
+> -	return __ext4_link(dir, inode, dentry);
+> +	ihold(inode);
+> +	ext4_inc_count(inode);
+
+I'd put inc_nlink() here instead. We are guaranteed to have a regular file
+anyway and it matches what we do in ext4_fc_replay_link_internal().
+Alternatively we could consistently use ext4_inc_count() &
+ext4_dec_count() in these functions.
+
+> +	err = __ext4_link(dir, inode, dentry);
+> +	if (err) {
+> +		drop_nlink(inode);
+> +		iput(inode);
+> +	} else {
+> +		d_instantiate(dentry, inode);
+> +	}
+> +	return err;
 >  }
-> -- 
-> 2.50.0.107.gf914562f5916.dirty
-> 
+
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
