@@ -4,129 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2102DFB5E8F
-	for <linux-um@archiver.kernel.org>; Mon, 16 Mar 2026 23:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76261FB5EA4
+	for <linux-um@archiver.kernel.org>; Tue, 17 Mar 2026 02:10:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OjoL/xI+JfK24mJlLYQ/qQdhvwGI+GcsV2kW/9vszrY=; b=YXLLHgOjije4VGgNOaPFz3Uh9o
-	0ZUpKi0jdT+GOjyAXw2+NAmJVdtzueItOKuexVRd68E2KVmoMBjJNVaeoT78M2JgXTpk+twi0Q73I
-	jYfoVlya+6DSWaTQ4ki+ey92XxvBPlO/bxIcU3N2GqNjGy++6/bdAH7189oLMOo1GDViqUdr55CI5
-	NS7ev6FiMVCR/sx0mBq9ohxJpR1OK7AE4JjBPDl9EVJfpsgMri96wlhbiLeTHoMpdgcZvwzIZL6px
-	v2UzZEeQFnqxHgq9rsIMkjcV4AY2vYRqUVWfrVDuDHrEueAZ7SqNtDv5e3TwuWCIzvv0rCgBve/RF
-	ub4/MOPw==;
+	bh=j4sbtWDw4DJ2JBJ+y1C7vQWjeEXxcelaEAyT7ptHthE=; b=YnSRBskOZ0qp8Ua3bcQYzNOni+
+	OWwOz/F3gfBaQmi54AlPUsHG867n2n0lN1s/JdSEsS+3edxb9lRGvo8FvtDUVYpXleszDML2SKvbr
+	+GFG5tGI4YUqCA7tWtoZY+YaHOD5WUFIdw/6cUze1v3XEBK3tkYIIYNIeeuBxRHYE56+CfzMJTo63
+	b0LBD3XrZLSqy+yET8efB9s3Z4cTwE3kMxPPmI4gj02pbogbuokYPNefaDWr3zurPWu0tJhc7zVCD
+	kNJXVOPC4YUzUo/O9uKpmZ70wfuieNX8MoAI4idMOMtMG/0lxQ6wVzEDBSqsYx38/Q6mEA1xfSbxE
+	djyLsYJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2HHO-0000000542P-1DPI;
-	Mon, 16 Mar 2026 23:23:22 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1w2JtV-00000005EKV-2N6g;
+	Tue, 17 Mar 2026 02:10:53 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2HHJ-0000000540L-4AYI
+	id 1w2JtR-00000005EJc-49o6
 	for linux-um@lists.infradead.org;
-	Mon, 16 Mar 2026 23:23:20 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-2ab39b111b9so21638155ad.1
-        for <linux-um@lists.infradead.org>; Mon, 16 Mar 2026 16:23:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773703396; cv=none;
-        d=google.com; s=arc-20240605;
-        b=VjJatTl0kRmrgfUnp/uu4oAAaIRIC93FfUPf86+XTEjFTxgK+7Q3zZKdStKD21Fk44
-         bsig2b2ab6a/U+tptBNlbNmk/67t97MV39lipJUzHHqSCE1N2A7r7XHKV4XRagp0wcwN
-         LbQ8hVag8wbviuE7kTOc4x36SmZyCHHlJtXv+8v+U0SmP66yieZZznKltS1ZhvJ9MAmG
-         XckY8saz3Xguh5HqLuCpr4MOpLiMPUJvcLhm/aXydMVzsGvpEfx7EM+LjmDWtr/obXbq
-         3Jflh2BXNzWc3/P4Lr2zSEPFMGctUGb3XhpN/6uVeQMO5tn773ayu2pa2Kg7HCa7NUr0
-         O+cQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=OjoL/xI+JfK24mJlLYQ/qQdhvwGI+GcsV2kW/9vszrY=;
-        fh=STbNUwErWAtNh8LpeI125foq/kRI5wrGuLaArHZqXnU=;
-        b=XjlphAguQJx8pEtP5kEpq5u1brwajjLq/3ixY8DmgOxp8FrkufzUaqaVZgbdjKxtwa
-         pTO6b84N3kkqf78mQhgZ0VHyF5k4Ra0BADK9ArXoMuZIZWtgh93x0BuoGqMxUNHUOnsU
-         /XYaMhX6BQvL4hM5vSlE+hm5bMevHJy7mRYf3QiuMXo3TIV3YiVvf2h8C865efUUgeL5
-         WNXMIok4rhZV9aG1NYkB7snuqtwGznwFOKvMhQ6l5dh+mLlKa9lUFFxl20zOW4a5RbP0
-         JKOO66Za0cRb2ZFKFWT/WiI7obRPDeArrEzYJ7n/AchApCxFb6oP38Js5Xi/xlXTx+wC
-         APJA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1773703396; x=1774308196; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OjoL/xI+JfK24mJlLYQ/qQdhvwGI+GcsV2kW/9vszrY=;
-        b=XjCO0r7E4b+6b64RL+ov8nvAeWWvpCrzjBc+pYFpEgJmq7oIV5HPjrgeElogjsobgo
-         P5rYuyFPfJSm4eikxwFMomWSNEklCWtRNSchzGkV989de5MVSdwVVfND6OF0TBHvstpt
-         hAyvRjf7Badg6ufOX1uDYlNFt2Tkz9O7voW+HaQfGzIvsjrEgDWkIEIUeckoub6jF9lJ
-         2TMYb+1yqUIaLxvGyXK/qhAa5vm9TSq25w/kerDR7tt+sJeVgLiMfaCMSS/w85FhidWU
-         x0aFj28x5wU9f3E71ecppOWi9d6Wnxb1p73bPBC84pKJ2iv3VN1PcpBLGo6sz688B3eO
-         hzoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773703396; x=1774308196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=OjoL/xI+JfK24mJlLYQ/qQdhvwGI+GcsV2kW/9vszrY=;
-        b=LH0SCpKtJtPIc0LE7G/IPJEKFlto7PoeRX9IUr4ITghGCKbHqGR/fRE8BTQIExndR0
-         HIXhllOkqz6xWLq8rayG//1kux2GfL1riiknCcPyyc3Zrm/I5eIze4NllTxvPHzkZ7sK
-         A4JdOqAR71U8zkRI5YEhQPWqk6sFeaaqhnCrxmI5BWcOs4U88BTdrl389NmLX6pb67Xg
-         plZN/b7Bb+pMpfcR8goqdEmktY9Hcg3M25NCUH8w0UvxkObwr4kPz1YJJDu1q/J8i6ek
-         /A1jVyYrKy2RWxMDdoZkV55835YrHurCsZzTjvciT0M9IV1Rkt6usjRP954ZbfUjGhC+
-         ruFA==
-X-Forwarded-Encrypted: i=1; AJvYcCXh/9FGHVtFfy8WKZqeiweIPLmNGNOH+WEQsTyTmZykmKES1GMKsi5T6uCu9fay+6wu4tWU4UQVog==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzi5TgMWNFTlUB1BUyjSq/kgQx949KTMZv0U89ekfym6pblCENC
-	/qCviMMyUSnTRbeNn2HScIgBDkuM9ZvRso3E9crZ/CF5rf3BwdNySldgEmZjYf8gnOAPDzbusCV
-	L3tv1tzlfUsdP62L9cWoeFb1FPY8/eav6OrQdYlns
-X-Gm-Gg: ATEYQzyapM+ul7w+7fy87WFEv3CI6UIREAEnGk+6wuJrV0GthBSvsx/sNCvRMpa7zPS
-	hmjWNqc+AMTKsiIMs+9TBdoQdxdarEoPKNgszqvtcahtRp4GbkujqqWNjEzuTjARAuvnI7IIgZc
-	lMUiVYojiF6MB8O/qT272YU31Q6Uouc2eLV+zTm2Q2pZMkt34AO6c6Nc6qXPQ6tNxQeqdjRwXf1
-	fYE28XYcNJ/o8V4OlrtKqAo7iDzR0xKtkL+h3WFRRKm3Px8sU5ZElk7OQNVQKMbRCLKMz+wbLQ8
-	zNy9WiWPyKBmY5r95Q==
-X-Received: by 2002:a17:902:ea06:b0:2b0:5c3f:c0d8 with SMTP id
- d9443c01a7336-2b05c3fc4damr40223235ad.47.1773703396327; Mon, 16 Mar 2026
- 16:23:16 -0700 (PDT)
+	Tue, 17 Mar 2026 02:10:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1773713448;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j4sbtWDw4DJ2JBJ+y1C7vQWjeEXxcelaEAyT7ptHthE=;
+	b=VkWQY8oIIq41H8t+dPvx8rUqWpepnIsJh30Hx+oxsdRb8uaVI9ykF9cVyJBZwyfpTmTnGm
+	bHvvtf1t9YdjUe6dQvGev5xjuJZ8n5GoZTWyGFwfHlh8NCVHEA3f8C1nM5DxS/HJo+3l8S
+	efh8cnpa36LW8T7iB0S3KvIDyjM8GSI=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-338-3Bd5hukVNg6_8EEIPcheoQ-1; Mon,
+ 16 Mar 2026 22:10:46 -0400
+X-MC-Unique: 3Bd5hukVNg6_8EEIPcheoQ-1
+X-Mimecast-MFC-AGG-ID: 3Bd5hukVNg6_8EEIPcheoQ_1773713443
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AF4D218005B6;
+	Tue, 17 Mar 2026 02:10:41 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.155])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B823C1955F19;
+	Tue, 17 Mar 2026 02:10:38 +0000 (UTC)
+Date: Tue, 17 Mar 2026 10:10:34 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Sourabh Jain <sourabhjain@linux.ibm.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: kasan-dev@googlegroups.com, linux-mm@kvack.org, andreyknvl@gmail.com,
+	ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	x86@kernel.org, chris@zankel.net, jcmvbkbc@gmail.com,
+	linux-s390@vger.kernel.org, hca@linux.ibm.com
+Subject: Re: [PATCH v5 09/15] arch/powerpc: don't initialize kasan if it's
+ disabled
+Message-ID: <abi4Gumt0Qr_h-3W@fedora>
+References: <20260225081412.76502-1-bhe@redhat.com>
+ <20260225081412.76502-10-bhe@redhat.com>
+ <71921cca-b890-41c4-93e9-957d3f647ffa@linux.ibm.com>
+ <0bc30137-3f1d-4a4a-8573-8f26866fcc26@kernel.org>
 MIME-Version: 1.0
-References: <cover.1773665966.git.ljs@kernel.org> <063af0422d99bee0195589aa63f8f44edaf409fa.1773665966.git.ljs@kernel.org>
-In-Reply-To: <063af0422d99bee0195589aa63f8f44edaf409fa.1773665966.git.ljs@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 16 Mar 2026 19:23:04 -0400
-X-Gm-Features: AaiRm50DdYFqfixz3H6HRwMmLfdf5osoLUZfr0b1blDqz3IzGNPvd_xOI_ajOas
-Message-ID: <CAHC9VhR2T8ujtfvz-HgkgSFByptTLmhbCYS+scY53aYg=sgfqw@mail.gmail.com>
-Subject: Re: [PATCH v2 17/23] mm: convert do_brk_flags() to use vma_flags_t
-To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@kernel.org>, 
-	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Kees Cook <kees@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <chleroy@kernel.org>, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H . Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Xu Xin <xu.xin16@zte.com.cn>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Michal Hocko <mhocko@suse.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0bc30137-3f1d-4a4a-8573-8f26866fcc26@kernel.org>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Mimecast-MFC-PROC-ID: JMuGYzkgP1piBVQsU4PhYjnRzN9yzBlEUWS0vME6v9M_1773713443
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260316_162318_466615_0F8CC4D4 
-X-CRM114-Status: GOOD (  26.71  )
+X-CRM114-CacheID: sfid-20260316_191050_443024_6F4B38FA 
+X-CRM114-Status: GOOD (  23.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,90 +96,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 16, 2026 at 9:09=E2=80=AFAM Lorenzo Stoakes (Oracle) <ljs@kerne=
-l.org> wrote:
->
-> In order to be able to do this, we need to change VM_DATA_DEFAULT_FLAGS a=
-nd
-> friends and update the architecture-specific definitions also.
->
-> We then have to update some KSM logic to handle VMA flags, and introduce
-> VMA_STACK_FLAGS to define the vma_flags_t equivalent of VM_STACK_FLAGS.
->
-> We also introduce two helper functions for use during the time we are
-> converting legacy flags to vma_flags_t values - vma_flags_to_legacy() and
-> legacy_to_vma_flags().
->
-> This enables us to iteratively make changes to break these changes up int=
-o
-> separate parts.
->
-> We use these explicitly here to keep VM_STACK_FLAGS around for certain
-> users which need to maintain the legacy vm_flags_t values for the time
-> being.
->
-> We are no longer able to rely on the simple VM_xxx being set to zero if t=
-he
-> feature is not enabled, so in the case of VM_DROPPABLE we introduce
-> VMA_DROPPABLE as the vma_flags_t equivalent, which is set to
-> EMPTY_VMA_FLAGS if the droppable flag is not available.
->
-> While we're here, we make the description of do_brk_flags() into a kdoc
-> comment, as it almost was already.
->
-> We use vma_flags_to_legacy() to not need to update the vm_get_page_prot()
-> logic as this time.
->
-> Note that in create_init_stack_vma() we have to replace the BUILD_BUG_ON(=
-)
-> with a VM_WARN_ON_ONCE() as the tested values are no longer build time
-> available.
->
-> We also update mprotect_fixup() to use VMA flags where possible, though w=
-e
-> have to live with a little duplication between vm_flags_t and vma_flags_t
-> values for the time being until further conversions are made.
->
-> Finally, we update the VMA tests to reflect these changes.
->
-> Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
-> ---
->  arch/arc/include/asm/page.h        |  2 +-
->  arch/arm/include/asm/page.h        |  2 +-
->  arch/arm64/include/asm/page.h      |  3 +-
->  arch/hexagon/include/asm/page.h    |  2 +-
->  arch/loongarch/include/asm/page.h  |  2 +-
->  arch/mips/include/asm/page.h       |  2 +-
->  arch/nios2/include/asm/page.h      |  2 +-
->  arch/powerpc/include/asm/page.h    |  4 +--
->  arch/powerpc/include/asm/page_32.h |  2 +-
->  arch/powerpc/include/asm/page_64.h | 12 ++++----
->  arch/riscv/include/asm/page.h      |  2 +-
->  arch/s390/include/asm/page.h       |  2 +-
->  arch/x86/include/asm/page_types.h  |  2 +-
->  arch/x86/um/asm/vm-flags.h         |  4 +--
->  include/linux/ksm.h                | 10 +++----
->  include/linux/mm.h                 | 47 ++++++++++++++++++------------
->  mm/internal.h                      |  3 ++
->  mm/ksm.c                           | 43 ++++++++++++++-------------
->  mm/mmap.c                          | 13 +++++----
->  mm/mprotect.c                      | 46 +++++++++++++++++------------
->  mm/mremap.c                        |  6 ++--
->  mm/vma.c                           | 34 +++++++++++----------
->  mm/vma.h                           | 14 +++++++--
->  mm/vma_exec.c                      |  5 ++--
->  security/selinux/hooks.c           |  4 ++-
->  tools/testing/vma/include/custom.h |  3 --
->  tools/testing/vma/include/dup.h    | 42 ++++++++++++++------------
->  tools/testing/vma/include/stubs.h  |  9 +++---
->  tools/testing/vma/tests/merge.c    |  3 +-
->  29 files changed, 186 insertions(+), 139 deletions(-)
+On 03/12/26 at 12:23pm, Christophe Leroy (CS GROUP) wrote:
+> 
+> 
+> Le 12/03/2026 à 12:12, Sourabh Jain a écrit :
+> > 
+> > 
+> > On 25/02/26 13:44, Baoquan He wrote:
+> > > Here, kasan is disabled if specified 'kasan=off' in kernel cmdline.
+> > > 
+> > > This includes 32bit, book3s/64 and book3e/64.
+> > > 
+> > > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > > Cc: linuxppc-dev@lists.ozlabs.org
+> > > ---
+> > >   arch/powerpc/mm/kasan/init_32.c        | 6 +++++-
+> > >   arch/powerpc/mm/kasan/init_book3e_64.c | 4 ++++
+> > >   arch/powerpc/mm/kasan/init_book3s_64.c | 4 ++++
+> > >   3 files changed, 13 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/powerpc/mm/kasan/init_32.c
+> > > b/arch/powerpc/mm/kasan/ init_32.c
+> > > index 1d083597464f..0ea2a636c992 100644
+> > > --- a/arch/powerpc/mm/kasan/init_32.c
+> > > +++ b/arch/powerpc/mm/kasan/init_32.c
+> > > @@ -141,6 +141,10 @@ void __init kasan_init(void)
+> > >       u64 i;
+> > >       int ret;
+> > > +    /* If KASAN is disabled via command line, don't initialize it. */
+> > > +    if (kasan_arg_disabled)
+> > > +        return;
+> > > +
+> > >       for_each_mem_range(i, &base, &end) {
+> > >           phys_addr_t top = min(end, total_lowmem);
+> > > @@ -170,7 +174,7 @@ void __init kasan_init(void)
+> > >   void __init kasan_late_init(void)
+> > >   {
+> > > -    if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+> > > +    if (IS_ENABLED(CONFIG_KASAN_VMALLOC) && kasan_enabled())
+> > >           kasan_unmap_early_shadow_vmalloc();
+> > >   }
+> > > diff --git a/arch/powerpc/mm/kasan/init_book3e_64.c
+> > > b/arch/powerpc/mm/ kasan/init_book3e_64.c
+> > > index 0d3a73d6d4b0..fbe4c9a7e460 100644
+> > > --- a/arch/powerpc/mm/kasan/init_book3e_64.c
+> > > +++ b/arch/powerpc/mm/kasan/init_book3e_64.c
+> > > @@ -111,6 +111,10 @@ void __init kasan_init(void)
+> > >       u64 i;
+> > >       pte_t zero_pte = pfn_pte(virt_to_pfn(kasan_early_shadow_page),
+> > > PAGE_KERNEL_RO);
+> > > +    /* If KASAN is disabled via command line, don't initialize it. */
+> > > +    if (kasan_arg_disabled)
+> > > +        return;
+> > > +
+> > >       for_each_mem_range(i, &start, &end)
+> > >           kasan_init_phys_region(phys_to_virt(start), phys_to_virt(end));
+> > > diff --git a/arch/powerpc/mm/kasan/init_book3s_64.c
+> > > b/arch/powerpc/mm/ kasan/init_book3s_64.c
+> > > index dcafa641804c..f7906f9ef9be 100644
+> > > --- a/arch/powerpc/mm/kasan/init_book3s_64.c
+> > > +++ b/arch/powerpc/mm/kasan/init_book3s_64.c
+> > > @@ -54,6 +54,10 @@ void __init kasan_init(void)
+> > >       u64 i;
+> > >       pte_t zero_pte = pfn_pte(virt_to_pfn(kasan_early_shadow_page),
+> > > PAGE_KERNEL);
+> > > +    /* If KASAN is disabled via command line, don't initialize it. */
+> > > +    if (kasan_arg_disabled)
+> > > +        return;
+> > > +
+> > >       if (!early_radix_enabled()) {
+> > >           pr_warn("KASAN not enabled as it requires radix!");
+> > >           return;
+> > 
+> > Should we log in the kernel log buffer that KASAN is disabled?
+> > 
+> > Right now, I don't see the kernel advertising the same.
+> 
+> When KASAN is enabled it is advertised with:
+> 
+> 	pr_info("KernelAddressSanitizer initialized (generic)\n");
+> 
+> Isn't the absence of that message enough to understand KASAN is not there ?
 
-Not that the SELinux changes are really all that significant, but they
-look fine to me.
+Right, that's the way I took when I tested it.
 
-Acked-by: Paul Moore <paul@paul-moore.com> (SELinux)
+> 
+> > 
+> > $ dmesg | grep -i kasan
+> > [    0.000000] Kernel command line: BOOT_IMAGE=(ieee1275//vdevice/v-
+> > scsi@30000070/disk@8100000000000000,msdos2)/vmlinuz-7.0.0-rc3+
+> > crashkernel=2G kasan=off
+> > 
+> > Tested this series on powerpc Pseries platform.
+> > So feel free to add:
+> > Tested-by: Sourabh Jain <sourabhjain@linux.ibm.com>
 
---=20
-paul-moore.com
+Thanks for testing.
+
 
