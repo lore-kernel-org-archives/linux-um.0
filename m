@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 916951088E5E
-	for <linux-um@archiver.kernel.org>; Thu, 19 Mar 2026 17:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B51161088E74
+	for <linux-um@archiver.kernel.org>; Thu, 19 Mar 2026 17:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4bl9t42B4LXiBnZarf9/q3l/mzIDatsBzDzzQR7YZIg=; b=WWES5de/9wJYTZ3D5bn/fkWIBk
-	z6ivSJMeY+1s7vloY1zYrZXVFte/1ZOWTZeN0VIWlLY+8l3V36A5fZlSvH20Wgo819eID/rwA+b6A
-	BYI92wLq1ROmDGtgCTkH0jUNK2dtVzOY2EJRdrLBqVQRasbmNNNlkxPiXBOzGr9nhA6dwEBktXaCT
-	pzU2cbnELDDKhaFF+loNBylJKBxw2Ff0GjwgAfgK/co45qVQYqje9j89/oQLqhagNbbLfAc5CQ9lj
-	lWLnwRcI8KLiXYwGw2AvgtDTGVgGi9o2YNXgsWRxw4yRUA4Y0VTrAz6p6oHvYB6NNIds2XVwhg74a
-	LdczzSJQ==;
+	bh=EuEjoftA1+hiXPIV+9bi9DU3ZElxVyYPyAtLVA/TK/A=; b=c0epIKZrE715qaj7aJXaf9GGq5
+	c4bcDCy9VYTEAjAlWtLXSBmWwDGRcC3/ySaoBOmzInA3mJJrRLNoPbSH/oUWHnW56mU7iCYkB4DDI
+	oU6xc3vRV5xxwYlZ5N+OCGqgbN+IJ/ZLoLPV8QVJBR6YCNrO9fnVO7uMN6Hv9sGvsGaal3gESQcNo
+	U1ado7fns6+s8MPslmTxhzZHAg4Kc8IwteNRwnkqC71nxeSIL4mzbh9e5+LhzNsDZ9Jm87ORptT3Z
+	7w+bdT+ImUOjXW9go9/nqk1IhmmNh9FGXG2yVxMHigg6V4Pi91WVdzc+OKegv0/gZFMiVoIwnASo4
+	iXJ3RI/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3HDc-0000000BCuZ-3nz9;
-	Thu, 19 Mar 2026 17:31:36 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w3HKn-0000000BDdh-14PQ;
+	Thu, 19 Mar 2026 17:39:01 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3HDb-0000000BCu7-1WCQ;
-	Thu, 19 Mar 2026 17:31:35 +0000
+	id 1w3HKj-0000000BDb8-23ph;
+	Thu, 19 Mar 2026 17:38:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0C91160053;
-	Thu, 19 Mar 2026 17:31:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13691C19424;
-	Thu, 19 Mar 2026 17:31:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 82C9640786;
+	Thu, 19 Mar 2026 17:38:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179C3C19425;
+	Thu, 19 Mar 2026 17:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773941493;
-	bh=5DppXj3QcNzrGmdgZID5IYobrhntHlZzGlg5qMCJioE=;
+	s=k20201202; t=1773941936;
+	bh=Hivr+4pDKuDtiIkYu2gbJDWvORBSel+6FMp1v9HmeG4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=SO7vfJuT4xUudvKFdjyC/XRHnDWKzUW5zhPZGOW4NkcLJWB/0zaBAPUZDEbzNniLu
-	 o6gtnAQILi1Xg5RGSgTnobL7eO04ZT32Gx2h3qfXV8nubgacMQGFufOtrVHdeNmWgM
-	 pZkRzoFA3bJPOKRw3mhQGFNORsomWmRnmNuVBbUaFpZmVyH6WM0IdprCTCpaX8+qFC
-	 9GF8H3rbnnwghtEQQ9Ex+hdnihLJcH+Gq6I/Fk+KprdszHQSk8Tg0pLI8axTqiBT2S
-	 atwtkQeokLlmSyD0VHX0bighzaB+U0P3innYYSr/zVKdE8T5gI4Lh0EcWg4r+v5cRx
-	 N/zcFeNPSI1JQ==
-Message-ID: <12bb9812-d7c4-44da-aa57-689ad520cb17@kernel.org>
-Date: Thu, 19 Mar 2026 18:31:20 +0100
+	b=AwsdLrRji7S/5bKRIRoLy9oMGfPTq7CI03hWA5bepga8vECo4/3RvNVeYeizQKIwW
+	 R9UN16H8ZaF5yK8yAVtizkZh9zEgm8LSZqWA/t1UeGp3EhNubKGLgbwTBmjS9ANHPQ
+	 CKr7ivIecBornjtAgZMvvL1T+6+bs5ktKzdaTNRhc0LyaeH1C0j44VGifmhwvaAXJM
+	 POmn8ELyxElL1bT/10KjExBS16LBEqK+xysiliEZ0LVwQMpB+qDKVPe4l/rYse1i4L
+	 PzUuZBXSFeyQ5M9ynh9jcooBzTBMkDLSF06baAlOeNctRGjpEyjMmt7dSbkQmkwwU3
+	 AvDqZkxp71zew==
+Message-ID: <b5f6f86a-3321-46ee-a481-23c2ee219618@kernel.org>
+Date: Thu, 19 Mar 2026 18:38:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/23] mm/vma: introduce vma_flags_same[_mask/_pair]()
+Subject: Re: [PATCH v3 11/23] mm/vma: introduce
+ [vma_flags,legacy]_to_[legacy,vma_flags]() helpers
 Content-Language: en-US
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -85,11 +86,14 @@ Cc: David Hildenbrand <david@kernel.org>,
  linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
 References: <cover.1773846935.git.ljs@kernel.org>
- <028d03f1b980b7f65fcc556db2e97224c06af1a6.1773846935.git.ljs@kernel.org>
+ <4fdffd05ee7fabe2dc313850a4300bf184beba69.1773846935.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <028d03f1b980b7f65fcc556db2e97224c06af1a6.1773846935.git.ljs@kernel.org>
+In-Reply-To: <4fdffd05ee7fabe2dc313850a4300bf184beba69.1773846935.git.ljs@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260319_103857_581357_BE4C1DF2 
+X-CRM114-Status: GOOD (  10.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,20 +109,20 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 3/18/26 16:50, Lorenzo Stoakes (Oracle) wrote:
-> Add helpers to determine if two sets of VMA flags are precisely the same,
-> that is - that every flag set one is set in another, and neither contain
-> any flags not set in the other.
+> While we are still converting VMA flags from vma_flags_t to vm_flags_t,
+> introduce helpers to convert between the two to allow for iterative
+> development without having to 'change the world' in a single commit'.
 > 
-> We also introduce vma_flags_same_pair() for cases where we want to compare
-> two sets of VMA flags which are both non-const values.
+> Also update VMA flags tests to reflect the change.
 > 
-> Also update the VMA tests to reflect the change, we already implicitly
-> test that this functions correctly having used it for testing purposes
-> previously.
+> Finally, refresh vma_flags_overwrite_word(),
+> vma_flag_overwrite_word_once(), vma_flags_set_word() and
+> vma_flags_clear_word() in the VMA tests to reflect current kernel
+> implementations - this should make no functional difference, but keeps the
+> logic consistent between the two.
 > 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-
 
 
