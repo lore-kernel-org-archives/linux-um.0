@@ -4,98 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 128C6108B908
-	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 11:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B0D5108B916
+	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 12:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=f0Avv2YVnMjut1nZHkcEN2Xio1w9aceLXv7p5r9+qm4=; b=k0C72kh9yP4lCULW9F3YH2IHVz
-	T7GGPMHlGkBCxUmTVlCtQSqk8DxjcfwYN8Y+VW4ThgwxOnQ0bWsA1LjofJNDv6vZzAdSuk39Oc5Fy
-	kTbdIgu5VfGF/owTpUoyB/6GaFd5LSbIiaa4sP+vR03FspcAhRp9qXHY5WbpJjJVJpn5TXvYZPMU8
-	FlYciBgBv8vUQcsVlOH6OQBrBRl5A1ZN7O1bHVZGn5wgWJ2Zt5oy+2Tw3rZpftQTPkgV73kZjF1al
-	4/AffBbM2uBtdYGV0GB2Efxdr4ARPtqs0X1jOVm1EnKN0Anrj5w4JvAARQGk8Q0z+82B875Gkf7qG
-	evkDw3Xw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2vkxPrMnmuyLw1Eyq1ncBeYNT01Y5cOahr0vxpRfkaE=; b=pqJZC0+6s/7JWH21VnfmwaAxBx
+	qqU9wmGz+3Wzi1m9YrjfOYhmJsifUCyyBcYAc4CRZ3u5QGpDUIc27vn9gJ2u13Bh+nNjf5LnwCeoI
+	3A0Icdn9ykMw4ZFqieYlriSFfQsSuChz8i0YdbGR28JgmKgF4pwNrrE0EBq3oo8j5QlB32pO/d8YB
+	EDuiaRr8FRqaCyFYQuR6xEerdUimK8IqKHTUdtt6gvspR1G+KK5bCcgLg+6vpQLvZFcgnaeHQVsIS
+	pq5VOLAmEoisb7/ADCb5mjbxfYzu4ynHQwHg/UeFzHtoGiKiXJPA08sdTOKdom7qb5PNaJv4Xl4ZG
+	st1EaOrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3YTa-0000000Citc-2mB4;
-	Fri, 20 Mar 2026 11:57:14 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w3Ylh-0000000Cjd1-159H;
+	Fri, 20 Mar 2026 12:15:57 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3YTX-0000000Cist-3MMQ;
-	Fri, 20 Mar 2026 11:57:13 +0000
+	id 1w3Ylc-0000000Cjbs-3lmj;
+	Fri, 20 Mar 2026 12:15:53 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0223C4090D;
-	Fri, 20 Mar 2026 11:57:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12487C4CEF7;
-	Fri, 20 Mar 2026 11:56:58 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 77D2A6013E;
+	Fri, 20 Mar 2026 12:15:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EB0C2BC9E;
+	Fri, 20 Mar 2026 12:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774007830;
-	bh=Mf6a4DBjpHPIv99A+jyu38p3Ewxs7HRLba8NEsfOQGI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cuDpamLL0C3greMzg3QB3iyxDWrB+iPjvn/sWXP2e2e9/imSZKeqLOJuj86hB5fR5
-	 MpMlIXyYEJ3MpstWS2TNTxc7fPtpr78amYFwSOMT/Z4EbHpHbONMyV4YsJuR3t98Nb
-	 FEbnlbwER8qae1AsGU6GnwW4+9cfxLDAC0qs0oHPsO7egT+TylsTJvINu9itZrSjl7
-	 EPJyLWEeAHwlxiL2kwGHiSjDsnGPHWFbJdp6Rbm6cCGki04+T39gZ1hT16wjCd1Gxr
-	 c3zL8LsHoRAxuJJWym+LonC/toJ20E1OUQ+JRmG7wDErFQEtivfSVdjL3z2Qo7++7u
-	 jKz30Jywr94ww==
-Message-ID: <373186fb-5000-47ba-85a3-4085658a7101@kernel.org>
-Date: Fri, 20 Mar 2026 12:56:56 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 22/23] mm/vma: convert vma_modify_flags[_uffd]() to use
- vma_flags_t
-Content-Language: en-US
-To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>, Jann Horn <jannh@google.com>,
- Pedro Falcato <pfalcato@suse.de>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Kees Cook <kees@kernel.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Dinh Nguyen <dinguyen@kernel.org>, Madhavan Srinivasan
- <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <chleroy@kernel.org>,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H . Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Xu Xin <xu.xin16@zte.com.cn>, Chengming Zhou <chengming.zhou@linux.dev>,
- Michal Hocko <mhocko@suse.com>, Paul Moore <paul@paul-moore.com>,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
+	s=k20201202; t=1774008951;
+	bh=0a8d+i8ryZ8Qz2/DM7FqnFIwG0FqrZAF/wmekpBJUaA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jDZF/FE9fX6C3+vM+jJy47M0EDpEvblTPV5F0Pl123V3O1jJPY6CxVfUvr5772OF0
+	 EwbFrRgFOMZ/HpYb4NZEpUGSYrLQi87HZkE7NRk6+fuun1vK7QZuwtpGT0RqYSRfFH
+	 5A+oXBXOcTOMiGae8q5ZIN2KC7PLnZqyLH2l646xGPAqU8LagVo4pd9PlFVH4c+EtA
+	 Pqh2ZXu7DwvuAuAEDFJDwB4KfEyqaegNTwQce0W+FDPQbl/idWlRYA3HUwornsKTMQ
+	 d8qWBnaA8QJH2RCt0j8JFUq9AuSv7rIJ6MBBUmVUq3PURFTUDPrFIxk7cw9pFtcgs7
+	 R5z9kb3c/HG6A==
+Date: Fri, 20 Mar 2026 12:15:36 +0000
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
+	Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Kees Cook <kees@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <chleroy@kernel.org>, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Xu Xin <xu.xin16@zte.com.cn>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Michal Hocko <mhocko@suse.com>, Paul Moore <paul@paul-moore.com>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH v3 22/23] mm/vma: convert vma_modify_flags[_uffd]() to
+ use vma_flags_t
+Message-ID: <7ce8bdb6-f6f9-42fc-9464-ba0eaac9cd13@lucifer.local>
 References: <cover.1773846935.git.ljs@kernel.org>
  <98a004bf89227ea9abaef5fef06ea7e584f77bcf.1773846935.git.ljs@kernel.org>
  <0b5765da-67e9-4e2e-99d8-08501730bf76@kernel.org>
  <7e22cc48-aa04-406d-b4d0-8ebb182b34b9@lucifer.local>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <7e22cc48-aa04-406d-b4d0-8ebb182b34b9@lucifer.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260320_045711_893370_2A1D9EA2 
-X-CRM114-Status: GOOD (  45.10  )
+ <373186fb-5000-47ba-85a3-4085658a7101@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <373186fb-5000-47ba-85a3-4085658a7101@kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,235 +97,247 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 3/20/26 12:08, Lorenzo Stoakes (Oracle) wrote:
-> On Fri, Mar 20, 2026 at 11:39:58AM +0100, Vlastimil Babka (SUSE) wrote:
->> On 3/18/26 16:50, Lorenzo Stoakes (Oracle) wrote:
->> > Update the vma_modify_flags() and vma_modify_flags_uffd() functions to
->> > accept a vma_flags_t parameter rather than a vm_flags_t one, and propagate
->> > the changes as needed to implement this change.
->> >
->> > Finally, update the VMA tests to reflect this.
->> >
->> > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
->>
->> > --- a/mm/mlock.c
->> > +++ b/mm/mlock.c
->> > @@ -415,13 +415,14 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
->> >   * @vma - vma containing range to be mlock()ed or munlock()ed
->> >   * @start - start address in @vma of the range
->> >   * @end - end of range in @vma
->> > - * @newflags - the new set of flags for @vma.
->> > + * @new_vma_flags - the new set of flags for @vma.
->> >   *
->> >   * Called for mlock(), mlock2() and mlockall(), to set @vma VM_LOCKED;
->> >   * called for munlock() and munlockall(), to clear VM_LOCKED from @vma.
->> >   */
->> >  static void mlock_vma_pages_range(struct vm_area_struct *vma,
->> > -	unsigned long start, unsigned long end, vm_flags_t newflags)
->> > +	unsigned long start, unsigned long end,
->> > +	vma_flags_t *new_vma_flags)
->> >  {
->> >  	static const struct mm_walk_ops mlock_walk_ops = {
->> >  		.pmd_entry = mlock_pte_range,
->> > @@ -439,18 +440,18 @@ static void mlock_vma_pages_range(struct vm_area_struct *vma,
->> >  	 * combination should not be visible to other mmap_lock users;
->> >  	 * but WRITE_ONCE so rmap walkers must see VM_IO if VM_LOCKED.
->> >  	 */
->> > -	if (newflags & VM_LOCKED)
->> > -		newflags |= VM_IO;
->> > +	if (vma_flags_test(new_vma_flags, VMA_LOCKED_BIT))
->> > +		vma_flags_set(new_vma_flags, VMA_IO_BIT);
->> >  	vma_start_write(vma);
->> > -	vm_flags_reset_once(vma, newflags);
->> > +	WRITE_ONCE(vma->flags, *new_vma_flags);
->>
->> It's not clear to me, how is switching from vm_flags_t to vma_flags_t
->> allowing us to simply do WRITE_ONCE() instead of the full logic of
->> vm_flags_reset_once()? Won't it fail to compile once once flags are more
->> than single word? Or worse, will compile but silently allow tearing?
-> 
-> We only care about tearing in the flags that can be contained within a
-> system word, but true we should probably do this more carefully, as I did
-> for vm_flags_reset_once().
-> 
-> I will reimplement this as a new, hideous, helper function.
-> 
-> I am not a fan of this being a thing to handle races, it's a hack. But I
-> guess that should be addressed separately.
+On Fri, Mar 20, 2026 at 12:56:56PM +0100, Vlastimil Babka (SUSE) wrote:
+> On 3/20/26 12:08, Lorenzo Stoakes (Oracle) wrote:
+> > On Fri, Mar 20, 2026 at 11:39:58AM +0100, Vlastimil Babka (SUSE) wrote:
+> >> On 3/18/26 16:50, Lorenzo Stoakes (Oracle) wrote:
+> >> > Update the vma_modify_flags() and vma_modify_flags_uffd() functions to
+> >> > accept a vma_flags_t parameter rather than a vm_flags_t one, and propagate
+> >> > the changes as needed to implement this change.
+> >> >
+> >> > Finally, update the VMA tests to reflect this.
+> >> >
+> >> > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+> >>
+> >> > --- a/mm/mlock.c
+> >> > +++ b/mm/mlock.c
+> >> > @@ -415,13 +415,14 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
+> >> >   * @vma - vma containing range to be mlock()ed or munlock()ed
+> >> >   * @start - start address in @vma of the range
+> >> >   * @end - end of range in @vma
+> >> > - * @newflags - the new set of flags for @vma.
+> >> > + * @new_vma_flags - the new set of flags for @vma.
+> >> >   *
+> >> >   * Called for mlock(), mlock2() and mlockall(), to set @vma VM_LOCKED;
+> >> >   * called for munlock() and munlockall(), to clear VM_LOCKED from @vma.
+> >> >   */
+> >> >  static void mlock_vma_pages_range(struct vm_area_struct *vma,
+> >> > -	unsigned long start, unsigned long end, vm_flags_t newflags)
+> >> > +	unsigned long start, unsigned long end,
+> >> > +	vma_flags_t *new_vma_flags)
+> >> >  {
+> >> >  	static const struct mm_walk_ops mlock_walk_ops = {
+> >> >  		.pmd_entry = mlock_pte_range,
+> >> > @@ -439,18 +440,18 @@ static void mlock_vma_pages_range(struct vm_area_struct *vma,
+> >> >  	 * combination should not be visible to other mmap_lock users;
+> >> >  	 * but WRITE_ONCE so rmap walkers must see VM_IO if VM_LOCKED.
+> >> >  	 */
+> >> > -	if (newflags & VM_LOCKED)
+> >> > -		newflags |= VM_IO;
+> >> > +	if (vma_flags_test(new_vma_flags, VMA_LOCKED_BIT))
+> >> > +		vma_flags_set(new_vma_flags, VMA_IO_BIT);
+> >> >  	vma_start_write(vma);
+> >> > -	vm_flags_reset_once(vma, newflags);
+> >> > +	WRITE_ONCE(vma->flags, *new_vma_flags);
+> >>
+> >> It's not clear to me, how is switching from vm_flags_t to vma_flags_t
+> >> allowing us to simply do WRITE_ONCE() instead of the full logic of
+> >> vm_flags_reset_once()? Won't it fail to compile once once flags are more
+> >> than single word? Or worse, will compile but silently allow tearing?
+> >
+> > We only care about tearing in the flags that can be contained within a
+> > system word, but true we should probably do this more carefully, as I did
+> > for vm_flags_reset_once().
+> >
+> > I will reimplement this as a new, hideous, helper function.
+> >
+> > I am not a fan of this being a thing to handle races, it's a hack. But I
+> > guess that should be addressed separately.
+>
+> Right, thanks!
 
-Right, thanks!
+No problem. I might be able to avoid it being too hideous let's see :)
 
->>
->> >  	}
->> >  }
->> >
->> > @@ -467,20 +468,22 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
->> >  	       struct vm_area_struct **prev, unsigned long start,
->> >  	       unsigned long end, vm_flags_t newflags)
->> >  {
->> > +	vma_flags_t new_vma_flags = legacy_to_vma_flags(newflags);
->> > +	const vma_flags_t old_vma_flags = vma->flags;
->> >  	struct mm_struct *mm = vma->vm_mm;
->> >  	int nr_pages;
->> >  	int ret = 0;
->> > -	vm_flags_t oldflags = vma->vm_flags;
->> >
->> > -	if (newflags == oldflags || vma_is_secretmem(vma) ||
->> > -	    !vma_supports_mlock(vma))
->> > +	if (vma_flags_same_pair(&old_vma_flags, &new_vma_flags) ||
->> > +	    vma_is_secretmem(vma) || !vma_supports_mlock(vma)) {
->> >  		/*
->> >  		 * Don't set VM_LOCKED or VM_LOCKONFAULT and don't count.
->> >  		 * For secretmem, don't allow the memory to be unlocked.
->> >  		 */
->> >  		goto out;
->> > +	}
->> >
->> > -	vma = vma_modify_flags(vmi, *prev, vma, start, end, &newflags);
->> > +	vma = vma_modify_flags(vmi, *prev, vma, start, end, &new_vma_flags);
->> >  	if (IS_ERR(vma)) {
->> >  		ret = PTR_ERR(vma);
->> >  		goto out;
->> > @@ -490,9 +493,9 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
->> >  	 * Keep track of amount of locked VM.
->> >  	 */
->> >  	nr_pages = (end - start) >> PAGE_SHIFT;
->> > -	if (!(newflags & VM_LOCKED))
->> > +	if (!vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT))
->> >  		nr_pages = -nr_pages;
->> > -	else if (oldflags & VM_LOCKED)
->> > +	else if (vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT))
->> >  		nr_pages = 0;
->> >  	mm->locked_vm += nr_pages;
->> >
->> > @@ -501,12 +504,13 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
->> >  	 * It's okay if try_to_unmap_one unmaps a page just after we
->> >  	 * set VM_LOCKED, populate_vma_page_range will bring it back.
->> >  	 */
->> > -	if ((newflags & VM_LOCKED) && (oldflags & VM_LOCKED)) {
->> > +	if (vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT) &&
->> > +	    vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT)) {
->> >  		/* No work to do, and mlocking twice would be wrong */
->> >  		vma_start_write(vma);
->> > -		vm_flags_reset(vma, newflags);
->> > +		vma->flags = new_vma_flags;
->>
->> This also does lot less than vm_flags_reset()?
-> 
-> Well let's look:
-> 
-> 	VM_WARN_ON_ONCE(!pgtable_supports_soft_dirty() && (flags & VM_SOFTDIRTY));
-> 
-> Are we really at a point where this is problematic? Do we hit this? Why are
-> we specifically checking only this case on every single instance of
-> resetting VMA flags?
+>
+> >>
+> >> >  	}
+> >> >  }
+> >> >
+> >> > @@ -467,20 +468,22 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
+> >> >  	       struct vm_area_struct **prev, unsigned long start,
+> >> >  	       unsigned long end, vm_flags_t newflags)
+> >> >  {
+> >> > +	vma_flags_t new_vma_flags = legacy_to_vma_flags(newflags);
+> >> > +	const vma_flags_t old_vma_flags = vma->flags;
+> >> >  	struct mm_struct *mm = vma->vm_mm;
+> >> >  	int nr_pages;
+> >> >  	int ret = 0;
+> >> > -	vm_flags_t oldflags = vma->vm_flags;
+> >> >
+> >> > -	if (newflags == oldflags || vma_is_secretmem(vma) ||
+> >> > -	    !vma_supports_mlock(vma))
+> >> > +	if (vma_flags_same_pair(&old_vma_flags, &new_vma_flags) ||
+> >> > +	    vma_is_secretmem(vma) || !vma_supports_mlock(vma)) {
+> >> >  		/*
+> >> >  		 * Don't set VM_LOCKED or VM_LOCKONFAULT and don't count.
+> >> >  		 * For secretmem, don't allow the memory to be unlocked.
+> >> >  		 */
+> >> >  		goto out;
+> >> > +	}
+> >> >
+> >> > -	vma = vma_modify_flags(vmi, *prev, vma, start, end, &newflags);
+> >> > +	vma = vma_modify_flags(vmi, *prev, vma, start, end, &new_vma_flags);
+> >> >  	if (IS_ERR(vma)) {
+> >> >  		ret = PTR_ERR(vma);
+> >> >  		goto out;
+> >> > @@ -490,9 +493,9 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
+> >> >  	 * Keep track of amount of locked VM.
+> >> >  	 */
+> >> >  	nr_pages = (end - start) >> PAGE_SHIFT;
+> >> > -	if (!(newflags & VM_LOCKED))
+> >> > +	if (!vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT))
+> >> >  		nr_pages = -nr_pages;
+> >> > -	else if (oldflags & VM_LOCKED)
+> >> > +	else if (vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT))
+> >> >  		nr_pages = 0;
+> >> >  	mm->locked_vm += nr_pages;
+> >> >
+> >> > @@ -501,12 +504,13 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
+> >> >  	 * It's okay if try_to_unmap_one unmaps a page just after we
+> >> >  	 * set VM_LOCKED, populate_vma_page_range will bring it back.
+> >> >  	 */
+> >> > -	if ((newflags & VM_LOCKED) && (oldflags & VM_LOCKED)) {
+> >> > +	if (vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT) &&
+> >> > +	    vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT)) {
+> >> >  		/* No work to do, and mlocking twice would be wrong */
+> >> >  		vma_start_write(vma);
+> >> > -		vm_flags_reset(vma, newflags);
+> >> > +		vma->flags = new_vma_flags;
+> >>
+> >> This also does lot less than vm_flags_reset()?
+> >
+> > Well let's look:
+> >
+> > 	VM_WARN_ON_ONCE(!pgtable_supports_soft_dirty() && (flags & VM_SOFTDIRTY));
+> >
+> > Are we really at a point where this is problematic? Do we hit this? Why are
+> > we specifically checking only this case on every single instance of
+> > resetting VMA flags?
+>
+> I'll admit I don't know, but sounds like we can stop being so paranoid when
+> converting code to the new API.
 
-I'll admit I don't know, but sounds like we can stop being so paranoid when
-converting code to the new API.
+Yeah I think so. I think Suren is ok with it, probably :P
 
-> 
-> 	vma_assert_write_locked(vma);
-> 
-> Note the vma_start_write() line above. I want to separate vma_flags_t
-> helpers from asserts like that, because:
-> 
-> 1. We might be operating on a VMA that is not yet added to the tree
-> 2. We might be operating on a VMA that is now detached
-> 3. Really in all but core code, you should be using vma_desc_xxx().
-> 4. Other VMA fields are manipulated with no such checks.
-> 5. It'd be egregious to have to add variants of flag functions just to
->    account for cases such as the above, especially when we don't do so for
->    other VMA fields. Drivers are the problematic cases and why it was
->    especially important (and also for debug as VMA locks were introduced),
->    the mmap_prepare work is solving this generally.
+>
+> >
+> > 	vma_assert_write_locked(vma);
+> >
+> > Note the vma_start_write() line above. I want to separate vma_flags_t
+> > helpers from asserts like that, because:
+> >
+> > 1. We might be operating on a VMA that is not yet added to the tree
+> > 2. We might be operating on a VMA that is now detached
+> > 3. Really in all but core code, you should be using vma_desc_xxx().
+> > 4. Other VMA fields are manipulated with no such checks.
+> > 5. It'd be egregious to have to add variants of flag functions just to
+> >    account for cases such as the above, especially when we don't do so for
+> >    other VMA fields. Drivers are the problematic cases and why it was
+> >    especially important (and also for debug as VMA locks were introduced),
+> >    the mmap_prepare work is solving this generally.
+>
+> Perfectly reasonable!
+>
+> > 	vm_flags_init(vma, flags);
+> >
+> > Analysing what's in this function:
+> >
+> > 	VM_WARN_ON_ONCE(!pgtable_supports_soft_dirty() && (flags & VM_SOFTDIRTY));
+> >
+> > Duplicated.
+> >
+> > 	vma_flags_clear_all(&vma->flags);
+> >
+> > Only necessary while you're only setting the first system word of
+> > vma->flags.
+> >
+> > 	vma_flags_overwrite_word(&vma->flags, flags);
+> >
+> > Again only necessary when you're only setting the first system word.
+> >
+> > So yeah it's doing the equivalent and (intentionally) eliminating some
+> > noise.
+>
+> Ack.
+>
+> > But I'll add the S/D check back I guess.
+>
+> Thanks for the detailed explanation. It's fine to drop legacy stuff, it just
+> wasn't obvious if intentional or by mistake. Maybe just mention the
+> intention in the changelog?
 
-Perfectly reasonable!
+Yeah that's a fair point will do!
 
-> 	vm_flags_init(vma, flags);
-> 
-> Analysing what's in this function:
-> 
-> 	VM_WARN_ON_ONCE(!pgtable_supports_soft_dirty() && (flags & VM_SOFTDIRTY));
-> 
-> Duplicated.
-> 
-> 	vma_flags_clear_all(&vma->flags);
-> 
-> Only necessary while you're only setting the first system word of
-> vma->flags.
-> 
-> 	vma_flags_overwrite_word(&vma->flags, flags);
-> 
-> Again only necessary when you're only setting the first system word.
-> 
-> So yeah it's doing the equivalent and (intentionally) eliminating some
-> noise.
+>
+> Thanks!
+>
+> >>
+> >> >  	} else {
+> >> > -		mlock_vma_pages_range(vma, start, end, newflags);
+> >> > +		mlock_vma_pages_range(vma, start, end, &new_vma_flags);
+> >> >  	}
+> >> >  out:
+> >> >  	*prev = vma;
+> >> > diff --git a/mm/mprotect.c b/mm/mprotect.c
+> >> > index eaa724b99908..2b8a85689ab7 100644
+> >> > --- a/mm/mprotect.c
+> >> > +++ b/mm/mprotect.c
+> >> > @@ -756,13 +756,11 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
+> >> >  		vma_flags_clear(&new_vma_flags, VMA_ACCOUNT_BIT);
+> >> >  	}
+> >> >
+> >> > -	newflags = vma_flags_to_legacy(new_vma_flags);
+> >> > -	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &newflags);
+> >> > +	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &new_vma_flags);
+> >> >  	if (IS_ERR(vma)) {
+> >> >  		error = PTR_ERR(vma);
+> >> >  		goto fail;
+> >> >  	}
+> >> > -	new_vma_flags = legacy_to_vma_flags(newflags);
+> >> >
+> >> >  	*pprev = vma;
+> >> >
+> >> > @@ -771,7 +769,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
+> >> >  	 * held in write mode.
+> >> >  	 */
+> >> >  	vma_start_write(vma);
+> >> > -	vm_flags_reset_once(vma, newflags);
+> >> > +	WRITE_ONCE(vma->flags, new_vma_flags);
+> >>
+> >> Ditto.
+> >
+> > I mean overall these cases are hacks in my opinion to work around code that
+> > should have solved their problem another way.
+> >
+> > But sure, as above I'll add a helper function or such.
+>
+> Great.
+>
+> >>
+> >> >  	if (vma_wants_manual_pte_write_upgrade(vma))
+> >> >  		mm_cp_flags |= MM_CP_TRY_CHANGE_WRITABLE;
+> >> >  	vma_set_page_prot(vma);
+> >> > @@ -796,6 +794,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
+> >> >  	}
+> >> >
+> >> >  	vm_stat_account(mm, vma_flags_to_legacy(old_vma_flags), -nrpages);
+> >> > +	newflags = vma_flags_to_legacy(new_vma_flags);
+> >> >  	vm_stat_account(mm, newflags, nrpages);
+> >> >  	perf_event_mmap(vma);
+> >> >  	return 0;
+> >> > diff --git a/mm/mseal.c b/mm/mseal.c
+> >> > index 316b5e1dec78..603df53ad267 100644
+>
 
-Ack.
-
-> But I'll add the S/D check back I guess.
-
-Thanks for the detailed explanation. It's fine to drop legacy stuff, it just
-wasn't obvious if intentional or by mistake. Maybe just mention the
-intention in the changelog?
-
-Thanks!
-
->>
->> >  	} else {
->> > -		mlock_vma_pages_range(vma, start, end, newflags);
->> > +		mlock_vma_pages_range(vma, start, end, &new_vma_flags);
->> >  	}
->> >  out:
->> >  	*prev = vma;
->> > diff --git a/mm/mprotect.c b/mm/mprotect.c
->> > index eaa724b99908..2b8a85689ab7 100644
->> > --- a/mm/mprotect.c
->> > +++ b/mm/mprotect.c
->> > @@ -756,13 +756,11 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
->> >  		vma_flags_clear(&new_vma_flags, VMA_ACCOUNT_BIT);
->> >  	}
->> >
->> > -	newflags = vma_flags_to_legacy(new_vma_flags);
->> > -	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &newflags);
->> > +	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &new_vma_flags);
->> >  	if (IS_ERR(vma)) {
->> >  		error = PTR_ERR(vma);
->> >  		goto fail;
->> >  	}
->> > -	new_vma_flags = legacy_to_vma_flags(newflags);
->> >
->> >  	*pprev = vma;
->> >
->> > @@ -771,7 +769,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
->> >  	 * held in write mode.
->> >  	 */
->> >  	vma_start_write(vma);
->> > -	vm_flags_reset_once(vma, newflags);
->> > +	WRITE_ONCE(vma->flags, new_vma_flags);
->>
->> Ditto.
-> 
-> I mean overall these cases are hacks in my opinion to work around code that
-> should have solved their problem another way.
-> 
-> But sure, as above I'll add a helper function or such.
-
-Great.
-
->>
->> >  	if (vma_wants_manual_pte_write_upgrade(vma))
->> >  		mm_cp_flags |= MM_CP_TRY_CHANGE_WRITABLE;
->> >  	vma_set_page_prot(vma);
->> > @@ -796,6 +794,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
->> >  	}
->> >
->> >  	vm_stat_account(mm, vma_flags_to_legacy(old_vma_flags), -nrpages);
->> > +	newflags = vma_flags_to_legacy(new_vma_flags);
->> >  	vm_stat_account(mm, newflags, nrpages);
->> >  	perf_event_mmap(vma);
->> >  	return 0;
->> > diff --git a/mm/mseal.c b/mm/mseal.c
->> > index 316b5e1dec78..603df53ad267 100644
-
+Cheers, Lorenzo
 
