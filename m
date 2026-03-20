@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EB8A10987AF
-	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 16:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0248F1099B36
+	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 18:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HO9cO3R1impdEosu2LKruSjtd9ozLd1JQp6jnHMa/MI=; b=uaopDJHkn0jW42xpgWUbWv/Dzy
-	8R8abqXPDqZXUsL/A390qcjr7H4VT33utmpPBke/wN9NV0DyoRqIg7X6dv0yxD2Z08kyvPuo0ea3N
-	3QVyuMU+xetW6W6AIdrZ2MoSXP7XEgck06Ri6D3lcgOtaZQH6PEbWQ6ArzNfmGPf9CncVKparEXCH
-	XEZOW6xyJ4TQfMiz7yvFZzTCwnu6JTKH2PwweHcDeJ2tzOTXHAPvL8VRENPg4iL142SDlx3CXsPNg
-	MW8p2nYosbgcGNXmV8zy2uJ0lyAL6u60Tw/xAOBtwzXhOuYUyebaQzIfH0UnfeFVCjZczkZUMIz6u
-	qgYsfdxQ==;
+	bh=NttFtymD8x5IkIE47Y3LvszodJUvEpPL23VFH4Wm7xA=; b=iNz2NOHHzAZSdUc0t3/toTCypD
+	kNi1XuF3s4LzNrF3s2vHVt5BZY3p7VGnvBG1qbIqJLkUpQUcIPC0Y8LXbwSvTKx0YCMPAQU4tUWp5
+	bRoN+YKW/Hg5Vb36nY/EwXxPK1GcxXJ+NS6RJQXEDiteipyr0vKhDHvIdu+vFmFgDS7kFI1gpQp70
+	67NigC0zTMWT8344b7/R+QfJZvFTAGxzBXunxywhJWixeosFA5MGf3DyRkXbWjFbWZXCP5uyiAFQ1
+	Q0IbYu3orjuzXczRb7AfKufYnZHnlwqZA9D5dorfBCwqiifBuma8JWwvbvJDjK+6R52XapFHKm6Cn
+	FB5ER+dA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3cs8-0000000DA9v-155M;
-	Fri, 20 Mar 2026 16:38:52 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1w3eaJ-0000000DO6S-1Yj9;
+	Fri, 20 Mar 2026 18:28:35 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3cs6-0000000DA9T-1HWE;
-	Fri, 20 Mar 2026 16:38:50 +0000
+	id 1w3eaF-0000000DO5b-1bxr;
+	Fri, 20 Mar 2026 18:28:32 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 847CE60126;
-	Fri, 20 Mar 2026 16:38:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDAC6C19425;
-	Fri, 20 Mar 2026 16:38:36 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 125CC4059C;
+	Fri, 20 Mar 2026 18:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E703C4AF63;
+	Fri, 20 Mar 2026 18:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774024729;
-	bh=Ksk0/Cy+7k9g8VSMuw5OALSCZ2GB9qpziu6Wa5P0d+4=;
+	s=k20201202; t=1774031309;
+	bh=Fv5VAaAi7lFFXaq+Zs2NQXEVg9yFBZfIimKqUJwizNI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I/OfmVcP71NX/eXv6rVA2H8uavbrfsew5pTj2wiVU5s+aHz5rN91R2Pz36DoL2+Fo
-	 rANmKpvbZV7cOFQK+lP7oYlsRq/4paUxujz4rezTBqKA66bwYPVNNBhzhmCr6J4xbi
-	 vjtP4kZEQ3amGKczLKy0m9YptVW35xq5Lm0Uxk2IG2Ler/6ijJ1G8YxCbmrxkSEC7Y
-	 M29VqGltRdx6Sm1ifElpqV0bL0Tm8oltBzYTbPzaR+3rGw9s9CGPX7CR94ZjYtEyJX
-	 jNLGM6YhVKgZpqntE0j9rerpK2JQejQf6CXMtXpXIuBddKssqb6KupwcU8OClk6p8E
-	 qhsKSOvDUiIBg==
-Date: Fri, 20 Mar 2026 16:38:34 +0000
+	b=gkHt0MCcBHLIQio/xzhZ3JYDqMoeggebPJgOlyMKl++IgyflAsadSjnR6ajO59T7W
+	 Bads34sP/a5yAm4Az5ZrzO6EFDu3djUgXqmf5qozSpDl0E+emDW/7MW3NjnJK8Slny
+	 OotgoXlSvtjugWgJaY9L6WhmqLGWE1/djXCDpUtueFL1T/RlRKAFXQq8l15zcyQNzg
+	 xjTOR7A8pPrNcxZlYg/qfRZqRoGr1vsLPFhe4Hd1TaAtSvhAOyzOMqZjEfVQNGp8Tp
+	 eyJrsI19HFTP1bsaOPJ+0b/i2opswgGS1tIHSoUImZmzyNRI2vbOkompeaDJUfnist
+	 DFKvOz84NKcEw==
+Date: Fri, 20 Mar 2026 18:28:28 +0000
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
@@ -71,17 +71,19 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
 	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
 	linux-um@lists.infradead.org, linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH v3 17/23] mm: convert do_brk_flags() to use vma_flags_t
-Message-ID: <366b74cf-b569-4004-bd12-dfbcefc25e56@lucifer.local>
+Subject: Re: [PATCH v3 21/23] mm/vma: convert as much as we can in mm/vma.c
+ to vma_flags_t
+Message-ID: <5c61e8fc-f77d-4f9a-80b9-534978aa1840@lucifer.local>
 References: <cover.1773846935.git.ljs@kernel.org>
- <981ed1afcd19115432e61778e7d226a36f8f5c2b.1773846935.git.ljs@kernel.org>
- <1d300b3b-2476-4381-b8df-a680f486b284@kernel.org>
- <f47e24c4-3a11-4a58-96f5-871443660246@lucifer.local>
- <7e2aea13-e047-4891-bd6f-ff6705c4fc28@kernel.org>
+ <44a952b98d68fc231ab231de6de04b077866bab8.1773846935.git.ljs@kernel.org>
+ <a7535063-abaa-4f67-a090-4a47098f10e7@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e2aea13-e047-4891-bd6f-ff6705c4fc28@kernel.org>
+In-Reply-To: <a7535063-abaa-4f67-a090-4a47098f10e7@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260320_112831_464112_BF555E0B 
+X-CRM114-Status: GOOD (  23.29  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,148 +98,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 20, 2026 at 04:06:15PM +0100, Vlastimil Babka (SUSE) wrote:
-> On 3/20/26 14:42, Lorenzo Stoakes (Oracle) wrote:
-> >>
-> >> More nits below:
-> >>
-> >> > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> >> > index b39cc1127e1f..e25d0d18f6d7 100644
-> >> > --- a/arch/arm64/include/asm/page.h
-> >> > +++ b/arch/arm64/include/asm/page.h
-> >> > @@ -46,7 +46,12 @@ int pfn_is_map_memory(unsigned long pfn);
-> >> >
-> >> >  #endif /* !__ASSEMBLER__ */
-> >> >
-> >> > -#define VM_DATA_DEFAULT_FLAGS	(VM_DATA_FLAGS_TSK_EXEC | VM_MTE_ALLOWED)
-> >> > +#ifdef CONFIG_ARM64_MTE
-> >> > +#define VMA_DATA_DEFAULT_FLAGS	append_vma_flags(VMA_DATA_FLAGS_TSK_EXEC, \
-> >> > +						 VMA_MTE_ALLOWED_BIT)
-> >>
-> >> I wonder what's the bloat-o-meter impact of these #define's (this
-> >> arm64-specific one isn't the only one) being no longer compile-time-constants?
+On Fri, Mar 20, 2026 at 11:15:52AM +0100, Vlastimil Babka (SUSE) wrote:
+> On 3/18/26 16:50, Lorenzo Stoakes (Oracle) wrote:
+> > Now we have established a good foundation for vm_flags_t to vma_flags_t
+> > changes, update mm/vma.c to utilise vma_flags_t wherever possible.
 > >
-> > I mean there's a precedent for this, but the compiler _should_ figure out this
-> > as a constant value, I have repeatedly confirmed that it's good at that in
-> > godbolt, via make foo/bar.S etc.
->
-> Great, thanks!
->
+> > We are able to convert VM_STARTGAP_FLAGS entirely as this is only used in
+> > mm/vma.c, and to account for the fact we can't use VM_NONE to make life
+> > easier, place the definition of this within existing #ifdef's to be
+> > cleaner.
 > >
-> >>
-> >> >   */
-> >> >  #define vma_desc_set_flags(desc, ...) \
-> >> >  	vma_desc_set_flags_mask(desc, mk_vma_flags(__VA_ARGS__))
-> >> > @@ -4059,7 +4071,6 @@ extern int replace_mm_exe_file(struct mm_struct *mm, struct file *new_exe_file);
-> >> >  extern struct file *get_mm_exe_file(struct mm_struct *mm);
-> >> >  extern struct file *get_task_exe_file(struct task_struct *task);
-> >> >
-> >> > -extern bool may_expand_vm(struct mm_struct *, vm_flags_t, unsigned long npages);
-> >> >  extern void vm_stat_account(struct mm_struct *, vm_flags_t, long npages);
-> >> >
-> >> >  extern bool vma_is_special_mapping(const struct vm_area_struct *vma,
-> >> > diff --git a/mm/internal.h b/mm/internal.h
-> >> > index f98f4746ac41..80d8651441a7 100644
-> >>
-> >> > diff --git a/mm/mprotect.c b/mm/mprotect.c
-> >> > index 9681f055b9fc..eaa724b99908 100644
-> >> > --- a/mm/mprotect.c
-> >> > +++ b/mm/mprotect.c
-> >>
-> >> > @@ -773,19 +778,24 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
-> >> >
-> >> >  	change_protection(tlb, vma, start, end, mm_cp_flags);
-> >> >
-> >> > -	if ((oldflags & VM_ACCOUNT) && !(newflags & VM_ACCOUNT))
-> >> > +	if (vma_flags_test(&old_vma_flags, VMA_ACCOUNT_BIT) &&
-> >> > +	    !vma_flags_test(&new_vma_flags, VMA_ACCOUNT_BIT))
-> >> >  		vm_unacct_memory(nrpages);
-> >> >
-> >> >  	/*
-> >> >  	 * Private VM_LOCKED VMA becoming writable: trigger COW to avoid major
-> >> >  	 * fault on access.
-> >> >  	 */
-> >> > -	if ((oldflags & (VM_WRITE | VM_SHARED | VM_LOCKED)) == VM_LOCKED &&
-> >> > -			(newflags & VM_WRITE)) {
-> >> > -		populate_vma_page_range(vma, start, end, NULL);
-> >> > +	if (vma_flags_test(&new_vma_flags, VMA_WRITE_BIT)) {
-> >> > +		const vma_flags_t mask =
-> >> > +			vma_flags_and(&old_vma_flags, VMA_WRITE_BIT,
-> >> > +				      VMA_SHARED_BIT, VMA_LOCKED_BIT);
-> >> > +
-> >> > +		if (vma_flags_same(&mask, VMA_LOCKED_BIT))
-> >>
-> >> That converts the original logic 1:1, but I wonder if it's now feasible to
-> >> write it more obviously as "VMA_LOCKED_BIT must be set, VM_WRITE_BIT and
-> >> VM_SHARED_BIT must not" ?
+> > Generally the remaining changes are mechanical.
 > >
-> > Hmm, I'm not sure if I can express this more clearly, it's a pain either
-> > way. Could do:
+> > Also update the VMA tests to reflect the changes.
 > >
-> > 	if (vma_flags_test(&new_vma_flags, VMA_WRITE_BIT) &&
-> > 	    !vma_flags_test_any(&old_vma_flags, VMA_WRITE_BIT, VMA_SHARED_BIT))
-> > 		populate_vma_page_range(vma, start, end, NULL);
+> > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 >
-> It would be a bit more:
->
-> 	if (vma_flags_test(&new_vma_flags, VMA_WRITE_BIT) &&
-> 	    vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT) &&
->  	    !vma_flags_test_any(&old_vma_flags, VMA_WRITE_BIT, VMA_SHARED_BIT))
->  		populate_vma_page_range(vma, start, end, NULL);
+> Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-Right yeah sorry :)
-
-That is clearer but still pretty verbose. Will think about how to do it but I
-think as a follow up still makes more sense.
+Thanks!
 
 >
-> (or reordered in whatever way the short circuting works best here, the original
-> code tested oldflags first).
+> Nits:
 >
-> But yeah, at least to me it's more clear what that's testing and doesn't need to
-> set up the intermediate mask variable, and VMA_LOCKED_BIT is there only once
-> in the code now. The number of vma_flags_* operations is the same.
->
-> >>
-> >> > +			populate_vma_page_range(vma, start, end, NULL);
-> >> >  	}
-> >> >
-> >> > -	vm_stat_account(mm, oldflags, -nrpages);
-> >> > +	vm_stat_account(mm, vma_flags_to_legacy(old_vma_flags), -nrpages);
-> >> >  	vm_stat_account(mm, newflags, nrpages);
-> >> >  	perf_event_mmap(vma);
-> >> >  	return 0;
-> >>
-> >> > diff --git a/mm/vma.h b/mm/vma.h
-> >> > index cf8926558bf6..1f2de6cb3b97 100644
-> >> > --- a/mm/vma.h
-> >> > +++ b/mm/vma.h
-> >>
-> >> > +static inline bool is_data_mapping_vma_flags(const vma_flags_t *vma_flags)
-> >> > +{
-> >> > +	const vma_flags_t mask = vma_flags_and(vma_flags,
-> >> > +			VMA_WRITE_BIT, VMA_SHARED_BIT, VMA_STACK_BIT);
-> >> > +
-> >> > +	return vma_flags_same(&mask, VMA_WRITE_BIT);
-> >>
-> >> Ditto?
+> > @@ -2338,8 +2339,11 @@ void mm_drop_all_locks(struct mm_struct *mm)
+> >   * We account for memory if it's a private writeable mapping,
+> >   * not hugepages and VM_NORESERVE wasn't set.
+> >   */
+> > -static bool accountable_mapping(struct file *file, vm_flags_t vm_flags)
+> > +static bool accountable_mapping(struct mmap_state *map)
+> >  {
+> > +	const struct file *file = map->file;
+> > +	vma_flags_t mask;
+> > +
+> >  	/*
+> >  	 * hugetlb has its own accounting separate from the core VM
+> >  	 * VM_HUGETLB may not be set yet so we cannot check for that flag.
+> > @@ -2347,7 +2351,9 @@ static bool accountable_mapping(struct file *file, vm_flags_t vm_flags)
+> >  	if (file && is_file_hugepages(file))
+> >  		return false;
 > >
-> > I may do both as a follow up patch given the series is a pain to rework at this point
-> > and I want at least the first version to be like-for-like intentionally.
+> > -	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
+> > +	mask = vma_flags_and(&map->vma_flags, VMA_NORESERVE_BIT, VMA_SHARED_BIT,
+> > +			     VMA_WRITE_BIT);
+> > +	return vma_flags_same(&mask, VMA_WRITE_BIT);
 >
-> OK sure.
+> Another case of possible refactor, if you agree with those pointed out in
+> earlier patch.
 
-Cheers!
+Ack
 
 >
-> >>
-> >> > +}
-> >> >
-> >> >  static inline void vma_iter_config(struct vma_iterator *vmi,
-> >> >  		unsigned long index, unsigned long last)
-> >> > diff --git a/mm/vma_exec.c b/mm/vma_exec.c
-> >> > index 8134e1afca68..5cee8b7efa0f 100644
+> >  }
 > >
-> > Thanks, Lorenzo
+> >  /*
 >
+> > @@ -2993,7 +2998,8 @@ unsigned long unmapped_area(struct vm_unmapped_area_info *info)
+> >  	gap = vma_iter_addr(&vmi) + info->start_gap;
+> >  	gap += (info->align_offset - gap) & info->align_mask;
+> >  	tmp = vma_next(&vmi);
+> > -	if (tmp && (tmp->vm_flags & VM_STARTGAP_FLAGS)) { /* Avoid prev check if possible */
+> > +	/* Avoid prev check if possible */
+> > +	if (tmp && (vma_test_any_mask(tmp, VMA_STARTGAP_FLAGS))) {
+>
+> The parentheses around function call not necessary?
+
+True, can fix up.
+
+>
+> >  		if (vm_start_gap(tmp) < gap + length - 1) {
+> >  			low_limit = tmp->vm_end;
+> >  			vma_iter_reset(&vmi);
+> > @@ -3045,7 +3051,8 @@ unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+> >  	gap -= (gap - info->align_offset) & info->align_mask;
+> >  	gap_end = vma_iter_end(&vmi);
+> >  	tmp = vma_next(&vmi);
+> > -	if (tmp && (tmp->vm_flags & VM_STARTGAP_FLAGS)) { /* Avoid prev check if possible */
+> > +	 /* Avoid prev check if possible */
+> > +	if (tmp && (vma_test_any_mask(tmp, VMA_STARTGAP_FLAGS))) {
+>
+> Same.
+
+True, will fix up.
+
+>
+> >  		if (vm_start_gap(tmp) < gap_end) {
+> >  			high_limit = vm_start_gap(tmp);
+> >  			vma_iter_reset(&vmi);
+
+Cheers, Lorenzo
 
