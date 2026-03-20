@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B9781099B3A
-	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 19:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 673531099B3A
+	for <linux-um@archiver.kernel.org>; Fri, 20 Mar 2026 19:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dBHmzvjB0HBrrqu6dkvU7Xr80teA5AGkgxmHrBsxf7c=; b=JHjRORARgw2K60I3W49KTxXUA1
-	fO/ajP4u+BtcsAwuLVm+qXzBIuHX9amGx0wn+AVhwCvetuCV8n1oUayOF8k0636Nr4UdDzxtKGqHY
-	xqIZyEam3lFbuRf8w74IjcDM0KZbzNSeAXDXMNZt+itom+r6A0SBhw+jddY59P1xoHnd8cfFCOnKY
-	/Fqg476mAV5ACSSRmM+SgPWY6mic/nL4KT0yZwvWt3HzTW7zrBqcBFQfBcHj0P82DSt/xc/q92PGp
-	busVJo0dWqqjaQIvXX+LIBTqrtCi4nqyUYZ+11kNpfVAYBGJmmHFgM3uOIsS4K+hXgeL0u69F1sHE
-	hDNJNwgQ==;
+	bh=MF3HDfZN/X2IuMlCa6w9U893UanxlzUmNuSBnCYYxSY=; b=gT/EPzC4s0N4NYPOVwo7t0GkQ3
+	dMSwnSp1KRQ4KBUnRCMyHHp6GFLCQywHcRCZLQxxxrKb36rYUyD1xpGy6gqJXCuP9/2MjJflMqri2
+	eit07Dc/9gpGf+XGP29xGqZ5+rSLmp+xk9UxCNpZ8c/h/QeRLW6DzBnjpWLEzqKnHeR+iaiw/wiIn
+	4o8Bp0Nr1NbJ1SxfaEbpEutENXrbddvCROf8+74+VaV20RstAjTg+Ef2GFvAuH5ow7GKCaKfamjB5
+	SBOfJURX/QkhlEyqMRDpy3WX7PJUIvhUJegwezOefCxAzwtxxp/yc2w3TYLVVf6nVx3UizEElK/RG
+	sey/0+WQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3fhd-0000000DUta-2UlH;
-	Fri, 20 Mar 2026 19:40:13 +0000
+	id 1w3fhh-0000000DV19-1dpd;
+	Fri, 20 Mar 2026 19:40:17 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w3fh5-0000000DU3W-3zRb;
-	Fri, 20 Mar 2026 19:39:40 +0000
+	id 1w3fh9-0000000DU8h-2UjX;
+	Fri, 20 Mar 2026 19:39:43 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 486E561858;
-	Fri, 20 Mar 2026 19:39:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D08AC2BC87;
-	Fri, 20 Mar 2026 19:39:37 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 891DB61857;
+	Fri, 20 Mar 2026 19:39:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57BFC2BCB4;
+	Fri, 20 Mar 2026 19:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774035577;
-	bh=mtxNzBBUKJYuZHY0i6poPtAf2sXpjk4MijTQlmTdsUs=;
+	s=k20201202; t=1774035582;
+	bh=Zhv1fm6PGlE9I5DuXJBB0cLrVMXpxk9UQr3R6GGX2pM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r7Lwht9+pf6T3ayIWKnBIAWgq30rcHApgwCJf7VIipmDLjJrnA6Kc3xfVV2oAn+aS
-	 EL/AIsxbuEZBctxQLYA4esE0Cb9unjlbgKfm7jCvnAUZoeuWaB15ikKN3qS/qY0QSj
-	 KBkh+oUifUS9ZhRkDbmifaOw9a4zycBrOBqHw4EzjQTH8wSLTr3/3wLI/xLf3A7SZT
-	 tjJoWNUVn9ZNWc2uoeb+rILFBerJyh5FKIojL53f+2lApxWxOcC5OrgtvEIw43DxPj
-	 C64YVDx6UXPke1ivDHxUWFEFuOgperSQRKN948zxjfX6R+GuSYy0hC85aY6FwrHlqI
-	 34AvdumiaPqAA==
+	b=YNEQNMxCWbltp4ulEcA/1pi0w9rAVKrTGQS8+v4PLs+aFYEzztK3IIefy1UFIkuOR
+	 rTDQcWY0SioZrCgW7IXmcLKciwKlGXqabHTR/PcPYieqDzBPZ60XqkkxP5s59rZg1A
+	 xan9A1ghdC6iIBLyXGYzuD8n0RYMLN+9ymJTqE/THx9LECKRwfgZYXza+nT86iX/k6
+	 8p+GKYR5eQNho+Uv+ID2mHduFoCDPEsGOedTudZT9YZBqkya5QuQ6VKpjiS64ChS4F
+	 YZzIJnzVkO0R7vQNfDQ1O4zJG1AtpdIzGw2MrsNefJt4teIMi0TcMEfp1mYeAj2lCz
+	 AoksKkIoUqu0w==
 From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,9 +104,9 @@ Cc: David Hildenbrand <david@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org,
 	selinux@vger.kernel.org
-Subject: [PATCH v4 23/25] mm/vma: convert vma_modify_flags[_uffd]() to use vma_flags_t
-Date: Fri, 20 Mar 2026 19:38:40 +0000
-Message-ID: <51afbb2b8c3681003cc7926647e37335d793836e.1774034900.git.ljs@kernel.org>
+Subject: [PATCH v4 25/25] mm: simplify VMA flag tests of excluded flags
+Date: Fri, 20 Mar 2026 19:38:42 +0000
+Message-ID: <d395c5dd837a9864f5efcec42175910afbe3ce73.1774034900.git.ljs@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1774034900.git.ljs@kernel.org>
 References: <cover.1774034900.git.ljs@kernel.org>
@@ -126,539 +126,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the vma_modify_flags() and vma_modify_flags_uffd() functions to
-accept a vma_flags_t parameter rather than a vm_flags_t one, and propagate
-the changes as needed to implement this change.
+We have implemented flag mask comparisons of the form:
 
-Also add vma_flags_reset_once() in replacement of vm_flags_reset_once(). We
-still need to be careful here because we need to avoid tearing, so maintain
-the assumption that the first system word set of flags are the only ones
-that require protection from tearing, and retain this functionality.
+if ((vm_flags & (VM_FOO|VM_BAR|VM_BAZ) == VM_FOO) { ... }
 
-We can copy the remainder of VMA flags above 64 bits normally. But
-hopefully by the time that happens, we will have replaced the logic that
-requires these WRITE_ONCE()'s with something else.
+Like-for-like in the code using a bitwise-and mask via vma_flags_and() and
+using vma_flags_same() to ensure the final result equals only the required
+flag value.
 
-We also replace instances of vm_flags_reset() with a simple write of VMA
-flags. We are no longer perform a number of checks, most notable of all the
-VMA flags asserts becase:
+This is fine but confusing, make things clearer by instead explicitly
+excluding undesired flags and including the desired one via tests of the
+form:
 
-1. We might be operating on a VMA that is not yet added to the tree.
+	if (vma_flags_test(&flags, VMA_FOO_BIT) &&
+	    !vma_flags_test_any(&flags, VMA_BAR_BIT, VMA_BAZ_BIT)) { ... }
 
-2. We might be operating on a VMA that is now detached.
+Which makes it easier to understand what is going on.
 
-3. Really in all but core code, you should be using vma_desc_xxx().
+No functional change intended.
 
-4. Other VMA fields are manipulated with no such checks.
-
-5. It'd be egregious to have to add variants of flag functions just to
-   account for cases such as the above, especially when we don't do so for
-   other VMA fields. Drivers are the problematic cases and why it was
-   especially important (and also for debug as VMA locks were introduced),
-   the mmap_prepare work is solving this generally.
-
-Additionally, we can fairly safely assume by this point the soft dirty
-flags are being set correctly, so it's reasonable to drop this also.
-
-Finally, update the VMA tests to reflect this.
-
+Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 ---
- include/linux/mm.h              | 22 +++++++++----------
- include/linux/userfaultfd_k.h   |  3 +++
- mm/madvise.c                    | 10 +++++----
- mm/mlock.c                      | 38 ++++++++++++++++++---------------
- mm/mprotect.c                   |  7 +++---
- mm/mseal.c                      | 11 ++++++----
- mm/userfaultfd.c                | 21 ++++++++++++------
- mm/vma.c                        | 15 +++++++------
- mm/vma.h                        | 15 ++++++-------
- tools/testing/vma/include/dup.h | 22 +++++++++++--------
- tools/testing/vma/tests/merge.c |  3 +--
- 11 files changed, 93 insertions(+), 74 deletions(-)
+ mm/mprotect.c | 12 ++++--------
+ mm/vma.c      |  7 +++----
+ mm/vma.h      |  6 ++----
+ 3 files changed, 9 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 86a236443364..fb989f1fa74e 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -959,22 +959,20 @@ static inline void vm_flags_reset(struct vm_area_struct *vma,
- 	vm_flags_init(vma, flags);
- }
- 
--static inline void vm_flags_reset_once(struct vm_area_struct *vma,
--				       vm_flags_t flags)
-+static inline void vma_flags_reset_once(struct vm_area_struct *vma,
-+					vma_flags_t *flags)
- {
--	vma_assert_write_locked(vma);
--	/*
--	 * If VMA flags exist beyond the first system word, also clear these. It
--	 * is assumed the write once behaviour is required only for the first
--	 * system word.
--	 */
-+	const unsigned long word = flags->__vma_flags[0];
-+
-+	/* It is assumed only the first system word must be written once. */
-+	vma_flags_overwrite_word_once(&vma->flags, word);
-+	/* The remainder can be copied normally. */
- 	if (NUM_VMA_FLAG_BITS > BITS_PER_LONG) {
--		unsigned long *bitmap = vma->flags.__vma_flags;
-+		unsigned long *dst = &vma->flags.__vma_flags[1];
-+		const unsigned long *src = &flags->__vma_flags[1];
- 
--		bitmap_zero(&bitmap[1], NUM_VMA_FLAG_BITS - BITS_PER_LONG);
-+		bitmap_copy(dst, src, NUM_VMA_FLAG_BITS - BITS_PER_LONG);
- 	}
--
--	vma_flags_overwrite_word_once(&vma->flags, flags);
- }
- 
- static inline void vm_flags_set(struct vm_area_struct *vma,
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index bf4e595ac914..3bd2003328dc 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -23,6 +23,9 @@
- /* The set of all possible UFFD-related VM flags. */
- #define __VM_UFFD_FLAGS (VM_UFFD_MISSING | VM_UFFD_WP | VM_UFFD_MINOR)
- 
-+#define __VMA_UFFD_FLAGS mk_vma_flags(VMA_UFFD_MISSING_BIT, VMA_UFFD_WP_BIT, \
-+				      VMA_UFFD_MINOR_BIT)
-+
- /*
-  * CAREFUL: Check include/uapi/asm-generic/fcntl.h when defining
-  * new flags, since they might collide with O_* ones. We want
-diff --git a/mm/madvise.c b/mm/madvise.c
-index afe0f01765c4..69708e953cf5 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -151,13 +151,15 @@ static int madvise_update_vma(vm_flags_t new_flags,
- 		struct madvise_behavior *madv_behavior)
- {
- 	struct vm_area_struct *vma = madv_behavior->vma;
-+	vma_flags_t new_vma_flags = legacy_to_vma_flags(new_flags);
- 	struct madvise_behavior_range *range = &madv_behavior->range;
- 	struct anon_vma_name *anon_name = madv_behavior->anon_name;
- 	bool set_new_anon_name = madv_behavior->behavior == __MADV_SET_ANON_VMA_NAME;
- 	VMA_ITERATOR(vmi, madv_behavior->mm, range->start);
- 
--	if (new_flags == vma->vm_flags && (!set_new_anon_name ||
--			anon_vma_name_eq(anon_vma_name(vma), anon_name)))
-+	if (vma_flags_same_mask(&vma->flags, new_vma_flags) &&
-+	    (!set_new_anon_name ||
-+	     anon_vma_name_eq(anon_vma_name(vma), anon_name)))
- 		return 0;
- 
- 	if (set_new_anon_name)
-@@ -165,7 +167,7 @@ static int madvise_update_vma(vm_flags_t new_flags,
- 			range->start, range->end, anon_name);
- 	else
- 		vma = vma_modify_flags(&vmi, madv_behavior->prev, vma,
--			range->start, range->end, &new_flags);
-+			range->start, range->end, &new_vma_flags);
- 
- 	if (IS_ERR(vma))
- 		return PTR_ERR(vma);
-@@ -174,7 +176,7 @@ static int madvise_update_vma(vm_flags_t new_flags,
- 
- 	/* vm_flags is protected by the mmap_lock held in write mode. */
- 	vma_start_write(vma);
--	vm_flags_reset(vma, new_flags);
-+	vma->flags = new_vma_flags;
- 	if (set_new_anon_name)
- 		return replace_anon_vma_name(vma, anon_name);
- 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 311bb3e814b7..8c227fefa2df 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -415,13 +415,14 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
-  * @vma - vma containing range to be mlock()ed or munlock()ed
-  * @start - start address in @vma of the range
-  * @end - end of range in @vma
-- * @newflags - the new set of flags for @vma.
-+ * @new_vma_flags - the new set of flags for @vma.
-  *
-  * Called for mlock(), mlock2() and mlockall(), to set @vma VM_LOCKED;
-  * called for munlock() and munlockall(), to clear VM_LOCKED from @vma.
-  */
- static void mlock_vma_pages_range(struct vm_area_struct *vma,
--	unsigned long start, unsigned long end, vm_flags_t newflags)
-+	unsigned long start, unsigned long end,
-+	vma_flags_t *new_vma_flags)
- {
- 	static const struct mm_walk_ops mlock_walk_ops = {
- 		.pmd_entry = mlock_pte_range,
-@@ -439,18 +440,18 @@ static void mlock_vma_pages_range(struct vm_area_struct *vma,
- 	 * combination should not be visible to other mmap_lock users;
- 	 * but WRITE_ONCE so rmap walkers must see VM_IO if VM_LOCKED.
- 	 */
--	if (newflags & VM_LOCKED)
--		newflags |= VM_IO;
-+	if (vma_flags_test(new_vma_flags, VMA_LOCKED_BIT))
-+		vma_flags_set(new_vma_flags, VMA_IO_BIT);
- 	vma_start_write(vma);
--	vm_flags_reset_once(vma, newflags);
-+	vma_flags_reset_once(vma, new_vma_flags);
- 
- 	lru_add_drain();
- 	walk_page_range(vma->vm_mm, start, end, &mlock_walk_ops, NULL);
- 	lru_add_drain();
- 
--	if (newflags & VM_IO) {
--		newflags &= ~VM_IO;
--		vm_flags_reset_once(vma, newflags);
-+	if (vma_flags_test(new_vma_flags, VMA_IO_BIT)) {
-+		vma_flags_clear(new_vma_flags, VMA_IO_BIT);
-+		vma_flags_reset_once(vma, new_vma_flags);
- 	}
- }
- 
-@@ -467,20 +468,22 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
- 	       struct vm_area_struct **prev, unsigned long start,
- 	       unsigned long end, vm_flags_t newflags)
- {
-+	vma_flags_t new_vma_flags = legacy_to_vma_flags(newflags);
-+	const vma_flags_t old_vma_flags = vma->flags;
- 	struct mm_struct *mm = vma->vm_mm;
- 	int nr_pages;
- 	int ret = 0;
--	vm_flags_t oldflags = vma->vm_flags;
- 
--	if (newflags == oldflags || vma_is_secretmem(vma) ||
--	    !vma_supports_mlock(vma))
-+	if (vma_flags_same_pair(&old_vma_flags, &new_vma_flags) ||
-+	    vma_is_secretmem(vma) || !vma_supports_mlock(vma)) {
- 		/*
- 		 * Don't set VM_LOCKED or VM_LOCKONFAULT and don't count.
- 		 * For secretmem, don't allow the memory to be unlocked.
- 		 */
- 		goto out;
-+	}
- 
--	vma = vma_modify_flags(vmi, *prev, vma, start, end, &newflags);
-+	vma = vma_modify_flags(vmi, *prev, vma, start, end, &new_vma_flags);
- 	if (IS_ERR(vma)) {
- 		ret = PTR_ERR(vma);
- 		goto out;
-@@ -490,9 +493,9 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
- 	 * Keep track of amount of locked VM.
- 	 */
- 	nr_pages = (end - start) >> PAGE_SHIFT;
--	if (!(newflags & VM_LOCKED))
-+	if (!vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT))
- 		nr_pages = -nr_pages;
--	else if (oldflags & VM_LOCKED)
-+	else if (vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT))
- 		nr_pages = 0;
- 	mm->locked_vm += nr_pages;
- 
-@@ -501,12 +504,13 @@ static int mlock_fixup(struct vma_iterator *vmi, struct vm_area_struct *vma,
- 	 * It's okay if try_to_unmap_one unmaps a page just after we
- 	 * set VM_LOCKED, populate_vma_page_range will bring it back.
- 	 */
--	if ((newflags & VM_LOCKED) && (oldflags & VM_LOCKED)) {
-+	if (vma_flags_test(&new_vma_flags, VMA_LOCKED_BIT) &&
-+	    vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT)) {
- 		/* No work to do, and mlocking twice would be wrong */
- 		vma_start_write(vma);
--		vm_flags_reset(vma, newflags);
-+		vma->flags = new_vma_flags;
- 	} else {
--		mlock_vma_pages_range(vma, start, end, newflags);
-+		mlock_vma_pages_range(vma, start, end, &new_vma_flags);
- 	}
- out:
- 	*prev = vma;
 diff --git a/mm/mprotect.c b/mm/mprotect.c
-index eaa724b99908..941f1211da0d 100644
+index 007d9a72b2f0..110d47a36d4b 100644
 --- a/mm/mprotect.c
 +++ b/mm/mprotect.c
-@@ -756,13 +756,11 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
- 		vma_flags_clear(&new_vma_flags, VMA_ACCOUNT_BIT);
- 	}
- 
--	newflags = vma_flags_to_legacy(new_vma_flags);
--	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &newflags);
-+	vma = vma_modify_flags(vmi, *pprev, vma, start, end, &new_vma_flags);
- 	if (IS_ERR(vma)) {
- 		error = PTR_ERR(vma);
- 		goto fail;
- 	}
--	new_vma_flags = legacy_to_vma_flags(newflags);
- 
- 	*pprev = vma;
- 
-@@ -771,7 +769,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
- 	 * held in write mode.
+@@ -784,14 +784,10 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
+ 	 * Private VM_LOCKED VMA becoming writable: trigger COW to avoid major
+ 	 * fault on access.
  	 */
- 	vma_start_write(vma);
--	vm_flags_reset_once(vma, newflags);
-+	vma_flags_reset_once(vma, &new_vma_flags);
- 	if (vma_wants_manual_pte_write_upgrade(vma))
- 		mm_cp_flags |= MM_CP_TRY_CHANGE_WRITABLE;
- 	vma_set_page_prot(vma);
-@@ -796,6 +794,7 @@ mprotect_fixup(struct vma_iterator *vmi, struct mmu_gather *tlb,
- 	}
+-	if (vma_flags_test(&new_vma_flags, VMA_WRITE_BIT)) {
+-		const vma_flags_t mask =
+-			vma_flags_and(&old_vma_flags, VMA_WRITE_BIT,
+-				      VMA_SHARED_BIT, VMA_LOCKED_BIT);
+-
+-		if (vma_flags_same(&mask, VMA_LOCKED_BIT))
+-			populate_vma_page_range(vma, start, end, NULL);
+-	}
++	if (vma_flags_test(&new_vma_flags, VMA_WRITE_BIT) &&
++	    vma_flags_test(&old_vma_flags, VMA_LOCKED_BIT) &&
++	    !vma_flags_test_any(&old_vma_flags, VMA_WRITE_BIT, VMA_SHARED_BIT))
++		populate_vma_page_range(vma, start, end, NULL);
  
  	vm_stat_account(mm, vma_flags_to_legacy(old_vma_flags), -nrpages);
-+	newflags = vma_flags_to_legacy(new_vma_flags);
- 	vm_stat_account(mm, newflags, nrpages);
- 	perf_event_mmap(vma);
- 	return 0;
-diff --git a/mm/mseal.c b/mm/mseal.c
-index 316b5e1dec78..603df53ad267 100644
---- a/mm/mseal.c
-+++ b/mm/mseal.c
-@@ -68,14 +68,17 @@ static int mseal_apply(struct mm_struct *mm,
- 	for_each_vma_range(vmi, vma, end) {
- 		const unsigned long curr_end = MIN(vma->vm_end, end);
- 
--		if (!(vma->vm_flags & VM_SEALED)) {
--			vm_flags_t vm_flags = vma->vm_flags | VM_SEALED;
-+		if (!vma_test(vma, VMA_SEALED_BIT)) {
-+			vma_flags_t vma_flags = vma->flags;
-+
-+			vma_flags_set(&vma_flags, VMA_SEALED_BIT);
- 
- 			vma = vma_modify_flags(&vmi, prev, vma, curr_start,
--					       curr_end, &vm_flags);
-+					       curr_end, &vma_flags);
- 			if (IS_ERR(vma))
- 				return PTR_ERR(vma);
--			vm_flags_set(vma, VM_SEALED);
-+			vma_start_write(vma);
-+			vma_set_flags(vma, VMA_SEALED_BIT);
- 		}
- 
- 		prev = vma;
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 77b042d5415f..ab14b650a080 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -2093,6 +2093,9 @@ struct vm_area_struct *userfaultfd_clear_vma(struct vma_iterator *vmi,
- {
- 	struct vm_area_struct *ret;
- 	bool give_up_on_oom = false;
-+	vma_flags_t new_vma_flags = vma->flags;
-+
-+	vma_flags_clear_mask(&new_vma_flags, __VMA_UFFD_FLAGS);
- 
- 	/*
- 	 * If we are modifying only and not splitting, just give up on the merge
-@@ -2106,8 +2109,8 @@ struct vm_area_struct *userfaultfd_clear_vma(struct vma_iterator *vmi,
- 		uffd_wp_range(vma, start, end - start, false);
- 
- 	ret = vma_modify_flags_uffd(vmi, prev, vma, start, end,
--				    vma->vm_flags & ~__VM_UFFD_FLAGS,
--				    NULL_VM_UFFD_CTX, give_up_on_oom);
-+				    &new_vma_flags, NULL_VM_UFFD_CTX,
-+				    give_up_on_oom);
- 
- 	/*
- 	 * In the vma_merge() successful mprotect-like case 8:
-@@ -2127,10 +2130,11 @@ int userfaultfd_register_range(struct userfaultfd_ctx *ctx,
- 			       unsigned long start, unsigned long end,
- 			       bool wp_async)
- {
-+	vma_flags_t vma_flags = legacy_to_vma_flags(vm_flags);
- 	VMA_ITERATOR(vmi, ctx->mm, start);
- 	struct vm_area_struct *prev = vma_prev(&vmi);
- 	unsigned long vma_end;
--	vm_flags_t new_flags;
-+	vma_flags_t new_vma_flags;
- 
- 	if (vma->vm_start < start)
- 		prev = vma;
-@@ -2141,23 +2145,26 @@ int userfaultfd_register_range(struct userfaultfd_ctx *ctx,
- 		VM_WARN_ON_ONCE(!vma_can_userfault(vma, vm_flags, wp_async));
- 		VM_WARN_ON_ONCE(vma->vm_userfaultfd_ctx.ctx &&
- 				vma->vm_userfaultfd_ctx.ctx != ctx);
--		VM_WARN_ON_ONCE(!(vma->vm_flags & VM_MAYWRITE));
-+		VM_WARN_ON_ONCE(!vma_test(vma, VMA_MAYWRITE_BIT));
- 
- 		/*
- 		 * Nothing to do: this vma is already registered into this
- 		 * userfaultfd and with the right tracking mode too.
- 		 */
- 		if (vma->vm_userfaultfd_ctx.ctx == ctx &&
--		    (vma->vm_flags & vm_flags) == vm_flags)
-+		    vma_test_all_mask(vma, vma_flags))
- 			goto skip;
- 
- 		if (vma->vm_start > start)
- 			start = vma->vm_start;
- 		vma_end = min(end, vma->vm_end);
- 
--		new_flags = (vma->vm_flags & ~__VM_UFFD_FLAGS) | vm_flags;
-+		new_vma_flags = vma->flags;
-+		vma_flags_clear_mask(&new_vma_flags, __VMA_UFFD_FLAGS);
-+		vma_flags_set_mask(&new_vma_flags, vma_flags);
-+
- 		vma = vma_modify_flags_uffd(&vmi, prev, vma, start, vma_end,
--					    new_flags,
-+					    &new_vma_flags,
- 					    (struct vm_userfaultfd_ctx){ctx},
- 					    /* give_up_on_oom = */false);
- 		if (IS_ERR(vma))
+ 	newflags = vma_flags_to_legacy(new_vma_flags);
 diff --git a/mm/vma.c b/mm/vma.c
-index 9d194f8e7acb..16a1d708c978 100644
+index c335f989586f..a4b30a069153 100644
 --- a/mm/vma.c
 +++ b/mm/vma.c
-@@ -1710,13 +1710,13 @@ static struct vm_area_struct *vma_modify(struct vma_merge_struct *vmg)
- struct vm_area_struct *vma_modify_flags(struct vma_iterator *vmi,
- 		struct vm_area_struct *prev, struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end,
--		vm_flags_t *vm_flags_ptr)
-+		vma_flags_t *vma_flags_ptr)
+@@ -2343,7 +2343,6 @@ void mm_drop_all_locks(struct mm_struct *mm)
+ static bool accountable_mapping(struct mmap_state *map)
  {
- 	VMG_VMA_STATE(vmg, vmi, prev, vma, start, end);
--	const vm_flags_t vm_flags = *vm_flags_ptr;
-+	const vma_flags_t vma_flags = *vma_flags_ptr;
- 	struct vm_area_struct *ret;
+ 	const struct file *file = map->file;
+-	vma_flags_t mask;
  
--	vmg.vm_flags = vm_flags;
-+	vmg.vma_flags = vma_flags;
+ 	/*
+ 	 * hugetlb has its own accounting separate from the core VM
+@@ -2352,9 +2351,9 @@ static bool accountable_mapping(struct mmap_state *map)
+ 	if (file && is_file_hugepages(file))
+ 		return false;
  
- 	ret = vma_modify(&vmg);
- 	if (IS_ERR(ret))
-@@ -1728,7 +1728,7 @@ struct vm_area_struct *vma_modify_flags(struct vma_iterator *vmi,
- 	 * them to the caller.
- 	 */
- 	if (vmg.state == VMA_MERGE_SUCCESS)
--		*vm_flags_ptr = ret->vm_flags;
-+		*vma_flags_ptr = ret->flags;
- 	return ret;
+-	mask = vma_flags_and(&map->vma_flags, VMA_NORESERVE_BIT, VMA_SHARED_BIT,
+-			     VMA_WRITE_BIT);
+-	return vma_flags_same(&mask, VMA_WRITE_BIT);
++	return vma_flags_test(&map->vma_flags, VMA_WRITE_BIT) &&
++		!vma_flags_test_any(&map->vma_flags, VMA_NORESERVE_BIT,
++				    VMA_SHARED_BIT);
  }
  
-@@ -1758,12 +1758,13 @@ struct vm_area_struct *vma_modify_policy(struct vma_iterator *vmi,
- 
- struct vm_area_struct *vma_modify_flags_uffd(struct vma_iterator *vmi,
- 		struct vm_area_struct *prev, struct vm_area_struct *vma,
--		unsigned long start, unsigned long end, vm_flags_t vm_flags,
--		struct vm_userfaultfd_ctx new_ctx, bool give_up_on_oom)
-+		unsigned long start, unsigned long end,
-+		const vma_flags_t *vma_flags, struct vm_userfaultfd_ctx new_ctx,
-+		bool give_up_on_oom)
- {
- 	VMG_VMA_STATE(vmg, vmi, prev, vma, start, end);
- 
--	vmg.vm_flags = vm_flags;
-+	vmg.vma_flags = *vma_flags;
- 	vmg.uffd_ctx = new_ctx;
- 	if (give_up_on_oom)
- 		vmg.give_up_on_oom = true;
+ /*
 diff --git a/mm/vma.h b/mm/vma.h
-index 1f2de6cb3b97..270008e5babc 100644
+index adc18f7dd9f1..1bfe7e47f6be 100644
 --- a/mm/vma.h
 +++ b/mm/vma.h
-@@ -342,24 +342,23 @@ void unmap_region(struct unmap_desc *unmap);
-  * @vma: The VMA containing the range @start to @end to be updated.
-  * @start: The start of the range to update. May be offset within @vma.
-  * @end: The exclusive end of the range to update, may be offset within @vma.
-- * @vm_flags_ptr: A pointer to the VMA flags that the @start to @end range is
-+ * @vma_flags_ptr: A pointer to the VMA flags that the @start to @end range is
-  * about to be set to. On merge, this will be updated to include sticky flags.
-  *
-  * IMPORTANT: The actual modification being requested here is NOT applied,
-  * rather the VMA is perhaps split, perhaps merged to accommodate the change,
-  * and the caller is expected to perform the actual modification.
-  *
-- * In order to account for sticky VMA flags, the @vm_flags_ptr parameter points
-+ * In order to account for sticky VMA flags, the @vma_flags_ptr parameter points
-  * to the requested flags which are then updated so the caller, should they
-  * overwrite any existing flags, correctly retains these.
-  *
-  * Returns: A VMA which contains the range @start to @end ready to have its
-- * flags altered to *@vm_flags.
-+ * flags altered to *@vma_flags.
-  */
- __must_check struct vm_area_struct *vma_modify_flags(struct vma_iterator *vmi,
- 		struct vm_area_struct *prev, struct vm_area_struct *vma,
--		unsigned long start, unsigned long end,
--		vm_flags_t *vm_flags_ptr);
-+		unsigned long start, unsigned long end, vma_flags_t *vma_flags_ptr);
+@@ -529,10 +529,8 @@ static inline bool is_data_mapping(vm_flags_t flags)
  
- /**
-  * vma_modify_name() - Perform any necessary split/merge in preparation for
-@@ -418,7 +417,7 @@ __must_check struct vm_area_struct *vma_modify_policy(struct vma_iterator *vmi,
-  * @vma: The VMA containing the range @start to @end to be updated.
-  * @start: The start of the range to update. May be offset within @vma.
-  * @end: The exclusive end of the range to update, may be offset within @vma.
-- * @vm_flags: The VMA flags that the @start to @end range is about to be set to.
-+ * @vma_flags: The VMA flags that the @start to @end range is about to be set to.
-  * @new_ctx: The userfaultfd context that the @start to @end range is about to
-  * be set to.
-  * @give_up_on_oom: If an out of memory condition occurs on merge, simply give
-@@ -429,11 +428,11 @@ __must_check struct vm_area_struct *vma_modify_policy(struct vma_iterator *vmi,
-  * and the caller is expected to perform the actual modification.
-  *
-  * Returns: A VMA which contains the range @start to @end ready to have its VMA
-- * flags changed to @vm_flags and its userfaultfd context changed to @new_ctx.
-+ * flags changed to @vma_flags and its userfaultfd context changed to @new_ctx.
-  */
- __must_check struct vm_area_struct *vma_modify_flags_uffd(struct vma_iterator *vmi,
- 		struct vm_area_struct *prev, struct vm_area_struct *vma,
--		unsigned long start, unsigned long end, vm_flags_t vm_flags,
-+		unsigned long start, unsigned long end, const vma_flags_t *vma_flags,
- 		struct vm_userfaultfd_ctx new_ctx, bool give_up_on_oom);
- 
- __must_check struct vm_area_struct *vma_merge_new_range(struct vma_merge_struct *vmg);
-diff --git a/tools/testing/vma/include/dup.h b/tools/testing/vma/include/dup.h
-index 58a621ec389f..9dd57f50ea6d 100644
---- a/tools/testing/vma/include/dup.h
-+++ b/tools/testing/vma/include/dup.h
-@@ -871,16 +871,20 @@ static inline void vm_flags_reset(struct vm_area_struct *vma,
- 	vm_flags_init(vma, flags);
- }
- 
--static inline void vm_flags_reset_once(struct vm_area_struct *vma,
--				       vm_flags_t flags)
-+static inline void vma_flags_reset_once(struct vm_area_struct *vma,
-+					vma_flags_t *flags)
+ static inline bool is_data_mapping_vma_flags(const vma_flags_t *vma_flags)
  {
--	vma_assert_write_locked(vma);
--	/*
--	 * The user should only be interested in avoiding reordering of
--	 * assignment to the first word.
--	 */
--	vma_flags_clear_all(&vma->flags);
--	vma_flags_overwrite_word_once(&vma->flags, flags);
-+	const unsigned long word = flags->__vma_flags[0];
-+
-+	/* It is assumed only the first system word must be written once. */
-+	vma_flags_overwrite_word_once(&vma->flags, word);
-+	/* The remainder can be copied normally. */
-+	if (NUM_VMA_FLAG_BITS > BITS_PER_LONG) {
-+		unsigned long *dst = &vma->flags.__vma_flags[1];
-+		const unsigned long *src = &flags->__vma_flags[1];
-+
-+		bitmap_copy(dst, src, NUM_VMA_FLAG_BITS - BITS_PER_LONG);
-+	}
+-	const vma_flags_t mask = vma_flags_and(vma_flags,
+-			VMA_WRITE_BIT, VMA_SHARED_BIT, VMA_STACK_BIT);
+-
+-	return vma_flags_same(&mask, VMA_WRITE_BIT);
++	return vma_flags_test(vma_flags, VMA_WRITE_BIT) &&
++		!vma_flags_test_any(vma_flags, VMA_SHARED_BIT, VMA_STACK_BIT);
  }
  
- static inline void vm_flags_set(struct vm_area_struct *vma,
-diff --git a/tools/testing/vma/tests/merge.c b/tools/testing/vma/tests/merge.c
-index 44e3977e3fc0..03b6f9820e0a 100644
---- a/tools/testing/vma/tests/merge.c
-+++ b/tools/testing/vma/tests/merge.c
-@@ -132,7 +132,6 @@ static bool test_simple_modify(void)
- 	struct vm_area_struct *vma;
- 	vma_flags_t vma_flags = mk_vma_flags(VMA_READ_BIT, VMA_WRITE_BIT, VMA_MAYREAD_BIT,
- 					     VMA_MAYWRITE_BIT);
--	vm_flags_t legacy_flags = VM_READ | VM_WRITE;
- 	struct mm_struct mm = {};
- 	struct vm_area_struct *init_vma = alloc_vma(&mm, 0, 0x3000, 0, vma_flags);
- 	VMA_ITERATOR(vmi, &mm, 0x1000);
-@@ -144,7 +143,7 @@ static bool test_simple_modify(void)
- 	 * performs the merge/split only.
- 	 */
- 	vma = vma_modify_flags(&vmi, init_vma, init_vma,
--			       0x1000, 0x2000, &legacy_flags);
-+			       0x1000, 0x2000, &vma_flags);
- 	ASSERT_NE(vma, NULL);
- 	/* We modify the provided VMA, and on split allocate new VMAs. */
- 	ASSERT_EQ(vma, init_vma);
+ static inline void vma_iter_config(struct vma_iterator *vmi,
 -- 
 2.53.0
 
