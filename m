@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 044A0EC01B0
-	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 15:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A96C9F4613F
+	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 15:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pBxuE79q0h/5XA82Gqv80sB/5+DcRUE+NdGM983xYdA=; b=LKEAv1oJ0GJ3Hzy9Z4Jkj+YhZW
-	2tKP9d+OUaBGJuGOsMmHPFTE+i4/jEjSvPx7hhP2n4vHI/7j1+OVnSjtptYQ8/LfV8Qpu7LlYKz5W
-	GKtLxu1NK75um6kP3Jb5FeHylFShx9YyxkMzB0V2b8iAOdlWtWD/jdXNXuhmgXJjE7nosoTYulb0P
-	ywP0WWRH6SsaydMJJA+wmYGCqcMCQf3mh4SKswM96QV65SP97n0xzGwS8npo2XYMCVpAgLG43j3Y+
-	aTGGYUDcBbnWPbdYf9rR5ngCmYcsHGJM+0BZSsRYI/vc1iNbQjfQw0sUQMos4snLTUUFiFNB9O+YK
-	l0A0zbTQ==;
+	bh=2+P1LJbOhGaADXr0borEizC7CpTJv3YbpsxtYt/vS4k=; b=vxkbtFvGQNeDqdeTQhfc/PvFhO
+	6TlEoZdN4RKUnU/pFg9o8wInW85EO3iZaiY1CqwiVkvH4nISmHzy8k2q0QKuJESwqkB8ZOuOmhxDF
+	FoKVg3ax6kZPnqI54Qo6cHLaTqu5a4sX6oZXSTmRV2Vid1t7drxn9Z8TqZT53KM40jU1EgsC8fa4G
+	psJ3Vi/lKV9TTToVpWIiVHFAfTV7hnZfrbP870vEgAf139DNiHYYwHaqC8GJi6tXlgfTZp4YbwM5C
+	eHTPNUpKMi+2HPes1QpMUPZIN4pjKW10fKLN2jy5M799m1KsCC/DMIwjE/SDi353Ghy21QN0tx71q
+	etpkBm0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4hXW-0000000H45f-10Cv;
-	Mon, 23 Mar 2026 15:50:02 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w4hZP-0000000H4IR-0GO0;
+	Mon, 23 Mar 2026 15:51:59 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4hXT-0000000H44O-0tyL;
-	Mon, 23 Mar 2026 15:50:00 +0000
+	id 1w4hZN-0000000H4Hu-00yB;
+	Mon, 23 Mar 2026 15:51:57 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 30C9443D7C;
-	Mon, 23 Mar 2026 15:49:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79346C4CEF7;
-	Mon, 23 Mar 2026 15:49:46 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id EE492600C4;
+	Mon, 23 Mar 2026 15:51:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCA5BC4CEF7;
+	Mon, 23 Mar 2026 15:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774280998;
-	bh=PE+T0jq3B8ZtYRDz678LEyuTz6jmDPCQy5RpPTYrDcc=;
+	s=k20201202; t=1774281115;
+	bh=vZdm4GONA/O1jK4+M6185Q0giqh3AS1i2sFB5Pfd/2Y=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XdKC0tlgf1MZ9+nFlKePnzFurNne6QPx1E6YWyTEqc5Cy4/MJ7viljpcXJeeYfD84
-	 LwWQhNPsI2I9K0v1c33u+VAYFjbd8O5XNRv7oB6hk9aWRLevlIqBhXTN/OJlKMwQKf
-	 P5Vz/q+wIiOUnPmbE+gPP+1XyMVrMVU51S9pyTagqqIblZpcRImI+DCS0rQGs9Ppmv
-	 uI4cbcMRaN1v0kgvKPt9I+2sGELYGp/hsRsweEovyazf3HWaMCdkqf89a80XhZaKnl
-	 owytQQeI/86OfShIGnWbjgDPLE70BmD03V3uE7cRvQ8417IfFC5O/o3RDSK2/SzDZz
-	 cVIvEtMGRKwxg==
-Message-ID: <3945a9c5-565f-4126-8d46-1db584b09e79@kernel.org>
-Date: Mon, 23 Mar 2026 16:49:44 +0100
+	b=o1THjGW87BBZn2ZRvUB/ZbG6Bpk46OGuXu9+rNxgEX1JPplRd0PmhhIVaepJQX2x+
+	 tNfnZZ2oJ/LEW/V1kb+Kd4rSlee9+4uD+RKeGWfnc/xNRMj7aASQw2bbJQ+4aFpnT4
+	 D5oU71wAa1icX022onJ8SXq1egN+wMrKLzs0GkJXDMxvnSocAjVWuUsitbcyyxaQfV
+	 JJXP9c4lBWKh9RLPX/Xy30cKFsVybbnBnhAp26jeybHA0vntxV0OkXb/w0rzQv6/lE
+	 VQ33MGCeDpT2FONGoMZBv7aFNGtJEznzEExGGKYXFQSBLYixZR0A4kZUSTFL4AAduW
+	 zfBJEYhpa4mqQ==
+Message-ID: <47f796ed-ac66-4a75-98c9-64afc8929f35@kernel.org>
+Date: Mon, 23 Mar 2026 16:51:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 24/25] mm/vma: convert __mmap_region() to use
- vma_flags_t
+Subject: Re: [PATCH v4 25/25] mm: simplify VMA flag tests of excluded flags
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -85,15 +84,12 @@ Cc: David Hildenbrand <david@kernel.org>,
  linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
 References: <cover.1774034900.git.ljs@kernel.org>
- <1fc33a404c962f02da778da100387cc19bd62153.1774034900.git.ljs@kernel.org>
+ <d395c5dd837a9864f5efcec42175910afbe3ce73.1774034900.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Content-Language: en-US
-In-Reply-To: <1fc33a404c962f02da778da100387cc19bd62153.1774034900.git.ljs@kernel.org>
+In-Reply-To: <d395c5dd837a9864f5efcec42175910afbe3ce73.1774034900.git.ljs@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260323_084959_299701_32339A7C 
-X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,24 +105,26 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 8:38 PM, Lorenzo Stoakes (Oracle) wrote:
-> Update the mmap() implementation logic implemented in __mmap_region() and
-> functions invoked by it.  The mmap_region() function converts its input
-> vm_flags_t parameter to a vma_flags_t value which it then passes to
-> __mmap_region() which uses the vma_flags_t value consistently from then
-> on.
+> We have implemented flag mask comparisons of the form:
 > 
-> As part of the change, we convert map_deny_write_exec() to using
-> vma_flags_t (it was incorrectly using unsigned long before), and place it
-> in vma.h, as it is only used internal to mm.
+> if ((vm_flags & (VM_FOO|VM_BAR|VM_BAZ) == VM_FOO) { ... }
 > 
-> With this change, we eliminate the legacy is_shared_maywrite_vm_flags()
-> helper function which is now no longer required.
+> Like-for-like in the code using a bitwise-and mask via vma_flags_and() and
+> using vma_flags_same() to ensure the final result equals only the required
+> flag value.
 > 
-> We are also able to update the MMAP_STATE() and VMG_MMAP_STATE() macros to
-> use the vma_flags_t value.
+> This is fine but confusing, make things clearer by instead explicitly
+> excluding undesired flags and including the desired one via tests of the
+> form:
 > 
-> Finally, we update the VMA tests to reflect the change.
+> 	if (vma_flags_test(&flags, VMA_FOO_BIT) &&
+> 	    !vma_flags_test_any(&flags, VMA_BAR_BIT, VMA_BAZ_BIT)) { ... }
 > 
+> Which makes it easier to understand what is going on.
+> 
+> No functional change intended.
+> 
+> Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
 Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
