@@ -4,149 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9455F46101
-	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 13:13:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 144A8F46101
+	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 13:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
-	References:To:From:Subject:Cc:Message-Id:Date:Content-Type:
-	Content-Transfer-Encoding:Reply-To:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rlCbzBoIfrdJR1CbU5uEeHQyXoDtlYgPeLEAaEyHdeg=; b=Dm8NuP+QHxksOfFGx8Vn775S07
-	PQCw5RLS6FdSpRHoSZ1Q5JcV7KWoPWqjo2dIoaBJZvfKOK9k2/bx64JZd0k9y3YOBBu964sS7zRTa
-	Yi45Er4/sY7uSLohSVUegpGMip14ad9amqpndUOgTmEiIZ6K6gIzL3mIkJC2hjjX8DnJGqOVOKPlR
-	PIV3rQy5yBA86kXcepgmlS2tBC4ipBja7Czeqg3zKIvh4HJ3Y29i0DNQZythrP614OgP+U3RS6HSX
-	VxLPC8rcShnvKWZeUFX83KbNqIlr02aA/S87KKj8aBbNj/woEgchR6+1uG3zt8w2PrvUlG17MrNaQ
-	+2xiXBBg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BBYCnrWUYKFuRRnPBj94PpkY2ZwRFNgR7IvcxQJbGJ4=; b=Y+k7JNVOCk5PYkeYaTMviUUoYK
+	xJZoZgQfl2/l1/aFNT99Qi7sW4YJVcpfx0KIo8A9CG91wPcKiGp9f4csWF9ZxLBbKv1hFmnNDdILa
+	+lKcJjeI4PGDFY/zHN87W4A/+DHd2aYNwfvwOoCe4v6iV501RauXrDgg7wCMDcwy7h+y1x8BzzI2c
+	Cf8XmIm/HKxbqsFZJrPQaVSW48P6X+gzzgDusfWPHwuh/0yDYyLSH/a9ecO4nuO3s9J4R5WqNDADg
+	2coFMSxxKwm9yiIOLnBfoZAXiOSSH2ecrf2g80oSgIXUjhdg7bmMEx3gqqwric1YDNTIMBDyXkImp
+	Inx/R1Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4f5u-0000000GlN8-2fc1;
-	Mon, 23 Mar 2026 13:13:22 +0000
-Received: from mail-uksouthazon11020123.outbound.protection.outlook.com ([52.101.196.123] helo=LO3P265CU004.outbound.protection.outlook.com)
+	id 1w4f6w-0000000GldH-1LJb;
+	Mon, 23 Mar 2026 13:14:26 +0000
+Received: from mail-dl1-x122e.google.com ([2607:f8b0:4864:20::122e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4f5s-0000000GlLt-1YoS;
-	Mon, 23 Mar 2026 13:13:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gUzZ3ZF7r4vVn2OYaOaX651xZVkCswwo3ZEQmSFIexnHH23tPrO+S/RyV5sq7tRvI0bvyxL/NLTiZm1flWe6NdPBaVAEYLRjxXBbCXC/xing5WafPqtzK8L6Y71Szw9iBIaOewkI1pIGjvg1ariLWZL9j/6woGN50O3gP3cdznpNCmS9bhOlZyjBGdg5xmoWLVsYKuPxgR0t1JTS3UcVLEpEJvCnLWXkb4WW3OzaN00Khu/VW5K3FFrTm+1FmaH/sQZL4HDCvnAuSSj1xeEgJIO82Ql1us8kVKmZW0aS3PQcHqguzGkxLLvAbBGAzRRmcc80J9g8u+il8BgZ/pKSlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rlCbzBoIfrdJR1CbU5uEeHQyXoDtlYgPeLEAaEyHdeg=;
- b=X8bc/SU1bDK0GKAc0McSDgF5pBkxh6v3wcWD2Wo75UwiulsjX28wQI3LblyBKxlJ3swF+qCh8696ZJyGBzEOkz+qBP6JazDKbPqo/rHXPrGsllS23P77rcPZTMkdoTmr79zzSssQvBAen0FxP1wDOayhujIeS7+5Bt1PRKRQ1zpsspTzIrlVL13uK+2wcI0YLySO41pSY28WFwh8CQLKY2vkHzzb7B9hUcxn8yjnOXFK/dHuwQCRlwJq1ncOvVYT6sENCeu6QyM9BUajs087DpJmQrpSv4tjpU9afKqakEll/3Amd12uFfJ5n2hEee/E2b7s22tHpdTriwU0K1DqaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rlCbzBoIfrdJR1CbU5uEeHQyXoDtlYgPeLEAaEyHdeg=;
- b=z7ow+m+xdGlA0PqABBEan86U4D5xfIhTsJOGDwqXhIFs8+BqoZ0chSRcB8hJ5sdlwY0w0It/S02n14OWoK08Y0XXU8u3vaat4kkK1+wqrHQPrXazVpowO8otFlbvyE5U3aEdiWC6NU7GnSt4BdHah6cGOJWEhBaSD3D5ENJRTiI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:488::16)
- by LO3P265MB2412.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:10f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9723.31; Mon, 23 Mar
- 2026 13:13:15 +0000
-Received: from LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
- ([fe80::1c3:ceba:21b4:9986]) by LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
- ([fe80::1c3:ceba:21b4:9986%5]) with mapi id 15.20.9723.030; Mon, 23 Mar 2026
- 13:13:15 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 23 Mar 2026 13:13:14 +0000
-Message-Id: <DHA6SE9EMEQF.1PKVHEG18I5FS@garyguo.net>
-Cc: "Miguel Ojeda" <ojeda@kernel.org>, <a.hindborg@kernel.org>,
- <acourbot@nvidia.com>, <akpm@linux-foundation.org>, <aliceryhl@google.com>,
- <anton.ivanov@cambridgegreys.com>, <bjorn3_gh@protonmail.com>,
- <boqun.feng@gmail.com>, <dakr@kernel.org>, <david@davidgow.net>,
- <gary@garyguo.net>, <johannes@sipsolutions.net>, <justinstitt@google.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kbuild@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
- <linux-um@lists.infradead.org>, <linux@armlinux.org.uk>,
- <llvm@lists.linux.dev>, <lossin@kernel.org>, <mark.rutland@arm.com>,
- <mmaurer@google.com>, <morbo@google.com>, <nathan@kernel.org>,
- <nick.desaulniers+lkml@gmail.com>, <nicolas.schier@linux.dev>,
- <nsc@kernel.org>, <peterz@infradead.org>, <richard@nod.at>,
- <rust-for-linux@vger.kernel.org>, <tmgross@umich.edu>, <urezki@gmail.com>,
- <will@kernel.org>
-Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
-From: "Gary Guo" <gary@garyguo.net>
-To: "Andrew Lunn" <andrew@lunn.ch>, "Miguel Ojeda"
- <miguel.ojeda.sandonis@gmail.com>
-X-Mailer: aerc 0.21.0
-References: <20260322192159.88138-1-ojeda@kernel.org>
- <20260323000327.111235-1-ojeda@kernel.org>
- <96287f3a-d245-47cf-b7cb-f821451493d3@lunn.ch>
- <CANiq72nwSWVDRqm0Vap5j5X5k+Q-wq8okQ9d3KUgZt6M4CpW9g@mail.gmail.com>
+	id 1w4f6t-0000000GlcQ-2inx
+	for linux-um@lists.infradead.org;
+	Mon, 23 Mar 2026 13:14:24 +0000
+Received: by mail-dl1-x122e.google.com with SMTP id a92af1059eb24-12a70b4de9bso170107c88.3
+        for <linux-um@lists.infradead.org>; Mon, 23 Mar 2026 06:14:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774271663; cv=none;
+        d=google.com; s=arc-20240605;
+        b=PITnevqPjc0Gy1NFafPf7y8+n+s6hj2BkPj6Ai2eYCKJj5zH/O6TMuxPR8A51ga/bq
+         HIdBtBHtZ2/9DiRmd/QXX2GpQyEqZMUpHNGuysmpvlo0cnGdZfCwcqjM3LPlcnuNKeyc
+         wsV+/4qHRHvZrlGDj5a8fF5tkgm0sHt4fRgMQiwoh4qHu2J7FAwt2jNamPewPoqjC6CX
+         RlWlvIceUH52n1dioH4oLR5didmOVPEdaoE0A5WVd9x5zy/kixzxReq2cJ+FVEqI4SJd
+         bL4AQ22HXX7W1vl8U/czqR8eZH91iqFXV6YOU1kjJ94OS2g/rVFgMhFIh1mcnNAYVA6G
+         5ZWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=BBYCnrWUYKFuRRnPBj94PpkY2ZwRFNgR7IvcxQJbGJ4=;
+        fh=MsA3JO/FwEH838P0k3MwHBgzWOtR0dHGWiD/phwtbgU=;
+        b=HTrBZdpJmJGufWKXQYNMG7HSGUUmS1kr0BCdn1KrBzrHRtC9wLUQ/Fqdjnm2SD/Kuu
+         EEhk5oA4c5wzRaYhr9Eb6G7qD0DCPduCAbQeNokq/9o1mniVqxwMN66O0my9ELvqhfKf
+         DimXbmsYF22eYH9jIP5Z5STJLYZ9ryUjYhcDnGMyLmAlejaaNU+OzYxzjEaDcKRkaHTJ
+         Oe1RxB+h1KrN14YdAC3g8QVi1AO9IV+dRGMOPExwQMApIL0PQYCOx1IibuLwLSdeBOJ0
+         zP4+TfzkUA6svLUaMQ7ryi4HXCkmhx7X8awX5Rl3TBQDOvsROuOGj8l6e5PDnV95OZ57
+         AXGQ==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1774271663; x=1774876463; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BBYCnrWUYKFuRRnPBj94PpkY2ZwRFNgR7IvcxQJbGJ4=;
+        b=hsYbLoo6PYF68UtZWpbuyiINJ1DyNsl3v/ib/j/F4Wwh8GMlboCazqUjFcj4jnHQNI
+         RB6H1r/nhfDVTYfwUBSTk7XzanPtpaecaSX8+v9iaiq468DVr1MJrDoF2OJN+MFY5W0z
+         ocUMAJk18C59Wd/5zUh0O4XngXjTpKtBRQCvSYkcw1R13yFH0zIa4tJV6Gv6O15uOVJM
+         QEWR2xs0zhqpXEnzwBv7okSrbM99I2wLgjrQSUxsvDFcyC9f/S4qxvi0E9zlZ4caFsVV
+         Ex2eMCOvgjWGNegM9FgZHnrc4LNsRF74swIB1KM8Y1PX1QkK52gv33Y5hE3zEJZO37+e
+         uMYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774271663; x=1774876463;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=BBYCnrWUYKFuRRnPBj94PpkY2ZwRFNgR7IvcxQJbGJ4=;
+        b=k/+Ykn1oej8em6mVUy//6X0NT7EPbAzoMKkjLYIZ5jQmPQDX0jO+LHLbTpah/Gow8L
+         kVEfFXCRODxJ0xZAOkhziq8IXOlA++BB0OEJcAVsLpXwPtv6FvsMwZ4AFfi7S3IveAyo
+         zm84EuJR9J5ZoC0ZVkupqACPsmujbU71UYjS0YEd+UruQGk5QjavEQlcz8/xnSvSsNvm
+         ElTtfxoRSsGwCPw1jpzohuoIWP6W2jOFXm4HDRpBRm4z+z24TSo4oBN+MjfpMiHmSx/p
+         Nyw40NSgjozcmyRGlwWEhK8uyf9JRO9fOCfbDDkU5fxQnrfdLQN91Ee9IG9rtJSpJgei
+         IF/w==
+X-Forwarded-Encrypted: i=1; AJvYcCVDIrLXo44Ih17zpKpZbDbOn/JsgT4zdDT5l4ul9jDTIcwpWhyNoYCcI8fHJ+nVBAxroFANQezWzw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwE9zqowvT6rbDyMez0U0s7S4MR2W7kzsYKjVtFnoaYNGSLhnCR
+	HxDaJ6U/YzL+RWYw12h4ZvnHSK73rG5uTQ+zbRWXjYaybiPr7Grp6i/QoPyxoDqkVHVoHBI9BtU
+	lN620IoNaH++ni9wLWB6/rlv19z86Vkg=
+X-Gm-Gg: ATEYQzzmhtreexDvPZtk/83zzzWhDZkxsmZWB7ZakeYbMJz7Yy3rT8PLyrN+1wb3Igf
+	4QUG8duwBTwWY7vAMb4A+L2IXtucyb6q4E6IRMSCJ14zQFG1iZ8z6f8i8GmqNnWBQKYX5uJkTDz
+	VUwDd76QYND/eDUpA9urBAqSNW1J7pUtPuD7DG9rgvWKJ7P/TaQqAejcrjns4y19ZsH09JvF1M6
+	XyBDpC7Zm6ScLGyFIXWR5exl1rcRXoEwNU8r1vojIHsbL6cm5aT2PLfe41ORvuhErPK5uLG8BDm
+	tY9uRKTPfOXJviUhBG/KetQcnvjOjRcKYVcfkdaYGGTGGusYBbAAeSikvld5iA12SZ5DH+fFeMj
+	HNMraZh6MWsnrzvZWci01rLc=
+X-Received: by 2002:a05:7022:f8d:b0:11e:332:1e01 with SMTP id
+ a92af1059eb24-12a726a9b6amr2560622c88.3.1774271662774; Mon, 23 Mar 2026
+ 06:14:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260322192159.88138-1-ojeda@kernel.org> <20260323000327.111235-1-ojeda@kernel.org>
+ <96287f3a-d245-47cf-b7cb-f821451493d3@lunn.ch> <CANiq72nwSWVDRqm0Vap5j5X5k+Q-wq8okQ9d3KUgZt6M4CpW9g@mail.gmail.com>
  <65336ad0-ac37-416f-b6ae-e691e3e375ae@lunn.ch>
 In-Reply-To: <65336ad0-ac37-416f-b6ae-e691e3e375ae@lunn.ch>
-X-ClientProxiedBy: LO4P302CA0005.GBRP302.PROD.OUTLOOK.COM
- (2603:10a6:600:2c2::13) To LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:488::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LOVP265MB8871:EE_|LO3P265MB2412:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a8913c6-9d7b-42db-a4d4-08de88ddf1a2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|10070799003|366016|7053199007|56012099003|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info: dQss4JqdVYJ6Sg1snzZZSMh/0y8t/831k7Uefopl6UeFlW3pocKm0H4mw5eG4AXg8EEvV3T5qQRIYzrgl1OjGE/aXCCLIZ1d1yLMtzBw0/SsK0QtO7Wzp/2Q+AISrz7Uawww2C8QG9H3xlYU8jdPALEwYxOB4XIATEssSSGSLc2vIYbbEI3tCYHABUbWdSABnnF3djmMYWng85d3QAiKdqiyd3LgA0iRQo6cpdo0t9qnR68MMkccl2pnq0x0CpkMlVnI8L4aCCZTXD0gF0nbNJn4QIDmpUSUTx6oT6HWMaLS/x8wvGgZTNc8lw2tFKi+en0fokgke9SRMZFFKbIeiEuG5ZTlSlGu06MU4hnCgOjIfEJKjth1QqAbAq9nOd/AaHJhg06f5W7u6w5OGKxEpe4uD/5/bFMmDe7RLhBzY5xuWGqA9ZYQAGXQEu4TvGqTv1V9/KFR7jCpyBadTxVkzbbhxQJtBINOGOdhsy2/WHIH6W9pULUjFmDTujgznv1mbN3JXQCLC6gkX0U+7byFcj4XmFDz4j7zCeoI7iftUzSlzNOyyJzbL17y8Strh3o1yZxEkRo/Vm15gTBp/tYHToZYbKfsDD7NS/0L5pCa3tOOduTTCauuRDEJp/AZwTKoUq7W9OHdWAhmtIe4UfGLNxynRAEPxjBE/S8PsGSVsulE+YZK1lVrQcHIIGF+soDbU+Xapx8YKgQEXaBYjdS2goVm1x3+QbtUeqrN1ep1TZY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(10070799003)(366016)(7053199007)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NHcrYlN6QmFuRUp3QXJoWFVXeHJPMEY1MkFjZTJZTHk5VDArRGV2WW5iY3dR?=
- =?utf-8?B?RGpKQzdGRmxKNUQ4V2pqNXlsVU5ySVdPdlB6Qk9RbTJBZ3ozL3JlM0k1UW5Q?=
- =?utf-8?B?SHNlUUp1dzUwODJKRUExQTVURUhTbGxEaHJOcFdob3duY0Y2Zy9yTDh5a2tX?=
- =?utf-8?B?UEdHc08vMmhvOHhBS3FPOGdFU3VZRjF3bkxOZlRSZGxsVkVZbEY5alhESEx2?=
- =?utf-8?B?bWJscHdScjVPc0g4UDF1OXJORkRGb1hJaHd0bHhCdGkxRG15dUd3ZEFqN1pl?=
- =?utf-8?B?MzlWTVlCRW1yQ0NmWnk5b3lwaG9ySk4xK2Fhb1RrZGQwRHUrSlFzTmNBbUw1?=
- =?utf-8?B?NjRJWWZRaWNndlRwT3QvTnc1clZST3FXMjRhMTI2d00xaWdyWDVwZzdvK0hM?=
- =?utf-8?B?OFJzUUhBUnRLQmlOVThnQ2FhNW5sUEgrUUl4UHVaMWF4Sm45YnFEekZ0T3Vv?=
- =?utf-8?B?ekJMZXE0cmtFakVaMWdZMlRyb1FvRm5QekRISStYTUlBVHFULzZlV3ZVYUlY?=
- =?utf-8?B?V3FuZVVnTHhKZmNuUTZITUxnWWU3eWxvRHRzWnd3Qmh5U28ySVdIalFxRUNn?=
- =?utf-8?B?VmRiVHUvNFdKd0hkYlJYbjAwOVc4Mnk2dkZ6ZWFMTHIzanh5M1pjb3RpVVFO?=
- =?utf-8?B?UmxBN2E4MkZ1bHR5MDdkQ0NmTTVrOStCYk83dXVhV1dRenl2VHNkb2N3Uml1?=
- =?utf-8?B?a281L01KaXE0UmFwZU1idXRrYXUzQVhUaityOUg5bUwvck1aYzhNR1VySUJu?=
- =?utf-8?B?YnJwalBwdHoxeWY2V3ZheXUyOEFFSnRVTm1YZmZVY1Q5NTBtQ0tJMXcxS1Z2?=
- =?utf-8?B?T0lIMW5odzVLL2lFVmE0NTRXYnZCZWFHVmlnZDNVNzM3M0dyWVlLbmRyTUJV?=
- =?utf-8?B?WUNLYW5GdHpiMzlDOG9nWG0rYVZyU2JRYTV0VlF4STIxOHRwaUZvSUcyZ3lr?=
- =?utf-8?B?ZUpPbFBGMEVoNWZjMW4zZHRFZ2dLc2h5WlRZOGZwYS95YSsvM1czV3NDakFL?=
- =?utf-8?B?dEFaYWpIYzZEQ1VNd2RQN2t5S28vVG5va2dQdEcrcjNUVk1DRXV6ejQrWjFw?=
- =?utf-8?B?SlVLNlhtcGZvOGVJNzRHS3pYK09JTmt2UjltcUpsc2RxNmZoZ2sya2l0Y0FS?=
- =?utf-8?B?TUVBOXIwODZScklaTU9reWdmejVKYXUrYVZZOTRSYysvUkFiRFI5cXhnTDBq?=
- =?utf-8?B?UHhwbXZRMStuWUx3VFR5YnFGSDRYRlhuRG0yZGNJbVBGUkNVWlVtRjVzUGZv?=
- =?utf-8?B?SUtveExYV1NsTW9FOTNrbTBkVnBicUYrUldQclZyNjVJb1RLYVZvckJHdkJk?=
- =?utf-8?B?cDhoZk9CcUt1L242UFMrN2JYYktSSHkxRlM4amtCdG91eEdrNkJJUVkvRjht?=
- =?utf-8?B?UXMveVQ1STl0MWUrdnJvWFBWSXZPYjV6S1Vsc1dnYVdjQXNZdGVWQ0ZnRER5?=
- =?utf-8?B?QVZFVTJkc0JZNy90c3dsTFJvd05TaEpHYUx4cVh0bm1jQy9PK3h4ZDNnS1hp?=
- =?utf-8?B?SkU1K0xSMDBDYXVlN1MrUWJGcUZBOC9TeE5PL2QwWVNuaGxCaFVtODNsbkRu?=
- =?utf-8?B?am1tZksrckRaWFF0Q1VjS29kMUxqZTBqOE9QWmNibnltZmg2NSt0cWYvckJX?=
- =?utf-8?B?bklXQU9wUUFud09FVVUvek5HRTBZQkN4OVI5UkJqeS9nckJsSXRLZlpPREJF?=
- =?utf-8?B?Z3ZEYVhKb0lSWWFYSDV6WDdvaWVZS1pTTGhNWE5CZ2hMcnU1a3d6TG5pZy9i?=
- =?utf-8?B?YWpId2JmQks2VWNiQ01weXM3VkNyZGQ0QWJWZ1NtUFpJb0RZVlQrSHB1T3Ba?=
- =?utf-8?B?enI3OW9Na3YxSUVPUU1uMURUaVVOc0dNM0hRWUJBY09pWjRlSmNnTGFXcXli?=
- =?utf-8?B?ZDV1SlVseGRnR1ZxTTNtT1pPVm11U2wvelQ0d0dYdHlXSDB0WmFrRXJodHNp?=
- =?utf-8?B?OU0vQXBPTUxBUTBmUkVJK2t3UVQrbnBZaDJXRU56ZTZCTjZIL2V6Sk90TS9L?=
- =?utf-8?B?ME5LRTJXN0s3WXByL3ZsNGI0RkE0ZHg3SjRsSmFRRGZvNlhYMWYvaGRTMGM1?=
- =?utf-8?B?VkpobUpFamdkbTNENDh1aUx3TDFlVDNUTXpvRFFCY0t1WFZaaVNYY3praFNC?=
- =?utf-8?B?VTArbHA4eHdVbVorQ0NuVVBPenlHam9lRWZVc3FtV0tXSzFDcGZuM2FIWENF?=
- =?utf-8?B?Rk9abE1jcmI2TnlhdS9ldVBHa1JxczduN0Q3aG92TXB4OS9DUTI0Q2RLNDU2?=
- =?utf-8?B?d2k3WGxJNTJnaEc0OWdvOUtma3NKVnArRnJDa0pJSWkyTTVoMTJ5eUUvUW1Q?=
- =?utf-8?B?SjYyUXlrb3l4ZEwreEFhVmozdE5IdGM3eHlPOWRvSU5XWHFvWXFnUT09?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a8913c6-9d7b-42db-a4d4-08de88ddf1a2
-X-MS-Exchange-CrossTenant-AuthSource: LOVP265MB8871.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2026 13:13:15.7286
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9Xbz2PQdgvOnGrh1ueRGByQLcQFhQG61QmiwlyCCQdj0t39Ei5ap+R0k5bFvkn2dJOuKY79o8puTzBK1WCFDMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P265MB2412
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 23 Mar 2026 14:14:10 +0100
+X-Gm-Features: AQROBzCU6xTHp3fepOJZJySC8VZYOKbiHafZdHuv7S9AawfpKcVFscMWOGjChLE
+Message-ID: <CANiq72kbp6cDnNsKb+rPHiEJzOa-EnvR2HHthM-VtT2GMukY-A@mail.gmail.com>
+Subject: Re: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Miguel Ojeda <ojeda@kernel.org>, a.hindborg@kernel.org, acourbot@nvidia.com, 
+	akpm@linux-foundation.org, aliceryhl@google.com, 
+	anton.ivanov@cambridgegreys.com, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, dakr@kernel.org, david@davidgow.net, gary@garyguo.net, 
+	johannes@sipsolutions.net, justinstitt@google.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-um@lists.infradead.org, linux@armlinux.org.uk, llvm@lists.linux.dev, 
+	lossin@kernel.org, mark.rutland@arm.com, mmaurer@google.com, morbo@google.com, 
+	nathan@kernel.org, nick.desaulniers+lkml@gmail.com, nicolas.schier@linux.dev, 
+	nsc@kernel.org, peterz@infradead.org, richard@nod.at, 
+	rust-for-linux@vger.kernel.org, tmgross@umich.edu, urezki@gmail.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260323_061320_448667_E97474AF 
-X-CRM114-Status: GOOD (  22.87  )
+X-CRM114-CacheID: sfid-20260323_061423_686823_2644E563 
+X-CRM114-Status: GOOD (  15.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -161,31 +130,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon Mar 23, 2026 at 12:54 PM GMT, Andrew Lunn wrote:
-> On Mon, Mar 23, 2026 at 04:24:59AM +0100, Miguel Ojeda wrote:
->> On Mon, Mar 23, 2026 at 4:04=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wro=
-te:
->> >
->> > Rust is already fragmented, because it does not support all
->> > architectures. Do we really want to make it even more fragmented by
->> > having some bindings only work on a subset of the subset of
->> > architectures?
->>=20
->> That is not the case. The `depends on` is not about putting them on
->> abstractions, but on this experimental build feature, which is gated
->> on `EXPERT` to begin with, because it uses a fairly exotic approach
->> involving LLVM bitcode, which carries potential pitfalls, like the
->> mismatches on the target string like one of the commit messages
->> mentions, and possibly others.
->
-> I'm not sure i follow this.
->
-> Maybe i should ask a different question.
->
-> You said:
->
->> we
->> may want to start simple with x86_64 and arm64 or similar first.
+On Mon, Mar 23, 2026 at 1:55=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
 >
 > The current proposed code for netlink needs this feature, because it
 > needs access to inline C functions. Is the implication, following a
@@ -195,11 +140,10 @@ te:
 > If you want netlink on um, arm32, riscv, loongarch you would need a
 > different implementation of the binding?
 
-It doesn't need this feature to build and function. It'll just be a bit slo=
-wer
-because inlining from C to Rust won't happen.
+I still don't follow -- this new mode is opt-in, and only a couple
+architectures (or whoever decides to support it) would be able to
+opt-in. Nothing else changes.
 
->
 > And a completely different question. Are there other work in progress
 > solutions to allow the use of inline C functions? For networking, in
 > particularly MAC and protocol code, anything which needs to access a
@@ -207,13 +151,9 @@ because inlining from C to Rust won't happen.
 > this "fairly exotic approach" as just a sort term bridge until some
 > other "boring approach" is ready?
 
-The actually inlining itself is not exotic, it's exactly same as LTO, just =
-in
-smaller scale. Although, the way we do it is probably somewhat uncommon due=
- all
-the constraints that the kernel has (mostly due to loadable modules, so we
-cannot perform a global LTO and thus need custom handling of LLVM bitcode).
+This series is really just a way to increase performance, i.e. it
+doesn't really change what we can do.
 
-Best,
-Gary
+Cheers,
+Miguel
 
