@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C27DF4613F
-	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 15:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 044A0EC01B0
+	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 15:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aJG7rviSzrQ4mxNP46Y9gYTa/9q/Y+t8JYvzFfU3sy0=; b=4hUqfAa08fq0Ax9t0U88tFqY34
-	UPLUQ4KqJg8fO+IaqOCNnc6tJY4ig0UhdHj5KKil48oVB3sbkVxQmXV4TSL7aBipEqZ50qLWB5XgX
-	J3UURgZylDBHwoh75LBku+vvXmzxSqQ8Rb/OiJEE7hLG6G1rG1zGSe4FSz3yuQv2+0YLHM7UXkfGA
-	fakXEIIIk/JQwMmTm48fwFo4nN5X/lOyd5QG9iaN7UmeJbdMyr4V36yzOBcJZTpKsxfOZJVeBcATm
-	EFPLneKxpB6KPZqYIyXvfR6iOx4IeZRX2UTgZsnsTNDwq4MDIM1FltdSeWn6pbiLgCb85IcGEERpp
-	xzvWiScA==;
+	bh=pBxuE79q0h/5XA82Gqv80sB/5+DcRUE+NdGM983xYdA=; b=LKEAv1oJ0GJ3Hzy9Z4Jkj+YhZW
+	2tKP9d+OUaBGJuGOsMmHPFTE+i4/jEjSvPx7hhP2n4vHI/7j1+OVnSjtptYQ8/LfV8Qpu7LlYKz5W
+	GKtLxu1NK75um6kP3Jb5FeHylFShx9YyxkMzB0V2b8iAOdlWtWD/jdXNXuhmgXJjE7nosoTYulb0P
+	ywP0WWRH6SsaydMJJA+wmYGCqcMCQf3mh4SKswM96QV65SP97n0xzGwS8npo2XYMCVpAgLG43j3Y+
+	aTGGYUDcBbnWPbdYf9rR5ngCmYcsHGJM+0BZSsRYI/vc1iNbQjfQw0sUQMos4snLTUUFiFNB9O+YK
+	l0A0zbTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4hVP-0000000H3sd-2dvP;
-	Mon, 23 Mar 2026 15:47:51 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1w4hXW-0000000H45f-10Cv;
+	Mon, 23 Mar 2026 15:50:02 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4hVL-0000000H3rj-369Y;
-	Mon, 23 Mar 2026 15:47:48 +0000
+	id 1w4hXT-0000000H44O-0tyL;
+	Mon, 23 Mar 2026 15:50:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9DE7743B0D;
-	Mon, 23 Mar 2026 15:47:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1465C2BC9E;
-	Mon, 23 Mar 2026 15:47:34 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 30C9443D7C;
+	Mon, 23 Mar 2026 15:49:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79346C4CEF7;
+	Mon, 23 Mar 2026 15:49:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774280866;
-	bh=ykDj0Ppke/lrsvnXc74bDdUkqngFPXP4WoK/RTIL1I0=;
+	s=k20201202; t=1774280998;
+	bh=PE+T0jq3B8ZtYRDz678LEyuTz6jmDPCQy5RpPTYrDcc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=KPjnpfdELqJbpC4ncfqddvGU9IIIkup26qddC2aNixhFBIb9mHkF5A7epXJQ3KmSH
-	 MuLQQp032z1JuZmOTzDCg5uhT0pMXLmk69mazn1wBoES5rRXYs+2i01B39tCb0fgwm
-	 eMVmp2zxvVNKgA6OUptqx23bwS7Xpo/9N86ZlA8ang/MlqIECTmX5MKUewXXQzMnmh
-	 QUNRieF4AKOOU9JlQtW5hTno4YlkFFGvDEgeAtLrbiTNsDF5KI83hQ66Af3sBzXk2x
-	 2EQzT+rnWcdOU/touJNZDWaVify96eKObV19ON47GNNYH2ceCv+xCHG57JoxHjqvXU
-	 vAON7QUwQBDNQ==
-Message-ID: <cd30724b-15e3-4642-b19e-c464d0978282@kernel.org>
-Date: Mon, 23 Mar 2026 16:47:32 +0100
+	b=XdKC0tlgf1MZ9+nFlKePnzFurNne6QPx1E6YWyTEqc5Cy4/MJ7viljpcXJeeYfD84
+	 LwWQhNPsI2I9K0v1c33u+VAYFjbd8O5XNRv7oB6hk9aWRLevlIqBhXTN/OJlKMwQKf
+	 P5Vz/q+wIiOUnPmbE+gPP+1XyMVrMVU51S9pyTagqqIblZpcRImI+DCS0rQGs9Ppmv
+	 uI4cbcMRaN1v0kgvKPt9I+2sGELYGp/hsRsweEovyazf3HWaMCdkqf89a80XhZaKnl
+	 owytQQeI/86OfShIGnWbjgDPLE70BmD03V3uE7cRvQ8417IfFC5O/o3RDSK2/SzDZz
+	 cVIvEtMGRKwxg==
+Message-ID: <3945a9c5-565f-4126-8d46-1db584b09e79@kernel.org>
+Date: Mon, 23 Mar 2026 16:49:44 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 23/25] mm/vma: convert vma_modify_flags[_uffd]() to use
+Subject: Re: [PATCH v4 24/25] mm/vma: convert __mmap_region() to use
  vma_flags_t
 To: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>
@@ -85,15 +85,15 @@ Cc: David Hildenbrand <david@kernel.org>,
  linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, selinux@vger.kernel.org
 References: <cover.1774034900.git.ljs@kernel.org>
- <51afbb2b8c3681003cc7926647e37335d793836e.1774034900.git.ljs@kernel.org>
+ <1fc33a404c962f02da778da100387cc19bd62153.1774034900.git.ljs@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Content-Language: en-US
-In-Reply-To: <51afbb2b8c3681003cc7926647e37335d793836e.1774034900.git.ljs@kernel.org>
+In-Reply-To: <1fc33a404c962f02da778da100387cc19bd62153.1774034900.git.ljs@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260323_084747_822794_52414421 
-X-CRM114-Status: GOOD (  20.12  )
+X-CRM114-CacheID: sfid-20260323_084959_299701_32339A7C 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,41 +109,23 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 3/20/26 8:38 PM, Lorenzo Stoakes (Oracle) wrote:
-> Update the vma_modify_flags() and vma_modify_flags_uffd() functions to
-> accept a vma_flags_t parameter rather than a vm_flags_t one, and propagate
-> the changes as needed to implement this change.
+> Update the mmap() implementation logic implemented in __mmap_region() and
+> functions invoked by it.  The mmap_region() function converts its input
+> vm_flags_t parameter to a vma_flags_t value which it then passes to
+> __mmap_region() which uses the vma_flags_t value consistently from then
+> on.
 > 
-> Also add vma_flags_reset_once() in replacement of vm_flags_reset_once(). We
-> still need to be careful here because we need to avoid tearing, so maintain
-> the assumption that the first system word set of flags are the only ones
-> that require protection from tearing, and retain this functionality.
+> As part of the change, we convert map_deny_write_exec() to using
+> vma_flags_t (it was incorrectly using unsigned long before), and place it
+> in vma.h, as it is only used internal to mm.
 > 
-> We can copy the remainder of VMA flags above 64 bits normally. But
-> hopefully by the time that happens, we will have replaced the logic that
-> requires these WRITE_ONCE()'s with something else.
+> With this change, we eliminate the legacy is_shared_maywrite_vm_flags()
+> helper function which is now no longer required.
 > 
-> We also replace instances of vm_flags_reset() with a simple write of VMA
-> flags. We are no longer perform a number of checks, most notable of all the
-> VMA flags asserts becase:
+> We are also able to update the MMAP_STATE() and VMG_MMAP_STATE() macros to
+> use the vma_flags_t value.
 > 
-> 1. We might be operating on a VMA that is not yet added to the tree.
-> 
-> 2. We might be operating on a VMA that is now detached.
-> 
-> 3. Really in all but core code, you should be using vma_desc_xxx().
-> 
-> 4. Other VMA fields are manipulated with no such checks.
-> 
-> 5. It'd be egregious to have to add variants of flag functions just to
->    account for cases such as the above, especially when we don't do so for
->    other VMA fields. Drivers are the problematic cases and why it was
->    especially important (and also for debug as VMA locks were introduced),
->    the mmap_prepare work is solving this generally.
-> 
-> Additionally, we can fairly safely assume by this point the soft dirty
-> flags are being set correctly, so it's reasonable to drop this also.
-> 
-> Finally, update the VMA tests to reflect this.
+> Finally, we update the VMA tests to reflect the change.
 > 
 > Signed-off-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
