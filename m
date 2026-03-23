@@ -4,89 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7491F4612F
-	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 14:39:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3544F46135
+	for <linux-um@archiver.kernel.org>; Mon, 23 Mar 2026 14:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
-	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ow2cYCMn5EXbkFbtWklLmiMt9RKP3mI6kxfKs0fin8E=; b=rvBBHkhtN1VyYmzFAAB9EkyhG2
-	bzGEw+ibC3hQQOcW0kFEoeJE3Iv3iyWED0sYZQiDDWpaPG0uTXPOCnn4j1NllEpYGheo2DtdlhZ9k
-	bdWjhVviYRMR1fmuX1xEh2AvL3COTzF0CDois2H5gz1wevmxGlGSoMdX1MRTvRQ2JCS2OxCke3Q9m
-	4G1buE4XJjmMINBdFnrb9T0un4VT/S0YEoUVCGFDUQE1RWZqbAgbYgGL6KM9Cv8kCHBP9khUI4YCD
-	9RyXKdLWQclsyDTzKXPidp4EeWBtGs7ZBQxxKxWk4ok84Q4ocUWHSTMVwYqsETsotHu2K4SqjX8IZ
-	Cy9T46XA==;
+	bh=LI8/dUz99GIMIFX7jL9A6Uqav/8pN6H5Y3gQQrLVq3g=; b=DI5MXDlyCLOkhOEBx1NZwVU9cl
+	t/PbUPeGSE+gNhVITlwRnagX2o6XzWzQsfihTIjRUD40Y6mfCSwqzp3drfS9ka0kKpU45S0Puxr07
+	RGEW6dZ8lDwvEAKj4qtUJW04uiJO6tr2jP/o1iLmZ2fvFo9C+MrBCmIsaVG0L5MX7/FHoMWajoTVe
+	ImngDIdXYgNZewt+lxyulys0soLq2E0TxJCd+BB8o++NxvBByL3/CPSh6HuTAL2LAJSJWUmqfhlx+
+	93boWz4IasQmYVt+LdGqz8UzJkOdfyaYqmh6A2TtNfcyBjVSjtslLK3YEUIydh9v1auO2D2x1VmrH
+	StPGOYJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4gR7-0000000GwTQ-38tp;
-	Mon, 23 Mar 2026 14:39:21 +0000
-Received: from mail-wm1-f73.google.com ([209.85.128.73])
+	id 1w4gex-0000000GxMu-06bq;
+	Mon, 23 Mar 2026 14:53:39 +0000
+Received: from mail-dy1-x132a.google.com ([2607:f8b0:4864:20::132a])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w4gR4-0000000GwSZ-2egE
+	id 1w4geu-0000000GxM5-0b6I
 	for linux-um@lists.infradead.org;
-	Mon, 23 Mar 2026 14:39:19 +0000
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-486fa07f2bbso15847295e9.2
-        for <linux-um@lists.infradead.org>; Mon, 23 Mar 2026 07:39:17 -0700 (PDT)
+	Mon, 23 Mar 2026 14:53:38 +0000
+Received: by mail-dy1-x132a.google.com with SMTP id 5a478bee46e88-2bd801b40dbso196333eec.0
+        for <linux-um@lists.infradead.org>; Mon, 23 Mar 2026 07:53:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774277615; cv=none;
+        d=google.com; s=arc-20240605;
+        b=OXVGXLGwz3Fmmpi7h1zSPS2ZNLJVYYdEPAOwqSBIr6rSCDs3wiy15+2Ut6s1viKjhC
+         LAw0NdK3I0spxaS7rEA76+IUJmnkp2ma08giUB/XAk+h2Duy8Zh2SuPmPEi7hMOt+Lkx
+         4gQ7ZmZDd4PnxfvfF6K8q+feZeDW3Pr+Z+xHGS/1PJNC0as2vrl0P0GVOK1TCTAVbhCG
+         XtY2H+EpdYwKMW0ceV49jeb9X1XJki/ZJQ1P3BaeS9/eBWZ87ISYGFQUtv6ooBWAYrU1
+         Pee0q1M29Ea2vfUecSIVUcE1HCrgjh/XQW2q8Ax/h5jbO4Fc2WDrVSO8SsP55rv/rZa0
+         2FZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=LI8/dUz99GIMIFX7jL9A6Uqav/8pN6H5Y3gQQrLVq3g=;
+        fh=/f50ZuQ0a5tdx+TfuohP1OrwPUyXueA5PgvG8su/X+g=;
+        b=JsxQXleoV+yISH2zTOaWuqP0xMF+5qvFbdcek3uo7EGuMgj3dUesJQo09oyii/KWpO
+         Gyz8s2n3/nDVr/T6dWDWeBjRdyie9Vuu6jpwLyUQSyDfx6Uxi+J+dbqgX5SSC3Ea5or4
+         QLKKw9ukcXSlHCYVArvdh0UnB2n+mORvhf86qHmXjxJ+XLDAolbbnezCAhbkh6JtzqPf
+         2O42XmA8jWoQe5GIz/ViYk6RgW5i69aoH+686PD9ght4GJJ2HbjLhKZt0gW6ueQUx+dL
+         iWMq1/o5sqLmh6fyzBOfB1RovlGdczMgjLDs46z22nErk+ptLFtlWuUtqrzRLB1s0+Zt
+         Cw1g==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1774276756; x=1774881556; darn=lists.infradead.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ow2cYCMn5EXbkFbtWklLmiMt9RKP3mI6kxfKs0fin8E=;
-        b=Y+y4rPh/0u6JCBZoY+wjYFzmBgawmmrR1zyMO7cKGIBULUtMzIVQq+aHnRJuXTWlV6
-         LDD2dcJ7xJ+A1D96gMOiL6xKeI7ZEC9MB4jQ+ytlHuIrPXbZbFQY/uzyBUQ9dIwbPAXB
-         qQsF3LD2sM+xS4s5gjs3OXkZvlT0CktvU98w7yVQQfJAb9GCp9bEOTUh1uQs6IFHlkgx
-         xz4nn/FdHwQAI+n2wiO1t1NHqpjve04ePxcCqNZEiwXO4jUS5G7glywci5pBLX7lkk5N
-         cMkQDLQPt/WujZHXySJZcginIa/8nrt+mMZimv2x6N+YWoytTvf38wdT+QAkdrpR0lPl
-         0Yww==
+        d=gmail.com; s=20230601; t=1774277615; x=1774882415; darn=lists.infradead.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LI8/dUz99GIMIFX7jL9A6Uqav/8pN6H5Y3gQQrLVq3g=;
+        b=FRJlwAWLeQtckrDNCLh8nmQVNn3NB8oNpqSvEUiFsFAoKs6Ism/foEn2EEH3UkXBgC
+         p3MZUZyT7FSd7XIF4nHKe1qfhNZHoRa66dHZistfzyZbedjo59X1B9jqaOxbzJkVWeXv
+         nt4tYkG5XRRL6OiCDR7LPsdd48xP10zUXkpGdjVd2cmVjQ+sCEgyEjOYh4Ol2to/jRwj
+         gxHVE2Tt+hEAt68agCNRjVItNfNtvR+YumFpqrYQCAmXNI+lPv8zkK0ctU/6gEKnFotD
+         /KM25/sFvlyAQKPE1Qc8kOebyh4r2lVVyDOStIxNdbqc32dvbw1+PWUF8J71R2y3HSn4
+         1eeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774276756; x=1774881556;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ow2cYCMn5EXbkFbtWklLmiMt9RKP3mI6kxfKs0fin8E=;
-        b=Vv54Fg4MFoJyfw4bXhIxmQLJSYc8RkbYakZ5p3XIW8FVjr8RCAmy2ZA1y/y6jcuRvI
-         DUVLn7JZY7RH6OiJT6X54qxuSUf/mAPJ2kPIuCNPQOYWQoauzNnYHWas8ZEfk6z5ni/S
-         y99FM/ZBKzMCGwxQtakzcwrb4mMZ6O+a6qF4hblSR7ExLCkVwZE88efp6BFHvM8I8S3/
-         b1UOzAuAWW9UYq8teiJLY3cdMnJdhzXSSS3MVQAuIAsJ+HMZ4DBzjGxzrrdHYMyJZ/DC
-         afiC3yD5AsbkJVTMGpr0mhjN4qXtxX9jeeano/Aru76vlhYmCh37fEf+IwxxD4vIWloX
-         883g==
-X-Forwarded-Encrypted: i=1; AJvYcCXAMNUD0IRcqSAG7kxXJFN80KlkbsfnEbSxL8kkn8EV+tBq4iwU1xC+A1rgSjK+Q8pgcyJrOjD5Kw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw1MHeKB0j/i1PNVhToufKsADWYvIcPNUruHBQZXmdatCblyRID
-	mLeWAm4gb+c7YaCqepG8RzuAMsJXn7ghDluFQhfrZgDCO4aQaAtR5C573bUPB+3Uk+LqibUVNUp
-	aEQeq9fLjkHwNhnRa8Q==
-X-Received: from wmbej14.prod.google.com ([2002:a05:600c:3e8e:b0:486:fa53:8cfc])
- (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:a43:b0:486:fbd1:9dc0 with SMTP id 5b1f17b1804b1-486fee0d52fmr164091435e9.22.1774276755701;
- Mon, 23 Mar 2026 07:39:15 -0700 (PDT)
-Date: Mon, 23 Mar 2026 14:39:14 +0000
-In-Reply-To: <b5063e7e-9245-434e-9877-5ac7b45f4bc7@lunn.ch>
-Mime-Version: 1.0
-References: <20260322192159.88138-1-ojeda@kernel.org> <20260323000327.111235-1-ojeda@kernel.org>
- <96287f3a-d245-47cf-b7cb-f821451493d3@lunn.ch> <CANiq72nwSWVDRqm0Vap5j5X5k+Q-wq8okQ9d3KUgZt6M4CpW9g@mail.gmail.com>
- <65336ad0-ac37-416f-b6ae-e691e3e375ae@lunn.ch> <DHA6SE9EMEQF.1PKVHEG18I5FS@garyguo.net>
- <b5063e7e-9245-434e-9877-5ac7b45f4bc7@lunn.ch>
-Message-ID: <acFQkuarr6bcOFwM@google.com>
-Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
-From: Alice Ryhl <aliceryhl@google.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Gary Guo <gary@garyguo.net>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, a.hindborg@kernel.org, acourbot@nvidia.com, 
-	akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, dakr@kernel.org, 
-	david@davidgow.net, johannes@sipsolutions.net, justinstitt@google.com, 
+        d=1e100.net; s=20251104; t=1774277615; x=1774882415;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=LI8/dUz99GIMIFX7jL9A6Uqav/8pN6H5Y3gQQrLVq3g=;
+        b=bjndy737TlcMdpBpJ9ytn4Lw7EVM3FHQbJlxCKxlmE5/WsXbPSwqKm4Wy7DFRYBrkZ
+         Ogh0CQlH4fRoxXW1SPASpqnomDXFLVFnQ0VuFCnziaTysqb7cvLNSPlTaJNWbEmdx9gT
+         vdl1Mt99Tll92H0OBzpVjoDhKE7o7HNuREitIdBqOlhZvBFfGB1rtmEL03PPkA/TFn1V
+         hu7I0dQvNE9VRrJ4+kb4YfiODcThHHQVCzDZektRdGlfFzgLpG6ITwhHBBm01nXF5qke
+         q/f7bC2d1t4YzXmzGR48XxQNpng6LFzMF2qN7F9CwI+XKsJ2JVcT7AfXhbmwolAHq4NF
+         OppQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpuxHjBfQhN4Ay9zxZIW6gzxuk2e61V95PiGAs6dHbg1GcRClbh6ysAU9ywzBVmTz9oq7VJQXHlA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwEHm1tOHQTyfYElZ+zBTiqfk4YI4ldsnr83ZcZU3cClMJPKx+N
+	wdJsBjXZ8fEdFboAe3P4iXRHxbl2eWimznGo2IAdBxwulr1x/xZMgT3UbL5+r19vCJDsv0QohZI
+	ecMnx6kgR/VEQCmMxe1JP/KbPh/a9Uqw=
+X-Gm-Gg: ATEYQzw0bAN8ed/V5AFr++V18zO4ppD2ZM091S2hHrDJISDQV3364os+zCe6lAD0Mma
+	ETElljQoVlD0+7M3hAguQ8EDb7JNss2v4D/Swwks05OcNXAFXR8ASIaWlC6OaWKMIe7QPH2s2Zq
+	PEzbqzDEb+mVBPH5Ss5zQNYCFWmivMkEcYzQv5Uzy2/RQPyfAvpRkqbrL7+C+ZWyhYrRKfKsGQx
+	urx+4klt8CFwp0C+xQvZ7uxeSV8GxjeCXUiF45t+1mvhuqabBVUVcx68d11smu2ozJ1uXjFU39h
+	aauhcAP5oEmIjxpAlshRkgEPkvnht4NLyJcsE30yztHbQ3lO/ylo9aUFj/74YqS3BKzEoHmApAi
+	9b1fP06Sktg4ayebYiu1YvnU=
+X-Received: by 2002:a05:7300:3215:b0:2c1:27c:758c with SMTP id
+ 5a478bee46e88-2c109938d44mr2357139eec.8.1774277615132; Mon, 23 Mar 2026
+ 07:53:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20260322192159.88138-1-ojeda@kernel.org> <20260322193830.89324-1-ojeda@kernel.org>
+ <4fba0163-547e-4099-8b37-5d8429bda6da@sirena.org.uk>
+In-Reply-To: <4fba0163-547e-4099-8b37-5d8429bda6da@sirena.org.uk>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 23 Mar 2026 15:53:21 +0100
+X-Gm-Features: AQROBzBN4j7-1buNPtn5ON4A_wtJBuiQQ3UlTVe5clvsCt_bKh7FB_BsDwGf67A
+Message-ID: <CANiq72nmFsnoP3dv_-0PWH0XBpf0OuPzNR2CP9Hw56Z+RVifAg@mail.gmail.com>
+Subject: Re: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
+To: Miguel Ojeda <ojeda@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Daniel Almeida <daniel.almeida@collabora.com>, Jean Delvare <khali@linux-fr.org>, 
+	linux-kernel@vger.kernel.org, a.hindborg@kernel.org, acourbot@nvidia.com, 
+	akpm@linux-foundation.org, aliceryhl@google.com, 
+	anton.ivanov@cambridgegreys.com, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, dakr@kernel.org, david@davidgow.net, gary@garyguo.net, 
+	johannes@sipsolutions.net, justinstitt@google.com, 
 	linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-um@lists.infradead.org, linux@armlinux.org.uk, llvm@lists.linux.dev, 
-	lossin@kernel.org, mark.rutland@arm.com, mmaurer@google.com, morbo@google.com, 
-	nathan@kernel.org, nick.desaulniers+lkml@gmail.com, nicolas.schier@linux.dev, 
-	nsc@kernel.org, peterz@infradead.org, richard@nod.at, 
-	rust-for-linux@vger.kernel.org, tmgross@umich.edu, urezki@gmail.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="utf-8"
+	linux-mm@kvack.org, linux-um@lists.infradead.org, linux@armlinux.org.uk, 
+	llvm@lists.linux.dev, lossin@kernel.org, mark.rutland@arm.com, 
+	mmaurer@google.com, morbo@google.com, nathan@kernel.org, 
+	nick.desaulniers+lkml@gmail.com, nicolas.schier@linux.dev, nsc@kernel.org, 
+	peterz@infradead.org, richard@nod.at, rust-for-linux@vger.kernel.org, 
+	tmgross@umich.edu, urezki@gmail.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260323_073918_665784_5DC6AD97 
-X-CRM114-Status: GOOD (  16.74  )
+X-CRM114-CacheID: sfid-20260323_075336_185264_2E3C04FB 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,31 +129,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 23, 2026 at 02:28:25PM +0100, Andrew Lunn wrote:
-> > > If you want netlink on um, arm32, riscv, loongarch you would need a
-> > > different implementation of the binding?
-> > 
-> > It doesn't need this feature to build and function. It'll just be a bit slower
-> > because inlining from C to Rust won't happen.
-> 
-> So it sounds like my understanding is out of date. When the first
-> Ethernet PHY driver was being merged, Rust could not access inline C
-> functions. The binding had to replicate the functionality. But you are
-> saying that Rust can now make use of inline C code, but not actually
-> inline it? It results in a function call?
-> 
-> What this feature does it actually allows inline C functions to be
-> inline? So it is just an optimisation?
+On Mon, Mar 23, 2026 at 2:54=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> Callers should never treat NULL any differently to any other non-error
+> pointer, this is not a value intended for inspection by users.
+>
+> Having specific handling for NULLs is very much not a preferred
+> interface, and most things shouldn't.  The caller should probably have
+> it's own !CONFIG_REGULATOR checks rather than using the return value.
 
-That's right, this series applies cross-language inlining to the helpers
-we have for calling inline functions.
+Yeah, that is the understanding I got from reading both the docs and
+the comment, but I think the docs (i.e. not the comment in the stub)
+could point that `NULL` is one possible pointer value (perhaps
+including discouraging relying on particular values at the same time,
+and perhaps mentioning `!CONFIG_REGULATOR`).
 
-Sorry if I was unclear on the netlink patch series. I mentioned this
-series because you told me that inlining is important for skbuff due to
-performance (not for netlink though), and this series is necessary to
-make such code on par with C perf-wise. But if you accept the function
-call overhead from not having cross-language inlining, this series is
-not needed.
+i.e. to me, "Pointer to a struct regulator corresponding to the
+regulator producer," sounds in the docs a bit too much like it will be
+a valid one... no?
 
-Alice
+Another perspective is that, when one reads the rendered docs:
+
+  https://docs.kernel.org/driver-api/regulator.html#c.regulator_get
+
+one sees the postconditions, but they happen to not apply in all cases
+(in fact, perhaps not having the "Returns" there would increase the
+chances one realizes that, but I understand that you want them to
+treat it as fully opaque as much as possible).
+
+It could also help things like AI review systems which may only notice
+the docs and not the comment inside the stub.
+
+Perhaps it could be at least a one-line comment in the real
+definition, even if not in the rendered docs, to have a chance for
+others to notice.
+
+I don't know -- I hope that helps, in any case. Perhaps Daniel can
+tell us what he thought when he was writing the code, as another
+perspective, i.e. whether it was the docs or not the issue.
+
+Thanks!
+
+Cheers,
+Miguel
 
