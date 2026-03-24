@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58EC8F4613D
-	for <linux-um@archiver.kernel.org>; Tue, 24 Mar 2026 12:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A53E5F54ADB
+	for <linux-um@archiver.kernel.org>; Tue, 24 Mar 2026 16:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8Tmw3URJKfLnuIfGwhqReoRx58Bp14UQn5+Ge5PCFaI=; b=zJRYlP7EhQ4pb97AlxFYPC55sb
-	K3HETH3KD0XDACdtjdCLq1ueeF9fHkvZkbgbLU8/gH0SRwF7XUun/nV9Zr3mreuxToMZwBLnTY0oq
-	rH/ibQDO3O8QUnoawemsAZQov5ewXFMVGt0nNwRRzRE/kOs1V2gr0cYODqu7N5MTNA7tdCPHy1yef
-	G+OXPBxpd8zCRpifZh9zXiHlZpbo4hIDa1jqXT+YJDJgg7w8E8Zgw1cDYMSDQhwd1A2mH/y2TUa97
-	Jb6PhOh7WBTC8zElsJCtIVCS3FhXlUV4OglkgaX+2b0LmRglcOXrkN1taT254S5B25wrf3hZ6yBmp
-	AkvHQ8XQ==;
+	bh=3Xek2iy9qjmWdzaaTDCJksqUsRu7KHXrr0+xwjq5P+g=; b=HPdslMqJGLgBATo/4jbcAEk8cA
+	rf+lZlvEsOeN20xJLgp3/Nit2W99Lhp4CCM39olf7lnyyXBAgXZQoQALcaC0Xn6C8ZiCVhTiTsS5y
+	hqzyA0GoP3Ip0S1T4nlgTz4RyiYyqJfrZjLzfq56dumsk8ePr7hIlC1EISSbYyyrN86UQitX0Ez19
+	LeY5P0Ui5cGa+PKLAu0/pQZi9LfOrGKAtxjGpYM+ZCuT96Ywrrutw9LeOVtTHHR+d6p7kWImCX79k
+	XP0vxNuzMx5cgaUhcqHGCj/ilCZsQn+mRS0CKhr0karOp3Ysxd2XvV854l8EDoBekMqHI6WQ9lzwi
+	Kjrk6S1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w51Lm-00000001Sz1-2SnZ;
-	Tue, 24 Mar 2026 12:59:14 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1w54pn-00000001u9Q-3HZt;
+	Tue, 24 Mar 2026 16:42:27 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w51Lj-00000001SwU-3Ogh;
-	Tue, 24 Mar 2026 12:59:12 +0000
+	id 1w54pk-00000001u8s-07Gr;
+	Tue, 24 Mar 2026 16:42:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id B22FF60180;
-	Tue, 24 Mar 2026 12:59:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 928E0C19424;
-	Tue, 24 Mar 2026 12:59:08 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id B7A3344260;
+	Tue, 24 Mar 2026 16:42:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E44B6C19424;
+	Tue, 24 Mar 2026 16:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1774357150;
-	bh=DNZLnRzh+CvM88p8pkAqUjgyo33nZndxuNt19jJaIc0=;
+	s=korg; t=1774370542;
+	bh=TDgLcRhij5JQVZa60QmaxqOx203j51xbjV/q4WkoTac=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=L2bpOAmA8emgVd/ZYEB/zrSuE9jofQHFZ27BdcP53YODoh57XV9LR2CPX59ADyD0z
-	 q7r1taKZSMDWKO39Sv/SPts3ItWTubPfixNB+/Y98emGdt7nlHO096btK1O0vCkoQ1
-	 6OtPOaaEWYgTpw6T6Z7ovs8Hs1s7B0CHbZRMoxPo=
-Date: Tue, 24 Mar 2026 05:59:07 -0700
+	b=DQOwZZrwl+GxIARWYI809PrjYZgIC0xfeubUvTNhKKAudWXflkBkHkOQxqHhcKfI5
+	 YEd8AoepFJifaDz0cIKUFkW85RTTMclmIhV4gfAqh3VY34KIx4Pm4UqjUG6y+A3vml
+	 FWjY7pXOdRDrlwOVcmMMkatFHeB/Fbf82T5tVjrs=
+Date: Tue, 24 Mar 2026 09:42:20 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner
@@ -72,13 +72,16 @@ Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner
  linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
  linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
 Subject: Re: cleanup the RAID5 XOR library v3
-Message-Id: <20260324055907.52f2304d0be85c1087e0b9f1@linux-foundation.org>
+Message-Id: <20260324094220.09e6eb90afc7f55937847f22@linux-foundation.org>
 In-Reply-To: <20260324062211.3216301-1-hch@lst.de>
 References: <20260324062211.3216301-1-hch@lst.de>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260324_094224_130597_5BB1B2B4 
+X-CRM114-Status: GOOD (  17.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,8 +113,8 @@ On Tue, 24 Mar 2026 07:21:36 +0100 Christoph Hellwig <hch@lst.de> wrote:
 > implementations (although none is contained here yet), and uses
 > static_call to avoid indirection function call overhead.
 
-Thanks, I'll update mm.git to this version.
+Thanks, I've updated mm.git's mm-nonmm-unstable branch to this version
+of the patchset.
 
-It looks like AI review has found a few things:
-	https://sashiko.dev/#/patchset/20260324062211.3216301-1-hch@lst.de
+
 
