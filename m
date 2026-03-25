@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A53E5F54ADB
-	for <linux-um@archiver.kernel.org>; Tue, 24 Mar 2026 16:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D673FEC0F4
+	for <linux-um@archiver.kernel.org>; Wed, 25 Mar 2026 01:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3Xek2iy9qjmWdzaaTDCJksqUsRu7KHXrr0+xwjq5P+g=; b=HPdslMqJGLgBATo/4jbcAEk8cA
-	rf+lZlvEsOeN20xJLgp3/Nit2W99Lhp4CCM39olf7lnyyXBAgXZQoQALcaC0Xn6C8ZiCVhTiTsS5y
-	hqzyA0GoP3Ip0S1T4nlgTz4RyiYyqJfrZjLzfq56dumsk8ePr7hIlC1EISSbYyyrN86UQitX0Ez19
-	LeY5P0Ui5cGa+PKLAu0/pQZi9LfOrGKAtxjGpYM+ZCuT96Ywrrutw9LeOVtTHHR+d6p7kWImCX79k
-	XP0vxNuzMx5cgaUhcqHGCj/ilCZsQn+mRS0CKhr0karOp3Ysxd2XvV854l8EDoBekMqHI6WQ9lzwi
-	Kjrk6S1A==;
+	bh=XPVOLvrIIEOfu5g5CChI9oR0hIwo1hqCCzApx/PbUc0=; b=qNzXSWTT7gDnIi+iOHi1tSLqod
+	kYgmXQFNB8GGrYfBOve2u1a/XSG9gnTC03LYYaq3nD0x8t961nRy5K5oHBPrPaY8HIdpKyz1E6dlE
+	5SNxLt5HvN8MYHnD5ATGDvgrrgJBRl9qvabpGbsj/K4yHuhmdRhZwqxJFSRMmWjlkcGqp9Kqo+Fga
+	jjwUokY/y0KvfYkyRv27hz6KU3bM+gN3gWNIeOo6agd8UBJyBBPaM1Jo/Hgyz7iVCJT2OVmIHi8PI
+	ozFbPNWCGq2z0nU8/dInKWlS4Q8FKTHOFv589ticwTXmkughv7XnVa0Tb06UF3TVWYwJXBR2WSyzQ
+	wzoEXnuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w54pn-00000001u9Q-3HZt;
-	Tue, 24 Mar 2026 16:42:27 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1w5CfR-00000002Qx0-13xE;
+	Wed, 25 Mar 2026 01:04:17 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w54pk-00000001u8s-07Gr;
-	Tue, 24 Mar 2026 16:42:25 +0000
+	id 1w5CfO-00000002Qw3-311o
+	for linux-um@lists.infradead.org;
+	Wed, 25 Mar 2026 01:04:15 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id B7A3344260;
-	Tue, 24 Mar 2026 16:42:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E44B6C19424;
-	Tue, 24 Mar 2026 16:42:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1774370542;
-	bh=TDgLcRhij5JQVZa60QmaxqOx203j51xbjV/q4WkoTac=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DQOwZZrwl+GxIARWYI809PrjYZgIC0xfeubUvTNhKKAudWXflkBkHkOQxqHhcKfI5
-	 YEd8AoepFJifaDz0cIKUFkW85RTTMclmIhV4gfAqh3VY34KIx4Pm4UqjUG6y+A3vml
-	 FWjY7pXOdRDrlwOVcmMMkatFHeB/Fbf82T5tVjrs=
-Date: Tue, 24 Mar 2026 09:42:20 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner
- <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
- <chleroy@kernel.org>, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti
- <alex@ghiti.fr>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Andreas
- Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, Anton
- Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Herbert Xu <herbert@gondor.apana.org.au>, Dan Williams
- <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>, David Sterba
- <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>, Song Liu
- <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>, Li Nan
- <linan122@huawei.com>, "Theodore Ts'o" <tytso@mit.edu>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: cleanup the RAID5 XOR library v3
-Message-Id: <20260324094220.09e6eb90afc7f55937847f22@linux-foundation.org>
-In-Reply-To: <20260324062211.3216301-1-hch@lst.de>
-References: <20260324062211.3216301-1-hch@lst.de>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+	by sea.source.kernel.org (Postfix) with ESMTP id F310D43F65;
+	Wed, 25 Mar 2026 01:04:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80B7AC19424;
+	Wed, 25 Mar 2026 01:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774400652;
+	bh=xuio0iUNCd9Dsa7TTkNCacQ8OxsZcaqyEFOvTKUEK6c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=N+IXTww2TQ6aT0wzvLKu3u2se94ZDbvY9MgeE8OZ/jn6e3j/Wgp8Y+DZNoOr7GRKJ
+	 Rz0KgBmWU8vuOpjZf+xalWcZ4/unyUJAKlIsQ+bCAP1vRgxlwgSJSuxyRS5xmjauvq
+	 gxgwPnswNQnKs+TLKkywzsgN6X3+jOkuU6dsDxdBa1hL+/E0l1TW7JBPn7XsQL+qE3
+	 9Ctk/M+DkzLcPVDfowZ5GxDIrx5iEHhNsmww7j0NBpCixDeuEKH4NSY+115Cvy4fQx
+	 cbUeBsTbznRc00Da62Hj0py6zFCXymI73KJoMa27lzFxg9GYXj8QcsCJOcQUOVdcbt
+	 4EmnvPD2x68Mg==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: achill@achill.org,
+	akpm@linux-foundation.org,
+	broonie@kernel.org,
+	conor@kernel.org,
+	f.fainelli@gmail.com,
+	hargar@microsoft.com,
+	jonathanh@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	lkft-triage@lists.linaro.org,
+	patches@kernelci.org,
+	patches@lists.linux.dev,
+	pavel@nabladev.com,
+	rwarsow@gmx.de,
+	shuah@kernel.org,
+	sr@sladewatkins.com,
+	stable@vger.kernel.org,
+	sudipm.mukherjee@gmail.com,
+	torvalds@linux-foundation.org,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH 6.18 000/212] 6.18.20-rc1 review
+Date: Wed, 25 Mar 2026 02:04:01 +0100
+Message-ID: <20260325010401.62938-1-ojeda@kernel.org>
+In-Reply-To: <20260323134503.770111826@linuxfoundation.org>
+References: <20260323134503.770111826@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260324_094224_130597_5BB1B2B4 
-X-CRM114-Status: GOOD (  17.23  )
+X-CRM114-CacheID: sfid-20260324_180414_778094_C78B8F1D 
+X-CRM114-Status: GOOD (  12.59  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,25 +94,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 24 Mar 2026 07:21:36 +0100 Christoph Hellwig <hch@lst.de> wrote:
+On Mon, 23 Mar 2026 14:43:41 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.18.20 release.
+> There are 212 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 25 Mar 2026 13:44:33 +0000.
+> Anything received after that time might be too late.
 
-> the XOR library used for the RAID5 parity is a bit of a mess right now.
-> The main file sits in crypto/ despite not being cryptography and not
-> using the crypto API, with the generic implementations sitting in
-> include/asm-generic and the arch implementations sitting in an asm/
-> header in theory.  The latter doesn't work for many cases, so
-> architectures often build the code directly into the core kernel, or
-> create another module for the architecture code.
-> 
-> Changes this to a single module in lib/ that also contains the
-> architecture optimizations, similar to the library work Eric Biggers
-> has done for the CRC and crypto libraries later.  After that it changes
-> to better calling conventions that allow for smarter architecture
-> implementations (although none is contained here yet), and uses
-> static_call to avoid indirection function call overhead.
+Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
+for loongarch64:
 
-Thanks, I've updated mm.git's mm-nonmm-unstable branch to this version
-of the patchset.
+Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
+For UML, I am seeing:
 
+    In file included from kernel/fork.c:108:
+    In file included from ./include/linux/unwind_deferred.h:6:
+    In file included from ./include/linux/unwind_user.h:6:
+    ./arch/x86/include/asm/unwind_user.h:23:12: error: no member named 'flags' in 'struct pt_regs'
+       23 |         if (regs->flags & X86_VM_MASK)
+          |             ~~~~  ^
+    ./arch/x86/include/asm/unwind_user.h:23:20: error: use of undeclared identifier 'X86_VM_MASK'
+       23 |         if (regs->flags & X86_VM_MASK)
+          |                           ^
+    ./arch/x86/include/asm/unwind_user.h:26:7: error: call to undeclared function 'user_64bit_mode'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+       26 |         if (!user_64bit_mode(regs))
+          |              ^
+
+We probably need at least:
+
+  aa7387e79a5c ("unwind_user/x86: Fix arch=um build")
+
+Or perhaps the split of the guards added later.
+
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+
+I hope that helps!
+
+Cheers,
+Miguel
 
