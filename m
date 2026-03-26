@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4433109E550
-	for <linux-um@archiver.kernel.org>; Thu, 26 Mar 2026 05:35:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50072106F317
+	for <linux-um@archiver.kernel.org>; Thu, 26 Mar 2026 10:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GAsmk2Bxir/aEOlCq/1mI6TxB8tMf98VYj7NlGYlXuE=; b=3D3BWENZCerIS9Kk1q57Y2gdCu
-	hoTrEY7VsRHnx+jG7+iaYm7TD9XSFRZ1FjUQp+rp1i/oMuwi/rceqoFebpki21efYo2ZU72Lw4USc
-	S78iq8jTzSQS0YXC+bwV+96H+f5Qo1KPlpVWBUtSqRjjULwWf++grfyZWxg6Jzze/xyihU9Khwy9X
-	KKHCV0bb/8Pv41z7M4HRldqAebzfbNjG0eRzdpzFyzXdHZuSoJdxJAPdcH0LS8WBo2Y32LzKIMZvw
-	CSA5S9jOOpn20vG3RDYq4lizf3160Bw0BEk+D3boOb2Sr35Wzqg7d8L4uUVAIYsspD5NEeuwW2dZY
-	2eCSnayA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
+	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lBGicU27laianFvyzY656GHLSJPIgkYXNKTwZ0wPpek=; b=atrszXNWjsq+FyXMP7knpZdEtq
+	fCsejHqZR9yKGqAeNerdVOboFuv8AtA5mIc4PBj/mTbcq6MpbgYDgn0Cbwst51l4Kwp6KVtpMwVOW
+	WhonlBtbxccyyrYx++sRSfPHDNhRam6kDoskUwGKXYyXFx7a8rE4XsNO0hjnkrZRWGshbg5p5ai7v
+	9g2Fq2t5jWNQOzndRsv2l9Yvy6npdF5MuCi1zojQh9dNUndNPQmuM/g1x4rxC+tC0Dbp86TUtBz8Y
+	5gydUgFaXjJ4+NpB1EXTVLfxg0CnXEZu0Wsfd81Ox5fHu9F+DfIbJIRo22NNMOpnEQUFlpAIbRyXu
+	qxftBFHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5dN2-00000004kOB-20zB;
-	Thu, 26 Mar 2026 05:35:04 +0000
-Received: from sphereful.davidgow.net ([2404:9400:4:0:216:3eff:fee2:5328])
+	id 1w5hfN-00000005Eut-2k97;
+	Thu, 26 Mar 2026 10:10:17 +0000
+Received: from mail-wm1-x349.google.com ([2a00:1450:4864:20::349])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w5dMw-00000004kKh-2U5N;
-	Thu, 26 Mar 2026 05:35:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
-	s=201606; t=1774503290;
-	bh=n9xjHtpRhSH9ix3QmcQLv0kr4+Yq4N4rwcbqb/HE28g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ijgkR2m3ExNXd2ith8CSWReGK6oM8F+dwRcN39lTcaP5QRKaFSL2C7Hry7+WTcTEv
-	 fLpTTixlufdp1FjAzY91YETdJPIkJX4CotIeLNltvQQtmbQtiCcat3dkq1K4Zrmen4
-	 CyP5KubsCneIzrox4OAoqDPlgNa+NVpW5z5LDiHaIz97yCpqANNeyMaKJ20XZIxG6u
-	 QkTrXwsfgas7w8i1czLe2DPYmWhBAMAMhIi7Msai1TXaJueYxcUnvaAvggh4ucfvor
-	 OsD0RXxdk6gO6vEcb5XRybbtwrtonLUphRvS5J0fqDqQcvdzQWR1mRFsdJYP3XkzS2
-	 enIVECQ4Vc98dzvMEYyAMNhUtG3rqKX7K7KePl8F6UaRWzBSDNn++WsPQev9REGcM6
-	 laduIln+ZZSR8TC1YcIwLA/Q2bPL75jVfD3O2itd+XFwK0VxfsGRe+iz+YQ+aEPlIA
-	 HsY2uKAjaVrx4f2w2Pr8OjOKJDAyiYTpgovWbnYQwDvEvCTUt4z+7RYiH4JxgBxfcU
-	 4YAkQwlBf+M+ki5fPPkEP9kWsuxjHBI14t2LQZModPKQOGUEJbc9/gOubHm4p1UIW6
-	 CBIA3YoVUd5FpHd/lWaVxfhzkPeuVcE0FwfC+ck3tgnNaLDNhjw6tjLdyl5M7BfRkn
-	 KeCU8ffvDKTc6ch+pcecUYn0=
-Received: by sphereful.davidgow.net (Postfix, from userid 119)
-	id 7E1AF1E8338; Thu, 26 Mar 2026 13:34:50 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
-	s=201606; t=1774503287;
-	bh=n9xjHtpRhSH9ix3QmcQLv0kr4+Yq4N4rwcbqb/HE28g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ldcLAgFv276uo5NW6LPy7yICCVgujhSzmWWh6jq+0as7zdXji4UzHT6jmt4Pz/+33
-	 S3izhb/lP9G6bwJL2/2H1qTs2LUaVuCj/ABRbszrZp4q62JjEXq55nTfRp2SvLuI9R
-	 fm906bBysocD7LOT3MwsI7/Yswz4Tiu7PEgJoKZ1suCr2uP3hzygBpq9Y/uHrCvnlV
-	 hL320KohBE1/nJw3XzMRLlA2C6A8q7IH7kiC+wl1eGgKbZUpqeffPGP1oYo0M96OJC
-	 b7+eOTWzv4JyqwtBOF8ElsXU3R7ytXb6QQaJ6JxxljEQwj2nIYkCAf94e9nYx5u4JE
-	 4903DdFW1gSuzq8xO+jxBKsA7ZEGlu1on8XW++IES/3QjXnfMvh/tT99aAmzDk70mK
-	 Q12zsoXnahHRQZEKsNXsV7IS8i6e64DETF7+FG/6LFPOLnJzdxuyTYZMWVs6YLIIDG
-	 aFSeffc9zYPYLL5KHnYpKyLYtJTLbeBA1SbKt6JO1LkMj8NOUC7hfwUzjxN/oHDv2z
-	 3/L5hJqEG8WzvGUCwLtLeVT2cCVUWYkRhKzxdIUzYLENGP4vUxvX5aCNKe1wTm38eG
-	 Uoepqbm42xqept2Sy0Ah2AWCkqIRpUM2alnyL+hUrW0AW3Nejd9c4XWG434jAvhFQB
-	 SI3cbpjzbw15rKzFZT3TjCdA=
-Received: from [IPV6:2001:8003:8824:9e00:6d16:7ef9:c827:387c] (unknown [IPv6:2001:8003:8824:9e00:6d16:7ef9:c827:387c])
-	by sphereful.davidgow.net (Postfix) with ESMTPSA id DC56A1E737C;
-	Thu, 26 Mar 2026 13:34:46 +0800 (AWST)
-Message-ID: <e6bcf016-4739-4ba4-a46c-c0416c07400f@davidgow.net>
-Date: Thu, 26 Mar 2026 13:34:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
-To: Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nsc@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Russell King <linux@armlinux.org.uk>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, aliceryhl@google.com
-Cc: linux-um@lists.infradead.org, llvm@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
- a.hindborg@kernel.org, acourbot@nvidia.com, akpm@linux-foundation.org,
- bjorn3_gh@protonmail.com, boqun.feng@gmail.com, dakr@kernel.org,
- gary@garyguo.net, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- lossin@kernel.org, mark.rutland@arm.com, mmaurer@google.com,
- nicolas.schier@linux.dev, peterz@infradead.org,
- rust-for-linux@vger.kernel.org, tmgross@umich.edu, urezki@gmail.com,
- will@kernel.org
-References: <20260203-inline-helpers-v2-0-beb8547a03c9@google.com>
- <20260322192159.88138-1-ojeda@kernel.org>
-Content-Language: fr
-From: David Gow <david@davidgow.net>
-In-Reply-To: <20260322192159.88138-1-ojeda@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+	id 1w5hfK-00000005EtS-2wKX
+	for linux-um@lists.infradead.org;
+	Thu, 26 Mar 2026 10:10:16 +0000
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4853b5b0fafso16128945e9.3
+        for <linux-um@lists.infradead.org>; Thu, 26 Mar 2026 03:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1774519812; x=1775124612; darn=lists.infradead.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lBGicU27laianFvyzY656GHLSJPIgkYXNKTwZ0wPpek=;
+        b=Mi7S02Yckqlk6j7gSVi4WmCMr3U1xdhtMYe4E2j8jQsTUfZ+AbDFzzLpkLBnZz96Kn
+         ym3hploimaJezOaWo8ML4GV/SmqiiO8u/5Yb6YItRxc965FcA8rl7X1B531U391vLhwD
+         FlyvbfJTtzfiWen/KiwIcj/c/XJGmHR4VaiHJcfIJA8+0BjvehILrApUswcvuXfrxKCZ
+         CEUKOOPJCBsXD/8Y/s31/j/lTlfW8Op6ds5/aLKIp6s4CY4HPNeeB0mEWaa1HYcf8gee
+         NSB2uIwiM1p500zo+8FVtUr4ZX9yzhqD50RRx9UmqzijJUn7OLI2WaYTA4tqGnX5MVgO
+         tPGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774519812; x=1775124612;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lBGicU27laianFvyzY656GHLSJPIgkYXNKTwZ0wPpek=;
+        b=hvgdS0o6xBzeKrfkwNdEiAu6COM4lBkw5uPn6J98sxBwxMMMlL4dDVjD3ka4i6v4Nz
+         IcNxuOdhDgKvD1EAMMwssSX/+/4qQDvKSKH3rVAvPMqXo+/ZFlTtVx0LMk2pT5SVVdmI
+         KppsMKrvcMN29XcT+tqGI7ZNLpR/onmRMrzGNwkLAY2d03bB42B6WX9LMVSzVtuIX2/g
+         gNwiGWORFX2NlNOKpv5M8fMIec+WcsgDFi43sPgBKio3RnolMyS4k1XsXrW1+JzElLIT
+         7n/g8iGrj5Nptjs2lAQOOVO60FC1j6UZpzxQuEa4NClnllbpb7ZRGcp15rZSmfpTfCql
+         odhw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+iwDNNzraTdj+YmJtnaLGOmqC0ZjD8V8urwc+tLU0J+SPgujS2P80pH0g0e0Nld9V2IT9E3C/eg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxTQpUc8eZkd/4fJUPLrChDfrkBqyGnkp2zBn6f6igvj8I+a3YP
+	x769K8ngUroAZ2Sdnf+/5J6Hbi0Z+5vrs/0htE3gKBEd+XGckCD0j7h5FgF59vu65/yDs2+QXYH
+	sFI81+LCsuUfGN9n4WQ==
+X-Received: from wmoo2.prod.google.com ([2002:a05:600d:102:b0:47d:5bef:a379])
+ (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:600c:890b:b0:485:6ec7:2df with SMTP id 5b1f17b1804b1-48715fd50abmr80350625e9.8.1774519811752;
+ Thu, 26 Mar 2026 03:10:11 -0700 (PDT)
+Date: Thu, 26 Mar 2026 10:10:10 +0000
+In-Reply-To: <acEP7tl8pqFA3tK8@shell.armlinux.org.uk>
+Mime-Version: 1.0
+References: <20260322192159.88138-1-ojeda@kernel.org> <20260323000327.111235-1-ojeda@kernel.org>
+ <acEP7tl8pqFA3tK8@shell.armlinux.org.uk>
+Message-ID: <acUGAsjYvNvTEO92@google.com>
+Subject: Re: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
+From: Alice Ryhl <aliceryhl@google.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Miguel Ojeda <ojeda@kernel.org>, a.hindborg@kernel.org, acourbot@nvidia.com, 
+	akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com, 
+	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, dakr@kernel.org, 
+	david@davidgow.net, gary@garyguo.net, johannes@sipsolutions.net, 
+	justinstitt@google.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-um@lists.infradead.org, llvm@lists.linux.dev, 
+	lossin@kernel.org, mark.rutland@arm.com, mmaurer@google.com, morbo@google.com, 
+	nathan@kernel.org, nick.desaulniers+lkml@gmail.com, nicolas.schier@linux.dev, 
+	nsc@kernel.org, peterz@infradead.org, richard@nod.at, 
+	rust-for-linux@vger.kernel.org, tmgross@umich.edu, urezki@gmail.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260325_223459_831425_1E8FB9C7 
-X-CRM114-Status: GOOD (  17.76  )
+X-CRM114-CacheID: sfid-20260326_031014_783699_A52A56B2 
+X-CRM114-Status: GOOD (  20.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,53 +98,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Le 23/03/2026 à 3:21 AM, Miguel Ojeda a écrit :
-> On Tue, 03 Feb 2026 11:34:07 +0000 Alice Ryhl <aliceryhl@google.com> wrote:
->>
->> To get rid of these helper symbols, provide functionality to inline
->> helpers into Rust using llvm-link. This option complements full LTO, by
->> being much cheaper and avoiding incompatibility with BTF.
+On Mon, Mar 23, 2026 at 10:03:26AM +0000, Russell King (Oracle) wrote:
+> On Mon, Mar 23, 2026 at 01:03:27AM +0100, Miguel Ojeda wrote:
+> > On Sun, 22 Mar 2026 20:21:59 +0100 Miguel Ojeda <ojeda@kernel.org> wrote:
+> > >
+> > >     On the other hand, regardless of whether we fix this (and another
+> > >     issue in a separate email found thanks to the UML build), we could
+> > >     instead add `depends on` listing explicitly the architectures where
+> > >     this is going to be actually tested. That way maintainers can decide
+> > >     whether they want to support it when they are ready. Thoughts?
+> > 
+> > Another one for arm 32-bit:
+> > 
+> >       LD      .tmp_vmlinux1
+> >     ld.lld: error: undefined symbol: __aeabi_read_tp
+> >     >>> referenced by uaccess.rs:349 (rust/kernel/uaccess.rs:349)
+> >     >>>               samples/rust/rust_misc_device.o:(<rust_misc_device::RustMiscDevice as kernel::miscdevice::MiscDevice>::ioctl) in archive vmlinux.a
+> >     >>> referenced by uaccess.rs:543 (rust/kernel/uaccess.rs:543)
+> >     >>>               samples/rust/rust_misc_device.o:(<rust_misc_device::RustMiscDevice as kernel::miscdevice::MiscDevice>::ioctl) in archive vmlinux.a
+> >     >>> referenced by uaccess.rs:543 (rust/kernel/uaccess.rs:543)
+> >     >>>               drivers/android/binder/rust_binder_main.o:(rust_binder_main::rust_binder_ioctl) in archive vmlinux.a
+> >     >>> referenced 36 more times
 > 
-> I have been testing this. I think we can go ahead with it, with a few
-> notes.
+> Why is Rust generating code for userspace thread accessors for kernel
+> space, where userspace threads are meaningless. This is totally wrong.
+> The kernel must not reference __aeabi_read_tp().
 > 
-> I will reply to a couple other bindings in separate emails to avoid
-> spamming people too much.
-> 
->    - I will mark the Kconfig option as "(EXPERIMENTAL)", since that is
->      what the commit message says and it allows us to be a bit
->      conservative.
-> 
-> 
->    - Clang passes `-Werror=unused-command-line-argument`, which means
->      under arm (i.e. 32-bit) we get:
-> 
->        clang: error: argument unused during compilation: '-U arm' [-Werror,-Wunused-command-line-argument]
-> 
->      And under UML I see:
-> 
->        clang: error: argument unused during compilation: '-I ./arch/um/include/shared' [-Werror,-Wunused-command-line-argument]
->        clang: error: argument unused during compilation: '-I ./arch/x86/um/shared' [-Werror,-Wunused-command-line-argument]
->        clang: error: argument unused during compilation: '-I ./arch/um/include/shared/skas' [-Werror,-Wunused-command-line-argument]
-> 
->      So we would need e.g. `-Wno-unused-command-line-argument` there
->      close to the `-Wno-override-module` one, unless Kbuild or
->      ClangBuiltLinux thinks it is important to keep it for this case.
-> 
->      On the other hand, regardless of whether we fix this (and another
->      issue in a separate email found thanks to the UML build), we could
->      instead add `depends on` listing explicitly the architectures where
->      this is going to be actually tested. That way maintainers can decide
->      whether they want to support it when they are ready. Thoughts?
-> 
->      Cc'ing Nathan, Nicolas, Nick, Bill, Justin, David, UML, ARM.
-I'm quite happy personally to just have 
--Wno-unused-command-line-argument here, given that it otherwise is 
-working pretty well on UML and 32-bit UML.
+> Note: I know nothing about Rust, but I know enough to say the above is
+> pointing to a fundamental issue in Rust for 32-bit ARM.
 
-That being said, I expect it won't get a lot of testing (regardless of 
-architecture) while it's hidden behind CONFIG_EXPERT.
+I noticed that the Makefile currently uses the arm-unknown-linux-gnueabi
+target. It should probably not be -linux target to avoid this? Probably
+it should just be armv7a-none-eabi, right? We gate HAVE_RUST on
+CPU_32v7, so we should not need to consider the other variants.
 
-Cheers,
--- David
+Alice
 
