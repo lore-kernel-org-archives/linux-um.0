@@ -4,154 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8053810BA453
-	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 09:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973D110ED655
+	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 10:38:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XlE8K29BcOci/GJeK99hdrRjgIObqUNFNRdsO2zBvLY=; b=zSmILQB9I1S0B19i5Q9rkQ/hkW
-	OC8web2OZcC9PJsVgouYFy31Rxci98Y877UDgKodSNLBjipgKRL1nDn7UQMLrnC6SyYeGkHf+S3Jh
-	CIHYHEAcsosg8S3Snv/zeA0p1KXjBXo+bQlVUyasgOsJnujA24P/D8DDELTj/Iy19/QBWUCTB8VpQ
-	tX/1IOlMx9WQ617GQ2U8A2kbdOo1pQg5pbjHJTQP2WQ98+Q0TyYHhHfW/U/cPYlLX9eZQfgaEkaBR
-	/ASGCHlJ5c4qOGc1lbOrtoMSSyuN8V/nJSir9NoBt+xHT7eovlmLNlqcL0nuc/kbsN9KleSzr1RCg
-	oLLMNjng==;
+	bh=CwDDZ0xuA60nrVV8S4QknF97+2IVtSx22G/TlvzHwhU=; b=eqy/kW+F+bQr4yVLh/cDB1uqA5
+	Axt0que3MQlfQ4qZwIn1H3SkZWupAz6YAdCjxCZtot96leMpxBviSbUnlVE2ZSNp7nzLKszpDj4qK
+	17ZZsh89KjYc6PkcUSsC8x1vK7tzhcMAcrBsQgIrmwP6otlKhYN4arNI7ZyoT2Nxf7rX7FRoHShjk
+	g+9P+ptjCpDoaDtUdK59RD+Vc+zaRTfw4hVA4W4yV4lZ1utR31tg76xSGwSja90JQvqWCK1Cb9RBa
+	J+oDkZ6/l2AHesh27f5Xez3aoTDeI7kPLU/OWT/HeStb6oFnmwAN38YZXURlZva1v35irnwAFzAPz
+	ZVnM2ARA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w635d-000000071mk-43Xz;
-	Fri, 27 Mar 2026 09:02:49 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1w64Zs-00000007ANl-0qV5;
+	Fri, 27 Mar 2026 10:38:08 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w635c-000000071mS-375K;
-	Fri, 27 Mar 2026 09:02:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=XlE8K29BcOci/GJeK99hdrRjgIObqUNFNRdsO2zBvLY=; b=Ezsl29sITn/f6v+BkaP23xF4nn
-	I28lCXCTdUOOq9RL8tWHqNtNikpRj+CiNxVRO+TDlruBmGF5aJ2UpJkZZAW92jPtulCPGQ5HEptdb
-	IMFiSvBYOjeIvLnEPJNZ5gYTw0CwFk56Sw9/lxDhWvxI2j3loAUlJmi4kexWU6+UxUfcr80GQ2zuM
-	uHicaPgeOvj9NTRR1Mf3YRm7ARjp6TFjrLFKPAWddm3+Lr7JkNVi+BsJAjdKQX/fHIEUkFUrOgK7l
-	50jHVzK10fXhChl3azK89N48MJ84nPmzJ3ZFQybqwNfXRNzfuJ4pdwN8nvKl9PwyydikE0L5mNVwS
-	QY3ZMJoA==;
-Received: from flow-a1-smtp.messagingengine.com ([103.168.172.136])
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w635Z-0000000A1mj-20aa;
-	Fri, 27 Mar 2026 09:02:47 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.phl.internal (Postfix) with ESMTP id 4A6471380181;
-	Fri, 27 Mar 2026 05:02:39 -0400 (EDT)
+	id 1w64Zp-00000007AMU-077J;
+	Fri, 27 Mar 2026 10:38:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 94D18443E2;
+	Fri, 27 Mar 2026 10:38:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB526C2BC86;
+	Fri, 27 Mar 2026 10:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774607883;
+	bh=fO1n3N31Hq1DYtmMY0Uiqq1O7a3QRkcXqeW2ikYyR7Y=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=KkG1yQlrWgKQ/NYWsbP/4gMcEzHO4FFs5XVqFPvgiTMUP5gZmxs+POHFYFovkQvMt
+	 ulKEWCRxR0YDfHRt8rPQYguRQVuK+yV9E3+XJKAkiERR5OUi0MUsUzODRkVzLSK8wl
+	 mgPgh6M/NwumgLGqAMTPdhbmpLX3dcSuTyZu0udCNjhz+Y8Frz/CN90C/9+aWLhebK
+	 MDdGRpUGBTGS/T396mdT0nVUuXycuaIA6edQ5WansTtZpHThVi7voJ8vEHR0R3KtU8
+	 kcqdtl17wUYyZItRMgb/WNrffJmfXB1VPcS0kRwnk+IxoDUY0asnuCh4K+PsSW9BgX
+	 lyEpYqymiG2tA==
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A301CF4007B;
+	Fri, 27 Mar 2026 06:38:00 -0400 (EDT)
 Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Fri, 27 Mar 2026 05:02:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1774602159;
-	 x=1774609359; bh=XlE8K29BcOci/GJeK99hdrRjgIObqUNFNRdsO2zBvLY=; b=
-	GVzqQY5nceojm37M1XZpOPq3WUecXUQj9WVf3CfutP3dTobqmGMQjzRLgNhoVby6
-	46aeZZINaK1f7YVuydM5TqNUI4j8vyRQzPpJA34i7ACZR1RSV4TO+hIb/Y1wlQAV
-	e4naVPRom36f6nfcFXr2OjE1mhktO/8tDetlgDKx/ERP6X26MCzVLKwpghPIlA9u
-	FgAZLJCBgZpz0FbarT4w54TicAqCn2qTr0Z2ZfdL6DznrwvGSdcVVRrirxDEue/H
-	5fVwFvlMX5ysAAT1/mtv1Dd/8FtVIaDqWDOOvUgWKJ3vwJ4vCQKKNs+/aj1E6yt+
-	+mz/Xbi/v8lcnLVbeJxZpA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1774602159; x=
-	1774609359; bh=XlE8K29BcOci/GJeK99hdrRjgIObqUNFNRdsO2zBvLY=; b=i
-	Exk1Qnjsvq2JnZ1+yT0ebsDIbgY2gqeRl0z1YUchEz9YmFAT5XKQHCu5+ZzfUzMA
-	KUBEKUA267I42sL6kTGiC0o6muCrmy6qX1nLFaMFkw6x8TBMIldQ20mR85lgu/Dz
-	dB2EG1eKMb571eSkAhGeN6NfTkTpx4Lu0/tgLzlYoDT4OZDwCv6fEL37252eYC4+
-	1qR+fAEfE/kjUNCAyy4Q+SMie5NYypjDP+zkoB40j+zYPYlVZgSiYG+KFdyvrW7G
-	OWPfc7ZhuIizFLxUKMgVQKKjnJY5rCQ68EF4nMVgcJw97GM4yWWv2nTfrHXCbuKd
-	K8t0sfV8n6x5lC5qiobPQ==
-X-ME-Sender: <xms:rUfGaePC1BrMnmTf9_OY6lvLvc1mUKp6M_A0RyuXLyRS-NOn6VKFDg>
-    <xme:rUfGaXzAgfItBbTl9XynqmOmljqUaNK22QfAcW8j65Y-hka2CDyCF6HlPX-DBmYss
-    eoR8l0vie_-ZAfZlP2omID4VIFPPLAESbv9Vf23rJ3uQmLsZXfiKPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefvdelkeejucetufdoteggodetrf
+  by phl-compute-01.internal (MEProxy); Fri, 27 Mar 2026 06:38:00 -0400
+X-ME-Sender: <xms:CF7GabpHu3v_u6fV8V_mdHz6sop4veHr9gldlSZav8Jy0ecQbG2kZg>
+    <xme:CF7GaQd6NTiStA_nuMJRyzxc--HbkJ0S1s7E49JLyq7o3XAbvBcTAa2AznFEPZAEY
+    OUf40tcUbSe7ZiR4cCBxK1pUd7gZu4raTVHGizBZPvHpJbXfFxNKA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeffedttdeiucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepuefhhedvjedtudeiiefgvdeuuefhueehfefffeeutdeiudegleevleeivdefgfei
-    necuffhomhgrihhnpehgihhthhhusgdrtghomhdpghhnuhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdr
-    uggvpdhnsggprhgtphhtthhopeeguddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    epjhgrmhhivgdrtghunhhlihhffhgvsegrrhhmrdgtohhmpdhrtghpthhtoheptggrthgr
-    lhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopehmrghrkhdrrhhuth
-    hlrghnugesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigsegrrhhmlhhinhhugidr
-    ohhrghdruhhkpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgugh
-    gvghhrvgihshdrtghomhdprhgtphhtthhopegurghvihgusegurghvihgughhofidrnhgv
-    thdprhgtphhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopegsoh
-    hquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegthhhrihhsihdrshgt
-    hhhrvghflhesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:rUfGaRCaBcqc7KdntZl0FsBnvOqvRVfnzmfBbmotVoydnvBrFXOcMg>
-    <xmx:rUfGaZyWyK0ItY1fAukXgGQMxYnCWlJ_ttZ9LwB67jfvcP3jcgDiJg>
-    <xmx:rUfGaeUWikKeRd3kQ5HcVz8AqFZRkLvV9rX5NscA0USMCL-N4mVGIQ>
-    <xmx:rUfGaQXDnwGyrD4fd56NTxM2Fq_dVcdlQpFE1HUUfNw_jSb36M81IQ>
-    <xmx:r0fGaasdsr7hoeyfiet3dxQz1PzdqR0Oy-FDo6Fl_eW5_GQ_HIxB6CTf>
-Feedback-ID: i56a14606:Fastmail
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrugcu
+    uehivghshhgvuhhvvghlfdcuoegrrhgusgeskhgvrhhnvghlrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeetgedvtddttdeuffegvdefgffgteeiueejuefhjefhvdekkeelkeduteej
+    tdetheenucffohhmrghinhepihhnfhhrrgguvggrugdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhguodhmvghsmhhtphgruhht
+    hhhpvghrshhonhgrlhhithihqdduieejtdehtddtjeelqdeffedvudeigeduhedqrghrug
+    gspeepkhgvrhhnvghlrdhorhhgseifohhrkhhofhgrrhgurdgtohhmpdhnsggprhgtphht
+    thhopeehtddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepsghpsegrlhhivghnke
+    druggvpdhrtghpthhtoheptggrthgrlhhinhdrmhgrrhhinhgrshesrghrmhdrtghomhdp
+    rhgtphhtthhopehlihhnuhigsegrrhhmlhhinhhugidrohhrghdruhhkpdhrtghpthhtoh
+    eprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthhopegrnhhtohhnrdhivhgrnhhovhes
+    tggrmhgsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepphgrlhhmvghrsegurg
+    gssggvlhhtrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgv
+    thdprhgtphhtthhopegrohhusegvvggtshdrsggvrhhkvghlvgihrdgvughupdhrtghpth
+    htohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghu
+X-ME-Proxy: <xmx:CF7Gaf8IJi0YURc1_Z-7XWWce32KTLQg0MgtSGjpDXebCVP8kjF1fg>
+    <xmx:CF7GaVb8rMguERdYH-uRjKmkbehDdibFJGzRPHkCAhl6T7z96o-pOw>
+    <xmx:CF7GaT-UHcu4LVpMMMFSjx_B0drCWxBBuaJzaeFjOkwZfnBqfgZ5rQ>
+    <xmx:CF7GafjVFP_InYrNfGUVD88lIgjoTxwR9RfXopF528_clTsktrNsYQ>
+    <xmx:CF7GaTly7jF5GPkZNeohixA93ZcJ20A7YlVUFe0lo5TI87Fbt8LPFZOZ>
+Feedback-ID: ice86485a:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 95B2C700069; Fri, 27 Mar 2026 05:02:37 -0400 (EDT)
+	id 6D4BB700065; Fri, 27 Mar 2026 06:38:00 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-X-ThreadId: AUJnWW6OA6Vc
-Date: Fri, 27 Mar 2026 10:02:17 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Russell King" <linux@armlinux.org.uk>,
- "Christian Schrefl" <chrisi.schrefl@gmail.com>,
- "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>,
- "Alice Ryhl" <aliceryhl@google.com>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Jamie Cunliffe" <Jamie.Cunliffe@arm.com>,
- "Will Deacon" <will@kernel.org>,
+X-ThreadId: AUjF8VgfYQMk
+Date: Fri, 27 Mar 2026 11:37:39 +0100
+From: "Ard Biesheuvel" <ardb@kernel.org>
+To: "Christoph Hellwig" <hch@lst.de>,
+ "Andrew Morton" <akpm@linux-foundation.org>
+Cc: "Richard Henderson" <richard.henderson@linaro.org>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "Magnus Lindholm" <linmag7@gmail.com>,
+ "Russell King" <linux@armlinux.org.uk>,
  "Catalin Marinas" <catalin.marinas@arm.com>,
- "Miguel Ojeda" <ojeda@kernel.org>,
- "Andreas Hindborg" <a.hindborg@kernel.org>, acourbot@nvidia.com,
- "Andrew Morton" <akpm@linux-foundation.org>,
+ "Will Deacon" <will@kernel.org>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "WANG Xuerui" <kernel@xen0n.name>,
+ "Madhavan Srinivasan" <maddy@linux.ibm.com>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ "Paul Walmsley" <pjw@kernel.org>, "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre Ghiti" <alex@ghiti.fr>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "Richard Weinberger" <richard@nod.at>,
  "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>,
- "Danilo Krummrich" <dakr@kernel.org>, "David Gow" <david@davidgow.net>,
- "Gary Guo" <gary@garyguo.net>,
  "Johannes Berg" <johannes@sipsolutions.net>,
- "Justin Stitt" <justinstitt@google.com>,
- linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-um@lists.infradead.org, llvm@lists.linux.dev,
- "Benno Lossin" <lossin@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>, mmaurer@google.com,
- "Bill Wendling" <morbo@google.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <nick.desaulniers+lkml@gmail.com>,
- "Nicolas Schier" <nicolas.schier@linux.dev>,
- "Nicolas Schier" <nsc@kernel.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Richard Weinberger" <richard@nod.at>, rust-for-linux@vger.kernel.org,
- "Trevor Gross" <tmgross@umich.edu>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>
-Message-Id: <93439e91-cf81-477b-b880-a813bb01ad7c@app.fastmail.com>
-In-Reply-To: <CAMuHMdUUfVCBZFi2WoOYibJLVnyPY-joRDJDowgHwjN_DGeEzw@mail.gmail.com>
-References: <20260322192159.88138-1-ojeda@kernel.org>
- <20260323000327.111235-1-ojeda@kernel.org>
- <acEP7tl8pqFA3tK8@shell.armlinux.org.uk> <acUGAsjYvNvTEO92@google.com>
- <CANiq72mzPpkELXis1CiSbKUmBXNQYMiMmjj-7-sYiLh4T_JSOQ@mail.gmail.com>
- <9cf5a94c-0f37-446c-b63d-ddac5674d220@gmail.com>
- <acVOL5Psz6kHlhq2@shell.armlinux.org.uk>
- <641592e3-2354-4238-9eb8-a1f5c2a13126@app.fastmail.com>
- <CAMuHMdUUfVCBZFi2WoOYibJLVnyPY-joRDJDowgHwjN_DGeEzw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
+ "Thomas Gleixner" <tglx@kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H . Peter Anvin" <hpa@zytor.com>,
+ "Herbert Xu" <herbert@gondor.apana.org.au>,
+ "Dan Williams" <dan.j.williams@intel.com>, "Chris Mason" <clm@fb.com>,
+ "David Sterba" <dsterba@suse.com>, "Arnd Bergmann" <arnd@arndb.de>,
+ "Song Liu" <song@kernel.org>, "Yu Kuai" <yukuai@fnnas.com>,
+ "Li Nan" <linan122@huawei.com>, "Theodore Ts'o" <tytso@mit.edu>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Message-Id: <b5edd377-423f-4837-a622-ad78654811c4@app.fastmail.com>
+In-Reply-To: <20260327061704.3707577-1-hch@lst.de>
+References: <20260327061704.3707577-1-hch@lst.de>
+Subject: Re: cleanup the RAID5 XOR library v4
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260327_090245_818145_95CB4CD7 
-X-CRM114-Status: UNSURE (   7.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260327_033805_111845_99DACD2F 
+X-CRM114-Status: GOOD (  26.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,29 +144,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 27, 2026, at 08:56, Geert Uytterhoeven wrote:
->>
->> I noticed a similar issue with m68k-linux, which has a bitfield
->> alignment different from anything else on gcc, but uses the normal
->> behavior on clang.
+
+
+On Fri, 27 Mar 2026, at 07:16, Christoph Hellwig wrote:
+> Hi all,
 >
-> Ugh, I wasn't aware of that. Adrian, did you know?
+> the XOR library used for the RAID5 parity is a bit of a mess right now.
+> The main file sits in crypto/ despite not being cryptography and not
+> using the crypto API, with the generic implementations sitting in
+> include/asm-generic and the arch implementations sitting in an asm/
+> header in theory.  The latter doesn't work for many cases, so
+> architectures often build the code directly into the core kernel, or
+> create another module for the architecture code.
+>
+> Changes this to a single module in lib/ that also contains the
+> architecture optimizations, similar to the library work Eric Biggers
+> has done for the CRC and crypto libraries later.  After that it changes
+> to better calling conventions that allow for smarter architecture
+> implementations (although none is contained here yet), and uses
+> static_call to avoid indirection function call overhead.
+>
+> A git tree is also available here:
+>
+>     git://git.infradead.org/users/hch/misc.git xor-improvements
+>
+> Gitweb:
+>
+>     
+> https://git.infradead.org/?p=users/hch/misc.git;a=shortlog;h=refs/heads/xor-improvements
+>
+> Changes since v3:
+>  - switch away from lockdep_assert_preemption_enabled() again
+>  - fix a @ reference in a kerneldoc comment.
+>  - build the arm4regs implementation also without kernel-mode neon
+>    support
+>  - fix a pre-existing issue about mismatched attributes on arm64's
+>    xor_block_inner_neon
+>  - reject 0-sized xor request and adjust the kunit test case to not
+>    generate them
+>
+> Changes since v2:
+>  - drop use of CONFIG_KERNEL_MODE_NEON for arm64
+>  - drop the new __limit_random_u32_below for the unit test
+>  - require 64-bit alignment because sparc64 requires it
+>  - use DEFINE_STATIC_CALL_NULL to avoid exposing a specific xor_gen
+>    routine
+>  - keep CONFIG_XOR_BLOCKS_ARCH self-contained in lib/raid/
+>  - don't select library option from kunit test and add a .kunitconfig
+>    instead
+>  - fix the module description for the kunit test
+>  - add a case where buffers are at the end of the allocation in the kunit test
+>  - use separate src/dst alignment in the kunit test
+>  - fix and improve the kunit assert message
+>
+> Changes since v1:
+>  - use lockdep_assert_preemption_enabled()
+>  - improve the commit message for the initial um xor.h cleanup
+>  - further clean up the um arch specific header
+>  - add SPDX identifier to the new build system files
+>  - use bool for xor_forced
+>  - fix an incorrect printk level conversion from warn to info
+>  - include xor_impl.h in xor-neon.c
+>  - remove unused exports for riscv
+>  - simply move the sparc code instead of splititng it
+>  - simplify the makefile for the x86-specific implementations
+>  - remove stray references to xor_blocks in crypto/async_tx
+>  - rework __DO_XOR_BLOCKS to avoid (theoretical) out of bounds references
+>  - improve the kerneldoc API documentration for xor_gen()
+>  - spell the name of the srcs argument to xor_gen correctly in xor.h
+>  - add a kunit test, and a new random helper for it.
+>
 
-To clarify, this illustrates what I mean here:
+For the series,
 
-echo 'struct { short a : 3; short b :15; short c :14; } x; int y = sizeof(x);' | m68k-linux-gcc -xc - -S -o-
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-this produces '4' on m68k-linux-gcc, but '6' everywhere else. I originally
-thought this was related to this 2009 change in both compilers
+As discussed, arm64 and ARM can share the NEON intrinsics implementation, which would allow for a bit of cleanup as well. I'll follow up with some patches based on this series.
 
-https://github.com/llvm/llvm-project/commit/830dfccfb2c06a1749938ce8cb78a1d6a295b942
-https://gcc.gnu.org/cgit/gcc/commit/?id=2cd36c22d3d16e24f342829a989ac35f2f442656
-
-but that only allowed bitfields to be marked as __attribute__((packed))
-in order to get tightly packed fields and return '4' on all architectures,
-while m68k-linux-gcc apparently has all bitfields implicitly packed unless they
-are explicitly marked __attribute__((aligned(x))). This behavior is
-independent of the -malign-int flag.
-
-     Arnd
 
