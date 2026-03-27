@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E951110BA426
-	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 06:21:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E365910BA431
+	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 06:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=07vOovAtUwNz4Cgfu6Afqnyvj7rNswjLnNiipxDT/U4=; b=XhfNuN1qHOJrRK5mopFcxAv8gY
-	bquKIdualy7ChVgUUqLMSEHbH4GEuEwi7zndwWSkeK2C1gFMphFogFr7YDeG2wSa/HBR9gkOxHBnW
-	dMQ2EGMlbMNSsR/q01AlYyM+4TrH9h3JqGrfUvDyMeG2WgJjREEIU8RJAiaa1DDu2pCDHKu7x766z
-	2U8Zz87pTIzYPVvQio5I5vZN+2Xa7u+WBa1CT8N/p5F3GtyNR2hZnN4MdoebGO09bLN3M/V0SmdZo
-	8UUebtOtLDaUSZsyHMth6Yi0CA3QQ54QrIqqA8+O/v2B21TSJE2Yw/mLJmTr4l468jASBHyWHeBRy
-	BjnyrNmA==;
+	bh=TEJqE0da2sBbiONNO3v6zKUvRiCT9+M3qH0kneUzSyM=; b=TDD5pWblMN7kB0NHbulsGRzHED
+	4AIue0/VhbaeC47tQOBxjcvpOwdTCh+HBEoHiHP1j2Vemspb8Pan1+XQ6V2iEGEpsEXhaSS6rLfaP
+	jpUV9p2G7oRZ1wwcbcAe99aqGZlzrkatFmHy19TRZjyngiLYkSpUlGZBHqmc4vuEzKjvUjb/ddd0r
+	LxuYVuiRtta8j5fJ6zXWO+WapUGN57+GmFY1I0AC3Icv0ThF+5+EA5Xznc0CkxRSsGkDGP2lkDu8M
+	QOhgU+FMrlsRycKGn4zZ6wanWGbOD4fLRrEDgBl5LSqooE+DugVq7ClCFEzjogRoXwVIn1p8+m1ik
+	GFR/Mnpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w60ZK-00000006mpK-2MN9;
-	Fri, 27 Mar 2026 06:21:18 +0000
+	id 1w60ZW-00000006mzH-2iyf;
+	Fri, 27 Mar 2026 06:21:30 +0000
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w60ZG-00000006mcg-2DiH;
-	Fri, 27 Mar 2026 06:21:15 +0000
+	id 1w60ZS-00000006mmn-2zgc;
+	Fri, 27 Mar 2026 06:21:27 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -84,9 +84,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 16/28] riscv: move the XOR code to lib/raid/
-Date: Fri, 27 Mar 2026 07:16:48 +0100
-Message-ID: <20260327061704.3707577-17-hch@lst.de>
+Subject: [PATCH 17/28] sparc: move the XOR code to lib/raid/
+Date: Fri, 27 Mar 2026 07:16:49 +0100
+Message-ID: <20260327061704.3707577-18-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260327061704.3707577-1-hch@lst.de>
 References: <20260327061704.3707577-1-hch@lst.de>
@@ -109,204 +109,303 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 Move the optimized XOR into lib/raid and include it it in xor.ko
 instead of always building it into the main kernel image.
 
+The code should probably be split into separate files for the two
+implementations, but for now this just does the trivial move.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/riscv/include/asm/xor.h                 | 54 +------------------
- arch/riscv/lib/Makefile                      |  1 -
- lib/raid/xor/Makefile                        |  1 +
- lib/raid/xor/riscv/xor-glue.c                | 56 ++++++++++++++++++++
- {arch/riscv/lib => lib/raid/xor/riscv}/xor.S |  4 --
- 5 files changed, 59 insertions(+), 57 deletions(-)
- create mode 100644 lib/raid/xor/riscv/xor-glue.c
- rename {arch/riscv/lib => lib/raid/xor/riscv}/xor.S (92%)
+ arch/sparc/include/asm/asm-prototypes.h       |  1 -
+ arch/sparc/include/asm/xor.h                  | 45 ++++++++++++++++---
+ arch/sparc/lib/Makefile                       |  2 +-
+ lib/raid/xor/Makefile                         |  2 +
+ .../raid/xor/sparc/xor-sparc32.c              | 23 ++--------
+ .../raid/xor/sparc/xor-sparc64-glue.c         | 26 +++--------
+ .../xor.S => lib/raid/xor/sparc/xor-sparc64.S | 10 -----
+ 7 files changed, 52 insertions(+), 57 deletions(-)
+ rename arch/sparc/include/asm/xor_32.h => lib/raid/xor/sparc/xor-sparc32.c (93%)
+ rename arch/sparc/include/asm/xor_64.h => lib/raid/xor/sparc/xor-sparc64-glue.c (74%)
+ rename arch/sparc/lib/xor.S => lib/raid/xor/sparc/xor-sparc64.S (98%)
 
-diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
-index ed5f27903efc..614d9209d078 100644
---- a/arch/riscv/include/asm/xor.h
-+++ b/arch/riscv/include/asm/xor.h
-@@ -2,60 +2,10 @@
- /*
-  * Copyright (C) 2021 SiFive
-  */
--
--#include <linux/hardirq.h>
--#include <asm-generic/xor.h>
--#ifdef CONFIG_RISCV_ISA_V
- #include <asm/vector.h>
--#include <asm/switch_to.h>
--#include <asm/asm-prototypes.h>
--
--static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
--			 const unsigned long *__restrict p2)
--{
--	kernel_vector_begin();
--	xor_regs_2_(bytes, p1, p2);
--	kernel_vector_end();
--}
--
--static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
--			 const unsigned long *__restrict p2,
--			 const unsigned long *__restrict p3)
--{
--	kernel_vector_begin();
--	xor_regs_3_(bytes, p1, p2, p3);
--	kernel_vector_end();
--}
--
--static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
--			 const unsigned long *__restrict p2,
--			 const unsigned long *__restrict p3,
--			 const unsigned long *__restrict p4)
--{
--	kernel_vector_begin();
--	xor_regs_4_(bytes, p1, p2, p3, p4);
--	kernel_vector_end();
--}
--
--static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
--			 const unsigned long *__restrict p2,
--			 const unsigned long *__restrict p3,
--			 const unsigned long *__restrict p4,
--			 const unsigned long *__restrict p5)
--{
--	kernel_vector_begin();
--	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
--	kernel_vector_end();
--}
+diff --git a/arch/sparc/include/asm/asm-prototypes.h b/arch/sparc/include/asm/asm-prototypes.h
+index 08810808ca6d..bbd1a8afaabf 100644
+--- a/arch/sparc/include/asm/asm-prototypes.h
++++ b/arch/sparc/include/asm/asm-prototypes.h
+@@ -14,7 +14,6 @@
+ #include <asm/oplib.h>
+ #include <asm/pgtable.h>
+ #include <asm/trap_block.h>
+-#include <asm/xor.h>
+ 
+ void *__memscan_zero(void *, size_t);
+ void *__memscan_generic(void *, int, size_t);
+diff --git a/arch/sparc/include/asm/xor.h b/arch/sparc/include/asm/xor.h
+index f4c651e203c4..f923b009fc24 100644
+--- a/arch/sparc/include/asm/xor.h
++++ b/arch/sparc/include/asm/xor.h
+@@ -1,9 +1,44 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 1997, 1999 Jakub Jelinek (jj@ultra.linux.cz)
++ * Copyright (C) 2006 David S. Miller <davem@davemloft.net>
++ */
+ #ifndef ___ASM_SPARC_XOR_H
+ #define ___ASM_SPARC_XOR_H
++
+ #if defined(__sparc__) && defined(__arch64__)
+-#include <asm/xor_64.h>
+-#else
+-#include <asm/xor_32.h>
+-#endif
+-#endif
++#include <asm/spitfire.h>
++
++extern struct xor_block_template xor_block_VIS;
++extern struct xor_block_template xor_block_niagara;
++
++#define arch_xor_init arch_xor_init
++static __always_inline void __init arch_xor_init(void)
++{
++	/* Force VIS for everything except Niagara.  */
++	if (tlb_type == hypervisor &&
++	    (sun4v_chip_type == SUN4V_CHIP_NIAGARA1 ||
++	     sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
++	     sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
++	     sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
++	     sun4v_chip_type == SUN4V_CHIP_NIAGARA5))
++		xor_force(&xor_block_niagara);
++	else
++		xor_force(&xor_block_VIS);
++}
++#else /* sparc64 */
++
++/* For grins, also test the generic routines.  */
 +#include <asm-generic/xor.h>
++
++extern struct xor_block_template xor_block_SPARC;
++
++#define arch_xor_init arch_xor_init
++static __always_inline void __init arch_xor_init(void)
++{
++	xor_register(&xor_block_8regs);
++	xor_register(&xor_block_32regs);
++	xor_register(&xor_block_SPARC);
++}
++#endif /* !sparc64 */
++#endif /* ___ASM_SPARC_XOR_H */
+diff --git a/arch/sparc/lib/Makefile b/arch/sparc/lib/Makefile
+index 783bdec0d7be..dd10cdd6f062 100644
+--- a/arch/sparc/lib/Makefile
++++ b/arch/sparc/lib/Makefile
+@@ -48,7 +48,7 @@ lib-$(CONFIG_SPARC64) += GENmemcpy.o GENcopy_from_user.o GENcopy_to_user.o
+ lib-$(CONFIG_SPARC64) += GENpatch.o GENpage.o GENbzero.o
  
--static struct xor_block_template xor_block_rvv = {
--	.name = "rvv",
--	.do_2 = xor_vector_2,
--	.do_3 = xor_vector_3,
--	.do_4 = xor_vector_4,
--	.do_5 = xor_vector_5
--};
--#endif /* CONFIG_RISCV_ISA_V */
-+extern struct xor_block_template xor_block_rvv;
+ lib-$(CONFIG_SPARC64) += copy_in_user.o memmove.o
+-lib-$(CONFIG_SPARC64) += mcount.o ipcsum.o xor.o hweight.o ffs.o
++lib-$(CONFIG_SPARC64) += mcount.o ipcsum.o hweight.o ffs.o
  
- #define arch_xor_init arch_xor_init
- static __always_inline void __init arch_xor_init(void)
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index bbc031124974..e220c35764eb 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -16,5 +16,4 @@ lib-$(CONFIG_MMU)	+= uaccess.o
- lib-$(CONFIG_64BIT)	+= tishift.o
- lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
- obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
--lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
- lib-$(CONFIG_RISCV_ISA_V)	+= riscv_v_helpers.o
+ obj-$(CONFIG_SPARC64) += iomap.o
+ obj-$(CONFIG_SPARC32) += atomic32.o
 diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
-index 006b44ce46bf..9e729b50e775 100644
+index 9e729b50e775..3a7c887d08ee 100644
 --- a/lib/raid/xor/Makefile
 +++ b/lib/raid/xor/Makefile
-@@ -17,6 +17,7 @@ xor-$(CONFIG_ARM64)		+= arm64/xor-neon.o arm64/xor-neon-glue.o
- xor-$(CONFIG_CPU_HAS_LSX)	+= loongarch/xor_simd.o
+@@ -18,6 +18,8 @@ xor-$(CONFIG_CPU_HAS_LSX)	+= loongarch/xor_simd.o
  xor-$(CONFIG_CPU_HAS_LSX)	+= loongarch/xor_simd_glue.o
  xor-$(CONFIG_ALTIVEC)		+= powerpc/xor_vmx.o powerpc/xor_vmx_glue.o
-+xor-$(CONFIG_RISCV_ISA_V)	+= riscv/xor.o riscv/xor-glue.o
+ xor-$(CONFIG_RISCV_ISA_V)	+= riscv/xor.o riscv/xor-glue.o
++xor-$(CONFIG_SPARC32)		+= sparc/xor-sparc32.o
++xor-$(CONFIG_SPARC64)		+= sparc/xor-sparc64.o sparc/xor-sparc64-glue.o
  
  
  CFLAGS_arm/xor-neon.o		+= $(CC_FLAGS_FPU)
-diff --git a/lib/raid/xor/riscv/xor-glue.c b/lib/raid/xor/riscv/xor-glue.c
-new file mode 100644
-index 000000000000..11666a4b6b68
---- /dev/null
-+++ b/lib/raid/xor/riscv/xor-glue.c
-@@ -0,0 +1,56 @@
+diff --git a/arch/sparc/include/asm/xor_32.h b/lib/raid/xor/sparc/xor-sparc32.c
+similarity index 93%
+rename from arch/sparc/include/asm/xor_32.h
+rename to lib/raid/xor/sparc/xor-sparc32.c
+index 8fbf0c07ec28..b65a75a6e59d 100644
+--- a/arch/sparc/include/asm/xor_32.h
++++ b/lib/raid/xor/sparc/xor-sparc32.c
+@@ -1,16 +1,12 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * include/asm/xor.h
+- *
+- * Optimized RAID-5 checksumming functions for 32-bit Sparc.
+- */
+-
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021 SiFive
-+ */
-+
+ /*
+  * High speed xor_block operation for RAID4/5 utilizing the
+  * ldd/std SPARC instructions.
+  *
+  * Copyright (C) 1999 Jakub Jelinek (jj@ultra.linux.cz)
+  */
 +#include <linux/raid/xor_impl.h>
-+#include <asm/vector.h>
-+#include <asm/switch_to.h>
-+#include <asm/asm-prototypes.h>
 +#include <asm/xor.h>
-+
-+static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2)
-+{
-+	kernel_vector_begin();
-+	xor_regs_2_(bytes, p1, p2);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3)
-+{
-+	kernel_vector_begin();
-+	xor_regs_3_(bytes, p1, p2, p3);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3,
-+			 const unsigned long *__restrict p4)
-+{
-+	kernel_vector_begin();
-+	xor_regs_4_(bytes, p1, p2, p3, p4);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3,
-+			 const unsigned long *__restrict p4,
-+			 const unsigned long *__restrict p5)
-+{
-+	kernel_vector_begin();
-+	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
-+	kernel_vector_end();
-+}
-+
-+struct xor_block_template xor_block_rvv = {
-+	.name = "rvv",
-+	.do_2 = xor_vector_2,
-+	.do_3 = xor_vector_3,
-+	.do_4 = xor_vector_4,
-+	.do_5 = xor_vector_5
-+};
-diff --git a/arch/riscv/lib/xor.S b/lib/raid/xor/riscv/xor.S
-similarity index 92%
-rename from arch/riscv/lib/xor.S
-rename to lib/raid/xor/riscv/xor.S
-index b28f2430e52f..56fb7fc1e2cd 100644
---- a/arch/riscv/lib/xor.S
-+++ b/lib/raid/xor/riscv/xor.S
-@@ -18,7 +18,6 @@ SYM_FUNC_START(xor_regs_2_)
- 	bnez a0, xor_regs_2_
- 	ret
- SYM_FUNC_END(xor_regs_2_)
--EXPORT_SYMBOL(xor_regs_2_)
  
- SYM_FUNC_START(xor_regs_3_)
- 	vsetvli a4, a0, e8, m8, ta, ma
-@@ -35,7 +34,6 @@ SYM_FUNC_START(xor_regs_3_)
- 	bnez a0, xor_regs_3_
- 	ret
- SYM_FUNC_END(xor_regs_3_)
--EXPORT_SYMBOL(xor_regs_3_)
+ static void
+ sparc_2(unsigned long bytes, unsigned long * __restrict p1,
+@@ -248,21 +244,10 @@ sparc_5(unsigned long bytes, unsigned long * __restrict p1,
+ 	} while (--lines > 0);
+ }
  
- SYM_FUNC_START(xor_regs_4_)
- 	vsetvli a5, a0, e8, m8, ta, ma
-@@ -55,7 +53,6 @@ SYM_FUNC_START(xor_regs_4_)
- 	bnez a0, xor_regs_4_
- 	ret
- SYM_FUNC_END(xor_regs_4_)
--EXPORT_SYMBOL(xor_regs_4_)
+-static struct xor_block_template xor_block_SPARC = {
++struct xor_block_template xor_block_SPARC = {
+ 	.name	= "SPARC",
+ 	.do_2	= sparc_2,
+ 	.do_3	= sparc_3,
+ 	.do_4	= sparc_4,
+ 	.do_5	= sparc_5,
+ };
+-
+-/* For grins, also test the generic routines.  */
+-#include <asm-generic/xor.h>
+-
+-#define arch_xor_init arch_xor_init
+-static __always_inline void __init arch_xor_init(void)
+-{
+-	xor_register(&xor_block_8regs);
+-	xor_register(&xor_block_32regs);
+-	xor_register(&xor_block_SPARC);
+-}
+diff --git a/arch/sparc/include/asm/xor_64.h b/lib/raid/xor/sparc/xor-sparc64-glue.c
+similarity index 74%
+rename from arch/sparc/include/asm/xor_64.h
+rename to lib/raid/xor/sparc/xor-sparc64-glue.c
+index e0482ecc0a68..3c67c8c3a0e8 100644
+--- a/arch/sparc/include/asm/xor_64.h
++++ b/lib/raid/xor/sparc/xor-sparc64-glue.c
+@@ -1,7 +1,5 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * include/asm/xor.h
+- *
+  * High speed xor_block operation for RAID4/5 utilizing the
+  * UltraSparc Visual Instruction Set and Niagara block-init
+  * twin-load instructions.
+@@ -10,7 +8,8 @@
+  * Copyright (C) 2006 David S. Miller <davem@davemloft.net>
+  */
  
- SYM_FUNC_START(xor_regs_5_)
- 	vsetvli a6, a0, e8, m8, ta, ma
-@@ -78,4 +75,3 @@ SYM_FUNC_START(xor_regs_5_)
- 	bnez a0, xor_regs_5_
+-#include <asm/spitfire.h>
++#include <linux/raid/xor_impl.h>
++#include <asm/xor.h>
+ 
+ void xor_vis_2(unsigned long bytes, unsigned long * __restrict p1,
+ 	       const unsigned long * __restrict p2);
+@@ -29,7 +28,7 @@ void xor_vis_5(unsigned long bytes, unsigned long * __restrict p1,
+ 
+ /* XXX Ugh, write cheetah versions... -DaveM */
+ 
+-static struct xor_block_template xor_block_VIS = {
++struct xor_block_template xor_block_VIS = {
+         .name	= "VIS",
+         .do_2	= xor_vis_2,
+         .do_3	= xor_vis_3,
+@@ -52,25 +51,10 @@ void xor_niagara_5(unsigned long bytes, unsigned long * __restrict p1,
+ 		   const unsigned long * __restrict p4,
+ 		   const unsigned long * __restrict p5);
+ 
+-static struct xor_block_template xor_block_niagara = {
++struct xor_block_template xor_block_niagara = {
+         .name	= "Niagara",
+         .do_2	= xor_niagara_2,
+         .do_3	= xor_niagara_3,
+         .do_4	= xor_niagara_4,
+         .do_5	= xor_niagara_5,
+ };
+-
+-#define arch_xor_init arch_xor_init
+-static __always_inline void __init arch_xor_init(void)
+-{
+-	/* Force VIS for everything except Niagara.  */
+-	if (tlb_type == hypervisor &&
+-	    (sun4v_chip_type == SUN4V_CHIP_NIAGARA1 ||
+-	     sun4v_chip_type == SUN4V_CHIP_NIAGARA2 ||
+-	     sun4v_chip_type == SUN4V_CHIP_NIAGARA3 ||
+-	     sun4v_chip_type == SUN4V_CHIP_NIAGARA4 ||
+-	     sun4v_chip_type == SUN4V_CHIP_NIAGARA5))
+-		xor_force(&xor_block_niagara);
+-	else
+-		xor_force(&xor_block_VIS);
+-}
+diff --git a/arch/sparc/lib/xor.S b/lib/raid/xor/sparc/xor-sparc64.S
+similarity index 98%
+rename from arch/sparc/lib/xor.S
+rename to lib/raid/xor/sparc/xor-sparc64.S
+index 35461e3b2a9b..a7b74d473bd4 100644
+--- a/arch/sparc/lib/xor.S
++++ b/lib/raid/xor/sparc/xor-sparc64.S
+@@ -1,7 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * arch/sparc64/lib/xor.S
+- *
+  * High speed xor_block operation for RAID4/5 utilizing the
+  * UltraSparc Visual Instruction Set and Niagara store-init/twin-load.
+  *
+@@ -92,7 +90,6 @@ ENTRY(xor_vis_2)
+ 	retl
+ 	  wr	%g0, 0, %fprs
+ ENDPROC(xor_vis_2)
+-EXPORT_SYMBOL(xor_vis_2)
+ 
+ ENTRY(xor_vis_3)
+ 	rd	%fprs, %o5
+@@ -159,7 +156,6 @@ ENTRY(xor_vis_3)
+ 	retl
+ 	 wr	%g0, 0, %fprs
+ ENDPROC(xor_vis_3)
+-EXPORT_SYMBOL(xor_vis_3)
+ 
+ ENTRY(xor_vis_4)
+ 	rd	%fprs, %o5
+@@ -245,7 +241,6 @@ ENTRY(xor_vis_4)
+ 	retl
+ 	 wr	%g0, 0, %fprs
+ ENDPROC(xor_vis_4)
+-EXPORT_SYMBOL(xor_vis_4)
+ 
+ ENTRY(xor_vis_5)
+ 	save	%sp, -192, %sp
+@@ -352,7 +347,6 @@ ENTRY(xor_vis_5)
  	ret
- SYM_FUNC_END(xor_regs_5_)
--EXPORT_SYMBOL(xor_regs_5_)
+ 	 restore
+ ENDPROC(xor_vis_5)
+-EXPORT_SYMBOL(xor_vis_5)
+ 
+ 	/* Niagara versions. */
+ ENTRY(xor_niagara_2) /* %o0=bytes, %o1=dest, %o2=src */
+@@ -399,7 +393,6 @@ ENTRY(xor_niagara_2) /* %o0=bytes, %o1=dest, %o2=src */
+ 	ret
+ 	 restore
+ ENDPROC(xor_niagara_2)
+-EXPORT_SYMBOL(xor_niagara_2)
+ 
+ ENTRY(xor_niagara_3) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2 */
+ 	save		%sp, -192, %sp
+@@ -461,7 +454,6 @@ ENTRY(xor_niagara_3) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2 */
+ 	ret
+ 	 restore
+ ENDPROC(xor_niagara_3)
+-EXPORT_SYMBOL(xor_niagara_3)
+ 
+ ENTRY(xor_niagara_4) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2, %o4=src3 */
+ 	save		%sp, -192, %sp
+@@ -544,7 +536,6 @@ ENTRY(xor_niagara_4) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2, %o4=src3 */
+ 	ret
+ 	 restore
+ ENDPROC(xor_niagara_4)
+-EXPORT_SYMBOL(xor_niagara_4)
+ 
+ ENTRY(xor_niagara_5) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2, %o4=src3, %o5=src4 */
+ 	save		%sp, -192, %sp
+@@ -643,4 +634,3 @@ ENTRY(xor_niagara_5) /* %o0=bytes, %o1=dest, %o2=src1, %o3=src2, %o4=src3, %o5=s
+ 	ret
+ 	 restore
+ ENDPROC(xor_niagara_5)
+-EXPORT_SYMBOL(xor_niagara_5)
 -- 
 2.47.3
 
