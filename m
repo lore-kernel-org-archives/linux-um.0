@@ -4,140 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F0310ED674
-	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 13:42:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 463E510F2862
+	for <linux-um@archiver.kernel.org>; Fri, 27 Mar 2026 17:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r8kqb/PmSoN6Ni50HiBp9vabWKni4KIgQFght4+Tts0=; b=CT+Rqv/KKY9XT9R4hwBS9AD64g
-	jSwQBUfvvXSFlYTu+7YTgYG5SrfqCAZ9ehkxMlvUzk3LTOWOKFASuELV8rAEvC1Jth3apv3eQVo5X
-	iWS5MF3NqgC6D5BPDKyIgb0KOEVuX3RFgqrmMLoDcLjHHK9LgAqfNRkjZ228AtPeWGjVI+YHqfBTL
-	1fUPZYhbe3keFBxmRrCCQflLmc5WoR3dbdTyYKO9JWC+CnAvf8nnRqqwbTW+kx3z9xYmgLBG2N9rH
-	7ngbhPRFCdPV/pzYuMdClR3M+ABVXG/alqcOhG1fRQZmJc80OSLjN7EkyrjNCNmXzv/X0m/0bf3W2
-	Nx+3dw7A==;
+	bh=00xs7oJV5RcNzaRyZmUSWqyrA7BLMepeqCZWgGFrmnc=; b=ScSEYtfcZdggN9SLaQdRn9HGHG
+	99SvMi9Bh5rEricYGkL/a7SI2jo2Y5uP93HlfugaiGgBgSlsptC1PxwQKguzrsRgIzvjzVHDk5Shq
+	gddo3OptwIXTKuhtdOnjy2z3nVWZ/Wqh9tk40MNpy5CLTzuW55TNZK8MF+eWJpHq2ON1NwTA5fbsw
+	k21wnhgme1izTh4hWJguliNplX0btuEMTOk4/yt3R2GvEHxaGib9MBpVrMtQDidRnNIK0DPuSr85A
+	q4u3Sx/I6rIJsYxvlkFOyoasMdKE4Qcd8QLw/e07B+lcTz/MzSLkTzIUyk65eHG+SEER4mWXIU5um
+	p4/6GCWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w67SJ-00000007Sxu-2ijB;
-	Fri, 27 Mar 2026 13:42:31 +0000
-Received: from flow-b3-smtp.messagingengine.com ([202.12.124.138])
+	id 1w6BJn-00000007st1-2MKB;
+	Fri, 27 Mar 2026 17:49:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w67SF-00000007Sx5-3Pj3;
-	Fri, 27 Mar 2026 13:42:29 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.stl.internal (Postfix) with ESMTP id EE82B130002C;
-	Fri, 27 Mar 2026 09:42:23 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Fri, 27 Mar 2026 09:42:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1774618943;
-	 x=1774626143; bh=r8kqb/PmSoN6Ni50HiBp9vabWKni4KIgQFght4+Tts0=; b=
-	WXmgYcfoU7DXqp4nVD4iHGiZnjmZ/oBiySyxKd7rz8vp9kcZDKnYLEMGgCJQIjL7
-	V2ImP+GLWMVeAo9BapSvgkg6sZA8FAlX89F/EJgDZjHchNHND2dlQNt4pc3epoh3
-	OJ9ax8G8Ti4nTeaIYae/vg9E4znqy0UmoGNsm5mT/JIT7wWxREblo3ydqTVYtkHP
-	UlmWf1KNBzT+e6MgE7LIPG67LgydS+QGPzIPPt6kxSxTjBes6xazxKTqstswJBaF
-	FpIaPM3zI7B8Hpd+MXNo6jjXH4XrRQbGwe29451a2OxlVNv+QJ8HI+vwtzjFwRfv
-	pS+0qtzZIeVwB5SBu2Lzrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1774618943; x=
-	1774626143; bh=r8kqb/PmSoN6Ni50HiBp9vabWKni4KIgQFght4+Tts0=; b=I
-	HVVfnyLZcN35pRyg32jICZM0qVLXsONawFPdb+heGxPgSM+izITH8vBPCEA/bJ9E
-	UN6H6aMcYUgpH7jg7wSGLvSMIlKgI7lRJLiAnw1ZuUsNQGzkiUxHOU3GYu5q66XA
-	Jtq76kjAyjkWoLV5eiPhBRC7IduTmfV52rSHitiA33ESsKYRWwKnZbkkIzoB5A80
-	UuVbB2VtJaN78K11CULHWhyiLFlTrPunOhraGsziiJpg80dksixydziqGGZRWk+1
-	rmY6b5kCR5m6oncjYZkweCTkFj8Kmi58gdgjDLPH5eRzHI0CFMQYY1btUypTC9F3
-	EVQl22V83017juQKIQ6Eg==
-X-ME-Sender: <xms:PYnGaTFjNv-2kjwzDO96mcm0J53r3iq9GAQxohg1QK5UaJwCiRIPvA>
-    <xme:PYnGabIVAVLiZp2iZ7XOB_zppj6xtVcQUdS2evGHJbBxfLdaZ5WI6ibLO15radjvz
-    L2ZUekfulSqpSJwxkEQ-5xkmAa_hhYZUOHObcnX-PTAuMVzrh-xqU8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeffedtgeefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepgedupdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopehjrghmihgvrdgtuhhnlhhifhhfvgesrghrmhdrtghomhdprhgtph
-    htthhopegtrghtrghlihhnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtohep
-    mhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrg
-    hrmhhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegrnhhtohhnrdhivhgrnhhovhes
-    tggrmhgsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepuggrvhhiugesuggrvh
-    hiughgohifrdhnvghtpdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvghtpdhr
-    tghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtoheptg
-    hhrhhishhirdhstghhrhgvfhhlsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:PonGac941VeA2oTCcTkWfzRB1nZw0mSSQHJ5Pqk3p0ZS0l9NehXMHQ>
-    <xmx:PonGaQa4Rabao1kTTsgiRbWyc3rxCyCd3mcww27MNaGYm9rsSBoKMA>
-    <xmx:PonGaVpcyAK2snd2rS9lHbXXYlQwTHW_7ACWd1UNjoDP3Fnvn14ONw>
-    <xmx:PonGacv8QU40CC2nyaF90d74nBjZSBShHRTwrc0LnYslN6WX6eF_Ng>
-    <xmx:P4nGabYMQKNNUJ-KtgTpLrS-vE-2hZR7lr1g9qxy0N1Vgj0xHOpyYnfa>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id D382B700065; Fri, 27 Mar 2026 09:42:21 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-MIME-Version: 1.0
-X-ThreadId: AUJnWW6OA6Vc
-Date: Fri, 27 Mar 2026 14:41:41 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Russell King" <linux@armlinux.org.uk>,
- "Christian Schrefl" <chrisi.schrefl@gmail.com>,
- "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>,
- "Alice Ryhl" <aliceryhl@google.com>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Jamie Cunliffe" <Jamie.Cunliffe@arm.com>,
- "Will Deacon" <will@kernel.org>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Miguel Ojeda" <ojeda@kernel.org>,
- "Andreas Hindborg" <a.hindborg@kernel.org>, acourbot@nvidia.com,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>,
- "Danilo Krummrich" <dakr@kernel.org>, "David Gow" <david@davidgow.net>,
- "Gary Guo" <gary@garyguo.net>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Justin Stitt" <justinstitt@google.com>,
- linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-um@lists.infradead.org, llvm@lists.linux.dev,
- "Benno Lossin" <lossin@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>, mmaurer@google.com,
- "Bill Wendling" <morbo@google.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <nick.desaulniers+lkml@gmail.com>,
- "Nicolas Schier" <nicolas.schier@linux.dev>,
- "Nicolas Schier" <nsc@kernel.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Richard Weinberger" <richard@nod.at>, rust-for-linux@vger.kernel.org,
- "Trevor Gross" <tmgross@umich.edu>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>
-Message-Id: <1990bf45-050a-445d-bcea-16d225207531@app.fastmail.com>
-In-Reply-To: <93439e91-cf81-477b-b880-a813bb01ad7c@app.fastmail.com>
-References: <20260322192159.88138-1-ojeda@kernel.org>
- <20260323000327.111235-1-ojeda@kernel.org>
- <acEP7tl8pqFA3tK8@shell.armlinux.org.uk> <acUGAsjYvNvTEO92@google.com>
- <CANiq72mzPpkELXis1CiSbKUmBXNQYMiMmjj-7-sYiLh4T_JSOQ@mail.gmail.com>
- <9cf5a94c-0f37-446c-b63d-ddac5674d220@gmail.com>
- <acVOL5Psz6kHlhq2@shell.armlinux.org.uk>
- <641592e3-2354-4238-9eb8-a1f5c2a13126@app.fastmail.com>
- <CAMuHMdUUfVCBZFi2WoOYibJLVnyPY-joRDJDowgHwjN_DGeEzw@mail.gmail.com>
- <93439e91-cf81-477b-b880-a813bb01ad7c@app.fastmail.com>
-Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
-Content-Type: text/plain
+	id 1w6BJl-00000007ssN-14WV;
+	Fri, 27 Mar 2026 17:49:57 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id D192860054;
+	Fri, 27 Mar 2026 17:49:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D99ECC19423;
+	Fri, 27 Mar 2026 17:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1774633795;
+	bh=fvV+eUnldLQbPdva1eQggufDFhZTLIQCCYJJa9ryFGE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Xukem7pwvHhzUBxAXhQ9NUugrvHjO83NuPglCq+AOxMC7jcj5knJ1iWiLSA3qMyPR
+	 XN8WgX2Ez7pjNH1P4TD8C2yL80THz5zSN5msmXHHVRwpdESPm9OS0FEtlzvOIU70KT
+	 MQ9zvWTqdnQj4+10/Ab7Ocs563lJZMmYcKdIZNc0=
+Date: Fri, 27 Mar 2026 10:49:53 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner
+ <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
+ <chleroy@kernel.org>, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti
+ <alex@ghiti.fr>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
+ <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Andreas
+ Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, Anton
+ Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Herbert Xu <herbert@gondor.apana.org.au>, Dan Williams
+ <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>, David Sterba
+ <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>, Song Liu
+ <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>, Li Nan
+ <linan122@huawei.com>, "Theodore Ts'o" <tytso@mit.edu>,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: cleanup the RAID5 XOR library v4
+Message-Id: <20260327104953.b91d7a4a71b1c1cd202e5a1c@linux-foundation.org>
+In-Reply-To: <20260327061704.3707577-1-hch@lst.de>
+References: <20260327061704.3707577-1-hch@lst.de>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260327_064228_147487_3240A5CB 
-X-CRM114-Status: UNSURE (   7.25  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,20 +93,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 27, 2026, at 10:02, Arnd Bergmann wrote:
-> On Fri, Mar 27, 2026, at 08:56, Geert Uytterhoeven wrote:
-> but that only allowed bitfields to be marked as __attribute__((packed))
-> in order to get tightly packed fields and return '4' on all architectures,
-> while m68k-linux-gcc apparently has all bitfields implicitly packed unless they
-> are explicitly marked __attribute__((aligned(x))). This behavior is
-> independent of the -malign-int flag.
+On Fri, 27 Mar 2026 07:16:32 +0100 Christoph Hellwig <hch@lst.de> wrote:
 
-I had another look and found that this has been in gcc since ELF
-support was originally added for m68k:
+> the XOR library used for the RAID5 parity is a bit of a mess right now.
+> The main file sits in crypto/ despite not being cryptography and not
+> using the crypto API, with the generic implementations sitting in
+> include/asm-generic and the arch implementations sitting in an asm/
+> header in theory.  The latter doesn't work for many cases, so
+> architectures often build the code directly into the core kernel, or
+> create another module for the architecture code.
+> 
+> Changes this to a single module in lib/ that also contains the
+> architecture optimizations, similar to the library work Eric Biggers
+> has done for the CRC and crypto libraries later.  After that it changes
+> to better calling conventions that allow for smarter architecture
+> implementations (although none is contained here yet), and uses
+> static_call to avoid indirection function call overhead.
 
-gcc/config/m68k/linux.h:#undef PCC_BITFIELD_TYPE_MATTERS
-
-All other current Linux/ELF targets get the default from gcc/config/elfos.h
-
-      Arnd
+Thanks, I've updated mm.git's mm-nonmm-unstable to this version of the
+patchset.
 
