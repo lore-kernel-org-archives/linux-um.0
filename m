@@ -4,71 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECD5B10D148A
-	for <linux-um@archiver.kernel.org>; Sun, 29 Mar 2026 03:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BBBCFC97F4
+	for <linux-um@archiver.kernel.org>; Sun, 29 Mar 2026 21:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=3wXPqz9uSdsbBV+gvFYDHL1AfaHwYaDG2Fl9a3n4ruA=; b=uFmL3pu9ww8pKjT2MRTQHNkrLG
-	QvfHvWO3CTwsw6In9HPocgraM1O53sjOzNzBQCZ/QiihcEYDRR8Ts3mDFWkNXLYn5akwfLip/2jHT
-	/zAnWqa6j9Gb8TKFuoPGEEHHlfQPDbLKCsJOxz+gZv77BDxeyg8/ufeBowRMgnhalCpRLty4m4EHj
-	12z01+hXmCQhyGg8d8Z0Q1fhhTm4bGmzna6wEEVrT1Cmgc8GkGf+P49utLYrv2o/B/P5mq9YDTbfE
-	OC8RK/q45+g7eR4AgMMbwAK2ToXey7u1V6FCAwF6CbDutvpG1lTgMvAsWHu+FWOGERI8bK6Ua2yaY
-	WSeDbCjA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=j4CeAQMu9DQKqH07kUrTogoujHxmqR5Uldl+FpaannQ=; b=fVUE8HxsCcsaiCmKobnpfzC1Ia
+	qeTJur3KJ3rFiMy1sVNfQTqNS//0aUssfjggznE49hPw95xqPDbauCW03Gybrgr5OGReNTc0vfdTu
+	+uiHN64fPRWNi9Htr9yCBtn8UaVlgvvw572nZwgAIoIJi08JZEwWsfwLu+V+UMf9EJMk1hKdRnHA8
+	sWhtmg1IVBj2ntQF72vUmrKzimHvE/IqnGrpKqG3+RLDnniJoOFlvpq8c7LszenBLKJCuELgKP0bw
+	H1C2H21SNQD+RhpehASbg37bFWINwAp9fSFDU5VpxzVArtkq9Qu8MysNr4z0njs46cJdDtoURQGjo
+	GNzLm6Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6gXH-00000009VgR-19Rq;
-	Sun, 29 Mar 2026 03:09:59 +0000
-Received: from smtp21.cstnet.cn ([159.226.251.21] helo=cstnet.cn)
+	id 1w6xjF-0000000ALjW-3FOE;
+	Sun, 29 Mar 2026 21:31:29 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w6gXC-00000009Vef-13YU
-	for linux-um@lists.infradead.org;
-	Sun, 29 Mar 2026 03:09:57 +0000
-Received: from localhost.localdomain (unknown [111.196.245.197])
-	by APP-01 (Coremail) with SMTP id qwCowAAXvWj6l8hpnOd8Cw--.20596S2;
-	Sun, 29 Mar 2026 11:09:47 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: akpm@osdl.org,
-	sergeh@kernel.org,
-	clg@fr.ibm.com,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn
-Subject: [PATCH] um: mconsole: use bounded version string formatting
-Date: Sun, 29 Mar 2026 11:09:46 +0800
-Message-ID: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	id 1w6xjC-0000000ALj0-1Fka;
+	Sun, 29 Mar 2026 21:31:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 4967F408C6;
+	Sun, 29 Mar 2026 21:31:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2530AC116C6;
+	Sun, 29 Mar 2026 21:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774819885;
+	bh=PZ1wpSjnIe92PCeQuI7dS0b860us4G2UnkohZEsZsEU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ULb4+WxdcWS0LYY9+V+ZhbQ2W3+gIjbkOcw58cK44Qjr9h22rlhdWgqrzvN7R6PFm
+	 JREZi4dijq69Gaojf+s0flL7jtbEMPdMc1H9xiVEXRPZGXJ+mlST60uJB7ykogcxSg
+	 kmfGm8RBCtS/7B0rt59NZvGOlgpFTgi1GJtUu13b3N8GxcTN5UmObfYBhRebgAbOcw
+	 s6hlqjkrksTerC1XE20F/dvAdRtaJ9guJhs99OCpaYdx7JLVTyioUmYJlr1WpZMw7X
+	 u3sIge99HyZ1zxhIvJaxFTUekKZ6rH63KCJunK++uOHXMhMrLVzR5ifEDLGHmrI7Dj
+	 yDWAS2zzXgozA==
+Date: Sun, 29 Mar 2026 14:31:19 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: cleanup the RAID5 XOR library v4
+Message-ID: <20260329213119.GA2106@quark>
+References: <20260327061704.3707577-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowAAXvWj6l8hpnOd8Cw--.20596S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw4rKF1fCFW7trykGFyDZFb_yoWkCrcEv3
-	4aqwn5Gayftr18Xr1DA39Iy3y0yws8Kr4kta1ktFWfAw1rurs7uFZ0vr1qgw1UXw48WFn3
-	C347AryjkryUGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb4kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoq2MUU
-	UUU
-X-Originating-IP: [111.196.245.197]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260327061704.3707577-1-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260328_200954_678345_DD3CB4C0 
-X-CRM114-Status: UNSURE (   6.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260329_143126_383107_D701C909 
+X-CRM114-Status: GOOD (  21.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,34 +109,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-mconsole_version() formats several UTS strings into a fixed 256-byte local buffer with sprintf() and no length bound.
+On Fri, Mar 27, 2026 at 07:16:32AM +0100, Christoph Hellwig wrote:
+> Hi all,
+> 
+> the XOR library used for the RAID5 parity is a bit of a mess right now.
+> The main file sits in crypto/ despite not being cryptography and not
+> using the crypto API, with the generic implementations sitting in
+> include/asm-generic and the arch implementations sitting in an asm/
+> header in theory.  The latter doesn't work for many cases, so
+> architectures often build the code directly into the core kernel, or
+> create another module for the architecture code.
+> 
+> Changes this to a single module in lib/ that also contains the
+> architecture optimizations, similar to the library work Eric Biggers
+> has done for the CRC and crypto libraries later.  After that it changes
+> to better calling conventions that allow for smarter architecture
+> implementations (although none is contained here yet), and uses
+> static_call to avoid indirection function call overhead.
+> 
+> A git tree is also available here:
+> 
+>     git://git.infradead.org/users/hch/misc.git xor-improvements
+> 
+> Gitweb:
+> 
+>     https://git.infradead.org/?p=users/hch/misc.git;a=shortlog;h=refs/heads/xor-improvements
+> 
+> Changes since v3:
+>  - switch away from lockdep_assert_preemption_enabled() again
+>  - fix a @ reference in a kerneldoc comment.
+>  - build the arm4regs implementation also without kernel-mode neon
+>    support
+>  - fix a pre-existing issue about mismatched attributes on arm64's
+>    xor_block_inner_neon
+>  - reject 0-sized xor request and adjust the kunit test case to not
+>    generate them
 
-Use snprintf() so the version reply stays within the local buffer.
+Reviewed-by: Eric Biggers <ebiggers@kernel.org>
 
-Fixes: e9ff3990f08e ("[PATCH] namespaces: utsname: switch to using uts namespaces")
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- arch/um/drivers/mconsole_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+But yes, as Andrew mentioned there are two "xor: add a better public
+API" patches.  They should be folded together.
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index e2a9e8879f58..18d0ec15557c 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -106,9 +106,9 @@ void mconsole_version(struct mc_request *req)
- {
- 	char version[256];
- 
--	sprintf(version, "%s %s %s %s %s", utsname()->sysname,
--		utsname()->nodename, utsname()->release, utsname()->version,
--		utsname()->machine);
-+	snprintf(version, sizeof(version), "%s %s %s %s %s",
-+		 utsname()->sysname, utsname()->nodename, utsname()->release,
-+		 utsname()->version, utsname()->machine);
- 	mconsole_reply(req, version, 0, 0);
- }
- 
--- 
-2.50.1 (Apple Git-155)
-
+- Eric
 
