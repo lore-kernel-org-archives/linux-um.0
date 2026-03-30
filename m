@@ -4,104 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A302410D14A6
-	for <linux-um@archiver.kernel.org>; Mon, 30 Mar 2026 12:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D554910D14AA
+	for <linux-um@archiver.kernel.org>; Mon, 30 Mar 2026 12:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=k7JyzGDh2V9hD5ppCKHdE8lqc25UY6zaRA17P+pQPiE=; b=BVBTE9QwJFr4fssqLACQX/Hj7C
-	DRvdvJ6fJy+m/W2PpPEgYhSo19fZgo/FTvxpyNWZbM52o9b4tz85BTMI+xXGnC9WBMhq+xG3bES9T
-	tyG4uP2lIPHt95QauAPwNX5CwSFVFMokEvCB4PSX/ztDUkmjjcJ4Flfb5HVHDeKqJ6PaRr2k1DUY2
-	yAzubTSiL9jPjFyckamfab/2toMZKXsBO36JI/SSJFHIbtHiKopu5ldYrKTa64E7YcOBUoTclpLe2
-	AOAQMr+jMLDJhBZa5TnlIa3SUHOfJwaeCBGS5XPdOMb/+QQZjFSa/+ZZj8DoZcbgpiAlMtBJX3T0H
-	QrCwSLUA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=vdwlRbDywCj3yrAkJeO/0XtIpUCTfBtP5P3/vuBUn5I=; b=fX3W555JPdrwca8+ZjBY33zhmI
+	wllaW4RN7MMdv5lKAg3k0Sxt6A0QLHldy7HMDoHi/Tdn8H2hj9rQIM3bC9k5W6kaeYo0+K7PhHCNA
+	CXMVNsD3DEJrm02gRKZs6z/E2U+TW8fajz4DTl9tswRMXETZLezAFEyPxhsh/7S95sIHfBJ6AYiIp
+	PDehWiRO1RR83S9JntwgexaONNU/czj9hli2RcWP3lcu1YEqls/PUXbkJ1/9bFjimtCe5S9Sa/uN8
+	WLWiCSP/kv2lRY+Dw+NHoVRijkcbeJ70C8KjMYG/xV95vT1V2y3+UeXtLZEiM2gr3H9yRBn1oflGn
+	cVvl+mbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7BLL-0000000BD9f-0H4r;
-	Mon, 30 Mar 2026 12:03:43 +0000
-Received: from mail-vs1-f54.google.com ([209.85.217.54])
+	id 1w7BVc-0000000BDo2-0Gmf;
+	Mon, 30 Mar 2026 12:14:20 +0000
+Received: from flow-a7-smtp.messagingengine.com ([103.168.172.142])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7BLI-0000000BD93-1H4z
-	for linux-um@lists.infradead.org;
-	Mon, 30 Mar 2026 12:03:41 +0000
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-60328e74517so1308909137.1
-        for <linux-um@lists.infradead.org>; Mon, 30 Mar 2026 05:03:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774872218; x=1775477018;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k7JyzGDh2V9hD5ppCKHdE8lqc25UY6zaRA17P+pQPiE=;
-        b=QYQnYJ7xfoocxEbvBn+qzixvzHNU66WmPyBBmiyQkTkqAzuRx9Q0DxNaVMQOdyufP3
-         xrt0vUsF+tZAc956uvMSJtFznhzkrBQp3/+A/08Sgfxvj913lSKywFsDAjcVQMHUNDlm
-         83B/ZqWCJ4zBzkepEN1f0VC/OCIgDUidQuY5+Eu6sGfAZD2F1CBk/+ccGXg6T3K8913D
-         40KsdK6yohjLMeErQF7SDu+I5vaBw0vYs113ck2Md1qE4KBwO7jL8dtYCXkWtE0w19jm
-         ZaBIKPO+L6AQ66YxMJuROLOfcYP3Rirus1/u6ginrv2gTjf9Wyz6NM2taJJAHGrrLrSp
-         jxFg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTpZr5016b59pjN5IHCxG5p+PvlCXa1N/CX6vF+pjfgpMgUprR/wTwO5XF5Zvpta3m2Lb9cbOVGA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzHSH5tt8EhV/R9rCLPU362J6EL20T/MBMTnhJUhXXFIc2kAXCy
-	xuf2L58Geb3g5FfDoMLfb0io4joaa2xwMT/HpAtSanRgKh0SEhhMqYb4nMEa3gTM
-X-Gm-Gg: ATEYQzyOgXydJTpSICg0UAabn0NJdPy48ZQ0PGvdT2ko+OEI+vdVJBVZH3g3aqKvFgX
-	CvMbp/hhSUfU4rhII5dpYpVc3XhUvxtCsviDi87IT6fLXsK0wsdXbJrLsCxkaPwN6TrZOnK2MJq
-	YeyOTEbbawPo1SACozy6ZWjcqUusw9DqJi7ZWp7C3sEiGViYcark98bEGwN19iJFpmj7u8gdEe5
-	3lSWDr80IbGRyuLPZYXcyK/HX6QHxG/RW0E4Vio8i1fuMqkUBZ4fv5rfwgAJ5ZwjZVK8Hh9xn16
-	xgYgkO76UKYvwKkQtF5Ey7cXH3sVbWjdD2gNK/bq81bRzmjjLO5vfY02DLCxDeReRaGR+OZmL8h
-	XE3NKr31P0D9b0wjYUkkazRb+McisTW1kzzfkTodkjvRj5X5Ca+vQOo35RhAz18O3Ome2eRswMa
-	mVuFB/cwtQPlc7ArfEWwMEyFzD2UMboKkUaaEXrCkvsau/wLJW50NfaZ5e18Pnt5b2
-X-Received: by 2002:a05:6102:6049:b0:5ff:fbe4:8a4 with SMTP id ada2fe7eead31-604f925999amr3072072137.21.1774872218298;
-        Mon, 30 Mar 2026 05:03:38 -0700 (PDT)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-605129b8347sm8021320137.3.2026.03.30.05.03.36
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Mar 2026 05:03:37 -0700 (PDT)
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-56ce5c899fcso1246993e0c.3
-        for <linux-um@lists.infradead.org>; Mon, 30 Mar 2026 05:03:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV88kSYKFQL136D3DSphaeg7HzMz5+7MBgK1d994X4MjjB0pThKKxeu0XMIM2ztModrtaur2dQqTA==@lists.infradead.org
-X-Received: by 2002:a05:6122:1824:b0:56a:e46f:2cfa with SMTP id
- 71dfb90a1353d-56d4a5f2e5cmr4217124e0c.12.1774872216490; Mon, 30 Mar 2026
- 05:03:36 -0700 (PDT)
+	id 1w7BVZ-0000000BDnC-00HM;
+	Mon, 30 Mar 2026 12:14:18 +0000
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.phl.internal (Postfix) with ESMTP id 4980C138039D;
+	Mon, 30 Mar 2026 08:14:13 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Mon, 30 Mar 2026 08:14:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1774872853;
+	 x=1774880053; bh=vdwlRbDywCj3yrAkJeO/0XtIpUCTfBtP5P3/vuBUn5I=; b=
+	P7DKvh6SIP+yQ8R66Ax+mey6RCWMDGbu4urWvNvvCMjfcDeHvP0YiffH8SShmDkd
+	4SxSv1o1EbjRGHmRrlm0eWr328vgn2tjR6V+Gej8mrtW8KMitkpBhH7fKQTqMUBq
+	UnpYAWvx4osHofaLhzhsIRepEi1nUvMMzNgVSk0sD/Ei6cDVlA11wm4Rub3AAKCc
+	1tzDxf7l7ufNkT+LumZKXu6VRm+ToFvfRYajH65x7pzc7sWSWSPkMhv9ZK/Qy3rp
+	/uzHTYvtAjIYYdhWcpAQxxPhQ3Jxz8kr3ZhX8NzwI5ZeG1VGwSKCgw3bOaza0kko
+	dfZ0O+egx6t9Pv2p7yHV9w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1774872853; x=
+	1774880053; bh=vdwlRbDywCj3yrAkJeO/0XtIpUCTfBtP5P3/vuBUn5I=; b=C
+	Seh2nn2JXXwZUw8f8LJddm9InB6NsowQA5aApYI3XFBOHhdPH2YMshSxql9GNxcv
+	epUWGITb/aiXA9dXvDZKu2tQmXvp6kzG+Q0VFvADjnjyi/jWmVSLl7fdsDwQbjNE
+	EE0kp//9EBPsRdCUqZjPzUnE53xY2oLaQYKHskst0s3L6xM3xCOskJaFRsHNaMwv
+	KyVn9G9r8jNTv8cPTbukA4AXrspuzyS5l3edvXr/ABm/zV/ViwiiLSWVR5cK0Eq0
+	CXOUAhpyf2PRQfa3aZ/yMCiA7G0lFNvlYGXsegzIKFPBrqzJYWe78jbFsBA7FdP8
+	yJ4OV4ahzrQ9XRxoNJgWA==
+X-ME-Sender: <xms:E2nKabkroe3a5G2UbwtgU0aJJZxIjO_sahUT_vNLUVJ9HMVoObLKlw>
+    <xme:E2nKaZqnApNKJMOR735waJCJFmHKcEfK-IOTp8HUkeqX5fTx-OKK24blL4I5izmpL
+    FgMug7sKNW-PkGiFVgHuALXZp7bU-29m4LSvF4Kj_RPu7ptDDdUZEY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeffeekleehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
+    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepgedupdhmohguvgepshhmthhpohhu
+    thdprhgtphhtthhopehjrghmihgvrdgtuhhnlhhifhhfvgesrghrmhdrtghomhdprhgtph
+    htthhopegtrghtrghlihhnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtohep
+    mhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrg
+    hrmhhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegrnhhtohhnrdhivhgrnhhovhes
+    tggrmhgsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepuggrvhhiugesuggrvh
+    hiughgohifrdhnvghtpdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvghtpdhr
+    tghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtoheptg
+    hhrhhishhirdhstghhrhgvfhhlsehgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:E2nKaVfqgC86F1-tw7SQimSjM9h5w44kWMVWMmkp2XFwLlqMNtkq0w>
+    <xmx:E2nKae4-pRskTOWQlcLYnnB_E1YHAl1UlHT3b33r4Du5WsAwbmYy1g>
+    <xmx:E2nKaSI9iV1Bh8Plx_WxBMHuy6_XLKjaE6QEcH_uToa4wP009fZ3xQ>
+    <xmx:E2nKafNhteTnhLOg4mEmIUirggGoqlz7QRKVQR0zQRFQ3aml_DeG7g>
+    <xmx:FWnKaR42JfWJ4JAPzDCCKyua_hvgCsmYAbcAMoMF7LicLihX8k5J_tPx>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 7D351700065; Mon, 30 Mar 2026 08:14:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-References: <20260322192159.88138-1-ojeda@kernel.org> <20260323000327.111235-1-ojeda@kernel.org>
+X-ThreadId: AUJnWW6OA6Vc
+Date: Mon, 30 Mar 2026 14:13:49 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Russell King" <linux@armlinux.org.uk>,
+ "Christian Schrefl" <chrisi.schrefl@gmail.com>,
+ "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>,
+ "Alice Ryhl" <aliceryhl@google.com>, "Ard Biesheuvel" <ardb@kernel.org>,
+ "Jamie Cunliffe" <Jamie.Cunliffe@arm.com>,
+ "Will Deacon" <will@kernel.org>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Miguel Ojeda" <ojeda@kernel.org>,
+ "Andreas Hindborg" <a.hindborg@kernel.org>, acourbot@nvidia.com,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ "Boqun Feng" <boqun.feng@gmail.com>,
+ "Danilo Krummrich" <dakr@kernel.org>, "David Gow" <david@davidgow.net>,
+ "Gary Guo" <gary@garyguo.net>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Justin Stitt" <justinstitt@google.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-um@lists.infradead.org, llvm@lists.linux.dev,
+ "Benno Lossin" <lossin@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>, mmaurer@google.com,
+ "Bill Wendling" <morbo@google.com>,
+ "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <nick.desaulniers+lkml@gmail.com>,
+ "Nicolas Schier" <nicolas.schier@linux.dev>,
+ "Nicolas Schier" <nsc@kernel.org>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Richard Weinberger" <richard@nod.at>, rust-for-linux@vger.kernel.org,
+ "Trevor Gross" <tmgross@umich.edu>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>
+Message-Id: <26d690ab-d68f-401f-ae2d-7aa4de081bce@app.fastmail.com>
+In-Reply-To: <CAMuHMdU-+dm83TVttfarT7QxE5ySpQ2LJ_k6oFKMWRcbaWcCdA@mail.gmail.com>
+References: <20260322192159.88138-1-ojeda@kernel.org>
+ <20260323000327.111235-1-ojeda@kernel.org>
  <acEP7tl8pqFA3tK8@shell.armlinux.org.uk> <acUGAsjYvNvTEO92@google.com>
  <CANiq72mzPpkELXis1CiSbKUmBXNQYMiMmjj-7-sYiLh4T_JSOQ@mail.gmail.com>
- <9cf5a94c-0f37-446c-b63d-ddac5674d220@gmail.com> <acVOL5Psz6kHlhq2@shell.armlinux.org.uk>
- <641592e3-2354-4238-9eb8-a1f5c2a13126@app.fastmail.com> <CAMuHMdUUfVCBZFi2WoOYibJLVnyPY-joRDJDowgHwjN_DGeEzw@mail.gmail.com>
+ <9cf5a94c-0f37-446c-b63d-ddac5674d220@gmail.com>
+ <acVOL5Psz6kHlhq2@shell.armlinux.org.uk>
+ <641592e3-2354-4238-9eb8-a1f5c2a13126@app.fastmail.com>
+ <CAMuHMdUUfVCBZFi2WoOYibJLVnyPY-joRDJDowgHwjN_DGeEzw@mail.gmail.com>
  <93439e91-cf81-477b-b880-a813bb01ad7c@app.fastmail.com>
-In-Reply-To: <93439e91-cf81-477b-b880-a813bb01ad7c@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 30 Mar 2026 14:03:24 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU-+dm83TVttfarT7QxE5ySpQ2LJ_k6oFKMWRcbaWcCdA@mail.gmail.com>
-X-Gm-Features: AQROBzBixIQPiuCOL0pIFbgyC_M26WMZwTpKOw623Sg5KUyDyMzQqEZKs9RSoco
-Message-ID: <CAMuHMdU-+dm83TVttfarT7QxE5ySpQ2LJ_k6oFKMWRcbaWcCdA@mail.gmail.com>
+ <CAMuHMdU-+dm83TVttfarT7QxE5ySpQ2LJ_k6oFKMWRcbaWcCdA@mail.gmail.com>
 Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Russell King <linux@armlinux.org.uk>, Christian Schrefl <chrisi.schrefl@gmail.com>, 
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Will Deacon <will@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, acourbot@nvidia.com, 
-	Andrew Morton <akpm@linux-foundation.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Danilo Krummrich <dakr@kernel.org>, David Gow <david@davidgow.net>, 
-	Gary Guo <gary@garyguo.net>, Johannes Berg <johannes@sipsolutions.net>, 
-	Justin Stitt <justinstitt@google.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-um@lists.infradead.org, llvm@lists.linux.dev, 
-	Benno Lossin <lossin@kernel.org>, Mark Rutland <mark.rutland@arm.com>, mmaurer@google.com, 
-	Bill Wendling <morbo@google.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nicolas.schier@linux.dev>, 
-	Nicolas Schier <nsc@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, rust-for-linux@vger.kernel.org, 
-	Trevor Gross <tmgross@umich.edu>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260330_050340_383116_2FD0B925 
-X-CRM114-Status: GOOD (  22.29  )
+X-CRM114-CacheID: sfid-20260330_051417_555167_936C9B5A 
+X-CRM114-Status: GOOD (  10.00  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,35 +152,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Arnd,
-
-On Fri, 27 Mar 2026 at 10:02, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Mar 27, 2026, at 08:56, Geert Uytterhoeven wrote:
-> >> I noticed a similar issue with m68k-linux, which has a bitfield
-> >> alignment different from anything else on gcc, but uses the normal
-> >> behavior on clang.
-> >
-> > Ugh, I wasn't aware of that. Adrian, did you know?
+On Mon, Mar 30, 2026, at 14:03, Geert Uytterhoeven wrote:
+> On Fri, 27 Mar 2026 at 10:02, Arnd Bergmann <arnd@arndb.de> wrote:
+>>
+>> echo 'struct { short a : 3; short b :15; short c :14; } x; int y = sizeof(x);' | m68k-linux-gcc -xc - -S -o-
+>>
+>> this produces '4' on m68k-linux-gcc, but '6' everywhere else. I originally
+>> thought this was related to this 2009 change in both compilers
 >
-> To clarify, this illustrates what I mean here:
->
-> echo 'struct { short a : 3; short b :15; short c :14; } x; int y = sizeof(x);' | m68k-linux-gcc -xc - -S -o-
->
-> this produces '4' on m68k-linux-gcc, but '6' everywhere else. I originally
-> thought this was related to this 2009 change in both compilers
+> Oh, now I remember.  AFAIK (holding wood and a rabbit leg) we don't
+> have any bitfield members spanning multiple base type instances in
+> the kernel.
 
-Oh, now I remember.  AFAIK (holding wood and a rabbit leg) we don't
-have any bitfield members spanning multiple base type instances in
-the kernel.
+There are certainly very few of those, but two example I found in
+UAPI are
 
-Gr{oetje,eeting}s,
+struct dvd_layer {
+        __u8 book_version       : 4;
+        __u8 book_type          : 4;
 
-                        Geert
+        __u8 min_rate           : 4;
+        __u8 disc_size          : 4;
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+        __u8 layer_type         : 4;
+        __u8 track_path         : 1;
+        __u8 nlayers            : 2;
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+        __u8 track_density      : 4; // crosses u8 boundary
+        __u8 linear_density     : 4;
+        __u8 bca                : 1;
+        __u32 start_sector;
+        __u32 end_sector;
+        __u32 end_sector_l0;
+};
+
+struct usb_raw_ep_caps {
+        __u32   type_control    : 1;
+        __u32   type_iso        : 1;
+        __u32   type_bulk       : 1;
+        __u32   type_int        : 1;
+        __u32   dir_in          : 1;
+        __u32   dir_out         : 1;
+       // 2 bit padding on m68k, 26 bits elsewhere
+};
+
+    Arnd
 
