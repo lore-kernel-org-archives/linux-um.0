@@ -4,133 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E161061B18
-	for <linux-um@archiver.kernel.org>; Mon, 30 Mar 2026 17:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8472B1061B23
+	for <linux-um@archiver.kernel.org>; Mon, 30 Mar 2026 21:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xyHj1A1ooEp14NZcD2mDWICtlYh0xq5f/JXIGtT6vLQ=; b=ubiIbOYkaZW8pXHO6eJogq1/IM
-	a2QzWwnvAeUlnpBemzoFOUDavw5tDbT8PSnPf1WQHl4qBfYrDbxYXAnZEs5j/HWBX/eeFnBXMp8nO
-	Uob/WKMDKp7UDU+bX2WMmleMb3Gr/qz/jUnPPwTn4Z0rkrIdb0ziLuCjHmykBG8hcG/FyrlnVY0R2
-	mAQCQTYP+hgZ3sBDJuvam+NDQPHT+HK9d7F9aYm1mN5WctiHA2sU6jblesMXq6nHG68OYae1XxuiH
-	N5fgf2r2EofV+QfBRCax5AuT413DmoNSqg2u2+VHXNHIbh+sui2KMQkepAhRqnk0YHNJXa4ztCM5h
-	wTjXQS2Q==;
+	bh=zlsVcWSeeIpbPnsSYMwOt0k3yfDPRs+s8ihr0jHypXY=; b=X430XVFSrgNbLQdNYUpD2rrXSC
+	R7EepIhG04ppHWvJcoDDJ33q+XPk5Qax7laqrJAKu175pW7zKLwKyK5G2CtYltjbLWav0C4jDKWjp
+	2CvK5k7Sh/lw95jPeMpEN5AM7rygES+K+VZEb+5kL8yU5jVSPfbaR1qqJ/X9Fl7Rl2jzZWJcRz3WJ
+	hiCOQK60PE86Y75fMX024yx8TPFcEGdLBSbe4s7zdUWhPErahujRg9CzqTTBKT8XWB1Uc2piz4ovs
+	cqQXX4lEUqjZ6/bTbjjZ3YGVum8R6WG5ySE8Yk4ldSHjwPmOki2xXu9uoDs/97CSXDV8beO2w6ew1
+	J+VdHrBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7GjZ-0000000BhsJ-3Xwe;
-	Mon, 30 Mar 2026 17:49:05 +0000
-Received: from relay.yourmailgateway.de ([188.68.61.107])
+	id 1w7JrN-0000000BtB5-046X;
+	Mon, 30 Mar 2026 21:09:21 +0000
+Received: from mail-vk1-xa2b.google.com ([2607:f8b0:4864:20::a2b])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7GjW-0000000Bhrt-2x30
+	id 1w7JrJ-0000000Bt9H-41yl
 	for linux-um@lists.infradead.org;
-	Mon, 30 Mar 2026 17:49:04 +0000
-Received: from mors-relay-8405.netcup.net (localhost [127.0.0.1])
-	by mors-relay-8405.netcup.net (Postfix) with ESMTPS id 4fkzJS6Mvjz71mM;
-	Mon, 30 Mar 2026 19:48:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=leemhuis.info;
-	s=key2; t=1774892936;
-	bh=CFzyN3AzXae38axJntKvEKVxtsSWiViqs4PHY8vcudo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dW9jGLTg606085ZK+kNco8KrBSJ9qm8ZpYpWs/dDT/w6BYzHH+ZS7xOl2zmr07Uik
-	 UXON46ZyZ8OeyCBLQ7euAlJ8EaBqUGWcDToOqYJ8GcVh05yoLY/fCuAL5sH6pjbuWb
-	 pDDnVKrCELmSLED7taOluGkht5B+ZeK3wOEXzAyCUp2OeeA8hPdgmjIejmaAjBu9r2
-	 /GdO8zdxylV6Tj7JGNaKdiAoDUNiLXAobMCtHXTHQves2w/ZeXbdQ+3Im8VxS42vPu
-	 MK8ok9/32XSw04E+1JI8VEAwCQ7qqB2gle+Nv/LCccMaX4GqBl7AJe/nB7NBvWNdSG
-	 uVRImriJ6FeXw==
-Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
-	by mors-relay-8405.netcup.net (Postfix) with ESMTPS id 4fkzJS5dPTz71m8;
-	Mon, 30 Mar 2026 19:48:56 +0200 (CEST)
-Received: from mxe9fb.netcup.net (unknown [10.243.12.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by policy02-mors.netcup.net (Postfix) with ESMTPS id 4fkzJP3C2Hz8sZg;
-	Mon, 30 Mar 2026 19:48:53 +0200 (CEST)
-Received: from [IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f] (unknown [IPv6:2a02:8108:8984:1d00:a0cf:1912:4be:477f])
-	by mxe9fb.netcup.net (Postfix) with ESMTPSA id E4676635A4;
-	Mon, 30 Mar 2026 19:48:51 +0200 (CEST)
-Authentication-Results: mxe9fb;
-        spf=pass (sender IP is 2a02:8108:8984:1d00:a0cf:1912:4be:477f) smtp.mailfrom=linux@leemhuis.info smtp.helo=[IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f]
-Received-SPF: pass (mxe9fb: connection is authenticated)
-Message-ID: <fed7d83d-ace7-47b2-acbb-d469c6189722@leemhuis.info>
-Date: Mon, 30 Mar 2026 19:48:50 +0200
+	Mon, 30 Mar 2026 21:09:19 +0000
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-56cde757d3dso1662583e0c.2
+        for <linux-um@lists.infradead.org>; Mon, 30 Mar 2026 14:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774904956; x=1775509756; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zlsVcWSeeIpbPnsSYMwOt0k3yfDPRs+s8ihr0jHypXY=;
+        b=EZwA6/ua8aWp8U89w0Uaq1+YR7XRPVIPXSlf8ZQYEokpKwBmoz15lAbzdk1tOAjeeO
+         6fYC2BH3rITBQ53fft+z/p68XiWxUDHrwSp+g9+M93rwVBkp5xPe1v+tqeEDKQDvNDPM
+         P0oi0/sAfj8b3pXCKRcFdv+ZiHvoVBVIDootoNKwdzzmVWrz0+VpOb6XNa5XUblU47Br
+         bmRkwNN8KDO+VJl71KtiGItTf/hgVy++6kW1LrJ38tNbswZ5U8M69ZowAc3rWSnytAdc
+         l/iueRMVVLk+NiLBKvpSLM15Q/tr1eWo3seFI1OeUfEXJX1LgcAfzkFWcVFSRmrdSE3z
+         krMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774904956; x=1775509756;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zlsVcWSeeIpbPnsSYMwOt0k3yfDPRs+s8ihr0jHypXY=;
+        b=CoKUXSZeCNGlecgVo+vQfcN7LYyJfrhuDm6kwAlgA/Wgi3RJO0Gi9CtzBDrk+m7gNv
+         +m79Yi7RlD3oa7DexI661/raXRj8uO44jVlRS+cjKfJq8h9/oHA8eM8h6UnAMTBwJeY1
+         XtQdzNky88agyri44VSBjDFMlY+mElJbhE8WHTWY1sHiqIYW5IsKayM8dnzeD/kqXnNW
+         IFcH2376SidIeeyVIf5ZTc7NbpjrpRpv+AuEErdxOSs7PCaUSkQDDj1eFJtQ0GbtTw8g
+         QnxlMtvracATt7EaO68ZBg+E+r1WXD1aX0MBye+7I8sPdl79e9FBhyZYObjD8zMsBuFn
+         4YUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmQ7ivw4RHIyHiABzlqpsqCWgKaPNnhtWg1/Wb4MQkFWO8DpWWuDTwbKWcJwd+cV9CVLyqAmmb0Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzq2s6rgqPZhaTo+hOjCU7wWyDFaX0Tq+autrYuI2kE2SXkMO0/
+	hIxdURqDRdnRMTfu4xeIm/8EQr5qWq+YDMNQf5abfVXaT3w6LIeXQl41
+X-Gm-Gg: ATEYQzybYxvj8zYrXtQR2ZJUOdOckhmSp/uGtecGPponimgaloBQrtkCOjYe02J7/ad
+	xprKQziOmKANPq9fYnGMinB577GnfOs7mQO8ROyajDsqsgPEomUgIMmwTIYg1KkVZStdvcbp4c7
+	vr+oH/j8aaoVwXVXgJ7IP+kMHM5hNBEQXM4pvRXWFYPbxidfhZg3Dizmo/MaQTzqFkSSmFb0od7
+	p5ODAOBxCDGFzJdfLlUVZ8kui2SGZFu/DTinVqPP3MgWI8enXy3o2WXFnNaGNoIINOQ6J+AT/sj
+	siiRfi8CJ68IfYb+7y830n0n1ZUez9m1QaQR7uhdQ+sUBueFWHlHgMPOOGxVXgk4OvMQrcbCkzX
+	UzxpecjFx/mZJk7b4iBMtzXTiflZhatzEdCAQW+8j086VnxN4uDEaOZKclrf7hB+6T8bVp/bY/n
+	oVlaJzxPAdp5P4A2YpICyxlv/4/Bdp9NZbDKo2
+X-Received: by 2002:a05:6122:3c44:b0:56b:9ba4:1372 with SMTP id 71dfb90a1353d-56d4a5f8c0emr5672211e0c.9.1774904956234;
+        Mon, 30 Mar 2026 14:09:16 -0700 (PDT)
+Received: from ?IPV6:2001:871:22a:d2a7::cebd? ([2001:871:22a:d2a7::cebd])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56d58a333c9sm9989448e0c.13.2026.03.30.14.09.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Mar 2026 14:09:15 -0700 (PDT)
+Message-ID: <f159850d-5fe6-4329-9703-b355305fd106@gmail.com>
+Date: Mon, 30 Mar 2026 23:09:06 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.18 000/212] 6.18.20-rc1 review
-To: gregkh@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
-Cc: achill@achill.org, akpm@linux-foundation.org, broonie@kernel.org,
- conor@kernel.org, f.fainelli@gmail.com, hargar@microsoft.com,
- jonathanh@nvidia.com, linux-kernel@vger.kernel.org, linux@roeck-us.net,
- lkft-triage@lists.linaro.org, patches@kernelci.org, patches@lists.linux.dev,
- pavel@nabladev.com, rwarsow@gmx.de, shuah@kernel.org, sr@sladewatkins.com,
- stable@vger.kernel.org, sudipm.mukherjee@gmail.com,
- torvalds@linux-foundation.org, "Peter Zijlstra (Intel)"
- <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Miguel Ojeda <ojeda@kernel.org>, Johannes Berg <johannes@sipsolutions.net>,
- linux-um@lists.infradead.org, Guenter Roeck <linux@roeck-us.net>
-References: <20260323134503.770111826@linuxfoundation.org>
- <20260325010401.62938-1-ojeda@kernel.org>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Content-Language: de-DE, en-US
-Autocrypt: addr=linux@leemhuis.info; keydata=
- xsFNBFJ4AQ0BEADCz16x4kl/YGBegAsYXJMjFRi3QOr2YMmcNuu1fdsi3XnM+xMRaukWby47
- JcsZYLDKRHTQ/Lalw9L1HI3NRwK+9ayjg31wFdekgsuPbu4x5RGDIfyNpd378Upa8SUmvHik
- apCnzsxPTEE4Z2KUxBIwTvg+snEjgZ03EIQEi5cKmnlaUynNqv3xaGstx5jMCEnR2X54rH8j
- QPvo2l5/79Po58f6DhxV2RrOrOjQIQcPZ6kUqwLi6EQOi92NS9Uy6jbZcrMqPIRqJZ/tTKIR
- OLWsEjNrc3PMcve+NmORiEgLFclN8kHbPl1tLo4M5jN9xmsa0OZv3M0katqW8kC1hzR7mhz+
- Rv4MgnbkPDDO086HjQBlS6Zzo49fQB2JErs5nZ0mwkqlETu6emhxneAMcc67+ZtTeUj54K2y
- Iu8kk6ghaUAfgMqkdIzeSfhO8eURMhvwzSpsqhUs7pIj4u0TPN8OFAvxE/3adoUwMaB+/plk
- sNe9RsHHPV+7LGADZ6OzOWWftk34QLTVTcz02bGyxLNIkhY+vIJpZWX9UrfGdHSiyYThHCIy
- /dLz95b9EG+1tbCIyNynr9TjIOmtLOk7ssB3kL3XQGgmdQ+rJ3zckJUQapLKP2YfBi+8P1iP
- rKkYtbWk0u/FmCbxcBA31KqXQZoR4cd1PJ1PDCe7/DxeoYMVuwARAQABzSdUaG9yc3RlbiBM
- ZWVtaHVpcyA8bGludXhAbGVlbWh1aXMuaW5mbz7CwZQEEwEKAD4CGwMFCwkIBwMFFQoJCAsF
- FgIDAQACHgECF4AWIQSoq8a+lZZX4oPULXVytubvTFg9LQUCaOO74gUJHfEI0wAKCRBytubv
- TFg9Lc4iD/4omf2z88yGmior2f1BCQTAWxI2Em3S4EJY2+Drs8ZrJ1vNvdWgBrqbOtxN6xHF
- uvrpM6nbYIoNyZpsZrqS1mCA4L7FwceFBaT9CTlQsZLVV/vQvh2/3vbj6pQbCSi7iemXklF7
- y6qMfA7rirvojSJZ2mi6tKIQnD2ndVhSsxmo/mAAJc4tiEL+wkdaX1p7bh2Ainp6sfxTqL6h
- z1kYyjnijpnHaPgQ6GQeGG1y+TSQFKkb/FylDLj3b3efzyNkRjSohcauTuYIq7bniw7sI8qY
- KUuUkrw8Ogi4e6GfBDgsgHDngDn6jUR2wDAiT6iR7qsoxA+SrJDoeiWS/SK5KRgiKMt66rx1
- Jq6JowukzNxT3wtXKuChKP3EDzH9aD+U539szyKjfn5LyfHBmSfR42Iz0sofE4O89yvp0bYz
- GDmlgDpYWZN40IFERfCSxqhtHG1X6mQgxS0MknwoGkNRV43L3TTvuiNrsy6Mto7rrQh0epSn
- +hxwwS0bOTgJQgOO4fkTvto2sEBYXahWvmsEFdLMOcAj2t7gJ+XQLMsBypbo94yFYfCqCemJ
- +zU5X8yDUeYDNXdR2veePdS3Baz23/YEBCOtw+A9CP0U4ImXzp82U+SiwYEEQIGWx+aVjf4n
- RZ/LLSospzO944PPK+Na+30BERaEjx04MEB9ByDFdfkSbM7BTQRSeAENARAAzu/3satWzly6
- +Lqi5dTFS9+hKvFMtdRb/vW4o9CQsMqL2BJGoE4uXvy3cancvcyodzTXCUxbesNP779JqeHy
- s7WkF2mtLVX2lnyXSUBm/ONwasuK7KLz8qusseUssvjJPDdw8mRLAWvjcsYsZ0qgIU6kBbvY
- ckUWkbJj/0kuQCmmulRMcaQRrRYrk7ZdUOjaYmjKR+UJHljxLgeregyiXulRJxCphP5migoy
- ioa1eset8iF9fhb+YWY16X1I3TnucVCiXixzxwn3uwiVGg28n+vdfZ5lackCOj6iK4+lfzld
- z4NfIXK+8/R1wD9yOj1rr3OsjDqOaugoMxgEFOiwhQDiJlRKVaDbfmC1G5N1YfQIn90znEYc
- M7+Sp8Rc5RUgN5yfuwyicifIJQCtiWgjF8ttcIEuKg0TmGb6HQHAtGaBXKyXGQulD1CmBHIW
- zg7bGge5R66hdbq1BiMX5Qdk/o3Sr2OLCrxWhqMdreJFLzboEc0S13BCxVglnPqdv5sd7veb
- 0az5LGS6zyVTdTbuPUu4C1ZbstPbuCBwSwe3ERpvpmdIzHtIK4G9iGIR3Seo0oWOzQvkFn8m
- 2k6H2/Delz9IcHEefSe5u0GjIA18bZEt7R2k8CMZ84vpyWOchgwXK2DNXAOzq4zwV8W4TiYi
- FiIVXfSj185vCpuE7j0ugp0AEQEAAcLBfAQYAQoAJgIbDBYhBKirxr6Vllfig9QtdXK25u9M
- WD0tBQJo47viBQkd8QjTAAoJEHK25u9MWD0tCH8P/1b+AZ8K3D4TCBzXNS0muN6pLnISzFa0
- cWcylwxX2TrZeGpJkg14v2R0cDjLRre9toM44izLaz4SKyfgcBSj9XET0103cVXUKt6SgT1o
- tevoEqFMKKp3vjDpKEnrcOSOCnfH9W0mXx/jDWbjlKbBlN7UBVoZD/FMM5Ul0KSVFJ9Uij0Z
- S2WAg50NQi71NBDPcga21BMajHKLFzb4wlBWSmWyryXI6ouabvsbsLjkW3IYl2JupTbK3viH
- pMRIZVb/serLqhJgpaakqgV7/jDplNEr/fxkmhjBU7AlUYXe2BRkUCL5B8KeuGGvG0AEIQR0
- dP6QlNNBV7VmJnbU8V2X50ZNozdcvIB4J4ncK4OznKMpfbmSKm3t9Ui/cdEK+N096ch6dCAh
- AeZ9dnTC7ncr7vFHaGqvRC5xwpbJLg3xM/BvLUV6nNAejZeAXcTJtOM9XobCz/GeeT9prYhw
- 8zG721N4hWyyLALtGUKIVWZvBVKQIGQRPtNC7s9NVeLIMqoH7qeDfkf10XL9tvSSDY6KVl1n
- K0gzPCKcBaJ2pA1xd4pQTjf4jAHHM4diztaXqnh4OFsu3HOTAJh1ZtLvYVj5y9GFCq2azqTD
- pPI3FGMkRipwxdKGAO7tJVzM7u+/+83RyUjgAbkkkD1doWIl+iGZ4s/Jxejw1yRH0R5/uTaB MEK4
-In-Reply-To: <20260325010401.62938-1-ojeda@kernel.org>
+Subject: Re: [PATCH v2 0/3] Inline helpers into Rust without full LTO
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+ "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ Alice Ryhl <aliceryhl@google.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, Jamie Cunliffe
+ <Jamie.Cunliffe@arm.com>, Will Deacon <will@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Miguel Ojeda <ojeda@kernel.org>,
+ a.hindborg@kernel.org, acourbot@nvidia.com, akpm@linux-foundation.org,
+ anton.ivanov@cambridgegreys.com, bjorn3_gh@protonmail.com,
+ boqun.feng@gmail.com, dakr@kernel.org, david@davidgow.net, gary@garyguo.net,
+ johannes@sipsolutions.net, justinstitt@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-um@lists.infradead.org, llvm@lists.linux.dev, lossin@kernel.org,
+ mark.rutland@arm.com, mmaurer@google.com, morbo@google.com,
+ nathan@kernel.org, nick.desaulniers+lkml@gmail.com,
+ nicolas.schier@linux.dev, nsc@kernel.org, peterz@infradead.org,
+ richard@nod.at, rust-for-linux@vger.kernel.org, tmgross@umich.edu,
+ urezki@gmail.com
+References: <20260322192159.88138-1-ojeda@kernel.org>
+ <20260323000327.111235-1-ojeda@kernel.org>
+ <acEP7tl8pqFA3tK8@shell.armlinux.org.uk> <acUGAsjYvNvTEO92@google.com>
+ <CANiq72mzPpkELXis1CiSbKUmBXNQYMiMmjj-7-sYiLh4T_JSOQ@mail.gmail.com>
+ <9cf5a94c-0f37-446c-b63d-ddac5674d220@gmail.com>
+ <acVOL5Psz6kHlhq2@shell.armlinux.org.uk>
+ <CANiq72=b+cr7Stxph_hXQTmD5crCvwWTqdaGKOJ7W1-66v4i_w@mail.gmail.com>
+Content-Language: en-US, de-DE
+From: Christian Schrefl <chrisi.schrefl@gmail.com>
+In-Reply-To: <CANiq72=b+cr7Stxph_hXQTmD5crCvwWTqdaGKOJ7W1-66v4i_w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-PPP-Message-ID: <177489293284.3003912.608197411344852819@mxe9fb.netcup.net>
-X-Rspamd-Server: rspamd-worker-8404
-X-Rspamd-Queue-Id: E4676635A4
-X-NC-CID: L8/6JuhhUOwoQOGUViPCPXU9G7sBvzjMG98Gfrl5mgP4nf1RAw8=
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260330_104903_190045_5A06B0D6 
-X-CRM114-Status: UNSURE (   5.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260330_140918_002613_83AC3747 
+X-CRM114-Status: GOOD (  13.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,25 +122,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 3/25/26 02:04, Miguel Ojeda wrote:
-> On Mon, 23 Mar 2026 14:43:41 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On 3/26/26 6:30 PM, Miguel Ojeda wrote:
+> On Thu, Mar 26, 2026 at 4:18 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+>>
+>> I'm not sure if this is still true, but I believe it used to be the case
+>> that the -linux-gnueabi target has one behaviour for enums (fixed size)
+>> whereas -none-eabi, the size of the type depends on the range of values
+>> included in the enum.
+>>
+>> Certianly, when Arm Ltd were proposing EABI, EABI had the latter
+>> behaviour, and I think there were cases where Linux used "enum" in
+>> its UAPI.
 > 
-> For UML, I am seeing:
-
-Guenter (now CCed) just reported something similar down in the thread.
-And I got a similar bug report about it as well, which bisected it to
-49cf34c0815f93 ("unwind_user/x86: Enable frame pointer unwinding on
-x86") [v6.19-rc1, v6.18.17 (b9537a51b65af0)]:
-https://bugzilla.kernel.org/show_bug.cgi?id=221283
-
-> [...]
+> Short enums? I see `c-enum-min-bits` in the armv7a-none-eabi built-in
+> `rustc` target, and indeed:
 > 
->   aa7387e79a5c ("unwind_user/x86: Fix arch=um build")
+>     #![no_std]
+> 
+>     #[repr(C)]
+>     enum T {
+>         A,
+>         B,
+>     }
+> 
+>     pub static S: usize = core::mem::size_of::<T>();
+> 
+> is 1 for that one, and 4 for the other.
 
-The users in that bug reported confirmed that this fixed things:
-https://bugzilla.kernel.org/show_bug.cgi?id=221283#c12
+I guess we could use a custom target spec, but I'm not
+sure if that is worth the hassle of adding another one.
 
-Greg, Sasha, could you pick this up please for 6.18.y?
+Cheers,
+Christian
 
-Ciao, Thorsten
 
