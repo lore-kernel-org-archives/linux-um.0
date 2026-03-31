@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BB1FF60F0
-	for <linux-um@archiver.kernel.org>; Tue, 31 Mar 2026 15:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1768F109B491
+	for <linux-um@archiver.kernel.org>; Tue, 31 Mar 2026 15:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=L6KdLgCGNoGiJCHVKn3CEmUMRZFdMC7KYYSnelOoBx0=; b=4w6+MtLx7BZzka9V7sZs3O8hv/
-	gVYA5Q9PSTmDNczQVGutu7NE9W8CJ1ihRAbiAUjfeG7qLZX4V2BrC0olUVtpA8JX6uPyOP0qwnL2r
-	ujd2zz/Bzsn6FeCBjS15tppObpue5xy+9ArL9b63k0VTiVm4ixai0XJERrE6kyQcIDqIrZ+idbxmp
-	r7OcxooAxKBScuKjT5ycgjw2R+sSMIrl6B8ZYx4hocS/VZCgyj6pMv9NmMxoM9rgJduRRiFZor6vc
-	aZVS75R91Bv+aRdcib9Phva6RxG8l1pj5uDanadyll9nI5DBv4EsAX1VXBoT0M6AdgVwFwOwu0Sbd
-	Ka1lN7zQ==;
+	bh=yaWHSQLJA3A7YGz2UV+++lmOuZ72xwId097H5P6g/Lw=; b=ufXQThDACea6K3loewO8P3dsOk
+	5p1Fo8Pt1DOQgpcEI07zmFlkWw5ysq226DmLnqCY9Zdyw/jQrNKk96sSu/UpyJocStWyF1H+XIMGW
+	dmyVTkUoNsLHO9rQLu21V73bO7I/OGxcSCkXaIK5gwptVjaqxwZv79ZBaTLRXevwL+ElSEyHfh8s9
+	3W3o/S1JEBLvb93kkZlAU6a2xbFaGtWR7tjqfcR2cl//ThvmUmDJRvy9z433h3ZNpvEAqZHwksoq1
+	/bLqL/+imREb8+Bf/13CwQWZDmMqX5QELu+ZwutG3OKsH4sXPm0G6OvQ71SQKiBav9qyLEuxcUtYf
+	066GsiTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7apm-0000000D9xR-082L;
-	Tue, 31 Mar 2026 15:16:50 +0000
-Received: from mgamail.intel.com ([192.198.163.16])
+	id 1w7bC2-0000000DCEx-42d7;
+	Tue, 31 Mar 2026 15:39:50 +0000
+Received: from mgamail.intel.com ([192.198.163.15])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7apj-0000000D9ws-1Ssa
+	id 1w7bC0-0000000DCEP-2Ksv
 	for linux-um@lists.infradead.org;
-	Tue, 31 Mar 2026 15:16:48 +0000
+	Tue, 31 Mar 2026 15:39:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774970207; x=1806506207;
+  t=1774971588; x=1806507588;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=YsW1N9WT2ID9oJMzACJzBddesMiBDzlZf4pdPRbOW2U=;
-  b=J3QQNbvCEGQr9gVc/iD81CqP4MxVGT1YzDMnWJDe9XjGYaPICFMsdkNx
-   ZwwSERowzAgapTHvGSOtaD9Yx2dzA39BdGUewldPkEeNPJhrycIxAlZ2z
-   7G16a+j4D7kOSlzqstHIHLOUPuMK/puWSpAHVAeNm5zeHLp0OTW+juDn0
-   fOO4ialInyDTTnAqESkP75qPMvSSp032mQn8WIoUqEv46TpzJZSgM+Ad1
-   Yq9A+KJQbRY2Kzmc25CLNNkzFoDt2ODLim5CGN9+6YGpR4nXh/DxmeLH5
-   MN+cqREKRDS7NBC3GSZPKgZJ+m+HbsfJabiBOQfrF2J19S4pFytlyADmO
-   A==;
-X-CSE-ConnectionGUID: u1NR+tNnTjKQR5Ji7HrDkg==
-X-CSE-MsgGUID: rJqJS7mNSSSV+rR1DRfFOw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11745"; a="63539394"
+  bh=OItpxqU5oSqyN8bGRByxmZipjRxVPgdfQBBwjM5jNZI=;
+  b=YaQ4jbpPix2pJDO5+3PNI1R0mLb7M6ez/otpFu5wOHHjNujUAPnaK3OS
+   BlNhhZsxcPcwoaNFhpNoDNLwRHqqcGk7mkYfC7EqVG5qU5/q/j6nMgBfk
+   bhdC3y9ZpdcM0NPH7StpkNy7ooiRyk/lrzqdzdjY0+ZrHoSWCL7ywUfPN
+   0IzzZymN5ynfsGcxff87thOPItZgDWVWC5Di7q0cA7xDtKRVd5Ma/xrMQ
+   VLuHjNxFI8XAH2ZM70qeznD2rXaCeDdDZSwB6Tucaa4ri1GXj3jRtho10
+   mVmmo+Cd/0hiLX/SE1+nM/rvyDdh6hH6DpnKCgd+HScR56h9xp0E/uMoM
+   g==;
+X-CSE-ConnectionGUID: w5yB+yeBSdaE3xcTwBPneQ==
+X-CSE-MsgGUID: Mgite7mjR+WCjpy+vYfcdQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11745"; a="76103880"
 X-IronPort-AV: E=Sophos;i="6.23,152,1770624000"; 
-   d="scan'208";a="63539394"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2026 08:16:46 -0700
-X-CSE-ConnectionGUID: Y+3x6NRoQReOsR9Ar1v3FQ==
-X-CSE-MsgGUID: 0O1dDmciTx+c3uIU00ykYg==
+   d="scan'208";a="76103880"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2026 08:39:47 -0700
+X-CSE-ConnectionGUID: sB1v2yFzTUOJq8v7416Iqg==
+X-CSE-MsgGUID: oFRpaSPpSniEPLV2ERbWlA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,152,1770624000"; 
-   d="scan'208";a="223091922"
+   d="scan'208";a="226264303"
 Received: from lkp-server01.sh.intel.com (HELO 283bf2e1b94a) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 31 Mar 2026 08:16:44 -0700
+  by orviesa009.jf.intel.com with ESMTP; 31 Mar 2026 08:39:45 -0700
 Received: from kbuild by 283bf2e1b94a with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1w7apd-000000002nn-2EqM;
-	Tue, 31 Mar 2026 15:16:41 +0000
-Date: Tue, 31 Mar 2026 23:16:23 +0800
+	id 1w7bBu-000000002or-19bA;
+	Tue, 31 Mar 2026 15:39:42 +0000
+Date: Tue, 31 Mar 2026 23:38:56 +0800
 From: kernel test robot <lkp@intel.com>
 To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at,
 	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: oe-kbuild-all@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org, pengpeng@iscas.ac.cn
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	pengpeng@iscas.ac.cn
 Subject: Re: [PATCH] um: mconsole: validate notify socket path length
-Message-ID: <202603312336.UUqJ8pFo-lkp@intel.com>
+Message-ID: <202603312307.FOQx0THR-lkp@intel.com>
 References: <20260329030945.32368-1-pengpeng@iscas.ac.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20260329030945.32368-1-pengpeng@iscas.ac.cn>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260331_081647_437850_5A4CA439 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20260331_083948_637033_9B1EEACD 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,25 +103,21 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Pengpeng-Hou/um-mconsole-
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux next
 patch link:    https://lore.kernel.org/r/20260329030945.32368-1-pengpeng%40iscas.ac.cn
 patch subject: [PATCH] um: mconsole: validate notify socket path length
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20260331/202603312336.UUqJ8pFo-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260331/202603312336.UUqJ8pFo-lkp@intel.com/reproduce)
+config: um-defconfig (https://download.01.org/0day-ci/archive/20260331/202603312307.FOQx0THR-lkp@intel.com/config)
+compiler: clang version 23.0.0git (https://github.com/llvm/llvm-project 2cd67b8b69f78e3f95918204320c3075a74ba16c)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260331/202603312307.FOQx0THR-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603312336.UUqJ8pFo-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202603312307.FOQx0THR-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   arch/um/drivers/mconsole_user.c: In function 'mconsole_notify':
->> arch/um/drivers/mconsole_user.c:203:13: error: implicit declaration of function 'snprintf' [-Wimplicit-function-declaration]
+>> arch/um/drivers/mconsole_user.c:203:6: error: call to undeclared function 'snprintf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      203 |         if (snprintf(target.sun_path, sizeof(target.sun_path), "%s", sock_name) >=
-         |             ^~~~~~~~
-   arch/um/drivers/mconsole_user.c:14:1: note: 'snprintf' is defined in header '<stdio.h>'; this is probably fixable by adding '#include <stdio.h>'
-      13 | #include "mconsole.h"
-     +++ |+#include <stdio.h>
-      14 | 
+         |             ^
+   1 error generated.
 
 
 vim +/snprintf +203 arch/um/drivers/mconsole_user.c
