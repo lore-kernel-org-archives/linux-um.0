@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1768F109B491
-	for <linux-um@archiver.kernel.org>; Tue, 31 Mar 2026 15:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E66410F6FBF
+	for <linux-um@archiver.kernel.org>; Wed,  1 Apr 2026 16:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yaWHSQLJA3A7YGz2UV+++lmOuZ72xwId097H5P6g/Lw=; b=ufXQThDACea6K3loewO8P3dsOk
-	5p1Fo8Pt1DOQgpcEI07zmFlkWw5ysq226DmLnqCY9Zdyw/jQrNKk96sSu/UpyJocStWyF1H+XIMGW
-	dmyVTkUoNsLHO9rQLu21V73bO7I/OGxcSCkXaIK5gwptVjaqxwZv79ZBaTLRXevwL+ElSEyHfh8s9
-	3W3o/S1JEBLvb93kkZlAU6a2xbFaGtWR7tjqfcR2cl//ThvmUmDJRvy9z433h3ZNpvEAqZHwksoq1
-	/bLqL/+imREb8+Bf/13CwQWZDmMqX5QELu+ZwutG3OKsH4sXPm0G6OvQ71SQKiBav9qyLEuxcUtYf
-	066GsiTw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=uhchMG1KpDGCTR20nQi2G4K7t9Zb0mD2F3Im1tSDrIg=; b=IabvWWUJSX5JQwDiVjQmxiSPDy
+	qP0O7vqVmqmW8B7NiEE1jq3FBcGqHcjM/WkUNs+bP8W3n66sgmYeaZMGhA/66Plau5lPKw6/+vING
+	UkA0WDkCvsyJWoL6sGq0kIx+IfT3zLrc3ULqVlCh98ABnRDiwlBYKz/P5nvE+xKwtHHAiRhjR7Luf
+	7MsUSNiLPIgsjA1qjuPLzeIj/U9ZRhjXcPlbiGm/dSiwEshQ5TuKys6zlAatS82X2tBzyNX0awR4q
+	MgCxOybmnM+wfBcNI16gUyA+E+aGtade60VbaSqzpb5/RyUzW2vomcHDr1s7U4nJECDXT+ur6iCm+
+	EocONnhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7bC2-0000000DCEx-42d7;
-	Tue, 31 Mar 2026 15:39:50 +0000
-Received: from mgamail.intel.com ([192.198.163.15])
+	id 1w7y2R-0000000FgnS-2dqw;
+	Wed, 01 Apr 2026 16:03:27 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7bC0-0000000DCEP-2Ksv
+	id 1w7y2P-0000000Fgn1-3l4R
+	for linux-um@bombadil.infradead.org;
+	Wed, 01 Apr 2026 16:03:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=uhchMG1KpDGCTR20nQi2G4K7t9Zb0mD2F3Im1tSDrIg=; b=XtJD4s761Lq4UWtfDC/ryTdVHJ
+	I5o9HsRbl4T9u4EhDVgdUmhXW1AGWrke2B3BWLTgj0GfmXRwU5ELkPj4HKKD7b5ny8++4GQEM+n+e
+	SiHHXSU3wVn8rwT3cMl1py4MhImjmFmowGXlsyJFC9k/pj9/nMybeZuX43hOwW09nkHQhRtSJEo2I
+	TaMCsxPjHWpmTVp80GGkvWrsTWP8iznEzjqsGDAPd/4Xu5TjrS5mDH9x76DdmhQufiVq6TW1EWG1G
+	msNnU4JnFznsBSkh7QDG6ObnwuN9FqubiD01HPfnZ9MOAzAsXuoLAIriQdk0K2hBo+RH0buuiKeBk
+	RuJy+ULQ==;
+Received: from smtp21.cstnet.cn ([159.226.251.21] helo=cstnet.cn)
+	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w7y2M-00000000qJW-0olx
 	for linux-um@lists.infradead.org;
-	Tue, 31 Mar 2026 15:39:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774971588; x=1806507588;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OItpxqU5oSqyN8bGRByxmZipjRxVPgdfQBBwjM5jNZI=;
-  b=YaQ4jbpPix2pJDO5+3PNI1R0mLb7M6ez/otpFu5wOHHjNujUAPnaK3OS
-   BlNhhZsxcPcwoaNFhpNoDNLwRHqqcGk7mkYfC7EqVG5qU5/q/j6nMgBfk
-   bhdC3y9ZpdcM0NPH7StpkNy7ooiRyk/lrzqdzdjY0+ZrHoSWCL7ywUfPN
-   0IzzZymN5ynfsGcxff87thOPItZgDWVWC5Di7q0cA7xDtKRVd5Ma/xrMQ
-   VLuHjNxFI8XAH2ZM70qeznD2rXaCeDdDZSwB6Tucaa4ri1GXj3jRtho10
-   mVmmo+Cd/0hiLX/SE1+nM/rvyDdh6hH6DpnKCgd+HScR56h9xp0E/uMoM
-   g==;
-X-CSE-ConnectionGUID: w5yB+yeBSdaE3xcTwBPneQ==
-X-CSE-MsgGUID: Mgite7mjR+WCjpy+vYfcdQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11745"; a="76103880"
-X-IronPort-AV: E=Sophos;i="6.23,152,1770624000"; 
-   d="scan'208";a="76103880"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2026 08:39:47 -0700
-X-CSE-ConnectionGUID: sB1v2yFzTUOJq8v7416Iqg==
-X-CSE-MsgGUID: oFRpaSPpSniEPLV2ERbWlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,152,1770624000"; 
-   d="scan'208";a="226264303"
-Received: from lkp-server01.sh.intel.com (HELO 283bf2e1b94a) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 31 Mar 2026 08:39:45 -0700
-Received: from kbuild by 283bf2e1b94a with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1w7bBu-000000002or-19bA;
-	Tue, 31 Mar 2026 15:39:42 +0000
-Date: Tue, 31 Mar 2026 23:38:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Wed, 01 Apr 2026 16:03:24 +0000
+Received: from localhost.localdomain (unknown [111.196.245.197])
+	by APP-01 (Coremail) with SMTP id qwCowABnC2fDQc1pzBThCw--.49325S2;
+	Thu, 02 Apr 2026 00:03:16 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: richard@nod.at
+Cc: anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
 	pengpeng@iscas.ac.cn
-Subject: Re: [PATCH] um: mconsole: validate notify socket path length
-Message-ID: <202603312307.FOQx0THR-lkp@intel.com>
-References: <20260329030945.32368-1-pengpeng@iscas.ac.cn>
+Subject: [PATCH] um: reject out-of-range port channel numbers
+Date: Thu,  2 Apr 2026 00:03:15 +0800
+Message-ID: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260329030945.32368-1-pengpeng@iscas.ac.cn>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: qwCowABnC2fDQc1pzBThCw--.49325S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4DGF17ZF1xGw13ZF1fJFb_yoW8WrW3pF
+	WYy342krZ3Ja1ay34UWa1Uu34Yq3W2yay29FykJ3sIvF1YvFyrWF4Ygwn0vFnrGFWxJFy0
+	vrsYva4IvF1UJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6v38UUU
+	UU=
+X-Originating-IP: [111.196.245.197]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260331_083948_637033_9B1EEACD 
-X-CRM114-Status: GOOD (  10.89  )
+X-CRM114-CacheID: sfid-20260401_170322_775647_936B9E6B 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,65 +95,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Pengpeng,
+port_init() parses the port channel number into an int, formats it into
+a small fixed string buffer, and later passes it to htons() for bind().
+Out-of-range values can therefore overflow the local device-name buffer
+and still get silently truncated at the socket layer.
 
-kernel test robot noticed the following build errors:
+Reject port numbers that do not fit in the 16-bit TCP/UDP port range.
 
-[auto build test ERROR on uml/next]
-[also build test ERROR on wireless-next/main wireless/main uml/fixes linus/master v7.0-rc6 next-20260330]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+---
+ arch/um/drivers/port_user.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Pengpeng-Hou/um-mconsole-validate-notify-socket-path-length/20260331-052930
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux next
-patch link:    https://lore.kernel.org/r/20260329030945.32368-1-pengpeng%40iscas.ac.cn
-patch subject: [PATCH] um: mconsole: validate notify socket path length
-config: um-defconfig (https://download.01.org/0day-ci/archive/20260331/202603312307.FOQx0THR-lkp@intel.com/config)
-compiler: clang version 23.0.0git (https://github.com/llvm/llvm-project 2cd67b8b69f78e3f95918204320c3075a74ba16c)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260331/202603312307.FOQx0THR-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603312307.FOQx0THR-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> arch/um/drivers/mconsole_user.c:203:6: error: call to undeclared function 'snprintf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     203 |         if (snprintf(target.sun_path, sizeof(target.sun_path), "%s", sock_name) >=
-         |             ^
-   1 error generated.
-
-
-vim +/snprintf +203 arch/um/drivers/mconsole_user.c
-
-   180	
-   181	int mconsole_notify(char *sock_name, int type, const void *data, int len)
-   182	{
-   183		struct sockaddr_un target;
-   184		struct mconsole_notify packet;
-   185		int n, err = 0;
-   186	
-   187		lock_notify();
-   188		if (notify_sock < 0) {
-   189			notify_sock = socket(PF_UNIX, SOCK_DGRAM, 0);
-   190			if (notify_sock < 0) {
-   191				err = -errno;
-   192				printk(UM_KERN_ERR "mconsole_notify - socket failed, "
-   193				       "errno = %d\n", errno);
-   194			}
-   195		}
-   196		unlock_notify();
-   197	
-   198		if (err)
-   199			return err;
-   200	
-   201		memset(&target, 0, sizeof(target));
-   202		target.sun_family = AF_UNIX;
- > 203		if (snprintf(target.sun_path, sizeof(target.sun_path), "%s", sock_name) >=
-
+diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
+index 3c62ae81df62..b3d393811d69 100644
+--- a/arch/um/drivers/port_user.c
++++ b/arch/um/drivers/port_user.c
+@@ -19,7 +19,7 @@ struct port_chan {
+ 	int raw;
+ 	struct termios tt;
+ 	void *kernel_data;
+-	char dev[sizeof("32768\0")];
++	char dev[sizeof("65535")];
+ };
+ 
+ static void *port_init(char *str, int device, const struct chan_opts *opts)
+@@ -27,6 +27,7 @@ static void *port_init(char *str, int device, const struct chan_opts *opts)
+ 	struct port_chan *data;
+ 	void *kern_data;
+ 	char *end;
++	unsigned long parsed_port;
+ 	int port;
+ 
+ 	if (*str != ':') {
+@@ -35,12 +36,13 @@ static void *port_init(char *str, int device, const struct chan_opts *opts)
+ 		return NULL;
+ 	}
+ 	str++;
+-	port = strtoul(str, &end, 0);
+-	if ((*end != '\0') || (end == str)) {
++	parsed_port = strtoul(str, &end, 0);
++	if ((*end != '\0') || end == str || parsed_port > 65535) {
+ 		printk(UM_KERN_ERR "port_init : couldn't parse port '%s'\n",
+ 		       str);
+ 		return NULL;
+ 	}
++	port = parsed_port;
+ 
+ 	kern_data = port_data(port);
+ 	if (kern_data == NULL)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.50.1 (Apple Git-155)
+
 
