@@ -4,67 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAD2DEDB7ED
-	for <linux-um@archiver.kernel.org>; Tue,  7 Apr 2026 10:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0004DFF5125
+	for <linux-um@archiver.kernel.org>; Tue,  7 Apr 2026 16:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Okc/NGVzKgwXO9HqRPceYseMQLICRsIHcETO9XgZCf0=; b=BVGstEeKOUIOFCLUSq4GwTpZ/j
-	XL7fHF1H5JoIH4lDE/MmyZYR4Z3nIrNBR/7UaaJIu74YqdTF2Q+Qqg/l5fvaq+KQhnspDZv/qp6XZ
-	r+jInRq5G2gPzBFg81lDAlemDL9YD1Kcng/OmyQwUHdGfbMqAIYR87bI0uEmiu9jfDJMrRXGjTi7E
-	vmSbEvE/wQ2XvH0LSQ+YX5eBfA87wUWK6HUBnfPFSiWKBgLBNq6LQiADc52sTXwmZCvBgabWEoerD
-	8JgkVsRJZr+/Whuph0AuW7p1OZcsaXuJvfmdjYgIMGxhCx7dq0xK05BdzAslVcC4d7oNQzbiHMAw9
-	ELv0eG5Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=gSINc38Cy5uCy/SOLZjP/5z73q6WQERusZs5SUoSVOk=; b=FBHPN9LLVFD/neOplPJErTXTf3
+	FMOLsN5u31w5Jm/G4ux49pP0tuD5TC8ivI9JA9Ubrvl7gKa6LssIElJEh+ygS6lWy0mCaqHQ2Cgmg
+	9CH+E2b728MAF2K1QT0l4Hnw0fncSbMnutL49Mn+5QdWzNuXv8E73Nkc2hmyhzlGZNTIujNWz76wi
+	yBlQzCWK4oWnrOkqRp9gb1rB0PoIladM3WW6nlTs/otvx9+9B7zeVa0nkJfihW+7P/qAJ5fbP/9Nc
+	Lxg2u97EhbPQxq0LT5IVfPlwebmGGy9JH07nQcPNB2819/Cu7KL9KWBmL5NUP1KnkdWg8Dr7xL0nb
+	UwFenzDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wA3YV-00000006HEb-2vrE;
-	Tue, 07 Apr 2026 10:21:11 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wA9Y8-00000006oQm-2FDw;
+	Tue, 07 Apr 2026 16:45:12 +0000
+Received: from mail-qv1-xf2e.google.com ([2607:f8b0:4864:20::f2e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wA3YQ-00000006HDc-0JwY
+	id 1wA9Y6-00000006oQ0-2FTJ
 	for linux-um@lists.infradead.org;
-	Tue, 07 Apr 2026 10:21:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Okc/NGVzKgwXO9HqRPceYseMQLICRsIHcETO9XgZCf0=;
-	t=1775557265; x=1776766865; b=CnFz0liZwc6YfDhfLosxhWYrozRTG+u5QH2jCeqQG4/X5n+
-	Vv1dTVjhV/ofwx+h9+vP/m4rMkldeA0WPwYP3H1sY+nogZhtRh9moCovPiP/r9Z2AQSBN1S/E8ot+
-	CsgdtHACkuC2TpdDjk8e7GA1iTFF/AJy+hlRQ4WoHxHkEUB9LNEjQ5/6teXAUyNWJENtHmuTIZU6r
-	DXtn6mMsTC6pwL2qO81lNew/7bBSRR51VfMLsI4WXxRA3MMqxqSs/A5rdIOI6lWzUH/uMYIcqdP/q
-	obwULSXDSulsVPqttUilBVZ4p+2h+GiwYKBFSoUD7uqpe+imUC1ED3KqZ5UsAUnQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1wA3YL-0000000CF8J-3qop;
-	Tue, 07 Apr 2026 12:21:02 +0200
-Message-ID: <31ea232d4b85e0c2b2931010e426c45a0650c297.camel@sipsolutions.net>
-Subject: Re: 6.13+ uml crash
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>
-Cc: "Berg, Johannes" <johannes.berg@intel.com>,
- linux-um@lists.infradead.org,  Tiwei Bie <tiwei.btw@antgroup.com>
-Date: Tue, 07 Apr 2026 12:21:01 +0200
-In-Reply-To: <CANP3RGdxC=w=Tqq_A9DVYig_dYfhBficmU9vQCySoCx72oCckA@mail.gmail.com> (sfid-20260407_114803_248342_1ACFC8FA)
-References: <CANP3RGd1SYY-Xakfq93Ttb-m1xXWdMAq=HEJMk6-KMcGmPWMtg@mail.gmail.com>
-	 <CANP3RGeOQa_s5ZyCp9MBVAR3cAz25=t=sYCdQgjsPCmA25F3=w@mail.gmail.com>
-	 <PH8PR11MB8285E84708CCB0C5799C1B4DE95AA@PH8PR11MB8285.namprd11.prod.outlook.com>
-	 <CANP3RGec_Skbzm3OFFhSJRFigsoQQ8hRL3JJxsVYMz3QtoguXA@mail.gmail.com>
-	 <9960ac97a83c4d37da513644b5019f96e03b55f2.camel@sipsolutions.net>
-	 <CANP3RGdxC=w=Tqq_A9DVYig_dYfhBficmU9vQCySoCx72oCckA@mail.gmail.com>
-	 (sfid-20260407_114803_248342_1ACFC8FA)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	Tue, 07 Apr 2026 16:45:11 +0000
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-8a049a767c3so609476d6.1
+        for <linux-um@lists.infradead.org>; Tue, 07 Apr 2026 09:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775580309; x=1776185109; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gSINc38Cy5uCy/SOLZjP/5z73q6WQERusZs5SUoSVOk=;
+        b=VKg3PgcRtWn7eG/dlK/Ak7EGmqUj6T5QTNkilZ2Z3oFHqVOXdE5hM2V81FKL0WjVlC
+         fnaHGwLV7U5O2jGiTOPFbf/pDsP6PbqfN1fYHf6dJU0aBjHlt6u4H11VbxdcKqZhKhiO
+         CX08WUjVbNvYOMGsc+J5nie9dMYQkbdSy8w37/CfOmVMjknqXs/3oIzN96a6nqMmjPnU
+         q3k3gLVRh8m/9vRimzCVzMtFK2sTiIjeHHbEBdMw0+ZV/YKvmDJuRlsO1kHszRJIQn3N
+         nS5nBphrKgL8JTWNx3GJ3yeGiW7wLnWNA2Fq2dZdr9bBTYyIwFpNYUHLWn4n/OagboJa
+         0GAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775580309; x=1776185109;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gSINc38Cy5uCy/SOLZjP/5z73q6WQERusZs5SUoSVOk=;
+        b=mb5or+p79kqLLmRcIbGTlulvipEFW1MvxqKeGsLAQLWwoEupe09PzJC+epEIgQg//c
+         8HBDMGNC2nH7dGaUQRayGW3sH6hMnQolwvdBkeNgGn2SlF13gVp4vR9f5XHE9WU669ro
+         Ni3sJGD+RzL+37Vj1iM43mjcYFwhXEKU3FTA9kZZaSo1ID50FE+8xauApGCHu1+PlmJD
+         kgJPf83CTXEWCS9AzqKyNrqhiRomDiBA1SXklTKNWUOe2g48dbhQIAaDtWVNTtTN60yN
+         WrhOrXbyY1ved1xC8V9cSs4AgvGm2yP7ZjG7mxT91pEsDzX8+peu8GGuRNEqd8tfRCs/
+         IZ2w==
+X-Gm-Message-State: AOJu0YxyW4uyyfSdPAyAFuVBpfXjrB2ttVJ4foybTVyhNaRZy8OBzmtd
+	WpPiZYV2+2CtMAE+cFq/IyFpZVxHT/Gh3lbYMEqezVgujoaKcZp6lZDr
+X-Gm-Gg: AeBDiev1P7nA8V1bZr+Sdzjki+wiw6halgoTt0Yfn95MhYIQT+0pkiwE/TuYSKqD5Uk
+	OFfXxc41TjCbFCNfpIi/pOGl2db5WysODviPWqMhkTgGh2yqeIeyfY91rXoh4exZnTwJk4687/1
+	xuKGKyyT/Cv8Rqhussq5mXTLKCXhqHsHovpX15tTqvoHObef3RELifVWLh+Rq5Ve81Wj1wRD1R/
+	IP2uIvKiSiXKyGgvAa/NQhScdnzx/cM9wUunzhiRZdb3SvQC+tCaFSf7ibrKq1ybzCzQ1veG3zd
+	gpDyW0uk+EO8YbjbsXhLb7zi0sdkw0HCmgjVt7IYh40dD55f6/3reBbee/FFXTuRDvi0O5ZQdeo
+	ybr/uOgTxldu5PtMSJ0UsZSpDOsHPrB2gvhOMf6hTZ/R4To6JMJmZ+RLmJBVK3L3OIIuFSZ6IXY
+	s5yvBLWfPfovJKgK32kjJjo/NH/lZT3SpX5zr3zNuGXG0aLGLyEEH62K7WP7TCK+lFOlQWmqmJ5
+	ue+IKtbOgbdXbcDfYjSfWnUUeE=
+X-Received: by 2002:a05:6214:4883:b0:89f:65be:998a with SMTP id 6a1803df08f44-8a5e6ccdf6emr330429436d6.0.1775580308286;
+        Tue, 07 Apr 2026 09:45:08 -0700 (PDT)
+Received: from workstation1 (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8aa70136e87sm62044156d6.22.2026.04.07.09.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2026 09:45:07 -0700 (PDT)
+From: Michael Bommarito <michael.bommarito@gmail.com>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Michael Bommarito <michael.bommarito@gmail.com>
+Subject: [PATCH 0/1] um: drivers: use libc strrchr() in cow_user.o
+Date: Tue,  7 Apr 2026 12:44:34 -0400
+Message-ID: <20260407164435.726012-1-michael.bommarito@gmail.com>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260407_032106_481797_3B67076C 
-X-CRM114-Status: GOOD (  46.63  )
+X-CRM114-CacheID: sfid-20260407_094510_594784_271DF884 
+X-CRM114-Status: GOOD (  22.88  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,332 +100,155 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-On Tue, 2026-04-07 at 02:47 -0700, Maciej =C5=BBenczykowski wrote:
-> On Tue, Apr 7, 2026 at 5:01=E2=80=AFPM Benjamin Berg <benjamin@sipsolutio=
-ns.net> wrote:
-> > you get an ESRCH error, which means that either the UML userspace
-> > process does not exist or maybe we do not have permission to trace for
-> > some reason.
-> >=20
-> > Now, the difference is that before the patch UML would just clone to
-> > create the userspace processes. After the patch, it will execve() into
-> > a separate executable that exists only as a memfd.
-> >=20
-> > I am noticing now, that we are doing the PTRACE_TRACEME inside the new
-> > executable instead of the usual method of doing it before execve. So
-> > maybe that makes a difference with AppArmor.
-> >=20
-> > So, I think you can do two things:
-> > =C2=A0=C2=A0 1. As a quick workaround, simply use "seccomp=3Don".
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 However, the sandboxing of the userspace=
- processes is not quite
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 as secure if you do that (i.e. they curr=
-ently can break out and
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 make host syscalls).
->=20
-> I tried the breaking commit, and 6.13.latest but it doesn't appear to
-> support seccomp=3Don
->=20
-> I tried 6.18.latest but it fails to build for me with
->=20
-> In file included from ./include/linux/unwind_user.h:6,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 from ./include/linux/unwind_deferred.h:6,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 from kernel/fork.c:108:
-> ./arch/x86/include/asm/unwind_user.h: In function =E2=80=98unwind_user_wo=
-rd_size=E2=80=99:
-> ./arch/x86/include/asm/unwind_user.h:23:17: error: =E2=80=98struct pt_reg=
-s=E2=80=99
-> has no member named =E2=80=98flags=E2=80=99
-> =C2=A0=C2=A0 23 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (reg=
-s->flags & X86_VM_MASK)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~
-> =C2=A0 CC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 net/ipv6/addrconf.o
-> ./arch/x86/include/asm/unwind_user.h:23:27: error: =E2=80=98X86_VM_MASK=
-=E2=80=99
-> undeclared (first use in this function)
-> =C2=A0=C2=A0 23 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (reg=
-s->flags & X86_VM_MASK)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~
-> ./arch/x86/include/asm/unwind_user.h:23:27: note: each undeclared
-> identifier is reported only once for each function it appears in
-> =C2=A0 CC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 block/blk-settings.o
-> =C2=A0 CC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 net/core/net_namespace.o
-> ./arch/x86/include/asm/unwind_user.h:26:14: error: implicit
-> declaration of function =E2=80=98user_64bit_mode=E2=80=99
-> [-Wimplicit-function-declaration]
-> =C2=A0=C2=A0 26 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!us=
-er_64bit_mode(regs))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~
->=20
-> it's likely related to some combination of kconfig options needed for
-> android net tests...
->=20
-> 6.16.latest builds but still crashes (not sure if it supports
-> seccomp=3Don), but the crash is different:
+Building ARCH=um on hosts with glibc 2.43 fails due to an interaction
+between UML's global -Dstrrchr=kernel_strrchr remap and glibc's new
+C23 const-preserving macro for strrchr().
 
-The below trace uses seccomp mode. In this case, it looks to me like
-the stub process died on us during startup. I am kind of thinking that
-in the ptrace case the stub executed but we couldn't trace it (i.e. it
-likely managed to do the self kill with SIGSTOP in real_init, see
-below).
+The failure is in arch/um/drivers/cow_user.c, a host-side helper that
+calls libc strrchr().  The object is built whenever CONFIG_BLK_DEV_UBD=y,
+which is the standard UML block device driver, so this affects most
+non-trivial UML builds on Ubuntu/Debian today.
 
-I guess you'll need to debug it some more.
+I caught this while testing on the release candidate for Ubuntu 26.04
+LTS, whose libc is glibc 2.43.  With 26.04 LTS shipping in the next
+few weeks and carrying five years of support, the affected user base
+will grow quickly, which is the main rationale for the Cc: stable
+trailer in the patch.
 
-You could try to add some more logging, to e.g. print the status code
-in os_reap_child. That information is missing in the log and may tell
-you what failed when starting the stub process.
+The root cause is that glibc 2.43 added (glibc commit cd748a63ab1a):
 
-So, what you are looking at is:
- * start_userspace, clone() a new process
- * userspace_tramp, sets up the FDs
- * userspace_tramp, execve() the memfd
- * real_init in stub_exe.c continues and sets up the stub
-   - sets up required memory maps and FDs
-   - in seccomp mode, installs SECCOMP filters, etc.
-   - in ptrace mode, does PTRACE_TRACEME and sends SIGSTOP to itself
+  #define strrchr(S,C) __glibc_const_generic(S, const char *, strrchr(S, C))
 
-Note that you cannot do much in stub_exe.c, which is why it uses
-different exit codes to convey the error.
+as part of C23 qualifier-generic support.  This function-like macro
+replaces UML's -D object-like macro, and the recursive-expansion
+protection in the C preprocessor causes the inner strrchr to resolve as
+the bare symbol -- which was never declared under that name, because
+the header declaration was already rewritten to kernel_strrchr by the
+-D.
 
-In seccomp mode you should be able to "strace -f" the UML process,
-which should show you what is happening to the stub.
+The remap itself (commit 2c51a4bc0233) is still needed for kernel-side
+objects to prevent linker clashes.  This was re-affirmed very recently
+in commit a74b6c0e53a6 ("um: Don't rename vmap to kernel_vmap"),
+which removed the now-obsolete vmap remap and updated the comment in
+arch/um/Makefile to explicitly call out -Dstrrchr=kernel_strrchr as
+one of the remaps that still prevents libc symbol clashes.  This patch
+only exempts the one host-side object that is proven to break:
+cow_user.o.
 
-Not sure I can help more than this though.
+A standalone reproducer (fails on glibc >= 2.43, succeeds on older):
 
-Benjamin
+  printf '#include <string.h>\nvoid f(void) { char *p = strrchr("foo", 47); }\n' \
+    | gcc -c -Dstrrchr=kernel_strrchr -x c - -o /dev/null
 
-> Run /sbin/net_test.sh as init process
-> Unexpectedly lost MM child! Affected tasks will segfault.
-> wait_stub_done_seccomp : failed to wait for stub, pid =3D -1, errno =3D 0
-> Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000000b
-> CPU: 0 UID: 0 PID: 1 Comm: net_test.sh Not tainted 6.16.12-g7e13344d2211 =
-#4 NONE
-> Stack:
-> =C2=A080803b60 6063f23b 6051b353 00000000
-> =C2=A000000001 6063f23b 606314ef 60027dfc
-> =C2=A080803b90 6002f679 60c70000 609374c0
-> Call Trace:
-> =C2=A0[<60027dfc>] ? _printk+0x0/0x57
-> =C2=A0[<6003237a>] show_stack+0x10b/0x11a
-> =C2=A0[<6051b353>] ? dump_stack_print_info+0x0/0x12b
-> =C2=A0[<60027dfc>] ? _printk+0x0/0x57
-> =C2=A0[<6002f679>] dump_stack_lvl+0x5e/0x79
-> =C2=A0[<6002f6ae>] dump_stack+0x1a/0x1c
-> =C2=A0[<60026626>] panic+0x156/0x377
-> =C2=A0[<6003ff78>] ? unblock_signals+0x25/0x28
-> =C2=A0[<6003ffa1>] ? um_set_signals+0x26/0x3e
-> =C2=A0[<600264d0>] ? panic+0x0/0x377
-> =C2=A0[<60049fd8>] do_exit+0x205/0x9f6
-> =C2=A0[<60162f26>] ? kmem_cache_free+0x118/0x12b
-> =C2=A0[<6004a9ff>] sys_exit_group+0x0/0x16
-> =C2=A0[<60055d9c>] get_signal+0x7dc/0x803
-> =C2=A0[<600555c0>] ? get_signal+0x0/0x803
-> =C2=A0[<6004349c>] ? setup_signal_stack_si+0x0/0x1f0
-> =C2=A0[<60055166>] ? signal_setup_done+0x0/0xb1
-> =C2=A0[<600320f5>] do_signal+0x54/0x1ce
-> =C2=A0[<60539370>] ? _raw_spin_unlock_irqrestore+0x0/0x39
-> =C2=A0[<60032db6>] fatal_sigsegv+0x32/0x3e
-> =C2=A0[<60041ac6>] wait_stub_done_seccomp+0x2b1/0x2c0
-> =C2=A0[<60041efa>] userspace+0xff/0x694
-> =C2=A0[<60031769>] ? interrupt_end+0x0/0xac
-> =C2=A0[<60179ba4>] ? copy_strings_kernel+0x0/0x9e
-> =C2=A0[<6003166a>] new_thread_handler+0x5a/0x5e
-> /aosp-tests/net/test/run_net_test.sh: line 503: 939215 Aborted
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (core dumped=
-) $KERNEL_BINARY umid=3Dnet_test mem=3D512M
-> seccomp=3Don $blockdevice=3D$ROOTFS $netconfig $consolemode ssl3=3Dnull,f=
-d:3
-> $cmdline 1>&2 3> "${SSL3}"
-> Warning: UML exited with 134 instead of zero.
->=20
-> > =C2=A0=C2=A0 2. Move the ptrace(PTRACE_TRACEME) call into userspace_tra=
-mp to
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 check if AppArmor is permitting ptrace t=
-hen.
->=20
-> haven't yet had time to try this approach.
+Tested on Ubuntu with glibc 2.43-2ubuntu1 and gcc 15.2.0 against
+v7.0-rc6 (3aae9383f42f).  v7.0-rc7 dropped on 2026-04-05 and neither
+arch/um/drivers/Makefile nor arch/um/drivers/cow_user.c changed
+between rc6 and rc7, so this patch applies and behaves identically on
+both.  The patched kernel builds cleanly, boots a Debian bookworm
+rootfs to multi-user, and boots with a COW overlay that exercises the
+absolutize() -> strrchr() code path in cow_user.c.
 
+cow_user.c is the only file under arch/um/ that calls strrchr(), so
+this patch is complete for the current tree.  A broader discussion
+about whether the global strrchr remap should be narrowed further
+(given that glibc's C23 macros are here to stay for strchr, memchr,
+strstr, etc.) may be warranted as a follow-up.
 
-Benjamin
+Compatibility and impact
+========================
 
->=20
-> >=20
-> > Benjamin
-> >=20
-> > On Tue, 2026-04-07 at 15:15 +0900, Maciej =C5=BBenczykowski wrote:
-> > > On Tue, Apr 7, 2026 at 2:56=E2=80=AFPM Berg, Johannes <johannes.berg@=
-intel.com> wrote:
-> > > > Hi,
-> > > >=20
-> > > > Haven't looked at this yet - but really better if you CC the UML li=
-st.
-> > > >=20
-> > > > johannes
-> > > >=20
-> > > > > -----Original Message-----
-> > > > > From: Maciej =C5=BBenczykowski <maze@google.com>
-> > > > > Sent: Saturday, April 4, 2026 5:25 AM
-> > > > > To: Berg, Benjamin <benjamin.berg@intel.com>; Berg, Johannes
-> > > > > <johannes.berg@intel.com>; Tiwei Bie <tiwei.btw@antgroup.com>
-> > > > > Subject: Re: 6.13+ uml crash
-> > > > >=20
-> > > > > On Fri, Apr 3, 2026 at 12:34=E2=80=AFPM Maciej =C5=BBenczykowski =
-<maze@google.com>
-> > > > > wrote:
-> > > > > >=20
-> > > > > > Host is:
-> > > > > >=20
-> > > > > > 6.18.14-1rodete1-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.18.14-
-> > > > > 1rodete1
-> > > > > > (2026-03-06) x86_64 GNU/Linux
-> > > > > >=20
-> > > > > > /proc/cmdline
-> > > > > > ima_hash=3Dsha256 kfence.sample_interval=3D100 intel_iommu=3Dsm=
-_off
-> > > > > > pci=3Dnoats printk.devkmsg=3Don slab_nomerge
-> > > > > > lsm=3Dlandlock,lockdown,yama,loadpin,safesetid,integrity,apparm=
-or,selinu
-> > > > > > x,smack,tomoyo,bpf
-> > > > > > apparmor=3D1 panic=3D30 glinux-boot-image=3Ddefault-20260324.03=
-.00
-> > > > > > earlycon=3Duart8250,io,0x3f8 console=3DttyS0,115200n8 console=
-=3Dhvc0
-> > > > > > console=3Dtty0 splash plymouth.ignore-serial-consoles i915.enab=
-le_psr=3D0
-> > > > > >=20
-> > > > > > No SELinux, but I think there is likely some corporate AppArmor=
- policy...
-> > > > > >=20
-> > > > > > I seem to hit this problem while trying to use UML on latest
-> > > > > > 6.13/6.14/6.15/6.16/6.17/6.18/6.19
-> > > > > > 6.12 guests are the last ones that work.
-> > > > > >=20
-> > > > > > I noticed 6.13 had many UML changes...
-> > > > > >=20
-> > > > > > This is while trying to run the android net tests.
-> > > > > >=20
-> > > > > > https://android.googlesource.com/kernel/tests/+log/refs/heads/m=
-irror-g
-> > > > > > oog-main-kernel /aosp-tests/net/test/run_net_test.sh --builder
-> > > > > > all_tests.sh
-> > > > > >=20
-> > > > > > ...
-> > > > > > VFS: Mounted root (ext3 filesystem) readonly on device 98:0.
-> > > > > > devtmpfs: mounted
-> > > > > > This architecture does not have kernel memory protection.
-> > > > > > Run /sbin/net_test.sh as init process
-> > > > > > Registers -
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x60025a90
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x2e2ea5
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x600423e4
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 3=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x2e2ea8
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x7fffffffbe30
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x206
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0x7fffffffbe30
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 9=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0xffffffff
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 11=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x7ffff7c40c87
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 12=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 13=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x13
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 14=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x2e2ea8
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x3e
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x7fffffffc000
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 17=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x33
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 18=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x206
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x7fffffffeff8
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x2b
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 21=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x7ffff7f9d740
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 22=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 23=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 24=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 25=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 26=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0x0
-> > > > > > Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS fa=
-iled,
-> > > > > > errno =3D 3=C2=A0 [ESRCH]
-> > > > > > CPU: 0 UID: 0 PID: 1 Comm: net_test.sh Not tainted
-> > > > > > 6.13.12-g2abfa5d47651 #3
-> > > > > > Stack:
-> > > > > > =C2=A0600277e4 60629dd1 80803d80 00000000
-> > > > > > =C2=A000000001 60629dd1 6061c0a9 600277e4
-> > > > > > =C2=A080803db0 6002efd2 60c70000 609171c0
-> > > > > > Call Trace:
-> > > > > > =C2=A0[<600277e4>] ? _printk+0x0/0x57
-> > > > > > =C2=A0[<600322ec>] show_stack+0x10b/0x11a
-> > > > > > =C2=A0[<600277e4>] ? _printk+0x0/0x57
-> > > > > > =C2=A0[<600277e4>] ? _printk+0x0/0x57
-> > > > > > =C2=A0[<6002efd2>] dump_stack_lvl+0x5e/0x79=C2=A0 [<6002f007>]
-> > > > > > dump_stack+0x1a/0x1c=C2=A0 [<60026838>] panic+0x156/0x377=C2=A0=
- [<600277e4>] ?
-> > > > > > _printk+0x0/0x57=C2=A0 [<600266e2>] ? panic+0x0/0x377=C2=A0 [<6=
-00277e4>] ?
-> > > > > > _printk+0x0/0x57=C2=A0 [<6004555b>] do_syscall_stub+0xa6/0x132
-> > > > > > [<60031608>] ? interrupt_end+0x0/0xae=C2=A0 [<6004560b>]
-> > > > > > syscall_stub_flush+0x24/0x2e=C2=A0 [<60045daf>] userspace+0x81/=
-0x469
-> > > > > > [<60031608>] ? interrupt_end+0x0/0xae=C2=A0 [<601761ba>] ?
-> > > > > > copy_strings_kernel+0x0/0x9e=C2=A0 [<60031509>]
-> > > > > > new_thread_handler+0x5a/0x5e
-> > > > > > /aosp-tests/net/test/run_net_test.sh: line 498: 3026597 Aborted
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 (core dumped) $KERNEL_BINARY umid=3Dnet_test mem=3D512M
-> > > > > > $blockdevice=3D$ROOTFS $netconfig $consolemode ssl3=3Dnull,fd:3=
- $cmdline
-> > > > > > 1>&2 3> "${SSL3}"
-> > > > > > Warning: UML exited with 134 instead of zero.
-> > > > >=20
-> > > > > It appears this broke at:
-> > > > >=20
-> > > > > commit 32e8eaf263d9be014ba1970444f745682fa9c6c0
-> > > > > Author: Benjamin Berg <benjamin.berg@intel.com>
-> > > > > =C2=A0=C2=A0=C2=A0 um: use execveat to create userspace MMs
-> > > > Intel Deutschland GmbH
-> > > > Registered Address: Dornacher Strasse 1, 85622 Feldkirchen, Germany
-> > > > Tel: +49 89 991 430, www.intel.de
-> > > > Managing Directors: Harry Demas, Jeffrey Schneiderman, Yin Chong So=
-rrell
-> > > > Chairperson of the Supervisory Board: Nicole Lau
-> > > > Registered Seat: Munich
-> > > > Commercial Register: Amtsgericht Muenchen HRB 186928
-> > >=20
-> > > --
-> > > Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
->=20
-> --
-> Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
+The patch only changes CFLAGS for one translation unit, cow_user.o.
+By configuration:
+
+  - glibc >= 2.43: build is fixed (the point).
+  - glibc <  2.43: no observable change.  cow_user.o now calls libc
+    strrchr() instead of being silently redirected to kernel_strrchr()
+    by the global -D; both are functionally identical for the
+    NUL-terminated path strings absolutize() uses.
+  - CONFIG_STATIC_LINK=y + CONFIG_UML_NET_VDE=y (the original 2011
+    case): unaffected.  The global remap is preserved for every
+    other translation unit, so the linker clash that 2c51a4bc0233
+    fixed cannot recur.
+  - CONFIG_BLK_DEV_UBD=n: cow_user.o is not built; the new
+    per-object CFLAGS line is inert.
+
+Verified locally with nm: after the patch, cow_user.o references
+libc strrchr (not kernel_strrchr), and the final UML binary cleanly
+resolves both kernel_strrchr (kernel side, EXPORT_SYMBOL'd) and
+strrchr@GLIBC_2.2.5 (libc) with no multiple-definition errors.
+
+A small personal note
+=====================
+
+The last and only patch I sent to LKML was in December 2006 [1], a
+two-line fix in the IEEE 802.11 softmac association code during the
+dark days of laptop hardware support.  I have done my best to follow
+the guidance, especially the recent AI assistance protocols in
+Documentation/process/coding-assistants.rst and generated-content.rst,
+but apologize in advance for anything I have done wrong regardless!
+
+PS: see the note below about checkpatch.pl and Assisted-by: behavior.
+I'd be happy to submit a patch for that as well, but suspect an
+experienced maintainer might prefer to handle it.
+
+[1] https://marc.info/?l=linux-kernel&m=116607116605310&w=2
+
+Disclosure of tool assistance
+=============================
+
+Per Documentation/process/coding-assistants.rst and
+generated-content.rst:
+
+Tools used: Claude Code with Claude Opus 4.6 (Anthropic); Codex with
+GPT-5.4 (OpenAI).
+
+What the tools did: helped reason through the -D macro / glibc C23
+macro interaction; helped narrow the failure to cow_user.o; suggested
+-Ustrrchr as the minimal override; helped construct the standalone
+gcc reproducer and the build/boot/COW test matrix; helped interpret
+build and boot logs; drafted the changelog and this cover letter;
+cross-checked against the glibc 2.43 release notes and the referenced
+kernel/glibc commits; located recent precedent (a74b6c0e53a6) and the
+Documentation/process/ disclosure guidance; ran checkpatch.pl and
+get_maintainer.pl interactively.
+
+What only the author did: manually reviewed every line of patch,
+changelog, and cover letter; executed every build and boot test on
+the host (ARCH=um build, bare kernel boot, Debian bookworm rootfs
+boot, COW overlay boot exercising cow_user.c::absolutize());
+inspected the resulting kernel binary, boot logs, and exercised code
+path by hand; made all final scope, framing, recipient,
+and Cc: stable decisions.
+
+The author has read every line of this submission, understands it,
+and takes full responsibility under the Developer Certificate of
+Origin.
+
+A note on the Assisted-by: trailers
+-----------------------------------
+
+The trailers in the patch use the format from
+Documentation/process/coding-assistants.rst:
+
+  Assisted-by: AGENT_NAME:MODEL_VERSION
+
+scripts/checkpatch.pl in v7.0-rc6 does not yet recognize Assisted-by:
+as a standard signature, so it emits a "Non-standard signature" warning
+and (because the value is not a Name <email> pair) an "Unrecognized
+email address" error for each trailer.  These are intentional: the
+trailer format follows the in-tree documentation, and checkpatch has
+not yet been updated to match.  Happy to reformat if maintainers
+prefer a different convention.
+
+Thanks,
+Michael Bommarito
+
+Michael Bommarito (1):
+  um: drivers: use libc strrchr() in cow_user.o
+
+ arch/um/drivers/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--
+2.49.0
 
