@@ -4,83 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E66410F6FBF
-	for <linux-um@archiver.kernel.org>; Wed,  1 Apr 2026 16:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 137A7FB519B
+	for <linux-um@archiver.kernel.org>; Tue,  7 Apr 2026 06:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=uhchMG1KpDGCTR20nQi2G4K7t9Zb0mD2F3Im1tSDrIg=; b=IabvWWUJSX5JQwDiVjQmxiSPDy
-	qP0O7vqVmqmW8B7NiEE1jq3FBcGqHcjM/WkUNs+bP8W3n66sgmYeaZMGhA/66Plau5lPKw6/+vING
-	UkA0WDkCvsyJWoL6sGq0kIx+IfT3zLrc3ULqVlCh98ABnRDiwlBYKz/P5nvE+xKwtHHAiRhjR7Luf
-	7MsUSNiLPIgsjA1qjuPLzeIj/U9ZRhjXcPlbiGm/dSiwEshQ5TuKys6zlAatS82X2tBzyNX0awR4q
-	MgCxOybmnM+wfBcNI16gUyA+E+aGtade60VbaSqzpb5/RyUzW2vomcHDr1s7U4nJECDXT+ur6iCm+
-	EocONnhQ==;
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Dtiz7Gkr44bdBY+oHLTxhUafHlH0dmAfJQMKyk3lEbY=; b=nOFxip8FErvFCPFwDljONOzynj
+	R7w44CXwoKgohk3+vR9IJTiTBbJGuKaoVbTU7DEqr5UKpvz5m0CwvZar8w0d1OlS1nCNbzTtY9qRN
+	Lv/uT5NjXgryvNB7HwnLyTo7JQoZcq6vJaQdGkcV21u28y6QBh6V3agfrGJ0oNWJdINVZwAonL+FV
+	3mWtnm0vzZ+czQwtWlXNcYbNiJIsrGEstZG2mmeMVblp9hplAVA0SjdcFOZTdPUFXDE79M9I/Zh/8
+	/6GLkxxfZAXuQ8K9vWegglg+1Uo8cjLPKaT0PA1lx2JgXK1gEqPhpG77Fzu9a+OlgVOAc3R2ybIWE
+	EVBFidLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7y2R-0000000FgnS-2dqw;
-	Wed, 01 Apr 2026 16:03:27 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1w9ziu-00000005yLJ-0eyT;
+	Tue, 07 Apr 2026 06:15:40 +0000
+Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7y2P-0000000Fgn1-3l4R
-	for linux-um@bombadil.infradead.org;
-	Wed, 01 Apr 2026 16:03:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=uhchMG1KpDGCTR20nQi2G4K7t9Zb0mD2F3Im1tSDrIg=; b=XtJD4s761Lq4UWtfDC/ryTdVHJ
-	I5o9HsRbl4T9u4EhDVgdUmhXW1AGWrke2B3BWLTgj0GfmXRwU5ELkPj4HKKD7b5ny8++4GQEM+n+e
-	SiHHXSU3wVn8rwT3cMl1py4MhImjmFmowGXlsyJFC9k/pj9/nMybeZuX43hOwW09nkHQhRtSJEo2I
-	TaMCsxPjHWpmTVp80GGkvWrsTWP8iznEzjqsGDAPd/4Xu5TjrS5mDH9x76DdmhQufiVq6TW1EWG1G
-	msNnU4JnFznsBSkh7QDG6ObnwuN9FqubiD01HPfnZ9MOAzAsXuoLAIriQdk0K2hBo+RH0buuiKeBk
-	RuJy+ULQ==;
-Received: from smtp21.cstnet.cn ([159.226.251.21] helo=cstnet.cn)
-	by desiato.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w7y2M-00000000qJW-0olx
+	id 1w9zis-00000005yJZ-0BIs
 	for linux-um@lists.infradead.org;
-	Wed, 01 Apr 2026 16:03:24 +0000
-Received: from localhost.localdomain (unknown [111.196.245.197])
-	by APP-01 (Coremail) with SMTP id qwCowABnC2fDQc1pzBThCw--.49325S2;
-	Thu, 02 Apr 2026 00:03:16 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: richard@nod.at
-Cc: anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn
-Subject: [PATCH] um: reject out-of-range port channel numbers
-Date: Thu,  2 Apr 2026 00:03:15 +0800
-Message-ID: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
-X-Mailer: git-send-email 2.50.1
+	Tue, 07 Apr 2026 06:15:39 +0000
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-50d6b393d60so1827781cf.0
+        for <linux-um@lists.infradead.org>; Mon, 06 Apr 2026 23:15:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1775542536; cv=none;
+        d=google.com; s=arc-20240605;
+        b=e0Jj4FXSrvIlZNOds7ykxMOFrTQlIddUkOSBCNDdJeJ+ad5dkYYAld52xi+HQ0/fKM
+         FdrJ20m9EWM2NF5hDK5KmRBgGJZzR4xpDx/zRODGQ8YYfevsZ0TENbxeUlgjAdr+WJ5G
+         qr0lp6PYeHzTZjrVZ6opl/BaDuAXVa2Kxb6s0dJGk1q00mVr/k6glgzAn6h1hXSBE9il
+         6DeoK/PACdeT/rDRWJuONnxJTLFIciPdfNloZ51faTBiKyqkxoMMD4MSw/lcaSq57+RF
+         4H6D+fxUDgYCD4wA7fPMedriwzyL3OnIHx+HtZnmuGUAgmfQCufd+9vFPWtiabj2oJZf
+         yjOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Dtiz7Gkr44bdBY+oHLTxhUafHlH0dmAfJQMKyk3lEbY=;
+        fh=UNliaCi9HqKzXKvpYevGQJ0tgUA1UsrGjSvvWTRT5f4=;
+        b=flGGrCNMW5jCitb7oidWcXIYNyGVAvdbPcfRGfcV66wPI54blRdL9FMAIEeCzefe2Z
+         x/xV4Bw4bVJ3z32BBGP2hHQrF0RmKcnBqqUyKICjVFPUzgr4AE86bTw9tbd3Lky+d7W3
+         SGu0gXZsETZBCuUQpbx52Pd3vQwICbU5zEetJxJLogiSN6QcZAx/LBTzGT6e/8tFYwjv
+         wvknNy7AkkgdrGzigpWy/UEV+ujvFlB+XhPGLhfonhz+wO/jNb2WLDMA4+8H3oMBGOkG
+         eEXYXV/CEqFKGcWwTLYlITpIfaj+jdzhiNtmZoECb8chyy4UviKGwBWegYU+74Pmv1Yi
+         0l9w==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1775542536; x=1776147336; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dtiz7Gkr44bdBY+oHLTxhUafHlH0dmAfJQMKyk3lEbY=;
+        b=fL42sIOdIaU2kqjQgkplO7R3kF+ZO5ouDWwZtqr2/hhyXxbD6cqZKLBx0MwLE09HAY
+         3oHzATCmgGgsdKQ5tL6DcJ2Vv0EB+J6LoRhaojMUM6IZY8aV20iLqHDwouARA53Bonve
+         7nRVKtAcEiI9gFANodbaAW/NgsnaLDkDw/1LvQMYDW0gY75CSS38APhlHgzkmzAqeKRY
+         3nIgN9EP3bCMajAH6ocYch20/vfR8Qh0kXALo3ZK9YRcdTaoil7T6tbHu4h+HBKBNKoH
+         ZK3YPXBmYjjqPwOflprwLWcChlerPsdFcKKlpshlDF+KTgIGzj9NcrAXM1cio7QW6wru
+         zaDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775542536; x=1776147336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Dtiz7Gkr44bdBY+oHLTxhUafHlH0dmAfJQMKyk3lEbY=;
+        b=oFH0oPcZ/9vKFgGk6yyK/ad5AM6Y4Wo/kjftg9KYOUSYU5BvEjpQBTY5c+PUN0T/y9
+         5UApItWQDh25qBu8Jt8T+kse5DFBawlEZdfhjkaQxlQ/D20tspW/ezDLd3mxta0/YH9N
+         CdVFSxG21GIDkjKzAz3BVx3Frx3BeSrv3fhV6lkV7D5Ldr/MROhhaZfPgJ5cBl3JKwtu
+         +r3F6Vs5jll6nAEl/LsKCAg0rBbbsco5cxkM8j3O35vKBvuwmmyeZ2e2xGplh5HcQd6G
+         2DgeRZYJs9MfBJnoq/zeOy8k5z77h+gAhCvQYgUx9eeXvLfC5+PYDPE/GOIdYOXk6kxA
+         zRBw==
+X-Forwarded-Encrypted: i=1; AJvYcCVTYu4nlJ7ffvpwghcJVHVjHrSq8d/MSVI+u/RxBR+bOKYS/viCJV6j+RrwKkNV8/vVeJ57Sd4Sxw==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx/Wd6n1RdTIrvH7awjjqYKqYQUsD3TzEBMs7daw7RAaqb8Z7eO
+	rAP/THo4HLEu/0JrJT0Qy4NoSEejtQO6oNQ588Jg+SI/Cuoo0yqJz1e5sbjl7UJTmeMkWAmWFFX
+	zVCr73Q7IXbTZg8m4r0SSZ3vaKGz/ihILrQrgrAe6
+X-Gm-Gg: AeBDieu9Ou7FKBmw0XfckYn7hVR8cCyelDB4Ri/+1AERUBc+PgGDyTmc3j8ffQzDyLU
+	Wno9YDoWPHOXrgBU90IcF20SIFCce5i8N0Vf1dh/ppxbDkl/Ld4iJ09RHQpoPTWC4x47zYHhg64
+	Hxo4N9phDuohIBOxCHMCVZbWiPJ0LgFNAcXdBjFfAd9sPnDGzzQEMsfDzb7cZ986orByJIff5J+
+	3pw7fScmJm/Iq6qZzof7LLshn1Ni8Xry1zKXGkBsvvTShlLWzSmg6gSzmtblj7xyB9I+tCm10qc
+	I3vgEkV4f3z+O2xWFKsr4z83G5pwgye1RHcMiQ==
+X-Received: by 2002:ac8:5893:0:b0:50d:418a:9770 with SMTP id
+ d75a77b69052e-50d63ea43bcmr52167921cf.2.1775542535247; Mon, 06 Apr 2026
+ 23:15:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowABnC2fDQc1pzBThCw--.49325S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4DGF17ZF1xGw13ZF1fJFb_yoW8WrW3pF
-	WYy342krZ3Ja1ay34UWa1Uu34Yq3W2yay29FykJ3sIvF1YvFyrWF4Ygwn0vFnrGFWxJFy0
-	vrsYva4IvF1UJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
-	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6v38UUU
-	UU=
-X-Originating-IP: [111.196.245.197]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
+References: <CANP3RGd1SYY-Xakfq93Ttb-m1xXWdMAq=HEJMk6-KMcGmPWMtg@mail.gmail.com>
+ <CANP3RGeOQa_s5ZyCp9MBVAR3cAz25=t=sYCdQgjsPCmA25F3=w@mail.gmail.com> <PH8PR11MB8285E84708CCB0C5799C1B4DE95AA@PH8PR11MB8285.namprd11.prod.outlook.com>
+In-Reply-To: <PH8PR11MB8285E84708CCB0C5799C1B4DE95AA@PH8PR11MB8285.namprd11.prod.outlook.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Tue, 7 Apr 2026 15:15:23 +0900
+X-Gm-Features: AQROBzCARvkNT55ihLunf9kGESe6p6PUmA5VahBjmmx_SrrVZMOao8wWsQevwIg
+Message-ID: <CANP3RGec_Skbzm3OFFhSJRFigsoQQ8hRL3JJxsVYMz3QtoguXA@mail.gmail.com>
+Subject: Re: 6.13+ uml crash
+To: "Berg, Johannes" <johannes.berg@intel.com>, linux-um@lists.infradead.org
+Cc: "Berg, Benjamin" <benjamin.berg@intel.com>, Tiwei Bie <tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260401_170322_775647_936B9E6B 
-X-CRM114-Status: UNSURE (   8.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260406_231538_174587_318AB601 
+X-CRM114-Status: GOOD (  21.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,56 +116,133 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-port_init() parses the port channel number into an int, formats it into
-a small fixed string buffer, and later passes it to htons() for bind().
-Out-of-range values can therefore overflow the local device-name buffer
-and still get silently truncated at the socket layer.
+On Tue, Apr 7, 2026 at 2:56=E2=80=AFPM Berg, Johannes <johannes.berg@intel.=
+com> wrote:
+> Hi,
+>
+> Haven't looked at this yet - but really better if you CC the UML list.
+>
+> johannes
+>
+> > -----Original Message-----
+> > From: Maciej =C5=BBenczykowski <maze@google.com>
+> > Sent: Saturday, April 4, 2026 5:25 AM
+> > To: Berg, Benjamin <benjamin.berg@intel.com>; Berg, Johannes
+> > <johannes.berg@intel.com>; Tiwei Bie <tiwei.btw@antgroup.com>
+> > Subject: Re: 6.13+ uml crash
+> >
+> > On Fri, Apr 3, 2026 at 12:34=E2=80=AFPM Maciej =C5=BBenczykowski <maze@=
+google.com>
+> > wrote:
+> > >
+> > > Host is:
+> > >
+> > > 6.18.14-1rodete1-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.18.14-
+> > 1rodete1
+> > > (2026-03-06) x86_64 GNU/Linux
+> > >
+> > > /proc/cmdline
+> > > ima_hash=3Dsha256 kfence.sample_interval=3D100 intel_iommu=3Dsm_off
+> > > pci=3Dnoats printk.devkmsg=3Don slab_nomerge
+> > > lsm=3Dlandlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,sel=
+inu
+> > > x,smack,tomoyo,bpf
+> > > apparmor=3D1 panic=3D30 glinux-boot-image=3Ddefault-20260324.03.00
+> > > earlycon=3Duart8250,io,0x3f8 console=3DttyS0,115200n8 console=3Dhvc0
+> > > console=3Dtty0 splash plymouth.ignore-serial-consoles i915.enable_psr=
+=3D0
+> > >
+> > > No SELinux, but I think there is likely some corporate AppArmor polic=
+y...
+> > >
+> > > I seem to hit this problem while trying to use UML on latest
+> > > 6.13/6.14/6.15/6.16/6.17/6.18/6.19
+> > > 6.12 guests are the last ones that work.
+> > >
+> > > I noticed 6.13 had many UML changes...
+> > >
+> > > This is while trying to run the android net tests.
+> > >
+> > > https://android.googlesource.com/kernel/tests/+log/refs/heads/mirror-=
+g
+> > > oog-main-kernel /aosp-tests/net/test/run_net_test.sh --builder
+> > > all_tests.sh
+> > >
+> > > ...
+> > > VFS: Mounted root (ext3 filesystem) readonly on device 98:0.
+> > > devtmpfs: mounted
+> > > This architecture does not have kernel memory protection.
+> > > Run /sbin/net_test.sh as init process
+> > > Registers -
+> > >         0       0x60025a90
+> > >         1       0x2e2ea5
+> > >         2       0x600423e4
+> > >         3       0x2e2ea8
+> > >         4       0x7fffffffbe30
+> > >         5       0x0
+> > >         6       0x206
+> > >         7       0x0
+> > >         8       0x7fffffffbe30
+> > >         9       0xffffffff
+> > >         10      0x0
+> > >         11      0x7ffff7c40c87
+> > >         12      0x0
+> > >         13      0x13
+> > >         14      0x2e2ea8
+> > >         15      0x3e
+> > >         16      0x7fffffffc000
+> > >         17      0x33
+> > >         18      0x206
+> > >         19      0x7fffffffeff8
+> > >         20      0x2b
+> > >         21      0x7ffff7f9d740
+> > >         22      0x0
+> > >         23      0x0
+> > >         24      0x0
+> > >         25      0x0
+> > >         26      0x0
+> > > Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS failed,
+> > > errno =3D 3  [ESRCH]
+> > > CPU: 0 UID: 0 PID: 1 Comm: net_test.sh Not tainted
+> > > 6.13.12-g2abfa5d47651 #3
+> > > Stack:
+> > >  600277e4 60629dd1 80803d80 00000000
+> > >  00000001 60629dd1 6061c0a9 600277e4
+> > >  80803db0 6002efd2 60c70000 609171c0
+> > > Call Trace:
+> > >  [<600277e4>] ? _printk+0x0/0x57
+> > >  [<600322ec>] show_stack+0x10b/0x11a
+> > >  [<600277e4>] ? _printk+0x0/0x57
+> > >  [<600277e4>] ? _printk+0x0/0x57
+> > >  [<6002efd2>] dump_stack_lvl+0x5e/0x79  [<6002f007>]
+> > > dump_stack+0x1a/0x1c  [<60026838>] panic+0x156/0x377  [<600277e4>] ?
+> > > _printk+0x0/0x57  [<600266e2>] ? panic+0x0/0x377  [<600277e4>] ?
+> > > _printk+0x0/0x57  [<6004555b>] do_syscall_stub+0xa6/0x132
+> > > [<60031608>] ? interrupt_end+0x0/0xae  [<6004560b>]
+> > > syscall_stub_flush+0x24/0x2e  [<60045daf>] userspace+0x81/0x469
+> > > [<60031608>] ? interrupt_end+0x0/0xae  [<601761ba>] ?
+> > > copy_strings_kernel+0x0/0x9e  [<60031509>]
+> > > new_thread_handler+0x5a/0x5e
+> > > /aosp-tests/net/test/run_net_test.sh: line 498: 3026597 Aborted
+> > >             (core dumped) $KERNEL_BINARY umid=3Dnet_test mem=3D512M
+> > > $blockdevice=3D$ROOTFS $netconfig $consolemode ssl3=3Dnull,fd:3 $cmdl=
+ine
+> > > 1>&2 3> "${SSL3}"
+> > > Warning: UML exited with 134 instead of zero.
+> >
+> > It appears this broke at:
+> >
+> > commit 32e8eaf263d9be014ba1970444f745682fa9c6c0
+> > Author: Benjamin Berg <benjamin.berg@intel.com>
+> >     um: use execveat to create userspace MMs
+> Intel Deutschland GmbH
+> Registered Address: Dornacher Strasse 1, 85622 Feldkirchen, Germany
+> Tel: +49 89 991 430, www.intel.de
+> Managing Directors: Harry Demas, Jeffrey Schneiderman, Yin Chong Sorrell
+> Chairperson of the Supervisory Board: Nicole Lau
+> Registered Seat: Munich
+> Commercial Register: Amtsgericht Muenchen HRB 186928
 
-Reject port numbers that do not fit in the 16-bit TCP/UDP port range.
-
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
----
- arch/um/drivers/port_user.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
-index 3c62ae81df62..b3d393811d69 100644
---- a/arch/um/drivers/port_user.c
-+++ b/arch/um/drivers/port_user.c
-@@ -19,7 +19,7 @@ struct port_chan {
- 	int raw;
- 	struct termios tt;
- 	void *kernel_data;
--	char dev[sizeof("32768\0")];
-+	char dev[sizeof("65535")];
- };
- 
- static void *port_init(char *str, int device, const struct chan_opts *opts)
-@@ -27,6 +27,7 @@ static void *port_init(char *str, int device, const struct chan_opts *opts)
- 	struct port_chan *data;
- 	void *kern_data;
- 	char *end;
-+	unsigned long parsed_port;
- 	int port;
- 
- 	if (*str != ':') {
-@@ -35,12 +36,13 @@ static void *port_init(char *str, int device, const struct chan_opts *opts)
- 		return NULL;
- 	}
- 	str++;
--	port = strtoul(str, &end, 0);
--	if ((*end != '\0') || (end == str)) {
-+	parsed_port = strtoul(str, &end, 0);
-+	if ((*end != '\0') || end == str || parsed_port > 65535) {
- 		printk(UM_KERN_ERR "port_init : couldn't parse port '%s'\n",
- 		       str);
- 		return NULL;
- 	}
-+	port = parsed_port;
- 
- 	kern_data = port_data(port);
- 	if (kern_data == NULL)
--- 
-2.50.1 (Apple Git-155)
-
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
