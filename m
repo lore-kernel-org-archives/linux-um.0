@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D438FD5F8F
-	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 07:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C24AEFD5F8C
+	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 07:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cKSNMqLJz0NGN18IiNVAGIQZTI4URku+1Rx2DUYJKdI=; b=Z3zHXxsBb13reIXjQzw7G02uFm
-	he2nnhYkzwhDrK1qbVtCCEoiU/w5b5lrZtt6b3yv0iJ80IJISmAnPY9p+XTqI/0uiFhzc9gKTJGMQ
-	yUOVXpkTlHUBnyFaoakMRpCDV1/4ZQ4GZ9ZK31HxhatD/EtvYkWRXSma5flWSTzBPWc7QoGTv4txV
-	2zTmAxr+jWwfcv9TJaqBBXmCiQB07/e15yCV9N05DvBUZm9y4wJ/67OBzrHCgS9v7pHqJG/vYWMzt
-	WmCzptfw11dqwPN4/VKcfuKb3ncWHUheW6Mf5T62kMC/OedxLrohvLaaPmLdvgO1v40uELwDTVCkq
-	6sjCARzw==;
+	bh=o8+KM1He4y8YFVz0IVPpHaGgsGzxBtpcXzn8bdfNOks=; b=nop3vyzxmEl2JG+ojYc1Oik1lr
+	Ht9SwAzLZyoaPHHQkdwdCb73kImiJpknAjiyY/qrq9buEo6dt+rexMWn9i1CFXDm2n5xvA3zJz9P/
+	iBb2EBVl/XtXjcOrqcMEhrG13YSvHdiFqMuf+HX9qsq5BIfwV6Qz/icFLqkE2nwQO0rTlEYUghPPa
+	8u7sPLvK/j+pci6PhbQKo0Wkfv5SHFq+1GXzx0e4gNXB75y8T6KaVchrc2YxjtU4vi8raqihlngEW
+	+J/yVLzuZjVQRxI0bzDfBDsp2Ka/TxHhUb8o3YJgLYo8essWig23WR05HpuZ+Wn3SUZqts+13fLM3
+	7c2bPfQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANMA-00000008R4H-03dH;
-	Wed, 08 Apr 2026 07:29:46 +0000
+	id 1wANVH-00000008Rzc-0cRi;
+	Wed, 08 Apr 2026 07:39:11 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANM6-00000008R3M-2b2V
+	id 1wANVD-00000008Ryt-0PHK
 	for linux-um@lists.infradead.org;
-	Wed, 08 Apr 2026 07:29:43 +0000
+	Wed, 08 Apr 2026 07:39:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cKSNMqLJz0NGN18IiNVAGIQZTI4URku+1Rx2DUYJKdI=;
-	t=1775633382; x=1776842982; b=CBBjJwEwDvkzFAGmpSEl72J6WUoKgw36YnIEQl4/PGsvJg2
-	HZYsLqc/uvWn745Ja3VWUel+X/6ctj5A0J4kOQWETTRQS8CGh5Qe+ze67gJdptBeUO2aVs8SqlN0x
-	xdsgFiPX4wG3/OPNlNDV3fmgs1RwS9/z9wtnStEpQ6YasRv934d/DydN58ToksBvcKvKk5nQ4/r2q
-	0ga/TmVmXJHSl9K3DqJcJPG7UuIXnp4G8P0wFEH6sZa/EQ3eLppo48Diq+CBQtI56N5dTMO3/svgt
-	F62MT8cb/8hn1c8HaRdYldEtPq8Iq/gol9ea69gWhLu50EpD5O3cUl7SgcvcoJlg==;
+	Resent-Cc:Resent-Message-ID; bh=o8+KM1He4y8YFVz0IVPpHaGgsGzxBtpcXzn8bdfNOks=;
+	t=1775633947; x=1776843547; b=YkUqyDWTeK0Plmaz4naQWnLtl4NFbsQ7vjJywyFAM8CWTM6
+	wKxUBQEjIZ/sJCat/6O6hFoon5sLyvX+LGaygeGGD44ZBftOwiiQJegGaz6BJtp6+f579KA4OApHb
+	+tFIJxnFkddnB4J7UqtmWkTJDtwRThLeI+nPeWF4RAhOYr0v0XnXjUspotUq+MCZ52Za0Iroiv22g
+	hDZH3OTCmJQ8EObhhunQQNX0YrOurHhPW1FVVTX8exc9uVA0iuw+pKyensqFNk6lBGGbixwS8PjnC
+	JDtlHgP3+qVeXYeZZCn1ezohN+DSTH5xwubUjK3zFqmP1j/eNLkNfG44fq0JVexA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wANLy-0000000E6Xj-2Vp7;
-	Wed, 08 Apr 2026 09:29:34 +0200
-Message-ID: <cedc3888ff787d821508f51f54ae7876ebc71bda.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: mconsole: use bounded version string formatting
+	id 1wANV9-0000000E7Ov-31Ty;
+	Wed, 08 Apr 2026 09:39:04 +0200
+Message-ID: <d022d5597e1d5ca3ecddb192e39d4a14a16d4c5a.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: reject out-of-range port channel numbers
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: akpm@osdl.org, sergeh@kernel.org, clg@fr.ibm.com, 
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Date: Wed, 08 Apr 2026 09:29:33 +0200
-In-Reply-To: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
-References: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at
+Cc: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Date: Wed, 08 Apr 2026 09:39:02 +0200
+In-Reply-To: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
+References: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260408_002942_657472_A3927A8B 
-X-CRM114-Status: UNSURE (   3.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260408_003908_841274_644E18C8 
+X-CRM114-Status: GOOD (  10.52  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,11 +73,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, 2026-03-29 at 11:09 +0800, Pengpeng Hou wrote:
-> mconsole_version() formats several UTS strings into a fixed 256-byte loca=
-l buffer with sprintf() and no length bound.
+On Thu, 2026-04-02 at 00:03 +0800, Pengpeng Hou wrote:
+> port_init() parses the port channel number into an int, formats it into
+> a small fixed string buffer, and later passes it to htons() for bind().
+> Out-of-range values can therefore overflow the local device-name buffer
+> and still get silently truncated at the socket layer.
 
-You really should line-wrap all your commit messages.
+So ... you have a whole bunch of these fixes, but do we really assume
+that the kernel command-line is somehow attacker controlled for ARCH=3Dum?
+
+Maybe I'm not imagining the right things, but I have a hard time seeing
+anyone run a service of any sort where the command line gets to be user-
+controlled, and yet the kernel needs to be secure against that user; in
+a normal ARCH=3Dum scenario the command line is written by the user as
+something like
+
+	linux foo=3Dbar mem=3D256M ...
+
+and then can happily attach gdb to the process and muck with it any way
+they want anyway?
+
+I'd probably say the code shouldn't have been this way at the start, but
+I'm also not convinced it's even really worth fixing for anything but
+the "look my LLM found _something_" creds...
 
 johannes
 
