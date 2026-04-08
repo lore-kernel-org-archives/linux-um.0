@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C24AEFD5F8C
-	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 07:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21BC0FD5F94
+	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 08:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=o8+KM1He4y8YFVz0IVPpHaGgsGzxBtpcXzn8bdfNOks=; b=nop3vyzxmEl2JG+ojYc1Oik1lr
-	Ht9SwAzLZyoaPHHQkdwdCb73kImiJpknAjiyY/qrq9buEo6dt+rexMWn9i1CFXDm2n5xvA3zJz9P/
-	iBb2EBVl/XtXjcOrqcMEhrG13YSvHdiFqMuf+HX9qsq5BIfwV6Qz/icFLqkE2nwQO0rTlEYUghPPa
-	8u7sPLvK/j+pci6PhbQKo0Wkfv5SHFq+1GXzx0e4gNXB75y8T6KaVchrc2YxjtU4vi8raqihlngEW
-	+J/yVLzuZjVQRxI0bzDfBDsp2Ka/TxHhUb8o3YJgLYo8essWig23WR05HpuZ+Wn3SUZqts+13fLM3
-	7c2bPfQA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7ja0QbYaBZRmmTEvwhwKx6NaKiiXZcUPz756eBATKYg=; b=YX+OHAH3h9MEmI5B+pXo5Hm+og
+	cc01958AaBmryHVD7Nx44RVq8HTOU23Pq+shbeQkytxXNjbgH3krer/H9c6tiW1KKmsLwkh0Jv0ZD
+	IAHtdRcFtjMA65xpbO7f7O74FozV5fMxPHrJyAx0/6GPMjgqB1iOcSQabRQVWnp82qM4XwLK6Ohwt
+	TxAzKI92swlOsFd+aPqOG664x9sCTydNZwkYY7R2qX2D6XhJIawFdyHJQT6DuI2jbmG6znFpFEeXC
+	1ESwX5gjLKHgZF+a20sC9jGDAhYte6+ONst7kzPjrBqUVnNBMbtpdM63ozgadH/DDtR1IjoYKTaze
+	wPqIFJig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANVH-00000008Rzc-0cRi;
-	Wed, 08 Apr 2026 07:39:11 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wANyT-00000008Uya-02Ip;
+	Wed, 08 Apr 2026 08:09:21 +0000
+Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANVD-00000008Ryt-0PHK
+	id 1wANyQ-00000008Uxr-2fJx
 	for linux-um@lists.infradead.org;
-	Wed, 08 Apr 2026 07:39:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=o8+KM1He4y8YFVz0IVPpHaGgsGzxBtpcXzn8bdfNOks=;
-	t=1775633947; x=1776843547; b=YkUqyDWTeK0Plmaz4naQWnLtl4NFbsQ7vjJywyFAM8CWTM6
-	wKxUBQEjIZ/sJCat/6O6hFoon5sLyvX+LGaygeGGD44ZBftOwiiQJegGaz6BJtp6+f579KA4OApHb
-	+tFIJxnFkddnB4J7UqtmWkTJDtwRThLeI+nPeWF4RAhOYr0v0XnXjUspotUq+MCZ52Za0Iroiv22g
-	hDZH3OTCmJQ8EObhhunQQNX0YrOurHhPW1FVVTX8exc9uVA0iuw+pKyensqFNk6lBGGbixwS8PjnC
-	JDtlHgP3+qVeXYeZZCn1ezohN+DSTH5xwubUjK3zFqmP1j/eNLkNfG44fq0JVexA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wANV9-0000000E7Ov-31Ty;
-	Wed, 08 Apr 2026 09:39:04 +0200
-Message-ID: <d022d5597e1d5ca3ecddb192e39d4a14a16d4c5a.camel@sipsolutions.net>
+	Wed, 08 Apr 2026 08:09:20 +0000
+Received: from reply.eml (unknown [111.196.245.116])
+	by APP-03 (Coremail) with SMTP id rQCowAC3m+InDdZp7X5YDQ--.19952S2;
+	Wed, 08 Apr 2026 16:09:12 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Pengpeng Hou <pengpeng@iscas.ac.cn>
 Subject: Re: [PATCH] um: reject out-of-range port channel numbers
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at
-Cc: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Date: Wed, 08 Apr 2026 09:39:02 +0200
+Date: Wed, 08 Apr 2026 16:09:11 +0800
+Message-ID: <20260408113000.1-uml-port-withdraw-pengpeng@iscas.ac.cn>
 In-Reply-To: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
 References: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowAC3m+InDdZp7X5YDQ--.19952S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aV
+	CY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
+	x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
+	CaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k2
+	0xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AKxVWUAVWUtwCFx2IqxVCFs4IE7xkEbVWUJV
+	W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+	1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+	IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+	x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+	DU0xZFpf9x0JUywZ7UUUUU=
+X-Originating-IP: [111.196.245.116]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260408_003908_841274_644E18C8 
-X-CRM114-Status: GOOD (  10.52  )
+X-CRM114-CacheID: sfid-20260408_010919_044175_A157F5B5 
+X-CRM114-Status: UNSURE (   3.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,29 +76,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2026-04-02 at 00:03 +0800, Pengpeng Hou wrote:
-> port_init() parses the port channel number into an int, formats it into
-> a small fixed string buffer, and later passes it to htons() for bind().
-> Out-of-range values can therefore overflow the local device-name buffer
-> and still get silently truncated at the socket layer.
+Hi Johannes, Anton,
 
-So ... you have a whole bunch of these fixes, but do we really assume
-that the kernel command-line is somehow attacker controlled for ARCH=3Dum?
+Thanks, that's fair.
 
-Maybe I'm not imagining the right things, but I have a hard time seeing
-anyone run a service of any sort where the command line gets to be user-
-controlled, and yet the kernel needs to be secure against that user; in
-a normal ARCH=3Dum scenario the command line is written by the user as
-something like
+I agree this is not a meaningful security boundary for UML, and I do not
+have a strong enough use case to justify carrying this as a fix.
 
-	linux foo=3Dbar mem=3D256M ...
+I'll drop this patch.
 
-and then can happily attach gdb to the process and muck with it any way
-they want anyway?
+Thanks,
+Pengpeng
 
-I'd probably say the code shouldn't have been this way at the start, but
-I'm also not convinced it's even really worth fixing for anything but
-the "look my LLM found _something_" creds...
 
-johannes
 
