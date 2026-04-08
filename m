@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21BC0FD5F94
-	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 08:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64008FD5F92
+	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 08:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7ja0QbYaBZRmmTEvwhwKx6NaKiiXZcUPz756eBATKYg=; b=YX+OHAH3h9MEmI5B+pXo5Hm+og
-	cc01958AaBmryHVD7Nx44RVq8HTOU23Pq+shbeQkytxXNjbgH3krer/H9c6tiW1KKmsLwkh0Jv0ZD
-	IAHtdRcFtjMA65xpbO7f7O74FozV5fMxPHrJyAx0/6GPMjgqB1iOcSQabRQVWnp82qM4XwLK6Ohwt
-	TxAzKI92swlOsFd+aPqOG664x9sCTydNZwkYY7R2qX2D6XhJIawFdyHJQT6DuI2jbmG6znFpFEeXC
-	1ESwX5gjLKHgZF+a20sC9jGDAhYte6+ONst7kzPjrBqUVnNBMbtpdM63ozgadH/DDtR1IjoYKTaze
-	wPqIFJig==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Subject:References:
+	In-Reply-To:Cc:To:Message-ID:Date:From:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hgFCpBQihoHdthu6uuECNMS8dLlL66LemOTFgOGP1zY=; b=0+vuMtkI/vJB3EenJYwdr4tbfr
+	4i4v5EEq6NrEcDtkS2O3kW0lttHOZQoGqmnSQUGV1z98hiL/k393hNGHSTu1P5NW2JTamOstFJigR
+	nKUIOt+3ZngdB6wy32Nw7g7d61cxoZK2OAgfmlB+z7VUB8G+el0IkMcyTs5iu8QeXIGswR+PO1R89
+	mR+wnDByAy0vDmvf8zTC/azhNq4NeVPwd5Ph+AVd7Qer43mu4oANLAIy+xInUBeIuNK3jhk9ya3Mj
+	HiZN2/wSUvrWKvmdPnmAL/vYIK6tuy8ZusBbAMySPve1sY1KLTC9bYtzEFWdAnscQfjIZ8DIEcwK0
+	DH9oih+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANyT-00000008Uya-02Ip;
-	Wed, 08 Apr 2026 08:09:21 +0000
+	id 1wAO69-00000008VkR-40yo;
+	Wed, 08 Apr 2026 08:17:17 +0000
 Received: from smtp81.cstnet.cn ([159.226.251.81] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wANyQ-00000008Uxr-2fJx
+	id 1wAO67-00000008Vk4-0wLN
 	for linux-um@lists.infradead.org;
-	Wed, 08 Apr 2026 08:09:20 +0000
-Received: from reply.eml (unknown [111.196.245.116])
-	by APP-03 (Coremail) with SMTP id rQCowAC3m+InDdZp7X5YDQ--.19952S2;
-	Wed, 08 Apr 2026 16:09:12 +0800 (CST)
+	Wed, 08 Apr 2026 08:17:16 +0000
+Received: from 0001-um-mconsole-v2.eml (unknown [111.196.245.116])
+	by APP-03 (Coremail) with SMTP id rQCowACXueAED9ZpM6pYDQ--.19818S2;
+	Wed, 08 Apr 2026 16:17:09 +0800 (CST)
 From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-To: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Pengpeng Hou <pengpeng@iscas.ac.cn>
-Subject: Re: [PATCH] um: reject out-of-range port channel numbers
-Date: Wed, 08 Apr 2026 16:09:11 +0800
-Message-ID: <20260408113000.1-uml-port-withdraw-pengpeng@iscas.ac.cn>
-In-Reply-To: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
-References: <20260401160315.88534-1-pengpeng@iscas.ac.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowAC3m+InDdZp7X5YDQ--.19952S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aV
-	CY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
-	x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
-	CaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k2
-	0xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AKxVWUAVWUtwCFx2IqxVCFs4IE7xkEbVWUJV
-	W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-	1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-	IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-	x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-	DU0xZFpf9x0JUywZ7UUUUU=
+Date: Wed, 8 Apr 2026 15:35:13 +0800
+Message-ID: <20260408160001.1-um-mconsole-v2-pengpeng@iscas.ac.cn>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Andrew Morton <akpm@osdl.org>, Serge E. Hallyn <sergeh@kernel.org>, Christian Borntraeger <clg@fr.ibm.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, pengpeng@iscas.ac.cn
+In-Reply-To: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
+References: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
+Subject: [PATCH v2] um: mconsole: use bounded version string formatting
+X-CM-TRANSID: rQCowACXueAED9ZpM6pYDQ--.19818S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrZw4rKF1fCFW7trykJw18Zrb_yoW8Jr1fpF
+	98Z34qgrs3uw1UGryUtFnY93Z5G3Wvqr48Kw1kKw1UuF1DWFW0yFWSqa4jy3yDJrykGrW2
+	vFs8AF15CF45Jr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r1q6r43
+	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+	WxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU13ku3UUUUU==
 X-Originating-IP: [111.196.245.116]
 X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260408_010919_044175_A157F5B5 
-X-CRM114-Status: UNSURE (   3.23  )
+X-CRM114-CacheID: sfid-20260408_011715_624403_9B5EB04E 
+X-CRM114-Status: UNSURE (   6.18  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,17 +74,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Johannes, Anton,
+mconsole_version() formats several UTS strings into a fixed 256-byte
+local buffer with sprintf() and no length bound.
 
-Thanks, that's fair.
+Use snprintf() so the version reply stays within the local buffer.
 
-I agree this is not a meaningful security boundary for UML, and I do not
-have a strong enough use case to justify carrying this as a fix.
+Fixes: e9ff3990f08e ("[PATCH] namespaces: utsname: switch to using uts namespaces")
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
 
-I'll drop this patch.
+---
+Changes since v1:
+- wrap the changelog paragraphs to 72 columns
+---
+ arch/um/drivers/mconsole_kern.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-Pengpeng
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index e2a9e8879f58..18d0ec15557c 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -106,9 +106,9 @@ void mconsole_version(struct mc_request *req)
+ {
+ 	char version[256];
+ 
+-	sprintf(version, "%s %s %s %s %s", utsname()->sysname,
+-		utsname()->nodename, utsname()->release, utsname()->version,
+-		utsname()->machine);
++	snprintf(version, sizeof(version), "%s %s %s %s %s",
++		 utsname()->sysname, utsname()->nodename, utsname()->release,
++		 utsname()->version, utsname()->machine);
+ 	mconsole_reply(req, version, 0, 0);
+ }
+ 
+-- 
+2.50.1 (Apple Git-155)
 
 
 
