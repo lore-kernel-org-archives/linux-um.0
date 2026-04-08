@@ -4,90 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C8E3FD5F8D
-	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 07:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D438FD5F8F
+	for <linux-um@archiver.kernel.org>; Wed,  8 Apr 2026 07:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JJJC7J8TYX3p75NwqxB/sPsa5BlF3mMYrIh33Y5V5Yk=; b=snrbarQ8bMuRAuA9Q40Ku8tl+x
-	Ij/6AzGm8N/KKZ0fdVqtTdKvT5Zj/2QvYZYR4fCZ/jcU/Vj5mFJMqNBqqQ4jagUmPvNIVv8wTXXWv
-	tC1NXjthmVdkMpy3KkYzUMLIcVhe8W1baHy1JZ60nRdsppbrX95k2SiMYbbQy1+HDCfIwVyXST9pX
-	UX10ZrwMezpjIz9EO8ZqTppzoxk5LSG830fv/67k8ps+N4ZjlEe/CWlzNpsfKsHQJ46Xk32fn9e6u
-	NF2D/SI5HfMxeQo6MJLKVzLgg5/V+k3Meaj4O3BqFz3fSFZD3pPy3OSz24M+2DLmDBaSg/hBoDmwi
-	Lasqmxgg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cKSNMqLJz0NGN18IiNVAGIQZTI4URku+1Rx2DUYJKdI=; b=Z3zHXxsBb13reIXjQzw7G02uFm
+	he2nnhYkzwhDrK1qbVtCCEoiU/w5b5lrZtt6b3yv0iJ80IJISmAnPY9p+XTqI/0uiFhzc9gKTJGMQ
+	yUOVXpkTlHUBnyFaoakMRpCDV1/4ZQ4GZ9ZK31HxhatD/EtvYkWRXSma5flWSTzBPWc7QoGTv4txV
+	2zTmAxr+jWwfcv9TJaqBBXmCiQB07/e15yCV9N05DvBUZm9y4wJ/67OBzrHCgS9v7pHqJG/vYWMzt
+	WmCzptfw11dqwPN4/VKcfuKb3ncWHUheW6Mf5T62kMC/OedxLrohvLaaPmLdvgO1v40uELwDTVCkq
+	6sjCARzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wAN03-00000008OMS-3NaP;
-	Wed, 08 Apr 2026 07:06:55 +0000
-Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
+	id 1wANMA-00000008R4H-03dH;
+	Wed, 08 Apr 2026 07:29:46 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wAN01-00000008OLZ-3pkZ
+	id 1wANM6-00000008R3M-2b2V
 	for linux-um@lists.infradead.org;
-	Wed, 08 Apr 2026 07:06:55 +0000
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-899d6b7b073so75732466d6.2
-        for <linux-um@lists.infradead.org>; Wed, 08 Apr 2026 00:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775632012; x=1776236812; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JJJC7J8TYX3p75NwqxB/sPsa5BlF3mMYrIh33Y5V5Yk=;
-        b=QJxyixDrELjikE08QyyonUlymHiSbD9X5HLTehP4pfjR2vA74rSIYHhWMJ30g9xDaz
-         oEoz4LRvxTyUkwREkD8Bw5VyWNwmziNRN1RSCEzFZ5Lx5dVMcB1iJqIwwcrfXMjUx7n2
-         ELllhlUwxSMTjv9SkK2x6vM5EUMZeu9nmrDQF6l+FGM1VkzTAcbJbQIL9KLhueQuEWv9
-         D3HAS31E4R4sni295Cm2uvt594C/oKG538YForOO8Lf5m7h398c834fu3gzUQ8Y+wsI3
-         N1WLSek8+8i2qM/T60YFTLZqMaIMZWRrSd1LPQ18w96BluH3zVhau7yIkjFqFzg3qCMY
-         YRog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775632012; x=1776236812;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=JJJC7J8TYX3p75NwqxB/sPsa5BlF3mMYrIh33Y5V5Yk=;
-        b=Y+pWxHsuQjXJIZ/m/M1no1npkTXLMg0V9A/37sX4UGFjdnGpLT1nr6ZekdNnAM54f9
-         BSmSLpjylfDpWz9e8zqweeBakJw9uiCmWWb2jAV9HEscsIsVAM4wiMOK+kQaoK2te4Xi
-         IIAq5hgQGDLROEbzQjByHf/gIhj73Yn/ApnyVZu/lifnaEDz+VLyCgRtoqT7+3kleHrH
-         bttGh62VrOssOY6P+IL5QQlaR79ZqAV7KWn1X5b98dMxg51VOcdvQaepsMYEwBRC0/BX
-         cV5iaGlQSYSsONtrm/Z6kP864l5IKhLwJ8ob7ffBgwGZi3y3geiEeuy0hOEgNt2kSuBl
-         Ecug==
-X-Forwarded-Encrypted: i=1; AJvYcCUkD19QlsNt/1L4M/H8i82kTW34S1K763XJxYQiomTwxeMZVtgmNzk4HtVnV+6qi9w5hW2Cy/5zxg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyGb40QwjZe8tmkHnH4amj6JbI0vuzdR+LxHRJ3hreCBhDFMVjy
-	5gA5Z1sS/W+L7TkzthTnOYoHmGYbQw8TYlyaEDIypP1zmzY2KQOM0z5t
-X-Gm-Gg: AeBDiet6kYq3L+hszF+ISLgYmtPE+LPI5gQ0HoQ9XLHSg7pzIRQHz6n3LIgD/VXuoWC
-	/060OHabeuX+RFZo3A+HWtfJy+d9dkbnV0wqnOtyBCdwE+lWHQXruWEJtvtmHbLIRy9yMAh14jV
-	DcQ7tRuGbk5FTAjHi+d+fYg7z17T4US/KVjovcu1GXw2+8kl2Q2ngLwpyMIRJd9gFI8YMvdYl8L
-	URjcBhBLqMiRXT7pV3Pg15+7sHzL/6EmyYCsFy+d0ya2ALEs3C52FhaYOlw9S1AbtZev3daQisD
-	ma/laJ12te4mFIvXoE8LvlMW0C0MF5TxlD3E2ObtUfKBex2KEuVFjyz+5HiVIbfTvo6SJ9qGCRy
-	3TS44PHzUQL/26OakB4ir7IWL4IlmCyNnbgKEz6Vrlk3Nb7/68TGJmUeeBJsgo5Ea3h6bO0mMrM
-	f8STnIpjfuwifmuylKeUhu4tAxEsht5tR7FQeU6VF5Ce6ETW9MKPbl4fJjb6azerFvYkdKtw+Na
-	e1/oqRskSVCVyjZUeF+8hid8jA=
-X-Received: by 2002:a05:6214:260b:b0:89c:e55b:604e with SMTP id 6a1803df08f44-8a7025b43e0mr334134016d6.5.1775632012587;
-        Wed, 08 Apr 2026 00:06:52 -0700 (PDT)
-Received: from workstation1 (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8aa70136e87sm77574156d6.22.2026.04.08.00.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2026 00:06:52 -0700 (PDT)
-From: Michael Bommarito <michael.bommarito@gmail.com>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Michael Bommarito <michael.bommarito@gmail.com>
-Subject: Re: [PATCH v2] um: drivers: call kernel_strrchr() explicitly in cow_user.c
-Date: Wed,  8 Apr 2026 03:06:44 -0400
-Message-ID: <20260408070644.2338858-1-michael.bommarito@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <a2efd8145cfbc207fef5884e93d09f787811becb.camel@sipsolutions.net>
-References: <a2efd8145cfbc207fef5884e93d09f787811becb.camel@sipsolutions.net>
+	Wed, 08 Apr 2026 07:29:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=cKSNMqLJz0NGN18IiNVAGIQZTI4URku+1Rx2DUYJKdI=;
+	t=1775633382; x=1776842982; b=CBBjJwEwDvkzFAGmpSEl72J6WUoKgw36YnIEQl4/PGsvJg2
+	HZYsLqc/uvWn745Ja3VWUel+X/6ctj5A0J4kOQWETTRQS8CGh5Qe+ze67gJdptBeUO2aVs8SqlN0x
+	xdsgFiPX4wG3/OPNlNDV3fmgs1RwS9/z9wtnStEpQ6YasRv934d/DydN58ToksBvcKvKk5nQ4/r2q
+	0ga/TmVmXJHSl9K3DqJcJPG7UuIXnp4G8P0wFEH6sZa/EQ3eLppo48Diq+CBQtI56N5dTMO3/svgt
+	F62MT8cb/8hn1c8HaRdYldEtPq8Iq/gol9ea69gWhLu50EpD5O3cUl7SgcvcoJlg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wANLy-0000000E6Xj-2Vp7;
+	Wed, 08 Apr 2026 09:29:34 +0200
+Message-ID: <cedc3888ff787d821508f51f54ae7876ebc71bda.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: mconsole: use bounded version string formatting
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Pengpeng Hou <pengpeng@iscas.ac.cn>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: akpm@osdl.org, sergeh@kernel.org, clg@fr.ibm.com, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Wed, 08 Apr 2026 09:29:33 +0200
+In-Reply-To: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
+References: <20260329030946.32410-1-pengpeng@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260408_000653_958154_95576252 
-X-CRM114-Status: UNSURE (   8.59  )
+X-CRM114-CacheID: sfid-20260408_002942_657472_A3927A8B 
+X-CRM114-Status: UNSURE (   3.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -103,14 +75,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2026-04-08, Johannes Berg wrote:
-> I think you should remove about 75% of that commit message, much
-> of it is noise [...]
->
-> Try without an LLM perhaps.
+On Sun, 2026-03-29 at 11:09 +0800, Pengpeng Hou wrote:
+> mconsole_version() formats several UTS strings into a fixed 256-byte loca=
+l buffer with sprintf() and no length bound.
 
-Thanks.  The irony of using these tools right now to help is that
-since none of us fully trust them, we push them to more verbosity,
-which ends up creating extra effort.  Appreciate your patience as
-we all adapt to this new world and hope v3 hits the mark.
+You really should line-wrap all your commit messages.
+
+johannes
 
