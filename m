@@ -4,129 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA4B1F36BA4
-	for <linux-um@archiver.kernel.org>; Fri, 10 Apr 2026 03:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CE5FF45A08
+	for <linux-um@archiver.kernel.org>; Fri, 10 Apr 2026 20:30:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Mime-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zuI9CuAq4ouP3xdUoAp+vg+3Srv0NooAubzTfiX0RTg=; b=YzoJPWXcsIqasVUHyb6Mr3vOPL
-	Gz5ic8gQ9uFkVBS/W/nzvScKXkP8dnxgXlYfzn+1qrXwoiNaxPr4IxUhtALwhHmO2YF+c5wG+SLLD
-	TRwOliSUYU3IChG8NYYOQCmLz3fGHLCRKEOKjcxr/fwdid/Dz1DtKyVMowroX5Al1Ks+AhN766Qbt
-	OsYGnxeFrR9E1EToB8eBz0J2+HwisrAjpLy1LOMyljleHjkGb23v0U/+M9brUgUhMKj7nlV16QB5s
-	BkWGvlzFyVDDq5WVTzvewV+NcPtXhTSSPJGHR+9vGPF/hogj/VMvLWtkMcf62A4waT9fqqofZTEUO
-	RkPYLIGA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Bg1THXuqlaX4hybh4CmPAceCR0tZGm2LDqqlEfk6Eg0=; b=OSogIb/0QNPjZWsMX0hfVqmQYF
+	xOXDDPf2aK62QH+pzsZlCyAXHSGI7HR8jzj4iwW/HKq52sCWeZKzJBuWy57gyDVpMWho8oPV9QJfI
+	lWLRhiIpc65hnr20cETuuWjiAj5WumJ2B+s4m4Er4KxBubt3fXucl2QCrZuldAaXWMplsvWLgW5Oz
+	pIB1MsjNDtLCpr2Pp3+X772lcJOg3aVW/gpN8fWd1LWpnXoS0xyo7nKd0NPa0YiKTWQULVIp9oVWj
+	a+3wxBtI/CLpFr4qBHz1nU3lOQKUqEFaLWRdeDOR+3jMJMDeB/p3lI/TgxvUrp5mjr9ZljBEMHRLn
+	oITIo2ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wB2PU-0000000BX2y-42RE;
-	Fri, 10 Apr 2026 03:19:56 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wBIV6-0000000ClwZ-3hwu;
+	Fri, 10 Apr 2026 20:30:48 +0000
+Received: from mail-qv1-xf2e.google.com ([2607:f8b0:4864:20::f2e])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wB2PR-0000000BX2S-1CdP;
-	Fri, 10 Apr 2026 03:19:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id A3716444F9;
-	Fri, 10 Apr 2026 03:19:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A35C1C4CEF7;
-	Fri, 10 Apr 2026 03:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775791191;
-	bh=++Koq39UWrgs6Y9/teNpfuGX4Prd7yZehxjZlfBpaLk=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=mdYIM+3nOOfJk2sQndWIVe1crpn+qIFglFUaJi6YUZ8om+pF74JbkoMG1pCSpEb9w
-	 XY42HnmovukKhj85guOzmyhoPciXUmwPx7036BzxDj+GBwDX7w8ZX/kQj6Kf75C9nQ
-	 yMJOxpzFMvk+DFq2q3tbouAiWajtfDS+AXyxjQFI3HFmtdEmAwU/TRZgmOQyhKh0dz
-	 oTEcDPh4RcJYLV/DB6MyHh1cNOYj4HnTWHBSTgpco77/7Mk4f7CQSMgdwxNaeolZeG
-	 11Id3MhuCNF2BddA3SZqi8zEZAyyZSbKwJdKtgyQMtKdIjBxiedoSXRHs0s+vuBPie
-	 fHhNTH/TVHimw==
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfauth.phl.internal (Postfix) with ESMTP id BEAFCF4007B;
-	Thu,  9 Apr 2026 23:19:48 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Thu, 09 Apr 2026 23:19:48 -0400
-X-ME-Sender: <xms:VGzYaRzc9F2SaA_dXGONVlZncUeqwfeC1knsfsUGLqCLtL9x7AJ9oQ>
-    <xme:VGzYaXbKB70COhi6wU5zcJDCn3jfZcRswNA20Sizt_IZgoixIWdWvIaDWTE9UJGaO
-    0gyCPv6TWv531UsombbNhRf0U-TJegFRbhlgcIH7rcKGm2a1YHwez-u>
-X-ME-Received: <xmr:VGzYaeCIWm-xaXNHRiAOee5n1VgDRaIYH8ii2WphVWSDkg5IlPqKJ2tQQw7rWGta-3eIj1g2bSuh8bC3JY4Fe1PIIjMC3ZQPqnM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgddvkedvlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefkjghfufggtgfgsehtjeertddttdejnecuhfhrohhmpeffrghnucghihhl
-    lhhirghmshcuoegujhgsfieskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    elhfeiudfgvdeijedtleeltdduueekffejjedvjefhgeevjeefueejledtleetjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegujhgsfidomh
-    gvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudejjedvfedtgeehhedqfeeffeel
-    gedtgeejqdgujhgsfieppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrihhlrdgtohhmpd
-    hnsggprhgtphhtthhopeehjedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohephhgt
-    hheslhhsthdruggvpdhrtghpthhtoheprhhitghhrghrugdrhhgvnhguvghrshhonheslh
-    hinhgrrhhordhorhhgpdhrtghpthhtohepmhgrthhtshhtkeeksehgmhgrihhlrdgtohhm
-    pdhrtghpthhtoheplhhinhhmrghgjeesghhmrghilhdrtghomhdprhgtphhtthhopehlih
-    hnuhigsegrrhhmlhhinhhugidrohhrghdruhhkpdhrtghpthhtoheptggrthgrlhhinhdr
-    mhgrrhhinhgrshesrghrmhdrtghomhdprhgtphhtthhopeifihhllheskhgvrhhnvghlrd
-    horhhgpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegt
-    hhgvnhhhuhgrtggriheskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:VGzYaRWWYH9YS5_KZb8QZgCAsWZfUiB9ORAbpTx2OwSeNwf8aS1oTQ>
-    <xmx:VGzYaYKyeSQq62O7WlXYf1xoalWcpZEhKySYJd9-cJQMpEvayfPE0g>
-    <xmx:VGzYaaJiDRoNy9BMYAaTC41fiA_6sbPjbfWZ4OvQdt7iOTvnCgAc1A>
-    <xmx:VGzYac91Cyql-IFbLq_KalJjxN3efCc9QroVK6-eoTOUQqKKiQULjQ>
-    <xmx:VGzYaQXpDuEx9ex4m7qF5l0GU1hi1krNMW-ZgN0aa1e6laSCn6NuISRa>
-Feedback-ID: i67ae4b3e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 9 Apr 2026 23:19:47 -0400 (EDT)
-Date: Thu, 09 Apr 2026 20:19:47 -0700
-From: Dan Williams <djbw@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Henderson <richard.henderson@linaro.org>,
-  Matt Turner <mattst88@gmail.com>,  Magnus Lindholm <linmag7@gmail.com>,
-  Russell King <linux@armlinux.org.uk>,
-  Catalin Marinas <catalin.marinas@arm.com>,
-  Will Deacon <will@kernel.org>,  Ard Biesheuvel <ardb@kernel.org>,
-  Huacai Chen <chenhuacai@kernel.org>,  WANG Xuerui <kernel@xen0n.name>,
-  Madhavan Srinivasan <maddy@linux.ibm.com>,
-  Michael Ellerman <mpe@ellerman.id.au>,
-  Nicholas Piggin <npiggin@gmail.com>,
-  "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-  Paul Walmsley <pjw@kernel.org>,  Palmer Dabbelt <palmer@dabbelt.com>,
-  Albert Ou <aou@eecs.berkeley.edu>,  Alexandre Ghiti <alex@ghiti.fr>,
-  Heiko Carstens <hca@linux.ibm.com>,  Vasily Gorbik <gor@linux.ibm.com>,
-  Alexander Gordeev <agordeev@linux.ibm.com>,
-  Christian Borntraeger <borntraeger@linux.ibm.com>,
-  Sven Schnelle <svens@linux.ibm.com>,
-  "David S. Miller" <davem@davemloft.net>,
-  Andreas Larsson <andreas@gaisler.com>,
-  Richard Weinberger <richard@nod.at>,
-  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-  Johannes Berg <johannes@sipsolutions.net>,
-  Thomas Gleixner <tglx@kernel.org>,  Ingo Molnar <mingo@redhat.com>,
-  Borislav Petkov <bp@alien8.de>,
-  Dave Hansen <dave.hansen@linux.intel.com>,  x86@kernel.org,
-  "H. Peter Anvin" <hpa@zytor.com>,
-  Herbert Xu <herbert@gondor.apana.org.au>,
-  Dan Williams <dan.j.williams@intel.com>,  Chris Mason <clm@fb.com>,
-  David Sterba <dsterba@suse.com>,  Arnd Bergmann <arnd@arndb.de>,
-  Song Liu <song@kernel.org>,  Yu Kuai <yukuai@fnnas.com>,
-  Li Nan <linan122@huawei.com>,  Theodore Ts'o <tytso@mit.edu>,
-  "Jason A. Donenfeld" <Jason@zx2c4.com>,  linux-alpha@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
-  loongarch@lists.linux.dev,  linuxppc-dev@lists.ozlabs.org,
-  linux-riscv@lists.infradead.org,  linux-s390@vger.kernel.org,
-  sparclinux@vger.kernel.org,  linux-um@lists.infradead.org,
-  linux-crypto@vger.kernel.org,  linux-btrfs@vger.kernel.org,
-  linux-arch@vger.kernel.org,  linux-raid@vger.kernel.org
-Message-ID: <69d86c53cfc4_2b31100e7@djbw-dev.notmuch>
-In-Reply-To: <20260327061704.3707577-25-hch@lst.de>
-References: <20260327061704.3707577-1-hch@lst.de>
- <20260327061704.3707577-25-hch@lst.de>
-Subject: Re: [PATCH 24/28] async_xor: use xor_gen
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+	id 1wBIV4-0000000Clw3-1Iq5
+	for linux-um@lists.infradead.org;
+	Fri, 10 Apr 2026 20:30:47 +0000
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-8a1e1817db6so20422086d6.2
+        for <linux-um@lists.infradead.org>; Fri, 10 Apr 2026 13:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1775853044; x=1776457844; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bg1THXuqlaX4hybh4CmPAceCR0tZGm2LDqqlEfk6Eg0=;
+        b=XrM46eS2oBpDOK4XTkKf5tC3Z8ruXVbze3eJ4W7eQB7ujg5mrRzkyzZVMldbE30Ofa
+         xs5O/2I1un9eNQ20blQ1sFPZHvotuYNNO6i3LWM2HWwE1ImFL0QbVVObbwSZDD/QEyqo
+         CRGf8EAVX1SGQjlpBXZsfdtXPoA+fvyLB2jVJ+Ab6ochsdDaeFcjjt7o4Wo41DFxuvWV
+         l6aYagWvOGJYzO7hbaEJ1oY+TsAk1Js2Lo0n/nUrsP7b83NY1sCoYJDEgl1UTfLiE3Rz
+         EWP+COuqQ1ZDtX9ETJ02DhqJan1rwF/kxnoz72Ycg+XwtYin4h+58aeVhbPRXHf914qw
+         zEIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775853044; x=1776457844;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bg1THXuqlaX4hybh4CmPAceCR0tZGm2LDqqlEfk6Eg0=;
+        b=HtMPMR77Ij6tQQfE117oKK9am9Jqf+PmDS7AFjZ8C3BZveBwcJUDSh0A6IZCFG+r8Z
+         vW9bKxTM2f31sAtUL0J+OLNi4P5havJHI5Uf8Ykmsje6Jcbwv5R7XUyawtQzO4cghPNt
+         ++Vjzpm84FhdXEiqExSHc7tQIaAF8zPUsLQLoiYclLkInY1Q2e9uMWztxYW8SfC673aS
+         yJGxzzGmBZYqfr1Ax0DNCOW/Qy7ReEsBqUvIG1bjcH9XDlFRD3Dy6TCWMt8AfyDkUSF5
+         W03FHAu7siZ2bV0ME2H56vh4eO0c8YlgXpYTn1pSf3w8K7xTa1o/QxJwUpJ8b2tbQPyC
+         Xmcw==
+X-Gm-Message-State: AOJu0YwT+61kM7dBJw4PbgCBNOGiXv+BQuhCp+5HO53Vbc4g8+zCix6r
+	JI37VtY84SM+kx1W7RQ1Lmbr5rCMgRNJII6AC+bWyyBL4vojawfnYTam
+X-Gm-Gg: AeBDieupVQDbScETaeEfxsJHKLvm42tYHXmYvPEnOA2S9O+STuQODZgg9H22SIG7K0L
+	xaQhzIMlRXryU5qEtzjCSX7noeqCkwiBsaGwt53yV6RFy2RbNz4pjI1xAnhMyEG5cRrQ3zow5M7
+	e5cSPl8k5/rc5Znt1Ub3Lx5U/kuGLmGncVezUvI/d/Sf6+z9v2YsIFv/YGWHNh1e8ZPCE5K9JvD
+	xH6r3xAGO7lhjoYoHFUj+YHrpOhw3eCBlpUPnXAOekeZ7fVZ/mua2rxQFq2TlVET/T+FcPi6FMg
+	lgN32VoFTHJGPyBK1je+8KORO2gmwQj3mowL4bDPDbxFfugufXqiQkb7JwY3JIMS0jFN98Fl670
+	RxUsmUTPsS3Q/Ink3AcwyeZKPJxj80pIhiXMQhRsDhlDOQPRQhYGcgI//novP/MyD83jQYrFbdH
+	2wo+TSNG5Phv6OWXFHN49oiyZVOSKwpnmUiTuIBTuEPzpNMx94XrMck2ulqxcJ+/fin2FqeL0Ye
+	kLRjvm3xWe0pYrVfz3a9Qrvs+s8oOs8RWqPgw==
+X-Received: by 2002:a05:6214:4706:b0:8a0:a3fb:862c with SMTP id 6a1803df08f44-8ac86162c8amr60783576d6.8.1775853044441;
+        Fri, 10 Apr 2026 13:30:44 -0700 (PDT)
+Received: from workstation1 (c-68-48-65-54.hsd1.mi.comcast.net. [68.48.65.54])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8ac84c9c37csm30845756d6.36.2026.04.10.13.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2026 13:30:43 -0700 (PDT)
+From: Michael Bommarito <michael.bommarito@gmail.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Michael Bommarito <michael.bommarito@gmail.com>
+Subject: [PATCH] um: vector: fix NULL pointer derefs in queue-less transports
+Date: Fri, 10 Apr 2026 16:30:28 -0400
+Message-ID: <20260410203028.3717914-1-michael.bommarito@gmail.com>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260409_201953_394720_5542D92A 
-X-CRM114-Status: GOOD (  19.92  )
+X-CRM114-CacheID: sfid-20260410_133046_361556_7695711E 
+X-CRM114-Status: GOOD (  14.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,46 +99,136 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Christoph Hellwig wrote:
-> Replace use of the loop around xor_blocks with the easier to use xor_gen
-> API.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  crypto/async_tx/async_xor.c | 34 ++++++++++------------------------
->  1 file changed, 10 insertions(+), 24 deletions(-)
-[..]
-> @@ -168,11 +156,10 @@ dma_xor_aligned_offsets(struct dma_device *device, unsigned int offset,
->   *
->   * honored flags: ASYNC_TX_ACK, ASYNC_TX_XOR_ZERO_DST, ASYNC_TX_XOR_DROP_DST
->   *
-> - * xor_blocks always uses the dest as a source so the
-> - * ASYNC_TX_XOR_ZERO_DST flag must be set to not include dest data in
-> - * the calculation.  The assumption with dma engines is that they only
-> - * use the destination buffer as a source when it is explicitly specified
-> - * in the source list.
-> + * xor_gen always uses the dest as a source so the ASYNC_TX_XOR_ZERO_DST flag
-> + * must be set to not include dest data in the calculation.  The assumption with
-> + * dma engines is that they only use the destination buffer as a source when it
-> + * is explicitly specified in the source list.
->   *
->   * src_list note: if the dest is also a source it must be at index zero.
->   * The contents of this array will be overwritten if a scribble region
-> @@ -259,11 +246,10 @@ EXPORT_SYMBOL_GPL(async_xor_offs);
->   *
->   * honored flags: ASYNC_TX_ACK, ASYNC_TX_XOR_ZERO_DST, ASYNC_TX_XOR_DROP_DST
->   *
-> - * xor_blocks always uses the dest as a source so the
-> - * ASYNC_TX_XOR_ZERO_DST flag must be set to not include dest data in
-> - * the calculation.  The assumption with dma engines is that they only
-> - * use the destination buffer as a source when it is explicitly specified
-> - * in the source list.
-> + * xor_gen always uses the dest as a source so the ASYNC_TX_XOR_ZERO_DST flag
-> + * must be set to not include dest data in the calculation.  The assumption with
-> + * dma engines is that they only use the destination buffer as a source when it
-> + * is explicitly specified in the source list.
+TAP transport sets neither VECTOR_RX nor VECTOR_TX, so
+vector_net_open() never allocates rx_queue or tx_queue.  HYBRID sets
+VECTOR_RX but not VECTOR_TX, so tx_queue is NULL there too.
 
-In retrospect, no need to duplicate this help, but as is:
+vector_reset_stats(), vector_poll(), vector_get_ethtool_stats(), and
+vector_get_ringparam() unconditionally deref these queue pointers,
+causing a NULL pointer crash on SMP or with any lock debugging option.
 
-Reviewed-by: Dan Williams <djbw@kernel.org>
+Guard all queue pointer accesses with NULL checks.
+
+Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
+Cc: stable@vger.kernel.org
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Assisted-by: Claude:claude-opus-4-6
+Assisted-by: Codex:gpt-5-4
+Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
+---
+Found while enabling KCOV and lockdep on UML for a network-stack
+test lab.  Tested boot with SMP=y + PROVE_LOCKING + DEBUG_SPINLOCK +
+DEBUG_LOCK_ALLOC + LOCKDEP + KCOV, all with vec0:transport=tap.
+
+Without the fix, the same config panics at addr 0x18 (SMP, no debug),
+0x1c (DEBUG_SPINLOCK), or 0x30 (lockdep) -- all offsets into a NULL
+vector_queue pointer.
+
+ arch/um/drivers/vector_kern.c | 48 +++++++++++++++++------------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 2cc90055499a5..6134c376e57be 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -105,25 +105,18 @@ static const struct {
+ 
+ static void vector_reset_stats(struct vector_private *vp)
+ {
+-	/* We reuse the existing queue locks for stats */
+-
+-	/* RX stats are modified with RX head_lock held
+-	 * in vector_poll.
+-	 */
+-
+-	spin_lock(&vp->rx_queue->head_lock);
++	if (vp->rx_queue)
++		spin_lock(&vp->rx_queue->head_lock);
+ 	vp->estats.rx_queue_max = 0;
+ 	vp->estats.rx_queue_running_average = 0;
+ 	vp->estats.rx_encaps_errors = 0;
+ 	vp->estats.sg_ok = 0;
+ 	vp->estats.sg_linearized = 0;
+-	spin_unlock(&vp->rx_queue->head_lock);
+-
+-	/* TX stats are modified with TX head_lock held
+-	 * in vector_send.
+-	 */
++	if (vp->rx_queue)
++		spin_unlock(&vp->rx_queue->head_lock);
+ 
+-	spin_lock(&vp->tx_queue->head_lock);
++	if (vp->tx_queue)
++		spin_lock(&vp->tx_queue->head_lock);
+ 	vp->estats.tx_timeout_count = 0;
+ 	vp->estats.tx_restart_queue = 0;
+ 	vp->estats.tx_kicks = 0;
+@@ -131,7 +124,8 @@ static void vector_reset_stats(struct vector_private *vp)
+ 	vp->estats.tx_flow_control_xoff = 0;
+ 	vp->estats.tx_queue_max = 0;
+ 	vp->estats.tx_queue_running_average = 0;
+-	spin_unlock(&vp->tx_queue->head_lock);
++	if (vp->tx_queue)
++		spin_unlock(&vp->tx_queue->head_lock);
+ }
+ 
+ static int get_mtu(struct arglist *def)
+@@ -1163,7 +1157,8 @@ static int vector_poll(struct napi_struct *napi, int budget)
+ 
+ 	if ((vp->options & VECTOR_TX) != 0)
+ 		tx_enqueued = (vector_send(vp->tx_queue) > 0);
+-	spin_lock(&vp->rx_queue->head_lock);
++	if (vp->rx_queue)
++		spin_lock(&vp->rx_queue->head_lock);
+ 	if ((vp->options & VECTOR_RX) > 0)
+ 		err = vector_mmsg_rx(vp, budget);
+ 	else {
+@@ -1171,7 +1166,8 @@ static int vector_poll(struct napi_struct *napi, int budget)
+ 		if (err > 0)
+ 			err = 1;
+ 	}
+-	spin_unlock(&vp->rx_queue->head_lock);
++	if (vp->rx_queue)
++		spin_unlock(&vp->rx_queue->head_lock);
+ 	if (err > 0)
+ 		work_done += err;
+ 
+@@ -1421,10 +1417,10 @@ static void vector_get_ringparam(struct net_device *netdev,
+ {
+ 	struct vector_private *vp = netdev_priv(netdev);
+ 
+-	ring->rx_max_pending = vp->rx_queue->max_depth;
+-	ring->tx_max_pending = vp->tx_queue->max_depth;
+-	ring->rx_pending = vp->rx_queue->max_depth;
+-	ring->tx_pending = vp->tx_queue->max_depth;
++	ring->rx_max_pending = vp->rx_queue ? vp->rx_queue->max_depth : 0;
++	ring->tx_max_pending = vp->tx_queue ? vp->tx_queue->max_depth : 0;
++	ring->rx_pending = ring->rx_max_pending;
++	ring->tx_pending = ring->tx_max_pending;
+ }
+ 
+ static void vector_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
+@@ -1466,11 +1462,15 @@ static void vector_get_ethtool_stats(struct net_device *dev,
+ 	 * to date.
+ 	 */
+ 
+-	spin_lock(&vp->tx_queue->head_lock);
+-	spin_lock(&vp->rx_queue->head_lock);
++	if (vp->tx_queue)
++		spin_lock(&vp->tx_queue->head_lock);
++	if (vp->rx_queue)
++		spin_lock(&vp->rx_queue->head_lock);
+ 	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
+-	spin_unlock(&vp->rx_queue->head_lock);
+-	spin_unlock(&vp->tx_queue->head_lock);
++	if (vp->rx_queue)
++		spin_unlock(&vp->rx_queue->head_lock);
++	if (vp->tx_queue)
++		spin_unlock(&vp->tx_queue->head_lock);
+ }
+ 
+ static int vector_get_coalesce(struct net_device *netdev,
+-- 
+2.53.0
+
 
