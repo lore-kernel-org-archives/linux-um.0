@@ -4,61 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 783B8F45A0D
-	for <linux-um@archiver.kernel.org>; Fri, 10 Apr 2026 20:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A8A6F3ED40
+	for <linux-um@archiver.kernel.org>; Sat, 11 Apr 2026 16:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ni2X+zRZY5FUog1RXnNGZZG7nRAwLpLm4d56uNXlyqg=; b=vBBAHKKWmYXug7OKO47mBU+3MQ
-	E5b1QicUz1kezghCMXtLDYTFvopISbNH82wC/bBn6V5KopwkqVCrqP/u3txdRFh90kv6T5Yc55Mvt
-	CuDN8tmVWebmDa1hEv1XMNN/VNKT1zlWgD2f6boZvNpUvXhVDON1Ah+nUNCx4E2LHk6XYWYizB3UO
-	G5QZ8aHaWs+E0+uxpnhiX4916iyH/H4d1W/BF5uOsPtfjxkW+synXbWyWi1iFBLIn4J6bAxvojJQW
-	2IOWPNdWSo70bhFIMAtqrU9ZnORP1WWRFZ3BUH6ZkMGVKrCkueiEWpxdqFLsX1IgDs3RQ05c5gp/u
-	u9/tJWuQ==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=32XDPxTh3hyuGD6AcGpPtFLd0DUI1/fNrBqBJNZoPuw=; b=vjfM8cHTG54oHbHnP4SE5dT2Po
+	ZmIKtmyd87M3Lv6lox3a7dwTFbd+3lTtvFveVzDdgKOyNn/0Ho9vkgTOrF7gfqlTaFhGusu1cJCWe
+	ofdP+eJ9ChRpUSWhov4yemcAoawGtGwIsvhPQdvaH8buxAod8UUS2pHIsJ05f+OQuSKDow5vsWWWW
+	6c6ggKtoPr2iUXSb42geFDts/FXiAiOGHi2cYMNNkfcvRDszM/yuLlcg5dLKjLewAVxCzTU7nsWq1
+	UBYk9xc6nPdtS6RPej+Xzt1AxyEfGMR8vcyNvANckvS5zVnSCLpux0oo7oV3evCmEU/kCNLtAqe7L
+	+SAVX4EQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBIbR-0000000Cm9A-3kI1;
-	Fri, 10 Apr 2026 20:37:21 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1wBbLQ-0000000Ddkk-1mqS;
+	Sat, 11 Apr 2026 16:38:04 +0000
+Received: from out28-3.mail.aliyun.com ([115.124.28.3])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBIbO-0000000Cm8p-2sly
+	id 1wBbLM-0000000Ddjh-2Pfe
 	for linux-um@lists.infradead.org;
-	Fri, 10 Apr 2026 20:37:20 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wBIbC-00EzFn-Bq; Fri, 10 Apr 2026 20:37:06 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wBHUe-0000000EGm3-3AmX;
-	Fri, 10 Apr 2026 21:37:05 +0100
-Message-ID: <364a0f17-c733-4ef0-8d8f-1bd9e00dcae9@cambridgegreys.com>
-Date: Fri, 10 Apr 2026 21:37:03 +0100
+	Sat, 11 Apr 2026 16:38:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1775925471; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=32XDPxTh3hyuGD6AcGpPtFLd0DUI1/fNrBqBJNZoPuw=;
+	b=qqdU0W9YBaDy2syl7wLI8z7/PcB+mk/X0kw9rVGVSXMheXmuZ9Kz8i3Rk7REAlQJkCvm3mLdlfqzcZWXNUivO7NreBgUxPdcTKdWd1TzriIZndJFtZ+5nla9J4P0EQg2w2loIHabuTNSc/Vl/poRo/AcK4iZaaVC1kOD5aDv5FE=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037031241;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.h9ur6et_1775925445;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.h9ur6et_1775925445 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sun, 12 Apr 2026 00:37:46 +0800
+From: Tiwei Bie <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	Tiwei Bie <tiwei.btw@antgroup.com>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>
+Subject: [PATCH] um: vector: Remove unnecessary NULL check in destroy_queue()
+Date: Sun, 12 Apr 2026 00:37:05 +0800
+Message-Id: <20260411163705.948426-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: vector: fix NULL pointer derefs in queue-less
- transports
-To: Michael Bommarito <michael.bommarito@gmail.com>, richard@nod.at,
- johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20260410203028.3717914-1-michael.bommarito@gmail.com>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <20260410203028.3717914-1-michael.bommarito@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260410_133718_754834_18E2E24C 
-X-CRM114-Status: GOOD (  19.56  )
+X-CRM114-CacheID: sfid-20260411_093801_189008_E859CC39 
+X-CRM114-Status: UNSURE (   7.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,141 +68,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 10/04/2026 21:30, Michael Bommarito wrote:
-> TAP transport sets neither VECTOR_RX nor VECTOR_TX, so
-> vector_net_open() never allocates rx_queue or tx_queue.  HYBRID sets
-> VECTOR_RX but not VECTOR_TX, so tx_queue is NULL there too.
->
-> vector_reset_stats(), vector_poll(), vector_get_ethtool_stats(), and
-> vector_get_ringparam() unconditionally deref these queue pointers,
-> causing a NULL pointer crash on SMP or with any lock debugging option.
->
-> Guard all queue pointer accesses with NULL checks.
->
-> Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
-> Cc: stable@vger.kernel.org
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Assisted-by: Claude:claude-opus-4-6
-> Assisted-by: Codex:gpt-5-4
-> Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
-> ---
-> Found while enabling KCOV and lockdep on UML for a network-stack
-> test lab.  Tested boot with SMP=y + PROVE_LOCKING + DEBUG_SPINLOCK +
-> DEBUG_LOCK_ALLOC + LOCKDEP + KCOV, all with vec0:transport=tap.
->
-> Without the fix, the same config panics at addr 0x18 (SMP, no debug),
-> 0x1c (DEBUG_SPINLOCK), or 0x30 (lockdep) -- all offsets into a NULL
-> vector_queue pointer.
->
->   arch/um/drivers/vector_kern.c | 48 +++++++++++++++++------------------
->   1 file changed, 24 insertions(+), 24 deletions(-)
->
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 2cc90055499a5..6134c376e57be 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -105,25 +105,18 @@ static const struct {
->   
->   static void vector_reset_stats(struct vector_private *vp)
->   {
-> -	/* We reuse the existing queue locks for stats */
-> -
-> -	/* RX stats are modified with RX head_lock held
-> -	 * in vector_poll.
-> -	 */
-> -
-> -	spin_lock(&vp->rx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_lock(&vp->rx_queue->head_lock);
->   	vp->estats.rx_queue_max = 0;
->   	vp->estats.rx_queue_running_average = 0;
->   	vp->estats.rx_encaps_errors = 0;
->   	vp->estats.sg_ok = 0;
->   	vp->estats.sg_linearized = 0;
-> -	spin_unlock(&vp->rx_queue->head_lock);
-> -
-> -	/* TX stats are modified with TX head_lock held
-> -	 * in vector_send.
-> -	 */
-> +	if (vp->rx_queue)
-> +		spin_unlock(&vp->rx_queue->head_lock);
->   
-> -	spin_lock(&vp->tx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_lock(&vp->tx_queue->head_lock);
->   	vp->estats.tx_timeout_count = 0;
->   	vp->estats.tx_restart_queue = 0;
->   	vp->estats.tx_kicks = 0;
-> @@ -131,7 +124,8 @@ static void vector_reset_stats(struct vector_private *vp)
->   	vp->estats.tx_flow_control_xoff = 0;
->   	vp->estats.tx_queue_max = 0;
->   	vp->estats.tx_queue_running_average = 0;
-> -	spin_unlock(&vp->tx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_unlock(&vp->tx_queue->head_lock);
->   }
->   
->   static int get_mtu(struct arglist *def)
-> @@ -1163,7 +1157,8 @@ static int vector_poll(struct napi_struct *napi, int budget)
->   
->   	if ((vp->options & VECTOR_TX) != 0)
->   		tx_enqueued = (vector_send(vp->tx_queue) > 0);
-> -	spin_lock(&vp->rx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_lock(&vp->rx_queue->head_lock);
->   	if ((vp->options & VECTOR_RX) > 0)
->   		err = vector_mmsg_rx(vp, budget);
->   	else {
-> @@ -1171,7 +1166,8 @@ static int vector_poll(struct napi_struct *napi, int budget)
->   		if (err > 0)
->   			err = 1;
->   	}
-> -	spin_unlock(&vp->rx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_unlock(&vp->rx_queue->head_lock);
->   	if (err > 0)
->   		work_done += err;
->   
-> @@ -1421,10 +1417,10 @@ static void vector_get_ringparam(struct net_device *netdev,
->   {
->   	struct vector_private *vp = netdev_priv(netdev);
->   
-> -	ring->rx_max_pending = vp->rx_queue->max_depth;
-> -	ring->tx_max_pending = vp->tx_queue->max_depth;
-> -	ring->rx_pending = vp->rx_queue->max_depth;
-> -	ring->tx_pending = vp->tx_queue->max_depth;
-> +	ring->rx_max_pending = vp->rx_queue ? vp->rx_queue->max_depth : 0;
-> +	ring->tx_max_pending = vp->tx_queue ? vp->tx_queue->max_depth : 0;
-> +	ring->rx_pending = ring->rx_max_pending;
-> +	ring->tx_pending = ring->tx_max_pending;
->   }
->   
->   static void vector_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
-> @@ -1466,11 +1462,15 @@ static void vector_get_ethtool_stats(struct net_device *dev,
->   	 * to date.
->   	 */
->   
-> -	spin_lock(&vp->tx_queue->head_lock);
-> -	spin_lock(&vp->rx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_lock(&vp->tx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_lock(&vp->rx_queue->head_lock);
->   	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
-> -	spin_unlock(&vp->rx_queue->head_lock);
-> -	spin_unlock(&vp->tx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_unlock(&vp->rx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_unlock(&vp->tx_queue->head_lock);
->   }
->   
->   static int vector_get_coalesce(struct net_device *netdev,
+All callers of destroy_queue() already perform a NULL check, so
+a NULL qi will never be passed in. Inside destroy_queue(), we
+dereference qi immediately, and the subsequent NULL check on qi
+is unnecessary and confusing. Remove it to address the smatch
+warning.
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202604110937.MLUL70Lx-lkp@intel.com/
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ arch/um/drivers/vector_kern.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 2cc90055499a..755d936e5b43 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -471,8 +471,6 @@ static void destroy_queue(struct vector_queue *qi)
+ 	struct vector_private *vp = netdev_priv(qi->dev);
+ 	struct mmsghdr *mmsg_vector;
+ 
+-	if (qi == NULL)
+-		return;
+ 	/* deallocate any skbuffs - we rely on any unused to be
+ 	 * set to NULL.
+ 	 */
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+2.34.1
 
 
