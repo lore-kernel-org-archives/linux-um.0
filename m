@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96E9AF3ED50
-	for <linux-um@archiver.kernel.org>; Sat, 11 Apr 2026 16:42:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A814F8E4B6
+	for <linux-um@archiver.kernel.org>; Fri, 17 Apr 2026 07:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FhnmcJoJrZTwLxDzFf/dyJeKnPWqt6OoM4v/l8G1xgM=; b=N0ko0QWZDKu7K/2nHdpynRqgWK
-	69Wpz2nFwEcqXmVPVtYTF2as6Wdf2Zmm6eOEx8mr30aaVVuz6utg2q7VIGO7rA818AvVuFw+tzWot
-	uC3bbvr1m5cbxf6pKUPG5K81ZtdRauKHUA9dYXIARK1J6uCBXWVSWy9qi2fNo7x/Z5PeRkzuorMXA
-	MfcEyWK5Wg01NlgrQfuDPswtxzNx+h3fiD+WUfvnvnpaemQ1HaK0TiapUfmsTHfSujT1aBqMqA2pF
-	ODxEtCnwyrrvz5tsRqC/3lWM+Vhsz/i0p7i2Q6zlSBLatGVFJS8CmLOAFcJqVZSGPg87dNYWXNSAM
-	WVOvnGrw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=7vdHnEyb1fD9r2mCCkttgb+9H3gpnpt2zBEX+XuGA9A=; b=NzBxf97reRn7+ksYDuXo5awdkV
+	yGZUNFzhFDxJ91oVuDkEeyNaRjah6zcGDKZibT5iEJug2mpjxzKexEG+IDGuEQSGJI3TXZ8yzif4l
+	2mIo9rPMh6K0IggvI/BmjY4GJbvoHEHROZZVyggmUtJoOwG+84sSIjebPFl8Ewof+g0TuRerZ3KXG
+	PzjRhmOHRYzXlsJLH+q91vLOYlL+12nUlKjt1ZOOlz/8WkJ2/P/a3almHLZMlt4MHqsLSXYSZzlrk
+	fZhsImwBhouOTWFB/WJHigoWv3f6sXol2dzlI5r9xS5WmIEQPmzgG8ZRhrEhMlD2BeH7zkQ7C/K8T
+	IWC6Ak+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBbPP-0000000DduI-04CH;
-	Sat, 11 Apr 2026 16:42:11 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1wDdlJ-00000003bni-2c7K;
+	Fri, 17 Apr 2026 07:37:13 +0000
+Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wBbPM-0000000DdtV-0P4j
+	id 1wDdlF-00000003blq-3pSr
 	for linux-um@lists.infradead.org;
-	Sat, 11 Apr 2026 16:42:09 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wBbPD-00F3LG-Sr; Sat, 11 Apr 2026 16:41:59 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wBaIG-0000000EvdI-1ojD;
-	Sat, 11 Apr 2026 17:41:58 +0100
-Message-ID: <63ffe16b-af07-4ac4-a823-8665dc255fbe@cambridgegreys.com>
-Date: Sat, 11 Apr 2026 17:41:57 +0100
+	Fri, 17 Apr 2026 07:37:11 +0000
+Received: from localhost.localdomain (unknown [111.196.245.116])
+	by APP-05 (Coremail) with SMTP id zQCowADndwsi4+Fpg_PXDQ--.78S2;
+	Fri, 17 Apr 2026 15:37:06 +0800 (CST)
+From: Pengpeng Hou <pengpeng@iscas.ac.cn>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: [PATCH] um: vector: reject interface specifications with too many arguments
+Date: Fri, 17 Apr 2026 15:37:04 +0800
+Message-ID: <20260417073704.1817-1-pengpeng@iscas.ac.cn>
+X-Mailer: git-send-email 2.50.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: vector: Remove unnecessary NULL check in
- destroy_queue()
-To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at,
- johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, kernel test robot <lkp@intel.com>,
- Dan Carpenter <error27@gmail.com>
-References: <20260411163705.948426-1-tiwei.btw@antgroup.com>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <20260411163705.948426-1-tiwei.btw@antgroup.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zQCowADndwsi4+Fpg_PXDQ--.78S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWxXw13Aw4kKFWkAw17GFg_yoWkWFg_Cw
+	1DXanrGF1a9r4DCwn8Kr1rC3yFvFyDWr1UurW0yr9xuws3ZrsxAr40yF1fXw1xXFW7Xrs8
+	Kr9rG34Fvr4SkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUj2YLD
+	UUUUU==
+X-Originating-IP: [111.196.245.116]
+X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260411_094208_164992_F33AEE78 
-X-CRM114-Status: GOOD (  13.01  )
+X-CRM114-CacheID: sfid-20260417_003710_326845_7AD3F23F 
+X-CRM114-Status: UNSURE (   8.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,39 +80,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 11/04/2026 17:37, Tiwei Bie wrote:
-> All callers of destroy_queue() already perform a NULL check, so
-> a NULL qi will never be passed in. Inside destroy_queue(), we
-> dereference qi immediately, and the subsequent NULL check on qi
-> is unnecessary and confusing. Remove it to address the smatch
-> warning.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202604110937.MLUL70Lx-lkp@intel.com/
-> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-> ---
->   arch/um/drivers/vector_kern.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 2cc90055499a..755d936e5b43 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -471,8 +471,6 @@ static void destroy_queue(struct vector_queue *qi)
->   	struct vector_private *vp = netdev_priv(qi->dev);
->   	struct mmsghdr *mmsg_vector;
->   
-> -	if (qi == NULL)
-> -		return;
->   	/* deallocate any skbuffs - we rely on any unused to be
->   	 * set to NULL.
->   	 */
+uml_parse_vector_ifspec() stores parsed key/value pairs in the fixed
+struct arglist token and value arrays, which are both sized to MAXVARGS.
+The parser increments numargs as it discovers pairs, but it never checks
+whether another slot is still available before writing into the arrays.
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reject interface specifications that exceed MAXVARGS instead of writing
+past the end of the fixed argument arrays.
 
+Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
+
+Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+---
+ arch/um/drivers/vector_user.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 2ea67e6fd067..3bee634f2102 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -93,6 +93,9 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
+ 	len = strlen(arg);
+ 	for (pos = 0; pos < len; pos++) {
+ 		if (next_starts) {
++			if (result->numargs >= MAXVARGS)
++				goto cleanup;
++
+ 			if (parsing_token) {
+ 				result->tokens[result->numargs] = arg + pos;
+ 			} else {
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+2.50.1 (Apple Git-155)
 
 
