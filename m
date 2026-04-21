@@ -4,62 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F3D1F588C2
-	for <linux-um@archiver.kernel.org>; Mon, 20 Apr 2026 13:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40BB2F5A8A2
+	for <linux-um@archiver.kernel.org>; Tue, 21 Apr 2026 00:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=LFE7ltbdDd1Q3SkkFAvEOfm9y7HJx4yDPS6nrqtLz5s=; b=e5tNW6iM0LW1xg/HOV6cL6sndu
-	bFtpANC87UvMu42Al8pP8YabZ5Fjkyp78HBclEqMpHdzCVvyFxrrkabbJ/TPP+d88EnMnIUlJlJpE
-	cJIvJaqFrU+OtLn02VXpbBl2Kx7p5FALZoy+zrjsOm0Ldk47RwUo6ZMoSK40Bo9yINq1LWNCsy0VH
-	2D5JHA9HxR9EfHhoccB5dYDfgBdeSGMSAHZKVugy6oS95h593OuShXpKI8QhzDh11zCOVYwvnNcKn
-	s1IenLZygwOw3onmTvGe4e7ckS4b89ziH9Y4gBTJmu/hvcA3ZRKB0E8ODwJj6HjL7zDd1MmTr5pgX
-	hOckOZWA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=C+5XAe57bUm6LVoZJuSZ1y1bUR5zzkUFhL9Z/LPCM/w=; b=aMaanB3WRNzAJT+RscNIkdlK3j
+	YAhpPFe4HFILKGaBm26WZwyBV0xcgF423ysH9Qu5VAoMlPs/UDqFJhX6ez4xySRhDizNvZd8bgQyd
+	LyWjYNx863X3l12PQHiQQH7e8uJ8j0yOgj5rYNR2FaCcr/ytPmc+uIzlsAr25/9QKcJRS1yCdm4uY
+	72NwiGkqWVgJht1hqamQ/aEDm8/BtQavF15rvI/nZgTwdo2p6Af5GhJNi5ko1ggjtxMuLRJX/hBDy
+	uPBqR+ze7xCeayu7EyPe7XRQPupB4DxqoDm5uGK1riKesg3it2ovIuCUDbh4HkhmzR5T874ewRFWl
+	MjfSaIpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEog4-000000071VH-2lRj;
-	Mon, 20 Apr 2026 13:28:40 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wEz27-00000007s2Q-34Pr;
+	Tue, 21 Apr 2026 00:32:07 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wEog0-000000071SB-3wLP
+	id 1wEz21-00000007s1y-3Na7
 	for linux-um@lists.infradead.org;
-	Mon, 20 Apr 2026 13:28:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=LFE7ltbdDd1Q3SkkFAvEOfm9y7HJx4yDPS6nrqtLz5s=; t=1776691716; x=1777901316; 
-	b=wXhRGHCZYIsbvtbjfSwT7Y6vAtWyMT2LBH5RDseLvn+jUOehSUOOV5liYMjRoWkBOsDiJwAu2Pw
-	fuVsk0POCfnuBqiKzJNmmoO52M0fL+euQUmxhGOJ7ZtUwxzE2XFA0r2oBvOjnQC+JhBowpTBvkU/O
-	kuQ2+G/tDv4I8U/NDX7/T9ZSksAtA+ydrtXvaWea2EXlB/EJaJgeWx/xMEoZA/5HN7fupgpUCSaVG
-	GsJEXh2ELqjjGmZrT9uqYgvOWSU+roURNGpPJ8TcQh5GHWG3POTRphbq7wHVcBWjMeurWERIIEHwk
-	0wXHIXdBeW0p1iDk4xgvRzzBNGxnFc3VYQxw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wEofr-00000002g99-0ohD;
-	Mon, 20 Apr 2026 15:28:27 +0200
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [GIT PULL] uml-for-7.1-rc1
-Date: Mon, 20 Apr 2026 15:26:12 +0200
-Message-ID: <20260420132821.364484-3-johannes@sipsolutions.net>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+	Tue, 21 Apr 2026 00:32:07 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 747534078A;
+	Tue, 21 Apr 2026 00:32:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F059C2BCB3;
+	Tue, 21 Apr 2026 00:32:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776731520;
+	bh=+3IdaYa2VdMpLGvwxTcOILLtpgFomhVHUkaFb71wk3U=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=IpN03wIsYsWxEWieVhWBQ1Hp3HPRlDPQ5cSVtEuitEdHHGpjLE58ODg2qnKHqWPbc
+	 makVhJkpHmpKI1hFdv6UXoOM/zSIv/qyhB6+xh4phbmyZw491xZHINqtf7P4WRMrp3
+	 kAo6XskQkcNLj9JeBGhaC2HiSixz00PZQ92iEdIlsr5bcgn1AzBqVFw/MwWRiCo49L
+	 S0niHm2UuJxzLTVlfG3OpvScRwj0SojK9alHHnZcCnMOsSOgBT1P/u/uyDUAkGkydk
+	 MlUR0a9y+UegNo/56su8pbqsyu9ov1F/smqrxGarT9Md36IEuoLeVw6BisnBWvToD7
+	 XWjBMbb3Etkfw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7D1B33930023;
+	Tue, 21 Apr 2026 00:31:25 +0000 (UTC)
+Subject: Re: [GIT PULL] uml-for-7.1-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20260420132821.364484-3-johannes@sipsolutions.net>
+References: <20260420132821.364484-3-johannes@sipsolutions.net>
+X-PR-Tracked-List-Id: <linux-um.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20260420132821.364484-3-johannes@sipsolutions.net>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.1-rc1
+X-PR-Tracked-Commit-Id: 6522fe5c1b007c376fc5f2de1016c99a18b0af8e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 065c4e67cc2c40e6dd94649e8e720096fbabd4ee
+Message-Id: <177673148411.2145745.16251126765052810684.pr-tracker-bot@kernel.org>
+Date: Tue, 21 Apr 2026 00:31:24 +0000
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260420_062837_023279_E7C3A992 
-X-CRM114-Status: GOOD (  10.06  )
+X-CRM114-CacheID: sfid-20260420_173201_862707_656E0AA8 
+X-CRM114-Status: UNSURE (   4.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,73 +78,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+The pull request you sent on Mon, 20 Apr 2026 15:26:12 +0200:
 
-UML doesn't have a lot of content right now. However, I should
-note that Michael Bommarito, who shows up here with a build fix,
-has been doing a sort of (LLM-assisted) security audit, so we'll
-likely be back after -rc1 with fixes.
+> https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.1-rc1
 
-Please pull and let us know if there's any problem.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/065c4e67cc2c40e6dd94649e8e720096fbabd4ee
 
-Thanks,
-johannes
+Thank you!
 
-
-
-The following changes since commit f338e77383789c0cae23ca3d48adcc5e9e137e3c:
-
-  Linux 7.0-rc4 (2026-03-15 13:52:05 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.1-rc1
-
-for you to fetch changes up to 6522fe5c1b007c376fc5f2de1016c99a18b0af8e:
-
-  um: Disable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21 (2026-04-10 09:28:59 +0200)
-
-----------------------------------------------------------------
-Mostly cleanups and small things, notably:
- - musl libc compatibility
- - vDSO installation fix
- - TLB sync race fix for recent SMP support
- - build fix for 32-bit with Clang 20/21
-
-----------------------------------------------------------------
-Kees Cook (2):
-      um: Replace strncpy() with strnlen()+memcpy_and_pad() in strncpy_chunk_from_user()
-      um: Disable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21
-
-Marcel W. Wysocki (2):
-      um: fix address-of CMSG_DATA() rvalue in stub
-      um: avoid struct sigcontext redefinition with musl
-
-Michael Bommarito (1):
-      um: drivers: call kernel_strrchr() explicitly in cow_user.c
-
-Randy Dunlap (1):
-      um: time-travel: clean up kernel-doc warnings
-
-Thomas Weißschuh (1):
-      x86/um: fix vDSO installation
-
-Tiwei Bie (3):
-      um: Fix potential race condition in TLB sync
-      um: Fix pte_read() and pte_exec() for kernel mappings
-      um: Remove CONFIG_FRAME_WARN from x86_64_defconfig
-
- arch/um/Kconfig                    | 4 +++-
- arch/um/configs/x86_64_defconfig   | 1 -
- arch/um/drivers/cow_user.c         | 8 +++++++-
- arch/um/include/asm/pgtable.h      | 9 ++++-----
- arch/um/kernel/skas/stub.c         | 2 +-
- arch/um/kernel/skas/uaccess.c      | 4 ++--
- arch/um/kernel/tlb.c               | 4 ++--
- arch/x86/Makefile.um               | 2 ++
- arch/x86/um/os-Linux/mcontext.c    | 6 ++++++
- arch/x86/um/vdso/Makefile          | 2 --
- include/uapi/linux/um_timetravel.h | 6 +++++-
- mm/Kconfig                         | 1 +
- 12 files changed, 33 insertions(+), 16 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
