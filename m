@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80616F89242
-	for <linux-um@archiver.kernel.org>; Tue, 21 Apr 2026 09:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E12E1F8925C
+	for <linux-um@archiver.kernel.org>; Tue, 21 Apr 2026 11:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kHClcNFbJyotO3NWPn6HihpQKuZ3MG7QzTXJ4GFZLvQ=; b=sdXA4s/WPpm7PLPfrxtqxNE7RB
-	KSrP7OG6a4aBiqGN04cOZmxwI/iYMVKZVWz2L76mhUyT2xxFpbHJN4E/O9jR5/22VzTrvPFSVuPdQ
-	CSm1QaKaEen14jHEtP1W4zEHPaabjPkqsG2qE29K/6oBiecZSylzN6FwWjObsewO9xdyFPZcH9SK2
-	UG4N/2AT7OLhr5hYqo+H9woAPSuhr3IzQRy+gnLnSiXXymzWmNGRoCRWle7fFrxU0MMiUcaBP8K9S
-	BeI+oB6MeNsxC7h+KPofFntPf/Bl6ly6CqDKZph8H2BD/onEA9dxvkVaE8JeapMoqlGCdt0tP6eit
-	gtCYnhNg==;
+	bh=lFeteiYg9QeDvk8T1N18atyupocQdS9GNRfR8QKBIAo=; b=uqGGMpsCwpO1bFZLOYqQKYyaOr
+	qK1hWmW5f+w1NDmdFSB5Q7oWSJITtlip1kIqZ0lJI9IegRRqEblTjL5TPFOZYTzjbdTvbMKDu9x04
+	IllOyn1TGhTxh7C0TCQcsGTgWTWX9MVYbyMZKimSgAKdpd6DpluUEpioh3tnd4WDvWHT9uCkamMc0
+	GcdZEvghYCaaI7V6mk3qiJItWlt5PWYkTFWYs5nIVzmH85pYXAH1X75f1tVxMHMLHm9i9J5ZLjfHL
+	rN9t72KI2imeo89W+OWf57DkyPJU69SYiWdxezNmZlAiIC7HsQFHwT9VlGFyV7NbJpy94i1MMu2WF
+	ea/Lb6qA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wF7sa-00000008NlP-0koj;
-	Tue, 21 Apr 2026 09:58:52 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wF90t-00000008Um3-0P2J;
+	Tue, 21 Apr 2026 11:11:31 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wF7sZ-00000008Nl8-2MHi
+	id 1wF90q-00000008Ulh-1seW
 	for linux-um@lists.infradead.org;
-	Tue, 21 Apr 2026 09:58:51 +0000
+	Tue, 21 Apr 2026 11:11:29 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8F23360133;
-	Tue, 21 Apr 2026 09:58:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02BA6C2BCB5;
-	Tue, 21 Apr 2026 09:58:41 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id F0F79400FB;
+	Tue, 21 Apr 2026 11:11:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DE79C2BCB0;
+	Tue, 21 Apr 2026 11:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776765530;
-	bh=Tsq1SH4wRGWaW6shCyBF9cxjiMaM2pGcEJjUycGIkHA=;
+	s=k20201202; t=1776769885;
+	bh=EUCP/+wIyjuuFsUEyg5Q933mW+t/e6mkILgKhGl+IIE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cP3xKsVIfM1kILDzW4ycKUXK9pvUGTHfseBrcSwd+2BIdsiGmWFM+P0KumzB72UI1
-	 lOkEWUgX/r4+nhLTVFZbEjMoNH6v2xIfPRUU9YnXvACZ8pUCme0aEKoyIWxnN5L/wv
-	 oM0epl8AYqBESabhGOuC/pYlp0IHdg8bZhbCD75w64NEUceMywaSHpWz1pPPziQMLk
-	 UZD9/NZw6FNzHPB5s38EwvNa+54WGupllvRBZbi7hqz6g6l3BGSyJAhPl5UcQbg/Jt
-	 6cSJOyasZ92wwBEQAHfhVIhs5j9r0q5XFpoE7gSE598t4XZdlexDJQkBZ6EOoKf+sE
-	 9NpzFHHIujcQQ==
+	b=mbTl5fZmFcBU5tYSBryBs6wfkQxkyJwj6zyC9pv83aHjCcgTKfCMDZvGFMkDuU5A8
+	 FEnCZSkBSXWx7s41ioY+4hZWiFYS3HyvH2KUpE0J4zHqjwCFVAikqd9ls4kf0p93uV
+	 BZak5ObgHRI9Gxu2aKoK1xpo0pjI/eK1Qi77TQPVg+lHlyGT76wc8+TYtiUNgglqnP
+	 reWN6chojkAvkicTb3bYEJxcMTmtW9mRJU6A5qRwtb8+SSE7sxmag/RuUnPPB0+fFX
+	 z3j1boww3uG48U2bRYLly9Jab3TxwKWU/BzeGfn1EE0uhf0439miKf5/fwkDNvksIU
+	 k956mzhJQQp0A==
 From: Miguel Ojeda <ojeda@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: achill@achill.org,
@@ -80,14 +80,19 @@ Cc: achill@achill.org,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH 6.18 000/198] 6.18.24-rc1 review
-Date: Tue, 21 Apr 2026 11:55:49 +0200
-Message-ID: <20260421095549.47476-1-ojeda@kernel.org>
-In-Reply-To: <20260420153935.605963767@linuxfoundation.org>
-References: <20260420153935.605963767@linuxfoundation.org>
+	linux-um@lists.infradead.org,
+	Benno Lossin <lossin@kernel.org>,
+	Gary Guo <gary@garyguo.net>
+Subject: Re: [PATCH 6.12 000/162] 6.12.83-rc1 review
+Date: Tue, 21 Apr 2026 13:11:11 +0200
+Message-ID: <20260421111111.57059-1-ojeda@kernel.org>
+In-Reply-To: <20260420153927.006696811@linuxfoundation.org>
+References: <20260420153927.006696811@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260421_041128_551014_A165627C 
+X-CRM114-Status: GOOD (  15.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,14 +107,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 20 Apr 2026 17:39:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Mon, 20 Apr 2026 17:40:32 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 >
-> This is the start of the stable review cycle for the 6.18.24 release.
-> There are 198 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.12.83 release.
+> There are 162 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
-> Responses should be made by Wed, 22 Apr 2026 15:38:57 +0000.
+> Responses should be made by Wed, 22 Apr 2026 15:38:55 +0000.
 > Anything received after that time might be too late.
 
 Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
@@ -117,26 +122,15 @@ for loongarch64:
 
 Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
-For UML (x86_64) I am seeing:
+For UML (x86_64), I am also seeing the same issue as for 6.18.y:
 
-    In file included from arch/um/kernel/asm-offsets.c:3:
-    In file included from ./arch/x86/um/shared/sysdep/kernel-offsets.h:5:
-    In file included from ./include/linux/crypto.h:18:
-    In file included from ./include/linux/slab.h:16:
-    In file included from ./include/linux/gfp.h:7:
-    In file included from ./include/linux/mmzone.h:1538:
-    In file included from ./include/linux/memory_hotplug.h:7:
-    In file included from ./include/linux/notifier.h:16:
-    In file included from ./include/linux/srcu.h:59:
     ./include/linux/srcutiny.h:14:10: fatal error: 'linux/irq_work_types.h' file not found
        14 | #include <linux/irq_work_types.h>
           |          ^~~~~~~~~~~~~~~~~~~~~~~~
-    1 error generated.
 
-Caused by commit 95721c9fb3a1 ("srcu: Use irq_work to start GP in tiny
-SRCU"). The header seems to simply not be there, i.e. either the
-`#include` is changed or commit c809f081fe40 ("irqwork: Move data struct
-to a types header") is backported.
+Please see the details at:
+
+    https://lore.kernel.org/stable/20260421095549.47476-1-ojeda@kernel.org/
 
 Cc: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: Paul E. McKenney <paulmck@kernel.org>
@@ -157,7 +151,19 @@ Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Cc: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-um@lists.infradead.org
 
-I hope that helps!
+We also still have the many missing safety comments Clippy warnings we
+recently discussed:
+
+    warning: unsafe block missing a safety comment
+        --> rust/kernel/init/macros.rs:1015:25
+
+Benno/Gary: I am tempted to just `#![allow(...)]` them for now (but if
+you plan to add the comments soon, please let me know!).
+
+Cc: Benno Lossin <lossin@kernel.org>
+Cc: Gary Guo <gary@garyguo.net>
+
+Thanks!
 
 Cheers,
 Miguel
