@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6998EF94CD9
-	for <linux-um@archiver.kernel.org>; Wed, 22 Apr 2026 07:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0026DFA1FDB
+	for <linux-um@archiver.kernel.org>; Wed, 22 Apr 2026 17:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YHNRGC1hGWc6m3ZzcDaW9en/CqZpzjUfDH3bqt0lyZw=; b=vBJVQ5eO3A0XKLF8JGgJZg25N+
-	8WJk4RUGLzIJGQwD7d6Y1duXkAozvy+twuDaIFJBObQ0RMtgnUau/NhWjR7FWtgutGRh+NZrtiklh
-	3pPZ3QjT8K0Zf33vlZlb1iEl4tK890fET/Fv0Cy0UoHhWoky7HMbpiK5StziwHw4zx26CAdCbPLts
-	BAJg0RsvRVMwUPIiccY8GS+kVAMQ5e1TVnVMEMv0/6YY3AhSK9qkD8UoS2v6vDCrsTVhQb4CGU3Fr
-	LGbk1jNSfRRbxGsw9wgNdyfIykGuIntytT7xJs1+6IrsYylQ5v7g+0TXScPzSc6aL7sJw7/EklHh1
-	pt/XxCvg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:Cc
+	:Message-Id:From:Subject:Content-Type:Date:To:Mime-Version:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=qs9GUd9BD+oZzLK/vsuOICM6KBilsRgKUVepBg7QJJ4=; b=BWkXwhplSxzhEFq+rhoOFASXYm
+	EjmE7/yyZ+2uA92femd2CPcRqyDzNzIsnf0CFuNDHvalFUVnJz0AJic3h6kVhrH2YANIO8Hko0ZC9
+	hdXVWiQG6hSDyoX9HB+y/pbnbrvT9sLl10hmuIQu/eUFq6gmF1KnBX1KFks7KXcGgwgYPHizct9V/
+	cka84v3cjc6KiLsyp7y/MoUw3G/9LmiZphJPJLhcMA8BY+3/tgh3whxyg0GXmiW6FzrAPYr3cojqp
+	QzBsukfssh7Qhdte6mspNh8OtDSioFHHtCNDGX+Ao6NKNe2tCQzJb4DIZhyHqIkZ/LsOXAFC1tdvq
+	YIKMmDwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFRc5-00000009hAT-1lh6;
-	Wed, 22 Apr 2026 07:03:09 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wFbYE-0000000AaEH-00ro;
+	Wed, 22 Apr 2026 17:39:50 +0000
+Received: from va-2-20.ptr.blmpb.com ([209.127.231.20])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFRc2-00000009hA4-3GIV
+	id 1wFbYB-0000000AaDu-1R8Z
 	for linux-um@lists.infradead.org;
-	Wed, 22 Apr 2026 07:03:08 +0000
+	Wed, 22 Apr 2026 17:39:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=YHNRGC1hGWc6m3ZzcDaW9en/CqZpzjUfDH3bqt0lyZw=;
-	t=1776841386; x=1778050986; b=wJX1KPQc6S5TmpHv74CjYS8ePA1kWs2754l/HFA8cNMxh+/
-	t2IJLZaDzfXl4m7uUUiGhFvmB0HZRxIn+bayT+rl58kKcQA+i9vWYCHPROwENAPbqozqjSMZbzr3C
-	sJSQSR4XmDVGhzYM2Yl67UgnIKc/R9ubqJbEwXvxp5IvaoG5d4WqsVeBz2sB/Zs7Kjb7DrqvWzog3
-	2K7qLYpUdhQ1ne9nERw3IwuK+Q6eqp8O2N5PcCUpWSCO8MjbYZ5BPeHwz0tavEtUyQA+meSDW70Ua
-	dFMWnKOzMXmKuF3GkYK23cauUwdyWBJhAZQvbWljqbZ09NRCUcscEah/u4uQHaMQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wFRbx-000000067S7-1ywB;
-	Wed, 22 Apr 2026 09:03:01 +0200
-Message-ID: <2fd57f98e3149ba56c83994a9181e92a0104cfe3.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: vector: fix NULL pointer derefs in queue-less
- transports
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Michael Bommarito <michael.bommarito@gmail.com>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Date: Wed, 22 Apr 2026 09:03:00 +0200
-In-Reply-To: <20260410203028.3717914-1-michael.bommarito@gmail.com>
-References: <20260410203028.3717914-1-michael.bommarito@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+ s=feishu2604220257; d=cherr.cc; t=1776879578; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=qs9GUd9BD+oZzLK/vsuOICM6KBilsRgKUVepBg7QJJ4=;
+ b=VjNHg5eN6T0G/5JprjMthUuKi6Uyguf47P3dOu7gMc0GL5B3dzqKUNRmsT6ouj6DLhtwSR
+ chUfZKWJ/IGtbBCHYuESa69k98+Kn8Sxy6L9VvfSZh3zcVPhWKSjh4WhycxSXOxrrdn3x+
+ NkciWOyQtzvOtQR0VF+8m0sI59dNnH+kd65LJkRocsaxAyxyvSqyZhYjUTissFE9I6/cCb
+ w51spGerxQsO3Y8SPdIBxWMXStI7yT7D+6EmbomH4fxSTw/6HvRVdWGlyL9EMu2j0lQnSa
+ mEqXHPStFnpC4NzSLnktt0WuZ9CsFCWiXHpaPPrIh/Y246NngI2HYVlWLLyiaA==
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAMwH6WkC/x2MQQqAIBQFrxJ/naAWUl0lIsJe9TcaGiGId09aD sNMpojAiDQ1mQJejuxdBdU2ZK/NnRC8VyYttZG97sTBaUXix/odYpSDNAoWRvdUkzug+n83L6V 8yBJH+F4AAAA=
+X-Mailer: b4 0.14.2
+Received: from pve.cherr ([111.42.148.201]) by smtp.feishu.cn with ESMTPS; Thu, 23 Apr 2026 01:39:35 +0800
+X-Original-From: Shengzhuo Wei <me@cherr.cc>
+To: "Richard Weinberger" <richard@nod.at>, 
+	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, 
+	"Johannes Berg" <johannes@sipsolutions.net>, 
+	"Dan Carpenter" <error27@gmail.com>, 
+	"Andrew Morton" <akpm@linux-foundation.org>, 
+	"Jeff Dike" <jdike@addtoit.com>
+Date: Thu, 23 Apr 2026 01:39:25 +0800
+X-Change-Id: 20260423-fix_exitcode-908061ece624
+Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH] um: proc/exitcode: fix simple_strtol() out-of-bounds read
+X-Lms-Return-Path: <lba+269e907d8+6a09fa+lists.infradead.org+me@cherr.cc>
+From: "Shengzhuo Wei" <me@cherr.cc>
+Message-Id: <20260423-fix_exitcode-v1-1-7e4508913d68@cherr.cc>
+Cc: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>, 
+	"Shengzhuo Wei" <me@cherr.cc>
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260422_000306_815327_5748DFC1 
-X-CRM114-Status: GOOD (  13.15  )
+X-CRM114-CacheID: sfid-20260422_103947_466727_CA3B0926 
+X-CRM114-Status: GOOD (  10.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,40 +75,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Sorry, I didn't pay much attention to this before...
+The stack buffer 'buf' is declared as char[sizeof("nnnnn\0")] (7 bytes)
+and the copy size is min(count, sizeof(buf)).  When a user writes 7 or
+more bytes, copy_from_user fills all 7 bytes without a NUL terminator.
+The subsequent call to simple_strtol() expects a NUL-terminated string
+and will read past the end of buf on the stack.
 
-On Fri, 2026-04-10 at 16:30 -0400, Michael Bommarito wrote:
-> TAP transport sets neither VECTOR_RX nor VECTOR_TX, so
-> vector_net_open() never allocates rx_queue or tx_queue.  HYBRID sets
-> VECTOR_RX but not VECTOR_TX, so tx_queue is NULL there too.
->=20
-> vector_reset_stats(), vector_poll(), vector_get_ethtool_stats(), and
-> vector_get_ringparam() unconditionally deref these queue pointers,
-> causing a NULL pointer crash on SMP or with any lock debugging option.
->=20
-> Guard all queue pointer accesses with NULL checks.
+write(2) should report the number of bytes consumed. Returning the original
+count would claim success even when the input was truncated, so userspace
+cannot detect it.
 
-I see how that fixes the crash, but maybe you could write a few words on
-why it's still correct?
+Clamp the copy length to sizeof(buf)-1, add a terminator, and return the
+consumed length.
 
-> -	spin_lock(&vp->tx_queue->head_lock);
-> -	spin_lock(&vp->rx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_lock(&vp->tx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_lock(&vp->rx_queue->head_lock);
->  	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
+Fixes: 201f99f170df ("uml: check length in exitcode_proc_write()")
+Fixes: e16f5350d4cf ("uml: get declaration of simple_strtoul")
+Signed-off-by: Shengzhuo Wei <me@cherr.cc>
+---
+ arch/um/kernel/exitcode.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I could imagine for example this memcpy() observing a torn write or
-something like that and getting strange results out?
+diff --git a/arch/um/kernel/exitcode.c b/arch/um/kernel/exitcode.c
+index 43edc2aa57e4fbd4a3d24f96878c76f9f8fd4eaa..8de404ff21a213918c5351bc20a6e047bf1b93f5 100644
+--- a/arch/um/kernel/exitcode.c
++++ b/arch/um/kernel/exitcode.c
+@@ -43,16 +43,17 @@ static ssize_t exitcode_proc_write(struct file *file,
+ 	size_t size;
+ 	int tmp;
+ 
+-	size = min(count, sizeof(buf));
++	size = min(count, sizeof(buf) - 1);
+ 	if (copy_from_user(buf, buffer, size))
+ 		return -EFAULT;
++	buf[size] = '\0';
+ 
+ 	tmp = simple_strtol(buf, &end, 0);
+ 	if ((*end != '\0') && !isspace(*end))
+ 		return -EINVAL;
+ 
+ 	uml_exitcode = tmp;
+-	return count;
++	return size;
+ }
+ 
+ static const struct proc_ops exitcode_proc_ops = {
 
-Or is that just not a thing because UML is (still) mostly non-SMP?
+---
+base-commit: 6596a02b207886e9e00bb0161c7fd59fea53c081
+change-id: 20260423-fix_exitcode-908061ece624
 
-
-Also I think there are related issues that wouldn't show up for a broken
-configuration, such as if create_queue() fails to allocate memory and we
-get an inconsistency between tx_queue / rx_queue pointers and VECTOR_TX
-/ VECTOR_RX flags? Though I'll admit that seems highly unlikely.
-
-johannes
+Best regards,
+-- 
+Shengzhuo Wei <me@cherr.cc>
 
