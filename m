@@ -4,74 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCF11F8FA88
-	for <linux-um@archiver.kernel.org>; Tue, 21 Apr 2026 15:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6998EF94CD9
+	for <linux-um@archiver.kernel.org>; Wed, 22 Apr 2026 07:03:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wvINAongtjjCgb6wY+xC1FvDJfOPl2KahZDKoEuClv4=; b=PUF6EJHYCKwZxlQ6NAGbx3hZq4
-	DeDwXhvBk9PDH3wiCyOabZsvxzBMcj49R37i70NIa/ZCuK5ZBLqg4GXgl8+oH1L508HIxgN7DiAs6
-	i+0MH3n7bpRw1ZUBC8dQVN6bXuvV8A3hKKiDEZgeVUCdHC+wtj1dweuWd0+Zk9+06gjKMeTHUYB9w
-	iceChlIPjbTd50lhzJ6qZYsNlb4elzOdiiADOwhySQV7f/nWV2lcvX4bf2ujTcCu5gHoqdjKFXTAP
-	/6nv/VpCQONCcmFxHIGchf6aQ5HTtH59GIXZFZrKSNTnqJRJEdHx1dh2b6PQlojN7f916VX8NUc7Z
-	Edw5csAg==;
+	bh=YHNRGC1hGWc6m3ZzcDaW9en/CqZpzjUfDH3bqt0lyZw=; b=vBJVQ5eO3A0XKLF8JGgJZg25N+
+	8WJk4RUGLzIJGQwD7d6Y1duXkAozvy+twuDaIFJBObQ0RMtgnUau/NhWjR7FWtgutGRh+NZrtiklh
+	3pPZ3QjT8K0Zf33vlZlb1iEl4tK890fET/Fv0Cy0UoHhWoky7HMbpiK5StziwHw4zx26CAdCbPLts
+	BAJg0RsvRVMwUPIiccY8GS+kVAMQ5e1TVnVMEMv0/6YY3AhSK9qkD8UoS2v6vDCrsTVhQb4CGU3Fr
+	LGbk1jNSfRRbxGsw9wgNdyfIykGuIntytT7xJs1+6IrsYylQ5v7g+0TXScPzSc6aL7sJw7/EklHh1
+	pt/XxCvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFCcJ-00000008oJ4-15jD;
-	Tue, 21 Apr 2026 15:02:23 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wFRc5-00000009hAT-1lh6;
+	Wed, 22 Apr 2026 07:03:09 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wFCcH-00000008oIx-3gXE
+	id 1wFRc2-00000009hA4-3GIV
 	for linux-um@lists.infradead.org;
-	Tue, 21 Apr 2026 15:02:22 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 03C0F6001A;
-	Tue, 21 Apr 2026 15:02:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D904C2BCB0;
-	Tue, 21 Apr 2026 15:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1776783740;
-	bh=Mpbkj6yOe1GN3X5YpgKdXjzi0Cn1sKwaB2ZCYJvR0x0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WmXxT4bq/jdUGylFLv9mGVtoKFbMm7IOdxmOVuBB4b28dU69dWhDMkm+T9Q+DWJ0r
-	 CVQJzqTUXa6/q+rkvq9bnfrBbUn2y7JSgNuJU5z3RSSkWOMVzFV2Dpkzi03eVVa2xx
-	 3K1hHh/TFZ0xkeDU+lUw3kmjwigck9NeVyuP/fWA=
-Date: Tue, 21 Apr 2026 17:02:18 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: achill@achill.org, akpm@linux-foundation.org, broonie@kernel.org,
-	conor@kernel.org, f.fainelli@gmail.com, hargar@microsoft.com,
-	jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-	linux@roeck-us.net, lkft-triage@lists.linaro.org,
-	patches@kernelci.org, patches@lists.linux.dev, pavel@nabladev.com,
-	rwarsow@gmx.de, shuah@kernel.org, sr@sladewatkins.com,
-	stable@vger.kernel.org, sudipm.mukherjee@gmail.com,
-	torvalds@linux-foundation.org,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun@kernel.org>, Sasha Levin <sashal@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-	rcu@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH 6.18 000/198] 6.18.24-rc1 review
-Message-ID: <2026042155-handcuff-stunner-1318@gregkh>
-References: <20260420153935.605963767@linuxfoundation.org>
- <20260421095549.47476-1-ojeda@kernel.org>
+	Wed, 22 Apr 2026 07:03:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=YHNRGC1hGWc6m3ZzcDaW9en/CqZpzjUfDH3bqt0lyZw=;
+	t=1776841386; x=1778050986; b=wJX1KPQc6S5TmpHv74CjYS8ePA1kWs2754l/HFA8cNMxh+/
+	t2IJLZaDzfXl4m7uUUiGhFvmB0HZRxIn+bayT+rl58kKcQA+i9vWYCHPROwENAPbqozqjSMZbzr3C
+	sJSQSR4XmDVGhzYM2Yl67UgnIKc/R9ubqJbEwXvxp5IvaoG5d4WqsVeBz2sB/Zs7Kjb7DrqvWzog3
+	2K7qLYpUdhQ1ne9nERw3IwuK+Q6eqp8O2N5PcCUpWSCO8MjbYZ5BPeHwz0tavEtUyQA+meSDW70Ua
+	dFMWnKOzMXmKuF3GkYK23cauUwdyWBJhAZQvbWljqbZ09NRCUcscEah/u4uQHaMQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wFRbx-000000067S7-1ywB;
+	Wed, 22 Apr 2026 09:03:01 +0200
+Message-ID: <2fd57f98e3149ba56c83994a9181e92a0104cfe3.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: vector: fix NULL pointer derefs in queue-less
+ transports
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Michael Bommarito <michael.bommarito@gmail.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
+Date: Wed, 22 Apr 2026 09:03:00 +0200
+In-Reply-To: <20260410203028.3717914-1-michael.bommarito@gmail.com>
+References: <20260410203028.3717914-1-michael.bommarito@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260421095549.47476-1-ojeda@kernel.org>
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260422_000306_815327_5748DFC1 
+X-CRM114-Status: GOOD (  13.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,63 +75,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Apr 21, 2026 at 11:55:49AM +0200, Miguel Ojeda wrote:
-> On Mon, 20 Apr 2026 17:39:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 6.18.24 release.
-> > There are 198 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 22 Apr 2026 15:38:57 +0000.
-> > Anything received after that time might be too late.
-> 
-> Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
-> for loongarch64:
-> 
-> Tested-by: Miguel Ojeda <ojeda@kernel.org>
-> 
-> For UML (x86_64) I am seeing:
-> 
->     In file included from arch/um/kernel/asm-offsets.c:3:
->     In file included from ./arch/x86/um/shared/sysdep/kernel-offsets.h:5:
->     In file included from ./include/linux/crypto.h:18:
->     In file included from ./include/linux/slab.h:16:
->     In file included from ./include/linux/gfp.h:7:
->     In file included from ./include/linux/mmzone.h:1538:
->     In file included from ./include/linux/memory_hotplug.h:7:
->     In file included from ./include/linux/notifier.h:16:
->     In file included from ./include/linux/srcu.h:59:
->     ./include/linux/srcutiny.h:14:10: fatal error: 'linux/irq_work_types.h' file not found
->        14 | #include <linux/irq_work_types.h>
->           |          ^~~~~~~~~~~~~~~~~~~~~~~~
->     1 error generated.
-> 
-> Caused by commit 95721c9fb3a1 ("srcu: Use irq_work to start GP in tiny
-> SRCU"). The header seems to simply not be there, i.e. either the
-> `#include` is changed or commit c809f081fe40 ("irqwork: Move data struct
-> to a types header") is backported.
-> 
-> Cc: Joel Fernandes <joelagnelf@nvidia.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Boqun Feng <boqun@kernel.org>
-> Cc: Sasha Levin <sashal@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Zqiang <qiang.zhang@linux.dev>
-> Cc: rcu@vger.kernel.org
-> 
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: linux-um@lists.infradead.org
+Sorry, I didn't pay much attention to this before...
 
-Thanks, I'll just drop this commit from 6.18 and older trees for now.
+On Fri, 2026-04-10 at 16:30 -0400, Michael Bommarito wrote:
+> TAP transport sets neither VECTOR_RX nor VECTOR_TX, so
+> vector_net_open() never allocates rx_queue or tx_queue.  HYBRID sets
+> VECTOR_RX but not VECTOR_TX, so tx_queue is NULL there too.
+>=20
+> vector_reset_stats(), vector_poll(), vector_get_ethtool_stats(), and
+> vector_get_ringparam() unconditionally deref these queue pointers,
+> causing a NULL pointer crash on SMP or with any lock debugging option.
+>=20
+> Guard all queue pointer accesses with NULL checks.
 
-greg k-h
+I see how that fixes the crash, but maybe you could write a few words on
+why it's still correct?
+
+> -	spin_lock(&vp->tx_queue->head_lock);
+> -	spin_lock(&vp->rx_queue->head_lock);
+> +	if (vp->tx_queue)
+> +		spin_lock(&vp->tx_queue->head_lock);
+> +	if (vp->rx_queue)
+> +		spin_lock(&vp->rx_queue->head_lock);
+>  	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
+
+I could imagine for example this memcpy() observing a torn write or
+something like that and getting strange results out?
+
+Or is that just not a thing because UML is (still) mostly non-SMP?
+
+
+Also I think there are related issues that wouldn't show up for a broken
+configuration, such as if create_queue() fails to allocate memory and we
+get an inconsistency between tx_queue / rx_queue pointers and VECTOR_TX
+/ VECTOR_RX flags? Though I'll admit that seems highly unlikely.
+
+johannes
 
