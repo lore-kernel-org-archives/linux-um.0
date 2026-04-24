@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8696FE5205
-	for <linux-um@archiver.kernel.org>; Fri, 24 Apr 2026 10:31:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89491FED3FC
+	for <linux-um@archiver.kernel.org>; Fri, 24 Apr 2026 20:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Mime-Version:Message-Id:
+	Subject:Content-Transfer-Encoding:Content-Type:From:To:Date:Cc:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=H4uVYoUgpKIkIvOZArZNMR6ZEOp/gVJeXZw7R1usUfU=; b=gwUN/VHrFffvrUnm0RxUNf8GWK
-	YJKyIaINc3cTSABeYqg8KOq7Dh+M4pXJ19r4+2irLxQkZxLC4RQt9Z95JHhXs2zJxOOoyQktW/HNj
-	a1nmS2xHpSm7+bt7Xv5XJgdDx9jPiGohlCzK4IGQ6eLvORTlHwz25JZCPyd1/yQejE+rcnzWMF4YT
-	pFYofw86osw/njn+mzASyjzjcF0GYlEleMbt8DVW6EG/Pc8JnDrfpuz5Z12ZKEmnYrPn0RzRNY5GC
-	s8ICbqIppJwb86en2MAOS5UbGbnfNE7BE0SHbfuX5Uy2/nGMPnDMan4r70DajhLif6qsIJbPg8fn/
-	hWH50j2g==;
+	bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=; b=xWCO4LdgGEOQNSScKY7oqQPNee
+	4X4cMB6bXrb2twlg8PdpYCxINive925Am2jqBuzsVlpbiU4/56DzJAsWIe375uGD154If6YdtMGnz
+	ZVBZLlbfpkvbNnIEEeUxanO0ak/0cG8lM8grLuA7mSW63rBDftzRCl4hwsFkDp6PsAyS2Skd4US+I
+	hD/V5VIOUiEtht0uvQzccvrrmccSuC5xR/iPD6gRsOzWAduFWCLoggJt6TIs+ukcun0/5lG3NNyQy
+	+GQNmFKYojw88uRthkC4wpTukqGaWMp1O6f/4p2rPKsUWvFQSja7u7gLNdB/088sk5iOYHNG35JKj
+	xGHZZ39Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGDoW-0000000D2fF-2jxB;
-	Fri, 24 Apr 2026 10:31:12 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wGN9u-0000000DjfC-25t5;
+	Fri, 24 Apr 2026 20:29:54 +0000
+Received: from va-2-35.ptr.blmpb.com ([209.127.231.35])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGDoV-0000000D2eu-0fPA
+	id 1wGN9r-0000000Djep-2XTM
 	for linux-um@lists.infradead.org;
-	Fri, 24 Apr 2026 10:31:11 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3CF32600AE;
-	Fri, 24 Apr 2026 10:31:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CEFC19425;
-	Fri, 24 Apr 2026 10:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777026669;
-	bh=0Sz5oYEFlV8HCKTpRL+w9bwfpXJkeAd+kzEzv8vJVEM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=F9TFE92LmJt5GDphUvhyod6GtDMcnlFGAeJ2RhOID6BG7L1HSCTgdxjbsnWbNGy7V
-	 AVpwy2TnChwkfotNYuD53O0gb0d/eOKM+blwzFrKZ4PSnMSiVzHL7YqI15D8cYpIpq
-	 63mHXI2JFq5tAEfTh8eCCj2ssjB7atsHgOS7UB8g/Um4lNVgDgTpJ3LF5xAH3aYwDD
-	 rNho+ofx4y3Dm6Fo2G9UFKfK59mX6MbaKoLc82oBoB/6Xc5FxxJOYgsXeMYtFOwsc3
-	 /v8EGPP2YB5XHrt5GSP23a7Hc2b1r32+Go35bwbzas92GhFFNOJarbs9ZuJ5bUGhA/
-	 Dwq2PranVzO+A==
-Received: from johan by xi.lan with local (Exim 4.98.2)
-	(envelope-from <johan@kernel.org>)
-	id 1wGDoR-0000000AydH-3Ctp;
-	Fri, 24 Apr 2026 12:31:07 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan@kernel.org>
-Subject: [PATCH] um: virtio_uml: switch to dynamic root device
-Date: Fri, 24 Apr 2026 12:31:01 +0200
-Message-ID: <20260424103101.2616338-1-johan@kernel.org>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	Fri, 24 Apr 2026 20:29:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=feishu2604220257; d=cherr.cc; t=1777062585; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=;
+ b=uoG+TyWgk36+y0vIGDNcDy6vzceg5aiPPuyVQCI5j8pV46I1lPshDIU8JPNlvJnjNZg0o9
+ QF3beZ27f5g2O5xA7CbdmyxGbpwuLhW1NVwvpBkrEbSGirb9AVUcJ+VmCpvcQiRQEdbqRc
+ TXS5J0S4nT0qrZYFzjMReH27Mn3P/BFY6ik2ovFEGIxQ3kJaIE9nmiab1VQ7pN3yM1i9Ca
+ +PqFR/TUBK9K1KL4DaZiOD5uyL14Ygj/cWJ3bPf0yFDRwWuUJfq0Br5DkEqUMIYmUQlhfq
+ 8ArPt1oKlCJOhzTYTIOfiJqIIbp0L4X7iGWYRDLHa89CYaMZZtADkBHMJmX8sw==
+Received: from pve.cherr ([111.42.148.201]) by smtp.feishu.cn with ESMTPS; Sat, 25 Apr 2026 04:29:42 +0800
+Cc: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>, 
+	"Shengzhuo Wei" <me@cherr.cc>
+Date: Sat, 25 Apr 2026 04:29:24 +0800
+X-Change-Id: 20260425-mconsole-oob-read-leak-a4b8696ac97b
+X-Original-From: Shengzhuo Wei <me@cherr.cc>
+To: "Richard Weinberger" <richard@nod.at>, 
+	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, 
+	"Johannes Berg" <johannes@sipsolutions.net>
+From: "Shengzhuo Wei" <me@cherr.cc>
+Content-Type: text/plain; charset=UTF-8
+X-Mailer: b4 0.14.2
+Content-Transfer-Encoding: 7bit
+X-Lms-Return-Path: <lba+269ebd2b7+c2655d+lists.infradead.org+me@cherr.cc>
+X-B4-Tracking: v=1; b=H4sIAKPS62kC/x3MQQqEMAxA0atI1ga0aNW5iswirVGD2gwtDIJ4d 4vLt/j/gsRROMGnuCDyX5JoyKjLAvxKYWGUKRtMZWzVmBYPryHpzqjqMDJNuDNtSI3r7WDJD52 DHP8iz3K+4/F73w9dsTqnaAAAAA==
+Subject: [PATCH] um: mconsole: Fix out-of-bounds read in mconsole_log()
+Message-Id: <20260425-mconsole-oob-read-leak-v1-1-7d46e5892c5c@cherr.cc>
+Mime-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260424_132951_725738_15B78168 
+X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,88 +73,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Driver core expects devices to be dynamically allocated and will, for
-example, complain loudly when no release function has been provided.
+mconsole_parse() matches the 3-byte prefix "log", but mconsole_log()
+skips strlen("log ") = 4 bytes, advancing ptr past the NUL terminator
+when a client sends "log" without a trailing space.
 
-Use __root_device_register() to allocate and register the root device
-instead of open coding using a static device.
+The length then comes from req->len, the raw recvfrom() count, instead
+of req->request.len, so printk() reads up to req->len - 4 bytes of
+stale data from a previous request left in the static mc_request
+buffer, leaking it to the kernel log.
 
-Note that root_device_register(), which also creates a link to the
-module, cannot be used as the device is registered when parsing the
-module parameters which happens before the module kobject has been
-set up.
+Use req->cmd->command for the actual command length, add skip_spaces(),
+use req->request.len, and guard against non-positive length.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Shengzhuo Wei <me@cherr.cc>
 ---
- arch/um/drivers/virtio_uml.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ arch/um/drivers/mconsole_kern.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 7425a8548141..c43afb0af47f 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -1274,14 +1274,7 @@ static void virtio_uml_remove(struct platform_device *pdev)
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index e2a9e8879f584734cf2e94d47e403d03f8aa2131..0dd5aab1544648a7f7942c2eb47a5792e7dd702b 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -117,10 +117,12 @@ void mconsole_log(struct mc_request *req)
+ 	int len;
+ 	char *ptr = req->request.data;
  
- /* Command line device list */
+-	ptr += strlen("log ");
++	ptr += strlen(req->cmd->command);
++	ptr = skip_spaces(ptr);
  
--static void vu_cmdline_release_dev(struct device *d)
--{
--}
--
--static struct device vu_cmdline_parent = {
--	.init_name = "virtio-uml-cmdline",
--	.release = vu_cmdline_release_dev,
--};
-+static struct device *vu_cmdline_parent;
- 
- static DEFINE_MUTEX(vu_cmdline_lock);
- static bool vu_cmdline_parent_registered;
-@@ -1333,11 +1326,10 @@ static int vu_cmdline_set_device(const char *device)
- 		return -EINVAL;
- 
- 	if (!vu_cmdline_parent_registered) {
--		err = device_register(&vu_cmdline_parent);
--		if (err) {
-+		vu_cmdline_parent = __root_device_register("virtio-uml-cmdline", NULL);
-+		if (IS_ERR(vu_cmdline_parent)) {
- 			pr_err("Failed to register parent device!\n");
--			put_device(&vu_cmdline_parent);
--			return err;
-+			return PTR_ERR(vu_cmdline_parent);
- 		}
- 		vu_cmdline_parent_registered = true;
- 	}
-@@ -1352,7 +1344,7 @@ static int vu_cmdline_set_device(const char *device)
- 	pr_info("Registering device virtio-uml.%d id=%d at %s\n",
- 		vu_cmdline_id, virtio_device_id, socket_path);
- 
--	pdev = platform_device_register_data(&vu_cmdline_parent, "virtio-uml",
-+	pdev = platform_device_register_data(vu_cmdline_parent, "virtio-uml",
- 					     vu_cmdline_id++, &pdata,
- 					     sizeof(pdata));
- 	err = PTR_ERR_OR_ZERO(pdev);
-@@ -1393,7 +1385,7 @@ static int vu_cmdline_get(char *buffer, const struct kernel_param *kp)
- 
- 	buffer[0] = '\0';
- 	if (vu_cmdline_parent_registered)
--		device_for_each_child(&vu_cmdline_parent, buffer,
-+		device_for_each_child(vu_cmdline_parent, buffer,
- 				      vu_cmdline_get_device);
- 	return strlen(buffer) + 1;
+-	len = req->len - (ptr - req->request.data);
+-	printk(KERN_WARNING "%.*s", len, ptr);
++	len = req->request.len - (ptr - req->request.data);
++	if (len > 0)
++		printk(KERN_WARNING "%.*s", len, ptr);
+ 	mconsole_reply(req, "", 0, 0);
  }
-@@ -1417,9 +1409,9 @@ static void vu_unregister_cmdline_devices(void)
- 	guard(mutex)(&vu_cmdline_lock);
  
- 	if (vu_cmdline_parent_registered) {
--		device_for_each_child(&vu_cmdline_parent, NULL,
-+		device_for_each_child(vu_cmdline_parent, NULL,
- 				      vu_unregister_cmdline_device);
--		device_unregister(&vu_cmdline_parent);
-+		root_device_unregister(vu_cmdline_parent);
- 		vu_cmdline_parent_registered = false;
- 	}
- }
+
+---
+base-commit: dd6c438c3e64a5ff0b5d7e78f7f9be547803ef1b
+change-id: 20260425-mconsole-oob-read-leak-a4b8696ac97b
+
+Best regards,
 -- 
-2.53.0
-
+Shengzhuo Wei <me@cherr.cc>
 
