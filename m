@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9089FDEE4D
-	for <linux-um@archiver.kernel.org>; Thu, 23 Apr 2026 22:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8696FE5205
+	for <linux-um@archiver.kernel.org>; Fri, 24 Apr 2026 10:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Subject:Cc:To:Message-ID:Date:From:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EQVMdPT0W05WSFGyTO5xjCpqytiwI4srcleJk1it/Yk=; b=SCIvK8l58WZDXPpFqxPMTiJKBa
-	QkldzL9xFtLe3+g4CVcouAKjqMQMHHhgaRjDOrDUmFPqnQpHAE7PiSYvpqdxfS38BYIs01neSM/3s
-	KUxM2TNKgGHpQasRXKJTPlpGPgfPUuz9KL5X0sxZIJieQwhyNj1doS929Kdsj740UMDPf0N64Mdzo
-	SiXhtEleV1hSb06m5BYFmgg3uc93T64nhFXUBecM9bw+fhAt88ZxzkA/91BfKviFrVB5NsR5rnFYY
-	dBRiwDCCd1YS6hhRfVkDkBw0Iz/jzEZPQ4BU1zvv+cp2cBwGu7dYOHUtuQS/FZ1dRLJwFFN/U8/Cp
-	tj98hbEg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=H4uVYoUgpKIkIvOZArZNMR6ZEOp/gVJeXZw7R1usUfU=; b=gwUN/VHrFffvrUnm0RxUNf8GWK
+	YJKyIaINc3cTSABeYqg8KOq7Dh+M4pXJ19r4+2irLxQkZxLC4RQt9Z95JHhXs2zJxOOoyQktW/HNj
+	a1nmS2xHpSm7+bt7Xv5XJgdDx9jPiGohlCzK4IGQ6eLvORTlHwz25JZCPyd1/yQejE+rcnzWMF4YT
+	pFYofw86osw/njn+mzASyjzjcF0GYlEleMbt8DVW6EG/Pc8JnDrfpuz5Z12ZKEmnYrPn0RzRNY5GC
+	s8ICbqIppJwb86en2MAOS5UbGbnfNE7BE0SHbfuX5Uy2/nGMPnDMan4r70DajhLif6qsIJbPg8fn/
+	hWH50j2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wG2qf-0000000COJi-14hh;
-	Thu, 23 Apr 2026 22:48:41 +0000
-Received: from smtp25.cstnet.cn ([159.226.251.25] helo=cstnet.cn)
+	id 1wGDoW-0000000D2fF-2jxB;
+	Fri, 24 Apr 2026 10:31:12 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wG2qc-0000000COJG-0m6P
+	id 1wGDoV-0000000D2eu-0fPA
 	for linux-um@lists.infradead.org;
-	Thu, 23 Apr 2026 22:48:40 +0000
-Received: from 06-uml-vector-v2.eml (unknown [111.196.245.116])
-	by APP-05 (Coremail) with SMTP id zQCowAAntwq6oeppDoBsDg--.55735S2;
-	Fri, 24 Apr 2026 06:48:27 +0800 (CST)
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Date: Thu, 23 Apr 2026 23:35:00 +0800
-Message-ID: <20260424070106.1-uml-vector-v2-pengpeng@iscas.ac.cn>
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, pengpeng@iscas.ac.cn
-Subject: [PATCH v2] um: vector: reject too many interface arguments
-In-Reply-To: <20260417073704.1817-1-pengpeng@iscas.ac.cn>
-References: <20260417073704.1817-1-pengpeng@iscas.ac.cn>
-X-CM-TRANSID: zQCowAAntwq6oeppDoBsDg--.55735S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWxXw13Aw4kKFWkAw17GFg_yoWkWFX_u3
-	Wqqanrur1S9r4Duw1UKr1rC3ySvFyDWryUCrW0yr9xuw4SvrZxAr40yF1fXw1xX3y7Zrs8
-	Gry7G34FyrWFkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbVAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vE77IFxVWUZVW8XwA2ocxC64kIII0Yj4
-	1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0
-	I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-	vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
-	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAG
-	YxC7MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-	b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
-	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-	VjvjDU0xZFpf9x0JU6v38UUUUU=
-X-Originating-IP: [111.196.245.116]
-X-CM-SenderInfo: pshqw1xhqjqxpvfd2hldfou0/
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260423_154838_608614_814D6E66 
-X-CRM114-Status: UNSURE (   6.27  )
-X-CRM114-Notice: Please train this message.
+	Fri, 24 Apr 2026 10:31:11 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 3CF32600AE;
+	Fri, 24 Apr 2026 10:31:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CEFC19425;
+	Fri, 24 Apr 2026 10:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777026669;
+	bh=0Sz5oYEFlV8HCKTpRL+w9bwfpXJkeAd+kzEzv8vJVEM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F9TFE92LmJt5GDphUvhyod6GtDMcnlFGAeJ2RhOID6BG7L1HSCTgdxjbsnWbNGy7V
+	 AVpwy2TnChwkfotNYuD53O0gb0d/eOKM+blwzFrKZ4PSnMSiVzHL7YqI15D8cYpIpq
+	 63mHXI2JFq5tAEfTh8eCCj2ssjB7atsHgOS7UB8g/Um4lNVgDgTpJ3LF5xAH3aYwDD
+	 rNho+ofx4y3Dm6Fo2G9UFKfK59mX6MbaKoLc82oBoB/6Xc5FxxJOYgsXeMYtFOwsc3
+	 /v8EGPP2YB5XHrt5GSP23a7Hc2b1r32+Go35bwbzas92GhFFNOJarbs9ZuJ5bUGhA/
+	 Dwq2PranVzO+A==
+Received: from johan by xi.lan with local (Exim 4.98.2)
+	(envelope-from <johan@kernel.org>)
+	id 1wGDoR-0000000AydH-3Ctp;
+	Fri, 24 Apr 2026 12:31:07 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan@kernel.org>
+Subject: [PATCH] um: virtio_uml: switch to dynamic root device
+Date: Fri, 24 Apr 2026 12:31:01 +0200
+Message-ID: <20260424103101.2616338-1-johan@kernel.org>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,35 +74,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-uml_parse_vector_ifspec() stores parsed key/value pairs in the fixed
-struct arglist token and value arrays, which are both sized to MAXVARGS.
-The parser increments numargs as it discovers pairs, but it never checks
-whether another slot is still available before writing into the arrays.
+Driver core expects devices to be dynamically allocated and will, for
+example, complain loudly when no release function has been provided.
 
-Reject interface specifications that exceed MAXVARGS instead of writing
-past the end of the fixed argument arrays.
+Use __root_device_register() to allocate and register the root device
+instead of open coding using a static device.
 
-Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+Note that root_device_register(), which also creates a link to the
+module, cannot be used as the device is registered when parsing the
+module parameters which happens before the module kobject has been
+set up.
+
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
-Changes since v1:
-- remove the blank line between Fixes and Signed-off-by
+ arch/um/drivers/virtio_uml.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 2ea67e6fd067..3bee634f2102 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -93,6 +93,9 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
- 	len = strlen(arg);
- 	for (pos = 0; pos < len; pos++) {
- 		if (next_starts) {
-+			if (result->numargs >= MAXVARGS)
-+				goto cleanup;
-+
- 			if (parsing_token) {
- 				result->tokens[result->numargs] = arg + pos;
- 			} else {
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 7425a8548141..c43afb0af47f 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1274,14 +1274,7 @@ static void virtio_uml_remove(struct platform_device *pdev)
+ 
+ /* Command line device list */
+ 
+-static void vu_cmdline_release_dev(struct device *d)
+-{
+-}
+-
+-static struct device vu_cmdline_parent = {
+-	.init_name = "virtio-uml-cmdline",
+-	.release = vu_cmdline_release_dev,
+-};
++static struct device *vu_cmdline_parent;
+ 
+ static DEFINE_MUTEX(vu_cmdline_lock);
+ static bool vu_cmdline_parent_registered;
+@@ -1333,11 +1326,10 @@ static int vu_cmdline_set_device(const char *device)
+ 		return -EINVAL;
+ 
+ 	if (!vu_cmdline_parent_registered) {
+-		err = device_register(&vu_cmdline_parent);
+-		if (err) {
++		vu_cmdline_parent = __root_device_register("virtio-uml-cmdline", NULL);
++		if (IS_ERR(vu_cmdline_parent)) {
+ 			pr_err("Failed to register parent device!\n");
+-			put_device(&vu_cmdline_parent);
+-			return err;
++			return PTR_ERR(vu_cmdline_parent);
+ 		}
+ 		vu_cmdline_parent_registered = true;
+ 	}
+@@ -1352,7 +1344,7 @@ static int vu_cmdline_set_device(const char *device)
+ 	pr_info("Registering device virtio-uml.%d id=%d at %s\n",
+ 		vu_cmdline_id, virtio_device_id, socket_path);
+ 
+-	pdev = platform_device_register_data(&vu_cmdline_parent, "virtio-uml",
++	pdev = platform_device_register_data(vu_cmdline_parent, "virtio-uml",
+ 					     vu_cmdline_id++, &pdata,
+ 					     sizeof(pdata));
+ 	err = PTR_ERR_OR_ZERO(pdev);
+@@ -1393,7 +1385,7 @@ static int vu_cmdline_get(char *buffer, const struct kernel_param *kp)
+ 
+ 	buffer[0] = '\0';
+ 	if (vu_cmdline_parent_registered)
+-		device_for_each_child(&vu_cmdline_parent, buffer,
++		device_for_each_child(vu_cmdline_parent, buffer,
+ 				      vu_cmdline_get_device);
+ 	return strlen(buffer) + 1;
+ }
+@@ -1417,9 +1409,9 @@ static void vu_unregister_cmdline_devices(void)
+ 	guard(mutex)(&vu_cmdline_lock);
+ 
+ 	if (vu_cmdline_parent_registered) {
+-		device_for_each_child(&vu_cmdline_parent, NULL,
++		device_for_each_child(vu_cmdline_parent, NULL,
+ 				      vu_unregister_cmdline_device);
+-		device_unregister(&vu_cmdline_parent);
++		root_device_unregister(vu_cmdline_parent);
+ 		vu_cmdline_parent_registered = false;
+ 	}
+ }
 -- 
-2.50.1 (Apple Git-155)
+2.53.0
 
 
