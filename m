@@ -4,60 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89491FED3FC
-	for <linux-um@archiver.kernel.org>; Fri, 24 Apr 2026 20:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E890FF8860
+	for <linux-um@archiver.kernel.org>; Sat, 25 Apr 2026 03:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Mime-Version:Message-Id:
-	Subject:Content-Transfer-Encoding:Content-Type:From:To:Date:Cc:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=; b=xWCO4LdgGEOQNSScKY7oqQPNee
-	4X4cMB6bXrb2twlg8PdpYCxINive925Am2jqBuzsVlpbiU4/56DzJAsWIe375uGD154If6YdtMGnz
-	ZVBZLlbfpkvbNnIEEeUxanO0ak/0cG8lM8grLuA7mSW63rBDftzRCl4hwsFkDp6PsAyS2Skd4US+I
-	hD/V5VIOUiEtht0uvQzccvrrmccSuC5xR/iPD6gRsOzWAduFWCLoggJt6TIs+ukcun0/5lG3NNyQy
-	+GQNmFKYojw88uRthkC4wpTukqGaWMp1O6f/4p2rPKsUWvFQSja7u7gLNdB/088sk5iOYHNG35JKj
-	xGHZZ39Q==;
+	bh=FkmQB+P02KIaQYkq0qbQCwjnAua5/GEYD9Iuj4JxTmg=; b=NTvUapR3JzzRTb7BFpXP+W7P/g
+	hqmOkmLqbokN5m0brf0zrKcf86YEmbs/ZtnD+eJUX7HfQmdjQ83faWrIZ1MA8Y7SU815LNHMatxS5
+	awEIVUZne8KQsMPELb2bn/Gjvqd81CPLwOwNbptBNl7Zlj9q7g0Z2URAC3GZwzwAZLzPZtCZzC2MN
+	3089cPaCqSf/B+ktfLnOvmZI5LOYp9vgCp7qPOhFSZZrCLkfwHZtQU4EN7if3ERd23twfeQFtKe6V
+	+7V0xoXVNOhxPaNwbEtQ0XqDE1xtq+orjPGVxWLO/bJDX0NUh/m1O0w2wkxp0yUU1TRwyfpv6aHjO
+	nzQ6E9hQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGN9u-0000000DjfC-25t5;
-	Fri, 24 Apr 2026 20:29:54 +0000
-Received: from va-2-35.ptr.blmpb.com ([209.127.231.35])
+	id 1wGTuV-0000000E3Fz-4BCP;
+	Sat, 25 Apr 2026 03:42:27 +0000
+Received: from sphereful.davidgow.net ([2404:9400:4:0:216:3eff:fee2:5328])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGN9r-0000000Djep-2XTM
+	id 1wGTuT-0000000E3F9-2J3r
 	for linux-um@lists.infradead.org;
-	Fri, 24 Apr 2026 20:29:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2604220257; d=cherr.cc; t=1777062585; h=from:subject:
- mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
- mime-version:in-reply-to:message-id;
- bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=;
- b=uoG+TyWgk36+y0vIGDNcDy6vzceg5aiPPuyVQCI5j8pV46I1lPshDIU8JPNlvJnjNZg0o9
- QF3beZ27f5g2O5xA7CbdmyxGbpwuLhW1NVwvpBkrEbSGirb9AVUcJ+VmCpvcQiRQEdbqRc
- TXS5J0S4nT0qrZYFzjMReH27Mn3P/BFY6ik2ovFEGIxQ3kJaIE9nmiab1VQ7pN3yM1i9Ca
- +PqFR/TUBK9K1KL4DaZiOD5uyL14Ygj/cWJ3bPf0yFDRwWuUJfq0Br5DkEqUMIYmUQlhfq
- 8ArPt1oKlCJOhzTYTIOfiJqIIbp0L4X7iGWYRDLHa89CYaMZZtADkBHMJmX8sw==
-Received: from pve.cherr ([111.42.148.201]) by smtp.feishu.cn with ESMTPS; Sat, 25 Apr 2026 04:29:42 +0800
-Cc: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>, 
-	"Shengzhuo Wei" <me@cherr.cc>
-Date: Sat, 25 Apr 2026 04:29:24 +0800
-X-Change-Id: 20260425-mconsole-oob-read-leak-a4b8696ac97b
-X-Original-From: Shengzhuo Wei <me@cherr.cc>
-To: "Richard Weinberger" <richard@nod.at>, 
-	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, 
-	"Johannes Berg" <johannes@sipsolutions.net>
-From: "Shengzhuo Wei" <me@cherr.cc>
-Content-Type: text/plain; charset=UTF-8
-X-Mailer: b4 0.14.2
-Content-Transfer-Encoding: 7bit
-X-Lms-Return-Path: <lba+269ebd2b7+c2655d+lists.infradead.org+me@cherr.cc>
-X-B4-Tracking: v=1; b=H4sIAKPS62kC/x3MQQqEMAxA0atI1ga0aNW5iswirVGD2gwtDIJ4d 4vLt/j/gsRROMGnuCDyX5JoyKjLAvxKYWGUKRtMZWzVmBYPryHpzqjqMDJNuDNtSI3r7WDJD52 DHP8iz3K+4/F73w9dsTqnaAAAAA==
-Subject: [PATCH] um: mconsole: Fix out-of-bounds read in mconsole_log()
-Message-Id: <20260425-mconsole-oob-read-leak-v1-1-7d46e5892c5c@cherr.cc>
-Mime-Version: 1.0
+	Sat, 25 Apr 2026 03:42:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
+	s=201606; t=1777088530;
+	bh=G/zToooWqj7mh84RSSASjaLKt8CwDepv7//5sF8bZ5g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aM7Xm3/3KpTKZVUE7jGGuTdHqe7O4yZGn/wz9kf1LUiUXYcxxfvVjnSAPUwXpJzNa
+	 ZHSs4V/XUX9fQcqzsXFp2C8ybyZAB1TANZid70cZ+T8bEX7rAYuq7gcxUH1cEuW3Av
+	 +F37F4+2BhdfUPfh2uO3ovYtpkn4p04wejaMNFAH9V689J9izPeVkza4ZixMe55mlR
+	 ebvOPDzq6DdXhqbUtJgkpRYEUhtOkq7VEUv05ArzA6CaLAIxuPogdO45qMU7K4rKxi
+	 YGyjXS9qKFoyDsHpujnuvKT+eriNkwzf8xISlHw+0weoA5kZedoVPUYXOrXjbUrw4P
+	 G7qfgGSTi5V0mJsmnu7y4WWT1jVlBhsvyXNpztNaGY+WOpQURZmP0kM5MfnECoWkSi
+	 FG67iN4TbEVBsJH4GMc7JbxfO8oT5q3cGnL8UTXtVrJrkKYBePe3LYfWjO4wqcSIrd
+	 9+ikaKDeKe+G/SsKBIPu8aEji15+2l/B3Cja06wMJszYNbbGJKr7cRRufPI20ulWw1
+	 YDPJuH7qvdCslH2w2QXLaedoWK5rbA5rAjEGA63fCyN0dM7Tik5QR2ud6SW9O5FeZh
+	 J5EFsUmSHd5dMvR2cR0QzaP0Xgjk7QX4gDi8fm0QheY/ubIIJY6LuGxZt+mYOj+HId
+	 FfpYfH4PatUHRFFkPRjewYAE=
+Received: by sphereful.davidgow.net (Postfix, from userid 119)
+	id DB8791E8F10; Sat, 25 Apr 2026 11:42:10 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=davidgow.net;
+	s=201606; t=1777088500;
+	bh=G/zToooWqj7mh84RSSASjaLKt8CwDepv7//5sF8bZ5g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IYc/LXRUA4ZYsZpFGxSTgJ8dRc/Tv0FSV5+eSo3K34sP3kqR0/ems5EF05ZLQdZ7B
+	 19l7IVxTsxOXJeG6Z3iVAheE27f3copYWKDvgscdute2gGNOoCw61WHdwRBTl+5Aer
+	 Wx1ZggzPWP27QPZ2JSG46atuZolXwgPGlRrlMCxhwZAeHkWHmqB1PKc7kdD1chSPjk
+	 ZR1I07LCwaN9+/DyuBSyzgsbPN2sP+h4hogIniP+TKi2e9o+xXeDzso4cGg5pH3wn7
+	 9WzeBPT89dPNxknTMnaMOzotec8ebogCtc6oxewh8l9fANrUW8rHrmVwf0TkVx1q5l
+	 2Ca2D40cE05xjP9fwTJVKurrRBNACNlIUywJVFw9AwqGSjLNuM3gD/wwZeL4JsJULc
+	 xtUPyp+nv0hekBCObVy17fsayLammrUNVuGVdUJOFkD5B6b9NL/OBfVchYZSmXEN4U
+	 G8/4il7B8LNWWx1Dy/TFmH/5P2x0AzTt+Dg96YCGYtwsh78MdCvrehGkk0RLioevk3
+	 Qaynz74TEDEoV6wI8JO1vInvqb93dy3+YBt7TYhB4Nbk+5RzcHLVHRKbTxzzkQ0iu4
+	 lQCMQo+ENCr5jzSetXokmTvCEOiiN1UZOoHUZ08Hdix0J1deqBEgPATChCI518NjKJ
+	 eLX9Wf4jJo0/6oWZhM0orcLI=
+Received: from localhost (pa49-196-90-201.pa.vic.optusnet.com.au [49.196.90.201])
+	by sphereful.davidgow.net (Postfix) with ESMTPSA id 9DCB31E8F09;
+	Sat, 25 Apr 2026 11:41:39 +0800 (AWST)
+From: David Gow <david@davidgow.net>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: David Gow <david@davidgow.net>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	rust-for-linux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rust: arch:um: Fix building 32-bit UML with GCC
+Date: Sat, 25 Apr 2026 11:41:23 +0800
+Message-ID: <20260425034125.53866-1-david@davidgow.net>
+X-Mailer: git-send-email 2.53.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260424_132951_725738_15B78168 
-X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-CacheID: sfid-20260424_204225_849130_D4BACC99 
+X-CRM114-Status: UNSURE (   9.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,50 +96,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-mconsole_parse() matches the 3-byte prefix "log", but mconsole_log()
-skips strlen("log ") = 4 bytes, advancing ptr past the NUL terminator
-when a client sends "log" without a trailing space.
+32-bit UML builds can be configured either by setting CONFIG_64BIT=n or
+with SUBARCH=i386. Both work with Rust-for-Linux when clang is the
+compiler, but when SUBARCH=i386, we don't set a bindgen target correctly if
+gcc is the compiler.
 
-The length then comes from req->len, the raw recvfrom() count, instead
-of req->request.len, so printk() reads up to req->len - 4 bytes of
-stale data from a previous request left in the static mc_request
-buffer, leaking it to the kernel log.
+Add the appropriate bindgen target configuration for i386, as is done in
+Makefile.clang.
 
-Use req->cmd->command for the actual command length, add skip_spaces(),
-use req->request.len, and guard against non-positive length.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Shengzhuo Wei <me@cherr.cc>
+Fixes: ab0f4cedc355 ("arch: um: rust: Add i386 support for Rust")
+Signed-off-by: David Gow <david@davidgow.net>
 ---
- arch/um/drivers/mconsole_kern.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index e2a9e8879f584734cf2e94d47e403d03f8aa2131..0dd5aab1544648a7f7942c2eb47a5792e7dd702b 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -117,10 +117,12 @@ void mconsole_log(struct mc_request *req)
- 	int len;
- 	char *ptr = req->request.data;
- 
--	ptr += strlen("log ");
-+	ptr += strlen(req->cmd->command);
-+	ptr = skip_spaces(ptr);
- 
--	len = req->len - (ptr - req->request.data);
--	printk(KERN_WARNING "%.*s", len, ptr);
-+	len = req->request.len - (ptr - req->request.data);
-+	if (len > 0)
-+		printk(KERN_WARNING "%.*s", len, ptr);
- 	mconsole_reply(req, "", 0, 0);
- }
- 
+This could go in via either the rust or um trees. I suspect rust is less
+likely to trigger conflicts, though.
+
+Cheers,
+-- David
 
 ---
-base-commit: dd6c438c3e64a5ff0b5d7e78f7f9be547803ef1b
-change-id: 20260425-mconsole-oob-read-leak-a4b8696ac97b
+ rust/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Best regards,
+diff --git a/rust/Makefile b/rust/Makefile
+index b361bfedfdf0..b9e9f512cec3 100644
+--- a/rust/Makefile
++++ b/rust/Makefile
+@@ -403,6 +403,8 @@ BINDGEN_TARGET_x86	:= x86_64-linux-gnu
+ BINDGEN_TARGET_arm64	:= aarch64-linux-gnu
+ BINDGEN_TARGET_arm	:= arm-linux-gnueabi
+ BINDGEN_TARGET_loongarch	:= loongarch64-linux-gnusf
++# This is only for i386 UM builds, which need the 32-bit target not -m32
++BINDGEN_TARGET_i386	:= i386-linux-gnu
+ BINDGEN_TARGET_um	:= $(BINDGEN_TARGET_$(SUBARCH))
+ BINDGEN_TARGET		:= $(BINDGEN_TARGET_$(SRCARCH))
+ 
 -- 
-Shengzhuo Wei <me@cherr.cc>
+2.53.0
+
 
