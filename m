@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B442DFF886E
-	for <linux-um@archiver.kernel.org>; Mon, 27 Apr 2026 17:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9609FF886A
+	for <linux-um@archiver.kernel.org>; Mon, 27 Apr 2026 17:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pZNMFYuU8CchD1nM5e7lml3XtY3zMVnrOrvqbhM+lqI=; b=gL8c6A0RdyKsMFGek5jYD28o4b
-	nvvRGDUZ6vaqZX7+twYPDUJemzBFq9VuxvaaGsMlZniGeeVEC8JEW+f6Avp2OU686mLn4zedbzK/V
-	ekXp2cUccB6o54p9NrJkF56kmqePaUbCnGVpp+H60YjpAbKl3eHRWeV7Le/TxStOecQD0E5fN0/tg
-	6w0Fhb9e1gfNzryb8yyZvoe4MSWaSHzJwa4fvZu9ew65hHnbwi8+XCwyr0631oGzXqyLILWjLARd6
-	/GcRlJzioddxWiN9Meda7dOUmzaxE/vPkiQ/eTD7Xo+BBX1sPnNXdTD0F2nbOwj8vaHk42w8COhlw
-	uS4mwHYQ==;
+	bh=h3Z/nVyoovIhD0EOyurWXqapA3Ve0yAERyRow/fU/M4=; b=VocaXiTSnX7UfgO6SMESWlILKm
+	I57vVfKAqzg9NiHzslWA9kA3Gu/BPVEAVjPHM+FYApaIc2u6Iytd3kIPCPLwYJGkpDARRVMkxmGLn
+	+oGSrpvKv69nO6uZV/2GwnCBa9pn2IRA4lyVNakqDK/rcB11JXBKWBS88vLZ97caTfeKr/fgr1Elk
+	1L4w/tJm/HTNy244DawSl6OPMke400dAOvT5mxZ+nSKkFEiyS5OVGB1EaR2ipIk5RctcJ9iCg6xis
+	qDV8rbMUeput22kUH+1PvZMN0pYpqWyPwz9J5BwJrI1t4lVdMKv8A5hDNpzU2EfOmp5M/+HB+BFe9
+	hljo/arw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHPc4-0000000HRv5-0L3S;
-	Mon, 27 Apr 2026 17:19:16 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wHPcF-0000000HS7r-1vKM;
+	Mon, 27 Apr 2026 17:19:27 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHPc0-0000000HRrh-3fSu;
-	Mon, 27 Apr 2026 17:19:12 +0000
+	id 1wHPcD-0000000HS5P-2hS0;
+	Mon, 27 Apr 2026 17:19:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5077960139;
+	by tor.source.kernel.org (Postfix) with ESMTP id 180046024D;
+	Mon, 27 Apr 2026 17:19:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A25EEC2BCB7;
 	Mon, 27 Apr 2026 17:19:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FAFFC2BCB4;
-	Mon, 27 Apr 2026 17:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777310352;
-	bh=vbZIj5I8a11ig9c375SeIMkNInKGe+jckYb8HPag1tw=;
+	s=k20201202; t=1777310364;
+	bh=xblTv37x9V4gU3cvmA9ILfz6xXNOv0sNe2zU9C6a5nw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lp9wELlrvJvoeuCK0/zMI5UANnrsQ+T4se/gBOunN8iQDrEi1RstW5G65/9vUEPmI
-	 U9UXqoktuU7EViGdT+8yzDZHjl2N0E5vd9veY8uQePuAD9x0oGHf4CotQwSmAD24go
-	 gSXTECesL9+kQmgNOk7myjSgr8UboLxcnh/OrEADTLSIqRqZRx4YwXDl6QWc3wVNsO
-	 sB/2ZwfKCyhos7Vj9aXXCgNggtmoXoIYLpWXmI9TjsLctEcOG8w3vDT/K6+fVh16nS
-	 /UcGgkCV5vp5qC1VRJeMqVPGsaV7+wscOAZaxlqKS8j4DsLjsIu1iQmtuFIX3tL+zm
-	 kvFBNXQR3j5iw==
+	b=k8kV5Zhk7HZbxy8X7mxqUL5UgTTJPPuuLtSKHKOe5PwbIiNodL9/7ESxRbcOMv4dB
+	 NN/pd897F5mMQZv6MW+RM/3mikWvqmJGQCtupbd6YHiobStaCQu79RRkwt3Bs1rL/A
+	 WmXtcy3vIzgejB2MGSu6MrKJ33itreKKdFlemNypyCUExoUHGXA1bHbqFqaNX4ujdd
+	 iXZiXWTV/w69yfgs2V8e+zdWAilhhtsvDDxzPIT8CbbievjXPmrPwVloE5aoqLKmYP
+	 ca2+sf92YJQm2mLHcpyNlGd6mMQP6QhUed6Hx8vk/CloBjO7tSgz4fayv+CeXka+Fz
+	 NwGM6tvALNVmQ==
 From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
 To: Yury Norov <ynorov@nvidia.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -91,14 +91,14 @@ Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
 	linux-parisc@vger.kernel.org,
 	linux-sh@vger.kernel.org,
 	linux-arch@vger.kernel.org
-Subject: [RFC PATCH v1 8/9] arm64: Add unsafe_copy_from_user()
-Date: Mon, 27 Apr 2026 19:13:49 +0200
-Message-ID: <5b09e58a84c9edcfe5724db5cd57e45d96a96bfa.1777306795.git.chleroy@kernel.org>
+Subject: [RFC PATCH v1 9/9] uaccess: Convert small fixed size copy_{to/from}_user() to scoped user access
+Date: Mon, 27 Apr 2026 19:13:50 +0200
+Message-ID: <8780eb2ef80575931a339e5225bc80eb13e9be6c.1777306795.git.chleroy@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1777306795.git.chleroy@kernel.org>
 References: <cover.1777306795.git.chleroy@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2498; i=chleroy@kernel.org; h=from:subject:message-id; bh=vbZIj5I8a11ig9c375SeIMkNInKGe+jckYb8HPag1tw=; b=owGbwMvMwCV2d0KB2p7V54MZT6slMWS+nxmbKDOhb/vkF5+62Iv+nzi0lmWmkWf+tSO3HK9yP D89hV+LoaOUhUGMi0FWTJHl+H/uXTO6vqTmT92lDzOHlQlkCAMXpwBMJCKWkeGFnFP5dUbGE1cO pXr18eg3ndoc9ubDcl2tYxbdt9o1nmkyMvQuDCp+FV4TvfDP3c6+r/YFCyvUNTZlcrea/2SZ/OM dBwcA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3638; i=chleroy@kernel.org; h=from:subject:message-id; bh=xblTv37x9V4gU3cvmA9ILfz6xXNOv0sNe2zU9C6a5nw=; b=owGbwMvMwCV2d0KB2p7V54MZT6slMWS+nxlr/n9yu2DE7uwkCZGbl0uCp6Y1JLvZTPpz+P/PY xNqPMoaOkpZGMS4GGTFFFmO/+feNaPrS2r+1F36MHNYmUCGMHBxCsBE9HwZ/ns82Ho9PV2Q+7Pp 5fqvs6O/v3YN+3EgL+Wk4b/co1rlkZ8YGVZxmDl7XFiUcmPSTPW14WGSHT6/1u4pcTY2cjD0U7P bzAkA
 X-Developer-Key: i=chleroy@kernel.org; a=openpgp; fpr=10FFE6F8B390DE17ACC2632368A92FEB01B8DD78
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -115,62 +115,110 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-At the time being, x86 and arm64 are missing unsafe_copy_from_user().
+copy_{to/from}_user() is a heavy function optimised for copy of large
+blocs of memory between user and kernel space.
 
-Add it.
+When the number of bytes to be copied is known at build time and small,
+using scoped user access removes the burden of that optimisation.
 
 Signed-off-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 ---
- arch/arm64/include/asm/uaccess.h | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ include/linux/uaccess.h | 47 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-index 1e20ec91b56f..adfdb52cd82b 100644
---- a/arch/arm64/include/asm/uaccess.h
-+++ b/arch/arm64/include/asm/uaccess.h
-@@ -437,7 +437,7 @@ static inline void user_access_restore(unsigned long enabled) { }
-  * We want the unsafe accessors to always be inlined and use
-  * the error labels - thus the macro games.
-  */
--#define unsafe_copy_loop(dst, src, len, type, label)				\
-+#define unsafe_put_loop(dst, src, len, type, label)				\
- 	while (len >= sizeof(type)) {						\
- 		unsafe_put_user(*(type *)(src),(type __user *)(dst),label);	\
- 		dst += sizeof(type);						\
-@@ -450,10 +450,29 @@ do {									\
- 	char __user *__ucu_dst = (_dst);				\
- 	const char *__ucu_src = (_src);					\
- 	size_t __ucu_len = (_len);					\
--	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
--	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
--	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
--	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
-+	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
-+	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
-+	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
-+	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
-+} while (0)
-+
-+#define unsafe_get_loop(dst, src, len, type, label)				\
-+	while (len >= sizeof(type)) {						\
-+		unsafe_get_user(*(type __user *)(src),(type *)(dst),label);	\
-+		dst += sizeof(type);						\
-+		src += sizeof(type);						\
-+		len -= sizeof(type);						\
-+	}
-+
-+#define unsafe_copy_from_user(_dst,_src,_len,label)			\
-+do {									\
-+	char *__ucu_dst = (_dst);					\
-+	const char __user *__ucu_src = (_src);				\
-+	size_t __ucu_len = (_len);					\
-+	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
-+	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
-+	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
-+	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
- } while (0)
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 33b7d0f5f808..3ac544527af2 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -50,6 +50,8 @@
+  #define mask_user_address(src) (src)
+ #endif
  
- extern unsigned long __must_check __arch_clear_user(void __user *to, unsigned long n);
++#define SMALL_COPY_USER		64
++
+ /*
+  * Architectures should provide two primitives (raw_copy_{to,from}_user())
+  * and get rid of their private instances of copy_{to,from}_user() and
+@@ -191,6 +193,9 @@ _inline_copy_from_user(void *to, const void __user *from, unsigned long n)
+ 	return res;
+ }
+ 
++static __always_inline __must_check unsigned long
++_small_copy_from_user(void *to, const void __user *from, unsigned long n);
++
+ extern __must_check unsigned long
+ _copy_from_user(void *, const void __user *, unsigned long);
+ 
+@@ -207,6 +212,9 @@ _inline_copy_to_user(void __user *to, const void *from, unsigned long n)
+ 	return n;
+ }
+ 
++static __always_inline __must_check unsigned long
++_small_copy_to_user(void __user *to, const void *from, unsigned long n);
++
+ extern __must_check unsigned long
+ _copy_to_user(void __user *, const void *, unsigned long);
+ 
+@@ -215,6 +223,8 @@ copy_from_user_common(void *to, const void __user *from, unsigned long n, bool p
+ {
+ 	if (!check_copy_size(to, n, false))
+ 		return n;
++	if (!partial && __builtin_constant_p(n) && n <= SMALL_COPY_USER)
++		return _small_copy_from_user(to, from, n);
+ 	if (IS_ENABLED(ARCH_WANTS_NOINLINE_COPY_USER))
+ 		return _copy_from_user(to, from, n);
+ 	else
+@@ -239,6 +249,8 @@ copy_to_user_common(void __user *to, const void *from, unsigned long n, bool par
+ 	if (!check_copy_size(from, n, true))
+ 		return n;
+ 
++	if (!partial && __builtin_constant_p(n) && n <= SMALL_COPY_USER)
++		return _small_copy_to_user(to, from, n);
+ 	if (IS_ENABLED(ARCH_WANTS_NOINLINE_COPY_USER))
+ 		return _copy_to_user(to, from, n);
+ 	else
+@@ -838,6 +850,41 @@ for (bool done = false; !done; done = true)					\
+ #define scoped_user_rw_access(uptr, elbl)				\
+ 	scoped_user_rw_access_size(uptr, sizeof(*(uptr)), elbl)
+ 
++static __always_inline __must_check unsigned long
++_small_copy_from_user(void *to, const void __user *from, unsigned long n)
++{
++	might_fault();
++	instrument_copy_from_user_before(to, from, n);
++	scoped_user_read_access_size(from, n, failed) {
++		/*
++		 * Ensure that bad access_ok() speculation will not lead
++		 * to nasty side effects *after* the copy is finished:
++		 */
++		if (!can_do_masked_user_access())
++			barrier_nospec();
++		unsafe_copy_from_user(to, from, n, failed);
++	}
++	instrument_copy_from_user_after(to, from, n, 0);
++	return 0;
++failed:
++	instrument_copy_from_user_after(to, from, n, n);
++	return n;
++}
++
++static __always_inline __must_check unsigned long
++_small_copy_to_user(void __user *to, const void *from, unsigned long n)
++{
++	might_fault();
++	if (should_fail_usercopy())
++		return n;
++	instrument_copy_to_user(to, from, n);
++	scoped_user_write_access_size(to, n, failed)
++		unsafe_copy_to_user(to, from, n, failed);
++	return 0;
++failed:
++	return n;
++}
++
+ /**
+  * get_user_inline - Read user data inlined
+  * @val:	The variable to store the value read from user memory
 -- 
 2.49.0
 
