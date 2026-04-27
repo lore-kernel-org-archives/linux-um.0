@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F86FF885C
-	for <linux-um@archiver.kernel.org>; Sun, 26 Apr 2026 00:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95EDDFF885E
+	for <linux-um@archiver.kernel.org>; Mon, 27 Apr 2026 13:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=FaiLW/pVXClx0hGhS3rNh2hU+gA/RQ/q+swTpIKpuX4=; b=qwbj+2yo+qh+7jKnuUmrp7dw0j
-	CT73sG9zMfE1x1Id4WKkXhkx4MBIochxDZ1FTB9laPL/aZnYAs4w+L067l8JkHndGecUUKo+YUIuz
-	gg74jqxYREDbJWDXK9Tj8pRvT74Q1BlFGk86POIPhuHWUv5V80/Mm+txEewHB57LzZMR9VZE4aQDd
-	JmyDKyiCQyKQ+B6GJjzNJKiWrzpYMIlBTIKn+aAmns4DO2WoHbrQ8Z6NU4RtB67Zlw2tjw603rpJU
-	9zMYPu+W9+Y6Wug6NSLah8nj+eXcaIjQxPmvhXwh/MxiYUXbUB3EEVblWUXcJrSbG/NhNYd1JDkXI
-	450FRKwA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Mime-Version:From:
+	Content-Transfer-Encoding:In-Reply-To:References:Content-Type:Cc:Message-Id:
+	Date:Subject:To:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=baKvzSOW4QC8ZRLKPMcqjLBbH845TIhG5tsH0QB936E=; b=1PNg6sgp5u7klAZELWTt/jsSYY
+	FIPULKzwqHgZQu6ki1KF3+twI7pxqrF4T8vVhB+MzWeYnsAHNc/cKLb4+D8QtHsqEh6zzwKKcaEyS
+	j8KORj0AB2TxsLEq0MRizeygUfwXQDBC3+s9he3RqJQIKLg7UN5AM7WJt5Hsa+fNJLm19qZzdgh0H
+	rFZdXl04Uja8Wn5jcw5ayERO10JO1cSnKkYM8Mq8RDr2icFYPEJoJrwaF8rlsWJGfd4omcgMPOpwo
+	CyXxDjSTR2TYp0vmPAqYvYRs9/xhjNj5SVxwkGTCn/hyaKY9xAyUDhex5+HhnVjF1YSW43oHzllow
+	zZg44uCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGmyN-0000000F5vx-2fDd;
-	Sun, 26 Apr 2026 00:03:43 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wHM8X-0000000H0hX-14Cf;
+	Mon, 27 Apr 2026 13:36:33 +0000
+Received: from va-2-29.ptr.blmpb.com ([209.127.231.29])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wGmyL-0000000F5vb-33Kb
+	id 1wHM8T-0000000H0gW-0zKV
 	for linux-um@lists.infradead.org;
-	Sun, 26 Apr 2026 00:03:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6026744056;
-	Sun, 26 Apr 2026 00:03:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F96CC2BCB0;
-	Sun, 26 Apr 2026 00:03:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777161821;
-	bh=l0kIGOnwEOk/z/NCHNJe/hFxFNb+wlfcj7Roc12943g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QZfBuGEwfNmc903opHbEC2LM1hIjcYDq/xfEddYzpJK9w0JLj84Y1tK6RmZUMzMq+
-	 hhcEU0eDJ581PMmJTWzs69zze7rrClxHxmETLJ6OwFVAzxzA8p4DwZCM6DUUtB3HRf
-	 c/yXvFhh1KMSZrmAoZfljdvj4tIiOjwL08DhAB2qdS4t2jnxwLh3uVXvKtABMD0Ast
-	 u2PoDEb4fkH/QPi4cSxHTPqtj18Ke/Alnjg+Ul0pF11pZkv2wz65jdUyOHed3Wh5m0
-	 7hAUzotbSfTQObc+TYJgHt9MMnk/3PVvkZq9S5IZVtkRd4rC3d8lxszGHLyQFLc9Of
-	 tw9GkrTcY2nTQ==
-From: Sasha Levin <sashal@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] um: Consolidate MAGIC_SYSRQ into generic Kconfig definition
-Date: Sat, 25 Apr 2026 20:03:39 -0400
-Message-ID: <20260426000339.57049-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
+	Mon, 27 Apr 2026 13:36:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=feishu2604220257; d=cherr.cc; t=1777296978; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=baKvzSOW4QC8ZRLKPMcqjLBbH845TIhG5tsH0QB936E=;
+ b=DrvfqBfSwVEO1NDrQYE1Gd8NgGaBXlWcSGsjTDYDuQuTV0GBR/9AN9nONRyImUBlIrh9KM
+ u2AYChcGxdF/0KpDVLIIyAYnkriTLrolAR0VOmqx60eMlPsmRAj2DEFuV25AEAqHe0kq9n
+ qMHoZeCnJLbc7uWVwF1lrPDPpwtpt7qTXzFLNFhg58stMOQ43mli9VhYUalA6+VPFI7QEQ
+ O5yToD/4k0vxhb5LX8HDQJN2+TnDTtVUhmoxRNxw60JTRuT/UEEP0bd2swWc9E7oN0V/XE
+ 65IezDuf7uc4Vzvd00uZcG96g5BfDGdS+zwJevTzsn8u+uVCzstAYGEAyilRxQ==
+To: "Richard Weinberger" <richard@nod.at>, 
+	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, 
+	"Johannes Berg" <johannes@sipsolutions.net>, 
+	"Dan Carpenter" <error27@gmail.com>, 
+	"Andrew Morton" <akpm@linux-foundation.org>, 
+	"Jeff Dike" <jdike@addtoit.com>, 
+	"David Laight" <david.laight.linux@gmail.com>
+Subject: Re: [PATCH] um: proc/exitcode: fix simple_strtol() out-of-bounds read
+Date: Mon, 27 Apr 2026 21:36:13 +0800
+Message-Id: <ae9mTTqp0QgL6rcL@pve.cherr>
+Cc: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>, 
+	"Shengzhuo Wei" <me@cherr.cc>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20260423-fix_exitcode-v1-1-7e4508913d68@cherr.cc>
+In-Reply-To: <20260423-fix_exitcode-v1-1-7e4508913d68@cherr.cc>
+Received: from pve.cherr ([111.42.148.84]) by smtp.feishu.cn with ESMTPS; Mon, 27 Apr 2026 21:36:16 +0800
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+From: "Shengzhuo Wei" <me@cherr.cc>
+Mime-Version: 1.0
+X-Original-From: Shengzhuo Wei <me@cherr.cc>
+X-Lms-Return-Path: <lba+269ef6651+ee31b0+lists.infradead.org+me@cherr.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260425_170341_831333_F00979E5 
-X-CRM114-Status: GOOD (  16.04  )
+X-CRM114-CacheID: sfid-20260427_063629_356865_392A1413 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,105 +76,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-kconfiglint reports:
+On 2026-04-23 01:39, Shengzhuo Wei wrote:
+> write(2) should report the number of bytes consumed. Returning the original
+> count would claim success even when the input was truncated, so userspace
+> cannot detect it.
+> 
+> Clamp the copy length to sizeof(buf)-1, add a terminator, and return the
+> consumed length.
+> 
+> Fixes: 201f99f170df ("uml: check length in exitcode_proc_write()")
+> Fixes: e16f5350d4cf ("uml: get declaration of simple_strtoul")
+> Signed-off-by: Shengzhuo Wei <me@cherr.cc>
+> ---
+>  arch/um/kernel/exitcode.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/um/kernel/exitcode.c b/arch/um/kernel/exitcode.c
+> index 43edc2aa57e4fbd4a3d24f96878c76f9f8fd4eaa..8de404ff21a213918c5351bc20a6e047bf1b93f5 100644
+> --- a/arch/um/kernel/exitcode.c
+> +++ b/arch/um/kernel/exitcode.c
+> @@ -43,16 +43,17 @@ static ssize_t exitcode_proc_write(struct file *file,
+>  	size_t size;
+>  	int tmp;
+>  
+> -	size = min(count, sizeof(buf));
+> +	size = min(count, sizeof(buf) - 1);
+>  	if (copy_from_user(buf, buffer, size))
+>  		return -EFAULT;
+> +	buf[size] = '\0';
+>  
+>  	tmp = simple_strtol(buf, &end, 0);
+>  	if ((*end != '\0') && !isspace(*end))
+>  		return -EINVAL;
+>  
+>  	uml_exitcode = tmp;
+> -	return count;
+> +	return size;
 
-  K008: config MAGIC_SYSRQ has prompts in 2 separate definitions
+There is another problem that have been talked about in another patch.
+Not consuming the whole string passed by user may (and will) break
+some programs that want to ensure "FULL WRITE" that use some function
+like "while (len > 0) { len -= write(); } ".
 
-MAGIC_SYSRQ is defined in two places with complementary conditions:
+Should we just let the return count as-is and fix the OOB problem only?
 
-  arch/um/Kconfig:213 — depends on MCONSOLE (UML only)
-  lib/Kconfig.debug:665 — depends on !UML (everything except UML)
+Link: https://lore.kernel.org/all/20260424063531.d1508a3c79c4b7808ed04420@linux-foundation.org/t/#u
+Link: https://lore.kernel.org/all/ef2301c4-bbc5-496e-b9d2-9adcff8b8d42@p183/
 
-The UML definition has existed since the initial git import in
-commit 1da177e4c3f4 ("Linux-2.6.12-rc2"). UML needs MAGIC_SYSRQ to work
-through its mconsole interface rather than through keyboard input, so the
-UML version depends on MCONSOLE while the generic version excludes UML
-entirely with `depends on !UML`.
+Regards,
+Shengzhuo Wei
 
-These two definitions are logically complementary: on UML, MAGIC_SYSRQ
-requires MCONSOLE; on everything else, it has no special dependencies.
-This can be expressed as a single definition with
-`depends on !UML || MCONSOLE`, which evaluates to:
-  - On UML: requires MCONSOLE (same as before)
-  - On non-UML: always satisfiable (same as before)
-
-Consolidate into the generic definition in lib/Kconfig.debug by changing
-the dependency to `depends on !UML || MCONSOLE` and merging the UML-
-specific help text that explains the mconsole-based sysrq interface.
-Remove the now-redundant definition from arch/um/Kconfig.
-
-This follows the same unification pattern used by commit 7bd291abe2da
-("sched: Unify the SCHED_{SMT,CLUSTER,MC} Kconfig") and our earlier
-SCHED_MC consolidation for SH.
-
-No functional change — the resulting Kconfig behavior is identical.
-
-Assisted-by: Claude:claude-opus-4-6 kconfiglint
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Kconfig   | 19 -------------------
- lib/Kconfig.debug | 10 ++++++----
- 2 files changed, 6 insertions(+), 23 deletions(-)
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index d9541d13d9eb0..5af245ede463f 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -210,25 +210,6 @@ config MCONSOLE
- 
- 	  It is safe to say 'Y' here.
- 
--config MAGIC_SYSRQ
--	bool "Magic SysRq key"
--	depends on MCONSOLE
--	help
--	  If you say Y here, you will have some control over the system even
--	  if the system crashes for example during kernel debugging (e.g., you
--	  will be able to flush the buffer cache to disk, reboot the system
--	  immediately or dump some status information). A key for each of the
--	  possible requests is provided.
--
--	  This is the feature normally accomplished by pressing a key
--	  while holding SysRq (Alt+PrintScreen).
--
--	  On UML, this is accomplished by sending a "sysrq" command with
--	  mconsole, followed by the letter for the requested command.
--
--	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
--	  unless you really know what this hack does.
--
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
- 	default 2 if 64BIT
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 8ff5adcfe1e0a..695e118f910fb 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -664,7 +664,7 @@ menu "Generic Kernel Debugging Instruments"
- 
- config MAGIC_SYSRQ
- 	bool "Magic SysRq key"
--	depends on !UML
-+	depends on !UML || MCONSOLE
- 	help
- 	  If you say Y here, you will have some control over the system even
- 	  if the system crashes for example during kernel debugging (e.g., you
-@@ -672,9 +672,11 @@ config MAGIC_SYSRQ
- 	  immediately or dump some status information). This is accomplished
- 	  by pressing various keys while holding SysRq (Alt+PrintScreen). It
- 	  also works on a serial console (on PC hardware at least), if you
--	  send a BREAK and then within 5 seconds a command keypress. The
--	  keys are documented in <file:Documentation/admin-guide/sysrq.rst>.
--	  Don't say Y unless you really know what this hack does.
-+	  send a BREAK and then within 5 seconds a command keypress. On UML,
-+	  this is accomplished by sending a "sysrq" command with mconsole,
-+	  followed by the letter for the requested command. The keys are
-+	  documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say
-+	  Y unless you really know what this hack does.
- 
- config MAGIC_SYSRQ_DEFAULT_ENABLE
- 	hex "Enable magic SysRq key functions by default"
--- 
-2.53.0
-
+>  }
+>  
+>  static const struct proc_ops exitcode_proc_ops = {
+> 
+> ---
 
