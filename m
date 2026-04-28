@@ -4,71 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9393FF885D
-	for <linux-um@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4B3FFF886D
+	for <linux-um@archiver.kernel.org>; Tue, 28 Apr 2026 11:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XPeVV9Ayo/Efa43OPqj35YhEQB3TFUbldQEXbJjJCzI=; b=bXNs4EM2OQyvlWqBWjzufH/zin
-	9ArEw7c5EIYZiZYva1UndSe06VBGyPXa9Jp76ISR8vRGkxrfTIuXKS/CaMCUfskpwU7BVKoN/91rQ
-	MuB4H0R+//l95FzrzxLSjZ3H1ur3OK/vxbARmqHnzS3WxcOb6srmJO2i47Viw9CilLfnDLNnFxJnI
-	Lg6MTEbVFBkhj4UR2q9ujxa392/Or3+/AAwqN4UeF8lT9PiWADyxNagaiMNpLy9oHvMTMRwXvz/Iu
-	MOVnQBKuhkVFMyL+S8PTCIM9h7+Wqg5PlxId9JTmzXppRA53Ecrf7lB/iMuwUlV0O/K/oHpWXC3D0
-	SJLk5dMw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=wVlN3F/adnpU3EbVMRovr5PQ7UzNKrgvugpJLXSzjvA=; b=oRcVKAUKufJI9GFijrnAA9GqN2
+	XMa5VZ/12pvXLArSepb38XVjpHb/Ormskl9RGIaDhb/jwF4KOn/yglICaoM7dc82Igz6pfpHNAzio
+	tP9Tgw2mnXdn7vF87+WWhw3Ab8ICSfE+JJiPYoC9Oy298UPOCZSsa2Qk0VMvD2ACs5ofqFlSkF51j
+	Cwa+YRmZypj/T1Uxdimbx2nUapr3zmJ8lTkS2kZJ3LJJVIxxEZeG6FfXCwqwB8SAT+E/FhdYx2kTS
+	6dC9evn6d+3Nocwtn5zbvlDpr0PTLkrlq3KNWGlQtrWojCHLwwz1goa4SUgRr+mP/hSbs0+aUshj/
+	GYFKhAdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHftC-00000001CDw-2sZJ;
-	Tue, 28 Apr 2026 10:42:02 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
-	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHft9-00000001CBn-2IZF
-	for linux-um@lists.infradead.org;
-	Tue, 28 Apr 2026 10:42:00 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 312C944059;
-	Tue, 28 Apr 2026 10:41:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3211C2BCAF;
-	Tue, 28 Apr 2026 10:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777372919;
-	bh=vZc4P0BDoe7eirlzk7685cVeWW4/osHZn5mpP9ILqCo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NFg+rsEjNmf2yWL/hq+mXrb8QEGUJDyxMZITDco//gM49SkXy0ug7u2pSsU6WY3qL
-	 U9HHEBqjjBYqeGSG7mRMwoMTEc6x6xkDvG9U7z4LpCQYd/9XYErXCeTFkyQSpUq/pF
-	 Ll07E7wVVbuZgBsboST3kdPDuq1cObuNIuk02tXItMXJxjNtZQEIJB16ogmt6izxx2
-	 hxKvS04eMg5ppqHaa1OVPX2cADIuQa/4oX+5H7Oc1y9KKLe62QFM0yu6c8WPWLUVsq
-	 +nTz73v71ENngp8LIsutJV9t6031bS26tpoahKAxYKqBZKBz5mSQ/eX+UvdpBOMb0o
-	 AqJTKYO/Q7ONg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.1] um: Disable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21
-Date: Tue, 28 Apr 2026 06:40:29 -0400
-Message-ID: <20260428104133.2858589-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260428104133.2858589-1-sashal@kernel.org>
-References: <20260428104133.2858589-1-sashal@kernel.org>
+	id 1wHgUz-00000001L41-3LO1;
+	Tue, 28 Apr 2026 11:21:05 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1wHgUw-00000001L32-2Vcd;
+	Tue, 28 Apr 2026 11:21:04 +0000
+Received: from gate.crashing.org (localhost [127.0.0.1])
+	by gate.crashing.org (8.18.1/8.18.1/Debian-2) with ESMTP id 63SBKIxF1057213;
+	Tue, 28 Apr 2026 06:20:18 -0500
+Received: (from segher@localhost)
+	by gate.crashing.org (8.18.1/8.18.1/Submit) id 63SBKHXo1057211;
+	Tue, 28 Apr 2026 06:20:17 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date: Tue, 28 Apr 2026 06:20:17 -0500
+From: Segher Boessenkool <segher@kernel.crashing.org>
+To: Yury Norov <ynorov@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Laight <david.laight.linux@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org,
+        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        dmaengine@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-fsdevel@vger.kernel.org,
+        ocfs2-devel@lists.linux.dev, bpf@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-x25@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        linux-sound@vger.kernel.org, sound-open-firmware@alsa-project.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH v1 7/9] x86: Add unsafe_copy_from_user()
+Message-ID: <afCX8WlnEFUei1y6@gate>
+References: <cover.1777306795.git.chleroy@kernel.org>
+ <0ee46bb228d97163fbdc14f2a7c52b93d8bc34ce.1777306795.git.chleroy@kernel.org>
+ <ae-j2_QirCySZD02@yury>
+ <63a4d0f6-0eb3-48cd-9f98-bf7b223b2606@kernel.org>
+ <ae-2yLWSGnfeTvh1@yury>
+ <CAHk-=wgPrLy0FR3sEWBYQuNAac1axDASYMnTuPuxEU0WytzL7w@mail.gmail.com>
+ <ae_jeJLlVWjJ4sOY@yury>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 7.0.2
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae_jeJLlVWjJ4sOY@yury>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260428_034159_636051_56581FEC 
-X-CRM114-Status: GOOD (  18.07  )
+X-CRM114-CacheID: sfid-20260428_042102_834754_31566CF4 
+X-CRM114-Status: GOOD (  21.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,347 +93,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Kees Cook <kees@kernel.org>
+Hi!
 
-[ Upstream commit 6522fe5c1b007c376fc5f2de1016c99a18b0af8e ]
+On Mon, Apr 27, 2026 at 06:30:16PM -0400, Yury Norov wrote:
+> On Mon, Apr 27, 2026 at 02:52:05PM -0700, Linus Torvalds wrote:
+> > On Mon, 27 Apr 2026 at 12:19, Yury Norov <ynorov@nvidia.com> wrote:
+> > >
+> > > This is what Linus said when added x86 implementation for copy_from_user()
+> > > in c512c69187197:
+> > 
+> > Note that some things have happily changed in the six+ years since...
+> > 
+> > >   That's partly because we have no current users of it, but also partly
+> > >   because the copy_from_user() case is slightly different and cannot
+> > >   efficiently be implemented in terms of a unsafe_get_user() loop (because
+> > >   gcc can't do asm goto with outputs).
+> > 
+> > now everybody can do asm goto with outputs.
+> > 
+> > Yes, it's disabled on older versions, so it's not *always* available,
+> > but all modern versions do it. And if you care about performance, you
+> > won't be using an old compiler.
+> 
+> The minimal GCC version is 8.1, and asm goto with outputs is supported
+> since GCC-11. That would brake the build, if we just switch to using it
+> without "CC_IS_GCC && (GCC_VERSION >= 110100)" guard.
+> 
+> Is it worth to maintain 2 version of the function? I don't know...
 
-Clang 20 and 21 miscompute __builtin_object_size() when -fprofile-arcs
-is active on 32-bit UML targets, which passes incorrect object size
-calculations for local variables through always_inline copy_to_user()
-and check_copy_size(), causing spurious compile-time errors:
+GCC 11 was released five years and a day ago.  The last GCC 11 release
+(that of 11.5) is not even two years ago though (but there will be no
+more!)
 
-  include/linux/ucopysize.h:52:4: error: call to '__bad_copy_from' declared with 'error' attribute: copy source size is too small
+So it would be not conservative at all to require GCC 11 as minimum now,
+some people might even call it a bit aggressive.  But in a year (or
+maybe two) the lay of the land will be rather different.
 
-The regression was introduced in LLVM commit 02b8ee281947 ("[llvm]
-Improve llvm.objectsize computation by computing GEP, alloca and malloc
-parameters bound"), which shipped in Clang 20. It was fixed in LLVM
-by commit 45b697e610fd ("[MemoryBuiltins] Consider index type size
-when aggregating gep offsets"), which was backported to the LLVM 22.x
-release branch.
 
-The bug requires 32-bit UML + GCOV_PROFILE_ALL (which uses -fprofile-arcs),
-though the exact trigger depends on optimizer decisions influenced by other
-enabled configs.
-
-Prevent the bad combination by disabling UML's ARCH_HAS_GCOV_PROFILE_ALL
-on 32-bit when using Clang 20.x or 21.x.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202604030531.O6FveVgn-lkp@intel.com/
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Assisted-by: Claude:claude-opus-4-6[1m]
-Signed-off-by: Kees Cook <kees@kernel.org>
-Link: https://patch.msgid.link/20260409052038.make.995-kees@kernel.org
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-Now I have a complete picture. Let me write the analysis.
-
-## Analysis
-
-### Phase 1: Commit Message Forensics
-
-**Step 1.1 - Subject Line:**
-Record: Subsystem = `um:` (User Mode Linux). Action verb = "Disable".
-Summary = Disable GCOV_PROFILE_ALL on 32-bit UML when building with
-Clang 20/21 to avoid a compiler miscompile.
-
-**Step 1.2 - Tags:**
-Record:
-- `Reported-by: kernel test robot <lkp@intel.com>` (lkp build failure
-  report)
-- `Closes: https://lore.kernel.org/oe-kbuild-all/202604030531.O6FveVgn-
-  lkp@intel.com/` (lkp report)
-- `Suggested-by: Nathan Chancellor <nathan@kernel.org>` (LLVM-kernel
-  maintainer endorsed the approach)
-- `Signed-off-by: Kees Cook <kees@kernel.org>` (hardening maintainer,
-  patch author)
-- `Link:
-  https://patch.msgid.link/20260409052038.make.995-kees@kernel.org`
-- `Signed-off-by: Johannes Berg <johannes.berg@intel.com>` (UML co-
-  maintainer applied it)
-- No `Fixes:` tag, no `Cc: stable` tag (expected for this review
-  pipeline)
-
-**Step 1.3 - Body Analysis:**
-Record: Bug = Clang 20/21 miscompute `__builtin_object_size()` when
-`-fprofile-arcs` is active on 32-bit UML. Symptom = spurious compile-
-time error: `error: call to '__bad_copy_from' declared with 'error'
-attribute: copy source size is too small`. Root cause identified in LLVM
-commit `02b8ee281947` (shipped in Clang 20), fixed in LLVM by
-`45b697e610fd`, backported to LLVM 22.x. Trigger = 32-bit UML +
-`GCOV_PROFILE_ALL` + Clang 20 or 21.
-
-**Step 1.4 - Hidden Bug Fix Detection:**
-Record: Not hidden - explicitly a build fix / toolchain workaround. Verb
-"Disable" accurately describes adding a Kconfig guard to prevent a
-broken combination.
-
-### Phase 2: Diff Analysis
-
-**Step 2.1 - Inventory:**
-Record: 1 file changed (`arch/um/Kconfig`), +3/-1 lines. Functions
-modified = none (Kconfig only). Scope = single-file, single-line logic
-change.
-
-**Step 2.2 - Code Flow Change:**
-Record: BEFORE: `config UML` unconditionally `select
-ARCH_HAS_GCOV_PROFILE_ALL`. AFTER: selects it only when NOT (32-bit AND
-Clang in `[20.0.0, 22.1.0)` range). Adds comment explaining why.
-
-**Step 2.3 - Bug Mechanism:**
-Record: Category = (h) Hardware/toolchain workarounds - specifically
-Kconfig dependency guard for a broken compiler. Mechanism = removing an
-invalid configuration option combination that would otherwise result in
-a compile-time error.
-
-**Step 2.4 - Fix Quality:**
-Record: Obviously correct Kconfig guard. Minimal. Zero regression risk
-at runtime (build configuration only). The only "risk" is disabling a
-feature in an invalid config, which is exactly the intent.
-
-### Phase 3: Git History Investigation
-
-**Step 3.1 - Blame:**
-Record: `select ARCH_HAS_GCOV_PROFILE_ALL` for UML was added in commit
-`2419ac3272669` ("um: Enable ARCH_HAS_GCOV_PROFILE_ALL" by Vincent
-Whitchurch, April 2022), first released in v5.19.
-
-**Step 3.2 - Fixes Tag:**
-Record: No Fixes: tag. The root cause is an LLVM compiler bug, not a
-kernel bug. LLVM commit `02b8ee281947` shipped in Clang 20 (external
-toolchain, not trackable via kernel Fixes:).
-
-**Step 3.3 - File History:**
-Record: Recent UM Kconfig churn includes MMU_GATHER_RCU_TABLE_FREE,
-KASAN_INLINE, SMP support, FORTIFY_SOURCE. No conflicting work on GCOV.
-Standalone patch, not part of a series.
-
-**Step 3.4 - Author Context:**
-Record: Kees Cook (kernel hardening/fortify maintainer) authored.
-Johannes Berg (UML co-maintainer) applied it. Nathan Chancellor (LLVM-
-kernel integration) suggested the approach. Strong expert endorsement
-from multiple relevant maintainers.
-
-**Step 3.5 - Dependencies:**
-Record: Depends only on `CLANG_VERSION` Kconfig symbol (present since at
-least v5.19). No kernel commit prerequisites.
-
-### Phase 4: Mailing List Investigation
-
-**Step 4.1 - Original Discussion:**
-Record: Fetched the thread via `b4 mbox` for message-id
-`20260409052038.make.995-kees@kernel.org`. This is v3; v1 at
-`20260408005958.work.271-kees@kernel.org` and v2 at
-`20260408162607.it.347-kees@kernel.org`. v3 changed approach based on
-Nathan Chancellor's suggestion (use `ARCH_HAS_GCOV_PROFILE_ALL` guard in
-arch/um instead of earlier approaches).
-
-**Step 4.2 - Reviewers:**
-Record: Thread includes UML maintainers (Richard Weinberger, Johannes
-Berg, Anton Ivanov), LLVM/Clang kernel contacts (Nathan Chancellor, Nick
-Desaulniers, Bill Wendling, Justin Stitt), and mailing lists (llvm@,
-linux-um@, linux-kernel@, linux-hardening@). Proper review coverage.
-
-**Step 4.3 - Bug Report:**
-Record: Reported-by lkp (kernel test robot) with lore link. This is an
-automated build tester - the bug was reproduced by lkp's test matrix.
-
-**Step 4.4 - Discussion Details:**
-Record: Johannes Berg raised a stylistic question about the version
-comparison bounds. Nathan Chancellor explained the bounds (including
-`22.0.x` which is the 22 development cycle, not 22.1.0 which is the
-first release). No NAKs; stylistic feedback only. No explicit stable
-nomination in the discussion.
-
-**Step 4.5 - Stable-List Discussion:**
-Record: No prior discussion on stable list found for this specific
-issue.
-
-### Phase 5: Semantic Analysis
-
-**Step 5.1 - Key functions:**
-Record: No functions modified. Kconfig-only change. `check_copy_size()`
-and `copy_to_user()` are mentioned as affected by the underlying
-miscompile, but they are not being modified.
-
-**Step 5.2-5.5:**
-Record: N/A for a Kconfig-only guard. Impact surface = anyone who builds
-32-bit UML with Clang 20/21 and enables `CONFIG_GCOV_PROFILE_ALL`.
-
-### Phase 6: Cross-Referencing Stable Trees
-
-**Step 6.1 - Buggy code in stable:**
-Record: Verified `select ARCH_HAS_GCOV_PROFILE_ALL` is present in UML
-Kconfig for v5.19, v6.1, v6.6, v6.12, v6.16, v7.0. So the "buggy
-combination" is selectable in all stable trees from v5.19 onward.
-
-**Step 6.2 - Backport Complications:**
-Record: Diff context is present cleanly in v6.1+ (line before is `select
-ARCH_HAS_FORTIFY_SOURCE`). In v5.19 the preceding line is
-`ARCH_EPHEMERAL_INODES` instead, so a very minor context adjustment
-would be needed for 5.19 only; v6.1+ should apply verbatim.
-`CLANG_VERSION` Kconfig symbol confirmed present in all trees checked.
-
-**Step 6.3 - Related fixes in stable:**
-Record: No prior fix exists. This is the first solution to this specific
-Clang 20/21 miscompile for UML.
-
-### Phase 7: Subsystem Context
-
-**Step 7.1 - Criticality:**
-Record: Subsystem = `arch/um/` (User Mode Linux). Criticality =
-PERIPHERAL. UML is a special architecture primarily used for kernel
-testing/debugging, not production deployments.
-
-**Step 7.2 - Activity:**
-Record: UML is moderately active - recent commits include SMP support,
-KASAN, preemption, page tables. Active but niche.
-
-### Phase 8: Impact and Risk
-
-**Step 8.1 - Affected Users:**
-Record: Only users who build with 32-bit UML +
-`CONFIG_GCOV_PROFILE_ALL=y` + Clang 20 or 21. Very narrow intersection;
-primarily kernel developers doing coverage testing on UML.
-
-**Step 8.2 - Trigger:**
-Record: Only triggers at BUILD time (not runtime). Trigger = compiling
-the kernel with the specific config combination above. Reproducible
-(kernel test robot hit it).
-
-**Step 8.3 - Failure Mode:**
-Record: Compile-time error - kernel fails to build. Severity = MEDIUM
-(blocks compilation but no runtime/security impact; users can work
-around by disabling GCOV or using different Clang version). Falls under
-allowed "BUILD FIXES" exception category in stable rules.
-
-**Step 8.4 - Risk/Benefit:**
-Record: BENEFIT = Fixes build failure for users in affected config
-(narrow but real). RISK = Effectively zero - Kconfig guard cannot cause
-runtime regressions; only cost is that affected users lose the ability
-to enable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21 (which was
-already broken anyway). Ratio = strongly favorable when it applies; non-
-impactful otherwise.
-
-### Phase 9: Final Synthesis
-
-**Evidence FOR backporting:**
-- Explicit Kconfig dependency fix - stable rules list "Build fixes:
-  Kconfig dependency fixes" as an explicit exception
-- Zero runtime regression risk (Kconfig-only)
-- Small (3 lines), obviously correct, well-reviewed
-- Subsystem maintainer applied, LLVM expert suggested the approach
-- Reported by automated build bot (real, reproducible issue)
-- Applies cleanly to all stable trees from v6.1 onward; trivial context
-  fix for v5.19
-- Similar Clang 20 build-error fixes are routinely accepted (e.g.,
-  `ef753d66051ca` objtool Clang 20 fix)
-
-**Evidence AGAINST backporting:**
-- Very narrow audience (32-bit UML + GCOV + Clang 20/21)
-- UML is a testing/debug arch, not production-critical
-- No `Cc: stable` in submission; discussion did not raise stable
-  nomination
-- Users can trivially work around by not enabling GCOV or upgrading
-  Clang to 22.1+
-
-**Stable Rules Checklist:**
-1. Obviously correct/tested: YES (Kconfig guard, build-tested by lkp)
-2. Fixes a real bug: YES (reproducible build failure)
-3. Important issue: MEDIUM (build failure, narrow scope)
-4. Small and contained: YES (3 lines, 1 file)
-5. No new features: YES (removes an option in invalid config)
-6. Applies to stable: YES (clean apply to v6.1+; minor context to v5.19)
-
-**Exception category:**
-Record: Falls under "BUILD FIXES - Kconfig dependency fixes" - an
-explicit allowed exception in stable rules.
-
-**Decision:**
-This is a Kconfig-only build fix that prevents a known Clang 20/21
-compiler miscompile from producing spurious compile errors on 32-bit UML
-with GCOV. It has zero runtime risk, applies cleanly to stable trees,
-and is explicitly within an allowed exception category. Although the
-affected user population is narrow, the cost to include it is
-essentially nil, and similar Clang version-specific build fixes are
-routinely backported. Stable users building with affected toolchains
-will otherwise see unexplained build breakage.
-
-### Verification
-
-- [Phase 1] Parsed tags from commit message: Reported-by kernel test
-  robot, Suggested-by Nathan Chancellor, Signed-off-by Kees Cook and
-  Johannes Berg, Link + Closes lore URLs. No Cc: stable, no Fixes: tag.
-- [Phase 1] Identified as an explicit build fix (compile error described
-  with exact error text).
-- [Phase 2] Verified diff: 3 lines added, 1 removed in `arch/um/Kconfig`
-  only; guards `ARCH_HAS_GCOV_PROFILE_ALL` with `!(!64BIT &&
-  CLANG_VERSION >= 200000 && CLANG_VERSION < 220100)`.
-- [Phase 3] `git log 2419ac3272669 -1` confirmed UML's
-  `ARCH_HAS_GCOV_PROFILE_ALL` select originated in v5.19-rc1 (Vincent
-  Whitchurch, Apr 2022).
-- [Phase 3] Confirmed no Fixes: target in kernel history; root cause is
-  LLVM commit (external).
-- [Phase 4] `b4 mbox 20260409052038.make.995-kees@kernel.org` retrieved
-  3-message thread; patch is v3 (links to v1/v2 in commit body). Nathan
-  explained version bounds rationale, no NAKs, no stable nominations
-  raised in thread.
-- [Phase 4] Confirmed proper reviewers/maintainers CC'd: UML maintainers
-  + LLVM kernel contacts.
-- [Phase 5] N/A (Kconfig-only change).
-- [Phase 6] `git show v5.19:arch/um/Kconfig`, `v6.1:`, `v6.6:`,
-  `v6.12:`, `v6.16:`, `v7.0:` all confirmed `select
-  ARCH_HAS_GCOV_PROFILE_ALL` present.
-- [Phase 6] `git show vX.Y:init/Kconfig` confirmed `CLANG_VERSION`
-  Kconfig symbol present in all checked stable trees.
-- [Phase 6] Verified diff context `ARCH_HAS_FORTIFY_SOURCE` /
-  `ARCH_HAS_GCOV_PROFILE_ALL` / `ARCH_HAS_KCOV` is present in v6.1+ for
-  clean apply; v5.19 context differs slightly.
-- [Phase 7] Subsystem = arch/um; peripheral/testing-focused.
-- [Phase 8] Failure mode = compile-time error (no runtime impact).
-  Severity MEDIUM - build failure, narrow config.
-- [Phase 8] Precedent `ef753d66051ca` (objtool Clang 20 fix) confirms
-  similar compiler-compat build fixes get applied in mainline/stable
-  ecosystem.
-- UNVERIFIED: Whether all `LLVM 22.x` patch references are accurate -
-  the commit cites them but I did not independently verify the LLVM
-  commits. This does not affect the kernel backport decision since the
-  kernel-side change stands on its own merits as a Kconfig guard.
-- UNVERIFIED: Exact user-impact numbers (how many stable users build
-  32-bit UML + GCOV + Clang 20/21) - inherently unknowable but likely
-  small; does not change the risk-benefit calculus since risk is
-  effectively zero.
-
-This is a narrowly-scoped Kconfig-only build fix with expert review,
-clean applicability, and zero runtime regression risk. It matches the
-documented "Build fixes / Kconfig dependency fixes" exception in stable
-kernel rules.
-
-**YES**
-
- arch/um/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 098cda44db225..d9541d13d9eb0 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -11,7 +11,9 @@ config UML
- 	select ARCH_HAS_CACHE_LINE_SIZE
- 	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_HAS_FORTIFY_SOURCE
--	select ARCH_HAS_GCOV_PROFILE_ALL
-+	# Clang 20 & 21 miscompute __builtin_object_size() under -fprofile-arcs
-+	# on 32-bit, causing spurious compile-time errors in check_copy_size().
-+	select ARCH_HAS_GCOV_PROFILE_ALL if !(!64BIT && CLANG_VERSION >= 200000 && CLANG_VERSION < 220100)
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_STRNCPY_FROM_USER
- 	select ARCH_HAS_STRNLEN_USER
--- 
-2.53.0
-
+Segher
 
