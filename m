@@ -4,151 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F9A2FF8864
-	for <linux-um@archiver.kernel.org>; Mon, 27 Apr 2026 22:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 429BFFF8868
+	for <linux-um@archiver.kernel.org>; Tue, 28 Apr 2026 09:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
-	Content-Type:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=INTDocwjeOkxaSI4e6JrPlp7Kh7b3u8/5GXqjyNfeUk=; b=HfPXpOgOCnwTsgupKFf5yhjDDG
-	gjpol53wmnCUGYNXNrU56DQKljPErEtl/MkemeiqspfuO7rxoQ0G5RBYLF2/AoW9ziouVFiM//t9r
-	SC57ZNzmAi5vD+Os0tVHaBHyBWWt0IEfAYgvWfocDGBTVc+3NF+IcvuLKvRzlT6mU6JdMrQLQX184
-	m5YOynogvyFshzkeSRrZaGP+i5q5pY5u6D4WDH1I6xQ/wgu0yCDaf5dTW4j1bMYBpn8ge6Znr56TP
-	iOUYAYLWUiFmsWWGkEZ0XZ4Wff58G/D6RzgOsduIyEl216S4j37CzjQJ/fLmqVg1sf+90aCU/CdQ+
-	fBdXrXtA==;
+	bh=Al22kA6RCf7FSEzj29cZLSkjdM9EgXxihmBX7/SeSVI=; b=NdXUQ795zAljUzba8206oywy0j
+	6rCrk2Fd7BRREgtFCFFBpqWC7ANUtc74fPlBGHBeNOEmzk2LDRB4sjNLpDbBCaqicA0DhLUYO6+Co
+	qGPwv+Ehw7gHKMtwSa15XssfOMnFAL+Yy4brCYxZp6lZK9P0sIfEFImreomFkC2QmvkMTd4qgcGh+
+	vfCt+Zbxg9voPlPKh/rffCA/DRhDuau/Q3Cp7+0mrxfHWB+xY8PK53zCdpZbV926N5+/cBAF9R6ex
+	gUCN6C48kDJ8oSwGJ99JeSXm1sz6Gw36PPfuPkJExaEdOkeV9Tp6DTNTPVajUEdTHtwFoOJBJjVD+
+	svNyr1Uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHUTL-00000000GCM-06TT;
-	Mon, 27 Apr 2026 22:30:35 +0000
-Received: from mail-westus2azlp170100005.outbound.protection.outlook.com ([2a01:111:f403:c005::5] helo=CO1PR03CU002.outbound.protection.outlook.com)
+	id 1wHemq-000000015sU-2by8;
+	Tue, 28 Apr 2026 09:31:24 +0000
+Received: from mail-ed1-f49.google.com ([209.85.208.49])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHUTH-00000000GBR-1oUL;
-	Mon, 27 Apr 2026 22:30:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cw2dkYic0VXH1kOjwz3jIZQqr8NTQVH9DBTRDd+uRIJW8uYvfM3m58iBDy5zpHYFWzEy5HurjZ12uATc9tuoWjt6/VUzJQgYZAXBZYTEWP2XEmKALhwnH1ENaA8Ac3CwlRTLvFMEwZgba4b3Efi2fsBGQWsShlfVbk+iphjAE+Pk8XuV/eyWjUpmRM4Y9HTRa5iR9RbjMNZZynCz9AHHff0s05EhkIWAfnApXK/qNRqGYLDiFlw7SNnaj3GyeIXPMO8znU+1Kcc/CMVRnCsFx/w1kA7TU7UcIRQb+Rb580j65fMEeEArkSpCjuQa2ek7DCgnd0gLF6jXF9N06qZxtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=INTDocwjeOkxaSI4e6JrPlp7Kh7b3u8/5GXqjyNfeUk=;
- b=SqLxt4MZPnahGOYqHMCjywU0/HSF4waA/vwnt9ydy1Lm3yrvjNZmkOwuRl93fy6RdmE6bPOC0ZQH4p62+pUUajNd8KxX3yJjBZ746IuQ8gH2tmJrktf9NUD/vrVHw11Y2NBVtrlIsVl9bi7Gqi3ZmgASKvtgOkWY/PmrmgA8udiJVCjbw3br3CieEjsiA/YIbcoZFACykvsdKe3H0iQEMKywElW7FGY/qQYU/hi4PYicWTB3SL3zcJzUqBCWxEiVibRndteACQ6BsdcLI27Rvh553IDZD+jPGF6v9qtpISs3YncftmVw4ldPrz0yQOOExCWF0vjzgVzKvTwuTXEdYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=INTDocwjeOkxaSI4e6JrPlp7Kh7b3u8/5GXqjyNfeUk=;
- b=nMn9Mg2etjSkCULYpJ5Rnl9/tmBSYad+HpQiMXeFiB6hdvpkrBodtOjFqLvvae82lTwKkV5GAhUHMYupb9utCbBt74zqUto3WQW72bithMtImxRQVa6G6ZaLkW4OIEKHFvEKJ+4xMIBslyesZGqZr4aXMhT6ctHxrHNz0lcJuSDOtu83n51qwHc7wWb/LGrn5RUMmskk9za8NlV0oTff8Bpmfg6PDqFInZvOWRUYF9K6Lc76NhEMq83jHNyESr4la6NDuNth/60Y4SeDe0uNCU02GfnTMD1so+hMFearXgJnH1poNP4yUWzDn8gizO53kHtparXBSnIxAyJtXuIfFA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY8PR12MB8300.namprd12.prod.outlook.com (2603:10b6:930:7d::16)
- by SA1PR12MB6871.namprd12.prod.outlook.com (2603:10b6:806:25f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.16; Mon, 27 Apr
- 2026 22:30:21 +0000
-Received: from CY8PR12MB8300.namprd12.prod.outlook.com
- ([fe80::ce75:8187:3ac3:c5de]) by CY8PR12MB8300.namprd12.prod.outlook.com
- ([fe80::ce75:8187:3ac3:c5de%3]) with mapi id 15.20.9870.013; Mon, 27 Apr 2026
- 22:30:18 +0000
-Date: Mon, 27 Apr 2026 18:30:16 -0400
-From: Yury Norov <ynorov@nvidia.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Laight <david.laight.linux@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org,
-	Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	dmaengine@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-fsi@lists.ozlabs.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-fsdevel@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev, bpf@vger.kernel.org,
-	kasan-dev@googlegroups.com, linux-mm@kvack.org,
-	linux-x25@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	linux-sound@vger.kernel.org, sound-open-firmware@alsa-project.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH v1 7/9] x86: Add unsafe_copy_from_user()
-Message-ID: <ae_jeJLlVWjJ4sOY@yury>
-References: <cover.1777306795.git.chleroy@kernel.org>
- <0ee46bb228d97163fbdc14f2a7c52b93d8bc34ce.1777306795.git.chleroy@kernel.org>
- <ae-j2_QirCySZD02@yury>
- <63a4d0f6-0eb3-48cd-9f98-bf7b223b2606@kernel.org>
- <ae-2yLWSGnfeTvh1@yury>
- <CAHk-=wgPrLy0FR3sEWBYQuNAac1axDASYMnTuPuxEU0WytzL7w@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgPrLy0FR3sEWBYQuNAac1axDASYMnTuPuxEU0WytzL7w@mail.gmail.com>
-X-ClientProxiedBy: BN0PR04CA0197.namprd04.prod.outlook.com
- (2603:10b6:408:e9::22) To CY8PR12MB8300.namprd12.prod.outlook.com
- (2603:10b6:930:7d::16)
+	id 1wHemo-000000015rT-0OF8
+	for linux-um@lists.infradead.org;
+	Tue, 28 Apr 2026 09:31:23 +0000
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-678a526f374so7377446a12.0
+        for <linux-um@lists.infradead.org>; Tue, 28 Apr 2026 02:31:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777368680; x=1777973480;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Al22kA6RCf7FSEzj29cZLSkjdM9EgXxihmBX7/SeSVI=;
+        b=PFFomdRBHDX2twJ5kQfJDbSzWr9dYmnLNGhEC23ojCd9omLxXN3gS/7yDN89ceHqkb
+         GJ3qtR7h9Y2zUdCDC3agRb9zk9dMaxry4mGIt6IBS1+9n/hHDDRnPUto598e98N8lffj
+         /VsrUWPbHc5nU9lPLue27Phx9KGvyVTlzXOIBUaGfUKqsG71Yz87ObXzxFvDrZzhA9t3
+         SgO9bWRbkj/1hvBkZEWVr1+txKaYB6kf+2Wigz4jUQGaFAi5GI5MtmaS7vou7+Ur7JUJ
+         9GrpRvDMzL2Y++rS9toZ87ZiHZrDtet6R97K8fZO6Pam57c3kRNylCsYSSyhTNO9HuH1
+         sQGw==
+X-Forwarded-Encrypted: i=1; AFNElJ8Z3i0hx6MFG+xjeAEpHlFmizl27EbL4uRvBgGCDCslByhNCCBJ08JXLA7U6SOR0diWlxgWLQOK6w==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxK1T7bXmIjY9eMs6NHJ84yd6TisC19NJ83vi4AOCniE8zMju2o
+	Vt8CJhA24+0B2rD6Tsa22GrZ8McmL+EXb4nurBADpxcFnMTctbuvwe6B2SK37989ww4=
+X-Gm-Gg: AeBDietPAwk+j99F+JinusznGshFYB9aTEZCpAKyih1942LKmmkryJTxhMSswycfKoP
+	mQ7uf3D51Y9A8KV+gyL+L8bS+rE9hmmg2UO0aqVfjIE8sUuMVVfDWZEnsCs6gSuzq2vsaF2TG7g
+	w6Vt/jst/Tq0939cxRxfPF8rLeiF2cDV6hKEcyYjfiSu1TtQyl3HZojPItc+1eFyArZM1St3xoT
+	xnspLH0NlBwNTwiEwEOzNfxO/7Aw3tb2iFGGck0NboTeVwgl6tjzFu5d8ATrKDy8fdl12nWtUr/
+	YcOb013fSImQKm1BB9rw0ak0UpLdtvXC3bCm2TPwNcZCqH4CpKhkWSHhINrYJRVULJ8QjxAklEr
+	WPtk/u6Twgx/IUQrn/gwI4u9O5BWWmCYHdgOFZavV4aSvtRQ0zGxBTBAUS1K2iWanurna0E4TwI
+	QR156S3LgS7+0TJhlzT4LWSRuGM6Q8nWU2CKn8PSWrVBtvt1o17iHY7TVc62KeK47/haN3KRk=
+X-Received: by 2002:a05:6402:540e:b0:674:b1b1:d039 with SMTP id 4fb4d7f45d1cf-679bb062b16mr1044458a12.11.1777368679550;
+        Tue, 28 Apr 2026 02:31:19 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-679b67d5ffesm550227a12.9.2026.04.28.02.31.19
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2026 02:31:19 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-67389cf78b0so19505562a12.2
+        for <linux-um@lists.infradead.org>; Tue, 28 Apr 2026 02:31:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+b+MlHbFHdLMYdKSn6odooxBYSU6zyX1IcdwgQSh6U0BV9o+KqvnwkDGjRCmjgTqrJFSTQ3XRNYQ==@lists.infradead.org
+X-Received: by 2002:a05:6402:5056:b0:676:d8a1:7a04 with SMTP id
+ 4fb4d7f45d1cf-679bb09a4admr915149a12.23.1777368324094; Tue, 28 Apr 2026
+ 02:25:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR12MB8300:EE_|SA1PR12MB6871:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f3655ce-20ef-4e2c-2fe2-08dea4ac8fa5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|10070799003|376014|7416014|366016|1800799024|56012099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info: /PUX5wTJGMs/KBsNviNpWA288jfovgZeFH/D5rlo4Ft68PLkNzRu+VJLbwZPVL7WMTmGE/7sGAUjidmOrf6PO7cVfcrQe6QT08Oqm4vVTbq+1kk8SU+vprwEBmYwG+gAfH2qmWzaQJsEm7YpHDRuW/7Cs1/Xk+BrlRiawZrKiyZzPhbDmpZp82G1md2nBR6MipihlTfUyQ+saizppq6JVvqKLc5dE++LYGjddOZxiO3yutMfU07Cp5tvF3yobREfTw/fDdOZgk2+rMoVASDdUVkAaqH0FXJ28Bm6NVJs+NSRjDYnMLXVfJoJcrsNuF4W22tsLIY5w3wDLjkrtfUAaGwMnqXvKgmEE1qpibH4HaSjxrWfCswHPCx7Vc7oELIEGKApXlepMVtafKQ1eBm0bnWKqspLr19ifmkOBqioMXptCdlJ75n5gVcLiBzfflllkv55OjNYGzmu/P23vn89/MqFVHCPYaOOw1vjLjy3Olm5/wQLP++hGKYxXIrZ64iQpyo+GIlD3HGQMFC+oPQ+4alqqHQ0+kc6l4epUtSsHVmWOEFWpRzFBafriU8ilGCl8/f8jCwsnB3t+/+q8pFFXiilqgDF9lWOw60zcIbP7xO24Ozxdu5GXF2ThaRP8NVaPA/4be0MJgysKa4xa0hnonHdTiIDcF4SkkqpHjiJ5qwmY2Gce2PdYuEwEpTf8TjR66psUlL2DcOZVs8sQNjcffnyedzo5Nat0VSDOW7wgzk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR12MB8300.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(376014)(7416014)(366016)(1800799024)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y1CvQpZYZ2eMHe2MhRl9jMjiWbPAKKWXFKb0rNr6P2FKNpuYqlm0vHnj/c+p?=
- =?us-ascii?Q?etrijvKck7MltKVOhuLlrUk/4maEie31AAuCO4vEDEQz7eLSMhE+LXqZ7580?=
- =?us-ascii?Q?/dTzhhd6ZXj5MAUt3SGOfXeBZ9mnjjf2uZ2zVl0944wpMj1aPR6bhJJsKwkp?=
- =?us-ascii?Q?VUL5kcdJLltj/bbXdIYt5R4Q5sFcreBO2t2YjdncWBk9awGhHkshgH2+xQK3?=
- =?us-ascii?Q?KZ9jZvFRcaTs7WARWb/cK4emdp6bDzM7GZoacpZC4jFUpUOAzU++q1cUqbIp?=
- =?us-ascii?Q?IcojDKNgAE9HncwAue719JnQVeUjYbuQfI9vFrEzSJwqQkAaJNY/N9KIqHH5?=
- =?us-ascii?Q?gb6ElO029nGL4z2hh5SKSqKFAJYfJvd6N318L3xLFXMXoREhQbz05reO9kR7?=
- =?us-ascii?Q?GWI0NeihuZjKnE/Ak2IoeTePP++KCVgyuhiSD0PXj7MCcQGFIfSjdMtsrSD0?=
- =?us-ascii?Q?qpof8HORPaHefDg6xtvU0Ls17iRCuj1Xtuu5fBcRshNrriAJmj0nlZqzlPp0?=
- =?us-ascii?Q?oq96Gm2fPd5N0qcJLOIB4vfutS46eOW3OBK4BlzxlMwOHl6WCEd/wmb2kDAK?=
- =?us-ascii?Q?VPTN1pR756Yxc8PWdgyvhKBLft+N8lDJQGyoSrLOClJEovN6quxxF5UrmLgl?=
- =?us-ascii?Q?BSzU4GMBOjLU5qQqVVM1fzFPiQJrPzyeuGPUF6s5eWsZMUNFhY8uESY52c+S?=
- =?us-ascii?Q?SE6TQJUy1lWTLGmxVFeFQgD9qZCVc47lVZv/tMLN8sA71HzeCfL2tx6zUAP1?=
- =?us-ascii?Q?hu81S/ywLrBvCHKaffr0P8d1j0edNWOzngwXYnwimWLWnJ+OOYH82yO8AfMj?=
- =?us-ascii?Q?9OG00BjXZXIsalWG80IQlBy27WpQ84/1c9oAnvbNeJfjdgOz4uIbM6FHkYyA?=
- =?us-ascii?Q?MupGlptk1Xu50YbzeOZ03kGiMKX0VxGdprIqVjtikQtw3BlYFt0IIGwsWiy8?=
- =?us-ascii?Q?wb6reRFBF6KZAnTmSERVS8uD68yLvuu4uDhGLoBqPxQofaxbHl5bqyIHeiVZ?=
- =?us-ascii?Q?JmIJF4RPeAJ5/v6RFBLjGohX5ZjyNkXJb9RZjSdHP1ziqpItJ3rcJG2ZFZJT?=
- =?us-ascii?Q?TOtNJUdl8MYzQUzieK78aUKDOyKuWpAWh2Jep6/sVe9CBZ2NlHHJGqtGJ0+6?=
- =?us-ascii?Q?owwVe4C6J1ikL7yn0gdEWIiiyjuOxoCdI3+hulZemm7LK5thRU+ZyJaPjQR+?=
- =?us-ascii?Q?YK+iuiqW4QYnqG8Bp71RoCe6giJoTJeiqfcGpFeX0h22VmfkFjYMyp/W8nb3?=
- =?us-ascii?Q?mBn+6WSNLOLGrrznB6jKXoRf6cnQ1xEMeJxPdXY/BnX2sOfoIY42tLqAScbN?=
- =?us-ascii?Q?LtZ7qBEv6zip7I8sQ5//f4FDcyaAHJDISd0ze+LMD1SGCz1vUejeBGt5jNwE?=
- =?us-ascii?Q?iyPDDoJ3VJHJ8aGIrV8p6MgUo+UO94WHdRtz/JHe7JLmdPqflsqW5Z53kqYw?=
- =?us-ascii?Q?MP/nGig0/bW+qSUHZi0ybA7U9qUULzBtAdJ3gf4NkhxIRHImljJP3sZS+AbG?=
- =?us-ascii?Q?VX+xV6ny9hftAe82VJ9ewoJIvZ1jOdavxAo38YgxrnhYM4VA4PLlPxMJgrFB?=
- =?us-ascii?Q?bl95emjkBX7MxnGkfKrgN0u2MtTSs3sO1Wdm6BH6ZQ9kazGSKdvWqMQAmcgZ?=
- =?us-ascii?Q?2TAXsG9f2jiTJy/XjYe+XqDYMz+09yazlugWhbXrIX8heUtqQqlD4RBq2C5J?=
- =?us-ascii?Q?CuCIR2G+UzaeT6rHBATVfYnF1JfQa1er7U7HJW5PSDW8XBt5cyY/COXOF+YI?=
- =?us-ascii?Q?h6yFwkKGk0zfxpHpRxxXg2KPpUtDCbrrUbX4jMC5IsdF387MIWjR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f3655ce-20ef-4e2c-2fe2-08dea4ac8fa5
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB8300.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2026 22:30:18.5780
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8yVCjxcKtFstGt67IdVeO9hT/qCk0UDq0EBYtz0042ex6ttmtrXzmmIlGerSzGsUENgCE8ayV5UchO391MZbfA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6871
+References: <cover.1777306795.git.chleroy@kernel.org> <c73b90236f2810edd47c84edd2a8d8e8e0c816da.1777306795.git.chleroy@kernel.org>
+In-Reply-To: <c73b90236f2810edd47c84edd2a8d8e8e0c816da.1777306795.git.chleroy@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 28 Apr 2026 11:25:11 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUvTBWoDN_wUo2n8-gkoheJ+-rbwew53OvoAwo8G5n1qg@mail.gmail.com>
+X-Gm-Features: AVHnY4JEWBVPw4tSjHgbQTia8gZd2WGJ1sv6qLdKJbtvs4hms1blpvc35yb0VWw
+Message-ID: <CAMuHMdUvTBWoDN_wUo2n8-gkoheJ+-rbwew53OvoAwo8G5n1qg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 4/9] uaccess: Introduce copy_{to/from}_user_partial()
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: Yury Norov <ynorov@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, David Laight <david.laight.linux@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
+	dmaengine@vger.kernel.org, linux-efi@vger.kernel.org, 
+	linux-fsi@lists.ozlabs.org, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-staging@lists.linux.dev, 
+	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-fsdevel@vger.kernel.org, 
+	ocfs2-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
+	linux-mm@kvack.org, linux-x25@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-sound@vger.kernel.org, sound-open-firmware@alsa-project.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260427_153031_497695_6256C819 
-X-CRM114-Status: GOOD (  15.26  )
+X-CRM114-CacheID: sfid-20260428_023122_140667_1283E209 
+X-CRM114-Status: GOOD (  24.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,31 +115,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 27, 2026 at 02:52:05PM -0700, Linus Torvalds wrote:
-> On Mon, 27 Apr 2026 at 12:19, Yury Norov <ynorov@nvidia.com> wrote:
-> >
-> > This is what Linus said when added x86 implementation for copy_from_user()
-> > in c512c69187197:
-> 
-> Note that some things have happily changed in the six+ years since...
-> 
-> >   That's partly because we have no current users of it, but also partly
-> >   because the copy_from_user() case is slightly different and cannot
-> >   efficiently be implemented in terms of a unsafe_get_user() loop (because
-> >   gcc can't do asm goto with outputs).
-> 
-> now everybody can do asm goto with outputs.
-> 
-> Yes, it's disabled on older versions, so it's not *always* available,
-> but all modern versions do it. And if you care about performance, you
-> won't be using an old compiler.
+Hi Christophe,
 
-The minimal GCC version is 8.1, and asm goto with outputs is supported
-since GCC-11. That would brake the build, if we just switch to using it
-without "CC_IS_GCC && (GCC_VERSION >= 110100)" guard.
+Thanks for your patch!
 
-Is it worth to maintain 2 version of the function? I don't know...
+On Mon, 27 Apr 2026 at 19:18, Christophe Leroy (CS GROUP)
+<chleroy@kernel.org> wrote:
+> Today there are approximately 3000 calls for copy_to_user() and
+> 3000 calls to copy_from_user().
+>
+> The majority of callers of copy_{to/from}_user() don't care about the
+> return value, they only check whether it is 0 or not, and when it is
+> not 0 they handle it as a -EACCES.
 
-Thanks,
-Yury
+I think the "a" can be dropped.
+
+> In order to allow better optimisation of copy_{to/from}_user() when
+> the size of the copy is known at build time, create new fonctions
+
+functions
+
+> named copy_{to/from}_user_partial() to be used by the few callers
+> that are interested in partial copies and need to now how many
+
+know
+
+> bytes remain at the end of the copy.
+>
+> For the time being it is just the same as copy_{to/from}_user().
+>
+> Signed-off-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
