@@ -4,63 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0F7AFF8868
-	for <linux-um@archiver.kernel.org>; Tue, 28 Apr 2026 10:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9393FF885D
+	for <linux-um@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jh8xjZ2R1YZyxIcTaobQIl9eUM9DPxSIs8QgFS3EA94=; b=4orPYsB0vvaRrPCy1+o965DCiM
-	63G88Sem1cWGnr7i140FOvFOTcbCSSmpee4uZNRQgSryOi2U2wk19ElEeLfi/av9YH0UYjmzwQJVY
-	k8rlPkm9vI0njNg5ebM/wQMVQ6lxf6FLqrYT4GWzIc5CajVMnbB4IcLWbn3+5WlgWH7VfUNXEGFxT
-	eS68IrJsJJjpNoXSNEEEU/ID2sSdK4y+CkM8aAmUXST1j29EY9N0/0r8Y97HhvKIY4yKL0B163/JN
-	gDF13INvNNxsf0CrBanEhzBI/XUQw1ucvC7hn3KlV3L691zvtZw6xAYnAIR2GN28di8FxPw/ucbD9
-	pDFtO94g==;
+	bh=XPeVV9Ayo/Efa43OPqj35YhEQB3TFUbldQEXbJjJCzI=; b=bXNs4EM2OQyvlWqBWjzufH/zin
+	9ArEw7c5EIYZiZYva1UndSe06VBGyPXa9Jp76ISR8vRGkxrfTIuXKS/CaMCUfskpwU7BVKoN/91rQ
+	MuB4H0R+//l95FzrzxLSjZ3H1ur3OK/vxbARmqHnzS3WxcOb6srmJO2i47Viw9CilLfnDLNnFxJnI
+	Lg6MTEbVFBkhj4UR2q9ujxa392/Or3+/AAwqN4UeF8lT9PiWADyxNagaiMNpLy9oHvMTMRwXvz/Iu
+	MOVnQBKuhkVFMyL+S8PTCIM9h7+Wqg5PlxId9JTmzXppRA53Ecrf7lB/iMuwUlV0O/K/oHpWXC3D0
+	SJLk5dMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHfsx-00000001C6s-1yu4;
-	Tue, 28 Apr 2026 10:41:47 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wHftC-00000001CDw-2sZJ;
+	Tue, 28 Apr 2026 10:42:02 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wHfsu-00000001C5K-3CDq
+	id 1wHft9-00000001CBn-2IZF
 	for linux-um@lists.infradead.org;
-	Tue, 28 Apr 2026 10:41:46 +0000
+	Tue, 28 Apr 2026 10:42:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6BBA8440AA;
-	Tue, 28 Apr 2026 10:41:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDCABC2BCAF;
-	Tue, 28 Apr 2026 10:41:42 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 312C944059;
+	Tue, 28 Apr 2026 10:41:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3211C2BCAF;
+	Tue, 28 Apr 2026 10:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777372904;
-	bh=aWNoUQTynV5pZbzLHTHX5c7mk9of2OZcSFZ4VPq8R0Y=;
+	s=k20201202; t=1777372919;
+	bh=vZc4P0BDoe7eirlzk7685cVeWW4/osHZn5mpP9ILqCo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZnVVBXcBj6sU+OfxZ6S1Vy7uAJdAVbCLVSawzOxhEcjMjPFJFdDogKD7kxw9PyAfq
-	 hsOQyI75/EJ1Vufs8v1J7qlJoFgrGQAYBX2ylEpTzy7e3lBBziQCMrEr2gX4UcWVOC
-	 xuNJogagian4Wgrm8asa/JGX/0EIdWQc6FojBsR+rF+Oz1xAidsTLJ6BdCbm0PickK
-	 PByGHsVCzwzJBVYGsneDBfLmW05UTthmdypnS0V1or/kyVPbU+tmkYx9wg2kor7UIw
-	 9B40YH09lC2mXAWkN4RisPg2ZCWmG9by9QKwuZgHYAEudaC7chck6NTNX8UuR/clkV
-	 CuBLDBriZtS4w==
+	b=NFg+rsEjNmf2yWL/hq+mXrb8QEGUJDyxMZITDco//gM49SkXy0ug7u2pSsU6WY3qL
+	 U9HHEBqjjBYqeGSG7mRMwoMTEc6x6xkDvG9U7z4LpCQYd/9XYErXCeTFkyQSpUq/pF
+	 Ll07E7wVVbuZgBsboST3kdPDuq1cObuNIuk02tXItMXJxjNtZQEIJB16ogmt6izxx2
+	 hxKvS04eMg5ppqHaa1OVPX2cADIuQa/4oX+5H7Oc1y9KKLe62QFM0yu6c8WPWLUVsq
+	 +nTz73v71ENngp8LIsutJV9t6031bS26tpoahKAxYKqBZKBz5mSQ/eX+UvdpBOMb0o
+	 AqJTKYO/Q7ONg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: "Marcel W. Wysocki" <maci.stgn@gmail.com>,
+Cc: Kees Cook <kees@kernel.org>,
+	kernel test robot <lkp@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
 	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
 	linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.18] um: avoid struct sigcontext redefinition with musl
-Date: Tue, 28 Apr 2026 06:40:18 -0400
-Message-ID: <20260428104133.2858589-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-6.1] um: Disable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21
+Date: Tue, 28 Apr 2026 06:40:29 -0400
+Message-ID: <20260428104133.2858589-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260428104133.2858589-1-sashal@kernel.org>
 References: <20260428104133.2858589-1-sashal@kernel.org>
@@ -68,11 +65,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.2
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260428_034144_867832_EE621A69 
-X-CRM114-Status: GOOD (  20.53  )
+X-CRM114-CacheID: sfid-20260428_034159_636051_56581FEC 
+X-CRM114-Status: GOOD (  18.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,381 +83,346 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: "Marcel W. Wysocki" <maci.stgn@gmail.com>
+From: Kees Cook <kees@kernel.org>
 
-[ Upstream commit d46dfb369a4627d90efc2c2ffbe29e38e3e74286 ]
+[ Upstream commit 6522fe5c1b007c376fc5f2de1016c99a18b0af8e ]
 
-mcontext.c includes both <sys/ucontext.h> and <asm/sigcontext.h>.
-With musl libc, this causes a struct sigcontext redefinition error:
+Clang 20 and 21 miscompute __builtin_object_size() when -fprofile-arcs
+is active on 32-bit UML targets, which passes incorrect object size
+calculations for local variables through always_inline copy_to_user()
+and check_copy_size(), causing spurious compile-time errors:
 
-  <sys/ucontext.h> pulls in musl's <bits/signal.h>, which defines
-  struct sigcontext directly.  The kernel's <asm/sigcontext.h> then
-  provides a second, conflicting definition of the same struct.
+  include/linux/ucopysize.h:52:4: error: call to '__bad_copy_from' declared with 'error' attribute: copy source size is too small
 
-With glibc this does not conflict because glibc's signal headers
-source their struct sigcontext from the kernel's own UAPI headers,
-so the include guard in <asm/sigcontext.h> makes the second
-inclusion a no-op.
+The regression was introduced in LLVM commit 02b8ee281947 ("[llvm]
+Improve llvm.objectsize computation by computing GEP, alloca and malloc
+parameters bound"), which shipped in Clang 20. It was fixed in LLVM
+by commit 45b697e610fd ("[MemoryBuiltins] Consider index type size
+when aggregating gep offsets"), which was backported to the LLVM 22.x
+release branch.
 
-mcontext.c does not actually use struct sigcontext by name -- it
-only needs the FP-state types (_fpstate, _xstate, etc.) that are
-defined in <asm/sigcontext.h> independently of the sigcontext
-struct.
+The bug requires 32-bit UML + GCOV_PROFILE_ALL (which uses -fprofile-arcs),
+though the exact trigger depends on optimizer decisions influenced by other
+enabled configs.
 
-Temporarily rename sigcontext to __kernel_sigcontext during the
-inclusion of <asm/sigcontext.h> so that the kernel's definition
-does not collide with musl's.  The #undef restores normal name
-resolution immediately afterward.
+Prevent the bad combination by disabling UML's ARCH_HAS_GCOV_PROFILE_ALL
+on 32-bit when using Clang 20.x or 21.x.
 
-No functional change with glibc; fixes the build with musl.
-
-Signed-off-by: Marcel W. Wysocki <maci.stgn@gmail.com>
-Link: https://patch.msgid.link/20260215142803.1455757-2-maci.stgn@gmail.com
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202604030531.O6FveVgn-lkp@intel.com/
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Assisted-by: Claude:claude-opus-4-6[1m]
+Signed-off-by: Kees Cook <kees@kernel.org>
+Link: https://patch.msgid.link/20260409052038.make.995-kees@kernel.org
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-Now I have enough information to write the complete analysis.
+Now I have a complete picture. Let me write the analysis.
 
 ## Analysis
 
-### PHASE 1: COMMIT MESSAGE FORENSICS
+### Phase 1: Commit Message Forensics
 
-**Step 1.1: PARSE THE SUBJECT LINE**
-Record: Subsystem=`um:` (User Mode Linux). Verb=`avoid` (implies fix -
-avoiding redefinition error). Summary: Fix a build failure when
-compiling UML with musl libc due to `struct sigcontext` being redefined.
+**Step 1.1 - Subject Line:**
+Record: Subsystem = `um:` (User Mode Linux). Action verb = "Disable".
+Summary = Disable GCOV_PROFILE_ALL on 32-bit UML when building with
+Clang 20/21 to avoid a compiler miscompile.
 
-**Step 1.2: PARSE ALL COMMIT MESSAGE TAGS**
+**Step 1.2 - Tags:**
 Record:
+- `Reported-by: kernel test robot <lkp@intel.com>` (lkp build failure
+  report)
+- `Closes: https://lore.kernel.org/oe-kbuild-all/202604030531.O6FveVgn-
+  lkp@intel.com/` (lkp report)
+- `Suggested-by: Nathan Chancellor <nathan@kernel.org>` (LLVM-kernel
+  maintainer endorsed the approach)
+- `Signed-off-by: Kees Cook <kees@kernel.org>` (hardening maintainer,
+  patch author)
 - `Link:
-  https://patch.msgid.link/20260215142803.1455757-2-maci.stgn@gmail.com`
-  (lore discussion)
-- `Signed-off-by: Marcel W. Wysocki <maci.stgn@gmail.com>` (author)
+  https://patch.msgid.link/20260409052038.make.995-kees@kernel.org`
 - `Signed-off-by: Johannes Berg <johannes.berg@intel.com>` (UML co-
-  maintainer who applied it)
-- No `Fixes:` tag (expected — bug from commit `b1e1bd2e69430`, not
-  tagged)
-- No `Cc: stable@vger.kernel.org` (not nominated by author, but absence
-  is expected)
-- No `Reported-by:`, `Tested-by:`, or `Reviewed-by:`
+  maintainer applied it)
+- No `Fixes:` tag, no `Cc: stable` tag (expected for this review
+  pipeline)
 
-**Step 1.3: ANALYZE THE COMMIT BODY TEXT**
-Record: Bug description is explicit and detailed — `mcontext.c` includes
-both `<sys/ucontext.h>` (pulls in musl's `<bits/signal.h>` which defines
-`struct sigcontext`) and `<asm/sigcontext.h>` (defines `struct
-sigcontext` again). With musl, these collide causing a compile-time
-"redefinition" error. With glibc, the include guard coordination
-prevents this. Symptom: build failure, not runtime. Author explains
-mechanism precisely.
+**Step 1.3 - Body Analysis:**
+Record: Bug = Clang 20/21 miscompute `__builtin_object_size()` when
+`-fprofile-arcs` is active on 32-bit UML. Symptom = spurious compile-
+time error: `error: call to '__bad_copy_from' declared with 'error'
+attribute: copy source size is too small`. Root cause identified in LLVM
+commit `02b8ee281947` (shipped in Clang 20), fixed in LLVM by
+`45b697e610fd`, backported to LLVM 22.x. Trigger = 32-bit UML +
+`GCOV_PROFILE_ALL` + Clang 20 or 21.
 
-**Step 1.4: DETECT HIDDEN BUG FIXES**
-Record: This is NOT a hidden bug fix; it's an explicit, stated build
-fix. Category = build fix (one of the documented exceptions allowed in
-stable).
+**Step 1.4 - Hidden Bug Fix Detection:**
+Record: Not hidden - explicitly a build fix / toolchain workaround. Verb
+"Disable" accurately describes adding a Kconfig guard to prevent a
+broken combination.
 
-### PHASE 2: DIFF ANALYSIS - LINE BY LINE
+### Phase 2: Diff Analysis
 
-**Step 2.1: INVENTORY THE CHANGES**
-Record: Single file: `arch/x86/um/os-Linux/mcontext.c`, +6 lines, 0
-removed. No functions modified (only top-of-file includes). Scope
-classification: trivial, single-file, preprocessor-only change.
+**Step 2.1 - Inventory:**
+Record: 1 file changed (`arch/um/Kconfig`), +3/-1 lines. Functions
+modified = none (Kconfig only). Scope = single-file, single-line logic
+change.
 
-**Step 2.2: UNDERSTAND THE CODE FLOW CHANGE**
-Record:
-- Before: `#include <asm/sigcontext.h>` pulls in kernel's `struct
-  sigcontext` definition after musl already defined its own →
-  redefinition error.
-- After: `#define sigcontext __kernel_sigcontext` before include +
-  `#undef sigcontext` after include. The kernel's struct gets renamed to
-  `__kernel_sigcontext` inside `<asm/sigcontext.h>`, avoiding the
-  collision. After the `#undef`, normal name resolution resumes (musl's
-  `struct sigcontext` is what any subsequent code would see — but this
-  file doesn't use it).
-- No executable code path is affected; this is purely a preprocessor
-  name-space change localized to 3 lines of includes.
+**Step 2.2 - Code Flow Change:**
+Record: BEFORE: `config UML` unconditionally `select
+ARCH_HAS_GCOV_PROFILE_ALL`. AFTER: selects it only when NOT (32-bit AND
+Clang in `[20.0.0, 22.1.0)` range). Adds comment explaining why.
 
-**Step 2.3: IDENTIFY THE BUG MECHANISM**
-Record: Bug category = Hardware/toolchain workaround (build fix).
-Mechanism: musl's `<bits/signal.h>` defines `struct sigcontext` directly
-(no guard macro shared with kernel UAPI), while x86 kernel UAPI
-`<asm/sigcontext.h>` only suppresses its user-space `struct sigcontext`
-definition with `#ifndef __KERNEL__` — there is no handshake with musl.
-The fix side-steps this by renaming the kernel's copy in this one
-translation unit.
+**Step 2.3 - Bug Mechanism:**
+Record: Category = (h) Hardware/toolchain workarounds - specifically
+Kconfig dependency guard for a broken compiler. Mechanism = removing an
+invalid configuration option combination that would otherwise result in
+a compile-time error.
 
-**Step 2.4: ASSESS THE FIX QUALITY**
-Record: Obviously correct. Narrowly scoped (`#define` paired with
-matching `#undef`). Zero regression risk with glibc: the `#undef`
-restores the macro namespace before the next include, and the file never
-references `struct sigcontext` by name (verified via grep — only
-`_fpstate`/`_xstate` types are used, which are defined independently).
-No red flags.
+**Step 2.4 - Fix Quality:**
+Record: Obviously correct Kconfig guard. Minimal. Zero regression risk
+at runtime (build configuration only). The only "risk" is disabling a
+feature in an invalid config, which is exactly the intent.
 
-### PHASE 3: GIT HISTORY INVESTIGATION
+### Phase 3: Git History Investigation
 
-**Step 3.1: BLAME THE CHANGED LINES**
-Record: The `#include <asm/sigcontext.h>` line (which is the root cause
-of the musl collision) was introduced by commit `b1e1bd2e69430` ("um:
-Add helper functions to get/set state for SECCOMP") — merged into v6.16
-(verified via `git tag --contains`). Before v6.16, `mcontext.c` only
-included `<sys/ucontext.h>` and had no conflict with musl.
+**Step 3.1 - Blame:**
+Record: `select ARCH_HAS_GCOV_PROFILE_ALL` for UML was added in commit
+`2419ac3272669` ("um: Enable ARCH_HAS_GCOV_PROFILE_ALL" by Vincent
+Whitchurch, April 2022), first released in v5.19.
 
-**Step 3.2: FOLLOW THE FIXES: TAG (if present)**
-Record: No `Fixes:` tag present. Based on blame, the offending code came
-from `b1e1bd2e69430` in v6.16. Verified: that commit is present in
-v6.16+ tags. The only stable branches where `<asm/sigcontext.h>` is
-included in this file are 6.17.y, 6.18.y, 6.19.y (verified by checking
-each `stable-push/linux-*.y` branch).
+**Step 3.2 - Fixes Tag:**
+Record: No Fixes: tag. The root cause is an LLVM compiler bug, not a
+kernel bug. LLVM commit `02b8ee281947` shipped in Clang 20 (external
+toolchain, not trackable via kernel Fixes:).
 
-**Step 3.3: CHECK FILE HISTORY FOR RELATED CHANGES**
-Record: Recent history of `arch/x86/um/os-Linux/mcontext.c`:
-`942349413a496` (SECCOMP 32bit xstate fix), `b1e1bd2e69430` (introduced
-the problematic include), and older minor changes. No prerequisite patch
-is needed for this fix; it is standalone. This patch is 2/2 in its
-series; patch 1/2 is `4076f73298320` ("um: fix address-of CMSG_DATA()
-rvalue in stub") — a different file, independent fix, not a
-prerequisite.
+**Step 3.3 - File History:**
+Record: Recent UM Kconfig churn includes MMU_GATHER_RCU_TABLE_FREE,
+KASAN_INLINE, SMP support, FORTIFY_SOURCE. No conflicting work on GCOV.
+Standalone patch, not part of a series.
 
-**Step 3.4: CHECK THE AUTHOR'S OTHER COMMITS**
-Record: Author Marcel W. Wysocki has only two commits in the tree (both
-from this 2/2 series on musl UML build fixes). New contributor. The
-applying committer is Johannes Berg (co-maintainer of UML subsystem),
-which is a trust signal for correctness.
+**Step 3.4 - Author Context:**
+Record: Kees Cook (kernel hardening/fortify maintainer) authored.
+Johannes Berg (UML co-maintainer) applied it. Nathan Chancellor (LLVM-
+kernel integration) suggested the approach. Strong expert endorsement
+from multiple relevant maintainers.
 
-**Step 3.5: CHECK FOR DEPENDENT/PREREQUISITE COMMITS**
-Record: Fix is entirely self-contained — a 6-line preprocessor patch. No
-dependencies.
+**Step 3.5 - Dependencies:**
+Record: Depends only on `CLANG_VERSION` Kconfig symbol (present since at
+least v5.19). No kernel commit prerequisites.
 
-### PHASE 4: MAILING LIST AND EXTERNAL RESEARCH
+### Phase 4: Mailing List Investigation
 
-**Step 4.1: FIND THE ORIGINAL PATCH DISCUSSION**
-Record: `b4 dig -c d46dfb369a4627d90efc2c2ffbe29e38e3e74286` found the
-submission at `https://lore.kernel.org/all/20260215142803.1455757-2-
-maci.stgn@gmail.com/`. Only v1 exists (no revisions). The mbox thread
-contains exactly 2 messages (the two patches 1/2 and 2/2) — no reply
-from reviewers, no NAKs, no stable nominations, no discussion of stable
-suitability. The patch was applied quickly by the UML maintainer.
+**Step 4.1 - Original Discussion:**
+Record: Fetched the thread via `b4 mbox` for message-id
+`20260409052038.make.995-kees@kernel.org`. This is v3; v1 at
+`20260408005958.work.271-kees@kernel.org` and v2 at
+`20260408162607.it.347-kees@kernel.org`. v3 changed approach based on
+Nathan Chancellor's suggestion (use `ARCH_HAS_GCOV_PROFILE_ALL` guard in
+arch/um instead of earlier approaches).
 
-**Step 4.2: CHECK WHO REVIEWED THE PATCH**
-Record: `b4 dig -c ... -w` shows recipients: Richard Weinberger (UML
-maintainer), Anton Ivanov (UML maintainer), Johannes Berg (UML co-
-maintainer), linux-um@lists.infradead.org, linux-kernel@vger.kernel.org.
-All appropriate people were CC'd. Johannes Berg applied the patch
-himself.
+**Step 4.2 - Reviewers:**
+Record: Thread includes UML maintainers (Richard Weinberger, Johannes
+Berg, Anton Ivanov), LLVM/Clang kernel contacts (Nathan Chancellor, Nick
+Desaulniers, Bill Wendling, Justin Stitt), and mailing lists (llvm@,
+linux-um@, linux-kernel@, linux-hardening@). Proper review coverage.
 
-**Step 4.3: SEARCH FOR THE BUG REPORT (if applicable)**
-Record: No `Reported-by:` tag or linked bug report. Not applicable — the
-commit message describes the bug mechanism without a specific reporter.
+**Step 4.3 - Bug Report:**
+Record: Reported-by lkp (kernel test robot) with lore link. This is an
+automated build tester - the bug was reproduced by lkp's test matrix.
 
-**Step 4.4: CHECK FOR RELATED PATCHES AND SERIES**
-Record: `b4 dig -a` confirms this is part of a 2-patch series (v1).
-Patch 1/2 is a separate musl build fix (CMSG_DATA rvalue issue in
-`arch/um/kernel/skas/stub.c`). They are independent fixes in different
-files — each can be applied without the other.
+**Step 4.4 - Discussion Details:**
+Record: Johannes Berg raised a stylistic question about the version
+comparison bounds. Nathan Chancellor explained the bounds (including
+`22.0.x` which is the 22 development cycle, not 22.1.0 which is the
+first release). No NAKs; stylistic feedback only. No explicit stable
+nomination in the discussion.
 
-**Step 4.5: CHECK STABLE MAILING LIST HISTORY**
-Record: Not specifically discussed on stable list, but precedent exists:
-other "Fix build with musl" commits have been backported to stable
-(e.g., `c723289f4e7f1` for turbostat, `d5408730bca99` for
-netfilter_bridge.h) — verified via `git log stable-push/linux-rolling-
-stable --grep=musl`.
+**Step 4.5 - Stable-List Discussion:**
+Record: No prior discussion on stable list found for this specific
+issue.
 
-### PHASE 5: CODE SEMANTIC ANALYSIS
+### Phase 5: Semantic Analysis
 
-**Step 5.1: IDENTIFY KEY FUNCTIONS IN THE DIFF**
-Record: No functions are modified. The diff only changes `#include`
-directives at file header level.
+**Step 5.1 - Key functions:**
+Record: No functions modified. Kconfig-only change. `check_copy_size()`
+and `copy_to_user()` are mentioned as affected by the underlying
+miscompile, but they are not being modified.
 
-**Step 5.2–5.4: TRACE CALLERS / CALLEES / CALL CHAIN**
-Record: Not applicable — no function-level code is touched. The change
-is compilation-unit scope only.
+**Step 5.2-5.5:**
+Record: N/A for a Kconfig-only guard. Impact surface = anyone who builds
+32-bit UML with Clang 20/21 and enables `CONFIG_GCOV_PROFILE_ALL`.
 
-**Step 5.5: SEARCH FOR SIMILAR PATTERNS**
-Record: Verified via grep: `mcontext.c` does not reference `struct
-sigcontext` by name anywhere — it only uses `_fpstate`, `_xstate`, etc.
-(19 matches) which are defined independently of `struct sigcontext` in
-`<asm/sigcontext.h>`. The fix's core premise is correct.
+### Phase 6: Cross-Referencing Stable Trees
 
-### PHASE 6: CROSS-REFERENCING AND STABLE TREE ANALYSIS
+**Step 6.1 - Buggy code in stable:**
+Record: Verified `select ARCH_HAS_GCOV_PROFILE_ALL` is present in UML
+Kconfig for v5.19, v6.1, v6.6, v6.12, v6.16, v7.0. So the "buggy
+combination" is selectable in all stable trees from v5.19 onward.
 
-**Step 6.1: DOES THE BUGGY CODE EXIST IN STABLE TREES?**
-Record: Verified by inspecting `arch/x86/um/os-Linux/mcontext.c` in each
-stable branch:
-- 5.10.y, 5.15.y, 6.1.y, 6.6.y, 6.12.y → DO NOT include
-  `<asm/sigcontext.h>` (bug doesn't exist there — fix not needed)
-- 6.17.y, 6.18.y, 6.19.y → DO include `<asm/sigcontext.h>` (bug exists,
-  fix is needed)
-- Rolling stable / 7.0 → same (bug exists)
+**Step 6.2 - Backport Complications:**
+Record: Diff context is present cleanly in v6.1+ (line before is `select
+ARCH_HAS_FORTIFY_SOURCE`). In v5.19 the preceding line is
+`ARCH_EPHEMERAL_INODES` instead, so a very minor context adjustment
+would be needed for 5.19 only; v6.1+ should apply verbatim.
+`CLANG_VERSION` Kconfig symbol confirmed present in all trees checked.
 
-**Step 6.2: CHECK FOR BACKPORT COMPLICATIONS**
-Record: The file content in 6.17.y, 6.18.y, 6.19.y is identical around
-the includes. Patch will apply cleanly. No backport adjustments needed.
+**Step 6.3 - Related fixes in stable:**
+Record: No prior fix exists. This is the first solution to this specific
+Clang 20/21 miscompile for UML.
 
-**Step 6.3: CHECK IF RELATED FIXES ARE ALREADY IN STABLE**
-Record: No duplicate or earlier fix for this specific issue in stable
-trees (verified by inspecting the actual files — they all still have the
-naked `#include <asm/sigcontext.h>`).
+### Phase 7: Subsystem Context
 
-### PHASE 7: SUBSYSTEM AND MAINTAINER CONTEXT
+**Step 7.1 - Criticality:**
+Record: Subsystem = `arch/um/` (User Mode Linux). Criticality =
+PERIPHERAL. UML is a special architecture primarily used for kernel
+testing/debugging, not production deployments.
 
-**Step 7.1: IDENTIFY THE SUBSYSTEM AND ITS CRITICALITY**
-Record: Subsystem = arch/um (User Mode Linux for x86). Criticality =
-PERIPHERAL — UML is a developer/testing-focused feature, not used in
-typical production systems. However, it is widely used for kernel
-testing in CI (e.g., Alpine Linux-based Docker containers use musl by
-default).
+**Step 7.2 - Activity:**
+Record: UML is moderately active - recent commits include SMP support,
+KASAN, preemption, page tables. Active but niche.
 
-**Step 7.2: ASSESS SUBSYSTEM ACTIVITY**
-Record: UML is actively developed (many recent commits). The particular
-code path here (SECCOMP mcontext helpers) is relatively new (added in
-v6.16), so the bug window is recent.
+### Phase 8: Impact and Risk
 
-### PHASE 8: IMPACT AND RISK ASSESSMENT
+**Step 8.1 - Affected Users:**
+Record: Only users who build with 32-bit UML +
+`CONFIG_GCOV_PROFILE_ALL=y` + Clang 20 or 21. Very narrow intersection;
+primarily kernel developers doing coverage testing on UML.
 
-**Step 8.1: DETERMINE WHO IS AFFECTED**
-Record: Only users who build UML with musl libc. This includes:
-developers using Alpine Linux-based CI/containers for kernel testing,
-musl-based embedded systems, void-linux users. Affects only x86 UML
-builds (arch/x86/um). Not a runtime issue — purely compile-time.
+**Step 8.2 - Trigger:**
+Record: Only triggers at BUILD time (not runtime). Trigger = compiling
+the kernel with the specific config combination above. Reproducible
+(kernel test robot hit it).
 
-**Step 8.2: DETERMINE THE TRIGGER CONDITIONS**
-Record: Triggers always (100%) when compiling `arch/x86/um/os-
-Linux/mcontext.c` with musl headers in the include path, on v6.16+
-kernels. Not triggered with glibc. Not a runtime issue, so no
-unprivileged-user security angle.
+**Step 8.3 - Failure Mode:**
+Record: Compile-time error - kernel fails to build. Severity = MEDIUM
+(blocks compilation but no runtime/security impact; users can work
+around by disabling GCOV or using different Clang version). Falls under
+allowed "BUILD FIXES" exception category in stable rules.
 
-**Step 8.3: DETERMINE THE FAILURE MODE SEVERITY**
-Record: Failure mode = compile error (build cannot complete). Severity =
-MEDIUM for affected users (they cannot build the kernel at all), LOW
-overall (only affects a niche combination). But it is a total block on
-an entire valid use case.
+**Step 8.4 - Risk/Benefit:**
+Record: BENEFIT = Fixes build failure for users in affected config
+(narrow but real). RISK = Effectively zero - Kconfig guard cannot cause
+runtime regressions; only cost is that affected users lose the ability
+to enable GCOV_PROFILE_ALL on 32-bit UML with Clang 20/21 (which was
+already broken anyway). Ratio = strongly favorable when it applies; non-
+impactful otherwise.
 
-**Step 8.4: CALCULATE RISK-BENEFIT RATIO**
-Record:
-- BENEFIT: MEDIUM — enables an entire class of users (musl + UML) to
-  build affected kernels. Build fixes are explicitly listed as a stable
-  exception.
-- RISK: VERY LOW — 6 lines, preprocessor-only, zero effect with glibc,
-  the file doesn't use the renamed struct anywhere.
-- Ratio: Strongly favorable.
+### Phase 9: Final Synthesis
 
-### PHASE 9: FINAL SYNTHESIS
+**Evidence FOR backporting:**
+- Explicit Kconfig dependency fix - stable rules list "Build fixes:
+  Kconfig dependency fixes" as an explicit exception
+- Zero runtime regression risk (Kconfig-only)
+- Small (3 lines), obviously correct, well-reviewed
+- Subsystem maintainer applied, LLVM expert suggested the approach
+- Reported by automated build bot (real, reproducible issue)
+- Applies cleanly to all stable trees from v6.1 onward; trivial context
+  fix for v5.19
+- Similar Clang 20 build-error fixes are routinely accepted (e.g.,
+  `ef753d66051ca` objtool Clang 20 fix)
 
-**Step 9.1: COMPILE THE EVIDENCE**
-FOR: (a) explicit build fix — documented exception for stable; (b)
-trivial 6-line preprocessor change, no behavior change; (c) applied by
-UML maintainer Johannes Berg; (d) fixes a real, reproducible build
-failure on v6.16+; (e) applies cleanly to 6.17.y, 6.18.y, 6.19.y; (f)
-precedent exists (other musl build fixes backported to stable); (g) the
-file doesn't use `struct sigcontext` by name — fix is logically sound
-and verified.
-AGAINST: (a) no `Cc: stable` tag and no explicit stable nomination in
-review; (b) affects a niche user group (musl + UML builders); (c) no
-reporter or tester confirmation in the thread.
+**Evidence AGAINST backporting:**
+- Very narrow audience (32-bit UML + GCOV + Clang 20/21)
+- UML is a testing/debug arch, not production-critical
+- No `Cc: stable` in submission; discussion did not raise stable
+  nomination
+- Users can trivially work around by not enabling GCOV or upgrading
+  Clang to 22.1+
 
-**Step 9.2: STABLE RULES CHECKLIST**
-1. Obviously correct? YES — verified fix logic against the source.
-2. Fixes real bug? YES — build failure documented.
-3. Important? MEDIUM — build fixes are important for affected users;
-   it's a total block.
-4. Small and contained? YES — 6 lines, single file, preprocessor only.
-5. No new features/APIs? YES — pure build fix.
-6. Applies to stable? YES — verified clean apply to
-   6.17.y/6.18.y/6.19.y.
+**Stable Rules Checklist:**
+1. Obviously correct/tested: YES (Kconfig guard, build-tested by lkp)
+2. Fixes a real bug: YES (reproducible build failure)
+3. Important issue: MEDIUM (build failure, narrow scope)
+4. Small and contained: YES (3 lines, 1 file)
+5. No new features: YES (removes an option in invalid config)
+6. Applies to stable: YES (clean apply to v6.1+; minor context to v5.19)
 
-**Step 9.3: EXCEPTION CATEGORY**
-Record: Falls squarely into "BUILD FIXES" exception category explicitly
-listed as allowed in stable.
+**Exception category:**
+Record: Falls under "BUILD FIXES - Kconfig dependency fixes" - an
+explicit allowed exception in stable rules.
 
-**Step 9.4: DECISION**
-This is a textbook small build fix. Zero functional change with glibc,
-unblocks musl builds for affected stable trees (6.17.y+). The code
-touched doesn't exist in older stable trees (5.10-6.12), so the fix is
-only relevant for newer stable branches — and maintainers/AUTOSEL
-pipelines can no-op where the file doesn't have the problematic include.
+**Decision:**
+This is a Kconfig-only build fix that prevents a known Clang 20/21
+compiler miscompile from producing spurious compile errors on 32-bit UML
+with GCOV. It has zero runtime risk, applies cleanly to stable trees,
+and is explicitly within an allowed exception category. Although the
+affected user population is narrow, the cost to include it is
+essentially nil, and similar Clang version-specific build fixes are
+routinely backported. Stable users building with affected toolchains
+will otherwise see unexplained build breakage.
 
 ### Verification
 
-- [Phase 1] Parsed tags from commit message: only Link: +
-  author/maintainer SOB. No Reported-by/Tested-by/Fixes/Cc:stable.
-  Confirmed.
-- [Phase 2] Read `arch/x86/um/os-Linux/mcontext.c` and diff: verified 6
-  lines added (comment + `#define` + `#undef`), no other changes.
-- [Phase 2] Ran grep on the file for `struct sigcontext` — no matches,
-  confirming the commit's claim that the file doesn't reference the
-  renamed struct.
-- [Phase 2] Ran grep for `_fpstate|_xstate` in the file — 19 matches,
-  confirming these are the types actually used.
-- [Phase 3] `git log -- arch/x86/um/os-Linux/mcontext.c`: confirmed
-  `<asm/sigcontext.h>` include was introduced by `b1e1bd2e69430` ("um:
-  Add helper functions to get/set state for SECCOMP").
-- [Phase 3] `git show b1e1bd2e69430~1:...mcontext.c`: verified pre-patch
-  file did NOT have `<asm/sigcontext.h>`.
-- [Phase 3] `git tag --contains b1e1bd2e69430`: confirmed it first
-  appears in v6.16.
-- [Phase 4] `b4 dig -c d46dfb369a4627d90efc2c2ffbe29e38e3e74286`: found
-  submission at lore URL; only v1 exists.
-- [Phase 4] `b4 dig -c ... -a`: confirmed v1-only, part of 2-patch
-  series; patch 1/2 is in a different file (stub.c).
-- [Phase 4] `b4 dig -c ... -w`: confirmed all UML maintainers and
-  correct lists were CC'd.
-- [Phase 4] Read saved mbox thread: only 2 messages (the two patches
-  themselves), no replies, no NAKs, no stable nomination.
-- [Phase 4] lore.kernel.org direct fetch: blocked by Anubis anti-
-  scraping, but mbox download via b4 succeeded.
-- [Phase 4] `git log --grep=musl stable-push/linux-rolling-stable`:
-  confirmed other musl build fixes have been backported (e.g.,
-  `c723289f4e7f1` turbostat, `d5408730bca99` netfilter_bridge.h).
-- [Phase 5] grep verification: `mcontext.c` only uses
-  `_fpstate`/`_xstate` types from `<asm/sigcontext.h>`; no `struct
-  sigcontext` references.
-- [Phase 6] Checked each stable branch's `arch/x86/um/os-
-  Linux/mcontext.c`: 5.10/5.15/6.1/6.6/6.12 do NOT have `#include
-  <asm/sigcontext.h>`; 6.17/6.18/6.19 DO. Fix only applies to 6.17+.
-- [Phase 6] Line counts (`wc -l`) show 6.17.y, 6.19.y, and current tree
-  all have 260-line mcontext.c with the same include structure — patch
-  will apply cleanly.
-- [Phase 7] Author Marcel W. Wysocki has only two commits ever (the 2/2
-  series), new contributor, but patch applied by maintainer Johannes
-  Berg.
-- [Phase 8] Failure mode: compile error only; no runtime impact.
-  Triggered deterministically on musl+UML.
-- UNVERIFIED: Could not independently confirm how many real users build
-  UML with musl (assumed non-zero based on Alpine Linux containers being
-  common in CI).
+- [Phase 1] Parsed tags from commit message: Reported-by kernel test
+  robot, Suggested-by Nathan Chancellor, Signed-off-by Kees Cook and
+  Johannes Berg, Link + Closes lore URLs. No Cc: stable, no Fixes: tag.
+- [Phase 1] Identified as an explicit build fix (compile error described
+  with exact error text).
+- [Phase 2] Verified diff: 3 lines added, 1 removed in `arch/um/Kconfig`
+  only; guards `ARCH_HAS_GCOV_PROFILE_ALL` with `!(!64BIT &&
+  CLANG_VERSION >= 200000 && CLANG_VERSION < 220100)`.
+- [Phase 3] `git log 2419ac3272669 -1` confirmed UML's
+  `ARCH_HAS_GCOV_PROFILE_ALL` select originated in v5.19-rc1 (Vincent
+  Whitchurch, Apr 2022).
+- [Phase 3] Confirmed no Fixes: target in kernel history; root cause is
+  LLVM commit (external).
+- [Phase 4] `b4 mbox 20260409052038.make.995-kees@kernel.org` retrieved
+  3-message thread; patch is v3 (links to v1/v2 in commit body). Nathan
+  explained version bounds rationale, no NAKs, no stable nominations
+  raised in thread.
+- [Phase 4] Confirmed proper reviewers/maintainers CC'd: UML maintainers
+  + LLVM kernel contacts.
+- [Phase 5] N/A (Kconfig-only change).
+- [Phase 6] `git show v5.19:arch/um/Kconfig`, `v6.1:`, `v6.6:`,
+  `v6.12:`, `v6.16:`, `v7.0:` all confirmed `select
+  ARCH_HAS_GCOV_PROFILE_ALL` present.
+- [Phase 6] `git show vX.Y:init/Kconfig` confirmed `CLANG_VERSION`
+  Kconfig symbol present in all checked stable trees.
+- [Phase 6] Verified diff context `ARCH_HAS_FORTIFY_SOURCE` /
+  `ARCH_HAS_GCOV_PROFILE_ALL` / `ARCH_HAS_KCOV` is present in v6.1+ for
+  clean apply; v5.19 context differs slightly.
+- [Phase 7] Subsystem = arch/um; peripheral/testing-focused.
+- [Phase 8] Failure mode = compile-time error (no runtime impact).
+  Severity MEDIUM - build failure, narrow config.
+- [Phase 8] Precedent `ef753d66051ca` (objtool Clang 20 fix) confirms
+  similar compiler-compat build fixes get applied in mainline/stable
+  ecosystem.
+- UNVERIFIED: Whether all `LLVM 22.x` patch references are accurate -
+  the commit cites them but I did not independently verify the LLVM
+  commits. This does not affect the kernel backport decision since the
+  kernel-side change stands on its own merits as a Kconfig guard.
+- UNVERIFIED: Exact user-impact numbers (how many stable users build
+  32-bit UML + GCOV + Clang 20/21) - inherently unknowable but likely
+  small; does not change the risk-benefit calculus since risk is
+  effectively zero.
 
-This is a small, obviously correct build fix with zero risk to glibc
-users and clear benefit to musl users. It fits the documented "BUILD
-FIXES" stable exception, the file is in the same state in stable
-6.17.y/6.18.y/6.19.y so it will apply cleanly, and the change is
-preprocessor-only with an immediate matching `#undef`.
+This is a narrowly-scoped Kconfig-only build fix with expert review,
+clean applicability, and zero runtime regression risk. It matches the
+documented "Build fixes / Kconfig dependency fixes" exception in stable
+kernel rules.
 
 **YES**
 
- arch/x86/um/os-Linux/mcontext.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/um/Kconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
-index a21403df66637..b1580df80b3fc 100644
---- a/arch/x86/um/os-Linux/mcontext.c
-+++ b/arch/x86/um/os-Linux/mcontext.c
-@@ -4,7 +4,13 @@
- #include <linux/string.h>
- #include <sys/ucontext.h>
- #include <asm/ptrace.h>
-+/*
-+ * musl defines struct sigcontext in <bits/signal.h>.  Rename the kernel's
-+ * copy to avoid redefinition while keeping the FP-state types available.
-+ */
-+#define sigcontext __kernel_sigcontext
- #include <asm/sigcontext.h>
-+#undef sigcontext
- #include <sysdep/ptrace.h>
- #include <sysdep/mcontext.h>
- #include <arch.h>
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 098cda44db225..d9541d13d9eb0 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -11,7 +11,9 @@ config UML
+ 	select ARCH_HAS_CACHE_LINE_SIZE
+ 	select ARCH_HAS_CPU_FINALIZE_INIT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+-	select ARCH_HAS_GCOV_PROFILE_ALL
++	# Clang 20 & 21 miscompute __builtin_object_size() under -fprofile-arcs
++	# on 32-bit, causing spurious compile-time errors in check_copy_size().
++	select ARCH_HAS_GCOV_PROFILE_ALL if !(!64BIT && CLANG_VERSION >= 200000 && CLANG_VERSION < 220100)
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
 -- 
 2.53.0
 
