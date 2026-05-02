@@ -4,69 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9052FCD3423
-	for <linux-um@archiver.kernel.org>; Sat,  2 May 2026 12:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 738BECD3423
+	for <linux-um@archiver.kernel.org>; Sat,  2 May 2026 13:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fyZCWSV6uUGBUx7qDOXXlcXryy60JSkhXY/hW5S/TWc=; b=ceCxfaatukSuAfx3gODIp2cIWj
-	RKbEXCoHGYwFfgu62vh7dprxGBvEtlfp9e8duuD8l0twLA0oRQ/LeBLMumyXXPRThJ91GRbe6UHEK
-	o6dCfwItFV4FwrauJRvAetJIniakdUuDtQyO+TG2Vb5PnLk5AhUrVrekoxQFTY820I0I6VoQ7O4Mz
-	8IY4vFWm15QUtw4rgHKXfbMhhl8Of6dSFt7za9D/bKYSiFdax8rtqpkFv/ZOt3iKB39N4G0QWpWi3
-	sU2+JxZ6bpHwO6Io4y3ehz41V+YOupuq/KzIdxePzgK3HWlrcWRg7PPx8NUdcRaI5YsrxehPGGQtl
-	wpmUOEYw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Date:Subject:Cc:To:From:Message-ID:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EPIu1VT3+WtFaU6ycaBtpB2LTIlRXTVRY8qiprkx7Gc=; b=voArpLnyyej8o5PV8koNKI+wAV
+	EN7wXOzIPTjf10u/0l9Oilc3Jdr9hVzav0/rLhEtgs3slKz7poSEszlPiVK/ckZUshI1TfkJDCe52
+	f5EnZtQZ4U5ZfpgTpfu5oiOnGCTt63RqBlK78bken9k5u7R+YdMzOe3ZWOoXfP3Dq/2/+Lgct8RWG
+	jU/e4hswRmg0qdEMvII9kEcnlTDKn9oaSY5BwUSA2OgZlRRn96w1AB3OCnXoAutm1RgwANdLOzBc7
+	Egfqj2c2aeON+DB7dfYx6s0Erl9doLRVCPbZD4EYQSWPoQCNwyxw7FNqzVOOHSqDSIo8c4zdGk1ws
+	MM+p3mPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wJ92P-00000008xDG-3sQk;
-	Sat, 02 May 2026 12:01:37 +0000
-Received: from nestor.xn--rombobjrn-67a.se ([188.126.83.49] helo=smtp.xn--rombobjrn-67a.se)
+	id 1wJA1w-000000092jC-3E2n;
+	Sat, 02 May 2026 13:05:12 +0000
+Received: from xmbghk7.mail.qq.com ([43.163.128.43])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wJ92N-00000008xBi-0v7v
+	id 1wJA1u-000000092iV-15dW
 	for linux-um@lists.infradead.org;
-	Sat, 02 May 2026 12:01:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xn--rombobjrn-67a.se;
-	s=a; t=1777723287; bh=Ep+PyIxZUxo7I++u34Bl31OMHEHI2GsPl+DkXpzZqCo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:From:Sender:Reply-To:Original-From:
-	 Organization:To:CC:Subject:Original-Subject:Date:Message-ID:
-	 In-Reply-To:References:Original-Message-ID:
-	 Disposition-Notification-To:Disposition-Notification-Options:
-	 MIME-Version:Content-Transfer-Encoding:Content-Type:
-	 Content-Features:Content-Alternative:Content-Location:
-	 TLS-Report-Domain:TLS-Report-Submitter:MT-Priority;
-	b=GkRzP7i9RTR0072h+WMkZvMRoCNMwNwC40JfXyxrLS/q1vm3ToFJdUlBmuXUryZif
-	 eE5uPAXZpohsnrcGeOv5M/Bys3/quIk76pWdJQYAWB1J15DO5STdJyg8wKp3Bu7GTG
-	 LI05A/fqlctPOn4nY48JOgAChIbNlERqIeirinTzgWvOoEuDPUpkFSbfiK4yls+ais
-	 sM3HRM42D0IMRV3NIwjesUQmIGkHbkkg2UpFFi7MDGA4cqehu5/SFuy7cBwMe1ZhNk
-	 4TpdQ7MxpIlIerzd5ridfX1OJ9cYT9FAgCJACOh/r7YK6iueeHvgXfe4l/OnXfU5PM
-	 rsTrnJjSjj9tA==
-Received: from tag.xn--rombobjrn-67a.se (tag.xn--rombobjrn-67a.se [192.168.72.9])
-	by smtp.xn--rombobjrn-67a.se (Postfix) with ESMTPSA id D7652407BE00;
-	Sat,  2 May 2026 14:01:27 +0200 (CEST)
-Date: Sat, 2 May 2026 14:01:08 +0200
-From: =?UTF-8?B?QmrDtnJu?= Persson <Bjorn@xn--rombobjrn-67a.se>
-To: Wang Zihan <3772548978@qq.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, corbet@lwn.net,
- skhan@linuxfoundation.org, mchehab@kernel.org, richard@nod.at,
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
- linux-um@lists.infradead.org
-Subject: Re: [PATCH] Documentation: Fix duplicated words
-Message-ID: <20260502140108.6643955c@tag.xn--rombobjrn-67a.se>
-In-Reply-To: <tencent_B1D6CBBF95486E31D04C2E1B92F5E605A307@qq.com>
-References: <tencent_B1D6CBBF95486E31D04C2E1B92F5E605A307@qq.com>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-redhat-linux-gnu)
+	Sat, 02 May 2026 13:05:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1777727101; bh=EPIu1VT3+WtFaU6ycaBtpB2LTIlRXTVRY8qiprkx7Gc=;
+	h=From:To:Cc:Subject:Date;
+	b=SoqB0E6MG0QyyXKSzdFLK+QwrSee9JXInL9cgY1BF+kooEl1hGkCwn/OrK5bVlDhd
+	 ANGmWIwS6jgMgJaFgTq7TPCyHUQV9qDx/nGfWR34WFLDHXBfpneiS7l1yXetVtNZYZ
+	 oWCaGyrBxjRg5UhJhbYLA2JEQWaSMxR0yalYQVUY=
+Received: from Lang.smartont.net ([2409:8a44:2312:14e1:56d8:1e1e:3f0b:d0f3])
+	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
+	id 13835EBD; Sat, 02 May 2026 21:04:56 +0800
+X-QQ-mid: xmsmtpt1777727096t2xpuewnz
+Message-ID: <tencent_7B6592FA660AA38DCB8215456E0DD0032E07@qq.com>
+X-QQ-XMAILINFO: NCmjBvJFq6XN9fygQfgBBr3jI/afKESixi/DV2JngKJxDNSdPNYBjFEnRA0RHC
+	 23m9JD6OTQX+A9s8LPXSA4jRFNq5X/wTVjIIEafaUIB75EWkvdbrVm+cmy5+/zBRsIUjdgCkYDC3
+	 Nm7/gkB7JM2GNnvIoZynZkK6Cvfy/Qv7AqqkdpkTZy/TZBLjggWl407oIRA1SZfvekrtMZQkW5hT
+	 C+PXNO1UkYFz/6npEHfEk4YQ5pxOEP2gHGQVxoWSIDKu12WQMQ0cHQVr7daQm7TTAp/cBp87jcp1
+	 6yFZnT4y1BMD9iU6S7UkmhGKDyI1vRJTIiEz6MKjRL8ti4jX7waqlEfmoAz9oOUAz4If4foQrw4Q
+	 yq3WcNBwv+zs595ha44rSabjuXPGqSA/W6nnSbKm7JRb4Kx+Yld+c+WXCNsJPT+IOFvSogT7rc2b
+	 Zc7ITyvvBUB7EvQJmAgtivpasNs4lSiH1eOlXOSEqSotbRqkCOYIa3brvOG7a+bJ8AoWmZuh/UcG
+	 vtCQJIytvEM4wieqDbABuj0ceXPwh4QNW53fnLbVyvcT/O8+3e9EPohLi3r2Sh0f0sJcdQAIC5ue
+	 PxqUsCMAf/XK+lTTswQ36Bc1JoJdeglQjo6FsxF3LgfSZkmgFdiD0ro6Km5La1OCmR9ZhUZp2FrK
+	 9UggnM57z0GRYHQXXW9osEAq33WDDgv2NWGiukIRWWyxCkkDisI9s20Sif3c/D6a83XbZigAFJnt
+	 8c+nSRS86rpMcB+2KaTSAygfiYJauTeC6BEDiwEW+z7PLyevLD3u06DsXo2dHVZb0xuZWAIEcl+q
+	 iGG5LszxEAPTg0gWdDtmk4xCioIIrfnYNtbS0uewDjcSdO4lCLIRzjZxa8pxZWxRLvd4XNIs6Sqf
+	 1t7z+wAlir0c8kXwhSU7+YOaMoRjR7ARA7xhuL6hbpuYUMuB8vWOxAlvCv2TzXWE2Oswn0VlURX9
+	 bdyV08PStwDbYhMgF5/fLY6SqMSlik1RdGFDcalt+tnc0K8PcoHnlMc4hvNwLvJpJ/AomXCbQUFM
+	 E+kn4zWqvvfRewl2PDlQTzzMg9pm4qHzy8APzf8XWu9pKqDbWd3DonqL4njgETjwOma3RExOeUIJ
+	 +E9NPwHb7YR64skIk=
+X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
+From: Wang Zihan <jiyu03@qq.com>
+To: loongarch@lists.linux.dev,
+	netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-um@lists.infradead.org
+Cc: chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	alexs@kernel.org,
+	si.yanteng@linux.dev,
+	corbet@lwn.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	mchehab@kernel.org,
+	richard@nod.at,
+	linux-kernel@vger.kernel.org,
+	Wang Zihan <3772548978@qq.com>
+Subject: [WITHDRAW] Documentation: Fix typo "eXtention" -> "Extension" and duplicated words
+Date: Sat,  2 May 2026 21:04:56 +0800
+X-OQ-MSGID: <20260502130456.585851-1-jiyu03@qq.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/s+pt7UBjTtHpjBNxXVWB9kl";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260502_050135_423370_880BF6E7 
-X-CRM114-Status: UNSURE (   5.92  )
+X-CRM114-CacheID: sfid-20260502_060510_622468_1591639F 
+X-CRM114-Status: UNSURE (   4.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,40 +97,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---Sig_/s+pt7UBjTtHpjBNxXVWB9kl
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Wang Zihan <3772548978@qq.com>
 
-Wang Zihan wrote:
->  you can always run UML under gdb and there will be a whole section
-> -later on on how to do that. That, however, is not the only way to
-> +later on how to do that. That, however, is not the only way to
+I apologize for submitting incorrect patches. After review by Björn Persson,
+I realized that my changes were not actually fixing errors:
 
-"Later on" is an established English expression. A plain "later" also
-works. This isn't a correction of an error; it's a stylistic change.
+1. Patch "Documentation: loongarch: Fix typo eXtention -> Extension"
+   The capitalization of 'X' in 'eXtention' was intentional to highlight
+   the letter, not a spelling mistake.
 
-Bj=C3=B6rn Persson
+2. Patch "Documentation: Fix duplicated words" (the "later on on" part)
+   "Later on" is an established English expression. The original text
+   was not an error, just a stylistic choice.
 
---Sig_/s+pt7UBjTtHpjBNxXVWB9kl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signatur
+I am withdrawing these patches:
+- Message-ID: <20260502111912.143743-1-3772548978@qq.com>
+- Message-ID: <20260502111916.145238-1-3772548978@qq.com>
 
------BEGIN PGP SIGNATURE-----
+Thank you for the correction and education. I will be more careful in the future.
 
-iQIzBAEBCgAdFiEE52SginNFTPmg+iBb4Tha3NZK5j8FAmn154QACgkQ4Tha3NZK
-5j/jXA//VZxalhvXELFLazBqWaE4KMf7cjtx1MrlRygc7caUVnuiH6P2AXJtgQIy
-chY2K2gn1yVnHnJsSpSflBQQ8L4lshmP9ZHMKVcU5f7fygL6Ueg6Aa4bBWgbU71B
-Y0KPOXE9eHOZfwZ8myMe7OJiRgZkJ4YbrmjFR2DoVx+NZ1eKfFAVUEGfOG3HkZBH
-6OKIbHcMbvzjtenrUkdaPOVAmH13GbtSUT17Z2Dm9ifui1wfTA/JAxfAw/MH+Pjd
-DyO9RVvhTJRIyr1LdTac1s9PRo2bVt6PV8cktZM9f1Njj1rnYpQhf1w4QH5+2kUV
-v9cA5bMaYKOQ2oL1VaHnW9CTm1DhqUN6eIs6IFMk++7Ad/QN2I7uLdp6Xh/rRtY2
-oKqOSVN+gWlVQ4MWrdrfRJ0QJ5ZKekmx5YcR7gfL4xYl52dHyA6GpsJozvD0xwTy
-6wUJX7skyjtxsVKwgUPyr4EwH7er49NcLjzZK6T70FbJu8c1eCUK92Fad3wzSe1D
-qNM3pnWHgaWHn6MrzPfsx1WLDVkDNfgD1leidoXabLJoCxzO6NRBWFtL8qcAI/Kb
-0PXcw3gg9f2fQQbRgSYkN9CKA+8WjFpHbqwVbakscxQGdW9KSKS59Kz21yDphswV
-IPHeHiN/KKKOf4XS+3qEXWFGIqc90/Pw4Xgpcpgvs9l9lAuiFTo=
-=j/I4
------END PGP SIGNATURE-----
+Apologies for the noise.
 
---Sig_/s+pt7UBjTtHpjBNxXVWB9kl--
+Wang Zihan
+
 
