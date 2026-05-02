@@ -4,108 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00C2BCD13D3
-	for <linux-um@archiver.kernel.org>; Thu, 30 Apr 2026 20:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCA8FCD13DA
+	for <linux-um@archiver.kernel.org>; Sat,  2 May 2026 11:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4cHFP+eNWcXFLm2JPg/pPVlADeLLzz8lJF7iSdVxtPU=; b=clQhymR9xuLRcftAs2EGsDzYjq
-	Q4fzu2OZu6EDEQIFp7iQyUmbzEkT+W1dIB5eePTmckMBti7KxV4EN2UEcbuuw03il/i2F4BMwzhHL
-	56L3QLEASq2MZ3aku8P58ukYtd6D+Ub6BNi4P8NCPPa54HH10b20TXfc9WjdG/wd6+9k1MmjCh7Gu
-	354t4U4/thmt1T8YqQ3PGj5HYiBk5fZsvIrcf21mIZQTFbaCotCl/FCYwSp+yaRDKLzRJEWkujKwI
-	ywX2agIHiaEYuiLQpNE9qF3qqXGmVZlTbqRsqu/wx9sb6Dd2fXdSrCn9vySkUeT00DbkVIZE+Mzs6
-	ns5HNl6A==;
+	MIME-Version:Date:Subject:Cc:To:From:Message-ID:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=/P2+h0oopeGcJLkWbR2iUk4xU6TlOScWeXXKUXMCSiQ=; b=HtRtsoS8lZxSck1woWdm3qei3q
+	2sB3s2ROhS9EIrjE8XGFPYSjINWFy8c9fpKZL8CyQBdkGnCWFYYxgWsUTXytqr66fVtcava608en1
+	5m0gGuqL2iPCdfsisbIJ2KctI0o1TpgMfhH6tKxPy1+rz4PdIPL23P2kZCNRcboCS6Om2dpvMluca
+	qcUrRbfAKMnophTKNYH5FLjjDEpeI3/MvKX41toI9CPEtsktkVxs4N02h08BlqnOcrbuZeyUX2NaE
+	6d445cYq/sT5y1FMZ9XNv1aTToeKfPW+tOKwPvXnzgXlD06sYaCA0JHK+UW9pOOi+k4ScB7LpSZL1
+	3v3jTQxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIYFP-00000005w1b-3TLP;
-	Thu, 30 Apr 2026 20:44:35 +0000
-Received: from mail-dl1-x1233.google.com ([2607:f8b0:4864:20::1233])
+	id 1wJ8Nj-00000008tEy-1n43;
+	Sat, 02 May 2026 11:19:35 +0000
+Received: from out162-62-57-137.mail.qq.com ([162.62.57.137])
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wIYFN-00000005w1F-3eb6
+	id 1wJ8Ng-00000008tDz-3w2d
 	for linux-um@lists.infradead.org;
-	Thu, 30 Apr 2026 20:44:34 +0000
-Received: by mail-dl1-x1233.google.com with SMTP id a92af1059eb24-12db2e9b3bcso134126c88.3
-        for <linux-um@lists.infradead.org>; Thu, 30 Apr 2026 13:44:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1777581873; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Dzj+L3k+jKvJlnHnsWI+vKOQM1t8nmYmhbQlSD7howcvmxMB3Bv+2qlZI/Kx/ZhNhA
-         0McgrHvEZC38PhIjFQfqP7v6vPgIJJu5AEc0of/aiEM4Gz+uO82KVgV/wlubdAa2KJbo
-         RqFSmck2FtDcKtfeIHo1JQbVfInOfxktMmqDZZXM4kK7rfmcdbfCIYnY1Pfi0RdV5SC3
-         ALjQIzdHka+Hd83ISZUoSrUTTfDBaSxp9stbQTMxhRmTNnUsojeB9lioIZbo53Lgq1uo
-         K38pIpjpe4y1JQmEkvbLWuzn5U2Lx7FQ6hb/z81KOsToygiSaKOtjbxteTP+pCYraQEH
-         L4Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=4cHFP+eNWcXFLm2JPg/pPVlADeLLzz8lJF7iSdVxtPU=;
-        fh=3Qje+IOmtPqrwKrmR5ISYkddFJn/M6Rz4zUzThq2VbE=;
-        b=JIq3QipkZVVxzChX/TOKSyJWUiB/FGTFuzcvqeJZENLO/iJWdnfRjG9kQrGHRrqMBd
-         1qNwnGS+NCeGKFn1deVxH6UR9GJ/SAz977Ngt0WvbT1cruLnbJDz5lb9P0uf8IXpyDqX
-         3M9bwTqSOjkLyTQRpfkCGy0aTr3una9mfAIWTS4mZ2rguzHrC4OrYWyTtVvIB4NGmIPR
-         prZQ5MW/x5U+rRM5kWokD/AD9g4clZu34UjzpQ7kB6mpnM7aXdzaGkhnHPSrTQlRFuT4
-         8aiNUjhTQ9jkmqlt/s+djC54jJDD7XbdXuAB8ijYCi/B3QBp4MBsraILvDQTPy6C23uU
-         6Aiw==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777581873; x=1778186673; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4cHFP+eNWcXFLm2JPg/pPVlADeLLzz8lJF7iSdVxtPU=;
-        b=VRgZokY9IEQQFACz4POWtvq2DD6tltGuNKmFXY1dvBmDYenNktz5TQXepTpXo0QaJq
-         i9hJmnxsfnhRD2evi76+W4XePvwwJnjLqiuxlXHuzfjrVqhukHkGavVDpI4iEiACFucO
-         QJ4235UDpHqWpQE580hT2qo1TOlwLvwiI6hetF2eL4bFQVpBC65/clDaCSqNiL6DK42O
-         CCaA+gRTQdYQc0/y7u1LeuJfOB/AANQyt9OaKhRJAETleGFUA2wi1yVj3gV9tGS2uFVM
-         nmbAA8p+4s1P8VMqdM4pmox0CpZQPmRXsjh43c3JHeWfUB2I8ZSSC374NF+qiJAmm5Er
-         lTxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777581873; x=1778186673;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4cHFP+eNWcXFLm2JPg/pPVlADeLLzz8lJF7iSdVxtPU=;
-        b=MFiYpVEGCUPt8YLwx/B2+1XZrgtEGomCEGokDqfV6FudOiIYOd3jm/vorAS7uAGiJc
-         iwmn5u/1kHFzreYfJKtSeuiM5qc8E03el8jVsGgWKb8UXGMLFyw1jjnSiTDSzJeHpA/n
-         289eoW6s4+JAjHND5TsL4rdzRm9Y6AvPuXVo8TfTa7FnReRlTxdDCrQKorfoCLJI+HVX
-         dEIwDNnDWqe8gY4kDcm0zsyEe6fGugwOzHdSGqVj6cu6nS0fpiZxfRHgs58IJ68HtWS4
-         2EDVpNueCQTyoQ7DW8G4m/kQ4hKtMD3rcpaOiAQDYR+1p7/wrneCQAvltKgb6M+2doFf
-         +vdQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/kqKBZ9dlzP6kEZHId/EQOleqyrtr2up3w3xmknaTzSJOp5zpoSU6lrO4w9Q2ko35+o6/9zMv9kg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwZTegzYi+Hh8J14EgA5wriLQEkPboECJn0mcSP3b+YuAFxTYaw
-	rp1E97GGc3AlTGjcEFpw7bjTBABD0o4uBXfTRNuNUxhBbRhN1LBNIVU3ol9f1KnZttq8D8eJWJF
-	ecE3mNempegUGWhyEeLhI/r4/wFsH3aA1lFE3
-X-Gm-Gg: AeBDiesoo2+6vLnKw7o2sUjflpkFaOdvkGc+y6JDcw884jR+O2s/Vwrq5CT1E2gW5da
-	o7Ej38C6Ureicp7FaRj3aw9ZZhMQ52ckyWBbNeZXbi8NvWijthIWoVFZ01EiDXx5cwnB717My+k
-	A43GiR8/BUM96HS/BaLyBvtTN7Kvd8TYLH6Ga3aVhSWpJVHgMvCHny0AdekKAQAjz8uZZS9JPqp
-	FTFN1PzzjOa4c3//D2dUQj8DzPK/CqKxd7IZCk1CIaHJKKMB/tdaz5TA/bEuH9IGPsX5acvv4x0
-	ZXWjAoG9xgL/Yyn7c0Q8GvQSlYiWcAb/j5JT3R99DzfWpTJD6Ks0DJbRMVA1ItAR5/vQUW8fniX
-	X3IaDRagCZHvYVL1IhvCMulRochvRi5QE0A==
-X-Received: by 2002:a05:7301:5803:b0:2ea:de28:f389 with SMTP id
- 5a478bee46e88-2ed3ef6ebd6mr954333eec.8.1777581872817; Thu, 30 Apr 2026
- 13:44:32 -0700 (PDT)
+	Sat, 02 May 2026 11:19:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1777720761; bh=/P2+h0oopeGcJLkWbR2iUk4xU6TlOScWeXXKUXMCSiQ=;
+	h=From:To:Cc:Subject:Date;
+	b=f8AdAd1Yzny6M9AGdBnREOaXZxkFWW7WJ/+yycFusP7iV84+7/WzHQPvf2IRKiw69
+	 TD3uQvVqPbq47spY5qpoMkkQorZa3+QCTnntWKXxvN98vqJ9W/2iKdt0Dssmf1bm+D
+	 4+R4IQ+sAN8qNgmLqsq8fgiyhR81/fGM8wjHAUrw=
+Received: from Lang.smartont.net ([2409:8a44:2312:14e1:56d8:1e1e:3f0b:d0f3])
+	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
+	id 4D013C04; Sat, 02 May 2026 19:19:16 +0800
+X-QQ-mid: xmsmtpt1777720756thcvqggum
+Message-ID: <tencent_B1D6CBBF95486E31D04C2E1B92F5E605A307@qq.com>
+X-QQ-XMAILINFO: MLMEjb5zWVcNZZuUZyxHibZ1w+zisKptqYUhi/n6boR51UmP7NHS8C4/S4TwPE
+	 sGhHegepQweJhOWf0lnRWad3ibJaI33gTpKd4J2h8wubBIvPvYqgeYEJ1rA6dVNXCVNaY0UEECeZ
+	 PIxOLhUlSxTboDw78cjaEmSdfcyf3Meqzkh0gyCB1y5zWNS9fYuG4qGawMYElyJRGuuVqRx8Zf4N
+	 QCdXAa6S/8nRI10lTNwpLAoQA0DM9FOy0m4bVyvv3o7zThEk6V0zKMfnDPm/MhJT0LC6h8j7/2Xc
+	 ULiJO1ju+7+REB9UH/FhWoYAgD2+4BYQY4nnR3jrMIKV64+I+bjBVwtWpIreuUnNNuQCGkRONe/l
+	 HtxGCswDbacj6VJ+K9w33mujR7GZVReAtMqbgdwjfTUqPqtBTgKSTaPmzzkZjaOzjOuXtS1VZLDY
+	 0qWZQDd1+KQT153BCfbWRXaJi1uFBddsj/UC70CnMxJCFdOWlCgNHZKxuCvSh1MSvn9i40U0o+8O
+	 IJOIG5GdhXoxpv2P8asYMgp/hKKwEFpgurcH8lHeN31PqBgOmMiqJQhaG2paGFdOepXHyUE6Wd6L
+	 R95zAvxRCk8nC02tP9N38FaW+KksyO5WFk/8Y2WyWv2RW6a0z2h6Wlc1YaxRCNTTh88XLs5H71qa
+	 x3VWqnrgno1zRl/vYAsD+OVyqJjdhZtRQrSisa234FcWBPGivpN6K+yZiGAd1LCH8sQkrqOyKt9q
+	 PA83pciw39FMxZzNWNpqmwbXBhVR8lHHbuHwndqk8gNExKhD8nvJzDL//+HSTz8gc+l0V/uuX/IF
+	 sVwVU0AKPkFQaqFtO62JdWCxvB/g4wI/f1yaGNhUk+zEdWNyua5riNlkJ3TQ9qGiePSEu5KmM61a
+	 1G8HkXwZZPHMOUlmYpEJkjAMBfIvSSW41+t7iqqDHTFr7rGjr32burNA1aRKJad/5Fg7yJ82qd1j
+	 ypFYj/bE19aaGqh+D7EsozLIsR2tIh9BhaCj2a9PemF3/CwbkJJ+GBmu8O3+cHzFRAEWMqd3JG2e
+	 y8Lk7UDixe7j5mR0mquA+eP3cGKFzG8VJUzs0NBfRdjJnHjCCNswTZhvhTwhw3h3+aKJyjatx0iX
+	 9ENtrI+dKX4kUkDnMvAD+jFINbRpP1d9qbZCDp
+X-QQ-XMRINFO: M/715EihBoGS47X28/vv4NpnfpeBLnr4Qg==
+From: Wang Zihan <3772548978@qq.com>
+To: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-um@lists.infradead.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	mchehab@kernel.org,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	linux-kernel@vger.kernel.org,
+	Wang Zihan <3772548978@qq.com>
+Subject: [PATCH] Documentation: Fix duplicated words
+Date: Sat,  2 May 2026 19:19:16 +0800
+X-OQ-MSGID: <20260502111916.145238-1-3772548978@qq.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-References: <20260425034125.53866-1-david@davidgow.net>
-In-Reply-To: <20260425034125.53866-1-david@davidgow.net>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 30 Apr 2026 22:44:20 +0200
-X-Gm-Features: AVHnY4LGNlzdRDP_FsWKzkzH4XH-Svm4aorK1yvmu0rhL8bxBKxh7t8QCy8fXW4
-Message-ID: <CANiq72m_wJuy6XyPpZ8+BrF_kQTDH8bST2=C1-vcNcKGN4S-2A@mail.gmail.com>
-Subject: Re: [PATCH] rust: arch:um: Fix building 32-bit UML with GCC
-To: David Gow <david@davidgow.net>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	rust-for-linux@vger.kernel.org, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260430_134433_913832_0081FDA8 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20260502_041933_541843_37BF9096 
+X-CRM114-Status: GOOD (  11.24  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,39 +96,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Apr 25, 2026 at 5:42=E2=80=AFAM David Gow <david@davidgow.net> wrot=
-e:
->
-> 32-bit UML builds can be configured either by setting CONFIG_64BIT=3Dn or
-> with SUBARCH=3Di386. Both work with Rust-for-Linux when clang is the
-> compiler, but when SUBARCH=3Di386, we don't set a bindgen target correctl=
-y if
-> gcc is the compiler.
->
-> Add the appropriate bindgen target configuration for i386, as is done in
-> Makefile.clang.
->
-> Fixes: ab0f4cedc355 ("arch: um: rust: Add i386 support for Rust")
-> Signed-off-by: David Gow <david@davidgow.net>
+Remove duplicated words in three documentation files:
+- "in in" -> "in" (switchdev.rst)
+- "The the" -> "The" (dmx-reqbufs.rst)
+- "on on" -> "on" (user_mode_linux_howto_v2.rst)
 
-Applied to `rust-fixes` -- thanks!
+Signed-off-by: Wang Zihan <3772548978@qq.com>
+---
+ Documentation/networking/switchdev.rst                | 2 +-
+ Documentation/userspace-api/media/dvb/dmx-reqbufs.rst | 2 +-
+ Documentation/virt/uml/user_mode_linux_howto_v2.rst   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-    [ For reference, the errors look like:
+diff --git a/Documentation/networking/switchdev.rst b/Documentation/networking/switchdev.rst
+index 2966b7122..948bce44c 100644
+--- a/Documentation/networking/switchdev.rst
++++ b/Documentation/networking/switchdev.rst
+@@ -162,7 +162,7 @@ The switchdev driver can know a particular port's position in the topology by
+ monitoring NETDEV_CHANGEUPPER notifications.  For example, a port moved into a
+ bond will see its upper master change.  If that bond is moved into a bridge,
+ the bond's upper master will change.  And so on.  The driver will track such
+-movements to know what position a port is in in the overall topology by
++movements to know what position a port is in the overall topology by
+ registering for netdevice events and acting on NETDEV_CHANGEUPPER.
+ 
+ L2 Forwarding Offload
+diff --git a/Documentation/userspace-api/media/dvb/dmx-reqbufs.rst b/Documentation/userspace-api/media/dvb/dmx-reqbufs.rst
+index d2bb1909e..18810f0bb 100644
+--- a/Documentation/userspace-api/media/dvb/dmx-reqbufs.rst
++++ b/Documentation/userspace-api/media/dvb/dmx-reqbufs.rst
+@@ -72,4 +72,4 @@ appropriately. The generic error codes are described at the
+ :ref:`Generic Error Codes <gen-errors>` chapter.
+ 
+ EOPNOTSUPP
+-    The  the requested I/O method is not supported.
++    The requested I/O method is not supported.
+diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+index c37e8e594..7b08738c3 100644
+--- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
++++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+@@ -1092,7 +1092,7 @@ be formatted as plain text.
+ 
+ Developing always goes hand in hand with debugging. First of all,
+ you can always run UML under gdb and there will be a whole section
+-later on on how to do that. That, however, is not the only way to
++later on how to do that. That, however, is not the only way to
+ debug a Linux kernel. Quite often adding tracing statements and/or
+ using UML specific approaches such as ptracing the UML kernel process
+ are significantly more informative.
+-- 
+2.54.0
 
-            BINDGEN rust/bindings/bindings_generated.rs
-          error: unsupported option '-mno-sse' for target ''
-          ...
-          error: unknown target triple 'unknown'
-          panicked at .../bindgen-0.72.1/ir/context.rs:562:15:
-          libclang error; possible causes include:
-          ...
-
-        - Miguel ]
-
-    [ Added space in title. - Miguel ]
-
-(I left the comment as-is to keep the match from `Makefile.clang`).
-
-Cheers,
-Miguel
 
