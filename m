@@ -4,62 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA9F3CD3423
-	for <linux-um@archiver.kernel.org>; Sat,  2 May 2026 14:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC990FF885A
+	for <linux-um@archiver.kernel.org>; Tue,  5 May 2026 12:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vkdJUl9byqmgdH4ISrrSUbw86t4D/yEgNaaTqWmyKRE=; b=jMxFc0a7Inx64FGtpgP7KRg2jY
-	NjX3yP0P3yB0cbuVdl32h/+Y5sxwPeYjBvZ71AR1UhR6MXgvp2y5QzZLGoZuV/pyUxS2AQbNdaiyL
-	VCtmTWn5X0JX29Bal0E8GT+gqkHiBO78QcM4r3gmKGk3a7m8Fbi9SzBBelj4ZgeuXqVLbJNmcTJge
-	xoIqGE6mcVltAGvL9T8dX7AkP16QK8EUt48BHKAZKvMVx96FgXTHX+VgtzmbOmJ0ds84eY2ofChpj
-	Bwi+3q7ml2COBTNGZFGjoMhqgS8xezhwnSsmoWYd5/QqhLAVXuOWfK7xg+2WUcr8aF/xIeq1lEV8m
-	xt9yb0AA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=2lJxaTnlwk5mlkbPhYJenySUrcGDTpVi4R6jywH/g8c=; b=VUHkh2tNmTJOdyFcF6L7UPADDm
+	ofT6PHjmkvrf0SnSSYgBZTKsBOb0PuFTINohOQsWcN6jdN9h8XvjsSrv3dd6Dolb4qg5SeOiqDVMT
+	DSeCOn6ppgZktzKlDqPyhZlk16IJW7K7n6Wrt0OyvjrPLFELwA34dnoQM+6sjHmnLHOzbxWbe+w7Q
+	TG6CFoYDcdoxR1gtT94Tk1+3Ju0KZwm7RfLdb8VUFcHaproTLqfXRPsqu0pOdvAJspcnV7g8S8um/
+	88uhXRsun29Wno4lsVkCcWWUR8AhAVDtSE1qxF3jriaHBLwXPUW7cb37cPpqyN1jgch1Vc+jqh4Wp
+	zwn7QWRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wJB8e-000000098rh-2Ryg;
-	Sat, 02 May 2026 14:16:12 +0000
-Received: from vps0.lunn.ch ([156.67.10.101])
+	id 1wKF8D-0000000GDLo-3rJE;
+	Tue, 05 May 2026 12:44:09 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wJB8b-000000098r3-2Ijg
+	id 1wKF8B-0000000GDKk-0xRw
 	for linux-um@lists.infradead.org;
-	Sat, 02 May 2026 14:16:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=vkdJUl9byqmgdH4ISrrSUbw86t4D/yEgNaaTqWmyKRE=; b=Ae
-	dyKaSRwo8iamjOkvzOLPx0wAtoj63h4rJf+NDQ+B4HrTfC1iaJUoZelsMWgFb216+JISuUJ1Sy2f5
-	0hwh7a0gDKqfiRJSg5x+Exg/Ps76LJ0e1KrwEAdaN4yWGrnuxD/NWJsjtb0S1vIV0yO3ERDdUJGaX
-	7cE11VZbDlHywBY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1wJB8T-0011Vh-Ph; Sat, 02 May 2026 16:16:01 +0200
-Date: Sat, 2 May 2026 16:16:01 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Wang Zihan <3772548978@qq.com>
-Cc: netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-um@lists.infradead.org,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, corbet@lwn.net,
-	skhan@linuxfoundation.org, mchehab@kernel.org, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: Fix duplicated words
-Message-ID: <918f7cdc-c0bc-4cbb-8385-ca0ddb2180c1@lunn.ch>
-References: <tencent_B1D6CBBF95486E31D04C2E1B92F5E605A307@qq.com>
+	Tue, 05 May 2026 12:44:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=2lJxaTnlwk5mlkbPhYJenySUrcGDTpVi4R6jywH/g8c=; t=1777985047; x=1779194647; 
+	b=sfNjGK6z0PXetp0Ygj2GZa3wkWd62TCduRuaXvYCeS3VM6SFGlE1J1OFhXA3wRxXeTAWXf9Y8Mx
+	VQnsfbdljy/2+juQYzTH2PMtNTb1Brc8UK9HnYmW7+W8/6HL/gOSrSlakuzL+GGIRhRV6i04riWEb
+	mC/2XeGzfB/wjLL2841qIjpFLzujM0RQDHAfkYF2tMfksOoWXXstzggV1ECHfaWHCJ/3ZHTqcvalz
+	dTmJoPYal1C15AoCSREwZMeF6TKclIlMqxtLzpLXp+MkX0JQbQNr0pqBsjgK8/WDeG88a1eHNeFYg
+	mr6xHpZL+DzJ7/cK8P8dnqQNredBJFJkeb7w==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1wKF84-0000000GBlx-3te9;
+	Tue, 05 May 2026 14:44:01 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH] um: virtio-pci: free the IRQ message buffers
+Date: Tue,  5 May 2026 14:43:18 +0200
+Message-ID: <20260505124317.2330700-2-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_B1D6CBBF95486E31D04C2E1B92F5E605A307@qq.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260502_071609_613074_3048DC98 
-X-CRM114-Status: UNSURE (   7.40  )
+X-CRM114-CacheID: sfid-20260505_054407_289454_C909C7B5 
+X-CRM114-Status: UNSURE (   8.45  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,26 +70,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, May 02, 2026 at 07:19:16PM +0800, Wang Zihan wrote:
-> Remove duplicated words in three documentation files:
-> - "in in" -> "in" (switchdev.rst)
-> - "The the" -> "The" (dmx-reqbufs.rst)
-> - "on on" -> "on" (user_mode_linux_howto_v2.rst)
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
+These buffers are allocated when initializing the virtual queues, but
+were not freed again. Wrap all of the del_vqs calls to detach and free
+the unused buffers before deleting the IRQ VQ.
 
-* don’t repost your patches within one 24h period
-
-We have already told you one of the fixes is wrong, but you did not
-wait 24 hours, so have not see our feedback.
-
-Also, in general when using a tool, assume it is wrong, and convince
-yourself it is correct, before making a change. "The the in this
-sentence is the subject." What does the bot make of that? Can you
-convince yourself the bot is correct?
-
-    Andrew
-
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
-pw-bot: cr
+ arch/um/drivers/virtio_pcidev.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcidev.c
+index 2bf5a645db45..53cffd373890 100644
+--- a/arch/um/drivers/virtio_pcidev.c
++++ b/arch/um/drivers/virtio_pcidev.c
+@@ -490,13 +490,24 @@ static int virtio_pcidev_init_vqs(struct virtio_pcidev_device *dev)
+ 	return 0;
+ }
+ 
++static void virtio_pcidev_del_vqs(struct virtio_device *vdev,
++				  struct virtio_pcidev_device *dev)
++{
++	void *msg;
++
++	while ((msg = virtqueue_detach_unused_buf(dev->irq_vq)))
++		kfree(msg);
++
++	vdev->config->del_vqs(vdev);
++}
++
+ static void __virtio_pcidev_virtio_platform_remove(struct virtio_device *vdev,
+ 						   struct virtio_pcidev_device *dev)
+ {
+ 	um_pci_platform_device_unregister(&dev->pdev);
+ 
+ 	virtio_reset_device(vdev);
+-	vdev->config->del_vqs(vdev);
++	virtio_pcidev_del_vqs(vdev, dev);
+ 
+ 	kfree(dev);
+ }
+@@ -526,7 +537,7 @@ static int virtio_pcidev_virtio_platform_probe(struct virtio_device *vdev,
+ 	um_pci_platform_device_unregister(&dev->pdev);
+ err_reset:
+ 	virtio_reset_device(vdev);
+-	vdev->config->del_vqs(vdev);
++	virtio_pcidev_del_vqs(vdev, dev);
+ err_free:
+ 	kfree(dev);
+ 	return err;
+@@ -569,7 +580,7 @@ static int virtio_pcidev_virtio_probe(struct virtio_device *vdev)
+ 
+ err_reset:
+ 	virtio_reset_device(vdev);
+-	vdev->config->del_vqs(vdev);
++	virtio_pcidev_del_vqs(vdev, dev);
+ err_free:
+ 	kfree(dev);
+ 	return err;
+@@ -591,9 +602,9 @@ static void virtio_pcidev_virtio_remove(struct virtio_device *vdev)
+ 
+ 	/* Stop all virtqueues */
+ 	virtio_reset_device(vdev);
++	virtio_pcidev_del_vqs(vdev, dev);
+ 	dev->cmd_vq = NULL;
+ 	dev->irq_vq = NULL;
+-	vdev->config->del_vqs(vdev);
+ 
+ 	kfree(dev);
+ }
+-- 
+2.54.0
+
 
