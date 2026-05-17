@@ -4,72 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8B52CD4851
-	for <linux-um@archiver.kernel.org>; Sun, 17 May 2026 02:25:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05694CD4F3C
+	for <linux-um@archiver.kernel.org>; Sun, 17 May 2026 23:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=sV6fhzrbrTX0iqeUo8xmtmUreYy8zZzFHjV3sir7464=; b=tdPv6PtFdS0HbEAHZ401Ruevtv
-	DUxHjceNvutrEPug1qzUc8vSUpY1S29j6OZS4ExJwV1lYkkdI0JD1/V+Ze/Kd2zCIA9mu7npoGrUa
-	M6LUFTXwm2ESbVeKrVwDGFAlfJ+lcrZTX/0r2N8uFdolulRyu0K6GoPmwyVC4DFUcy6MGJVfgVQ7H
-	QxLTh03OSnJAzlZyz0KFQVJCQRb6/eCgETI9wX9j09OfLINWs5L6+lepAFQtbq01gKHuLfqZlOLvJ
-	js9bgkxwp6RVfnrcEfX0j3onK7SWku2OnZ7itXSB7DR6cjlWUN8o53hWv+xt5eRm78bfv8azaBJB7
-	aqtWzxcQ==;
+	bh=JRMBAbgRVexPfq6YzE4iuqHwU1pkT7p6WoFGRBKz/5o=; b=K2PALFHtWgVjL86YEDqNpBo7m4
+	D1qg/ovbmFmYNdAUseSCe+K8cQ4Oa8IEgVwfCI9QheAx1zMAHLNlMAcVcnF4O0zJOpslGlPH99GsA
+	9qV01WpBILQjH5fJBBFbSdc/H7Bz08vKX5BPnr4FIxxhvQw6v8Ku8KGAmyEteya/hRMRZukGGrr6w
+	8cjiG8oN/dc8yQOQ1kZV4uDQnfz6w5YXYyAR2uNtMHpLjEokelnsXAKyc8X+60gwDAzD2wAcRNpyA
+	H0Jor8YJnJ5YARUAMOYd5zoqWaK0SunZi+op6GU1KJx5p6/fwTf4vJYJFDtDm8XKEVlcP+5eKJ56k
+	P4ZEeOJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wORCH-0000000BvF8-2aOV;
-	Sun, 17 May 2026 02:25:41 +0000
-Received: from p-west2-cluster4-host5-snip4-3.eps.apple.com ([57.103.69.154] helo=outbound.mr.icloud.com)
+	id 1wOl38-0000000Dg01-1X3E;
+	Sun, 17 May 2026 23:37:34 +0000
+Received: from out28-169.mail.aliyun.com ([115.124.28.169])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wORCF-0000000BvEc-1ZOy
+	id 1wOl34-0000000DfyI-0evi
 	for linux-um@lists.infradead.org;
-	Sun, 17 May 2026 02:25:40 +0000
-Received: from outbound.mr.icloud.com (unknown [127.0.0.2])
-	by p00-icloudmta-asmtp-us-west-2a-100-percent-0 (Postfix) with ESMTPS id 56A1B1800188;
-	Sun, 17 May 2026 02:25:32 +0000 (UTC)
-X-ICL-Out-Info: HUtFAUMEWwJACUgBTUQeDx5WFlZNRAJCTQhKBUMDRQBBCFYBWANLVxQEC0AFBlgARnkRUAFYHlZeWhdeTVEPDwNKEAJeBV1yGVoUXBhTRVEfVFhBDgpSEhhcFFxQWB5GElYNXQkZBkBeUBtfAkIPHBNWFRMdQxkPKwhKBEMHRQJeCyUTCVNWWxNVF0YJGQhdHRkVWgkKVwBAC04DWAZcAkILTAZbGV4KSQxVAkBEGFpBCkoFLV4IXh9MHB0OWAYMUE0BQwgKAlEcVg1X
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1778984735; x=1781576735; bh=sV6fhzrbrTX0iqeUo8xmtmUreYy8zZzFHjV3sir7464=; h=From:To:Subject:Date:Message-ID:MIME-Version:x-icloud-hme; b=y8MFib1H3rIfbmyeZl8olPAG4p7Ap2aO+aLMT+VrsSn0NHQyZWhjdTAgeVSvdLQbVt5sagfcJLwY9cOObAH3NXQ081TiUYa8f/uyNVza2l+LEU8TVyUoMNznKkOtHZroY4h80hmTgmFcoE107do9MeyTQZMkrxASZ/cbejK2ocMOYKlgTzZgz+CNOuutjN0degzhcrEWLg1OSsBhG4LZdRQosE+Q5qZkMHeqXs76ewyoBu2m/2vPWG8SQhbRXwn8Eu3ZpH8QpjPU2gMkgshOIlh3sucU/NGEro1Oqw0sx+NtLMWB77zK0Ebx65kmblx0c7p9HxVHu5Tf4PvJrsVxhg==
-mail-alias-created-date: 1778972301885
-Received: from localhost.localdomain (unknown [17.57.152.38])
-	by p00-icloudmta-asmtp-us-west-2a-100-percent-0 (Postfix) with ESMTPSA id 5DF73180009F;
-	Sun, 17 May 2026 02:25:29 +0000 (UTC)
-From: Sakurai Shun <ssh1326@icloud.com>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: Sakurai Shun <ssh1326@icloud.com>,
-	linux-um@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: fix typo in user_mode_linux_howto_v2.rst
-Date: Sun, 17 May 2026 11:24:44 +0900
-Message-ID: <20260517022456.5895-1-ssh1326@icloud.com>
-X-Mailer: git-send-email 2.54.0
+	Sun, 17 May 2026 23:37:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1779061042; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=JRMBAbgRVexPfq6YzE4iuqHwU1pkT7p6WoFGRBKz/5o=;
+	b=Yuz8yuXQ6O2bG5IAXIkxCFGku1P1dB5otm7UDvKbrk95TCb1NRVHyTtQa1vbNynXhtFWRI9LdRIpDO6n554VSjDFydycSK2mC9LKAJ8EAcnvqD2NkrOnFsc8vaVi1KuwgIXE9c453icSHK7sNFBWEbOLTYi257+Xmbdh5txmlwE=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068016216;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---.hZWRg1x_1779061016;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.hZWRg1x_1779061016 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Mon, 18 May 2026 07:37:20 +0800
+From: Tiwei Bie <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	Tiwei Bie <tiwei.btw@antgroup.com>
+Subject: [PATCH] um: Tighten exec permissions on page mappings
+Date: Mon, 18 May 2026 07:36:41 +0800
+Message-Id: <20260517233641.127433-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authority-Info-Out: v=2.4 cv=GMUF0+NK c=1 sm=1 tr=0 ts=6a09271d
- cx=c_apl:c_pps:t_out a=9OgfyREA4BUYbbCgc0Y0oA==:117
- a=9OgfyREA4BUYbbCgc0Y0oA==:17 a=NGcC8JguVDcA:10 a=x7bEGLp0ZPQA:10
- a=ZxuoajvSgW0A:10 a=VkNPw1HP01LnGYTKEx00:22 a=v3ZZPjhaAAAA:8
- a=A5CT-1V7y8jouT4tXaAA:9 a=0bXxn9q0MV6snEgNplNhOjQmxlI=:19
- a=IxSG75etxsVYPPdR13TJ:22 a=inEeFAWOpojiTzPHIy75:22
-X-Proofpoint-GUID: VM9EXsHA23NyGS9J0AjnhSgXfyAOqHVK
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE3MDAyNSBTYWx0ZWRfX6VY+BRc+F+XG
- nkIp9McyifMfMIUc+y/mNrw6V2JKzjK4FptQtpPrnbyFR29pLrztD0PwYQJCadGjHRCNEWaG7Eh
- 8+vYgtBYNESBOZjTJkpFhYKsHRjC8p6h2yOS7i5hIrq4aJC7+JW3yvu2ArTtcmS+L7iWW081mTq
- Q4BcmyFU59D1KlwPPESF5Jb3NU7+kGBZU0jaY0rS3UNVFJn1xRWAjLL1xAKPCTX3rQNT9KVLGdw
- vlljWGThqvonsz8Kwzw17pR8z+4+G9RySCHKFzQuYSuhDyQs9oumKkjizJErOVhuEj/k6Y20k0D
- UlmVV8SBQ0CjGC7BsQDQgNKrYZXuFYz/bkr0LwhX9YgAqb3W7QVFQjp5A8jRYg=
-X-Proofpoint-ORIG-GUID: VM9EXsHA23NyGS9J0AjnhSgXfyAOqHVK
-X-Apple-Category-Label: MjE0Nzk4NjU5NzY6JGNhdGVnb3J5JF9QZXJzb25hbCw=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260516_192539_429457_888522A1 
-X-CRM114-Status: UNSURE (   9.33  )
+X-CRM114-CacheID: sfid-20260517_163730_734918_C53C2E60 
+X-CRM114-Status: UNSURE (   7.51  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -85,27 +66,99 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Replace "privilges" with "privileges"
+In UML, page mappings are backed by mmap, which allows us to
+effectively manage exec permissions. Introduce a _PAGE_EXEC
+bit so that pages can be mapped without granting unnecessary
+exec permissions.
 
-Signed-off-by: Sakurai Shun <ssh1326@icloud.com>
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- Documentation/virt/uml/user_mode_linux_howto_v2.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/include/asm/pgtable.h | 25 ++++++++++++++++---------
+ arch/um/kernel/mem.c          | 16 ++++++++--------
+ 2 files changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-index c37e8e594..9224bea5e 100644
---- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-+++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-@@ -234,7 +234,7 @@ an ioctl to setup the tun interface and/or use raw sockets where needed.
- This can be achieved by granting the user a particular capability instead
- of running UML as root.  In case of vector transport, a user can add the
- capability ``CAP_NET_ADMIN`` or ``CAP_NET_RAW`` to the uml binary.
--Thenceforth, UML can be run with normal user privilges, along with
-+Thenceforth, UML can be run with normal user privileges, along with
- full networking.
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index 88ea8434364d..6304026a2b2e 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -13,6 +13,7 @@
  
- For example::
+ #define _PAGE_PRESENT	0x001
+ #define _PAGE_NEEDSYNC	0x002
++#define _PAGE_EXEC	0x004
+ #define _PAGE_RW	0x020
+ #define _PAGE_USER	0x040
+ #define _PAGE_ACCESSED	0x080
+@@ -55,14 +56,19 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ #define _PAGE_TABLE	(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED | _PAGE_DIRTY)
+ #define _KERNPG_TABLE	(_PAGE_PRESENT | _PAGE_RW | _PAGE_ACCESSED | _PAGE_DIRTY)
+ #define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY)
+-#define __PAGE_KERNEL_EXEC                                              \
+-	 (_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
+-#define PAGE_NONE	__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
+-#define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED)
+-#define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
+-#define PAGE_READONLY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
+-#define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
+-#define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
++
++#define _PAGE_BASE		(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
++#define PAGE_NONE		__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
++#define PAGE_SHARED		__pgprot(_PAGE_BASE | _PAGE_RW)
++#define PAGE_SHARED_EXEC	__pgprot(_PAGE_BASE | _PAGE_RW | _PAGE_EXEC)
++#define PAGE_COPY		__pgprot(_PAGE_BASE)
++#define PAGE_COPY_EXEC		__pgprot(_PAGE_BASE | _PAGE_EXEC)
++#define PAGE_READONLY		__pgprot(_PAGE_BASE)
++#define PAGE_READONLY_EXEC	__pgprot(_PAGE_BASE | _PAGE_EXEC)
++
++#define _PAGE_KERNEL		(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
++#define PAGE_KERNEL		__pgprot(_PAGE_KERNEL)
++#define PAGE_KERNEL_EXEC	__pgprot(_PAGE_KERNEL | _PAGE_EXEC)
+ 
+ /*
+  * The i386 can't do page protection for execute, and considers that the same
+@@ -117,7 +123,8 @@ static inline int pte_read(pte_t pte)
+ 
+ static inline int pte_exec(pte_t pte)
+ {
+-	return !pte_get_bits(pte, _PAGE_PROTNONE);
++	return pte_get_bits(pte, _PAGE_EXEC) &&
++	       !pte_get_bits(pte, _PAGE_PROTNONE);
+ }
+ 
+ static inline int pte_write(pte_t pte)
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 1eef0e42ef5d..7a018357aba4 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -115,18 +115,18 @@ static const pgprot_t protection_map[16] = {
+ 	[VM_READ]					= PAGE_READONLY,
+ 	[VM_WRITE]					= PAGE_COPY,
+ 	[VM_WRITE | VM_READ]				= PAGE_COPY,
+-	[VM_EXEC]					= PAGE_READONLY,
+-	[VM_EXEC | VM_READ]				= PAGE_READONLY,
+-	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
+-	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY_EXEC,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY_EXEC,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY_EXEC,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_EXEC,
+ 	[VM_SHARED]					= PAGE_NONE,
+ 	[VM_SHARED | VM_READ]				= PAGE_READONLY,
+ 	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+ 	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_EXEC,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_EXEC,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_EXEC,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_EXEC
+ };
+ DECLARE_VM_GET_PAGE_PROT
+ 
 -- 
-2.54.0
+2.34.1
 
 
