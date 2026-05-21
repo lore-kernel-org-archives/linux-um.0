@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4199CD5BB5
-	for <linux-um@archiver.kernel.org>; Thu, 21 May 2026 13:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15685CD5BB1
+	for <linux-um@archiver.kernel.org>; Thu, 21 May 2026 13:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Dnh9Qdh/Ek2SFmUD3YQQhAJ1lm8lFb5yTi3rkZyIV7s=; b=fMyTy+uhDbJmCTRkRpd+0OJD8l
-	zYSjFkNjF0rDqlXHzFoqDh9Y1jar+Q0o8y//GrqVd5EQfAHYtjRcPbn/HhmX0rU4BtGINrUjyEx3X
-	w09VJ5FellnfFS5RZNwtqSF6zWH1BX1gW1OGP5q9naZVioIZayCxFTjsX2QbvuF6K6WPRBRfZeZIk
-	aZ2R0QjiIiZvmDjD/Cw4qH3zrG6ixz8kTCI7jIFPzR11tdoxbgeWqrU7adTxH4Z3hCIzJyTL0vEEv
-	POMKs/SSt4ht42QzuneYl8lHYe4mfMdDzGrftzPImrQhTHJYebfqh4i90cEKRZDxc4J3iwlp39fnM
-	tYvTIt3A==;
+	bh=tqeEG6FXEKElqAGUt/Z2qfbIbuB++N7b4Fh1Zt6D5dk=; b=xon3p5vjic7MsewfKxrjN0WvFs
+	Zcof3Iv/cJhKpDmGY2Jxf6VjTYfbORgyLev2AovFmpe2L0Zw1/lfv/ztEgWJIoeB76S/GJdH97es2
+	mD+KW4eJZcLDtMwq3tS/HJ12AFtFPrfFR87okr8Iop5f4vSfrWufRZTxrXkBOyT4XnfGzwMtyKslu
+	Fe/6CmE393gs1H5oPikxgJgJyBVuRioIAIuEIdceV3xIKXp/iF9WoCNbmMpRdP1BEzzpToy0D8Uwy
+	Yl+XV+P+gNuDE9VnW3JNTjQZQx0k/BdL6gnm98Jmgwr/1P/U9KCpKk98TjUc4xF9FyrnVYoXaSTK6
+	bS+ES+Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQ3i2-00000007w9a-1od3;
-	Thu, 21 May 2026 13:45:10 +0000
+	id 1wQ3w3-00000007yYo-25MM;
+	Thu, 21 May 2026 13:59:39 +0000
 Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQ3hz-00000007w82-2vwY
+	id 1wQ3w0-00000007yXS-25sk
 	for linux-um@lists.infradead.org;
-	Thu, 21 May 2026 13:45:09 +0000
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-c829586e894so3199307a12.2
-        for <linux-um@lists.infradead.org>; Thu, 21 May 2026 06:45:06 -0700 (PDT)
+	Thu, 21 May 2026 13:59:38 +0000
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-c8279604464so9098298a12.1
+        for <linux-um@lists.infradead.org>; Thu, 21 May 2026 06:59:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1779371106; x=1779975906; darn=lists.infradead.org;
+        d=google.com; s=20251104; t=1779371975; x=1779976775; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dnh9Qdh/Ek2SFmUD3YQQhAJ1lm8lFb5yTi3rkZyIV7s=;
-        b=sD2mP7ftDSt6gNw024tGzLvNZLp4ndzZ8pjYiS6xlVSuUJJWiGIwLYCeFlXf1teKKb
-         2gHkFWGKoR/897L/qm9w6KwTOGJ/4yuir0A3bhYvdNEixo5ltbKHLQYOq14uTckwgF3T
-         UsS0x0zpeGFpyrs3muY9D8s0yOMC0MqfCrU5vDl3zWwhOgi71zc7UIdC6IsgevBIehf0
-         VkxDMMuCkpWwGWhtpRdo0OlqRnciBOPOTjKFpdw1cHUhrw3vTCT81OA60HsD9B/aE9wX
-         wcfDajLMc5AYwlhFp3GOLpzIA37UR7pWfXb64JD9MKWJPTdC90d0+faXOBOOFj61w309
-         vfyw==
+        bh=tqeEG6FXEKElqAGUt/Z2qfbIbuB++N7b4Fh1Zt6D5dk=;
+        b=LI0yM81CWLxgEPsJ3HHA47GV6/uSG7Gf773XW/cTs7rBbKHnC6pZg6gMkFyYbcJhIn
+         lyqlxHtn4ZP7DrVjpOr4WqpTll8k1wEq0U9ToKhVyanO/Qf+SSHBt+1lH1zq9abpBDJS
+         g+NmfNjqI4CdNGXWRpVXTjSFuLGoS1cYx+Y7w0QkcXUNl1mGJhr20cabo0tSDcChGq4p
+         JcXAr2PdXkyab5RDz8zr1Jd4uonReXIaAnlkqB45MYtukNMODAzrS7yzS5DnCVCbuy4e
+         dFLdsdxwXTXTj58igx3NEMjXo8zL+CLXtDHkqRmz8iNVsiaZvS2XzSoao+sqtOwGlnuK
+         tbXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779371106; x=1779975906;
+        d=1e100.net; s=20251104; t=1779371975; x=1779976775;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dnh9Qdh/Ek2SFmUD3YQQhAJ1lm8lFb5yTi3rkZyIV7s=;
-        b=lx+ktKiH4MlRI3NThKYe3gPwTW2Dd7ZT4CbMQUhDCXonK3Q+0PnOblDTrdsuw3WoUv
-         wbMChMxBi+3f2WXR/Gae3I1ewNmw2jX+eGv2Tm9SbuhElWYEVmftRYeA8zpV4Dt6uf7M
-         +kYiUccc4L/OnC1xBjwafPF8tZYdzaLqVqmv3fYPxIdJEh9cWBD9fUStEzTmi/DI/LVY
-         /ToOOCMNklxezC4VPUVbqm4LPgXD83j1O9l4Bq8sMtNN1W6bqH+68EFt+cuDiY1yvSKR
-         kVFePJFtt+WKYND760Hm8zUCBmZM9iSUBX2hilVVxfp4xrNSRM+mkcojE7PPTn65TN1l
-         n1dg==
-X-Forwarded-Encrypted: i=1; AFNElJ9/nLMiW4KpqQpw1T96DooX07AcIyJCCo3c/R+W+mvFsQ0CGUcxEjjOgXOTR/LEWyG42las062GIw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YywDQatjx3XXRDGEpOApMeOn8g2fJfzDIdYGfecuttvDBfFQg/I
-	VMm4INn1JLpQvtzhVe6CKmoTi9q+wSuRrU5B9ocOZvjbWgTOX8Wdy5PvujpuN1cxeZ7BlJYaa4a
-	4c629HQ==
-X-Received: from pgvm13.prod.google.com ([2002:a65:62cd:0:b0:c85:1159:ffbd])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a20:7491:b0:3a0:bc61:62e5
- with SMTP id adf61e73a8af0-3b30883a17bmr3700528637.44.1779371104725; Thu, 21
- May 2026 06:45:04 -0700 (PDT)
-Date: Thu, 21 May 2026 06:45:04 -0700
-In-Reply-To: <20260521133326.2465264-9-kees@kernel.org>
+        bh=tqeEG6FXEKElqAGUt/Z2qfbIbuB++N7b4Fh1Zt6D5dk=;
+        b=GtFiKVxeZtRlrq8eNFSo5OnZYTequpnbPpMCJhJ1QBrsgQeT2SGZlsrZ3ffm0jy1yM
+         J3AwH7XVq1y5zQPmes6eIlsTjAkymyiLAo0S+1gIjxskyBMbyB2zWs77ihEAHGI64U5R
+         J9JY4Lthqi3jEqf1NVHqDP4YhyDtrKSD+oy0olzS8cpLrYesl2JtL2Vp4WXPLeziJmn4
+         43FDwpg/hHAVLJ5FMIgp2Dk3DH+cfhHm32ZOEIMWARuaxuJdYGa7ciyu7WLXbAPlbzLV
+         jIbkIPqem4ltMvljJDBTNOcDuhsdElgpFT+zCjYdpb212IIyVSr57qN+0xj+JHZzkxaB
+         GEMw==
+X-Forwarded-Encrypted: i=1; AFNElJ+wbdkDjQrUKjN1sgjCuwHxyA09Ls084SeRxMCRMH1NVDPwHN9UaEJ9vVqjY0p4Mj7i8ydcasjpqQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx0HfVq82BekWpGDWtHTF0GA3GxbmAaid9eqk/VZSGrYA3v4+Ae
+	OxFXDHf7R5WljXk+fThrMvUG1sxMpfJUNkSzLtB06BblS0K4Ik7Qpigqu3SsBwAsAvS4lIObXv2
+	NEd+O6w==
+X-Received: from pge1.prod.google.com ([2002:a05:6a02:2d01:b0:c79:83b3:cdf8])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a20:431a:b0:39c:a78e:dba9
+ with SMTP id adf61e73a8af0-3b308ac1b14mr3725831637.40.1779371973881; Thu, 21
+ May 2026 06:59:33 -0700 (PDT)
+Date: Thu, 21 May 2026 06:59:33 -0700
+In-Reply-To: <20260521133326.2465264-4-kees@kernel.org>
 Mime-Version: 1.0
-References: <20260521133315.work.845-kees@kernel.org> <20260521133326.2465264-9-kees@kernel.org>
-Message-ID: <ag8MYC6pOZvvYHMp@google.com>
-Subject: Re: [PATCH 09/11] treewide: Convert custom kernel_param_ops .get
- callbacks to seq_buf via cocci
+References: <20260521133315.work.845-kees@kernel.org> <20260521133326.2465264-4-kees@kernel.org>
+Message-ID: <ag8PxTTi5NxT51EW@google.com>
+Subject: Re: [PATCH 04/11] treewide: Convert struct kernel_param_ops
+ initializers to DEFINE_KERNEL_PARAM_OPS
 From: Sean Christopherson <seanjc@google.com>
 To: Kees Cook <kees@kernel.org>
 Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou <pengpeng@iscas.ac.cn>, 
@@ -118,8 +118,8 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou <pengpeng@iscas.ac.cn>,
 	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260521_064507_744611_C7E3C2F9 
-X-CRM114-Status: GOOD (  15.39  )
+X-CRM114-CacheID: sfid-20260521_065936_548594_13CD4C9A 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,51 +135,21 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On Thu, May 21, 2026, Kees Cook wrote:
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 07f4c7209ac0..00317774a90b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -368,12 +368,16 @@ static int vmentry_l1d_flush_set(const char *s, const struct kernel_param *kp)
->  	return ret;
->  }
->  
-> -static int vmentry_l1d_flush_get(char *s, const struct kernel_param *kp)
-> +static int vmentry_l1d_flush_get(struct seq_buf *s,
-> +				 const struct kernel_param *kp)
->  {
-> -	if (WARN_ON_ONCE(l1tf_vmx_mitigation >= ARRAY_SIZE(vmentry_l1d_param)))
-> -		return sysfs_emit(s, "???\n");
-> +	if (WARN_ON_ONCE(l1tf_vmx_mitigation >= ARRAY_SIZE(vmentry_l1d_param))) {
-> +		seq_buf_printf(s, "???\n");
-> +		return 0;
-> +	}
->  
-> -	return sysfs_emit(s, "%s\n", vmentry_l1d_param[l1tf_vmx_mitigation].option);
-> +	seq_buf_printf(s, "%s\n", vmentry_l1d_param[l1tf_vmx_mitigation].option);
-> +	return 0;
+> Using Coccinelle, rewrite every struct kernel_param_ops initializer that
+> sets .get into a DEFINE_KERNEL_PARAM_OPS-family macro invocation,
+> for example:
+> 
+> @@
+> declarer name DEFINE_KERNEL_PARAM_OPS;
+> identifier OPS;
+> expression SET, GET;
+> @@
+> - const struct kernel_param_ops OPS = {
+> -       .set = SET,
+> -       .get = GET,
+> - };
+> + DEFINE_KERNEL_PARAM_OPS(OPS, SET, GET);
 
-For this one, can you manually change it to this?
-
-	if (WARN_ON_ONCE(l1tf_vmx_mitigation >= ARRAY_SIZE(vmentry_l1d_param)))
-		seq_buf_printf(s, "???\n");
-	else
-		seq_buf_printf(s, "%s\n", vmentry_l1d_param[l1tf_vmx_mitigation].option);
-	return 0;
-
->  }
->  
->  /*
-> @@ -459,9 +463,11 @@ static int vmentry_l1d_flush_set(const char *s, const struct kernel_param *kp)
->  	pr_warn_once("Kernel compiled without mitigations, ignoring vmentry_l1d_flush\n");
->  	return 0;
->  }
-> -static int vmentry_l1d_flush_get(char *s, const struct kernel_param *kp)
-> +static int vmentry_l1d_flush_get(struct seq_buf *s,
-> +				 const struct kernel_param *kp)
->  {
-> -	return sysfs_emit(s, "never\n");
-> +	seq_buf_printf(s, "never\n");
-> +	return 0;
->  }
->  #endif
+IMO, "OPS, GET, SET" is more intuitive, especially since that's the order used
+by DEFINE_SIMPLE_ATTRIBUTE and DEFINE_DEBUGFS_ATTRIBUTE.
 
