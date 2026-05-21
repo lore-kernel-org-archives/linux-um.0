@@ -4,54 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05694CD4F3C
-	for <linux-um@archiver.kernel.org>; Sun, 17 May 2026 23:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 127A7CD5BB5
+	for <linux-um@archiver.kernel.org>; Thu, 21 May 2026 13:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=JRMBAbgRVexPfq6YzE4iuqHwU1pkT7p6WoFGRBKz/5o=; b=K2PALFHtWgVjL86YEDqNpBo7m4
-	D1qg/ovbmFmYNdAUseSCe+K8cQ4Oa8IEgVwfCI9QheAx1zMAHLNlMAcVcnF4O0zJOpslGlPH99GsA
-	9qV01WpBILQjH5fJBBFbSdc/H7Bz08vKX5BPnr4FIxxhvQw6v8Ku8KGAmyEteya/hRMRZukGGrr6w
-	8cjiG8oN/dc8yQOQ1kZV4uDQnfz6w5YXYyAR2uNtMHpLjEokelnsXAKyc8X+60gwDAzD2wAcRNpyA
-	H0Jor8YJnJ5YARUAMOYd5zoqWaK0SunZi+op6GU1KJx5p6/fwTf4vJYJFDtDm8XKEVlcP+5eKJ56k
-	P4ZEeOJA==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=D92GfeXfztwtGh+NKFXW+ejJ7GCi/ckBt7Icqwg1tfs=; b=YkHzIKqqAOPhU0EBKc4ZjFuQ3p
+	qwbz7mzkKQ9vZHh7O5wpjejNJ4hcYMP5GvuYp063vCVmldJ+RaHF6LrG7RvJQffKysyJn7vQ2e8a1
+	p2AuXTXZ3qzykmPnL+BdY0K3vkOAnOCWebaI5YrHdNrKiT6ztefG9X8wMa5CRvADtNE4bJKzNFYn1
+	jVofFYA+6KyfVrWfcQvrH06gcVrY+Mec5oAPLiXWB9mMT/kUWNsjTzxoZ+RcKtzLvSA3a6lfiyrAh
+	RNOe+wPtkIMpdAPGvHB+FY84ufumIallCPypND1d5DAG37D+qmzMLlXZrsBhZGRJuK3D/XRDkq587
+	PIfXYXSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wOl38-0000000Dg01-1X3E;
-	Sun, 17 May 2026 23:37:34 +0000
-Received: from out28-169.mail.aliyun.com ([115.124.28.169])
+	id 1wQ3Wj-00000007uDY-2oq5;
+	Thu, 21 May 2026 13:33:29 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wOl34-0000000DfyI-0evi
+	id 1wQ3Wh-00000007uCQ-3m6t
 	for linux-um@lists.infradead.org;
-	Sun, 17 May 2026 23:37:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1779061042; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=JRMBAbgRVexPfq6YzE4iuqHwU1pkT7p6WoFGRBKz/5o=;
-	b=Yuz8yuXQ6O2bG5IAXIkxCFGku1P1dB5otm7UDvKbrk95TCb1NRVHyTtQa1vbNynXhtFWRI9LdRIpDO6n554VSjDFydycSK2mC9LKAJ8EAcnvqD2NkrOnFsc8vaVi1KuwgIXE9c453icSHK7sNFBWEbOLTYi257+Xmbdh5txmlwE=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068016216;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---.hZWRg1x_1779061016;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.hZWRg1x_1779061016 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Mon, 18 May 2026 07:37:20 +0800
-From: Tiwei Bie <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	Tiwei Bie <tiwei.btw@antgroup.com>
-Subject: [PATCH] um: Tighten exec permissions on page mappings
-Date: Mon, 18 May 2026 07:36:41 +0800
-Message-Id: <20260517233641.127433-1-tiwei.btw@antgroup.com>
+	Thu, 21 May 2026 13:33:28 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 150F360231;
+	Thu, 21 May 2026 13:33:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCD6A1F00ADE;
+	Thu, 21 May 2026 13:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779370406;
+	bh=D92GfeXfztwtGh+NKFXW+ejJ7GCi/ckBt7Icqwg1tfs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=OsMbrSfwtX1kazk5IQM74ggG4Dvao03ITo2rB7fjYJyw9ABWXfqI+9aA5qAj2SR/5
+	 bCJNN1CMD9hyb5ppglH/pZwAMSiek0jplgAMqEVVQL5JpcL8KAc0T0+rQaEkPfLgZJ
+	 h9CesS2RNlFMe0lhxQwlPJ5aoyzt8jSouyNeQ/ut9fjkrIWPM1iotTIo8B7ZH0pEOt
+	 PXBO5iwh3tZMUmZ6TsOUjTCKa3JTEC0MG2ngQVnXCKyNc+yajzL20Z6iBGWjesqILa
+	 wl9GSf1Gtg2R6s/MvPcceAUrPZB+a/bbJr58Jk3b4DpNimJFAtwQW4sG1Fmcwkxlwv
+	 gBE9pRr5KxqXg==
+From: Kees Cook <kees@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <kees@kernel.org>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Corey Minyard <corey@minyard.net>,
+	Gabriel Somlo <somlo@cmu.edu>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	Jason Baron <jbaron@akamai.com>,
+	Jim Cromie <jim.cromie@gmail.com>,
+	Tiwei Bie <tiwei.btw@antgroup.com>,
+	Benjamin Berg <benjamin.berg@intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	"David E. Box" <david.e.box@linux.intel.com>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@kernel.org>,
+	Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Alexander Potapenko <glider@google.com>,
+	Marco Elver <elver@google.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Georgia Garcia <georgia.garcia@canonical.com>,
+	kvm@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-mm@kvack.org,
+	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,
+	qemu-devel@nongnu.org,
+	intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-rdma@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	usb-storage@lists.one-eyed-alien.net,
+	virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 05/11] moduleparam: Rename .get field to .get_str
+Date: Thu, 21 May 2026 06:33:18 -0700
+Message-Id: <20260521133326.2465264-5-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260521133315.work.845-kees@kernel.org>
+References: <20260521133315.work.845-kees@kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3072; i=kees@kernel.org; h=from:subject; bh=vLGSuUHmnLi1/YHHelOJK4C4TcXRiKv4YFWn5np0glM=; b=owGbwMvMwCVmps19z/KJym7G02pJDFn8nAsD4o0V/uTmcB53njx1B6e/bj7HRgn2VXOEOnsWp wZ2X7zWUcrCIMbFICumyBJk5x7n4vG2Pdx9riLMHFYmkCEMXJwCMBEONkaGy7PKr73Ur1Czz5B6 etdJJuEbm4bhmk/7zrsdOuT8PYl9KSPDwTtq/fyyAtr+f2YaPvkpdWtWnGfLNNfmFeI5M+tXlVf wAAA=
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260517_163730_734918_C53C2E60 
-X-CRM114-Status: UNSURE (   7.51  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,98 +166,86 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-In UML, page mappings are backed by mmap, which allows us to
-effectively manage exec permissions. Introduce a _PAGE_EXEC
-bit so that pages can be mapped without granting unnecessary
-exec permissions.
+Now that every kernel_param_ops initializer in the tree goes through
+DEFINE_KERNEL_PARAM_OPS, no source file outside kernel/params.c and
+include/linux/moduleparam.h references the .get field by name. Take
+advantage of that to rename the field to .get_str.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+The bare .get name is now free for the next commit, which adds it
+back as a struct seq_buf *-based callback.
+
+Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- arch/um/include/asm/pgtable.h | 25 ++++++++++++++++---------
- arch/um/kernel/mem.c          | 16 ++++++++--------
- 2 files changed, 24 insertions(+), 17 deletions(-)
+ include/linux/moduleparam.h | 8 ++++----
+ kernel/params.c             | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 88ea8434364d..6304026a2b2e 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -13,6 +13,7 @@
- 
- #define _PAGE_PRESENT	0x001
- #define _PAGE_NEEDSYNC	0x002
-+#define _PAGE_EXEC	0x004
- #define _PAGE_RW	0x020
- #define _PAGE_USER	0x040
- #define _PAGE_ACCESSED	0x080
-@@ -55,14 +56,19 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
- #define _PAGE_TABLE	(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED | _PAGE_DIRTY)
- #define _KERNPG_TABLE	(_PAGE_PRESENT | _PAGE_RW | _PAGE_ACCESSED | _PAGE_DIRTY)
- #define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY)
--#define __PAGE_KERNEL_EXEC                                              \
--	 (_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
--#define PAGE_NONE	__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
--#define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | _PAGE_ACCESSED)
--#define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
--#define PAGE_READONLY	__pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
--#define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
--#define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
-+
-+#define _PAGE_BASE		(_PAGE_PRESENT | _PAGE_USER | _PAGE_ACCESSED)
-+#define PAGE_NONE		__pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
-+#define PAGE_SHARED		__pgprot(_PAGE_BASE | _PAGE_RW)
-+#define PAGE_SHARED_EXEC	__pgprot(_PAGE_BASE | _PAGE_RW | _PAGE_EXEC)
-+#define PAGE_COPY		__pgprot(_PAGE_BASE)
-+#define PAGE_COPY_EXEC		__pgprot(_PAGE_BASE | _PAGE_EXEC)
-+#define PAGE_READONLY		__pgprot(_PAGE_BASE)
-+#define PAGE_READONLY_EXEC	__pgprot(_PAGE_BASE | _PAGE_EXEC)
-+
-+#define _PAGE_KERNEL		(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
-+#define PAGE_KERNEL		__pgprot(_PAGE_KERNEL)
-+#define PAGE_KERNEL_EXEC	__pgprot(_PAGE_KERNEL | _PAGE_EXEC)
- 
- /*
-  * The i386 can't do page protection for execute, and considers that the same
-@@ -117,7 +123,8 @@ static inline int pte_read(pte_t pte)
- 
- static inline int pte_exec(pte_t pte)
- {
--	return !pte_get_bits(pte, _PAGE_PROTNONE);
-+	return pte_get_bits(pte, _PAGE_EXEC) &&
-+	       !pte_get_bits(pte, _PAGE_PROTNONE);
- }
- 
- static inline int pte_write(pte_t pte)
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 1eef0e42ef5d..7a018357aba4 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -115,18 +115,18 @@ static const pgprot_t protection_map[16] = {
- 	[VM_READ]					= PAGE_READONLY,
- 	[VM_WRITE]					= PAGE_COPY,
- 	[VM_WRITE | VM_READ]				= PAGE_COPY,
--	[VM_EXEC]					= PAGE_READONLY,
--	[VM_EXEC | VM_READ]				= PAGE_READONLY,
--	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
--	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY_EXEC,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_EXEC,
- 	[VM_SHARED]					= PAGE_NONE,
- 	[VM_SHARED | VM_READ]				= PAGE_READONLY,
- 	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
- 	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_EXEC
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 26bf45b36d02..f5f4148e2504 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -63,7 +63,7 @@ struct kernel_param_ops {
+ 	/* Returns 0, or -errno.  arg is in kp->arg. */
+ 	int (*set)(const char *val, const struct kernel_param *kp);
+ 	/* Returns length written or -errno.  Buffer is 4k (ie. be short!) */
+-	int (*get)(char *buffer, const struct kernel_param *kp);
++	int (*get_str)(char *buffer, const struct kernel_param *kp);
+ 	/* Optional function to free kp->arg when module unloaded. */
+ 	void (*free)(void *arg);
  };
- DECLARE_VM_GET_PAGE_PROT
+@@ -82,7 +82,7 @@ struct kernel_param_ops {
+ #define DEFINE_KERNEL_PARAM_OPS(_name, _set, _get)			\
+ 	const struct kernel_param_ops _name = {				\
+ 		.set = (_set),						\
+-		.get = (_get),						\
++		.get_str = (_get),					\
+ 	}
  
+ /* As DEFINE_KERNEL_PARAM_OPS, with KERNEL_PARAM_OPS_FL_NOARG set. */
+@@ -90,14 +90,14 @@ struct kernel_param_ops {
+ 	const struct kernel_param_ops _name = {				\
+ 		.flags = KERNEL_PARAM_OPS_FL_NOARG,			\
+ 		.set = (_set),						\
+-		.get = (_get),						\
++		.get_str = (_get),					\
+ 	}
+ 
+ /* As DEFINE_KERNEL_PARAM_OPS, with an additional .free callback. */
+ #define DEFINE_KERNEL_PARAM_OPS_FREE(_name, _set, _get, _free)		\
+ 	const struct kernel_param_ops _name = {				\
+ 		.set = (_set),						\
+-		.get = (_get),						\
++		.get_str = (_get),					\
+ 		.free = (_free),					\
+ 	}
+ 
+diff --git a/kernel/params.c b/kernel/params.c
+index e19fff2926bc..6852caea1785 100644
+--- a/kernel/params.c
++++ b/kernel/params.c
+@@ -467,7 +467,7 @@ static int param_array_get(char *buffer, const struct kernel_param *kp)
+ 	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
+ 		p.arg = arr->elem + arr->elemsize * i;
+ 		check_kparam_locked(p.mod);
+-		ret = arr->ops->get(elem_buf, &p);
++		ret = arr->ops->get_str(elem_buf, &p);
+ 		if (ret < 0)
+ 			goto out;
+ 		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
+@@ -554,11 +554,11 @@ static ssize_t param_attr_show(const struct module_attribute *mattr,
+ 	int count;
+ 	const struct param_attribute *attribute = to_param_attr(mattr);
+ 
+-	if (!attribute->param->ops->get)
++	if (!attribute->param->ops->get_str)
+ 		return -EPERM;
+ 
+ 	kernel_param_lock(mk->mod);
+-	count = attribute->param->ops->get(buf, attribute->param);
++	count = attribute->param->ops->get_str(buf, attribute->param);
+ 	kernel_param_unlock(mk->mod);
+ 	return count;
+ }
 -- 
 2.34.1
 
