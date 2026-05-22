@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6C02CD5BB4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBB08CD5BB0
 	for <linux-um@archiver.kernel.org>; Fri, 22 May 2026 14:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oXIK+cBu6urjvTGhsBL+5S0tHUK0ISof8qCbA0I9wM0=; b=jy/+1kn6c6kIea1WUp3/ThKeRu
-	/IBFjVbus6JfBoXrnU0Bjt45r3sdv9mxYUKOpS1QSCVSYf/hkK5MRElZYnYAQ7Uodh416IS/Lkg2i
-	EJ3ZYdbsfJpdYlclHOkYyu+Q5Zy7QvAsGo81vWPG+MZP7yleHpWL3IGnKqigF/isnQAi9iZ/sM/C6
-	ljVEI8FSfLuiO/HQ4JTY6Zq04dbVSxyYsQjk5BNZ5zfY15zFE8LV4n1nlbXaYr1MTaKk2CxGClOQy
-	NeiFwEXc5dah6sBlsoXW+5Eag+CAkxSt4QLFs4kLhCiR9tZ1AYahwDwdqp4EL8u8YDcpz0/bKgamw
-	Rm+UYfJQ==;
+	bh=H+T5Xm2pme6Jcpih7VPFA5EZ9bN5jCyycTaeJz2Unis=; b=pktNi/9qmKMuoggXK0KreRbzd3
+	vUSZJLgTp80YvocxE7hBoUxYNvPG8XuIsk7lRZX2Nvvyjrrtf+RZ7AxzARVcqgc8VFuVy8VDsORtT
+	yLlo6mi6cV7tJSrx3Swkn6oGboW46+fPKoh86F4lGvA4WpTe1LM0QvWMULuD30Vo6zwoyLNYDf1ZP
+	Y/Ho1YZihgU5XbHfqrL/c7N/PuaJKrBuwRf7k9bOf2QSnI9Vz6evLFoWJzkMF9JntM7Oi4WDomqrK
+	BJzV2rqvbkyirYzYjDqqmVg5wwUlVp+OmMKY1b7FY5gOODEzHGSYeXVZZxIFQ/Vpi8xm3K+SsbOrT
+	manM+wXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQQkB-0000000B78V-2NAP;
+	id 1wQQkB-0000000B78L-28p3;
 	Fri, 22 May 2026 14:20:55 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQQk8-0000000B77K-2Hcq
+	id 1wQQk4-0000000B75u-0IbY
 	for linux-um@lists.infradead.org;
-	Fri, 22 May 2026 14:20:54 +0000
+	Fri, 22 May 2026 14:20:53 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 45C9C401B6;
-	Fri, 22 May 2026 14:20:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0FAC1F00A3D;
+	by sea.source.kernel.org (Postfix) with ESMTP id 7DCA74383B;
 	Fri, 22 May 2026 14:20:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15CCA1F000E9;
+	Fri, 22 May 2026 14:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779459652;
-	bh=oXIK+cBu6urjvTGhsBL+5S0tHUK0ISof8qCbA0I9wM0=;
+	s=k20260515; t=1779459647;
+	bh=H+T5Xm2pme6Jcpih7VPFA5EZ9bN5jCyycTaeJz2Unis=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=V7oxZJv+MZWhFVDAePYoRiHd0Y1Z2pxNTc0iupY1Lbc5/AT3qsmjUeCUdYSBuBC7N
-	 Jsf3dRLSoaK3hrq2tjTAmQNsX7a1K2UHPDNG/pDNdrdAGbxfYCq3DDVqXLQiZjWZfh
-	 mSiVR0ltKpAwJV1d+7VNThin5o+u+c6yvB9uD2dI+bd1xGwXhXQL9x+la6GZREgmtk
-	 5KMvsoc+gfF+5Sa7Og/wYYtSeZVHiJIQNcsYMkw1S0sdLQV8N0ngW/p2NR2vuHy97q
-	 M2l7UT8R3JtiSvwPxa45EgNhdLrDeN9ZMoED/CVnBLrqAsv7G7xHseP8nqMr9hCX67
-	 H7u8j4b4IBAJQ==
+	b=D35guIUPEhT4eG7ItlkowbWJs8WBZz7vxTKCtrhnchfpIR0mk9FMHqtmbWaaUouh5
+	 MuWu3h6iHSR6nfI8VdU9fzpsi4WmmLS5trO+6K/zSXhpJFQs2rUnr9Daqnmujyr77y
+	 cndftdziCKUQv1fGV5ue0i3W6P5Pdymg/F0tJ1nZpWNxFQTGFF2am4YGYulMtPatlM
+	 d6YRlBCMnwCOqdhJFrBaxjEWO11daXzIPVCitqWClQBtPx6HkLbbvK9rD5ceI7j99D
+	 inU1LeqeqpBZgdUhAxX8GA7/u5DIGzUgKt8a9lqTcR+aBM7Cx/w+1FSpV2g8Ct4xEZ
+	 0t4h66WZQN3ug==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Ingo Molnar <mingo@redhat.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -65,17 +65,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH 6/8] x86: require minimum 64 byte cache lines
-Date: Fri, 22 May 2026 16:19:57 +0200
-Message-Id: <20260522141959.1071595-7-arnd@kernel.org>
+Subject: [PATCH 5/8] x86: remove dependencies on CONFIG_M... CPU options
+Date: Fri, 22 May 2026 16:19:56 +0200
+Message-Id: <20260522141959.1071595-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260522141959.1071595-1-arnd@kernel.org>
 References: <20260522141959.1071595-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260522_072053_387831_B6E7B0F8 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20260522_072048_148059_29CA68E6 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,50 +92,60 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Later x86-32 CPUs like Pentium-M, K7 and Atom use 64 byte cache lines
-and are incompatible with kernels built for smaller values of
-X86_L1_CACHE_SHIFT.
+CPU specific features should generally be controlled by
+CPU_SUP_xxx options rather than CONFIG_Mxxx, to allow
+generic kernels to be built that work with all of them.
 
-Pentium-4 CPUs have 128 byte cache lines but are compatible with
-cache operations that expect the lines to be 64 bytes.
-
-Older CPUs have smaller cache lines of 16 or 32 bytes but work
-correctly when X86_L1_CACHE_SHIFT is set to a larger value.
-
-Remove the per-CPU tuning and always build for 64 or 128 byte
-cache lines that work correctly in any CPU.
+Replace the few options that don't follow this scheme
+with checks on either CPU_SUP_xxx or X86_PAE by itself.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/Kconfig.cpu | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/x86/kernel/tsc.c    | 2 +-
+ arch/x86/xen/Kconfig     | 3 +--
+ drivers/misc/mei/Kconfig | 2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
-index 65d887274dd8..4991b633047e 100644
---- a/arch/x86/Kconfig.cpu
-+++ b/arch/x86/Kconfig.cpu
-@@ -180,8 +180,8 @@ config MVIAC7
- 	bool "VIA C7"
- 	depends on X86_32
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index e7a43471783f..3d5d38035c52 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1213,7 +1213,7 @@ static void __init tsc_disable_clocksource_watchdog(void)
+ 
+ static void __init check_system_tsc_reliable(void)
+ {
+-#if defined(CONFIG_MGEODEGX1) || defined(CONFIG_MGEODE_LX) || defined(CONFIG_X86_GENERIC)
++#if defined(CONFIG_CPU_SUP_CYRIX_32)
+ 	if (is_geode_lx()) {
+ 		/* RTSC counts during suspend */
+ #define RTSC_SUSP 0x100
+diff --git a/arch/x86/xen/Kconfig b/arch/x86/xen/Kconfig
+index aa4040fd9215..7e74db652215 100644
+--- a/arch/x86/xen/Kconfig
++++ b/arch/x86/xen/Kconfig
+@@ -10,8 +10,7 @@ config XEN
+ 	select X86_HV_CALLBACK_VECTOR
+ 	select HIBERNATE_CALLBACKS
+ 	depends on X86_64 || (X86_32 && X86_PAE)
+-	depends on X86_64 || (X86_GENERIC || MPENTIUM4 || MATOM)
+-	depends on X86_LOCAL_APIC && X86_TSC
++	depends on X86_LOCAL_APIC
  	help
--	  Select this for a VIA C7.  Selecting this uses the correct cache
--	  shift and tells gcc to treat the CPU as a 686.
-+	  Select this for a VIA C7.  Selecting this tells gcc to treat the
-+	  CPU as a 686.
- 
- config MATOM
- 	bool "Intel Atom"
-@@ -239,9 +239,7 @@ config X86_INTERNODE_CACHE_SHIFT
- config X86_L1_CACHE_SHIFT
- 	int
- 	default "7" if MPENTIUM4
--	default "6" if MK7 || MPENTIUMM || MATOM || MVIAC7 || X86_GENERIC || X86_64
--	default "4" if MGEODEGX1
--	default "5" if MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || MVIAC3_2 || MGEODE_LX
-+	default "6"
- 
- config X86_F00F_BUG
- 	def_bool y
+ 	  This is the Linux Xen port.  Enabling this will allow the
+ 	  kernel to boot in a paravirtualized environment under the
+diff --git a/drivers/misc/mei/Kconfig b/drivers/misc/mei/Kconfig
+index 2d1bc5b4d11b..faa451584002 100644
+--- a/drivers/misc/mei/Kconfig
++++ b/drivers/misc/mei/Kconfig
+@@ -4,7 +4,7 @@ config INTEL_MEI
+ 	tristate "Intel Management Engine Interface"
+ 	depends on PCI
+ 	depends on X86 || DRM_XE!=n || COMPILE_TEST
+-	default X86_64 || MATOM
++	default X86_64 || CPU_SUP_INTEL
+ 	help
+ 	  The Intel Management Engine (Intel ME) provides Manageability,
+ 	  Security and Media services for system containing Intel chipsets.
 -- 
 2.39.5
 
