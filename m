@@ -4,100 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEFB3CD5BB3
-	for <linux-um@archiver.kernel.org>; Fri, 22 May 2026 21:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74CEECD4F54
+	for <linux-um@archiver.kernel.org>; Sat, 23 May 2026 08:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z9LGZE9LUGiUFHbvTe+3X1oZ8+Pw+tBYCwgcLVodZ8Q=; b=JwaSu+zun3oR9GgVpdQitikN2o
-	OHeE05JhIuNyWP4Sbd9njcEHp7g4ofmvygKUjppW35dtMb4g2yYHaRVjReDkmxwdxNlP1F/4+uvFG
-	S5/ONvXVqZVDYh6c87OhgRgHqgbY6fINvEoKhVlGNLjU4fq79nzh0zVS81TTHKa+V64beUdt6/VE+
-	wDEOMQf3Cf3prR1G/q7OxV8VZ6MUWbz61yWDsvZwTNtIBbtNQM4yXUmDGSpzs95+4ET5/NhdPTaql
-	eAMVRkzQBm7Z8XfnQbY/zwBS6mcfS6hGEvms5QL3KhASmN4k3Nosr0N89+U6CCVVd+rzyhsTFO51q
-	59rV+mNQ==;
+	bh=i9N/95A/Qq2bBhi9MEP97bwNmBebXjIW5RFDkklcsZ4=; b=IgOrZ/JWTOYOB287rCAHNpnf2Q
+	6SaQv2nN0cmq1ccgjv3Rvw11KmIywFP5Xr0NT9ZFoW9VO0S4mYKalbeKSEg7a2XUUSUgumoZtoAGR
+	cH99U4gjIoK9N4M/V1aoE4zeIDr2twAgkwSvBbsbMdiZHHxcxTd0R2jpIYixX40lDpuze5vbEBJhz
+	SGWMuxCW743GLb4MzqBUC+ll3+NcxSJq1clTYCsjriTpMO4JsdjbKxNp7EETx3qX7ye8+hnCMJwvR
+	bEYyZBwsNHJH1m+jhiB5ecG6OI0CJWSX7YRP9zEQIMDjwJKI1EcSl1DckHIhtPJwJMtBQlnRlMbIS
+	14anixpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQXVE-0000000C0II-3HYJ;
-	Fri, 22 May 2026 21:33:56 +0000
-Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
+	id 1wQi6x-0000000CyMH-0H6n;
+	Sat, 23 May 2026 08:53:35 +0000
+Received: from fhigh-a8-smtp.messagingengine.com ([103.168.172.159])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQXVC-0000000C0HJ-0CPy
+	id 1wQi6t-0000000CyLf-3Y7F
 	for linux-um@lists.infradead.org;
-	Fri, 22 May 2026 21:33:55 +0000
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-48fe26a177cso58857775e9.1
-        for <linux-um@lists.infradead.org>; Fri, 22 May 2026 14:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779485632; x=1780090432; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z9LGZE9LUGiUFHbvTe+3X1oZ8+Pw+tBYCwgcLVodZ8Q=;
-        b=VLF6zh9+5oeCsZbMHcY3GHWZB1haVZ20uj5GULNpkSoK0/vZsRUXy9qQzupSOKF/k4
-         TGk58dr5aTIIzkMxjZH0w3wbOZYp+vJFgnR/Q3MMtUBhSkEaIQCeJ4ebx+VcFJt/UooM
-         96KoOO0qsDew6xXm9A1iurZQWMD5ch6QH2QZQmwx05KPdWYblww17QR+fOY92MAjzTAj
-         JjJipiktfyfHl/wHnIzCgID/eiNMAfOcAK5SxNq9vHMa93MWnUi7OdNd3q630JFfU1+O
-         ewPHx+ajvtgRcOpo5EQCr0AWWQ4e7RjfXwXzfMWBNtOjAtZl5XAvdAdVz6bLC2Os3Ua8
-         MCtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779485632; x=1780090432;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Z9LGZE9LUGiUFHbvTe+3X1oZ8+Pw+tBYCwgcLVodZ8Q=;
-        b=StNnuqBY/OEbkq5FzceyLR0nQM2u9BL78DVlx/0ZpH8VCaJx5mOsrUYCOe4dPvu0NY
-         YZxrsiGk9ECbBa2IXcA9xMH7/ML1GPuBqNfg5/Ntuddk4bFG6Yv9vbfHuh1ZHbPmVLGZ
-         aj5di2fIy/b+1x4XNylFHWOYWRM8EeOC7lSlm2Lhab4PNzsvBe2vcmAcaLucv7nP7CEP
-         gPOxtfhMUz/AO5gHlGfsN0cpIQTGFEeTXMHw+b3issw1TgROpSZJdgCAT5fD10T31Da7
-         /KhSeK6XtrYO57HyhjM+CLi0mzTSWRPZ0NDPZR+eoWN42pKLxDPWdZYvRCMrRAYNkYDv
-         y6Ew==
-X-Forwarded-Encrypted: i=1; AFNElJ+JvevoaSn3ufmPY622eYJkS2ovwMRKHgmuN9FPb62MnpcUTwVRYgGZ2TYt94PHC3ZaGNgmsEivVQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzEISYEy4JXmwyOoDG5UAw0OVXR5FpjDh63U8QsOzJCBb0N4irv
-	zWP2leT5uYOEFCLrKqahVQqSO3UqA3rXtk2wNnWlX75bL4SyFf2JQQ4h
-X-Gm-Gg: Acq92OHAtt7kL/Ro3Uz3kt+HcvMCHwxVeeQaHv4+xBbVGmcAEsgJ+iBgF01jZCzyhEM
-	4PqDdMcF4nU6AnKo46sGcCHM/mk3yFq3A1aezEnCM+rHWCTyyz5U7+D+P2m++1LIjGLg/mIQJo5
-	/jdrR/2ZLoU2lMs2pqAPZEya6oGMm7cRRpvbDICz9Kz4CVuxR6fm29ksWV4tgbNFFuFJJYX+lQ9
-	Kf+zoUfmXU0mtI6czhmpYLyDZtgAmHO6piyw4sZmHeo+xL+1B6UGN5H1X+nF7l7qPVUY03LScP6
-	eYzonnxP+3d8CdM8I8dTH2b3t4s5KnBC04xjOurgvW4oAkJK1ZSmgzM/wA9g4Ts3+pMltE6/afu
-	zW2z3I6aG+e7g4rdRzE7rygcyzVuExktLFerNHLyAC5I4l//uE8pB7jMFpqxXFtbkxVnFoSedKX
-	Pmh0WHVwiyzslJiCaJL3pNmdGTvoYswKUUXkrB3k4dHqO4EXrmwLkUKJkK8W5GRwjpkBjD+xCTt
-	ODiwX2G2dnflw==
-X-Received: by 2002:a05:600c:4706:b0:485:3abe:ab86 with SMTP id 5b1f17b1804b1-49042487e09mr73282765e9.4.1779485631817;
-        Fri, 22 May 2026 14:33:51 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49045282201sm77281575e9.8.2026.05.22.14.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2026 14:33:51 -0700 (PDT)
-Date: Fri, 22 May 2026 22:33:49 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Richard
- Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter
- Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Will Deacon
- <will@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo
- <gary@garyguo.net>, Yury Norov <yury.norov@gmail.com>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Alexander Usyskin <alexander.usyskin@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH 8/8] x86: simplify 32-bit instruction set selection
-Message-ID: <20260522223349.155dfe20@pumpkin>
-In-Reply-To: <20260522141959.1071595-9-arnd@kernel.org>
-References: <20260522141959.1071595-1-arnd@kernel.org>
-	<20260522141959.1071595-9-arnd@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	Sat, 23 May 2026 08:53:33 +0000
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 17BBF140014D;
+	Sat, 23 May 2026 04:53:30 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Sat, 23 May 2026 04:53:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1779526410;
+	 x=1779612810; bh=i9N/95A/Qq2bBhi9MEP97bwNmBebXjIW5RFDkklcsZ4=; b=
+	f4x+L8FxJrecIwsAJlX7ieZgMrPLKA3ieSF8Di3Ho4bOeJ9+xY+fGfL0K+yj5yzr
+	2i/V4BJEdXKmHvwypW3SMj0VuNBYGjtRFkr5NRIIuhv7mm71pAimGdKDZd216C9G
+	sOddyI3VKpZx9MxtH0FPZAbJI8Uenddc9XAOycd+DPgtZaj6mqrJtYIfqhZRD8qb
+	nRd3wN6ehPs8UsJ/thdsuM6xrRA3UOZ4+6y6NIVKRuOu3cndmoNOmpBjttCMtxkP
+	4ATv+QiFZVjAOYsW/ppLDxAnvhuM8mth71dprPtdBslWD6VhLpNuwnQ2/BnDtTcU
+	YZdf+d3fjaCKP/hp25UNpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1779526410; x=
+	1779612810; bh=i9N/95A/Qq2bBhi9MEP97bwNmBebXjIW5RFDkklcsZ4=; b=m
+	mN7s1X06zi6LBqiHSZ6ZpNuiPMiC7f5U/wRlYCBHAcWKlDpICWhk5ADgvGnALdtS
+	7suBSUFsXIkOgRnOHyOwsq+G2U190s8V67sFlbknLeVrhVFuR0qhf9GKM3/vlHoJ
+	ffKJA+zslMbabLBvCq5se7eEdKAcqc03MmbCi3jFIli5x6OBL8BwNo7Kuo46nGDm
+	OYgTVb83RchsD1aLCzxkE/kjnlzFO/JsLVk0cBPs03sZSbQSGFyescSE8/ZS0B9r
+	WhZErOUPN+E+Z1He5riC9/GxWwUQ3ni8wYxQOw+RRtg4D38XLMrtwc36rY/rK41x
+	NzatTmoMAo9PJ+lQRoGww==
+X-ME-Sender: <xms:B2sRagPAGBhz7keY5Aj3YwiLAXn9s0P8XcjHat7JO1CC8PGchuS3Ng>
+    <xme:B2sRahxHX_drMMe2c-gL0ciHDNOx7gWZx-8SYISutlkoUCUdGFQcUdW9g8DChv7ST
+    S2APQq0hR4lUFxqTUXi24GeyzOganKeBQQgh0quveb5HcbbNCSGU-0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdduhedviedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
+    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepvdefpdhmohguvgepshhmthhpohhu
+    thdprhgtphhtthhopegsphesrghlihgvnhekrdguvgdprhgtphhtthhopegrnhhtohhnrd
+    hivhgrnhhovhestggrmhgsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepghgr
+    rhihsehgrghrhihguhhordhnvghtpdhrtghpthhtohepuggrvhhiugdrlhgrihhghhhtrd
+    hlihhnuhigsehgmhgrihhlrdgtohhmpdhrtghpthhtohephihurhihrdhnohhrohhvsehg
+    mhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorh
+    hgpdhrtghpthhtoheprghlvgigrghnuggvrhdruhhshihskhhinhesihhnthgvlhdrtgho
+    mhdprhgtphhtthhopegrnhhthhhonhihrdhlrdhnghhuhigvnhesihhnthgvlhdrtghomh
+    dprhgtphhtthhopehprhiivghmhihslhgrfidrkhhithhsiigvlhesihhnthgvlhdrtgho
+    mh
+X-ME-Proxy: <xmx:B2sRaoojv8oIYa3Y4fZFjQkU1dq7CF3jUTmZg1vMpHMWYsskRXqQng>
+    <xmx:B2sRaqPEmUIdOUAk5foMiMnzQT8NnzUopKrFserl5CnDW8sQCbcXng>
+    <xmx:B2sRatPHYfBCHRA_GeXI_jPvOWIwKsTEIMHgY_3BD1_PFZzd8nw-Gg>
+    <xmx:B2sRak2a_mUBSWn3kDwlkWQ8jZb4gBQxv4kRqGkxB2iQ8b2hs7fVPw>
+    <xmx:CmsRasW5q0gyysCmFQCs1H15vAPhxrhTR8Hai6_lUwViOxjBZQahruc8>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id B0350182007A; Sat, 23 May 2026 04:53:27 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-ThreadId: AnN1zSbkQxM3
+Date: Sat, 23 May 2026 10:51:41 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "David Laight" <david.laight.linux@gmail.com>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Ingo Molnar" <mingo@redhat.com>, "Richard Weinberger" <richard@nod.at>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Thomas Gleixner" <tglx@kernel.org>, "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Will Deacon" <will@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
+ "Gary Guo" <gary@garyguo.net>, "Yury Norov" <yury.norov@gmail.com>,
+ "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
+ "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+ "Alexander Usyskin" <alexander.usyskin@intel.com>,
+ "Anthony L Nguyen" <anthony.l.nguyen@intel.com>,
+ "Przemek Kitszel" <przemyslaw.kitszel@intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Message-Id: <9789e44c-cad6-4fb9-b684-ed132347a92d@app.fastmail.com>
+In-Reply-To: <20260522223349.155dfe20@pumpkin>
+References: <20260522141959.1071595-1-arnd@kernel.org>
+ <20260522141959.1071595-9-arnd@kernel.org> <20260522223349.155dfe20@pumpkin>
+Subject: Re: [PATCH 8/8] x86: simplify 32-bit instruction set selection
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260522_143354_138494_B8623C54 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20260523_015332_279064_F9A15183 
+X-CRM114-Status: GOOD (  14.94  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,24 +129,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 22 May 2026 16:19:59 +0200
-Arnd Bergmann <arnd@kernel.org> wrote:
+On Fri, May 22, 2026, at 23:33, David Laight wrote:
+> On Fri, 22 May 2026 16:19:59 +0200
+> Arnd Bergmann <arnd@kernel.org> wrote:
+>
+>> From: Arnd Bergmann <arnd@arndb.de>
+> ...
+>> Change the CPU selection to build everything with either -march=i586
+>> or -march=i686 and make the specific options only change the -mtune=
+>> parameter where this was previously handled by -march=. Note that
+>> the only -mtune= options that gcc or clang understand for x86-32
+>> are i486, pentium, pentiumpro, pentium4, atom, geode, k6 and athlon,
+>> the other ten are just aliases for one of them.
+>
+> Hmmm... That rather implies there is nothing for anything designed
+> in the last 20 years.
+> No wonder code generation choices look strange at times.
 
-> From: Arnd Bergmann <arnd@arndb.de>
-...
-> Change the CPU selection to build everything with either -march=i586
-> or -march=i686 and make the specific options only change the -mtune=
-> parameter where this was previously handled by -march=. Note that
-> the only -mtune= options that gcc or clang understand for x86-32
-> are i486, pentium, pentiumpro, pentium4, atom, geode, k6 and athlon,
-> the other ten are just aliases for one of them.
+I think this is correct: I can only think of two 32-bit x86
+cores designed in the past 20 year: Quark is basically a i486
+pipeline and rarely used with Linux these days. RDC Emkore
+is still used in low-end SoCs like Vortex86EX2 but never
+gained GCC support.
 
-Hmmm... That rather implies there is nothing for anything designed
-in the last 20 years.
-No wonder code generation choices look strange at times.
+> You don't want to pick p4, so I guess either p-pro or athlon?
 
-You don't want to pick p4, so I guess either p-pro or athlon?
-But neither is really anything like even Sandy bridge.
+If you have a p4, why wouldn't you pick that option?
 
--- David
+Most other 32-bit Intel cores (Pentium II, Pentium III,
+Pentium-M, Yonah/Core) are indeed iterations of
+Pentium Pro, picking the more specific Kconfig option
+has never had any effect on gcc tuning parameters.
+
+If you want a kernel that can run more more than one
+CPU, CONFIG_X86_GENERIC will still do that, but that
+is likely measurably worse on the more sensitive cores
+like k6/nx686 or geode/cx5x86.
+
+> But neither is really anything like even Sandy bridge.
+
+Sandy Bridge was well into the 64-bit era. Even when that was
+new, you wouldn't have run a 32-bit kernel on it (or cared
+about CPU optimizations if you did). For x86-64 there is no
+CPU selection and we just always build with -mtune=generic.
+Thisi works well with any out-of-order microarchitecture.
+
+       Arnd
 
