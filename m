@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27010CD5BD1
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF31CD6E69
 	for <linux-um@archiver.kernel.org>; Tue,  2 Jun 2026 13:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ezV5ICAM2va0jVjd8iAniGdLxBSb69xxnF1gv2JwpSY=; b=HRqKtafjVrKryatEVtqizcuatP
-	TGzT5lnV8y/sb2DReEs42KKUgjPzxJlexoOgfUmqUKMROGO9kY8SkdP0PP6brrQqXxMjTTXGRUfm9
-	vOON6QlOre/SgIGp7RXvHcxs3t7lzU4ZPKj0elXTRiKGnyjl3WHAVYoxLU1FslH9ZDemOFxTgyIU/
-	xr8+xthb6bI6Xhi1Q4P4//FfjwSBcBEJQV/WcJ0BJIN1K021vsPjrq+GEx27S77HhFUXuufyC3eYW
-	v0UNC8wWIHANBKiDEcMUJj9GZprG0o0IqkY+8iLFMyHldTjnkoyv8lLwEEf9FcDdfaMJmUrBOlGo9
-	vbrhPr2A==;
+	bh=Z9Ii4kFnGASPrJVUv4pLJyz9ASaQSsUSFT2aMNSnQpw=; b=Lq5Qsxk+z/oXqUbRPlQJaza2nx
+	4n8ZT8dI82fvOz9x7G6LHO60WiA+F/2au+abXVqVbm0Dhfa7//hJrqd0jZZNCXyWwJGS7rkFMmquu
+	1Fejp6KCUBi03ed2cByhDU7ZY4OUBnLJFFjEHXh/TPpw+1EKmECBaltDf/MTxVvqIDsLTbZ/uV0Wu
+	l/e1f/z7V5MfkxodXk8m37h/dcfVBBzdok9BHE+wwRn8BSQlsTG5Beme4LvJ2Ug1hXhmUQYtf92zB
+	8Bb/JR/VzwIZM7f30sWBrnTPFR5LGa1mPQtwL4EId1DkkOyKgrKqqoc15xwCnydsWaKyKZjLgLy/H
+	a/NnJXQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUPKa-0000000D7vC-1zri;
+	id 1wUPKa-0000000D7vR-30qA;
 	Tue, 02 Jun 2026 13:38:56 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wQ3Wi-00000007uCR-23x1
+	id 1wQaV1-0000000CLdV-45Zw
 	for linux-um@lists.infradead.org;
-	Thu, 21 May 2026 13:33:29 +0000
+	Sat, 23 May 2026 00:45:57 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9A25643D68;
-	Thu, 21 May 2026 13:33:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 664AA1F00A3C;
-	Thu, 21 May 2026 13:33:26 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id B5E3542A04;
+	Sat, 23 May 2026 00:45:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8D01F000E9;
+	Sat, 23 May 2026 00:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779370406;
-	bh=ezV5ICAM2va0jVjd8iAniGdLxBSb69xxnF1gv2JwpSY=;
+	s=k20260515; t=1779497154;
+	bh=Z9Ii4kFnGASPrJVUv4pLJyz9ASaQSsUSFT2aMNSnQpw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=j4CDviTd6M6LDTj5r6sQRqgJ6ESa9aWMu37zRV8mtOcXrJiE1zLL6x/OVHUw7taNB
-	 jl6ETIYiu8JAkRBqc4Wuv2aB534ln8Hu69MX1fb2GFClu2Mmurr/zb532bCHmICyRT
-	 bW4gGDuRH21kbO4Mt3QzAC1BgrPy+si2Rjb35ZfN4nboZAY9y9toARiousj3e/bp3M
-	 OhVS9wgD8OvUpe6jIOQ+pq818okRHEEM5Lah2/H+GkNEe7+pCkBUV/HEs3jXEYS4f4
-	 MtCRjjIGdmkPubfqUsmmCsve0nsahQ5jfKPmPGh0P3LHoWU280OP0E1I4NEEZgAN1h
-	 MDV3MyE2qhaxQ==
-From: Kees Cook <kees@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <kees@kernel.org>,
+	b=AYrP9ADMMstpZMK07X7RJX7Vi+LssxAckCYKP0qcdmy4tA9a9uGeNKXekQFeMbDY2
+	 LDBidZU8qfyCeiIO2lTcwcq4IenY+1Wd9qlBghobsMk+v2M/w+YRP79CHe0dVbDprH
+	 6m4cKDcu9eoRxsj9K8pW3klTEaPK47F9haaWHiA44qhhUhE1d+q0p7agQTc1CqKY7Y
+	 TIm3cavZyfg5Ocnp8Ulrf7LvNxFf6kEk1G4wZqQ5n3xAgZSAUkznMwff7nIEvl1Awg
+	 MCkN/vkTJiTtDyoIlmLFKVmTKKTBPE0rS5dN7mvUamAdq3cIcL7ggZ6AdKA3393vQz
+	 kGvcVXqs9FgPQ==
+From: SeongJae Park <sj@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
 	Pengpeng Hou <pengpeng@iscas.ac.cn>,
-	stable@vger.kernel.org,
 	Petr Pavlu <petr.pavlu@suse.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -142,20 +142,19 @@ Cc: Kees Cook <kees@kernel.org>,
 	linux-arch@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH 01/11] params: bound array element output to the caller's page buffer
-Date: Thu, 21 May 2026 06:33:14 -0700
-Message-Id: <20260521133326.2465264-1-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260521133315.work.845-kees@kernel.org>
-References: <20260521133315.work.845-kees@kernel.org>
+	linux-hardening@vger.kernel.org,
+	damon@lists.linux.dev
+Subject: Re: [PATCH 09/11] treewide: Convert custom kernel_param_ops .get callbacks to seq_buf via cocci
+Date: Fri, 22 May 2026 17:45:43 -0700
+Message-ID: <20260523004543.86540-1-sj@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260521133326.2465264-9-kees@kernel.org>
+References: 
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2143; i=kees@kernel.org; h=from:subject; bh=3eO38ZdE0rbljlF5l/QfEOapKDQ3GxlJmKbxHXugskI=; b=owGbwMvMwCVmps19z/KJym7G02pJDFn8nAtqmS7cf3B//69jZ5rrq6va9p3fNOGM7h2Jd74Pn JTCV6u3dZSyMIhxMciKKbIE2bnHuXi8bQ93n6sIM4eVCWQIAxenAEzEYiojw//ne8uu9YZ9+sWp mJ7czDyrP2Afv+2f21+/99yL9Jp+OI2RYVNeQ9witS6BzPe55aerW/eveRmS81ixc8XMVftPpj7 OZQAA
-X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260521_063328_574821_7CCBECF7 
-X-CRM114-Status: GOOD (  18.62  )
+X-CRM114-CacheID: sfid-20260522_174556_058793_4B3E7F90 
+X-CRM114-Status: GOOD (  15.42  )
 X-Mailman-Approved-At: Tue, 02 Jun 2026 06:38:56 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -171,75 +170,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Pengpeng Hou <pengpeng@iscas.ac.cn>
++ damon@lists.linux.dev
 
-param_array_get() appends each element's string representation into the
-shared sysfs page buffer by passing buffer + off to the element getter.
+On Thu, 21 May 2026 06:33:22 -0700 Kees Cook <kees@kernel.org> wrote:
 
-That works for getters that only write a small bounded string, but
-param_get_charp() and similar helpers format against PAGE_SIZE from the
-pointer they receive. Once off is non-zero, an element getter can
-therefore write past the end of the original sysfs page buffer.
+> Using the following Coccinelle script, convert struct kernel_param_ops
+> .get callbacks from "char *" to "struct seq_buf *" when the only write
+> to the buffer is via a final call of scnprintf(), snprintf(), sprintf(),
+> or sysfs_emit().
+> 
+> Since seq_buf_printf() will return -1 on overflow, and struct
+> kernel_param_ops .get callbacks are expected to truncate without error,
+> we must ignore the return value from seq_buf_print() and always return 0
+> (as the length is calculated in the common dispatcher code).
+> 
+> @@
+> identifier FN, BUF, KP;
+> expression FMT;
+> expression list ARGS;
+> @@
+>  int FN(
+> -               char *BUF
+> +               struct seq_buf *BUF
+>                 , const struct kernel_param *KP)
+>  {
+>         ... when any
+> (
+> -       return scnprintf(BUF, PAGE_SIZE, FMT, ARGS);
+> |
+> -       return snprintf(BUF, PAGE_SIZE, FMT, ARGS);
+> |
+> -       return sprintf(BUF, FMT, ARGS);
+> |
+> -       return sysfs_emit(BUF, FMT, ARGS);
+> )
+> +       seq_buf_printf(BUF, FMT, ARGS);
+> +       return 0;
+>  }
+> 
+> No struct kernel_param_ops initializations need changing since
+> DEFINE_KERNEL_PARAM_OPS already routes the pointer to .get or .get_str
+> via _Generic based on the function signature, so converted callbacks
+> are automatically moved from the .get_str to the .get callback.
+> 
+> Signed-off-by: Kees Cook <kees@kernel.org>
+[...]
+>  mm/damon/lru_sort.c                           | 14 +++---
+>  mm/damon/reclaim.c                            | 14 +++---
+>  mm/damon/stat.c                               | 10 ++--
 
-Collect each element into a temporary PAGE_SIZE buffer first and then
-copy only the remaining space into the caller's page buffer.
+For the above DAMON changes,
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
-Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Signed-off-by: Kees Cook <kees@kernel.org>
----
- kernel/params.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+Reviewed-by: SeongJae Park <sj@kernel.org>
 
-diff --git a/kernel/params.c b/kernel/params.c
-index 74d620bc2521..752721922a15 100644
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -475,22 +475,36 @@ static int param_array_set(const char *val, const struct kernel_param *kp)
- static int param_array_get(char *buffer, const struct kernel_param *kp)
- {
- 	int i, off, ret;
-+	char *elem_buf;
- 	const struct kparam_array *arr = kp->arr;
- 	struct kernel_param p = *kp;
- 
-+	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!elem_buf)
-+		return -ENOMEM;
-+
- 	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
--		/* Replace \n with comma */
--		if (i)
--			buffer[off - 1] = ',';
- 		p.arg = arr->elem + arr->elemsize * i;
- 		check_kparam_locked(p.mod);
--		ret = arr->ops->get(buffer + off, &p);
-+		ret = arr->ops->get(elem_buf, &p);
- 		if (ret < 0)
--			return ret;
-+			goto out;
-+		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
-+		if (!ret)
-+			break;
-+		/* Replace the previous element's trailing newline with a comma. */
-+		if (i)
-+			buffer[off - 1] = ',';
-+		memcpy(buffer + off, elem_buf, ret);
- 		off += ret;
-+		if (off == PAGE_SIZE - 1)
-+			break;
- 	}
- 	buffer[off] = '\0';
--	return off;
-+	ret = off;
-+out:
-+	kfree(elem_buf);
-+	return ret;
- }
- 
- static void param_array_free(void *arg)
--- 
-2.34.1
 
+Thanks,
+SJ
+
+[...]
 
