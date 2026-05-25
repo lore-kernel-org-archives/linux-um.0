@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFD88CD5BD5
-	for <linux-um@archiver.kernel.org>; Mon, 25 May 2026 13:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A775CD5BC9
+	for <linux-um@archiver.kernel.org>; Mon, 25 May 2026 16:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=; b=hqLO53SVWf4xGZOwNHzFdxcJJM
-	Wixx492B8YBkr7y357mYWdp10c4S1vzxcelNUuTFi9SyxO+Skzy+WP68VuB8quF8yB+gADLx/cWLP
-	fSRmaUJ6CCWD1B5x7kOPKX5ea0EiKYR0niHmJmVPtQZWbpK/m6khfIx1YkkhAOxBepKnE+wCGrUDk
-	Vy+zluXmrrhTQ83CP4sPlafE8EGbIJKnOKLKLDEdwFWs0m9hWj5brocJHS3nZ7DkHOgqxqppusIzE
-	60np0C5NU1HQ27s+BpZVhCxnj6HUkY4usxVyeB7WYHY9LnBaocvUqQjSKB85XGWI+1qi7Z/OWtT8g
-	dP45cUnw==;
+	bh=6YA+/JJXQ9abERc/NViF0XyaL5qdJ2pUb4chRkVwshY=; b=Hghl/B2LPoUraY3VIZtRgZfNPv
+	LE2D2Ilk7FFNsFd4TofIT/qylkp87TxhK8s3ZXBaQI802cbHlZTVHK2VQtJNo9AHjWA4Ujybi58fc
+	O89CWNgtDmCNtR+nN6r1JHTA5tpJmxQhucblZtpe2982ZylI7eo0qqi7ury5dErkHLY264B8+I3ZN
+	YpPr74zrwUJJA7ZlxtTzBqzttj2vk0eHVbaC4r6Hm3KeVsHSZGDDOkMEI3LgOxKqBJBxPShHToV6l
+	ikRjNFOGeqWltdAIrttqUk3X9E4X8ONoaC2Ll3kkDftqMYEuGMGN49G7g5NcW866GVADyXAtSoDJf
+	ZcXDdNig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRVSb-0000000HKL6-2lz4;
-	Mon, 25 May 2026 13:35:13 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1wRY1X-0000000009G-2RHk;
+	Mon, 25 May 2026 16:19:27 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRVSZ-0000000HKKV-3IG1
+	id 1wRY1V-0000000008d-0sJz
 	for linux-um@lists.infradead.org;
-	Mon, 25 May 2026 13:35:13 +0000
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-441209fb77eso5927332f8f.1
-        for <linux-um@lists.infradead.org>; Mon, 25 May 2026 06:35:11 -0700 (PDT)
+	Mon, 25 May 2026 16:19:26 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-48fde648a71so63301405e9.0
+        for <linux-um@lists.infradead.org>; Mon, 25 May 2026 09:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1779716110; x=1780320910; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1779725963; x=1780330763; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=;
-        b=eHxn09ttmzi0xaJyCM4A+yTj2sJIzyr5Q49PwJWOme8BEoit43d1UQHfjJYK+5tDRy
-         qvSdHXOW5h7gAljVOEjVcR/HorXgqBe9c9kzvSnlg9iqxRPY2ZQS4VKBUHyvrBsNtai0
-         /STofRBP7yBTZzYV7NzQMxNfi58uTld2fMocvmKsjZEUsQ319ExwdboTGxlPl99+7YWI
-         AHLtp0AcGXxP99FVujxqMOhrgU5c7NHEEvqy/cD9HooL1FZQ01dfigZyfhxOBPdnzSJg
-         iHtg5oxo3bfsxNlz4rjiLagWsAjPV63zSHE6A6HAdUZa/Vw4vbLYvIlXXA9uoGF6QJLB
-         +/ug==
+        bh=6YA+/JJXQ9abERc/NViF0XyaL5qdJ2pUb4chRkVwshY=;
+        b=Kj4pexWY3OlyZR1mSmMnAzSUeSpsMGIyd/W2zTLOLgmKL73TQDElEcsTW+2a+QIajo
+         V8dOseRunza6YxlN/KotdhsW9GE/66YSfcZem+lPBOvg/724opvxPMVtvOE7cGg3es4F
+         2hZKFxiSCd8z+SMfW2QBo8jJ/4Vgw7P9CfgZCAljKebKICcOvVN7RHisZfPsDmWP3JLx
+         VDVKxIXtuSPGQe4q1d7zlTlQ0tSQrOE8AZMBjN/sIzLbPgLIgxtvo8G/FZQ9jqhK5lQw
+         h3HPxAK6Oxx/BzjpAo+f+RzeguLuXNw3fY2cGw1/TbxCIszdcz5yZopymOztp9gzDzaF
+         E/nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779716110; x=1780320910;
+        d=1e100.net; s=20251104; t=1779725963; x=1780330763;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=;
-        b=hRiVY3r3kJhSsm2hXno+429O8mbqUQ5y0CMHemn4m6p88uFv7vAclic5gttI9E8oA5
-         eEvKvNGMpAT9LuG8dj2GHfU4yxMY5kbyCAtGna2zhsjM9OySFu+cs73ExHvA9Eabg1GC
-         JMlHsjomroJGIykrjgOWBvZejm+S6/TTZcKtA+e9t1X9XM6aQei+/4yHCgi59flbNVIB
-         1UbEzhmnh5AJxkBQiO1jEgcER1JIC1P4kluEyzCw9a5WzN8G8DD3uDAXKR15zm9MtWCt
-         AaE1l6Qa3mZ4fu1TG9P/1gfTJp8DNaDf8npiZA+4S30itH7O6kZ+FIZUWZ3JM6kJvgDY
-         +pfg==
-X-Forwarded-Encrypted: i=1; AFNElJ81TdcNSoOuhgGGtp34+z/kl/9KP/2p3OrBeptYa0z2ivdPCjLhKGP+hyO8DcXcBH0pLoI6cDeH7A==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz/VANIYO4DYiq02jIski6eMvY3PBV/UORT+Na5MLWRUJIHmyFz
-	iTLWZFR7+WHVCcsMZwxQ1W8dSj4PDkQiTeOoAu85Y5Qm+5+13yoTdwqMeMX1D/CXQmM=
-X-Gm-Gg: Acq92OGqTcXgBl5k3BIuLCkoc5YN49u+3/YICbbMIYV7cjGV8Dry+JJhAog4n1z0ZzW
-	TY6rVQ673dhX42sAKlIlRbnvd2XTj9A2fmcsfsryo7xtKD5+AmLtF1E5oJ7HMBoTRTL3s1oH44g
-	YaFMEmntR9R+XLdOHwXlezBa50pu/mIgPPG7n5AXIatamgFXh+TXmjr4qzOeDDZovrXVvcK/F/e
-	cXXyfXMxL2+Gf3m+GBEfmZgt9uRGmggcO3kTbq6Ds4hHHU2WwCXDznoCnjNK5WtWX+eyHvCmRti
-	XRvJfdnrVWHrTp4Xu5hJf6uso4aKw56wqCfkBuhhg5Zhpkv5VVgzLa4HIeE3X+pu2Jhdj2/15Gs
-	f4IyWZOlqgrZO2d4Dj00N2wUO7YyRKgRYPxXSXiEd5CALx7OdZT/asEPM5C5naSPPHNhGJoDZAA
-	m702mvEp3a+Xt5RZPtOHyM7h0sySB2EbWlIEicWQjzcLlTP5fTYob6tTXQ0WKKx7r/kbEkt8v19
-	zj91hrje4SWhCRVXfCwtMswp7TQepbCAjWpMI/fmOebQy7ErS7PAQz0esxHvHZnwvzKUQ==
-X-Received: by 2002:a05:6000:2008:b0:45e:8cdc:4ee8 with SMTP id ffacd0b85a97d-45ea3128ccdmr31052715f8f.6.1779716109692;
-        Mon, 25 May 2026 06:35:09 -0700 (PDT)
+        bh=6YA+/JJXQ9abERc/NViF0XyaL5qdJ2pUb4chRkVwshY=;
+        b=PTFBX361xJ7kb3G5hhNJZE0oQj6ljB6/Wt4cBRNXsHAI2po7bmPhbq6X1Jl6Ivt08F
+         UF0I47W7Z5qey5dRzE53Y7w198FTf7oFE3w8Rznececy+h0ZZRm3OdhiLnis7uk45QiI
+         RLk1vSp/WQMihHsCMTsARa0gJxVvD/kNhMHlVcnPz48tSuLbJCDQ+qvqCF880Kjw0w/8
+         XVwPDCUODeSRQgkEF/oMTrI+xu94FyBfwHYiXvdtCoo0pGBUsivnH7fwMCX/3iNDq39X
+         /IU91D7sz3VwhU9iQp1N7bXY40A9cAVAPJeBz1MFUeI9p5+jJN717Wi1sPTCP4Vq4wfg
+         5L0A==
+X-Forwarded-Encrypted: i=1; AFNElJ9dMOH5VIcmyqRHvqg0dYkvo6fpSvIGHfwkUSYVRCITdoOaU2c2ykpmuiiPxjY+vo8waOOx0BTJgg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxJu0Jv4wtpRg6Qy5TXiyqYYXhHKdjk8en3zfJQ+0lcSv6vJPOO
+	gi9wK28UOFxuADRIgfGgbJSPHQ6GK8ntjeMOHGUU9yNQCCIMCvT6PbXJCrOsTR3YYjQ=
+X-Gm-Gg: Acq92OFIpAg8gqPH1ww3SwaEgteMbPjJRAR2ukVIjKt8vxOUMn1pROS4re8ruu36M7T
+	10wuWMt7maTUh0Vu9wIk7Db/KAVho1Zsa08gnGf8h6FRjmRFcdEZs4VP1K5BABnCTS+LDESJsqE
+	5N5UEzuJXJztn3Yob/zKcbsQRAZ0cdnAlqKPFrUvpYmuiUqzx+WceZztdLkbOMuZ4hM+neG3iUL
+	ZZHt57RCcUjZXwq6QkZUY4N/Xdnz3D/X9hdCMeMIfBLDw/nAKW2eEc53UbUMfq9JDyg/j8L342o
+	T7oIKtQOQzgbezhqEnfxi6Hhn5U6Uykexc8QKAbERug25d9fsZzKox0CWM3fTF69hjU6jmiDV0B
+	TKsfRCg3toCQ6zC6dOmT3q9Px6z4LCe9Snsf+CiC9JFl8D/C3jtLxb0l0jVdpglkI/KoTfyLy7g
+	WQQ26S8JX1i41BOWpSfZKZEloZI41RYCUhYWsUSWYUyRbHHMLEv0EMV1SOdnIPeMTk93bodCwEq
+	wlbkz+vLpd2v/hmus0RXvlKq1GzLrpERAtS/mYkRbam8hwhDR63mANd8fQBdQ2V17tVvA==
+X-Received: by 2002:a05:600c:3b07:b0:490:f7c:b19 with SMTP id 5b1f17b1804b1-490420f67f5mr197977845e9.0.1779725963153;
+        Mon, 25 May 2026 09:19:23 -0700 (PDT)
 Received: from ?IPV6:2a00:1028:838d:271e:8e3b:4aff:fe4c:a100? (dynamic-2a00-1028-838d-271e-8e3b-4aff-fe4c-a100.ipv6.o2.cz. [2a00:1028:838d:271e:8e3b:4aff:fe4c:a100])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d5cb9asm29456456f8f.27.2026.05.25.06.35.06
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49059cc9a91sm48939425e9.1.2026.05.25.09.19.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2026 06:35:09 -0700 (PDT)
-Message-ID: <da358ae1-91b4-4a16-ac76-ffab99c230b9@suse.com>
-Date: Mon, 25 May 2026 15:35:06 +0200
+        Mon, 25 May 2026 09:19:22 -0700 (PDT)
+Message-ID: <a4c7ccee-6189-4c74-bad8-57d1438c7d8d@suse.com>
+Date: Mon, 25 May 2026 18:19:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/11] treewide: Convert struct kernel_param_ops
- initializers to DEFINE_KERNEL_PARAM_OPS
+Subject: Re: [PATCH 06/11] moduleparam: Add seq_buf-based .get callback
+ alongside .get_str
 To: Kees Cook <kees@kernel.org>
 Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
  <pengpeng@iscas.ac.cn>, Richard Weinberger <richard@nod.at>,
@@ -138,15 +138,15 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
  linux-arch@vger.kernel.org, netdev@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
 References: <20260521133315.work.845-kees@kernel.org>
- <20260521133326.2465264-4-kees@kernel.org>
+ <20260521133326.2465264-6-kees@kernel.org>
 Content-Language: en-US
 From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20260521133326.2465264-4-kees@kernel.org>
+In-Reply-To: <20260521133326.2465264-6-kees@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260525_063511_857093_73BCF5C4 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20260525_091925_282274_BD425752 
+X-CRM114-Status: GOOD (  14.66  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -162,30 +162,32 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 5/21/26 3:33 PM, Kees Cook wrote:
-> Using Coccinelle, rewrite every struct kernel_param_ops initializer that
-> sets .get into a DEFINE_KERNEL_PARAM_OPS-family macro invocation,
-> for example:
+> Add a new struct kernel_param_ops::get callback whose signature
+> takes a struct seq_buf instead of a raw char buffer:
 > 
-> @@
-> declarer name DEFINE_KERNEL_PARAM_OPS;
-> identifier OPS;
-> expression SET, GET;
-> @@
-> - const struct kernel_param_ops OPS = {
-> -       .set = SET,
-> -       .get = GET,
-> - };
-> + DEFINE_KERNEL_PARAM_OPS(OPS, SET, GET);
+>   int (*get)(struct seq_buf *sb, const struct kernel_param *kp);
 > 
-> Using the macro for initialization means future changes can manipulate
-> the struct layout and callback prototypes without having to change every
-> initializer.
+> The previously-legacy .get field is now .get_str (char *buffer);
+> .get is the new seq_buf-aware form.  param_attr_show() prefers .get
+> when set, otherwise falls back to .get_str.  WARN_ON_ONCE() if both
+> are set.  Return contract for .get:
+> 
+>   < 0 : errno propagated to userspace; seq_buf contents discarded
+>   = 0 : success; length derived from seq_buf_used()
+>   > 0 : forbidden; the dispatcher WARN_ON_ONCE()s and treats as 0
+> 
+> The default policy on seq_buf_has_overflowed() is silent truncation,
+> matching scnprintf()/sysfs_emit() behaviour.  Callbacks that want a
+> specific overflow errno can check seq_buf_has_overflowed() and
+> return their preferred error.
+> 
+> No callbacks use .get yet; the legacy path is still the only one in use
+> after this commit. A subsequent commit teaches DEFINE_KERNEL_PARAM_OPS
+> to route initializers by type.
+> 
+> Signed-off-by: Kees Cook <kees@kernel.org>
 
-Nit: For consistency, I suggest also converting the few remaining
-kernel_param_ops instances that specify only .set and no .get, such as
-simdisk_param_ops_filename.
+Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
 
--- 
-Thanks,
-Petr
+-- Petr
 
