@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08173CD5BC9
-	for <linux-um@archiver.kernel.org>; Mon, 25 May 2026 13:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFD88CD5BD5
+	for <linux-um@archiver.kernel.org>; Mon, 25 May 2026 13:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ij+l12dR+ISDUAaA9eJOw0SDQ47xwS4UQDqlRXMB76c=; b=dKqEN9hQd4Zr/fRf8OEJo1oN4R
-	q4foG0Y7j2388k3rfCMGDrek/0uDrSLC/GNasPjHjCFveuLzR0GTfcoMyVbqXp6sgQnPwEBpkCJdE
-	IRSKF9wQM6edcrgNVecpSbsPoCBd57tRs5o3nWr0BT0i0ydYgCPJhRasQUwQRGWWWmUVkFy1vHJs9
-	F2DvWsNECRqMFAKiGAhrFKDZ2kNzDgVvKfeqpD7JLmvRVVEXYB+EKW9Vyv4jhe3P4efrU9EDixZpY
-	VLWlr/rkWeGFquwSt2B5ltj/EfyeYZx2XFBLFMF5tRShpUga/cFmLKl9lsXS+7Z8gYoKRxTeBWqZZ
-	n0LoGrmw==;
+	bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=; b=hqLO53SVWf4xGZOwNHzFdxcJJM
+	Wixx492B8YBkr7y357mYWdp10c4S1vzxcelNUuTFi9SyxO+Skzy+WP68VuB8quF8yB+gADLx/cWLP
+	fSRmaUJ6CCWD1B5x7kOPKX5ea0EiKYR0niHmJmVPtQZWbpK/m6khfIx1YkkhAOxBepKnE+wCGrUDk
+	Vy+zluXmrrhTQ83CP4sPlafE8EGbIJKnOKLKLDEdwFWs0m9hWj5brocJHS3nZ7DkHOgqxqppusIzE
+	60np0C5NU1HQ27s+BpZVhCxnj6HUkY4usxVyeB7WYHY9LnBaocvUqQjSKB85XGWI+1qi7Z/OWtT8g
+	dP45cUnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRVL1-0000000HJSv-3JU1;
-	Mon, 25 May 2026 13:27:23 +0000
-Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
+	id 1wRVSb-0000000HKL6-2lz4;
+	Mon, 25 May 2026 13:35:13 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRVKx-0000000HJSC-20x7
+	id 1wRVSZ-0000000HKKV-3IG1
 	for linux-um@lists.infradead.org;
-	Mon, 25 May 2026 13:27:20 +0000
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4891e86fabeso121365995e9.1
-        for <linux-um@lists.infradead.org>; Mon, 25 May 2026 06:27:18 -0700 (PDT)
+	Mon, 25 May 2026 13:35:13 +0000
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-441209fb77eso5927332f8f.1
+        for <linux-um@lists.infradead.org>; Mon, 25 May 2026 06:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1779715637; x=1780320437; darn=lists.infradead.org;
+        d=suse.com; s=google; t=1779716110; x=1780320910; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ij+l12dR+ISDUAaA9eJOw0SDQ47xwS4UQDqlRXMB76c=;
-        b=FAbibZVJzYpJP6FZ2v9FLL76UWaLvmNjV164x4QPMD3voGtvnubnRfwo5apcouKX7r
-         DfhFHQTP8z2b0gpxvi68ESbza1AeDktzJ4FOs0E2g3fxp4e/VCzp3GYOVMzvYnBrBDJp
-         Fm94GBqfdTfEDoncz6QpUoxd5mQQloxE/cfZgxW8rYRVjsvkBGB6W/vDe//KN8qxP0sz
-         iWOeoWEnshuImiTP7FdOCX1iInRFvPBKNNmfCqLfeaSvEITygAGYG9wgaLubDK5rSOnB
-         ht/2p7u0hY/eaU4Euy1YZz67E9N14IgIq1e4eu6n15Ndhd+xKdCzj06sp+R0RXwolIj7
-         8f/w==
+        bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=;
+        b=eHxn09ttmzi0xaJyCM4A+yTj2sJIzyr5Q49PwJWOme8BEoit43d1UQHfjJYK+5tDRy
+         qvSdHXOW5h7gAljVOEjVcR/HorXgqBe9c9kzvSnlg9iqxRPY2ZQS4VKBUHyvrBsNtai0
+         /STofRBP7yBTZzYV7NzQMxNfi58uTld2fMocvmKsjZEUsQ319ExwdboTGxlPl99+7YWI
+         AHLtp0AcGXxP99FVujxqMOhrgU5c7NHEEvqy/cD9HooL1FZQ01dfigZyfhxOBPdnzSJg
+         iHtg5oxo3bfsxNlz4rjiLagWsAjPV63zSHE6A6HAdUZa/Vw4vbLYvIlXXA9uoGF6QJLB
+         +/ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779715637; x=1780320437;
+        d=1e100.net; s=20251104; t=1779716110; x=1780320910;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ij+l12dR+ISDUAaA9eJOw0SDQ47xwS4UQDqlRXMB76c=;
-        b=sjw98ljIQNCf1qJakZ/s/nmQ5ScE4Ohw187UB6apHcsdt/5wRI8KPVoJshwb4aHEuh
-         b5nT9lI6OalbInA+HoVb7ht19aFrKm7O64zw6tYP0g2C8hxKQ3RK3KpRYCfN/TmkZAwb
-         Shoeig+xThRDbPTqiNwXRASaIqW1h4Fme58p08ev1SRQpRRY5KStQjQZ1svBF1S55Xwt
-         y5qV6QMURZxnYceG/5ppxBs6DpnKZMboXgmmIAMuqM0u9WE6WBJEKlEV57NfASPe0ab+
-         VCsYLRQwKrOmN00vukMeui4Z/ssa0XDu9gj3BlH/Dp5JtU1CKhE/v58K2FxQtiRVFdgp
-         Q40Q==
-X-Forwarded-Encrypted: i=1; AFNElJ/dgMjuDn0ADO2m8p3HsfZEwivHcXcOgcjgEyfM21bsapK3Ad8rb+9z5poFPE+XAWuF70eoQI0CYw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz8l2sOhibTbwJ/z0i4gwn4CQSevbQ6IEtti4Cz6KNFcdvUa+Je
-	knvywEJ7EvnrcpF+yhTM8yIU8z7gxyhFxhbmQbN5zcqCg6Ez/D1B8BgZM4fDW/KWKfc=
-X-Gm-Gg: Acq92OHpFEsIzY/dwDWfqZJBHAE/f9QgP37Vr+E52L0GEZ5tt8Gj99eFd5aigJrlSVR
-	/FXeuxVMnOWQXDXs5EBmzabf/1v9W90F1dFc12UNL2HEGidleUg05R4LOo6KEAknGjj4ctSTem7
-	y2pC7zdhwn5RmIfpbIMbXmPNFc6krsQ23W9R2GcSbmm6YdBYBgEPuYQg3gxJ+ec1hYr/+7g8EMQ
-	yPLcKZjFxWZEqOawnIy5AKsfJPTmUj7hEdpUyD2zOQUxPS5pvtEtE3Xsm1cnLPSgcbqkpqt1a/y
-	0RmpB0QVgAiRwTDIB2p+d7KLGkTU7rZHOvTbfaINvMX77Ku3uTPqca9CVtPg1qceCcWhTMBz8bB
-	5enJpgypYFuwVRUcuJxuVA2zxrQuJF8ZwrwH2unECyXmmG/ezVoQE/s0SRzgH/k3j5jk0g6Ru7f
-	94gSY7ZlSB4WHoE3Nivqauxr2MQV2PAwQTdbnCVSAU3HazKbxfSx48PZmn7xTlC9W1KMuOIzQGy
-	yn4W5g40u9vNclBo6Tntc/a3O5ar9XFcO+NVpCJF2Brq6yqu77pLydcnGi03bmIGZBynr1GqBxD
-	H6sg
-X-Received: by 2002:a05:600c:3b02:b0:48f:e1ac:c94f with SMTP id 5b1f17b1804b1-490424b3938mr247672645e9.10.1779715636631;
-        Mon, 25 May 2026 06:27:16 -0700 (PDT)
+        bh=9XVHRPBSt9KXo5wrulw6nEDVPqzcFN/DF35DZwL4F0c=;
+        b=hRiVY3r3kJhSsm2hXno+429O8mbqUQ5y0CMHemn4m6p88uFv7vAclic5gttI9E8oA5
+         eEvKvNGMpAT9LuG8dj2GHfU4yxMY5kbyCAtGna2zhsjM9OySFu+cs73ExHvA9Eabg1GC
+         JMlHsjomroJGIykrjgOWBvZejm+S6/TTZcKtA+e9t1X9XM6aQei+/4yHCgi59flbNVIB
+         1UbEzhmnh5AJxkBQiO1jEgcER1JIC1P4kluEyzCw9a5WzN8G8DD3uDAXKR15zm9MtWCt
+         AaE1l6Qa3mZ4fu1TG9P/1gfTJp8DNaDf8npiZA+4S30itH7O6kZ+FIZUWZ3JM6kJvgDY
+         +pfg==
+X-Forwarded-Encrypted: i=1; AFNElJ81TdcNSoOuhgGGtp34+z/kl/9KP/2p3OrBeptYa0z2ivdPCjLhKGP+hyO8DcXcBH0pLoI6cDeH7A==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz/VANIYO4DYiq02jIski6eMvY3PBV/UORT+Na5MLWRUJIHmyFz
+	iTLWZFR7+WHVCcsMZwxQ1W8dSj4PDkQiTeOoAu85Y5Qm+5+13yoTdwqMeMX1D/CXQmM=
+X-Gm-Gg: Acq92OGqTcXgBl5k3BIuLCkoc5YN49u+3/YICbbMIYV7cjGV8Dry+JJhAog4n1z0ZzW
+	TY6rVQ673dhX42sAKlIlRbnvd2XTj9A2fmcsfsryo7xtKD5+AmLtF1E5oJ7HMBoTRTL3s1oH44g
+	YaFMEmntR9R+XLdOHwXlezBa50pu/mIgPPG7n5AXIatamgFXh+TXmjr4qzOeDDZovrXVvcK/F/e
+	cXXyfXMxL2+Gf3m+GBEfmZgt9uRGmggcO3kTbq6Ds4hHHU2WwCXDznoCnjNK5WtWX+eyHvCmRti
+	XRvJfdnrVWHrTp4Xu5hJf6uso4aKw56wqCfkBuhhg5Zhpkv5VVgzLa4HIeE3X+pu2Jhdj2/15Gs
+	f4IyWZOlqgrZO2d4Dj00N2wUO7YyRKgRYPxXSXiEd5CALx7OdZT/asEPM5C5naSPPHNhGJoDZAA
+	m702mvEp3a+Xt5RZPtOHyM7h0sySB2EbWlIEicWQjzcLlTP5fTYob6tTXQ0WKKx7r/kbEkt8v19
+	zj91hrje4SWhCRVXfCwtMswp7TQepbCAjWpMI/fmOebQy7ErS7PAQz0esxHvHZnwvzKUQ==
+X-Received: by 2002:a05:6000:2008:b0:45e:8cdc:4ee8 with SMTP id ffacd0b85a97d-45ea3128ccdmr31052715f8f.6.1779716109692;
+        Mon, 25 May 2026 06:35:09 -0700 (PDT)
 Received: from ?IPV6:2a00:1028:838d:271e:8e3b:4aff:fe4c:a100? (dynamic-2a00-1028-838d-271e-8e3b-4aff-fe4c-a100.ipv6.o2.cz. [2a00:1028:838d:271e:8e3b:4aff:fe4c:a100])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454b1ab3sm284841905e9.14.2026.05.25.06.27.13
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d5cb9asm29456456f8f.27.2026.05.25.06.35.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 May 2026 06:27:16 -0700 (PDT)
-Message-ID: <1c21f66f-0d0f-4a8b-835b-23408242cff1@suse.com>
-Date: Mon, 25 May 2026 15:27:13 +0200
+        Mon, 25 May 2026 06:35:09 -0700 (PDT)
+Message-ID: <da358ae1-91b4-4a16-ac76-ffab99c230b9@suse.com>
+Date: Mon, 25 May 2026 15:35:06 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/11] moduleparam: Add DEFINE_KERNEL_PARAM_OPS macro
- family
+Subject: Re: [PATCH 04/11] treewide: Convert struct kernel_param_ops
+ initializers to DEFINE_KERNEL_PARAM_OPS
 To: Kees Cook <kees@kernel.org>
 Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
  <pengpeng@iscas.ac.cn>, Richard Weinberger <richard@nod.at>,
@@ -139,15 +138,15 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>, Pengpeng Hou
  linux-arch@vger.kernel.org, netdev@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
 References: <20260521133315.work.845-kees@kernel.org>
- <20260521133326.2465264-3-kees@kernel.org>
+ <20260521133326.2465264-4-kees@kernel.org>
 Content-Language: en-US
 From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20260521133326.2465264-3-kees@kernel.org>
+In-Reply-To: <20260521133326.2465264-4-kees@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260525_062719_558033_55A5F022 
-X-CRM114-Status: GOOD (  25.13  )
+X-CRM114-CacheID: sfid-20260525_063511_857093_73BCF5C4 
+X-CRM114-Status: GOOD (  12.82  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,63 +162,28 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 5/21/26 3:33 PM, Kees Cook wrote:
-> Add macros that define a struct kernel_param_ops initializer through a
-> macro so the underlying field layout can evolve without touching every
-> call site. Three variants cover the three cases:
+> Using Coccinelle, rewrite every struct kernel_param_ops initializer that
+> sets .get into a DEFINE_KERNEL_PARAM_OPS-family macro invocation,
+> for example:
 > 
->  DEFINE_KERNEL_PARAM_OPS(name, set, get) // basic
->  DEFINE_KERNEL_PARAM_OPS_NOARG(name, set, get) // set KERNEL_PARAM_OPS_FL_NOARG
->  DEFINE_KERNEL_PARAM_OPS_FREE(name, set, get, free) // also set .free
+> @@
+> declarer name DEFINE_KERNEL_PARAM_OPS;
+> identifier OPS;
+> expression SET, GET;
+> @@
+> - const struct kernel_param_ops OPS = {
+> -       .set = SET,
+> -       .get = GET,
+> - };
+> + DEFINE_KERNEL_PARAM_OPS(OPS, SET, GET);
 > 
-> Callers prefix their own visibility qualifiers, e.g.:
-> 
->   static DEFINE_KERNEL_PARAM_OPS(my_ops, my_set, my_get);
-> 
-> Also update module_param_call() and STANDARD_PARAM_DEF() to use
-> DEFINE_KERNEL_PARAM_OPS internally so the generated ops table will go
-> through the same macro as everything else.
-> 
-> Subsequent commits convert all open-coded struct kernel_param_ops
-> definitions to use these macros, in preparation for migrating to a
-> seq_buf .get API.
-> 
-> Signed-off-by: Kees Cook <kees@kernel.org>
-> ---
->  include/linux/moduleparam.h | 36 ++++++++++++++++++++++++++++++++++--
->  kernel/params.c             |  6 ++----
->  2 files changed, 36 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-> index 075f28585074..26bf45b36d02 100644
-> --- a/include/linux/moduleparam.h
-> +++ b/include/linux/moduleparam.h
-> @@ -68,6 +68,39 @@ struct kernel_param_ops {
->  	void (*free)(void *arg);
->  };
->  
-> +/*
-> + * Define a const struct kernel_param_ops initializer. Callers prefix with
-> + * any required visibility qualifiers (typically "static"):
-> + *
-> + *   static DEFINE_KERNEL_PARAM_OPS(my_ops, my_set, my_get);
-> + *
-> + * Routing the @_set and @_get function pointers through the macro
-> + * (rather than naming the struct fields at every call site) lets the
-> + * field layout change in one place when callbacks are migrated to a
-> + * new signature.
-> + */
+> Using the macro for initialization means future changes can manipulate
+> the struct layout and callback prototypes without having to change every
+> initializer.
 
-Nit: The newly introduced DEFINE_KERNEL_PARAM_OPS*() macros remain in
-place at the end of the series after the migration is complete and this
-comment is removed in patch 7. It would be helpful to describe in the
-commit message why these macros are generally preferable to defining
-kernel_param_ops instances directly.
-
-I assume the motivation is that the structure is simple enough and using
-macros then makes defining kernel_param_ops instances a bit more
-concise. A minor disadvantage is that some analysis tools, such as
-ctags, may no longer see the generated definition, but that is also the
-case for DEFINE_MUTEX() and other similar macros.
+Nit: For consistency, I suggest also converting the few remaining
+kernel_param_ops instances that specify only .set and no .get, such as
+simdisk_param_ops_filename.
 
 -- 
 Thanks,
