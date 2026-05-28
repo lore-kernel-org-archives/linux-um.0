@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040BCCD5BD5
-	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 08:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4389FCD5BD5
+	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 08:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/ySzIAVBkrBsUi6rIrqJMmTK9JRbtofloTdSDPZ/eLk=; b=nVrlYmHFzZGgrDlqR3/sF5B+ev
-	zZ+SSw4U2VCRDNvZSRWIGe67C7YFkKTaYNwH2D8huU/sYwZaaccSQXjY1Y1migNjjsIAu3arx3BhY
-	nlyAFKmq6hMKQI5uQTr7tBwhq3xIqdzq6siPG+rnGl8akPMw4XNny47A3o49/YAeAE6MnvJ8pkDQ1
-	17MqwSdJQR163OZmcupsDImS21JOf7oKkckxfgO7aFczJs/B58PyEKaX6NcQ4v3yijWbHB1YPBGvl
-	VUKhAT4k3u40reSgSYm02WoM1d5sIQSX5InKFzcvjYAf22T3eoklsdhXU1/OoInIXIGSS7OAP5Tte
-	lSZXIJew==;
+	bh=l5DxUYBizlM/QrV/e8m4rm26bum2vadY2wArofLHKGY=; b=PL+MAcSGJYRDxxDfa3/Tq4u6o4
+	kQQoFtPSxF7igjhNRyEisCX1d0Imtxz/bIIkH3KPhVlblM14PSGqQiXj75sF0zNlBQjhKT+coafRI
+	hmQAWm1RyZG7WzdBtttskSqMqJMqjWZontSgSvHGke9h0PX+GARdoK7bXUAcqlS/0rNnDzpn/D4sg
+	mxsrM9Eco+sLq/H6EzWTyMj5A75puKakMuBfIiyiyzlIxLI3b5lfUHHYo06gwZ7WzSa7XMcAtI847
+	lhk7mrx132ROT/IakpjpQrZvLYDyIehqk9gItu3Bm8EF3421gH5I+ibO5YDCCWFCMHwYaHGupo0hK
+	/rviZjbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSVg5-00000005KN0-2vbx;
-	Thu, 28 May 2026 08:01:17 +0000
+	id 1wSVgc-00000005Kj4-4907;
+	Thu, 28 May 2026 08:01:50 +0000
 Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSVfn-00000005K8J-2Ekx
+	id 1wSVgZ-00000005Kfn-02Jo
 	for linux-um@lists.infradead.org;
-	Thu, 28 May 2026 08:01:01 +0000
+	Thu, 28 May 2026 08:01:49 +0000
 Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
 	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wSVff-000QAQ-Q1; Thu, 28 May 2026 08:00:51 +0000
+	id 1wSVCt-000Q6r-AE; Thu, 28 May 2026 07:31:07 +0000
 Received: from [192.168.21.56]
 	by jain.kot-begemot.co.uk with esmtp (Exim 4.98.2)
 	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wSUBb-00000001dCj-3laD;
-	Thu, 28 May 2026 09:00:51 +0100
-Message-ID: <a3be3b6c-3347-4b5b-97fa-2431cfb76623@cambridgegreys.com>
-Date: Thu, 28 May 2026 09:00:49 +0100
+	id 1wSTiq-00000001bve-0das;
+	Thu, 28 May 2026 08:31:06 +0100
+Message-ID: <d19f715e-b8c3-4351-a34b-067a3f591c5a@cambridgegreys.com>
+Date: Thu, 28 May 2026 08:31:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] um: vector: avoid NULL queue dereference in legacy RX
@@ -56,8 +56,8 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260528_010059_603014_BD25DCD4 
-X-CRM114-Status: GOOD (  13.37  )
+X-CRM114-CacheID: sfid-20260528_010147_060838_923F5E09 
+X-CRM114-Status: GOOD (  10.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,20 +95,16 @@ On 28/05/2026 08:13, Johannes Berg wrote:
 > 
 > So ... you're effectively saying that the tap transport has been broken
 > since 6.12, released ~1.5 years ago.
-
-The one I use is raw :) It is the most useful.
-
-Tap badly needs someone to expose the socket which the kernel uses to implement it. I started writing a kernel helper at some point, but never finished it. It should be able to produce "stupid speeds" with it.
-
-And, yes indeed, this was broken by 612a8c8e0b43ba7e3d0e51f6f76a5fec4912d439 / 2024-07-05 which by the look of it I did not test for tap.
-
-Nice catch.
-
 > 
 > Maybe we should just remove that entirely since nobody complained?
 > 
 > johannes
 > 
+> 
+
+More interesting while it was not observed in testing.
+
+The patch is OK otherwise. I will ack it.
 
 -- 
 Anton R. Ivanov
