@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA49CD5BD1
-	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 07:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040BCCD5BD5
+	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 08:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cEfNXf5FA0/JfEy/uGLzghxeaR7x7407NCUyO6iJU7o=; b=zSscJggVeh2xwX6uql4HerQ+i5
-	VNL3k9NyZ+FppHpv8ChJOmxrFoTZDB0Ww25ta0v28kRJgIwAWSZg8bknozFh1bw3hd2T1+kWm5e5Q
-	YwsQhswZ027UOzoG+oXRBnCvu34l6FnHyDx4EFN6aJiJZSN7zLoBH+VXBhAzxIdxHhB/oOv8pAnGP
-	UT92yPX12bdmHib9pPQ8gQIBmQoYRNPCkEwQpsIBAxKt5el9IjQOMEAc3wBWCO5atVklr8nvk7rI6
-	MFOYk9KZ3zhtImv8Aye09Ce0+ZbgITUr+d3M06kcd+k++Tgfc1yljViPtUOsJmrHF3i6dajIZ0GEp
-	9aDPd+Sw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=/ySzIAVBkrBsUi6rIrqJMmTK9JRbtofloTdSDPZ/eLk=; b=nVrlYmHFzZGgrDlqR3/sF5B+ev
+	zZ+SSw4U2VCRDNvZSRWIGe67C7YFkKTaYNwH2D8huU/sYwZaaccSQXjY1Y1migNjjsIAu3arx3BhY
+	nlyAFKmq6hMKQI5uQTr7tBwhq3xIqdzq6siPG+rnGl8akPMw4XNny47A3o49/YAeAE6MnvJ8pkDQ1
+	17MqwSdJQR163OZmcupsDImS21JOf7oKkckxfgO7aFczJs/B58PyEKaX6NcQ4v3yijWbHB1YPBGvl
+	VUKhAT4k3u40reSgSYm02WoM1d5sIQSX5InKFzcvjYAf22T3eoklsdhXU1/OoInIXIGSS7OAP5Tte
+	lSZXIJew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSUwK-00000005FJo-0RHB;
-	Thu, 28 May 2026 07:14:00 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wSVg5-00000005KN0-2vbx;
+	Thu, 28 May 2026 08:01:17 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSUwG-00000005FJP-2R7j
+	id 1wSVfn-00000005K8J-2Ekx
 	for linux-um@lists.infradead.org;
-	Thu, 28 May 2026 07:13:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cEfNXf5FA0/JfEy/uGLzghxeaR7x7407NCUyO6iJU7o=;
-	t=1779952436; x=1781162036; b=gMGyOuEN8MigrxdvGKqRkE1UBYXE0xlpf83tjr5XmhcQj2i
-	LPbCJgLRLR2d8JHDVvZoH1LZIxTkkJZ/snCMc6K+uR5pCMDhYTg5isvHZg/GnB2mzQjT8ZpGD/8xs
-	M5KC7YqRxjBumnFLoJZ5wRkoQOFeF4DYSmBGWIBudWNel3C1Dx/8RccmUW8FpQSqZOvgrpWemFSdZ
-	cee2NSRASapLh1n5h+0AAKTq18bS4/2LT7YUD2tKWtIuWMkqTTEHVnrJs+McTxM/ILAAUZo4lkPrK
-	DkM/utg7bi01cTbONiri8vw4/1ayn7WVlkuv/dBfM42LTBaN13oO3v+bInhACxzg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wSUw2-000000078lL-1xRY;
-	Thu, 28 May 2026 09:13:42 +0200
-Message-ID: <b72e33e9d651f67ff2236b21fc13c3c78a99cb97.camel@sipsolutions.net>
+	Thu, 28 May 2026 08:01:01 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1wSVff-000QAQ-Q1; Thu, 28 May 2026 08:00:51 +0000
+Received: from [192.168.21.56]
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.98.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1wSUBb-00000001dCj-3laD;
+	Thu, 28 May 2026 09:00:51 +0100
+Message-ID: <a3be3b6c-3347-4b5b-97fa-2431cfb76623@cambridgegreys.com>
+Date: Thu, 28 May 2026 09:00:49 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] um: vector: avoid NULL queue dereference in legacy RX
  mode
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Henry Barreto <contato@henrybarreto.dev>, Richard Weinberger
-	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Tiwei Bie <tiwei.btw@antgroup.com>, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Henry Barreto <me@henrybarreto.dev>
-Date: Thu, 28 May 2026 09:13:37 +0200
-In-Reply-To: <20260527213524.45903-1-contato@henrybarreto.dev>
+To: Johannes Berg <johannes@sipsolutions.net>,
+ Henry Barreto <contato@henrybarreto.dev>, Richard Weinberger <richard@nod.at>
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Henry Barreto <me@henrybarreto.dev>
 References: <20260527213524.45903-1-contato@henrybarreto.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+ <b72e33e9d651f67ff2236b21fc13c3c78a99cb97.camel@sipsolutions.net>
+Content-Language: en-US
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <b72e33e9d651f67ff2236b21fc13c3c78a99cb97.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260528_001356_906354_DDC6C48B 
-X-CRM114-Status: UNSURE (   9.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260528_010059_603014_BD25DCD4 
+X-CRM114-Status: GOOD (  13.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,29 +72,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2026-05-27 at 18:35 -0300, Henry Barreto wrote:
-> From: Henry Barreto <me@henrybarreto.dev>
->=20
-> Bringing a UML vector netdev up can panic in vector_net_open() with a
-> fault in _raw_spin_lock().
->=20
-> vector_net_open() calls vector_reset_stats(), which takes the RX and TX
-> queue locks. However, queue allocation depends on runtime transport
-> options. With tap transport, vector RX/TX queues are not created and the
-> legacy header buffers are used instead. Taking a queue lock then
-> dereferences a NULL queue pointer.
->=20
-> Take the queue locks in vector_reset_stats() only when the corresponding
-> queue exists. Also move the RX queue lock in vector_poll() into the
-> VECTOR_RX path, so legacy RX does not touch rx_queue.
->=20
-> Fixes: 612a8c8e0b43 ("um: vector: Replace locks guarding queue depth with=
- atomics")
 
-So ... you're effectively saying that the tap transport has been broken
-since 6.12, released ~1.5 years ago.
 
-Maybe we should just remove that entirely since nobody complained?
+On 28/05/2026 08:13, Johannes Berg wrote:
+> On Wed, 2026-05-27 at 18:35 -0300, Henry Barreto wrote:
+>> From: Henry Barreto <me@henrybarreto.dev>
+>>
+>> Bringing a UML vector netdev up can panic in vector_net_open() with a
+>> fault in _raw_spin_lock().
+>>
+>> vector_net_open() calls vector_reset_stats(), which takes the RX and TX
+>> queue locks. However, queue allocation depends on runtime transport
+>> options. With tap transport, vector RX/TX queues are not created and the
+>> legacy header buffers are used instead. Taking a queue lock then
+>> dereferences a NULL queue pointer.
+>>
+>> Take the queue locks in vector_reset_stats() only when the corresponding
+>> queue exists. Also move the RX queue lock in vector_poll() into the
+>> VECTOR_RX path, so legacy RX does not touch rx_queue.
+>>
+>> Fixes: 612a8c8e0b43 ("um: vector: Replace locks guarding queue depth with atomics")
+> 
+> So ... you're effectively saying that the tap transport has been broken
+> since 6.12, released ~1.5 years ago.
 
-johannes
+The one I use is raw :) It is the most useful.
+
+Tap badly needs someone to expose the socket which the kernel uses to implement it. I started writing a kernel helper at some point, but never finished it. It should be able to produce "stupid speeds" with it.
+
+And, yes indeed, this was broken by 612a8c8e0b43ba7e3d0e51f6f76a5fec4912d439 / 2024-07-05 which by the look of it I did not test for tap.
+
+Nice catch.
+
+> 
+> Maybe we should just remove that entirely since nobody complained?
+> 
+> johannes
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
 
