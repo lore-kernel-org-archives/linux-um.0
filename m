@@ -4,60 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84463CD5BD5
-	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 08:02:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83A6FCD5BD1
+	for <linux-um@archiver.kernel.org>; Thu, 28 May 2026 08:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ENxjtq2SNsml1+RlRIgf3/UJi0mDvR9nG+YCmNcsr3Y=; b=lF3ZAMX6GJkrP8eCnLK4vVcpLA
-	Nul10VWBIUDXplYJQG08LdyWKfFMW0soiH0R0U4cHHZr/RCHV3sQ2wrJnxOuaQC2kSMefgB2GNRoT
-	haqfQVpTEbRHUwn8ew8oQbyWNndNUeRiBf7NlozwgDvUClRiVHD9FkR08rk5FgpS+0fg30Jj/rf5j
-	7S6mdNdFrDQ5L8+9qn/iqpBqo80gTgd19j9lzwS6PCN2F1DzUcKE0/X6dtUq5MRfb5ntI+CTmbyP8
-	cgN//X5kxLhmgPAHjGGFjcvIJCT4wp1MqNMQWneIPs41zjUhukZY7b0ViRQ/El3CL30Q7RuLFzgqW
-	qOnWtLqA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lMis8oI9nzQmxhD2cadrgYjkurIFfQSjVlT5txsPDq0=; b=xVtVRZ55uQ6ORM3LbYj9K/NAjX
+	Ydo7S17yKhYXX+I66pLJMAdF9/nJcMzR/zO+WtJeT9eoKIAo8rFwgf9EQBWbi8D634lMfCGLAmqGJ
+	XCY5Cm2+F1HEqbfF+UPBWi0yeH2KUyHLXtEoz2PbAMekUJmsyU4cwOWpIjZqpDARVBlYAKqqY+U1j
+	7/vju2DERUh6Fw35lGaz+tt3qVaz4rlMjW976qriHzuOW+Ct3nhEQHfL3MHiWat3ju7zJCTLQVV/x
+	8JZGB1IAUR8fwcFAPnU8bjZc0p755Vze5uVtnZwDtg4/TiTkDNqYAyztm4ssGp55Xs4Us6qH9iLVF
+	G5K5kuqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSVhO-00000005Kxb-0Tuz;
-	Thu, 28 May 2026 08:02:38 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1wSVwH-00000005MOk-3QOu;
+	Thu, 28 May 2026 08:18:01 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wSVhL-00000005Kwf-1VMK
+	id 1wSVwF-00000005MNz-0HOS
 	for linux-um@lists.infradead.org;
-	Thu, 28 May 2026 08:02:36 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wSVhG-000QAt-MD; Thu, 28 May 2026 08:02:30 +0000
-Received: from [192.168.21.56]
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1wSUDC-00000001dG3-3ZRq;
-	Thu, 28 May 2026 09:02:29 +0100
-Message-ID: <5318a8f9-eadf-4cc5-978b-8749d44d0acb@cambridgegreys.com>
-Date: Thu, 28 May 2026 09:02:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Thu, 28 May 2026 08:18:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=lMis8oI9nzQmxhD2cadrgYjkurIFfQSjVlT5txsPDq0=;
+	t=1779956278; x=1781165878; b=QGS4vBKCobzeMvK2GHTOCuZsj/r1S+F+tCUHPlR/uSB24hg
+	DbqnmmMkgDL1ouu/JrsijMlnFWRtzvhUukJgXuzX8mnQPVXPOYZNRx45MnH+vR6CfLC7+C9TtcxjX
+	8yARkz8lg2XAPwakseOfoGd0L6MmQtlF7N7hD6knRCO4bMU9NxWT3bq2BEXjn1FKBtZUkEOFWfsQM
+	eLIgHX4sY40EbILRKmxssQRZnYseCr4HV8Cz7QBQIr9cKih1NKB/Hufs4AhfbIq01t6WwlS22hNiN
+	GPDHFbo/hZ8mv7wE5FQw7UL8xvuPvwzjoBwOdBxpKAyF1YaZemhVFWR5zAquK5GQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wSVw7-00000007CQm-3FrP;
+	Thu, 28 May 2026 10:17:52 +0200
+Message-ID: <21c2c12a804d662d74c3518267d90e045223583e.camel@sipsolutions.net>
 Subject: Re: [PATCH] um: vector: avoid NULL queue dereference in legacy RX
  mode
-To: Henry Barreto <contato@henrybarreto.dev>,
- Richard Weinberger <richard@nod.at>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
- Tiwei Bie <tiwei.btw@antgroup.com>, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org, Henry Barreto <me@henrybarreto.dev>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Henry Barreto
+	 <contato@henrybarreto.dev>, Richard Weinberger <richard@nod.at>
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>, linux-um@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Henry Barreto <me@henrybarreto.dev>
+Date: Thu, 28 May 2026 10:17:50 +0200
+In-Reply-To: <a3be3b6c-3347-4b5b-97fa-2431cfb76623@cambridgegreys.com>
 References: <20260527213524.45903-1-contato@henrybarreto.dev>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20260527213524.45903-1-contato@henrybarreto.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+	 <b72e33e9d651f67ff2236b21fc13c3c78a99cb97.camel@sipsolutions.net>
+	 <a3be3b6c-3347-4b5b-97fa-2431cfb76623@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260528_010235_399045_D711C1BD 
-X-CRM114-Status: GOOD (  19.27  )
+X-CRM114-CacheID: sfid-20260528_011759_103646_65BB8CC8 
+X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,102 +77,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Thu, 2026-05-28 at 09:00 +0100, Anton Ivanov wrote:
+> >=20
+> > So ... you're effectively saying that the tap transport has been broken
+> > since 6.12, released ~1.5 years ago.
+>=20
+> The one I use is raw :) It is the most useful.
 
+Right.
 
-On 27/05/2026 22:35, Henry Barreto wrote:
-> From: Henry Barreto <me@henrybarreto.dev>
-> 
-> Bringing a UML vector netdev up can panic in vector_net_open() with a
-> fault in _raw_spin_lock().
-> 
-> vector_net_open() calls vector_reset_stats(), which takes the RX and TX
-> queue locks. However, queue allocation depends on runtime transport
-> options. With tap transport, vector RX/TX queues are not created and the
-> legacy header buffers are used instead. Taking a queue lock then
-> dereferences a NULL queue pointer.
-> 
-> Take the queue locks in vector_reset_stats() only when the corresponding
-> queue exists. Also move the RX queue lock in vector_poll() into the
-> VECTOR_RX path, so legacy RX does not touch rx_queue.
-> 
-> Fixes: 612a8c8e0b43 ("um: vector: Replace locks guarding queue depth with atomics")
-> Signed-off-by: Henry Barreto <me@henrybarreto.dev>
-> ---
->   arch/um/drivers/vector_kern.c | 26 ++++++++++++++++++--------
->   1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 25d9258fa592..70762f15d093 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -110,19 +110,26 @@ static void vector_reset_stats(struct vector_private *vp)
->   	 * in vector_poll.
->   	 */
->   
-> -	spin_lock(&vp->rx_queue->head_lock);
-> +	if (vp->rx_queue)
-> +		spin_lock(&vp->rx_queue->head_lock);
-> +
->   	vp->estats.rx_queue_max = 0;
->   	vp->estats.rx_queue_running_average = 0;
->   	vp->estats.rx_encaps_errors = 0;
->   	vp->estats.sg_ok = 0;
->   	vp->estats.sg_linearized = 0;
-> -	spin_unlock(&vp->rx_queue->head_lock);
-> +
-> +	if (vp->rx_queue)
-> +		spin_unlock(&vp->rx_queue->head_lock);
-> +
->   
->   	/* TX stats are modified with TX head_lock held
->   	 * in vector_send.
->   	 */
->   
-> -	spin_lock(&vp->tx_queue->head_lock);
-> +	if (vp->tx_queue)
-> +		spin_lock(&vp->tx_queue->head_lock);
-> +
->   	vp->estats.tx_timeout_count = 0;
->   	vp->estats.tx_restart_queue = 0;
->   	vp->estats.tx_kicks = 0;
-> @@ -130,7 +137,10 @@ static void vector_reset_stats(struct vector_private *vp)
->   	vp->estats.tx_flow_control_xoff = 0;
->   	vp->estats.tx_queue_max = 0;
->   	vp->estats.tx_queue_running_average = 0;
-> -	spin_unlock(&vp->tx_queue->head_lock);
-> +
-> +	if (vp->tx_queue)
-> +		spin_unlock(&vp->tx_queue->head_lock);
-> +
->   }
->   
->   static int get_mtu(struct arglist *def)
-> @@ -1168,15 +1178,15 @@ static int vector_poll(struct napi_struct *napi, int budget)
->   
->   	if ((vp->options & VECTOR_TX) != 0)
->   		tx_enqueued = (vector_send(vp->tx_queue) > 0);
-> -	spin_lock(&vp->rx_queue->head_lock);
-> -	if ((vp->options & VECTOR_RX) > 0)
-> +	if ((vp->options & VECTOR_RX) > 0) {
-> +		spin_lock(&vp->rx_queue->head_lock);
->   		err = vector_mmsg_rx(vp, budget);
-> -	else {
-> +		spin_unlock(&vp->rx_queue->head_lock);
-> +	} else {
->   		err = vector_legacy_rx(vp);
->   		if (err > 0)
->   			err = 1;
->   	}
-> -	spin_unlock(&vp->rx_queue->head_lock);
->   	if (err > 0)
->   		work_done += err;
->   
+> Tap badly needs someone to expose the socket which the kernel uses to imp=
+lement it. I started writing a kernel helper at some point, but never finis=
+hed it. It should be able to produce "stupid speeds" with it.
+>=20
+> And, yes indeed, this was broken by 612a8c8e0b43ba7e3d0e51f6f76a5fec4912d=
+439 / 2024-07-05 which by the look of it I did not test for tap.
+>=20
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Yeah, I guess I'm just thinking that clearly nobody uses it, the
+infrastructure isn't there (as you say), and it was broken for a rather
+long time now and nobody complained (that we know of.)
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+So ... is it worth even keeping it? I'm fine either way, just wondering.
 
+johannes
 
