@@ -4,112 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92C28CD6E56
-	for <linux-um@archiver.kernel.org>; Mon,  1 Jun 2026 12:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B30ACD6E66
+	for <linux-um@archiver.kernel.org>; Mon,  1 Jun 2026 19:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3ZjcplI1IRnFnk0efUVPi4+MY/klXOGYW0jLHAuU0HQ=; b=rFSSO88RKansEyBKarVpPJYvdF
-	8aPZ0Hcp+jUDWCHqed6UKPb23WxoCLRkrKkDro1w8mK6KCtiOFslYwZMNLyuzfJOZgHwpOsDWy0Ux
-	SO5DwnoZ3EWlwf0pqNLzU6O+rbd0qylDLdm3C2CdVFygPILvQ+AQWOnKYxPc0WiJgI2oS1mMKq0I8
-	j8RuvzOr55Jen/McshA87DcZ3wxR1LVssm5CnFpsXFUZ0dABMd/eXcPWxUZHD3sl/7+bVGH2Ae+8n
-	TXr9TThTnVFO0/k9GaaSHvNpJschYjsn7ZuTiPedLNfqpybCBgJrlvuWvWrPkaArGv/oCiIhNypQN
-	uqZjkGEQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=XNCn/hiuq2TSQD0/7268qMBjDGPldqx55TcTTgULBQo=; b=0rX6y0ccZ5/E+phtFS6pS0Lb3Q
+	aY3dwRSmvS1O+a4bzWUz/PFtGdRXUYj9LiEfROQt3j5971E/QbWStpzzloLGARkIv0Cievt/W06de
+	J3LZK96JvYEBgKj3A/ReooVZRT+uVvYPgV4JoI8WmxO/lcsFylEE2llhr8S2SkMjnH6/9eOVWZsU5
+	f+stKlpefFNjt2Eb2Y52VPoiljs7shGkg35x2/JvTl5WoDMvRBq762cYEKFatGBBYLknkVfVPDFJw
+	bwiKmvF9xEl9Lfg4QH96vWNVtyVAEwHdFxX1P5cs1DOzdi9tDAokCCTWsFoBtzM6eJP2u2Uvq+kkM
+	KOfU8XDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU1l2-0000000B8Ae-0oNe;
-	Mon, 01 Jun 2026 12:28:40 +0000
-Received: from fout-a3-smtp.messagingengine.com ([103.168.172.146])
+	id 1wU8nh-0000000BkBV-2cCP;
+	Mon, 01 Jun 2026 19:59:53 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU1kz-0000000B89v-33pG
+	id 1wU8nf-0000000BkAP-1hJN
 	for linux-um@lists.infradead.org;
-	Mon, 01 Jun 2026 12:28:39 +0000
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id B19F5EC00F4;
-	Mon,  1 Jun 2026 08:28:34 -0400 (EDT)
-Received: from phl-imap-05 ([10.202.2.95])
-  by phl-compute-04.internal (MEProxy); Mon, 01 Jun 2026 08:28:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1780316914;
-	 x=1780403314; bh=3ZjcplI1IRnFnk0efUVPi4+MY/klXOGYW0jLHAuU0HQ=; b=
-	Ui0v4TSuPzRO7xRaZDafNYDDdCd8XqYPEVdhwIHp4sChfdDE+TLdfu9mHQGySD3I
-	iCe/d9DjD9gutWZxWtPy0ar1wHhJuU32SHo76dzfUilKnqFHwjIsfvnMiF3Abjic
-	OS4mMgFPhTHZicj87I38jlNTHJ+HDuKe0VtJ2+8xwuntICw5W3U4rskEBd/Of+SQ
-	RxDvda/f9GX5fYhKOah/w5RrqoLWe0HzXZRBhoI42EtrX0BHn8QTc4beyFqyZqGF
-	uNL0E2DhX8tQ5tBdJ7fwd0pu1mwxLZTFXcnT0GeKvVXDBY/nufa55hq9XxbHt86a
-	GyYJK7lkhbnH9uUkpl9WvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1780316914; x=
-	1780403314; bh=3ZjcplI1IRnFnk0efUVPi4+MY/klXOGYW0jLHAuU0HQ=; b=H
-	BMnFWcmLkGttdFD9lZSuiXVbzIbLR7PDO6HT+cLz9wOs22ZJQyq2RBxDAcIXJA49
-	sN9QP+PMiS499sE1zWgHkFcTQV/M2gTLo6xAg6rbUNbqVepHhioHscH+AWRZWcwY
-	62YDjRQwBhyATENDZjO/ryl5XAh2cjH3M6UgsFEmhOjh5cPRgwQ0m0gF+DI1yOg8
-	SpcjgZC6xx/tsH7NSisgcQblNj611Tpgsmpxxq+eZ0R8P5aVq8vMjMKha9joLV08
-	ORVEOtzGhhEMwpEE3h3ltjcKW++YvCPLOD0QzQHWWMT2IdLR/DuEMkokUkVMAiM+
-	E0h49qrx8gQmliSOhb09Q==
-X-ME-Sender: <xms:8HodanPncEQEYzpKYw8Hvfer_eF51AqBU5ac1K_C_w3hJAVf1ZY1iA>
-    <xme:8HodasyxloeLB3tOnCtcqCD_zcYAtNvE6JDjWJFDtUTBV-ePgDd51PKUftDjLbJc5
-    iW3SbLVqWfSKGnrfBS89de3l_htHgtuAY973YG6w0z0nSjDWKMeEgY>
-X-ME-Proxy-Cause: dmFkZTEuJ8z3Npq/dH3C9xP6qXfCRbHTe9gj4rOILrQUCzqX8oO8KWWCSR169Z//vxGG/n
-    T9k6AEXlUZb1Pxob5RE0+HEVsHGUVZWFNr0tjiNlwbYIt8i2dYMmuDaivMAhOa8QaAJlm4
-    yiYxKFDH3zZ2aWyhC3Mp4b3brwFIPhorOLB1X2dpWI61Zk1xHrpkq8F5vWxapJaHR1OtBw
-    RFgfuaactUUmz4gSt4Wx7qh8WPO/D9WdS/WRIPklOWuk/mnS5qSDD/LWvewEGK7LWeO7mG
-    phdhiGNvyVNFikhD39gPgxoltn91897OPGino+8xWACj4o+iq+phlvei/JJxNc5Jt3jVcO
-    xWfHUCQDJtecA1t9Y4AK0Tf6Hc596+CpHpu8T9r93/USE+5kkyMtqEwuQIy23kDlJv9xMK
-    ylUmqACtFKQsabZMJ0UdR2/hPWDxoUtqWc4EmpRA/eXH4D3ET3fVunLhF8b9MJvOJCyabM
-    EeOlxYAdCcjquXba8ftqBvLDOYSMptTMiHC4JFczMJoQ0ryN3fY75hadiUgPD/Ot4i4eGN
-    6TkhLCsbGgbSKeD2nLEEH8QakT1zAivQTpqj5iVyKhJyXBFXllkCwXifHbwaXVmIJESn5P
-    ETNQOszvaMmZ23cphcPUNJh/UnnaautLCampyBGSMsfBUY39yH06qfPN0L+w
-X-ME-Proxy: <xmx:8HodarnLpdY7C9tAvkiQ0HdhJr1XvLCAzRkkISOgL2FoaOGUW6IJVg>
-    <xmx:8Hodaiw7VmSR8YsJ74TDyERR-jicz0l_08fKTlNMeGfUgGMtFjUscw>
-    <xmx:8HodaqL5LS_5slnre2b6BEI02KW9xpnjLi8o1RBX5bNdEKbd-Z9jOQ>
-    <xmx:8HodatLmDnSuqPQPvwFepkeWJPLFj_605sJeFpChDhFl_RYtaLUgVQ>
-    <xmx:8nodaqOEPmaQprN-yV6S-ZGFsmeSiih4MMsOvjOpebtovSyD08V-f7Z0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id C2A1E182007E; Mon,  1 Jun 2026 08:28:32 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	Mon, 01 Jun 2026 19:59:52 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 4E93A40825;
+	Mon,  1 Jun 2026 19:59:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6831F00893;
+	Mon,  1 Jun 2026 19:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780343990;
+	bh=XNCn/hiuq2TSQD0/7268qMBjDGPldqx55TcTTgULBQo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=jPPf1HSEtTmrOkKgXG7yZ4L4yWlXriv9f4UInH3EUjfr7uRqEixqsswHEVJD66e/i
+	 UYMnZm3AwHRFYgRV2ih8KtH9UMVsaXegF2blXd/AV6FabDLb+h4l5NmMOw9ZVrD++N
+	 KcX2jHWXOHM02LWFJzDj4MfNwHTR6omd404TzjNZvpI6ZIAf59Yvhv/clTseKbIOtO
+	 ETM1funcq4ukCXv67pvcGJzgYBqL/gNfgi123wCjIaYqeaTkJBGmaBAvvqiI5vVIDR
+	 F9G7b/Sg9jjyGT7K98XQKfJ06MeRLxen4rImVcQChLpFwv+lALs23w52eL46/a7lq6
+	 WVHwgppy+tSkw==
+Date: Mon, 1 Jun 2026 12:59:49 -0700
+From: Kees Cook <kees@kernel.org>
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Corey Minyard <corey@minyard.net>,
+	Gabriel Somlo <somlo@cmu.edu>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans de Goede <hansg@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
+	Tiwei Bie <tiwei.btw@antgroup.com>,
+	Benjamin Berg <benjamin.berg@intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	"David E. Box" <david.e.box@linux.intel.com>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Vinod Koul <vkoul@kernel.org>,
+	Frank Li <Frank.Li@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Alexander Potapenko <glider@google.com>,
+	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, linux-mm@kvack.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net, qemu-devel@nongnu.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+	usb-storage@lists.one-eyed-alien.net,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 00/11] Convert moduleparams to seq_buf
+Message-ID: <202606011259.CE6E74CE@keescook>
+References: <20260521133315.work.845-kees@kernel.org>
+ <88c5ca1d-eeda-4023-bc7a-397b92780db9@suse.com>
 MIME-Version: 1.0
-X-ThreadId: ABuN838N9sew
-Date: Mon, 01 Jun 2026 14:27:52 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Ingo Molnar" <mingo@redhat.com>, "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Thomas Gleixner" <tglx@kernel.org>, "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, "Peter Zijlstra" <peterz@infradead.org>,
- "Will Deacon" <will@kernel.org>, "Boqun Feng" <boqun@kernel.org>,
- "Gary Guo" <gary@garyguo.net>, "Yury Norov" <yury.norov@gmail.com>,
- "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
- "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
- "Alexander Usyskin" <alexander.usyskin@intel.com>,
- "Anthony L Nguyen" <anthony.l.nguyen@intel.com>,
- "Przemek Kitszel" <przemyslaw.kitszel@intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- "Savoir-faire Linux Inc." <kernel@savoirfairelinux.com>
-Message-Id: <95b6f585-f52e-481e-9d55-cc1a5dd9ace2@app.fastmail.com>
-In-Reply-To: <CAMuHMdWroJRgr-p7CXLf08EJkbPxhro1WVYGe0pQ8Zu__jMobA@mail.gmail.com>
-References: <20260522141959.1071595-1-arnd@kernel.org>
- <20260522141959.1071595-2-arnd@kernel.org>
- <CAMuHMdWroJRgr-p7CXLf08EJkbPxhro1WVYGe0pQ8Zu__jMobA@mail.gmail.com>
-Subject: Re: [PATCH 1/8] x86: remove ts5500 platforms support
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88c5ca1d-eeda-4023-bc7a-397b92780db9@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260601_052838_038041_B2A7BC3F 
-X-CRM114-Status: GOOD (  11.56  )
+X-CRM114-CacheID: sfid-20260601_125951_489964_E7114653 
+X-CRM114-Status: GOOD (  25.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,30 +141,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 1, 2026, at 10:31, Geert Uytterhoeven wrote:
-> Hi Arnd,
->
-> On Fri, 22 May 2026 at 16:20, Arnd Bergmann <arnd@kernel.org> wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> Support for =C3=89lan was removed in 7.1, but the ts5500 platform
->> still depends on it. Remove this one as well, not that it
->> cannot be used any more.
->
-> https://www.embeddedts.com/products/TS-5500
->
->    "Retired. Last Time Buy. This product is being retired. We will
->     have a Last Time Buy until 01/07/26. Supplies are limited."
->
-> but
->
->    "Available with Linux 2.4 kernel"
+On Tue, May 26, 2026 at 08:53:06AM +0200, Petr Pavlu wrote:
+> On 5/21/26 3:33 PM, Kees Cook wrote:
+> > Hi,
+> > 
+> > I tried to trim the CC list here, but it's still pretty huge...
+> > 
+> > We've had a long-standing issue with "write to a string pointer" callbacks
+> > that don't bounds check the destination (and for which the bounds is
+> > also not part of the callback prototype, even if it is "known" to be
+> > PAGE_SIZE, which sysfs_emit() depends on). Both moduleparams and sysfs
+> > use this pattern. As a first step, and to test the migration method,
+> > migrate moduleparams first.
+> > 
+> > There are 2 "mechanical" treewide patches that are handled by Coccinelle:
+> > - treewide: Convert struct kernel_param_ops initializers to DEFINE_KERNEL_PARAM_OPS
+> > - treewide: Convert custom kernel_param_ops .get callbacks to seq_buf via cocci
+> > 
+> > The last treewide patch is manual, and may need to be broken up into
+> > per-subsystem patches, though I'd prefer to avoid this, as it would
+> > extend the migration from 1 relase to at least 2 releases. (1 to
+> > release the migration infrastructure, then 1 release to collect all the
+> > subsystem changes, and possibly 1 more release to remove the migration
+> > infrastructure.)
+> > 
+> > Thoughts, questions?
+> 
+> This looks reasonable to me. I added a few minor comments on the patches
+> but they already look solid.
 
-Linux-2.4 and DOS are probably more commonly used on these than
-anything modern, given that this is a 486 with 32 MB.
+Thanks for the review! I'll get a v2 prepared with your notes addressed. :)
 
-There is a good chance it still would have worked with
-linux-7.0 if anyone had tried.
+-Kees
 
-        Arnd
+-- 
+Kees Cook
 
