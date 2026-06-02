@@ -4,60 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E241CD6E4A
-	for <linux-um@archiver.kernel.org>; Tue,  2 Jun 2026 11:27:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10331CD6E64
+	for <linux-um@archiver.kernel.org>; Tue,  2 Jun 2026 12:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CP93nlQssNvYpFC8rnfGZuXcUdBpP5yef/5fnF6hzcI=; b=Uh3K1c/748pooK3fYWG7GFevq/
-	lcJkKqo1C/+8DorF6993XlQs76qs7BGve6si5qecKyQzMNC03aSfie4cvdriviEn5OEdcAd5AUnuA
-	dzRbxi7+GehsCcwDX4Yl6wdf2H7yvu6UNnKDkSK+P4douM9+/K4BPQky1NRiuhwznS59C7M4X9UJ5
-	Jv+pXCOoDNb33Yk73q8wCVD7X+prYnMFBdQKvpvFcYioL21efVEiENBmTHup9nGTZA8PWrd8pzjfM
-	jL89K0yIMLP5YqtZD5FVtVmHep8f7bfcNFWs8q+wDezg7bZEzByFqKFRlbfHTuDnTKI/afaTpJ/Iy
-	1GX3gFVw==;
+	bh=3fuMy8ZTlB4sZmM4SRNfS45Rtpr0e2y/Uhs3uZMD108=; b=kKqZpsjPTDJqqdQyPRWQwyQZV9
+	l8445Lpu1J8iNAvrOMmIrSIfPYfsNpGX5VCyc73u6gahAbK0HVrMcEaDQx638i0nYtaMb6Xj7oIRJ
+	C5zjbkQc9v13fEJbYXqJJmQf+UwDw4z3T9Lx/JLO74gOY3PZy7tr1COf3n5XGl4BKQnDLbpJuIDUq
+	+sGbK6sCWExYcBepG6izUa1QsNdsqXuwvCsFsSBHnwjl5VSKqHHyqIVOsrx8NTIIxatexQGfXBQsU
+	tKYFylcqJSpe9p09rjppamPGkA5KaHpcMboa3KxMfM4MEOBZzTQvuDAlnK38R5Ugm4uhshC95Au0C
+	RYTJ/KPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUNH6-0000000Cs7y-1m9b;
-	Tue, 02 Jun 2026 11:27:12 +0000
-Received: from mgamail.intel.com ([198.175.65.15])
+	id 1wUOJZ-0000000CzYP-40D5;
+	Tue, 02 Jun 2026 12:33:49 +0000
+Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wUNH3-0000000Cs7Z-44Xd
+	id 1wUOJX-0000000CzXO-1c6q
 	for linux-um@lists.infradead.org;
-	Tue, 02 Jun 2026 11:27:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780399630; x=1811935630;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vFe0YHJbZeLES+sUauMUh5hZ46dD8ew9Ej6lDFLoT9Q=;
-  b=OpuvB+TCFOlrTj1dTsQq4IO6bT0RYvhdqKiNi7guAfItcI40qmxJuR+2
-   JxfSI7H8Vs0pb6lSzui2MNNzEWzxhK2dqWRYpbiEiVo05UowkhP/brLIc
-   ZVeqrXsY/GHqe3VM+ZWp1v4ClJFL3WOZdAoNffJszSxQymB3W2SmL0kdn
-   EoTQOQCHyRV6IH4CmL1hEzveBQPF06YlAMtiXnjfxI7VYYLoSP3+xGnlr
-   LFm/IXvUvXoEkVqVbja68afnmQGU98K68zOP52EZcPPPHvMGyw+ljzTra
-   1vViH6ezFD00NvPoMZN+e9EIaC8+Q8JOgg1j4bdpBSO6q8EyVZiF5BWXP
-   A==;
-X-CSE-ConnectionGUID: 557MPzSCT2+kKx1AIcC00g==
-X-CSE-MsgGUID: Ouet3EIPSTilbnObNn7Wpw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11804"; a="84805017"
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="84805017"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 04:27:08 -0700
-X-CSE-ConnectionGUID: 57WJuzJhQk+bJIT4F8AZnw==
-X-CSE-MsgGUID: InV+5AxmRSKrEz4WoNh7bQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="240879149"
-Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.229])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 04:26:48 -0700
-Date: Tue, 2 Jun 2026 14:26:46 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Kees Cook <kees@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
+	Tue, 02 Jun 2026 12:33:48 +0000
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-5174a34800fso26645781cf.3
+        for <linux-um@lists.infradead.org>; Tue, 02 Jun 2026 05:33:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1780403626; x=1781008426; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3fuMy8ZTlB4sZmM4SRNfS45Rtpr0e2y/Uhs3uZMD108=;
+        b=mb5u0/hIxSig2CRO0rtz6wCNBEH15f9FLMWQMuTJuSkWtTkj+LBT3TjpcsyzwDKcT9
+         x9pB+VcOBfYI1Uwivd+lov901oHEo67s6+Km2GAwThXL5HUBq/taPQe+OK0KayweYqs+
+         28k+n2OPlnba2wEY04kJKUqsc6GCskzJ5G5RUYOV2Kk5IDDKdEqWV7xEmTkpmW+0tlb4
+         PokR5E9aKkegRdlav8SS8mszcfAlyqCDeT3Nx2rCG2ar/Nkeeg/GnKfAlYjaQBXfNcb8
+         nIAPJ7laN5Wn9cvvnYZrrqEFiH8ecJ1T6es2MWXmVY0MWk5Nekiflg1RBXaRjmb6Va0O
+         7CjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780403626; x=1781008426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3fuMy8ZTlB4sZmM4SRNfS45Rtpr0e2y/Uhs3uZMD108=;
+        b=ZpOiqrcO8zR4xa3OQHAfPFvw2NseDuQgIlwlzyym8BTY7FHa3bWGzpXmQI7GQvQemh
+         RgsyN3jzGB8sIHu5gFfLIYK/9s3gKsnUIn6yOTkzxXQC7gO4JcEE0iIyFRPzhTNhbE8j
+         npY0iozs1lF2TIThyfMIiqA56FDc6ZKe75TwbOzGyP1jXykG4PIYTKDSsWrHqj46DKUE
+         4H9G0A0A/M5VGrEDCSWKKPIMaxUqlPeFK6pxP+MUREIBUevs4D5aP9lOJ4gUzRRvaSfD
+         nnf7e8IGck0ozbPS1vo9qIzWllJKWK+e+YprNplA4h4gkEDKn4b+QBZQRb+w/tWBgk/r
+         QJvw==
+X-Forwarded-Encrypted: i=1; AFNElJ+eD7IjzDg1kO4AWcIHxRGPBPXRvO6q+BTH518zVfnbJwfsXoPqlQlG6QLJ+SIn+/DTBtvrbgIVdA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzfbs2D2wY0673TihaLKixmPk1zI0bDSsyaYObe99yL/tfarODc
+	TAWKa3H5yo/0asD8iQJrmKa/MlHJFxKpiin8KuHxI0OutGFSavLHgiB+pK+IrskCQ3M=
+X-Gm-Gg: Acq92OFFVbEfBtRvdYdeozaqvbgZ5du5Kh6q33JlxJp/aDwIZE0noblt5LjM9hKHuT+
+	zTH2dTkl9ZEo5ZTGXIavmxqPUkJil30fAECIVxSpDgRQsH264M9zQvzFg7NrKI9ODsvCx8JXR6d
+	JTxLhxuJEOxgbkW0TWgrXfslFEGz6biZNhj7ZdnL6amgB7cfjh9XirrAUqB5F5pcM/eoGxDprV5
+	z3hduwac3MkUGEU+7S7a21eanHkSlCsOGvufRA+34ZFTSb6/QT2TfPXuZtSmLrfb67gpyeGAGKT
+	3sQD/NY8EiLa0tDU9bWpwIMU6AICuzNc5J7oP2200tzX6kivS0Fu3Enrk20A8f1mLVkHr+VJ0WU
+	cEEfzcjN3VsGGG5rtyzPwuQT5T/45xq6IyrH/35KueYtqp7NhceSbQjCaUOF5+O0mEWGA/tpa0s
+	RFyCMlfg1d/loEmIeMuHXZl8QqwcnX7bJdo+IVHoH4AYQg6Ryv1Q7xM2mC7CFd100xsEtOunVjQ
+	wTM6cmLh9rwSst5
+X-Received: by 2002:a05:622a:190a:b0:509:2527:d789 with SMTP id d75a77b69052e-5173a5c05ecmr228232631cf.6.1780403625864;
+        Tue, 02 Jun 2026 05:33:45 -0700 (PDT)
+Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51741d6a240sm78686221cf.18.2026.06.02.05.33.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jun 2026 05:33:45 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1wUOJU-00000003m5x-3DKO;
+	Tue, 02 Jun 2026 09:33:44 -0300
+Date: Tue, 2 Jun 2026 09:33:44 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
 	Pengpeng Hou <pengpeng@iscas.ac.cn>, stable@vger.kernel.org,
 	Petr Pavlu <petr.pavlu@suse.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -73,7 +92,7 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>,
 	Tvrtko Ursulin <tursulin@ursulin.net>,
 	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
 	Bart Van Assche <bvanassche@acm.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
 	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Hans de Goede <hansg@kernel.org>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -87,11 +106,11 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>,
 	Alan Stern <stern@rowland.harvard.edu>,
 	Jason Wang <jasowang@redhat.com>,
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
 	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
 	Tiwei Bie <tiwei.btw@antgroup.com>,
 	Benjamin Berg <benjamin.berg@intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
 	"David E. Box" <david.e.box@linux.intel.com>,
 	"Maciej W. Rozycki" <macro@orcam.me.uk>,
 	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
@@ -130,18 +149,17 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>,
 	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH 01/11] params: bound array element output to the caller's
  page buffer
-Message-ID: <ah699hwLxIIOZ0-7@ashevche-desk.local>
+Message-ID: <20260602123344.GG2487554@ziepe.ca>
 References: <20260521133315.work.845-kees@kernel.org>
  <20260521133326.2465264-1-kees@kernel.org>
+ <ah699hwLxIIOZ0-7@ashevche-desk.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260521133326.2465264-1-kees@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+In-Reply-To: <ah699hwLxIIOZ0-7@ashevche-desk.local>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260602_042710_050013_ECB40583 
-X-CRM114-Status: GOOD (  21.11  )
+X-CRM114-CacheID: sfid-20260602_053347_437915_06D01C68 
+X-CRM114-Status: GOOD (  16.64  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,68 +174,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 21, 2026 at 06:33:14AM -0700, Kees Cook wrote:
+On Tue, Jun 02, 2026 at 02:26:46PM +0300, Andy Shevchenko wrote:
+> On Thu, May 21, 2026 at 06:33:14AM -0700, Kees Cook wrote:
+> > 
+> > param_array_get() appends each element's string representation into the
+> > shared sysfs page buffer by passing buffer + off to the element getter.
+> > 
+> > That works for getters that only write a small bounded string, but
+> > param_get_charp() and similar helpers format against PAGE_SIZE from the
+> > pointer they receive. Once off is non-zero, an element getter can
+> > therefore write past the end of the original sysfs page buffer.
+> > 
+> > Collect each element into a temporary PAGE_SIZE buffer first and then
+> > copy only the remaining space into the caller's page buffer.
 > 
-> param_array_get() appends each element's string representation into the
-> shared sysfs page buffer by passing buffer + off to the element getter.
+> ...
 > 
-> That works for getters that only write a small bounded string, but
-> param_get_charp() and similar helpers format against PAGE_SIZE from the
-> pointer they receive. Once off is non-zero, an element getter can
-> therefore write past the end of the original sysfs page buffer.
+> > +	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
 > 
-> Collect each element into a temporary PAGE_SIZE buffer first and then
-> copy only the remaining space into the caller's page buffer.
+> get_free_page() (or how it is called)?
 
-...
+I thought modern mm guidance was to use kmalloc whenever possible and
+not use get_free_page() unless you intend to use the struct page bits?
 
-> +	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-
-get_free_page() (or how it is called)?
-
-> +	if (!elem_buf)
-> +		return -ENOMEM;
-> +
->  	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
-> -		/* Replace \n with comma */
-> -		if (i)
-> -			buffer[off - 1] = ',';
->  		p.arg = arr->elem + arr->elemsize * i;
->  		check_kparam_locked(p.mod);
-> -		ret = arr->ops->get(buffer + off, &p);
-> +		ret = arr->ops->get(elem_buf, &p);
->  		if (ret < 0)
-> -			return ret;
-> +			goto out;
-> +		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
-
-It's usually discouraged to use castings in min/max/clamp. Can we make ret long
-or do something different here?
-
-> +		if (!ret)
-> +			break;
-
-> +		/* Replace the previous element's trailing newline with a comma. */
-> +		if (i)
-> +			buffer[off - 1] = ',';
-
-Can't we do this after with help of strreplace()?
-
-> +		memcpy(buffer + off, elem_buf, ret);
->  		off += ret;
-> +		if (off == PAGE_SIZE - 1)
-> +			break;
->  	}
->  	buffer[off] = '\0';
-> -	return off;
-> +	ret = off;
-> +out:
-> +	kfree(elem_buf);
-> +	return ret;
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jason
 
