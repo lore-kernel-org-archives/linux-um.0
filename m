@@ -4,49 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B30ACD6E66
-	for <linux-um@archiver.kernel.org>; Mon,  1 Jun 2026 19:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E241CD6E4A
+	for <linux-um@archiver.kernel.org>; Tue,  2 Jun 2026 11:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XNCn/hiuq2TSQD0/7268qMBjDGPldqx55TcTTgULBQo=; b=0rX6y0ccZ5/E+phtFS6pS0Lb3Q
-	aY3dwRSmvS1O+a4bzWUz/PFtGdRXUYj9LiEfROQt3j5971E/QbWStpzzloLGARkIv0Cievt/W06de
-	J3LZK96JvYEBgKj3A/ReooVZRT+uVvYPgV4JoI8WmxO/lcsFylEE2llhr8S2SkMjnH6/9eOVWZsU5
-	f+stKlpefFNjt2Eb2Y52VPoiljs7shGkg35x2/JvTl5WoDMvRBq762cYEKFatGBBYLknkVfVPDFJw
-	bwiKmvF9xEl9Lfg4QH96vWNVtyVAEwHdFxX1P5cs1DOzdi9tDAokCCTWsFoBtzM6eJP2u2Uvq+kkM
-	KOfU8XDA==;
+	bh=CP93nlQssNvYpFC8rnfGZuXcUdBpP5yef/5fnF6hzcI=; b=Uh3K1c/748pooK3fYWG7GFevq/
+	lcJkKqo1C/+8DorF6993XlQs76qs7BGve6si5qecKyQzMNC03aSfie4cvdriviEn5OEdcAd5AUnuA
+	dzRbxi7+GehsCcwDX4Yl6wdf2H7yvu6UNnKDkSK+P4douM9+/K4BPQky1NRiuhwznS59C7M4X9UJ5
+	Jv+pXCOoDNb33Yk73q8wCVD7X+prYnMFBdQKvpvFcYioL21efVEiENBmTHup9nGTZA8PWrd8pzjfM
+	jL89K0yIMLP5YqtZD5FVtVmHep8f7bfcNFWs8q+wDezg7bZEzByFqKFRlbfHTuDnTKI/afaTpJ/Iy
+	1GX3gFVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU8nh-0000000BkBV-2cCP;
-	Mon, 01 Jun 2026 19:59:53 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wUNH6-0000000Cs7y-1m9b;
+	Tue, 02 Jun 2026 11:27:12 +0000
+Received: from mgamail.intel.com ([198.175.65.15])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wU8nf-0000000BkAP-1hJN
+	id 1wUNH3-0000000Cs7Z-44Xd
 	for linux-um@lists.infradead.org;
-	Mon, 01 Jun 2026 19:59:52 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4E93A40825;
-	Mon,  1 Jun 2026 19:59:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6831F00893;
-	Mon,  1 Jun 2026 19:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780343990;
-	bh=XNCn/hiuq2TSQD0/7268qMBjDGPldqx55TcTTgULBQo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=jPPf1HSEtTmrOkKgXG7yZ4L4yWlXriv9f4UInH3EUjfr7uRqEixqsswHEVJD66e/i
-	 UYMnZm3AwHRFYgRV2ih8KtH9UMVsaXegF2blXd/AV6FabDLb+h4l5NmMOw9ZVrD++N
-	 KcX2jHWXOHM02LWFJzDj4MfNwHTR6omd404TzjNZvpI6ZIAf59Yvhv/clTseKbIOtO
-	 ETM1funcq4ukCXv67pvcGJzgYBqL/gNfgi123wCjIaYqeaTkJBGmaBAvvqiI5vVIDR
-	 F9G7b/Sg9jjyGT7K98XQKfJ06MeRLxen4rImVcQChLpFwv+lALs23w52eL46/a7lq6
-	 WVHwgppy+tSkw==
-Date: Mon, 1 Jun 2026 12:59:49 -0700
-From: Kees Cook <kees@kernel.org>
-To: Petr Pavlu <petr.pavlu@suse.com>
+	Tue, 02 Jun 2026 11:27:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780399630; x=1811935630;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vFe0YHJbZeLES+sUauMUh5hZ46dD8ew9Ej6lDFLoT9Q=;
+  b=OpuvB+TCFOlrTj1dTsQq4IO6bT0RYvhdqKiNi7guAfItcI40qmxJuR+2
+   JxfSI7H8Vs0pb6lSzui2MNNzEWzxhK2dqWRYpbiEiVo05UowkhP/brLIc
+   ZVeqrXsY/GHqe3VM+ZWp1v4ClJFL3WOZdAoNffJszSxQymB3W2SmL0kdn
+   EoTQOQCHyRV6IH4CmL1hEzveBQPF06YlAMtiXnjfxI7VYYLoSP3+xGnlr
+   LFm/IXvUvXoEkVqVbja68afnmQGU98K68zOP52EZcPPPHvMGyw+ljzTra
+   1vViH6ezFD00NvPoMZN+e9EIaC8+Q8JOgg1j4bdpBSO6q8EyVZiF5BWXP
+   A==;
+X-CSE-ConnectionGUID: 557MPzSCT2+kKx1AIcC00g==
+X-CSE-MsgGUID: Ouet3EIPSTilbnObNn7Wpw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11804"; a="84805017"
+X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
+   d="scan'208";a="84805017"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 04:27:08 -0700
+X-CSE-ConnectionGUID: 57WJuzJhQk+bJIT4F8AZnw==
+X-CSE-MsgGUID: InV+5AxmRSKrEz4WoNh7bQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
+   d="scan'208";a="240879149"
+Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.229])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 04:26:48 -0700
+Date: Tue, 2 Jun 2026 14:26:46 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kees Cook <kees@kernel.org>
 Cc: Luis Chamberlain <mcgrof@kernel.org>,
-	Pengpeng Hou <pengpeng@iscas.ac.cn>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>, stable@vger.kernel.org,
+	Petr Pavlu <petr.pavlu@suse.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
@@ -100,7 +113,6 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>,
 	John Johansen <john.johansen@canonical.com>,
 	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
 	"Serge E. Hallyn" <serge@hallyn.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Georgia Garcia <georgia.garcia@canonical.com>, kvm@vger.kernel.org,
 	dmaengine@vger.kernel.org, linux-modules@vger.kernel.org,
 	kasan-dev@googlegroups.com, linux-mm@kvack.org,
@@ -116,17 +128,20 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>,
 	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
 	linux-arch@vger.kernel.org, netdev@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 00/11] Convert moduleparams to seq_buf
-Message-ID: <202606011259.CE6E74CE@keescook>
+Subject: Re: [PATCH 01/11] params: bound array element output to the caller's
+ page buffer
+Message-ID: <ah699hwLxIIOZ0-7@ashevche-desk.local>
 References: <20260521133315.work.845-kees@kernel.org>
- <88c5ca1d-eeda-4023-bc7a-397b92780db9@suse.com>
+ <20260521133326.2465264-1-kees@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <88c5ca1d-eeda-4023-bc7a-397b92780db9@suse.com>
+In-Reply-To: <20260521133326.2465264-1-kees@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260601_125951_489964_E7114653 
-X-CRM114-Status: GOOD (  25.79  )
+X-CRM114-CacheID: sfid-20260602_042710_050013_ECB40583 
+X-CRM114-Status: GOOD (  21.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,39 +156,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 26, 2026 at 08:53:06AM +0200, Petr Pavlu wrote:
-> On 5/21/26 3:33 PM, Kees Cook wrote:
-> > Hi,
-> > 
-> > I tried to trim the CC list here, but it's still pretty huge...
-> > 
-> > We've had a long-standing issue with "write to a string pointer" callbacks
-> > that don't bounds check the destination (and for which the bounds is
-> > also not part of the callback prototype, even if it is "known" to be
-> > PAGE_SIZE, which sysfs_emit() depends on). Both moduleparams and sysfs
-> > use this pattern. As a first step, and to test the migration method,
-> > migrate moduleparams first.
-> > 
-> > There are 2 "mechanical" treewide patches that are handled by Coccinelle:
-> > - treewide: Convert struct kernel_param_ops initializers to DEFINE_KERNEL_PARAM_OPS
-> > - treewide: Convert custom kernel_param_ops .get callbacks to seq_buf via cocci
-> > 
-> > The last treewide patch is manual, and may need to be broken up into
-> > per-subsystem patches, though I'd prefer to avoid this, as it would
-> > extend the migration from 1 relase to at least 2 releases. (1 to
-> > release the migration infrastructure, then 1 release to collect all the
-> > subsystem changes, and possibly 1 more release to remove the migration
-> > infrastructure.)
-> > 
-> > Thoughts, questions?
+On Thu, May 21, 2026 at 06:33:14AM -0700, Kees Cook wrote:
 > 
-> This looks reasonable to me. I added a few minor comments on the patches
-> but they already look solid.
+> param_array_get() appends each element's string representation into the
+> shared sysfs page buffer by passing buffer + off to the element getter.
+> 
+> That works for getters that only write a small bounded string, but
+> param_get_charp() and similar helpers format against PAGE_SIZE from the
+> pointer they receive. Once off is non-zero, an element getter can
+> therefore write past the end of the original sysfs page buffer.
+> 
+> Collect each element into a temporary PAGE_SIZE buffer first and then
+> copy only the remaining space into the caller's page buffer.
 
-Thanks for the review! I'll get a v2 prepared with your notes addressed. :)
+...
 
--Kees
+> +	elem_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+
+get_free_page() (or how it is called)?
+
+> +	if (!elem_buf)
+> +		return -ENOMEM;
+> +
+>  	for (i = off = 0; i < (arr->num ? *arr->num : arr->max); i++) {
+> -		/* Replace \n with comma */
+> -		if (i)
+> -			buffer[off - 1] = ',';
+>  		p.arg = arr->elem + arr->elemsize * i;
+>  		check_kparam_locked(p.mod);
+> -		ret = arr->ops->get(buffer + off, &p);
+> +		ret = arr->ops->get(elem_buf, &p);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto out;
+> +		ret = min(ret, (int)(PAGE_SIZE - 1 - off));
+
+It's usually discouraged to use castings in min/max/clamp. Can we make ret long
+or do something different here?
+
+> +		if (!ret)
+> +			break;
+
+> +		/* Replace the previous element's trailing newline with a comma. */
+> +		if (i)
+> +			buffer[off - 1] = ',';
+
+Can't we do this after with help of strreplace()?
+
+> +		memcpy(buffer + off, elem_buf, ret);
+>  		off += ret;
+> +		if (off == PAGE_SIZE - 1)
+> +			break;
+>  	}
+>  	buffer[off] = '\0';
+> -	return off;
+> +	ret = off;
+> +out:
+> +	kfree(elem_buf);
+> +	return ret;
 
 -- 
-Kees Cook
+With Best Regards,
+Andy Shevchenko
+
+
 
