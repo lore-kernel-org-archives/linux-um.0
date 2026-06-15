@@ -4,62 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFF27CD98CE
-	for <linux-um@archiver.kernel.org>; Fri, 12 Jun 2026 15:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 687DBCD98DA
+	for <linux-um@archiver.kernel.org>; Mon, 15 Jun 2026 23:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TXy50/thz4PVQL4UBlbkqNt4vAqev8Z5e9GmH/S8x4k=; b=vzHutb0hn2ms0nJv0Qwsrlv2Ty
-	+osDPioEcOUQXyfc6df1w1AHRyZnfHJKbz1ZtRRPrWwsy825Xt9zZZL1qt7PwNpTM+LaqyQSfZIpC
-	tDJpwVP1q+cQKynwuISeeMkpg9w6rOKc95NpdmOldDSP1a/QmVvhfDNoR+P4wW/QLFZwLj0/fsAb5
-	48yJ1fvnEsYV4WuKKu31KHVrdrY0As+IiU/BEGZj4j9PJjDWWRGsSyuuSntJ6ZZtXB8Xj3089tE4W
-	i3dNRSGqg9w0Y0O+9pQVl9nOg65+Z2epiCIsnn26jHiRe131grGMa+A76VZXIOTkrZXm3ETl7ztUu
-	gPnhmQ8w==;
+	bh=w1+VZxJhd9auI1O1Pph/8OjTinmdD4Jdgbh6toXfWag=; b=RbCliCdFCJahexL1MZT3kO2x1a
+	jncQyaOYq6LW0igoA/qYSby4NBBSPv6hyk0xjZne2wHX7eubNYuOpIQv5vAZpIOLeSnnOAetxdT9e
+	OHt6mVjREN+79yh4ruoMLkxEM3TSr+QUj9+Czl7P06mj8/naRzrDAjjE8lkR38HYslrYvxlS64Dos
+	Ej9Uk7/97NjFNeynkBENn2WOfpyNU2+WykxB4tB17yOGEo3DomU0c6KLQP2OIZYq8l9Hgm+UnUq+K
+	Q1NbADbyWXJrEcoISBq7rpNXJ9ToXCjBs9oX4M77TXL+bzxtLM7Wl16ZD+YmMK+a6knm5lTVv+ZVd
+	XEHNMvHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wY4GO-0000000BCD2-3BZa;
-	Fri, 12 Jun 2026 15:57:44 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wZH7z-0000000EyFy-0Aoa;
+	Mon, 15 Jun 2026 23:54:03 +0000
+Received: from mail.alien8.de ([65.109.113.108])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wY4GM-0000000BCCu-34Hf
+	id 1wZH7v-0000000EyE5-0fmx
 	for linux-um@lists.infradead.org;
-	Fri, 12 Jun 2026 15:57:42 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3B26D434B2;
-	Fri, 12 Jun 2026 15:57:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F1991F00A3A;
-	Fri, 12 Jun 2026 15:57:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781279862;
-	bh=TXy50/thz4PVQL4UBlbkqNt4vAqev8Z5e9GmH/S8x4k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=mWk6gWQq2JHzV+TBt3fss6o21OVMj5wMElvakO8Ef6RrL0R4clbvJ4iT0zGwqNb2J
-	 PcWLzYCkVhGZBqg1Bvna4fEPxXIKGHlCSEpys68LG5qtLzEHddPqwOk9w/NJGW29Ob
-	 XIkZhhZ3qce7LCI+yM44mwzGyNvSszlLIaCOmsMeJ8Yr346G2x5sjwP2CpQfd7RhRT
-	 znLd91Z0id2rbRF1fJJVEGzA+aELv0in2f5vs/QhXNoK9KRr0kzvgaCk3mnKdG+q8I
-	 jLlxcrxYBlq5Svf6JGzdf6Q2qHuT+e5ys+2E4sP8PDbJ26GYWZPyCIXWJm0YToLF5G
-	 ybFpaD3V37Ybg==
-Received: from johan by xi.lan with local (Exim 4.99.3)
-	(envelope-from <johan@kernel.org>)
-	id 1wY4GJ-00000002OVZ-3iZp;
-	Fri, 12 Jun 2026 17:57:39 +0200
-Date: Fri, 12 Jun 2026 17:57:39 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] um: virtio_uml: switch to dynamic root device
-Message-ID: <aiwsczUnvyWS3dYL@hovoldconsulting.com>
-References: <20260424103101.2616338-1-johan@kernel.org>
+	Mon, 15 Jun 2026 23:54:01 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A1C2A40E01CE;
+	Mon, 15 Jun 2026 23:53:42 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 2Q7h6KcO9Y6T; Mon, 15 Jun 2026 23:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1781567612; bh=w1+VZxJhd9auI1O1Pph/8OjTinmdD4Jdgbh6toXfWag=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cIj93yTWCM9xvi+L0if5BU9IMKyb2zDaEukgg61A33Wzaf3PfOXb9KE9S8rXAeBC8
+	 3iLDtaiWe5A6N0VleIUKi8WmHUEjv5ua0Pb8lrR1G7wB7kVHWniiiuTWt2KNl4aFvl
+	 q58y2ihqQcGAufG0LVn2/UrY77Ga0CMTVsoxJFnKgkSAZc2lnCGSRe7iiTonrTgBjx
+	 f6qUyip+KqtPB7I7BZLM2jMlVm9pPuYUP5CdJbetYwAzHD3d7LlkbhRosCXyUg/NAg
+	 HgyYYnTQDZAW+k4+kpZpNBxuUlI4aokKwM87KLd+ZQ/xYMcy3VjcgpmTIN+bQ7snpo
+	 1d2Uu23jWr1XyRvjjnIykfYzQ6QTkNWGi1sjcwkybzWtw40ttdOLoGkRk/UFbidFpC
+	 pAa6FGOeRZuzI1nZ/fC6tQr5MtTByevsF7XAFzG0WEqYZpES0hX3kWweU3lulOYila
+	 LVLg1lh1vHJp1ZUPhyMuL3F1wwud/I/8CCFht0UwiA1Zg4xz9hTthfdjVP/ZQ1SkYJ
+	 UWVgD0OW8Hd4ZR1MIGbAOLN4f0e+cu/xQuaz6h059dMCuRZYX1vALCTPs5BKQMhv33
+	 y3IMxXbykTz89TrxJNLqz4f1bysk6kzai5JOpOlXM1DoC4qKqvwbDbIRA9qVa62aB1
+	 hbH4tVwKfd2rBib9Zy+0s+6s=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::48])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 192B540E01B4;
+	Mon, 15 Jun 2026 23:53:21 +0000 (UTC)
+Date: Mon, 15 Jun 2026 16:53:18 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Eric Biggers <ebiggers@kernel.org>, Richard Weinberger <richard@nod.at>
+Cc: x86@kernel.org, Christoph Hellwig <hch@lst.de>,
+	linux-crypto@vger.kernel.org,
+	David Laight <david.laight.linux@gmail.com>,
+	linux-raid@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v3] lib/raid/xor: x86: Add AVX-512 optimized xor_gen()
+Message-ID: <20260615235318.GBajCQbuy9dBgKH8L_@fat_crate.local>
+References: <20260615190338.26581-1-ebiggers@kernel.org>
+ <20260615201050.GB1764@quark>
+ <255CAE3E-7FD3-4DC2-B3DE-46BE67EF22A8@alien8.de>
+ <20260615212922.GA28589@quark>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260424103101.2616338-1-johan@kernel.org>
+In-Reply-To: <20260615212922.GA28589@quark>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260615_165359_366007_74E7E91C 
+X-CRM114-Status: GOOD (  24.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,22 +92,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Apr 24, 2026 at 12:31:01PM +0200, Johan Hovold wrote:
-> Driver core expects devices to be dynamically allocated and will, for
-> example, complain loudly when no release function has been provided.
+On Mon, Jun 15, 2026 at 02:29:22PM -0700, Eric Biggers wrote:
+> On Mon, Jun 15, 2026 at 09:16:55PM +0000, Borislav Petkov wrote:
+> > On June 15, 2026 8:10:50 PM UTC, Eric Biggers <ebiggers@kernel.org> wrote:
+> > >
+> > >But I wanted to ask: do we really care about the case where features are
+> > >"supported" but their XCR0 bits aren't set?  Perhaps the kernel just
+> > >doesn't/shouldn't support weird cases like "-cpu max,xsave=off"?
+> > >
+> > 
+> > Yes, our aim is to support only configurations which are actually
+> > present in real hardware and not a "oh, it would be good if it did
+> > that, just because..."
 > 
-> Use __root_device_register() to allocate and register the root device
-> instead of open coding using a static device.
-> 
-> Note that root_device_register(), which also creates a link to the
-> module, cannot be used as the device is registered when parsing the
-> module parameters which happens before the module kobject has been
-> set up.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
+> Seems reasonable to me.  Would the same apply to UML here?
 
-Can this one be picked up now?
+Good question.
 
-Johan
+Richi?
+
+> > >If this case indeed needs to be handled, could we make things easier for
+> > >the kernel's AVX and AVX-512 optimized code?  Currently AVX-512 needs:
+> > >
+> > >        if (boot_cpu_has(X86_FEATURE_AVX512F) &&
+> > >            cpu_has_xfeatures(XFEATURE_MASK_FP | XFEATURE_MASK_SSE |
+> > >                              XFEATURE_MASK_YMM | XFEATURE_MASK_AVX512, NULL))
+> > >
+> > >How about we make X86_FEATURE_AVX512F depend on XCR0=111xx111, and
+> > >X86_FEATURE_AVX depend on XCR0=xxxxx111?  Then the cpu_has_xfeatures()
+> > >check wouldn't be needed.  Is there any reason not to do that?
+> > 
+> >  How do you want to accomplish that? Very early during boot on the BSP
+> >  you sanity-check XCR0 and clear feature flags if components are not
+> >  set? 
+> 
+> That would be the idea.  Something similar to what
+> arch/x86/kernel/cpu/cpuid-deps.c does. 
+
+Yap.
+
+> Except that seems to only enforce the dependencies when the kernel itself is
+> disabling things; if the hypervisor is broken then it just warns.
+
+Not the kernel's problem. We deliberately don't want to maintain a zoo of
+options which are not present in real hw. If HV is doing funny things, oh
+well...
+
+
+> In any case, I'd like these to go away:
+> 
+>     $ git grep cpu_has_xfeatures | wc -l
+>     31
+
+Yeah, all in crypto. I can certainly see why.
+
+@dhansen, any other thoughts?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
