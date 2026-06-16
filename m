@@ -4,123 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32BB1CD98DA
-	for <linux-um@archiver.kernel.org>; Tue, 16 Jun 2026 00:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87EA7CD98D2
+	for <linux-um@archiver.kernel.org>; Tue, 16 Jun 2026 03:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v0+YNkd99NzG3Ncv0QTlsbiAqL4H7V7QrUZJBr919c0=; b=Rmmgbi/0DdRTozMmXLpdCUN8eS
-	u0jB5RjhkSyqe8r5IamJVx9NGts64UGuNAhi6CIcs/KkCrmHAvVAw2fIR9MJdNDOtur69BOykHBSI
-	2YaHwewTq/RpPtB4kfjPrkLTHyZO0GVLh/XecClPHcFvf35BxaolotNAGcGi8tkdC9NQsh4FnG3kN
-	TpU1Cmp2Kjhceyzsv8URNByR0RY5rVtjrDPL2dPJ+Jf+QyR9KQsgBG9OeoIj5XmVws9Yl/1E5XQ7T
-	54P4s0680QNht6xu3zyM1xLRj8P5X3OK+dmOJ2hVW9ak3BCrh4LsPJxR33Lro1i04TCW4cfCJ24ur
-	leMoA8dQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:To:Content-Transfer-Encoding
+	:Mime-Version:Cc:Message-Id:Date:From:Subject:Content-Type:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=; b=NycyHK6E8Ag2xXJA7l5m5QkXh0
+	kQa8FDWfVGGzMDJmYMoHWYlZ9s5LFQiEqMq6CcLEapAAvfr6N5z6d6MAKXsI6JNga+0E5cnZSLw2C
+	vtnYB975jqyrLVr8TBvgpqAqhMOAg9JmxvOM4ErunlRhWSGzKa8YIoicudFCNdWNNJrqERXQz6/QY
+	Fu0Z+D+UpSzf66de6/1t6UDjzzlva2lnGTgwUJByOpcU0jPLWuCiyRHQTkgG6hJEOfkcwTGbloHlP
+	B1+b3wxam63OVXPUNO7STDdTIc3OFG4VfrJX+IQsC8azyhyNp+Dmrg6YOHmsT/X9OgJV4NMT+tgfB
+	fYbad7Xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZHgm-0000000F14l-08OK;
-	Tue, 16 Jun 2026 00:30:00 +0000
-Received: from mgamail.intel.com ([192.198.163.19])
+	id 1wZKpt-0000000FACJ-3JOg;
+	Tue, 16 Jun 2026 03:51:37 +0000
+Received: from va-2-44.ptr.blmpb.com ([209.127.231.44])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wZHgj-0000000F14R-0gAC
+	id 1wZKpr-0000000FABY-0XG9
 	for linux-um@lists.infradead.org;
-	Tue, 16 Jun 2026 00:29:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781569797; x=1813105797;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nAcqhxqulZNHmEkkYFlFRN0k981XqrSoP83dI7MDHYE=;
-  b=lIS/KNgOIhBDqUqQKL5MDvsHTNR7poPuvFIZ39vC0JlSJTBSdTmt2wab
-   vTVWuxYomReqeQmAKaZoiWZ+3QMSX/PovOlzT/+KEQBMS8XE6nJMHk98N
-   7+YGxA+IkCYdmAQgSFwwhrRa1+3a3Fo3VJFhi2DaAl+897hQpD4Yx5Ia+
-   c+ckom/3of9XuBIemmCCO/AIm+0Je8wAXoGYkVNcp03M52isy7zUUEQyl
-   Q2Fp8G3wNMCXtmu0BvEQaStkU7EgFRKvKUrU63dP16htgp54ggvNmgcMb
-   rVQnrggspH32rPLe0suyg2shU+CrauOqhQmfkjydOz1SkVSGxBTELaANo
-   A==;
-X-CSE-ConnectionGUID: vuUleQxARBOKCRDQAhuExg==
-X-CSE-MsgGUID: KZBoaURCRK+pQCHH3qrYlA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11818"; a="81335463"
-X-IronPort-AV: E=Sophos;i="6.24,207,1774335600"; 
-   d="scan'208";a="81335463"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2026 17:29:55 -0700
-X-CSE-ConnectionGUID: 0+z8rS0yQOC7JRcAvaYDAg==
-X-CSE-MsgGUID: 7bwlbNNmQ+Kfq+YfA9Aw8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,207,1774335600"; 
-   d="scan'208";a="246494161"
-Received: from bradocaj-mobl.ger.corp.intel.com (HELO [10.125.111.24]) ([10.125.111.24])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2026 17:29:55 -0700
-Message-ID: <a832eee3-55ec-4cf4-907f-346ff98870ca@intel.com>
-Date: Mon, 15 Jun 2026 17:29:58 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] lib/raid/xor: x86: Add AVX-512 optimized xor_gen()
-To: Borislav Petkov <bp@alien8.de>, Eric Biggers <ebiggers@kernel.org>,
- Richard Weinberger <richard@nod.at>
-Cc: x86@kernel.org, Christoph Hellwig <hch@lst.de>,
- linux-crypto@vger.kernel.org, David Laight <david.laight.linux@gmail.com>,
- linux-raid@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-References: <20260615190338.26581-1-ebiggers@kernel.org>
- <20260615201050.GB1764@quark>
- <255CAE3E-7FD3-4DC2-B3DE-46BE67EF22A8@alien8.de>
- <20260615212922.GA28589@quark>
- <20260615235318.GBajCQbuy9dBgKH8L_@fat_crate.local>
-From: Dave Hansen <dave.hansen@intel.com>
-Content-Language: en-US
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20260615235318.GBajCQbuy9dBgKH8L_@fat_crate.local>
+	Tue, 16 Jun 2026 03:51:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=feishu2604220257; d=cherr.cc; t=1781581885; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=CC9VmaJmuE4+l9TeEA+2T38jJ6gbwFgmDLEFdtmT0Bg=;
+ b=XxymL61XvZgVQF1YxGm3+R18cpPktpALxkVX5/i7fY/x7R8N/KXdA+dtp8cyLg7L+DEZOe
+ 9jFaSXrcawdMwoFdSrxEeWESV9aYFkwoo6hsmWOxFM/btGD+GuFYXFBky6TTCZ9PAq9aAD
+ okr105nI9i2tf+XPeXxHKrwyOFKx6aaoToOoN1ZWp1hgmEkrYuke8K8q2IJcE89YzEpnlF
+ D53Lqiq49zYY/n4ocaPCEJPQzDZMuLYFzW1B2TeYuw5a+jNLVtFOokkIeUyHYBmTGTJmzx
+ Qw7JODaifVjlrP0+P7lYk+pNr7pb99AXv9fvhL/EerycWjeHlinvGlTjxPXmeg==
 Content-Type: text/plain; charset=UTF-8
+X-Original-From: Shengzhuo Wei <me@cherr.cc>
+X-Lms-Return-Path: <lba+26a30c83b+23c956+lists.infradead.org+me@cherr.cc>
+Received: from pve.cherr ([111.40.58.131]) by smtp.feishu.cn with ESMTPS; Tue, 16 Jun 2026 11:51:22 +0800
+Subject: [PATCH RESEND] um: mconsole: Fix out-of-bounds read in mconsole_log()
+From: "Shengzhuo Wei" <me@cherr.cc>
+Date: Tue, 16 Jun 2026 11:51:14 +0800
+Message-Id: <20260616-mconsole-oob-read-leak-v1-1-528d711f63fb@cherr.cc>
+X-Mailer: b4 0.14.2
+Cc: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>, 
+	"Shengzhuo Wei" <me@cherr.cc>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+To: "Richard Weinberger" <richard@nod.at>, 
+	"Anton Ivanov" <anton.ivanov@cambridgegreys.com>, 
+	"Johannes Berg" <johannes@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260615_172957_249111_B8AE6C5B 
-X-CRM114-Status: UNSURE (   7.53  )
+X-CRM114-CacheID: sfid-20260615_205135_253694_394BD9B1 
+X-CRM114-Status: UNSURE (   8.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,17 +71,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 6/15/26 16:53, Borislav Petkov wrote:
-> 
->> In any case, I'd like these to go away:
->>
->>     $ git grep cpu_has_xfeatures | wc -l
->>     31
-> Yeah, all in crypto. I can certainly see why.
-> 
-> @dhansen, any other thoughts?
+mconsole_parse() matches the 3-byte prefix "log", but mconsole_log()
+skips strlen("log ") = 4 bytes, advancing ptr past the NUL terminator
+when a client sends "log" without a trailing space.
 
-If we can get rid of cpu_has_xfeatures(), I'm all for it. I'm not quite
-sure how the code would look so I'm reserving judgement until I see the
-patches. But it's worth a try.
+The length then comes from req->len, the raw recvfrom() count, instead
+of req->request.len, so printk() reads up to req->len - 4 bytes of
+stale data from a previous request left in the static mc_request
+buffer, leaking it to the kernel log.
+
+Use req->cmd->command for the actual command length, add skip_spaces(),
+use req->request.len, and guard against non-positive length.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Shengzhuo Wei <me@cherr.cc>
+---
+ arch/um/drivers/mconsole_kern.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index e2a9e8879f584734cf2e94d47e403d03f8aa2131..0dd5aab1544648a7f7942c2eb47a5792e7dd702b 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -117,10 +117,12 @@ void mconsole_log(struct mc_request *req)
+ 	int len;
+ 	char *ptr = req->request.data;
+ 
+-	ptr += strlen("log ");
++	ptr += strlen(req->cmd->command);
++	ptr = skip_spaces(ptr);
+ 
+-	len = req->len - (ptr - req->request.data);
+-	printk(KERN_WARNING "%.*s", len, ptr);
++	len = req->request.len - (ptr - req->request.data);
++	if (len > 0)
++		printk(KERN_WARNING "%.*s", len, ptr);
+ 	mconsole_reply(req, "", 0, 0);
+ }
+ 
+
+---
+base-commit: dd6c438c3e64a5ff0b5d7e78f7f9be547803ef1b
+change-id: 20260425-mconsole-oob-read-leak-a4b8696ac97b
+
+Best regards,
+-- 
+Shengzhuo Wei <me@cherr.cc>
 
