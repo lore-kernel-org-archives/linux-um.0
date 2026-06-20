@@ -4,86 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E42CDB46B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ACA8CDB46D
 	for <linux-um@archiver.kernel.org>; Sat, 20 Jun 2026 03:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=yJtTB3kYPQDo6qPyBmwUW8+Xd/EL9XzUwzLHmDVX5cg=; b=KMmrj8ANXlC8rOYSYHZy33GYwh
-	Hirq5q9/aecJXPBTFVJrusvPgn+n7JXNi3i579BJYvYh+SZRRKLdpPCm5jrVHbw/H/Lu+o/Fm4xVG
-	5PfSUC7XBiFZ2IiAx6n1o1GqHMnx0Bnk1OOHnMm5SPW8Xa7k3UNJtBL08CX1eUIcnE7NlFWdgZ+YU
-	5cS4499OZl0MtQizGcgceNtwmBjWtuemsEVZ2bJvFIz8ZXs9kEo9h7zM2kUdK6hNPQs240b681cHU
-	uQ6x89Qznx+vsx9puRW2JuC2C2mcX6LxJEHdNUzOxdMxBZX4UIy2mqiOOSmq9yEV8Sli3J+0e9B4w
-	zJOG9ddg==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5FCm6E9MkcU38NC2Mst8nilIoI1sQjvR7qI1VIqxRUE=; b=v7IUVGQ5DROlWXZ8wNepEL174O
+	R/SJL0uTU4+fi8anJ3zJUj+4R1CAdpsRK5yph/KEBhSsp9pE8bgUsoNFC7JLKoWUityswPWTFQcDT
+	h6059d/nurx8lQYymDsYBkAnpcP80O5wTfyDlD4SAVt7bwhjtP08Rj+QmNe3n4yowIHy/uyMcTsv4
+	1TX7AVCNu0MP+3fy2ko/U8BgdU3jAuUFaa7O/XSdOaSNWzxX41OxRi5GppEbltS7a959MjhGBaBgi
+	VvCsZRwVyi4n7UXORDy4o/jHwwu/O3qQSGtQHivIRw3z/x8Np9QYAS7Pq5+kq+TrUgoHlE3MCDW2b
+	KZLVgdBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamIK-000000038ru-48gV;
-	Sat, 20 Jun 2026 03:22:56 +0000
-Received: from mail-dy1-x1334.google.com ([2607:f8b0:4864:20::1334])
+	id 1wamIL-000000038s0-0GvC;
+	Sat, 20 Jun 2026 03:22:57 +0000
+Received: from mail-dy1-x1336.google.com ([2607:f8b0:4864:20::1336])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamII-000000038qz-3udc
+	id 1wamIJ-000000038r0-0HIJ
 	for linux-um@lists.infradead.org;
 	Sat, 20 Jun 2026 03:22:56 +0000
-Received: by mail-dy1-x1334.google.com with SMTP id 5a478bee46e88-30b6dad2382so4940899eec.0
-        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:22:53 -0700 (PDT)
+Received: by mail-dy1-x1336.google.com with SMTP id 5a478bee46e88-304f590dd91so3070070eec.0
+        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781925773; x=1782530573; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yJtTB3kYPQDo6qPyBmwUW8+Xd/EL9XzUwzLHmDVX5cg=;
-        b=C+kzKRVfcXNj25iJA/zwmb9N3jEyB9XKH7+wjecVZR4c7hPrQoxp9Jd9t9oQZzsSJi
-         8CIWF5gci/u13QQ2/fQRMVqvbjiT/nO1HmrXLabg5AtV/J5qqUrWY48vY6qEfOA3rLyl
-         yz6M9/ykznBPxd4PIHNtZ2DuFejwiI0e25yh13jxWFgiVYzj0RVSgIF3RGooqcabjnIk
-         5paYOuQa+nfioyteqbgva+MCTA1R2xpksvdSQ7J+yxpsxgzi6a9cLc/matlpkga+ZN3I
-         yw0uRIlVMz1ZgWnON6ea8//mf5z8WXrVumofDBxGfGwILB8O4dXvJdpV4NBPe+pP0T1m
-         M6FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781925773; x=1782530573;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1781925774; x=1782530574; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yJtTB3kYPQDo6qPyBmwUW8+Xd/EL9XzUwzLHmDVX5cg=;
-        b=ko/dj/KYUbz/cpoPZZ7ioJDBKxGin49vInh/hcSl8vFr9uvWL7FsPClDs8yEIH3GgK
-         Kn/9Mh5W9SksRzoNH4nlKOM1ki7VWP03FUiS86kBxrC6b63/ps17svm8ADYrbILCAVvA
-         Uas7+4YsdiXdOf8bxB8aHRjR70yMZGRwof6sg5bkz1aqmtmCUmJBsjeZg+CHl+S6Baw7
-         LeVcqMCc7VkM4370IY0HvbxCqAzF4ty1aSYEUh3k027/dEASR/gZzegnOL7hsqO3doys
-         WxXSx3wN3YgExFmGMDQtniYySj2m2Y2nHZdd4b8IIJyyG1G/0wJ93cuItmHUf08oSa5i
-         GtmA==
-X-Forwarded-Encrypted: i=1; AFNElJ+0GxoOHyPvd6NthMWU9zRm0SrAmgevG4JZIEgvP0YxEWCnvM25Eh0JMDb1IkJjGanC3JRVjIb4cA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwqJ36YsDEoemHSNnpCqH+7k988RSMY10sTSgjflUaxiwixGYlQ
-	0B9fykJTSE3hJo+UKcyiD6PXq+6R9wbE4MudtPHDxJyx1JVkMZMTU+MAddw/HQ==
-X-Gm-Gg: AfdE7cmqcHmiykA9CVEW0JtQlSCmD/tSTGJcZHIelcYYMUjhmX1jzN2KpUAVhATU+0U
-	Pvly1xQG3VMlgMYhUBIkhi+MllWJHIDbEGBZ4uYbKMNVhfqtLIQoSu8Mkyfix2S+vfSQQ6FQ5bS
-	MKpJK1kxWNVac+pvENzDVwIPqvLf+53G/SUu+ayfaU34gbPILvGGbDnmyiWVu7XizV7NcaL2FmM
-	IW3gTbDxSOp1c/YV5+4DHIIsVFKfJjDZh1bKzPJmqpKfnk7p4G/9urgePlWBoVBkI9BGhtHZsL/
-	ed87wu4ouG7+gM2iiWn4eEhAyup8gRahJdgzTQKukOPE2O7NG8IuINYr3QAcNA90nJXu2Ig/KUU
-	KOJc43gpvA6Tr6MJMVLV1gfWNJzs1M3rMHhpO8jqBGy0vNlwR1z17veUPpCJ8ry71G8Viuzo4K1
-	88UkpXUwAP6rBcZnalga2m63UEFQNATeDoNAd4zUarqwesovHNaw==
-X-Received: by 2002:a05:7301:fa10:b0:2ed:e12:376d with SMTP id 5a478bee46e88-30c0d2a4c7amr2417866eec.35.1781925772616;
-        Fri, 19 Jun 2026 20:22:52 -0700 (PDT)
+        bh=5FCm6E9MkcU38NC2Mst8nilIoI1sQjvR7qI1VIqxRUE=;
+        b=JLTyjHo3DOW6gj+zISyA6KCIkF33fcQpzuA04rehib09P3ycPbeMn4PgQ4p3mvDlPj
+         HFI+IPVjcrdPWvtJh1xzTdLPHvVEHhC/TM7CV3eh5268BXG1qtstc2XdCs9jbcXLDO9E
+         jmdQ3K0VWlGFNvqH6zQzvxOHDUggyNmzNNyLJVlGHxDA54XIsDqdVhA2AbWRhHZK/ldZ
+         D9BDFOaMO6mR1pmubQ/B+q0ujBMujLU66WSvLoK1/zfnVdDrCwWDaN2JUlVZks5/PzCo
+         f2EtRpR0vk4ku6tQQ5cQNW8hVN15T+JGDFrR+v5D0WNiVjlrPfdA5jmWoV/2Zcg0nQRM
+         YgyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781925774; x=1782530574;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5FCm6E9MkcU38NC2Mst8nilIoI1sQjvR7qI1VIqxRUE=;
+        b=tS5H6HQIn2NGc5qwKAiptwc3DNcfImHtalksvUPXCrztwqe/FyTExUly/1JXwQR6X1
+         PqIb8QgqjLdKyeWjebP9gSObalT7Ou5AjaD2ySkYbwLfCi7hG9oB0EWvrhG364uN9jdF
+         o+GCXnPYPJXz9Ag0cKvQX2AVLTnLs9qNVsu5ktc7LaC6XiN1ri8wJ/iSs5cJq/GXkeg/
+         RPNdR6n7g1L8Aw8RPVE8YQ8Fsxv7QbXZ+/clAzRlJvwX/z4jmZ2AfdzVOgspyEbplMkY
+         fGR3KumwEM7Qizf2rLhq/5PMZWvWb/uM16sHl1X6Lmr/fwbiQ9pDtUnSrZWBYyOcVghv
+         hGpg==
+X-Forwarded-Encrypted: i=1; AFNElJ9VNQrjUDSAXStAWanh04EezTlvIfuovRV4KVqllvTdS4ggraCRYPwkwETGpMd4jsbQnS6poTW2gw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwzBbtK7SN/ZxvWYtQC8qEWAOW6KPmA7+qlRU/e3ynam3/TKL/C
+	yeRgbK/1Mn2qXodQURULr0HYsbTRuaaR8jxfy5BTFGUlKhyLL70v/DNS
+X-Gm-Gg: AfdE7cnXMjiG3iFhZ3vzJDMafoXNeTuFPpwJ/JxLVrcHwH0E7ZUDVU+U/9/cqyr0BLY
+	zk/lxb5eE+qGnkRVrerl+MOebrQqBQ4x7+bqi0On3vnAOC9a9QJJS9uuMi4HaSUsk90oHtL7l2M
+	tjzL+MR5cfVRiTq4vMNAOvBOErLvw58Rl6rRn/PpGTOCSTLJqZNE4FMEQak9z5zRqpONU4q2JUK
+	MCoursClEMTgQvNnDqIsIVAvC4EMoA83T6/ZjolPzeM0NLFgHcrWCeINuMvUAU+gvpB/PaQ6FUR
+	Qm+u8UjiS5X8BOir2EwgzGxM7N4vbE95x2rMjU3kzgK5MNoOo9VVTCX18vhog65lhnuH24kTOS1
+	CgcJMGVyqxFg8c3VcATnj8DkWp5AxIlXs1Cmaajnx4STL1IpviN9aiaqsmauYDJ5GQ5W/cb2aMb
+	v1D81T9lPmeAhhSDBkBBRi+FFUOBFMdaZ9EJV2uUmmgHv6OBgFRg==
+X-Received: by 2002:a05:7300:6ca7:b0:30c:5a5:df4f with SMTP id 5a478bee46e88-30c07000e2amr3719479eec.16.1781925774012;
+        Fri, 19 Jun 2026 20:22:54 -0700 (PDT)
 Received: from pop-os.. ([2601:647:6802:dbc0:ce45:b713:5d9f:6abd])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.50
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2026 20:22:51 -0700 (PDT)
+        Fri, 19 Jun 2026 20:22:53 -0700 (PDT)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 0/7] um: skas: harden the seccomp userspace stub
-Date: Fri, 19 Jun 2026 20:22:17 -0700
-Message-ID: <cover.1781925126.git.xiyou.wangcong@gmail.com>
+Subject: [PATCH 1/7] um: skas: create a seccomp USER_NOTIF listener and hand it to the monitor
+Date: Fri, 19 Jun 2026 20:22:18 -0700
+Message-ID: <11160b08c2b828d6684983502e7d6c8c88e5b230.1781925126.git.xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1781925126.git.xiyou.wangcong@gmail.com>
+References: <cover.1781925126.git.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260619_202254_979957_FAFEB00E 
-X-CRM114-Status: UNSURE (   9.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260619_202255_112326_1F428C66 
+X-CRM114-Status: GOOD (  20.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,67 +102,133 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Cong Wang <cwang@multikernel.io>
 
-In the seccomp ("SECCOMP") userspace mode, each guest userspace process
-runs in a stub under a seccomp filter and traps to the monitor (the UML
-kernel) on every syscall. Two items on the stub.c "Known security issues"
-list could not be addressed by the filter alone:
+First step toward validating stub mmap() calls (the intra-guest /
+host-escape disclosure issue in stub.c "Known security issues"): give the
+monitor a SECCOMP_RET_USER_NOTIF listener for each stub's filter, so a
+later change can route mmap to the monitor for per-call validation.
 
-  - a hijacked stub could mmap() arbitrary physmem offsets, which is an
-    intra-guest disclosure and, on this base (single physmem fd, no
-    kernel/user split), a host escape; and
+The stub installs its seccomp filter with NEW_LISTENER (plus TSYNC_ESRCH,
+which the kernel requires to combine NEW_LISTENER with TSYNC); the
+seccomp() return value is the listener fd. mmap still returns RET_ALLOW,
+so there is no behavioural change yet.
 
-  - a hijacked stub could block SIGALRM via a crafted rt_sigreturn to
-    evade preemption and wedge the monitor indefinitely.
+The stub cannot hand the fd over itself: once the filter is installed,
+every syscall it makes from outside the stub page traps with SIGSYS
+instead of executing, so it can neither sendmsg() nor close() the fd.
+Instead the monitor pulls it with pidfd_getfd(): the listener is, by
+construction, fd 1 in the stub (close_range() left only fd 0 open before
+seccomp() allocated it). Leaving the stub's copy open is harmless:
+ioctl (NOTIF_RECV/SEND) is not on the syscall allowlist, so a hijacked
+stub cannot self-approve. The monitor stores the fd in mm_id.
 
-This series closes both:
-
-  1-2: route the stub's mmap() through a SECCOMP_RET_USER_NOTIF listener
-       owned by the monitor (no behavioural change yet).
-  3-4: validate each mmap() against the mm's page table -- allowed iff the
-       PTE already maps the requested frame with no more access than it
-       grants -- including out-of-batch mmaps a hijacked stub issues on
-       its own.
-  5:   route and validate munmap() the same way (range-confined below
-       STUB_START).
-  6:   add a watchdog thread that detects a stub which stops reporting
-       back (e.g. blocked SIGALRM) and SIGKILLs it, letting the monitor
-       recover via the existing teardown.
-  7:   drop the now-resolved "Known security issues" note and refresh the
-       seccomp= help text.
-
-After the series a hijacked stub is confined to the frames its own page
-tables reference and can no longer reach arbitrary guest/host memory; one
-that evades preemption is detected out of band and killed rather than
-wedging the monitor.
-
-Verified on UML (UP and 2-CPU SMP): boots and survives fork/exec storms
-and heavy mmap/munmap churn with zero false denials or false kills; an
-artificially SIGALRM-blocked busy loop is killed in ~5s and the monitor
-recovers, while syscall-making processes are untouched. Each patch builds
-and the series is bisectable.
-
+Assisted-by: Claude:claude-opus-4.8
+Signed-off-by: Cong Wang <cwang@multikernel.io>
 ---
-Cong Wang (7):
-  um: skas: create a seccomp USER_NOTIF listener and hand it to the
-    monitor
-  um: skas: gate stub mmap() through the USER_NOTIF monitor
-  um: skas: validate stub mmap() against the guest page table
-  um: skas: handle out-of-batch stub mmap notifications
-  um: skas: validate stub munmap() against the guest address range
-  um: skas: kill stubs that block SIGALRM via a watchdog thread
-  um: skas: refresh stub security notes after closing the known issues
+ arch/um/include/shared/skas/mm_id.h |  1 +
+ arch/um/kernel/skas/stub_exe.c      | 12 ++++++---
+ arch/um/os-Linux/skas/process.c     | 38 +++++++++++++++++++++++++++--
+ 3 files changed, 45 insertions(+), 6 deletions(-)
 
- arch/um/include/shared/skas/mm_id.h |   1 +
- arch/um/include/shared/skas/skas.h  |   5 +
- arch/um/kernel/skas/stub.c          |  22 --
- arch/um/kernel/skas/stub_exe.c      |  19 +-
- arch/um/kernel/skas/uaccess.c       |  48 +++++
- arch/um/os-Linux/skas/process.c     | 315 ++++++++++++++++++++++++----
- arch/um/os-Linux/start_up.c         |   6 -
- 7 files changed, 344 insertions(+), 72 deletions(-)
-
-
-base-commit: 1a3746ccbb0a97bed3c06ccde6b880013b1dddc1
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index 18c0621430d2..46164d71554b 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -17,6 +17,7 @@ struct mm_id {
+ 
+ 	/* Only used with SECCOMP mode */
+ 	int sock;
++	int seccomp_notify_fd;
+ 	int syscall_fd_num;
+ 	int syscall_fd_map[STUB_MAX_FDS];
+ };
+diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
+index cbafaa684e66..b5432f6ccbc7 100644
+--- a/arch/um/kernel/skas/stub_exe.c
++++ b/arch/um/kernel/skas/stub_exe.c
+@@ -196,10 +196,14 @@ noinline static void real_init(void)
+ 			.len = sizeof(filter) / sizeof(filter[0]),
+ 			.filter = filter,
+ 		};
+-
+-		if (stub_syscall3(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
+-				  SECCOMP_FILTER_FLAG_TSYNC,
+-				  (unsigned long)&prog) != 0)
++		long listener;
++
++		listener = stub_syscall3(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
++					 SECCOMP_FILTER_FLAG_TSYNC |
++					 SECCOMP_FILTER_FLAG_NEW_LISTENER |
++					 SECCOMP_FILTER_FLAG_TSYNC_ESRCH,
++					 (unsigned long)&prog);
++		if (listener < 0)
+ 			stub_syscall1(__NR_exit, 21);
+ 
+ 		/* Fall through, the exit syscall will cause SIGSYS */
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index d6c22f8aa06d..0ab1d109a68d 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -428,6 +428,34 @@ __initcall(init_stub_exe_fd);
+ 
+ int using_seccomp;
+ 
++/*
++ * Obtain the SECCOMP_RET_USER_NOTIF listener fd the stub created. The stub
++ * cannot hand it over itself: after installing the filter, every syscall it
++ * makes traps with SIGSYS rather than executing (so it can neither sendmsg()
++ * it nor close() it). Instead the listener is, by construction, the first free
++ * fd in the stub -- fd 1, since close_range() left only fd 0 open before
++ * seccomp() allocated it -- so the monitor duplicates it directly with
++ * pidfd_getfd(). ptrace_may_access() holds because the monitor is the stub's
++ * parent.
++ */
++#define STUB_LISTENER_FD 1
++static int get_stub_listener(struct mm_id *mm_id)
++{
++	int pidfd, lfd;
++
++	pidfd = syscall(__NR_pidfd_open, mm_id->pid, 0);
++	if (pidfd < 0)
++		return -errno;
++
++	lfd = syscall(__NR_pidfd_getfd, pidfd, STUB_LISTENER_FD, 0);
++	close(pidfd);
++	if (lfd < 0)
++		return -errno;
++
++	mm_id->seccomp_notify_fd = lfd;
++	return 0;
++}
++
+ /**
+  * start_userspace() - prepare a new userspace process
+  * @mm_id: The corresponding struct mm_id
+@@ -449,6 +477,8 @@ int start_userspace(struct mm_id *mm_id)
+ 	unsigned long sp;
+ 	int status, n, err;
+ 
++	mm_id->seccomp_notify_fd = -1;
++
+ 	/* setup a temporary stack page */
+ 	stack = mmap(NULL, UM_KERN_PAGE_SIZE,
+ 		     PROT_READ | PROT_WRITE | PROT_EXEC,
+@@ -522,10 +552,14 @@ int start_userspace(struct mm_id *mm_id)
+ 	}
+ 
+ 	close(tramp_data.sockpair[0]);
+-	if (using_seccomp)
++	if (using_seccomp) {
+ 		mm_id->sock = tramp_data.sockpair[1];
+-	else
++		err = get_stub_listener(mm_id);
++		if (err)
++			goto out_kill;
++	} else {
+ 		close(tramp_data.sockpair[1]);
++	}
+ 
+ 	return 0;
+ 
 -- 
 2.43.0
 
