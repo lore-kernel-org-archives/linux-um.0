@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14414CD98F6
-	for <linux-um@archiver.kernel.org>; Sat, 20 Jun 2026 03:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54AE8CDB46F
+	for <linux-um@archiver.kernel.org>; Sat, 20 Jun 2026 03:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=denyd7/DJf6K/1NoER/Dxb5q4O70rtudkvVdUrIy9Zo=; b=LIGb6YlR4TmZiRRtWYK09d3ZeW
-	yyMkKdu6xjOvOOkAWRXDwXP32okS8TJ8oqnvDxhwDIZlQzibPy6e+QpK4+CQM20AthyWNGdy4XoCV
-	aEJRwinhHxGfcMfa6xnRhnxkcd8x0EshotMcyL3ijeRQr1us+njPw4DhXCrSNM2/7NJcHeYhLk646
-	jDTG179QnBR190WksblGxHrj9koNbiFWNBJ11mr8hltCPTbJbxOwz0abfWNiFoV4lFc802hGmXBcq
-	x9x2+N7jRekGxjK3d1OOJ/45g1uUJrorfxoWLr6BTKzdNaVKbI8bqEA/cDCSna6Hvl4wBYLB062+G
-	Al3IwqBQ==;
+	bh=UQJZPDXyzYbdfHi5k5DDEvQTmfrd8Kt/5xF/6c2q/zU=; b=fptVNY4OIwTn8lSX52OO4pJ++9
+	dspOkLq5KdRx7IhWZyo2bUrAkSLxk4Rt4xk4kZmdtUs7uFwiXQwWzj5+jSc9vvt7v3uQ26eO0P65X
+	ZeX7aijJTn1PfPV59aka4Pmvkj8J8iKQgn6BHVwV+iy7QKuOWYY6cU0VeJAqNXw66OaBoD3hHWnak
+	CbDlFRK5rIa7vz7G+s1QmKUv2peDBcwKlmfMiduunVOoyzAfdwYtn8PlMit6L1/DlnmG0Y3SkRU61
+	qZ+BVbC0ynHfH3skSwx8nSVhS0aHbjByk3NyfjCkEUxso6iv189LusL6ochbwv1K2TRoeXXDNDPKU
+	KjtrXw5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamIO-000000038tv-3My0;
-	Sat, 20 Jun 2026 03:23:00 +0000
-Received: from mail-dl1-x1236.google.com ([2607:f8b0:4864:20::1236])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamIM-000000038s7-068V
-	for linux-um@lists.infradead.org;
+	id 1wamIN-000000038sg-2ZRn;
 	Sat, 20 Jun 2026 03:22:59 +0000
-Received: by mail-dl1-x1236.google.com with SMTP id a92af1059eb24-137eb0d76beso2640552c88.0
-        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:22:57 -0700 (PDT)
+Received: from mail-dy1-x1335.google.com ([2607:f8b0:4864:20::1335])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wamIK-000000038rV-1kow
+	for linux-um@lists.infradead.org;
+	Sat, 20 Jun 2026 03:22:57 +0000
+Received: by mail-dy1-x1335.google.com with SMTP id 5a478bee46e88-30c03b09e02so3623128eec.1
+        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781925777; x=1782530577; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1781925776; x=1782530576; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=denyd7/DJf6K/1NoER/Dxb5q4O70rtudkvVdUrIy9Zo=;
-        b=fZR7YX7o27p1kpAO5fO/djeDONnx6sT8SGZsO+APu4lY9XH+VKgk6Z6OMKeA+XDlgt
-         iEMvtD/2S0kOlkIABUxlD6mm5AhfNwEeHuDodS1E+pLSziJZvlnCkQis3v/WzYirfZI0
-         GFQg0iSLbp1Ga7GlneqVkFo90cjjt3nv6r3898dT7ZD6iJR94Xm3mGk32I+zc3iM7Xk6
-         +ld6+e/cev7ce5YL6Ap0p3Q++oYlLXPiM2EhY8kXTBE3Ys2Rao9zR0LpGEhZe7CCj+qq
-         hcFypNc5qSWKXxPO0Qui8iiOiCDLCDA8jzuFzFjnl8gyOficIZLA42VQkIXJuoQr/cYu
-         tg3Q==
+        bh=UQJZPDXyzYbdfHi5k5DDEvQTmfrd8Kt/5xF/6c2q/zU=;
+        b=V7ZDy+Nlvj13DxJCLZBNFcEnGPlEVyVq3bodQu1qhVd0uL3o70ubrmXJ472RuLK3MX
+         uonMRTd1Ptfou1L7w81+gcavWpr2aX8uCp3m7pgMsfzir0QU/0FWN2iZlrLvdjDJIXuT
+         UckZmwy7k1iqJpR7WPjAAMXUvm4pugxYI+0EGn7twcbmH9wUZjvwQcefqeoBfPE2f8ed
+         zumO51lAZqAsKKgw4nZ8KFDy4ghoYwjrU2Ejy/e+PAkiSNJxu0fvjSu+FeboE3mr/HhS
+         X8F2S9SCJCkIKLnY13m6TCIvDKasMq1qATQHrXiX6jOoSDjKd3ea86jqDeFJchXKxfsl
+         a6Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781925777; x=1782530577;
+        d=1e100.net; s=20251104; t=1781925776; x=1782530576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=denyd7/DJf6K/1NoER/Dxb5q4O70rtudkvVdUrIy9Zo=;
-        b=nWluuO3N0KDkBxBkT7f6mWaRA+6/SDWtKRfqLr9yciIfTkVJlMSeAs7wbpzKecli7U
-         duW1wTtWxH6GL9K/dHSEYmJEqahRIxkJb3GUR6/u/V4avzM3djtqpP+lTwPrBjz2/aTw
-         r4FGl0Ua/kGw5E+4YDHykLrKbkGLEqPw2ZrtLU2alMgLXbp419WLbmFQNteFjyu1MV4d
-         5xpvMor3yyRHSEljqK//nJYcAJgdjIweWL9oXj22noO/JjqtTwthWDZoO1Xf57kaHpus
-         OV3YugJV7GXUxVm87+rnq5g2gKQfNRTcLv++1fxMEcXHMX7lYowrk6fFL93rRhsemzkz
-         jMPA==
-X-Forwarded-Encrypted: i=1; AFNElJ+6DWDG7g4kAYiY3D3CKJqPd/8VVtoVQalVfBrHQ6PuG2fZHwTn+J0kAI0+iNbormACU+Rn89Huaw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yznvw1m/gzMmt30KjLoyCswGePB9Nl/Szzb40CMqHxOafYssN9P
-	X1ZQCCmx6AnsjbNeGYcEJ1laDbwE6eBh+cDZ/JrzPqU7rXyVeXcrKE4U
-X-Gm-Gg: AfdE7cmpWhEba43yWT9scWARW20TkUYCE9GHDI/d34XmRriUanRA/L7HPWIB0tymdjD
-	zf3NuU/gc6flAY6XQYDqSg9zJDAvrfHqn8vx49FcKdLcXZ/x/UKJCf73AVHc3OFT2nYNo1gR/Un
-	F7gu+CvK8WHiaIs+inh7/+/pvYH1oYv6PEK5gZa+7RbAAlGDbDO3IpabgCb4LyL1RUQB39uYEpP
-	9SGiGpjYLdoqKluA9UbyzZpme5ZqiJ3YuOHK3ZMspz8DfKPGwU4W81gM+qlWPWQ5oYhEnrY1xsH
-	sBExWDZtRBn/Lxc+89CMw6yjv9YLRBAeYriC0FRdjq3hb20JMgRMsDPZzi8QjSz2b/sNpUN7pWI
-	vcaBWRWexKz65fkxQbYKHvMb59oPe+qphzlT9SldBw5eJ37MO9CjUMkPcNkBAcZ9mJvuKOPdsQW
-	TbA1dWyf+JJqh/qUVXSZ7617wSYHal+gAj+3FhSdjjCLcAwYUOfA==
-X-Received: by 2002:a05:7301:438a:b0:30b:f451:e817 with SMTP id 5a478bee46e88-30c079daf13mr2048493eec.14.1781925776969;
-        Fri, 19 Jun 2026 20:22:56 -0700 (PDT)
+        bh=UQJZPDXyzYbdfHi5k5DDEvQTmfrd8Kt/5xF/6c2q/zU=;
+        b=pvY2SHLzbVwGAj9HjKH7FH2cMofw0o1/syLg1hyVNp7F9/vzg4bYzI8AvbHyk7LAPk
+         Vywxpitnbs8o8KlrZzjh4NLJW90rmpCy2vXSQb35yoXf6tyNPJ6XPTW2q8/utuq8dvwD
+         e+afnDdXjYneueDimPwDqvdYCRASkqAdjIMeIxXGsF1YYpzLxWVLF4/nWP74JMTfadwn
+         pk90SPQv17OhlxNWpbzk0iaCUYHdlAQ4958aox2XLtHn26EuBjgiSqqBu/vSeiX0TE2z
+         rU1IPjKzivcicRskNIJNXEJP5AIcms1LKFNKJ8XGrgfHTVMA8ku2zRemGVK5Lp+N5RFS
+         Oq/Q==
+X-Forwarded-Encrypted: i=1; AFNElJ9CFk4qY42/7EEmQzur+hF2RxJ2J+MWUxow89nbioMl6AHGf2O28MxW4cqi7Q3+08B25yUFA/9U9g==@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywy/1qNs3xKHaKOs2nvJEngpis//kTi82r20OA1OYLVehAPUQiR
+	B3VtJgkg4UHd745cbsNzpFwOGIaqqg4XQ4ZS9T2F8Pf+EpBMH60K7FXK
+X-Gm-Gg: AfdE7ckJ4CFV5kU3HMrMMyErMYGDMLSpJ+cALXzzj0cRXBSbxCzLWjS9+ohUPB5iQMA
+	QD+YnJxepy7hx8DJCnbynqHNu0L9+LJp6vKYstAtUtHaFBn25O9+BuhofkZG0NbrTnpTq0mqC76
+	fuxt+p4mB9zF+MBCQMHx2nc9b5OF8d4/dOqg+6iUE3yLp+DwJONoU8lArD+0w4k4qaiLHTh8iLw
+	067UFmQrSZVGb+Zdw9fQO9EV52f7y3nFHCH9jZAZZuG9/0W4hU2dlaP4JUkyu1psOeKg5qNWdxs
+	mPsr9yoGJ8alQUfa+54URPec6GjFThR1ON5a/cXoTacxaa5/picTwFhTjIri4kHCkYURCIHnzd3
+	hOitmawkmDOk5fZRaEmDZsodzrOu/6wk4zXNUXrQdnB+1FE9c//+CiL4vBQtTtYMK5ppfWp+4Es
+	bR7xXuiGpTXw/gklLbchVNa+jLa0ahPFcNJ1KuuV7s6jUSaYEigg==
+X-Received: by 2002:a05:7301:7bc3:b0:304:188d:d0be with SMTP id 5a478bee46e88-30c0d065c0bmr2662154eec.16.1781925775529;
+        Fri, 19 Jun 2026 20:22:55 -0700 (PDT)
 Received: from pop-os.. ([2601:647:6802:dbc0:ce45:b713:5d9f:6abd])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.55
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2026 20:22:56 -0700 (PDT)
+        Fri, 19 Jun 2026 20:22:54 -0700 (PDT)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 3/7] um: skas: validate stub mmap() against the guest page table
-Date: Fri, 19 Jun 2026 20:22:20 -0700
-Message-ID: <7c38eec25d3ddc70893f1debc415d613dcf90a3b.1781925126.git.xiyou.wangcong@gmail.com>
+Subject: [PATCH 2/7] um: skas: gate stub mmap() through the USER_NOTIF monitor
+Date: Fri, 19 Jun 2026 20:22:19 -0700
+Message-ID: <b256f2d9655225ab723c766c76c2005703bebe38.1781925126.git.xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1781925126.git.xiyou.wangcong@gmail.com>
 References: <cover.1781925126.git.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260619_202258_071400_525AD61C 
-X-CRM114-Status: GOOD (  22.23  )
+X-CRM114-CacheID: sfid-20260619_202256_462995_67FDEFE1 
+X-CRM114-Status: GOOD (  20.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,157 +102,209 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Cong Wang <cwang@multikernel.io>
 
-Replace the allow-all USER_NOTIF response with the actual security check.
-When a stub mmap traps to the monitor, validate its arguments against the
-mm's page table: the call is allowed iff this mm's PTE for the target
-address maps exactly the physical frame named by the mmap offset, and the
-requested protection does not exceed what the PTE grants. Otherwise the
-mmap is rejected with -EPERM.
+Route the stub's mmap to SECCOMP_RET_USER_NOTIF instead of RET_ALLOW, and
+have the monitor service the resulting notifications inline. This is the
+mechanism that a following change uses to validate each mmap's arguments;
+for now every stub mmap is allowed (responded with
+SECCOMP_USER_NOTIF_FLAG_CONTINUE), so behaviour is unchanged.
 
-This is what closes the disclosure issue documented in stub.c. A hijacked
-stub (jumping to the in-stub mmap with crafted registers) can no longer
-choose an arbitrary physmem offset: it is confined to the frames its own
-mm's PTEs already reference. On this base (single physmem fd, no
-kernel/user split) the same check also blocks host escape: a mapping of
-a UML-kernel frame has no authorizing user PTE, so it is denied.
+CONTINUE is safe for mmap: its arguments are all scalars captured in
+seccomp_data, so there is no TOCTOU re-read of user memory.
 
-The check is a pure function of state the monitor already owns (it *is*
-the UML kernel and holds the guest pgd, freshly synced before the stub
-mmap is issued), so it needs no per-batch bookkeeping or fd-identity
-tracking. stub_mmap_allowed() lives in skas/uaccess.c next to
-virt_to_pte(); the os-Linux notify handler calls it and responds CONTINUE
-or -EPERM.
+The stub runs queued mmap batches in two places: syscall_stub_flush()
+and the userspace() resume path, both of which wake the stub via
+wait_stub_done_seccomp(). Servicing therefore lives there: after waking,
+the monitor issues one NOTIF_RECV/CONTINUE per STUB_SYSCALL_MMAP in the
+batch the stub is about to run. Signals are masked while the stub
+executes the batch inside its SIGSYS handler, so notifications arrive in
+queued order with nothing interleaved, and a simple counted loop is
+sufficient. The pre-existing wake logic is factored into
+wake_seccomp_stub() so both the wake and the wait-only paths share it.
 
 Verified on UML: guest boots and survives a fork/exec storm plus heavy
-demand paging with zero false denials.
+demand paging with every stub mmap round-tripping through the monitor.
 
 Assisted-by: Claude:claude-opus-4.8
 Signed-off-by: Cong Wang <cwang@multikernel.io>
 ---
- arch/um/include/shared/skas/skas.h |  3 +++
- arch/um/kernel/skas/uaccess.c      | 36 ++++++++++++++++++++++++++++++
- arch/um/os-Linux/skas/process.c    | 21 ++++++++---------
- 3 files changed, 50 insertions(+), 10 deletions(-)
+ arch/um/kernel/skas/stub_exe.c  |   5 +-
+ arch/um/os-Linux/skas/process.c | 121 ++++++++++++++++++++++----------
+ 2 files changed, 89 insertions(+), 37 deletions(-)
 
-diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
-index 2237ffedec75..ce1b67b06b4b 100644
---- a/arch/um/include/shared/skas/skas.h
-+++ b/arch/um/include/shared/skas/skas.h
-@@ -18,4 +18,7 @@ extern void current_mm_sync(void);
- void initial_jmpbuf_lock(void);
- void initial_jmpbuf_unlock(void);
+diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
+index b5432f6ccbc7..65ea2af5ca73 100644
+--- a/arch/um/kernel/skas/stub_exe.c
++++ b/arch/um/kernel/skas/stub_exe.c
+@@ -173,7 +173,7 @@ noinline static void real_init(void)
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,__NR_close,
+ 				 5, 0),
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
+-				 4, 0),
++				 5, 0),
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_munmap,
+ 				 3, 0),
+ #ifdef __i386__
+@@ -191,6 +191,9 @@ noinline static void real_init(void)
  
-+int stub_mmap_allowed(struct mm_id *id, unsigned long addr,
-+		      unsigned long prot, unsigned long offset);
+ 			/* [18] Permitted call for the stub */
+ 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
 +
- #endif
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index caef1deef795..9359ede8a04b 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -13,6 +13,18 @@
- #include <kern_util.h>
- #include <asm/futex.h>
- #include <os.h>
-+#include <skas.h>
-+
-+/*
-+ * Same mapping as MMAP_OFFSET() in <sysdep/stub.h>, but usable from kernel
-+ * code (that header pulls in the host <sys/mman.h>). 64-bit stubs use mmap()
-+ * with a byte offset; 32-bit stubs use mmap2() with a page offset.
-+ */
-+#ifdef CONFIG_64BIT
-+#define stub_mmap_offset(phys)	(phys)
-+#else
-+#define stub_mmap_offset(phys)	((phys) >> PAGE_SHIFT)
-+#endif
- 
- pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
- {
-@@ -43,6 +55,30 @@ pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
- 	return pte_offset_kernel(pmd, addr);
- }
- 
-+int stub_mmap_allowed(struct mm_id *id, unsigned long addr,
-+		      unsigned long prot, unsigned long offset)
-+{
-+	struct mm_context *ctx = container_of(id, struct mm_context, id);
-+	struct mm_struct *mm = container_of(ctx, struct mm_struct, context);
-+	pte_t *pte;
-+
-+	pte = virt_to_pte(mm, addr);
-+	if (pte == NULL || !pte_present(*pte))
-+		return 0;
-+
-+	/* Must map exactly the frame this PTE references. */
-+	if (stub_mmap_offset(pte_val(*pte) & PAGE_MASK) != offset)
-+		return 0;
-+
-+	/* Must not grant more access than the PTE allows. */
-+	if ((prot & UM_PROT_WRITE) && !pte_write(*pte))
-+		return 0;
-+	if ((prot & UM_PROT_EXEC) && !pte_exec(*pte))
-+		return 0;
-+
-+	return 1;
-+}
-+
- static pte_t *maybe_map(unsigned long virt, int is_write)
- {
- 	pte_t *pte = virt_to_pte(current->mm, virt);
++			/* [19] mmap: route to the monitor for validation */
++			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_USER_NOTIF),
+ 		};
+ 		struct sock_fprog prog = {
+ 			.len = sizeof(filter) / sizeof(filter[0]),
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 63b426b2c523..3a31e52cdcf8 100644
+index 0ab1d109a68d..63b426b2c523 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -187,10 +187,11 @@ static void wake_seccomp_stub(struct mm_id *mm_idp)
- 			    FUTEX_WAKE, 1, NULL, NULL, 0));
+@@ -29,7 +29,9 @@
+ #include <sysdep/stub.h>
+ #include <sysdep/mcontext.h>
+ #include <linux/futex.h>
++#include <linux/seccomp.h>
+ #include <linux/threads.h>
++#include <sys/ioctl.h>
+ #include <timetravel.h>
+ #include <asm-generic/rwonce.h>
+ #include "../internal.h"
+@@ -147,49 +149,89 @@ void wait_stub_done(int pid)
+ 	fatal_sigsegv();
  }
  
--static int seccomp_notify_serve(int notify_fd)
-+static int seccomp_notify_serve(struct mm_id *mm_idp)
++static void wake_seccomp_stub(struct mm_id *mm_idp)
++{
++	struct stub_data *data = (void *)mm_idp->stack;
++	const char byte = 0;
++	struct iovec iov = {
++		.iov_base = (void *)&byte,
++		.iov_len = sizeof(byte),
++	};
++	union {
++		char data[CMSG_SPACE(sizeof(mm_idp->syscall_fd_map))];
++		struct cmsghdr align;
++	} ctrl;
++	struct msghdr msgh = {
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
++
++	if (mm_idp->syscall_fd_num) {
++		unsigned int fds_size = sizeof(int) * mm_idp->syscall_fd_num;
++		struct cmsghdr *cmsg;
++
++		msgh.msg_control = ctrl.data;
++		msgh.msg_controllen = CMSG_SPACE(fds_size);
++		cmsg = CMSG_FIRSTHDR(&msgh);
++		cmsg->cmsg_level = SOL_SOCKET;
++		cmsg->cmsg_type = SCM_RIGHTS;
++		cmsg->cmsg_len = CMSG_LEN(fds_size);
++		memcpy(CMSG_DATA(cmsg), mm_idp->syscall_fd_map, fds_size);
++
++		CATCH_EINTR(syscall(__NR_sendmsg, mm_idp->sock, &msgh, 0));
++	}
++
++	data->signal = 0;
++	data->futex = FUTEX_IN_CHILD;
++	CATCH_EINTR(syscall(__NR_futex, &data->futex,
++			    FUTEX_WAKE, 1, NULL, NULL, 0));
++}
++
++static int seccomp_notify_serve(int notify_fd)
++{
++	struct seccomp_notif req = {};
++	struct seccomp_notif_resp resp = {};
++	int ret;
++
++	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_RECV, &req));
++	if (ret < 0)
++		return -errno;
++
++	resp.id = req.id;
++	resp.flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
++
++	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_SEND, &resp));
++	if (ret < 0)
++		return -errno;
++
++	return 0;
++}
++
++static void seccomp_serve_mmaps(struct mm_id *mm_idp)
++{
++	struct stub_data *data = (void *)mm_idp->stack;
++	int i, n_mmaps = 0;
++
++	if (mm_idp->seccomp_notify_fd < 0)
++		return;
++
++	for (i = 0; i < data->syscall_data_len; i++)
++		if (data->syscall_data[i].syscall == STUB_SYSCALL_MMAP)
++			n_mmaps++;
++
++	for (i = 0; i < n_mmaps; i++)
++		seccomp_notify_serve(mm_idp->seccomp_notify_fd);
++}
++
+ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
  {
- 	struct seccomp_notif req = {};
- 	struct seccomp_notif_resp resp = {};
-+	int notify_fd = mm_idp->seccomp_notify_fd;
+ 	struct stub_data *data = (void *)mm_idp->stack;
  	int ret;
  
- 	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_RECV, &req));
-@@ -198,7 +199,14 @@ static int seccomp_notify_serve(int notify_fd)
- 		return -errno;
+ 	do {
+-		const char byte = 0;
+-		struct iovec iov = {
+-			.iov_base = (void *)&byte,
+-			.iov_len = sizeof(byte),
+-		};
+-		union {
+-			char data[CMSG_SPACE(sizeof(mm_idp->syscall_fd_map))];
+-			struct cmsghdr align;
+-		} ctrl;
+-		struct msghdr msgh = {
+-			.msg_iov = &iov,
+-			.msg_iovlen = 1,
+-		};
+-
+ 		if (!running) {
+-			if (mm_idp->syscall_fd_num) {
+-				unsigned int fds_size =
+-					sizeof(int) * mm_idp->syscall_fd_num;
+-				struct cmsghdr *cmsg;
+-
+-				msgh.msg_control = ctrl.data;
+-				msgh.msg_controllen = CMSG_SPACE(fds_size);
+-				cmsg = CMSG_FIRSTHDR(&msgh);
+-				cmsg->cmsg_level = SOL_SOCKET;
+-				cmsg->cmsg_type = SCM_RIGHTS;
+-				cmsg->cmsg_len = CMSG_LEN(fds_size);
+-				memcpy(CMSG_DATA(cmsg), mm_idp->syscall_fd_map,
+-				       fds_size);
+-
+-				CATCH_EINTR(syscall(__NR_sendmsg, mm_idp->sock,
+-						&msgh, 0));
+-			}
+-
+-			data->signal = 0;
+-			data->futex = FUTEX_IN_CHILD;
+-			CATCH_EINTR(syscall(__NR_futex, &data->futex,
+-					    FUTEX_WAKE, 1, NULL, NULL, 0));
++			wake_seccomp_stub(mm_idp);
++			seccomp_serve_mmaps(mm_idp);
+ 		}
  
- 	resp.id = req.id;
--	resp.flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
-+
-+	if (req.data.nr == STUB_MMAP_NR &&
-+	    stub_mmap_allowed(mm_idp, req.data.args[0], req.data.args[2],
-+			      req.data.args[5])) {
-+		resp.flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
-+	} else {
-+		resp.error = -EPERM;
-+	}
- 
- 	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_SEND, &resp));
- 	if (ret < 0)
-@@ -220,7 +228,7 @@ static void seccomp_serve_mmaps(struct mm_id *mm_idp)
- 			n_mmaps++;
- 
- 	for (i = 0; i < n_mmaps; i++)
--		seccomp_notify_serve(mm_idp->seccomp_notify_fd);
-+		seccomp_notify_serve(mm_idp);
- }
- 
- void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
-@@ -288,13 +296,6 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ 		do {
+@@ -246,6 +288,13 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
  		fatal_sigsegv();
  }
  
--/*
-- * Service one SECCOMP_RET_USER_NOTIF notification from a stub mmap: read the
-- * suspended call, then respond CONTINUE so the stub's real mmap runs. CONTINUE
-- * is safe here because mmap takes only scalar arguments (no TOCTOU on user
-- * memory). Validation of (addr, len, prot, fd, offset) is added later; for now
-- * every stub mmap is allowed.
-- */
++/*
++ * Service one SECCOMP_RET_USER_NOTIF notification from a stub mmap: read the
++ * suspended call, then respond CONTINUE so the stub's real mmap runs. CONTINUE
++ * is safe here because mmap takes only scalar arguments (no TOCTOU on user
++ * memory). Validation of (addr, len, prot, fd, offset) is added later; for now
++ * every stub mmap is allowed.
++ */
  extern unsigned long current_stub_stack(void);
  
  static void get_skas_faultinfo(int pid, struct faultinfo *fi)
