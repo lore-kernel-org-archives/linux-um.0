@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43411CDB46B
-	for <linux-um@archiver.kernel.org>; Sat, 20 Jun 2026 03:23:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D2CCDB471
+	for <linux-um@archiver.kernel.org>; Sat, 20 Jun 2026 03:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qT9+SzDes0Z5D0pbybzrBYC2KXIoyIL2sm/1qClFdQc=; b=Wsc7++RhtiuRHioA4ykc8g28Pw
-	QiIUNWRYy07yfNX3+L1bfW+H/g16rFxQ7kRkas0/H/vOguiyKqX5GgvaVahSCH1S7DpPnXP4nv/d7
-	2rbjUWX8NmoXBG72d7pLRAGv5vTuSWsfjhgb+6WhuurglGWKoYORU5NT1z4Va+xoOaCcDSF3yO3If
-	qbx3FjmVjhZz5I67gPFafOfBnGjBelPTZeWT6fO5JcQ/Nyv8zUhPx+KsCGdFdR58X3zzoTie9zWdW
-	HFIGbpK4Z4r8gBSY+mWrloU+8lu8NngzbVBS1xeB6xxWzCFN4edTSqG7/pm5rslT99q4XSlQkDIOr
-	HOGVhSSQ==;
+	bh=lEUg6D+GFM56fnHVOgGa2ieTPH08FZYZa7bjmqpjtO4=; b=BvNWjSYo2WYXi2PzgvIic125f7
+	sRO/+uOeOpnA/+DS6SUov0pvX71ayiNh6OOM6o1NK0Nfihk+iEI+tQ254RqqbSmOMlis0nCXf7tjW
+	xpdVNsJ/gYKHhKx/+iSyvByP5nBZxSk2I/jbpSZD2yWZRlO6uh5Gpox4VXY9wl+Kjo60Vod+sRPvb
+	RpJTuy40W5S9J/fM/RtFvsV+piKwl3AVbtLsE874oAcfufkKJAP3l2arprO7ZnSgJlaYmzPRR+Iqx
+	uBbkqBmWg5Wt4R4Dvdq4XwD/j1WzLcqYMbI5Q3nlcsSxHc3gco/7ZBJPwJ8T4gt19ez5BiCS8HQPe
+	EvMHNImw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamIQ-000000038va-3vdz;
-	Sat, 20 Jun 2026 03:23:02 +0000
-Received: from mail-dy1-x1330.google.com ([2607:f8b0:4864:20::1330])
+	id 1wamIS-000000038wi-0DPs;
+	Sat, 20 Jun 2026 03:23:04 +0000
+Received: from mail-dy1-x1329.google.com ([2607:f8b0:4864:20::1329])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wamIO-000000038ta-1pvO
+	id 1wamIP-000000038uI-2oBt
 	for linux-um@lists.infradead.org;
-	Sat, 20 Jun 2026 03:23:02 +0000
-Received: by mail-dy1-x1330.google.com with SMTP id 5a478bee46e88-3078e0dcd67so2972950eec.0
-        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:23:00 -0700 (PDT)
+	Sat, 20 Jun 2026 03:23:03 +0000
+Received: by mail-dy1-x1329.google.com with SMTP id 5a478bee46e88-30bcdf8232fso5991726eec.0
+        for <linux-um@lists.infradead.org>; Fri, 19 Jun 2026 20:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781925779; x=1782530579; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1781925781; x=1782530581; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qT9+SzDes0Z5D0pbybzrBYC2KXIoyIL2sm/1qClFdQc=;
-        b=I3cTZAu+oH5WeXZPUayui07aNHjeUCiqUcVFfj+fajtE+KNqIYTAo9J5AFgQ+hfW8b
-         LvJKpca2swcr4J6bPMqN5+cXb4Imo8IIqFN4qA3fPtrIjaSopr0eQqgzsQ8eXxfMze3T
-         V5K66bb1k6Yg60F7vhBanhjt3IiisH0fC4XwmqGJP+LtwwfGqYiwdzRxaF0p8wubF4lN
-         ln/oot64PSNIn31XIu5jtLCmB81p/hVEaPjwzynWfp8e4NJ9L7OrOCnQ7CLdPP9E/Ezi
-         RqtTi//LGeY6F1bY6Wchxp2oe2PCmga1Ah5RdHPjGUvw9cDevI36AwxPmiYIuC6BZGag
-         8Eww==
+        bh=lEUg6D+GFM56fnHVOgGa2ieTPH08FZYZa7bjmqpjtO4=;
+        b=Asc2gy6HjnDiZBI1xqhZYQjNRMt8vFaGzsnUfp0L1QZPUDTNG5hUFYWMiO890CpQfQ
+         Q9Cd237P+nF6trK9/gwa9/r4UAAY0o6SSUj6LKXCMBOAfH6IBXQU6/tnzYjcUQJA1D7X
+         XBrgtyRKedymEBZ8eQmibPCjk0NkGIObN2naOF+Qs1++SfRHpw/7PTwG0u5jd92MD/jY
+         5AfZ+eUJwePAiNL4MstqpitmHK0WX9cp1s1W9NrrLUKPnRkBN2A4qJeBBsEQ2R1NI3Wl
+         oXLzjtRFJ2EjDwq5vwcqvGDbtCOO1J5bldFTBnDlFvTcFOo1Zxw1+V0BEYhWpOqNWNho
+         z5BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781925779; x=1782530579;
+        d=1e100.net; s=20251104; t=1781925781; x=1782530581;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=qT9+SzDes0Z5D0pbybzrBYC2KXIoyIL2sm/1qClFdQc=;
-        b=n37MkjuyQsCA5NvRDOES72ifF8tcIa/fGBSdSe1aEulLHLAgXj0DnRDTIz0gMuwwV4
-         6nA8C7rvFpNTr80/6sDao9pA6pmGHcerlq2JacnDjDJyJJor7s7gfVbxRjYXJQwjq+wN
-         F9dhV0MmQ1JIbx6L3wanffs8Xanv+6EjqovMqatQv0CQtjo5Q5yiBEiQaOCPEYpSZtmg
-         ALqLIHr0ur1wIrWDL+6vNY9LM0PriVuqX6xcRwap6J8ga2UOJud/Yamt0SUo1v8HDXsh
-         Poc5tFrOpb5VonriypJffNrq4KLN6P3LPz7kYXajOwwSqy4zQuRZtuW0iCtK/TtqKj6e
-         sXEw==
-X-Forwarded-Encrypted: i=1; AFNElJ9utRJH94i9518sjETgCjr68MhuKKE9Zbfg7uCKX8JXUfKE3GpMsVRBKtOoKlidu3KAb9qV5uadxw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxWFRMbUbzjtQYWzqkS1aU1LYJDmMZ7eJszftvC6omXX04aNqIo
-	5g9YPxNlhDKk3AW/X2dfnO3c6eqaaqELzVADSEQqqV37mecUQK51uCrb
-X-Gm-Gg: AfdE7clL4VyopmICuCuuiQxOcpFzes1xmXUNDuxDfK3gxh0l6vruLJs4dwzQimLuz0H
-	9V7aIOxcsnpBTIUw4AhUA13eqHPagJ7mCmjau0tPb+koI4HXrXKUUHbsdzPUVE3OKO1Iwdiqx0f
-	qc2fIJZneRj4TeLDKIZcTfP7ZTxCLcS4DUgpKjcCbxpjTQEKcXdJvahsHl3ToYa9tGFLIpp5gf/
-	cTQFkf6LWDE3Ii23znZAUsdsBnSdHqnudpuhhEqyotFp4ES2oKgCO1Y2spoaKvkm6OrImZQS59c
-	1Tbj3ZK0WXKHwYOZ+a+Qwkmif3grQRKLCosSDsfBSYkv1JpV2AOykpv/Zm4LvY09vtBHFER4e8t
-	G3PmnZAnx/YM/MqliRUaoKPC3w+glG0+dp6smKzymGOO8x+8hv6VXxOvm6pBT61HFCziB03I+BR
-	eXIXlNFUpIEbAkLFdE0VE2s3HCBoxMG7pEMbp2N7jGb6NVqJ83kw==
-X-Received: by 2002:a05:693c:3105:b0:304:dd1c:737e with SMTP id 5a478bee46e88-30c07156ec1mr3774349eec.16.1781925779531;
-        Fri, 19 Jun 2026 20:22:59 -0700 (PDT)
+        bh=lEUg6D+GFM56fnHVOgGa2ieTPH08FZYZa7bjmqpjtO4=;
+        b=UNTdcJ0k+19RkVyJ6ew5jFke15QCHdZKv6BofuZOYGYH/z1qyXmW9uhXqGuVWR2wPU
+         zagb6etMCJVlKzQvNIFAepJ89xfr3bZHY8/Uguj+h+NkKBn7AlWGfb5swkuIWE+UGIRf
+         ndduK2eYmw+CSuARL7HMOdtk7yMbwJx85/8Wbbl5yyk8W3W3D/KgrTmm1J9X56h/d/eM
+         RnRzcc43acQfWsNsvPgOVJc6x/T+lBa1tqvd3OsoT36FfbbaDkUb/wdcRgKTDxTRmTOM
+         gQzBPBUwejq1JCFpz+dxXA7X7K9JbIuR7FsnGvuFlP7iiOK7F2LE3zPycbu4PI6RNpO+
+         SQaA==
+X-Forwarded-Encrypted: i=1; AFNElJ+PSt4eqc1+Ck59bynqAngxwYDkZbjymbB94OU/ASBJWEjMyWlQKZSa9xpJpmKUCv81vY2O8JcreQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyCGFXQC8wcHR1azvUFrNJjdyLcG4djaZF83Ei0CB005gkVu7OJ
+	6jBKgxkgh8vL/Ceb1rl6VJ48IM0ox/M6WB3Lhzp1/KlUFQghbeBJmbnQ
+X-Gm-Gg: AfdE7cm53aMuV9Pyzsf3TzJTQkPHxTdQ8FJ35ndHaK5LSwsUYoqrmcOxKqw+69V3Cyw
+	pfP6Bv3b3Lp7vuEJw1r1N9nk5NnqovVspYpotTMu74/3f0BdrECLfQM/a88W+1R/JRr+fmfoU/r
+	AgjZCWxdRtM8RqAe8GeiYAx8Q12DGXIIbNt6LRIAxeLYJrqxdN0X5BP/7z5tjZrTWbhtVN7qnag
+	HGiSrDtrOv+WxAaOX8MuUeGqcAZwa451hv1WmpmX6h+NsC+pDktCpqb6ht+qvN6GRbbxjWTlOCc
+	pi6m/q50DbZwqBQITCthjTRnYijoZW1XIbTzmamNhUNXN4sPFrHf3R8Otq/X1oGJn1kKTCxitOV
+	1wS/z27cv3H5fjV12FrUnoyFNjUydhBiRJBd9hXLJLQI8j/7+Wh/TmiOG+jV3YBII+4qPD9XnrN
+	+N9f6NVetqqNguw7Tcqye9aQSgQuw7PVwlqelA0UShriRo1OQzPg==
+X-Received: by 2002:a05:693c:63d3:b0:30c:1275:9509 with SMTP id 5a478bee46e88-30c1275997emr1573462eec.14.1781925780761;
+        Fri, 19 Jun 2026 20:23:00 -0700 (PDT)
 Received: from pop-os.. ([2601:647:6802:dbc0:ce45:b713:5d9f:6abd])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.58
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1ba1f14fsm1902019eec.5.2026.06.19.20.22.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2026 20:22:58 -0700 (PDT)
+        Fri, 19 Jun 2026 20:23:00 -0700 (PDT)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 5/7] um: skas: validate stub munmap() against the guest address range
-Date: Fri, 19 Jun 2026 20:22:22 -0700
-Message-ID: <79317fd985294cb54ec14aa6ae8837bc99b5f4cb.1781925126.git.xiyou.wangcong@gmail.com>
+Subject: [PATCH 6/7] um: skas: kill stubs that block SIGALRM via a watchdog thread
+Date: Fri, 19 Jun 2026 20:22:23 -0700
+Message-ID: <7c7c19f9f70e874f071c3ea66957d56e0ea2648d.1781925126.git.xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1781925126.git.xiyou.wangcong@gmail.com>
 References: <cover.1781925126.git.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260619_202300_485969_50B106AE 
-X-CRM114-Status: GOOD (  22.08  )
+X-CRM114-CacheID: sfid-20260619_202302_200835_395F9BB7 
+X-CRM114-Status: GOOD (  23.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,178 +102,226 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Cong Wang <cwang@multikernel.io>
 
-Route stub munmap() through the USER_NOTIF monitor too, and validate it
-before letting it run. munmap() was previously SECCOMP_RET_ALLOW, so a
-hijacked stub (jumping to the in-stub munmap with crafted registers) could
-unmap arbitrary ranges, including the stub's own code/data pages, which
-would sever the monitor's control over it, or guest mappings outside what
-it is allowed to manage. After mmap, munmap was the remaining memory
-primitive a hijacked stub could invoke with arbitrary arguments.
+A hijacked stub can block SIGALRM with a crafted rt_sigreturn (the mask is
+restored from the stack it controls), so it is never preempted and never
+reports back. SIGALRM goes to the stub, not the monitor, so the monitor
+then blocks indefinitely in wait_stub_done_seccomp(). This is the one item
+("blocking e.g. SIGALRM") of the stub.c "Known security issues" list that a
+seccomp filter cannot address, since rt_sigreturn is required and its
+effect lives on the stack rather than in register arguments.
 
-Unlike mmap(), there is no PTE left to check: by the time the stub unmaps
-a guest page the kernel has already cleared the corresponding entry. So
-stub_munmap_allowed() is range-based instead: the request must be
-non-empty, must not wrap, and must lie entirely below STUB_START. That
-confines the stub to the guest address space and keeps its own reserved
-region off-limits. Both arguments are scalars captured in seccomp_data, so
-CONTINUE carries no TOCTOU risk, same as mmap().
+Detect it out of band. A helper thread blocks on its own timerfd and
+watches a per-vCPU (pid, seq) pair the monitor updates around each wait:
+pid is the stub being waited on, seq advances every time the stub reports.
+A stub that stops reporting leaves pid pinned and seq frozen; after
+SECCOMP_WD_STALL_TICKS ticks of no progress the watchdog SIGKILLs it, and
+the resulting SIGCHLD unblocks the monitor through the existing "pid < 0"
+teardown.
 
-stub_munmap_allowed() lives in skas/uaccess.c next to stub_mmap_allowed();
-the os-Linux notify handler dispatches on the syscall number and responds
-CONTINUE or -EPERM, and the batch server counts STUB_SYSCALL_MUNMAP as
-well as STUB_SYSCALL_MMAP.
+Each monitor writes only its own slot and the watchdog only reads, so the
+word-sized state needs just __READ_ONCE()/__WRITE_ONCE(), no lock; the
+watchdog scans every slot, covering all CPUs under SMP. A false kill cannot
+happen without the same pid and an unchanged seq across many ticks. The
+thread runs with all signals blocked (os_run_helper_thread()), uses
+write(2) rather than printk() from its non-kernel context, and is started
+once via a compare-and-swap guard. It is preferred over a bounded
+FUTEX_WAIT timeout: it costs one counter bump on the per-syscall hot path
+and catches a stall anywhere on stub input, not just the one futex.
 
-Verified on UML: guest boots and survives heavy mmap/munmap churn with
-zero false denials; the legitimate boot-time clear of the whole user
-address space [0, STUB_START) is allowed (end == STUB_START), while a
-range overlapping the stub region is denied.
+Verified on UML (UP and 2-CPU SMP): heavy mmap/munmap churn and CPU-bound
+loops on every vCPU run with zero false kills; a stub with SIGALRM blocked
+is killed in ~5s and the monitor recovers, while syscall-making processes
+are untouched.
 
 Assisted-by: Claude:claude-opus-4.8
 Signed-off-by: Cong Wang <cwang@multikernel.io>
 ---
- arch/um/include/shared/skas/skas.h |  2 ++
- arch/um/kernel/skas/stub_exe.c     |  4 ++--
- arch/um/kernel/skas/uaccess.c      | 12 ++++++++++++
- arch/um/os-Linux/skas/process.c    | 31 ++++++++++++++++++------------
- 4 files changed, 35 insertions(+), 14 deletions(-)
+ arch/um/os-Linux/skas/process.c | 129 ++++++++++++++++++++++++++++++++
+ 1 file changed, 129 insertions(+)
 
-diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
-index ce1b67b06b4b..ca2a62cef0c1 100644
---- a/arch/um/include/shared/skas/skas.h
-+++ b/arch/um/include/shared/skas/skas.h
-@@ -20,5 +20,7 @@ void initial_jmpbuf_unlock(void);
- 
- int stub_mmap_allowed(struct mm_id *id, unsigned long addr,
- 		      unsigned long prot, unsigned long offset);
-+int stub_munmap_allowed(struct mm_id *id, unsigned long addr,
-+			unsigned long len);
- 
- #endif
-diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
-index 65ea2af5ca73..00eea0cb9463 100644
---- a/arch/um/kernel/skas/stub_exe.c
-+++ b/arch/um/kernel/skas/stub_exe.c
-@@ -175,7 +175,7 @@ noinline static void real_init(void)
- 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
- 				 5, 0),
- 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_munmap,
--				 3, 0),
-+				 4, 0),
- #ifdef __i386__
- 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_set_thread_area,
- 				 2, 0),
-@@ -192,7 +192,7 @@ noinline static void real_init(void)
- 			/* [18] Permitted call for the stub */
- 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
- 
--			/* [19] mmap: route to the monitor for validation */
-+			/* [19] mmap and munmap: route to the monitor for validation */
- 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_USER_NOTIF),
- 		};
- 		struct sock_fprog prog = {
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 9359ede8a04b..feb267637735 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -14,6 +14,7 @@
- #include <asm/futex.h>
- #include <os.h>
- #include <skas.h>
-+#include <as-layout.h>
- 
- /*
-  * Same mapping as MMAP_OFFSET() in <sysdep/stub.h>, but usable from kernel
-@@ -79,6 +80,17 @@ int stub_mmap_allowed(struct mm_id *id, unsigned long addr,
- 	return 1;
- }
- 
-+int stub_munmap_allowed(struct mm_id *id, unsigned long addr, unsigned long len)
-+{
-+	if (len == 0 || addr + len < addr)
-+		return 0;
-+
-+	if (addr + len > STUB_START)
-+		return 0;
-+
-+	return 1;
-+}
-+
- static pte_t *maybe_map(unsigned long virt, int is_write)
- {
- 	pte_t *pte = virt_to_pte(current->mm, virt);
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 0987eb79ce76..2010b4529c41 100644
+index 2010b4529c41..7ffde2b00b61 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -193,7 +193,7 @@ static int seccomp_notify_serve(struct mm_id *mm_idp)
- 	struct seccomp_notif req = {};
- 	struct seccomp_notif_resp resp = {};
- 	int notify_fd = mm_idp->seccomp_notify_fd;
--	int ret;
-+	int allowed, ret;
- 
- 	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_RECV, &req));
- 	if (ret < 0)
-@@ -201,13 +201,19 @@ static int seccomp_notify_serve(struct mm_id *mm_idp)
- 
- 	resp.id = req.id;
- 
--	if (req.data.nr == STUB_MMAP_NR &&
--	    stub_mmap_allowed(mm_idp, req.data.args[0], req.data.args[2],
--			      req.data.args[5])) {
-+	if (req.data.nr == STUB_MMAP_NR)
-+		allowed = stub_mmap_allowed(mm_idp, req.data.args[0],
-+					    req.data.args[2], req.data.args[5]);
-+	else if (req.data.nr == __NR_munmap)
-+		allowed = stub_munmap_allowed(mm_idp, req.data.args[0],
-+					      req.data.args[1]);
-+	else
-+		allowed = 0;
-+
-+	if (allowed)
- 		resp.flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
--	} else {
-+	else
- 		resp.error = -EPERM;
--	}
- 
- 	CATCH_EINTR(ret = ioctl(notify_fd, SECCOMP_IOCTL_NOTIF_SEND, &resp));
- 	if (ret < 0)
-@@ -231,19 +237,20 @@ static void seccomp_notify_drain(struct mm_id *mm_idp)
- 			break;
- }
- 
--static void seccomp_serve_mmaps(struct mm_id *mm_idp)
-+static void seccomp_serve_stub_syscalls(struct mm_id *mm_idp)
- {
- 	struct stub_data *data = (void *)mm_idp->stack;
--	int i, n_mmaps = 0;
-+	int i, n_notif = 0;
- 
- 	if (mm_idp->seccomp_notify_fd < 0)
- 		return;
- 
- 	for (i = 0; i < data->syscall_data_len; i++)
--		if (data->syscall_data[i].syscall == STUB_SYSCALL_MMAP)
--			n_mmaps++;
-+		if (data->syscall_data[i].syscall == STUB_SYSCALL_MMAP ||
-+		    data->syscall_data[i].syscall == STUB_SYSCALL_MUNMAP)
-+			n_notif++;
- 
--	for (i = 0; i < n_mmaps; i++)
-+	for (i = 0; i < n_notif; i++)
+@@ -21,6 +21,7 @@
+ #include <as-layout.h>
+ #include <init.h>
+ #include <kern_util.h>
++#include <smp.h>
+ #include <mem.h>
+ #include <os.h>
+ #include <ptrace_user.h>
+@@ -33,6 +34,8 @@
+ #include <linux/threads.h>
+ #include <sys/ioctl.h>
+ #include <poll.h>
++#include <signal.h>
++#include <sys/timerfd.h>
+ #include <timetravel.h>
+ #include <asm-generic/rwonce.h>
+ #include "../internal.h"
+@@ -254,11 +257,131 @@ static void seccomp_serve_stub_syscalls(struct mm_id *mm_idp)
  		seccomp_notify_serve(mm_idp);
  }
  
-@@ -255,7 +262,7 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
++#define SECCOMP_WD_TICK_SECS	1
++#define SECCOMP_WD_STALL_TICKS	5	/* ~5s of no progress before killing */
++
++static int seccomp_wd_pid[CONFIG_NR_CPUS] = { [0 ... CONFIG_NR_CPUS - 1] = -1 };
++static unsigned long seccomp_wd_seq[CONFIG_NR_CPUS];
++
++static inline void seccomp_wd_enter(int pid)
++{
++	int cpu = uml_curr_cpu();
++
++	__WRITE_ONCE(seccomp_wd_seq[cpu], seccomp_wd_seq[cpu] + 1);
++	__WRITE_ONCE(seccomp_wd_pid[cpu], pid);
++}
++
++static inline void seccomp_wd_progress(void)
++{
++	int cpu = uml_curr_cpu();
++
++	__WRITE_ONCE(seccomp_wd_seq[cpu], seccomp_wd_seq[cpu] + 1);
++}
++
++static inline void seccomp_wd_exit(void)
++{
++	__WRITE_ONCE(seccomp_wd_pid[uml_curr_cpu()], -1);
++}
++
++/* Per-CPU snapshot the watchdog compares against the next tick. */
++struct seccomp_wd_cpu {
++	int prev_pid;
++	unsigned long prev_seq;
++	int stall;
++};
++
++static void seccomp_wd_check_cpu(int cpu, struct seccomp_wd_cpu *st)
++{
++	static const char kill_msg[] =
++		"seccomp watchdog: killing unresponsive stub (SIGALRM blocked?)\n";
++	int pid = __READ_ONCE(seccomp_wd_pid[cpu]);
++	unsigned long seq = __READ_ONCE(seccomp_wd_seq[cpu]);
++
++	if (pid >= 0 && pid == st->prev_pid && seq == st->prev_seq) {
++		if (++st->stall >= SECCOMP_WD_STALL_TICKS) {
++			/* printk() is unsafe from this thread. */
++			(void)!write(2, kill_msg, sizeof(kill_msg) - 1);
++			kill(pid, SIGKILL);
++			st->stall = 0;
++		}
++	} else {
++		st->stall = 0;
++	}
++
++	st->prev_pid = pid;
++	st->prev_seq = seq;
++}
++
++static void *seccomp_watchdog(void *arg)
++{
++	int tfd = (int)(long)arg;
++	struct seccomp_wd_cpu st[CONFIG_NR_CPUS];
++	int cpu;
++
++	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++)
++		st[cpu] = (struct seccomp_wd_cpu){ .prev_pid = -1 };
++
++	for (;;) {
++		unsigned long long expirations;
++
++		/*
++		 * One check per wakeup; ignore the expiration count so a
++		 * descheduled watchdog accrues stalls more slowly, never faster.
++		 */
++		if (read(tfd, &expirations, sizeof(expirations)) !=
++		    sizeof(expirations))
++			continue;
++
++		for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++)
++			seccomp_wd_check_cpu(cpu, &st[cpu]);
++	}
++
++	return NULL;
++}
++
++static void start_seccomp_watchdog(void)
++{
++	static int started;
++	static struct os_helper_thread *wd_td;
++	struct itimerspec its = {
++		.it_value    = { .tv_sec = SECCOMP_WD_TICK_SECS },
++		.it_interval = { .tv_sec = SECCOMP_WD_TICK_SECS },
++	};
++	int tfd;
++
++	/* Several vCPU monitors may race here; only the first starts the thread. */
++	if (!__sync_bool_compare_and_swap(&started, 0, 1))
++		return;
++
++	tfd = timerfd_create(CLOCK_MONOTONIC, 0);
++	if (tfd < 0) {
++		printk(UM_KERN_ERR "%s : timerfd_create failed, errno = %d\n",
++		       __func__, errno);
++		return;
++	}
++
++	if (timerfd_settime(tfd, 0, &its, NULL) < 0) {
++		printk(UM_KERN_ERR "%s : timerfd_settime failed, errno = %d\n",
++		       __func__, errno);
++		close(tfd);
++		return;
++	}
++
++	if (os_run_helper_thread(&wd_td, seccomp_watchdog, (void *)(long)tfd) < 0) {
++		printk(UM_KERN_ERR "%s : failed to start watchdog thread\n",
++		       __func__);
++		close(tfd);
++		wd_td = NULL;
++	}
++}
++
+ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ {
+ 	struct stub_data *data = (void *)mm_idp->stack;
+ 	int ret;
+ 
++	seccomp_wd_enter(mm_idp->pid);
++
  	do {
  		if (!running) {
  			wake_seccomp_stub(mm_idp);
--			seccomp_serve_mmaps(mm_idp);
-+			seccomp_serve_stub_syscalls(mm_idp);
- 		}
+@@ -296,6 +419,9 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ 		if (__READ_ONCE(mm_idp->pid) < 0)
+ 			goto out_kill;
  
- 		do {
++		/* The stub reported back: record progress for the watchdog. */
++		seccomp_wd_progress();
++
+ 		running = 0;
+ 
+ 		/* We may receive a SIGALRM before SIGSYS, iterate again. */
+@@ -312,9 +438,11 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ 		goto out_kill;
+ 	}
+ 
++	seccomp_wd_exit();
+ 	return;
+ 
+ out_kill:
++	seccomp_wd_exit();
+ 	printk(UM_KERN_ERR "%s : failed to wait for stub, pid = %d, errno = %d\n",
+ 	       __func__, mm_idp->pid, errno);
+ 	/* This is not true inside start_userspace */
+@@ -633,6 +761,7 @@ int start_userspace(struct mm_id *mm_id)
+ 		err = get_stub_listener(mm_id);
+ 		if (err)
+ 			goto out_kill;
++		start_seccomp_watchdog();
+ 	} else {
+ 		close(tramp_data.sockpair[1]);
+ 	}
 -- 
 2.43.0
 
