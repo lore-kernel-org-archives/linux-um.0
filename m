@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33931CDE014
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33802CDE010
 	for <linux-um@archiver.kernel.org>; Fri, 26 Jun 2026 04:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aUvemCYU2gM0Md1nHd9zkcg4lEq76VgyKyutQ2xO3OM=; b=M788udTLj+2b4LVBF8e/XaHzsa
-	ea78XI9TWHzRibBZVuHbPkfLRs32igY0ZJsiOiShdvVqcVI/MFUGBNiQ/568pZUr08TgceUkCIFMP
-	oiAEtInUqebFXFwyLsEzzlQQ1/g9Tc1dwktkkiPbnrBC2YnyfMl4UAskKy943nFvQK+qdpDgfN50w
-	tHQuQXBO7sk/5dPtIo85EMW2/iEelhowLYGT764E6rVFzHqFKIQR0FkCJi4ptmQ725SVd7L7QiOtv
-	MhNZMaJ6hQv61yETYtMeOP1NqyEX3RBoF/RIwp7Aet0SAHgjRgn2L1exiM1PerGRTVLmpeZ4hRCfg
-	WQTFizsg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EThdRu/11wp6N0JSfRIxy1kA6W323gFL4ICwbKnuv1w=; b=J04JLF/BiiXk+UqheOWMq9vmN6
+	2zpjuFaKNq3bH5XvRJoe7tqOPW69/ei+FRAlOkSq5ET96Hkdtaa0W6RaK8tqRyuszeuAsUaTQ/1y0
+	e5hattqmz/dyjaBCuyp/frPBIouNLY7v6lTEJEz2PwqtkkPO+pgo4x0o6s3llc9jfE0kPjYUYZtKw
+	obGzvHHf3g1ljj8MgwWAF3RN2QfUl/QpisCfQY+NDWAgYNhg4o4KAkeDggD6cTj7zvSHsQ3SgQMx2
+	T0d+a/QWDN2bmcdR5w72puJv8faGpI0Q9MTcnPMSTTFeiJLzyOd0b1L9G9odEYr0if/gLJMWbJoDk
+	AyqgbHfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcyLg-0000000ATYp-0ysH;
-	Fri, 26 Jun 2026 04:39:28 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wcyLf-0000000ATYF-0FZe;
+	Fri, 26 Jun 2026 04:39:27 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wcyLe-0000000ATY1-2515
+	id 1wcyLd-0000000ATXZ-0vUZ
 	for linux-um@lists.infradead.org;
-	Fri, 26 Jun 2026 04:39:26 +0000
+	Fri, 26 Jun 2026 04:39:25 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4065144337;
-	Fri, 26 Jun 2026 04:39:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E36F41F00A3F;
-	Fri, 26 Jun 2026 04:39:25 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 3F29D60098;
+	Fri, 26 Jun 2026 04:39:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4AA91F000E9;
+	Fri, 26 Jun 2026 04:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782448766;
-	bh=aUvemCYU2gM0Md1nHd9zkcg4lEq76VgyKyutQ2xO3OM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=IscOaURzwbCIcrFUSIAXfbPZiTU83y04muUJKOhxo/IlHadrjcl89lllQkNW6U9dp
-	 ZGwRE0NZZuiHRFwKtmb+eeNPFStTpI96aRAHu8+ybFnB54+lKNZ0L5F3TeuGXyFy/2
-	 JPUau7gXAPSyvFluDZTr7m4t40Ya5pm+k28ASfC+9RMGz7kPcuDWChPLSjae7jU7lU
-	 wV89DTc0kpcVzrallKtyKi8JNbgOZLSKW39yQEu1if/gxaFHihLdfV6Wj96cjeu/K7
-	 RbP88aWZp/1LBLeH9hBjV9I95osabpgIHMOPX6ycdqE2HG6thODuhFAYsUS/Upe6ZK
-	 nABQ4RrnXu19Q==
+	s=k20260515; t=1782448764;
+	bh=EThdRu/11wp6N0JSfRIxy1kA6W323gFL4ICwbKnuv1w=;
+	h=From:To:Cc:Subject:Date;
+	b=ij6vpCDhyTlRwiqupSK0EHeAXKevHJCyIHbjmW2s/O85CCp68rYWWunAGtELDSHzF
+	 tuw7kMRdbe5vx/ULc8iV7pybd4jEEPz/BTc/5b1rEXDNzrisDikUTO+2n9KeN1fjxY
+	 vb9lJbaDgvQGbn9hlJ02dZ7FiL95jp5wGu+kl+MKL5QkGNUv+K4hve8OEGtNtNXTAo
+	 X8VNIRH//W5F0MnZQSigvXDTODiV/rTsZqwOSM/nKjOIO8lwkRfNQgpeT8lmghCYqy
+	 074dsVHwlftgIusGkl0Oaqm8eAzif6n6YIif2LUYi+sm8Zt6/KAJboYJU2dxkvyk8a
+	 Ao8VCKNR4Sgjg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -51,12 +51,10 @@ Cc: linux-um@lists.infradead.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 6/8] x86/fpu: Remove cpu_has_xfeatures()
-Date: Thu, 25 Jun 2026 21:37:29 -0700
-Message-ID: <20260626043731.319287-7-ebiggers@kernel.org>
+Subject: [PATCH 0/8] x86: Remove cpu_has_xfeatures() and add AVX-512 xor_gen()
+Date: Thu, 25 Jun 2026 21:37:23 -0700
+Message-ID: <20260626043731.319287-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260626043731.319287-1-ebiggers@kernel.org>
-References: <20260626043731.319287-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -73,128 +71,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The only remaining caller of cpu_has_xfeatures() is
-print_xstate_features(), which uses it only to check and get the name of
-a single feature.
+My patch "lib/raid/xor: x86: Add AVX-512 optimized xor_gen()"
+(https://lore.kernel.org/r/20260615190338.26581-1-ebiggers@kernel.org/)
+still seems to be blocked on a Sashiko comment about cpu_has_xfeatures()
+not being called.
 
-Remove it and just inline the needed code into print_xstate_features().
+However, the x86-optimized RAID library code supports UML, and currently
+UML doesn't implement cpu_has_xfeatures().  That's perhaps why the
+existing AVX-512 optimized RAID6 code doesn't check it either.
 
-This also makes the "unknown xstate feature" entry at index XFEATURE_MAX
-of xfeature_names[] unnecessary, so remove that too.
+In fact, it seems to have been getting by fine without it, which
+suggests that it's not truly needed.
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- arch/x86/include/asm/fpu/api.h |  9 -------
- arch/x86/kernel/fpu/xstate.c   | 44 +++-------------------------------
- 2 files changed, 3 insertions(+), 50 deletions(-)
+But to eliminate any doubts, I've had a go at fully resolving the
+situation by making both native x86 and UML explicitly clear any
+X86_FEATURE_* flags at boot time whose xfeatures are missing.
 
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 90c63fe19c0f..cfed8b24d64f 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -97,19 +97,10 @@ static inline void fpregs_assert_state_consistent(void) { }
- /*
-  * Load the task FPU state before returning to userspace.
-  */
- extern void switch_fpu_return(void);
- 
--/*
-- * Query the presence of one or more xfeatures. Works on any legacy CPU as well.
-- *
-- * If 'feature_name' is set then put a human-readable description of
-- * the feature there as well - this can be used to print error (or success)
-- * messages.
-- */
--extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
--
- /* Trap handling */
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern void fpu_sync_fpstate(struct fpu *fpu);
- extern void fpu_reset_from_exception_fixup(void);
- 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 7f7e62e4ebc5..c6f0264f957c 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -64,12 +64,12 @@ static const char *xfeature_names[] =
- 	"unknown xstate feature",
- 	"unknown xstate feature",
- 	"AMX Tile config",
- 	"AMX Tile data",
- 	"APX registers",
--	"unknown xstate feature",
- };
-+static_assert(ARRAY_SIZE(xfeature_names) == XFEATURE_MAX);
- 
- static unsigned short xsave_cpuid_features[] __initdata = {
- 	[XFEATURE_FP]				= X86_FEATURE_FPU,
- 	[XFEATURE_SSE]				= X86_FEATURE_XMM,
- 	[XFEATURE_YMM]				= X86_FEATURE_AVX,
-@@ -120,48 +120,10 @@ static inline unsigned int next_xfeature_order(unsigned int i, u64 mask)
- 	     i++)
- 
- #define XSTATE_FLAG_SUPERVISOR	BIT(0)
- #define XSTATE_FLAG_ALIGNED64	BIT(1)
- 
--/*
-- * Return whether the system supports a given xfeature.
-- *
-- * Also return the name of the (most advanced) feature that the caller requested:
-- */
--int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
--{
--	u64 xfeatures_missing = xfeatures_needed & ~fpu_kernel_cfg.max_features;
--
--	if (unlikely(feature_name)) {
--		long xfeature_idx, max_idx;
--		u64 xfeatures_print;
--		/*
--		 * So we use FLS here to be able to print the most advanced
--		 * feature that was requested but is missing. So if a driver
--		 * asks about "XFEATURE_MASK_SSE | XFEATURE_MASK_YMM" we'll print the
--		 * missing AVX feature - this is the most informative message
--		 * to users:
--		 */
--		if (xfeatures_missing)
--			xfeatures_print = xfeatures_missing;
--		else
--			xfeatures_print = xfeatures_needed;
--
--		xfeature_idx = fls64(xfeatures_print)-1;
--		max_idx = ARRAY_SIZE(xfeature_names)-1;
--		xfeature_idx = min(xfeature_idx, max_idx);
--
--		*feature_name = xfeature_names[xfeature_idx];
--	}
--
--	if (xfeatures_missing)
--		return 0;
--
--	return 1;
--}
--EXPORT_SYMBOL_GPL(cpu_has_xfeatures);
--
- static bool xfeature_is_aligned64(int xfeature_nr)
- {
- 	return xstate_flags[xfeature_nr] & XSTATE_FLAG_ALIGNED64;
- }
- 
-@@ -300,13 +262,13 @@ static void __init print_xstate_features(void)
- {
- 	int i;
- 
- 	for (i = 0; i < XFEATURE_MAX; i++) {
- 		u64 mask = BIT_ULL(i);
--		const char *name;
-+		const char *name = xfeature_names[i];
- 
--		if (cpu_has_xfeatures(mask, &name))
-+		if (fpu_kernel_cfg.max_features & mask)
- 			pr_info("x86/fpu: Supporting XSAVE feature 0x%03Lx: '%s'\n", mask, name);
- 	}
- }
- 
- /*
+Then, cpu_has_xfeatures() is entirely removed from the kernel.
+
+The last patch adds the AVX-512 optimized xor_gen().  I do still think
+it would be fine to proceed with it without the rest.  But if there are
+any doubts, we can take this more comprehensive cleanup route.
+
+Eric Biggers (8):
+  x86/fpu: Check for missing AVX and AVX-512 xstate bits
+  um: Check for missing AVX and AVX-512 xstate bits
+  crypto: x86 - Stop using cpu_has_xfeatures()
+  lib/crypto: x86: Stop using cpu_has_xfeatures()
+  lib/crc: x86: Stop using cpu_has_xfeatures()
+  x86/fpu: Remove cpu_has_xfeatures()
+  lib/raid/xor: x86: Remove redundant X86_FEATURE_OSXSAVE check
+  lib/raid/xor: x86: Add AVX-512 optimized xor_gen()
+
+ arch/um/kernel/um_arch.c                   |  78 ++++++++++++-
+ arch/x86/crypto/aegis128-aesni-glue.c      |   3 +-
+ arch/x86/crypto/aesni-intel_glue.c         |   7 +-
+ arch/x86/crypto/aria_aesni_avx2_glue.c     |  11 +-
+ arch/x86/crypto/aria_aesni_avx_glue.c      |  11 +-
+ arch/x86/crypto/aria_gfni_avx512_glue.c    |  11 +-
+ arch/x86/crypto/camellia_aesni_avx2_glue.c |  11 +-
+ arch/x86/crypto/camellia_aesni_avx_glue.c  |  11 +-
+ arch/x86/crypto/cast5_avx_glue.c           |   7 +-
+ arch/x86/crypto/cast6_avx_glue.c           |   7 +-
+ arch/x86/crypto/serpent_avx2_glue.c        |   9 +-
+ arch/x86/crypto/serpent_avx_glue.c         |   7 +-
+ arch/x86/crypto/sm4_aesni_avx2_glue.c      |  11 +-
+ arch/x86/crypto/sm4_aesni_avx_glue.c       |  11 +-
+ arch/x86/crypto/twofish_avx_glue.c         |   6 +-
+ arch/x86/include/asm/fpu/api.h             |   9 --
+ arch/x86/kernel/fpu/xstate.c               |  63 ++++-------
+ lib/crc/x86/crc-pclmul-template.h          |   6 +-
+ lib/crypto/x86/blake2s.h                   |   4 +-
+ lib/crypto/x86/chacha.h                    |   3 +-
+ lib/crypto/x86/nh.h                        |   4 +-
+ lib/crypto/x86/poly1305.h                  |   7 +-
+ lib/crypto/x86/sha1.h                      |   4 +-
+ lib/crypto/x86/sha256.h                    |   4 +-
+ lib/crypto/x86/sha512.h                    |   3 +-
+ lib/crypto/x86/sm3.h                       |   3 +-
+ lib/raid/xor/Makefile                      |   2 +-
+ lib/raid/xor/x86/xor-avx512.c              | 121 +++++++++++++++++++++
+ lib/raid/xor/x86/xor_arch.h                |  24 ++--
+ 29 files changed, 264 insertions(+), 194 deletions(-)
+ create mode 100644 lib/raid/xor/x86/xor-avx512.c
+
+
+base-commit: 4edcdefd4083ae04b1a5656f4be6cd83ae919ef4
 -- 
 2.54.0
 
