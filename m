@@ -4,87 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A4E8C44500
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jul 2026 09:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE4C6C43602
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jul 2026 10:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GU2sQW+BHbRyl8stT+ES8Av3G6KBfsKpnc1VSiXAaH8=; b=b00bIY4NjK2yzdACACJqNe/6r6
-	Hgc5+eS8JVeUtHp0T5BGFtJ6/xUwvfH8YJbzZyCqlAmx81JcQKeqBS+BrARQ6IbvLnKW/h+30mjAN
-	PTy+Im1hc86VbocJealVUF/rYv8l18xW+hu8rxTE3IfjWqAp2oLOxNgvJJVHAbGYyIdifL9/8Ob3n
-	4hHaSG7OEmHqK9wWQwgmSKBCJPHgWgTrPoYsdpetrMP6pg/ZR17KUbnUoZe46fdYqvWFx1FUkCga/
-	S/KYubfhFvvt1IjWL2eIet8hc1dhoryybyOn5ahsN64irqDVSzd0Vs8DVur71970Gcdp1EwZR1s6b
-	ZVVQhQPg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4eAaXEt312UQloawJo+yaYovtDfAeaYocuuY17b1XAY=; b=L3IeamiPNaSINgHi25EPnFcCZ9
+	GF+mRp1o0Ax2LjHz7PJRP97HjvH6e+VwYQH2ivhaz3vu4diYe/FZsSHzaauTVBn20aen5qExtbXX8
+	B10tYodC5y1Tj51NNgPNTAYHrMMD6NB4gSyd8ekf2iM8CIeEDzikb1N+MvipVTFaw8MQBU+PhyxO9
+	OEnvs+pwdsCWTv6O7IBcBlkLNuVDESniWh2zNPnFSXL1yEYbODiYxX+S89RYI481SW+IpKTg9IrCt
+	vycImKftS5bYQNWR8tEa/1bLX84rW5zkryQztRopIDLaP5IskU6CV7+CahaDXgMRrzwj1r1avXqlH
+	gC0TLvIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfaW0-00000006VpG-09CX;
-	Fri, 03 Jul 2026 09:48:56 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wfaVy-00000006Vox-0zYL;
-	Fri, 03 Jul 2026 09:48:54 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CB5A46001A;
-	Fri,  3 Jul 2026 09:48:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6F641F000E9;
-	Fri,  3 Jul 2026 09:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783072132;
-	bh=GU2sQW+BHbRyl8stT+ES8Av3G6KBfsKpnc1VSiXAaH8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=kTHi5+aaAp/rX4HTakkhjR3bFvlbbboB2hx19Nen/OQCynsTw3x/WIdUXu+frxwFV
-	 89SbG0+Shaxd2FOCH4dmgKGnOQNd95ufhEkEGXGpT/32v4K6RPBMgJaLR03++i0XQv
-	 HLnWwMqbhfMA9VGMcYWioEN6EpIjQeekAAIeSA8n3p4PU3sGcDhY+SXTEkDi6qWsvN
-	 N6ri66YT0BOjRUFOiXivtMgrlnMXxRLN30aljrlnw5thKW/fQEv2TszzuBrW0Uq2oE
-	 Hw8BoXQe/baC4Oi3LETFSwEwu7qrQBQfRHShyZgwSnxBg2nijHTJWdtguxJWbMqGZ5
-	 OSuwx+53eId9w==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>, Jinjie Ruan
- <ruanjinjie@huawei.com>
-Cc: oleg@redhat.com, richard.henderson@linaro.org, mattst88@gmail.com,
- linmag7@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com,
- will@kernel.org, kees@kernel.org, guoren@kernel.org,
- chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
- tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com,
- deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
- chleroy@kernel.org, pjw@kernel.org, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, alex@ghiti.fr, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
- svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
- glaubitz@physik.fu-berlin.de, richard@nod.at,
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
- luto@kernel.org, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, chris@zankel.net,
- jcmvbkbc@gmail.com, peterz@infradead.org, wad@chromium.org,
- thuth@redhat.com, mark.rutland@arm.com, ada.coupriediaz@arm.com,
- kevin.brodsky@arm.com, linusw@kernel.org, yeoreum.yun@arm.com,
- song@kernel.org, james.morse@arm.com, anshuman.khandual@arm.com,
- broonie@kernel.org, liqiang01@kylinos.cn, pengcan@kylinos.cn,
- ryan.roberts@arm.com, yangtiezhu@loongson.cn, sshegde@linux.ibm.com,
- mchauras@linux.ibm.com, austin.kim@lge.com, jchrist@linux.ibm.com,
- arnd@arndb.de, thomas.weissschuh@linutronix.de, sohil.mehta@intel.com,
- andrew.cooper3@citrix.com, jgross@suse.com, kas@kernel.org,
- x86@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org
+	id 1wfahE-00000006X0N-0WXj;
+	Fri, 03 Jul 2026 10:00:32 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wfahB-00000006Wzb-2Dsh;
+	Fri, 03 Jul 2026 10:00:30 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77B231FC4;
+	Fri,  3 Jul 2026 03:00:23 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A98773FAA1;
+	Fri,  3 Jul 2026 03:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1783072827; bh=aCTCeigzdW+DLmQcURYHBbc2LLCBHkNsbpfYvvGCiJA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S7QhjRah1ACbDsWq1fyjeQXt+EKdqlo9vLYGLe10grZ3du51t6ZFb4OLnHfKmugvC
+	 xYIGBaOHJhM7/+St8RX1L1+kEfNfOXq3codPouX1rlw+gMBwRumJ3t0IzbR4AAn6ks
+	 AEhSYO6Tc+ug7ijrNB2evf01wmU75WbW8DbnvJvM=
+Date: Fri, 3 Jul 2026 11:00:11 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
+	Jinjie Ruan <ruanjinjie@huawei.com>, oleg@redhat.com,
+	richard.henderson@linaro.org, mattst88@gmail.com, linmag7@gmail.com,
+	linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+	kees@kernel.org, guoren@kernel.org, chenhuacai@kernel.org,
+	kernel@xen0n.name, geert@linux-m68k.org, tsbogend@alpha.franken.de,
+	James.Bottomley@hansenpartnership.com, deller@gmx.de,
+	maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
+	chleroy@kernel.org, pjw@kernel.org, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, alex@ghiti.fr, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com, svens@linux.ibm.com,
+	ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, chris@zankel.net,
+	jcmvbkbc@gmail.com, peterz@infradead.org, wad@chromium.org,
+	thuth@redhat.com, ada.coupriediaz@arm.com, kevin.brodsky@arm.com,
+	linusw@kernel.org, yeoreum.yun@arm.com, song@kernel.org,
+	james.morse@arm.com, anshuman.khandual@arm.com, broonie@kernel.org,
+	liqiang01@kylinos.cn, pengcan@kylinos.cn, ryan.roberts@arm.com,
+	yangtiezhu@loongson.cn, sshegde@linux.ibm.com,
+	mchauras@linux.ibm.com, austin.kim@lge.com, jchrist@linux.ibm.com,
+	arnd@arndb.de, thomas.weissschuh@linutronix.de,
+	sohil.mehta@intel.com, andrew.cooper3@citrix.com, jgross@suse.com,
+	kas@kernel.org, x86@kernel.org, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mm@kvack.org, linux-csky@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-um@lists.infradead.org
 Subject: Re: [PATCH v16 01/18] seccomp: Convert __secure_computing() to
  return boolean
-In-Reply-To: <akdp6GAu77-ipsXA@kunlun.suse.cz>
+Message-ID: <akeIK5TRCjlKbzbp@J2N7QTR9R3>
 References: <20260629130616.642022-1-ruanjinjie@huawei.com>
  <20260629130616.642022-2-ruanjinjie@huawei.com>
  <akdp6GAu77-ipsXA@kunlun.suse.cz>
-Date: Fri, 03 Jul 2026 11:48:49 +0200
-Message-ID: <87cxx4mmim.ffs@fw13>
+ <87cxx4mmim.ffs@fw13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87cxx4mmim.ffs@fw13>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260703_030029_649594_75F36FF1 
+X-CRM114-Status: GOOD (  19.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,39 +104,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 03 2026 at 09:51, Michal Such=C3=A1nek wrote:
-> On Mon, Jun 29, 2026 at 09:05:59PM +0800, Jinjie Ruan wrote:
->> -	if (secure_computing())
->> +	if (!secure_computing())
->>  		return -1;
->
-> Hello,
->
-> I am not fond of this logic inversion. The boolean is meaningless in
-> itself.
->
-> Previously -1 was used to indicate that the syscall was filtered but you
-> chose to invert the logic choosing true to mean syscall was not filtered.
->
-> You could choose true to mean that syscall was fitered avoiding this
-> inversion.
+On Fri, Jul 03, 2026 at 11:48:49AM +0200, Thomas Gleixner wrote:
+> On Fri, Jul 03 2026 at 09:51, Michal Suchánek wrote:
+> > On Mon, Jun 29, 2026 at 09:05:59PM +0800, Jinjie Ruan wrote:
+> >> -	if (secure_computing())
+> >> +	if (!secure_computing())
+> >>  		return -1;
+> >
+> > Hello,
+> >
+> > I am not fond of this logic inversion. The boolean is meaningless in
+> > itself.
+> >
+> > Previously -1 was used to indicate that the syscall was filtered but you
+> > chose to invert the logic choosing true to mean syscall was not filtered.
+> >
+> > You could choose true to mean that syscall was fitered avoiding this
+> > inversion.
+> 
+> That's just wrong. Boolean logic makes more sense with having
+> (!condition()). Just because the old 0/-1 nonsense had it the other way
+> round does not mean it has to stay that way.
 
-That's just wrong. Boolean logic makes more sense with having
-(!condition()). Just because the old 0/-1 nonsense had it the other way
-round does not mean it has to stay that way.
+100% agreed!
 
-> Sashiko points out some places in existing code where it supposedly
-> explodes which might or might not be true
+Bikeshedding below; sorry.
 
-The vsyscall one is correct, but that's a bug like any other one and should
-be caught in review.
+I think the bigger problem is just that secure_computing() is a terrible
+name that does not express the intended semantic -- it's not clear
+whether "secure computing" means "seccomp permit the syscall" or
+"seccomp is enabled and some special rules now apply" or something else
+entirely.
 
-The blurb about bypass is AI halluzination nonsense.
+If we're changing the return type, it might be worth renaming the
+function something like:
 
-> but any in-flight patches that use secure_computing would also be
-> affected.
+	seccomp_permits_syscall()
 
-Maintainers know how to deal with collisions of that kind. Stop making
-problems up.
+... so for the code quoted at the start of the mail, we'd have:
 
+	if (!seccomp_permits_syscall())
+		return -1;
+
+... or for arm64, where we have NO_SYSCALL:
+
+	 if (!seccomp_permits_syscall())
+	 	return NO_SYSCALL.
+
+Thomas, any thoughts on that?
+
+It's also odd that seccomp aquires the syscall number itself via , rather
+than than being passed down explicitly by the arch code. That completely
+obscures what seccomp is doing, vs having:
+
+	if (!seccomp_permis_syscall(syscall))
+		...
+
+... but I guess that saves some duplication in the ptrace code.
+
+Mark.
 
