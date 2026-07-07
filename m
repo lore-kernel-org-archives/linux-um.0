@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 273ECC43458
-	for <linux-um@archiver.kernel.org>; Mon,  6 Jul 2026 02:41:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44729C43602
+	for <linux-um@archiver.kernel.org>; Tue,  7 Jul 2026 19:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tLzU64zcWCpCqtKqdJfi72+8jOLqHwm6rAX9TlEnpBE=; b=BxrVJ660lHcxRD1qTzZevlEAe5
-	wHHyeSR4tjffV7AA7ogOwv7gXes3zyDCGajKPCMIB3ynieu9yvKOrWmMvTKhFqF8lwj4ieStWPV6a
-	dUV1hNJE6uYPC3RMKnkddU/sK/GtRlueu1cKfXe9XZ/ttW5OobMAnlxGoKzwOMhwqAiFa++Lbuovp
-	Y8OyaTx9YET/7951Cfhg7+H8mW6sTd75I1FOk+Tv93+Ap2ap5JUu3iinXvsCGSFzQYOkZAB1HibkL
-	ApVvQU2UYIRs7Mb8sTcB/gzDHN2nvVndQ0XBX4agBuB4RaByDSoXaWww2ItpT2haehRkECrIbT09s
-	cwcgixxA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:
+	Message-ID:Date:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=sKaa6jqJcnZ3kixdUKctGHCLE8bgvUhOgv/iQQ4U2eg=; b=TojZeEyYUKUMltcRZQQoW2U/C7
+	IS+tgBEaVy5Z5ys8fkALVNf6HVYZmBf49oQSBc+ulG0OXu//DV41n7FHwribM0RAPeEbQIwwdunG7
+	Mp/uYB3q0UjZX7DIh7O3JmvpTxuCTmFMoI1hL+GssCp8lX9pSytxf0EXqLlTaPi6khtZHgxMBGa3p
+	nbc7jICBT3odpACiBR7j6RW74q3aMoqIyyHNGsFeaS/gJKi3ELAYVDatSRHql3MToesJEANzLnbFt
+	/Z1J+NxkYg5VdP5Q3GI+dd27V1s0isX5CwnlcuJqOYD2+qY+x3NyIbLw8roMOTgewaYjeZbQneMS8
+	g6+N133w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgZH7-0000000BPYX-0VDB;
-	Mon, 06 Jul 2026 02:41:37 +0000
-Received: from canpmsgout05.his.huawei.com ([113.46.200.220])
+	id 1whB7N-0000000Fghz-3evZ;
+	Tue, 07 Jul 2026 19:06:05 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wgZH2-0000000BPXC-3guO
-	for linux-um@lists.infradead.org;
-	Mon, 06 Jul 2026 02:41:35 +0000
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=tLzU64zcWCpCqtKqdJfi72+8jOLqHwm6rAX9TlEnpBE=;
-	b=6kW0tTks7I4JJHDfBVjF8dEaDL2J766PtNvpdA6LbQQFpMfTqMznvyBNQeh9wxbc/IYSzn3ZU
-	f2djYQecToR3moTosPPfqQapkuoiHKQieMFK0sbmqWZPM62GXgOZ9REO2UonKr5TBLANxucel3h
-	3onSIAA/PUlP2PaW4QIuLbU=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4gtpL20K7Pz12LHv;
-	Mon,  6 Jul 2026 10:32:42 +0800 (CST)
-Received: from dggpemf500011.china.huawei.com (unknown [7.185.36.131])
-	by mail.maildlp.com (Postfix) with ESMTPS id 836134057A;
-	Mon,  6 Jul 2026 10:41:22 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- dggpemf500011.china.huawei.com (7.185.36.131) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 6 Jul 2026 10:41:17 +0800
-Message-ID: <e53b3d1f-c9fe-428c-bf1c-6505b3bcb894@huawei.com>
-Date: Mon, 6 Jul 2026 10:41:16 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 01/18] seccomp: Convert __secure_computing() to return
- boolean
-To: Ada Couprie Diaz <ada.coupriediaz@arm.com>
-CC: <oleg@redhat.com>, <richard.henderson@linaro.org>, <mattst88@gmail.com>,
-	<linmag7@gmail.com>, <linux@armlinux.org.uk>, <catalin.marinas@arm.com>,
-	<will@kernel.org>, <kees@kernel.org>, <guoren@kernel.org>,
-	<chenhuacai@kernel.org>, <kernel@xen0n.name>, <geert@linux-m68k.org>,
-	<tsbogend@alpha.franken.de>, <James.Bottomley@HansenPartnership.com>,
-	<deller@gmx.de>, <maddy@linux.ibm.com>, <mpe@ellerman.id.au>,
-	<npiggin@gmail.com>, <chleroy@kernel.org>, <pjw@kernel.org>,
-	<palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <alex@ghiti.fr>,
-	<hca@linux.ibm.com>, <gor@linux.ibm.com>, <agordeev@linux.ibm.com>,
-	<borntraeger@linux.ibm.com>, <svens@linux.ibm.com>,
-	<ysato@users.sourceforge.jp>, <dalias@libc.org>,
-	<glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
-	<anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-	<luto@kernel.org>, <tglx@kernel.org>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>, <hpa@zytor.com>, <chris@zankel.net>,
-	<jcmvbkbc@gmail.com>, <peterz@infradead.org>, <wad@chromium.org>,
-	<thuth@redhat.com>, <mark.rutland@arm.com>, <kevin.brodsky@arm.com>,
-	<linusw@kernel.org>, <yeoreum.yun@arm.com>, <song@kernel.org>,
-	<james.morse@arm.com>, <anshuman.khandual@arm.com>, <broonie@kernel.org>,
-	<liqiang01@kylinos.cn>, <pengcan@kylinos.cn>, <ryan.roberts@arm.com>,
-	<yangtiezhu@loongson.cn>, <sshegde@linux.ibm.com>, <mchauras@linux.ibm.com>,
-	<austin.kim@lge.com>, <jchrist@linux.ibm.com>, <arnd@arndb.de>,
-	<thomas.weissschuh@linutronix.de>, <sohil.mehta@intel.com>,
-	<andrew.cooper3@citrix.com>, <jgross@suse.com>, <kas@kernel.org>,
-	<x86@kernel.org>, <linux-alpha@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mm@kvack.org>, <linux-csky@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-m68k@lists.linux-m68k.org>,
-	<linux-mips@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
-	<linux-s390@vger.kernel.org>, <linux-sh@vger.kernel.org>,
-	<linux-um@lists.infradead.org>
-References: <20260629130616.642022-1-ruanjinjie@huawei.com>
- <20260629130616.642022-2-ruanjinjie@huawei.com>
- <b8f3b5cd-8d8a-4396-ba0c-011a83234dd9@arm.com>
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <b8f3b5cd-8d8a-4396-ba0c-011a83234dd9@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- dggpemf500011.china.huawei.com (7.185.36.131)
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260705_194133_317438_8E9762B5 
-X-CRM114-Status: GOOD (  23.51  )
+	id 1whB7F-0000000FggT-1O5w;
+	Tue, 07 Jul 2026 19:05:59 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 0192043206;
+	Tue,  7 Jul 2026 19:05:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113781F000E9;
+	Tue,  7 Jul 2026 19:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783451156;
+	bh=sKaa6jqJcnZ3kixdUKctGHCLE8bgvUhOgv/iQQ4U2eg=;
+	h=Date:From:To:Cc:Subject;
+	b=VFkWTdo5yhgpXx9sxvRHZ3HlP4xSZ4aHXa1zsGtMnp9mQpMvU4qieroT0K0+AUmNe
+	 mH4Zbvrp37BWRtV+WSrFvOBwzQyMx5YfHARXuOrmubRPkhjAk6NgYYQTWgkAhazAju
+	 1djGcOQc2V77x2qVXGFvC6BkwM/+Iezw2J7QhqUY7M9Y5saOvbXsETd73JhuSwTJ1e
+	 Hk7rq39ys7eddzm/Skk6nfXmoJIZBJVZnDdD7rbJtFga+XVDyFyYEDjJyfJdP9Y2Vt
+	 rb/jER5CfvGmtQfb87VuvQHb1UgZTCkpnw26sWY8rQ0z0x4vkc0U56YUbxw1o0tQkB
+	 6sQc63NXlLiVQ==
+Date: Tue, 07 Jul 2026 21:05:53 +0200
+Message-ID: <20260707181957.433213175@kernel.org>
+User-Agent: quilt/0.69
+From: Thomas Gleixner <tglx@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Shrikanth Hegde <sshegde@linux.ibm.com>,
+ linuxppc-dev@lists.ozlabs.org,
+ Kees Cook <kees@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev,
+ Paul Walmsley <pjw@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ linux-riscv@lists.infradead.org,
+ Sven Schnelle <svens@linux.ibm.com>,
+ linux-s390@vger.kernel.org,
+ x86@kernel.org,
+ Mark Rutland <mark.rutland@arm.com>,
+ Jinjie Ruan <ruanjinjie@huawei.com>,
+ Andy Lutomirski <luto@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Guo Ren <guoren@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Richard Weinberger <richard@nod.at>,
+ Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org,
+ linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ Vineet Gupta <vgupta@kernel.org>,
+ Will Deacon <will@kernel.org>,
+ Brian Cain <bcain@kernel.org>,
+ Michal Simek <monstr@monstr.eu>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org,
+ linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org,
+ sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
+ Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org
+Subject: [patch 00/18] entry: Consolidate and rework syscall entry handling
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,112 +112,153 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Sorry for the long CC list, but this is a treewide change.
 
+Michal recently posted a RFC patch to separate the potential syscall number
+modifications in syscall_enter_user_mode_work() from the information
+whether the syscall should be processed and the return value modified:
 
-On 7/1/2026 12:37 AM, Ada Couprie Diaz wrote:
-> Hi Jinjie,
-> 
-> On 29/06/2026 14:05, Jinjie Ruan wrote:
->> The return value of __secure_computing() currently uses 0 to indicate
->> that a system call should be allowed, and -1 to indicate that it should
->> be blocked/killed. This 0/-1 pattern is non-intuitive for a security
->> check function and makes the control flow at the call sites less
->> readable.
->>
->> Furthermore, any potential future changes to these return values would
->> require a high-risk, error-prone audit of all its users across different
->> architectures.
->>
->> Sanitize this logic by converting the return type of __secure_computing()
->> to a proper boolean, where 'true' explicitly means 'allow' and 'false'
->> means 'fail/deny'.
->>
->> Update all the two dozen or so call sites across the tree to align with
->> this new boolean semantic. No functional changes are intended, as the
->> callers still return -1 to the lower-level assembly entry code upon
->> seccomp denial.
-> Would it be relevant to mention that this fixes the unsound return value of
-> `syscall_trace_enter()` in generic entry, which motivated the patch
-> initially[0] ?
+  https://lore.kernel.org/lkml/CE1qW@kunlun.suse.cz
 
-That's a very good point. It's definitely worth mentioning
+The existing logic is:
 
->> Suggested-by: Thomas Gleixner <tglx@kernel.org>
->> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
->> ---
->>   arch/alpha/kernel/ptrace.c            |  2 +-
->>   arch/arm/kernel/ptrace.c              |  2 +-
->>   arch/arm64/kernel/ptrace.c            |  2 +-
->>   arch/csky/kernel/ptrace.c             |  2 +-
->>   arch/m68k/kernel/ptrace.c             |  2 +-
->>   arch/mips/kernel/ptrace.c             |  2 +-
->>   arch/parisc/kernel/ptrace.c           |  2 +-
->>   arch/sh/kernel/ptrace_32.c            |  2 +-
->>   arch/um/kernel/skas/syscall.c         |  2 +-
->>   arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
->>   arch/xtensa/kernel/ptrace.c           |  3 +--
->>   include/linux/entry-common.h          |  7 +++---
->>   include/linux/seccomp.h               | 10 ++++----
->>   kernel/seccomp.c                      | 34 +++++++++++++--------------
->>   14 files changed, 36 insertions(+), 38 deletions(-)
-> 
-> This is missing an update to the Kconfig documentation, a possible
-> suggestion :
+arch_syscall()
+	regs->result = -ENOSYS;
 
-Will update it.
+	syscallnr = syscall_enter_from_user_mode(regs, syscall);
 
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index fa7507ac8e13..9e3d40088afb 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -637,7 +637,7 @@ config HAVE_ARCH_SECCOMP_FILTER
->           - syscall_set_return_value()
->           - SIGSYS siginfo_t support
->           - secure_computing is called from a ptrace_event()-safe context
-> -         - secure_computing return value is checked and a return value
-> of -1
-> +         - secure_computing return value is checked and if false
->             results in the system call being skipped immediately.
->           - seccomp syscall wired up
->           - if !HAVE_SPARSE_SYSCALL_NR, have SECCOMP_ARCH_NATIVE,
-> 
->> [...]
->> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
->> index 416a3352261f..3f66320e46d3 100644
->> --- a/include/linux/entry-common.h
->> +++ b/include/linux/entry-common.h
->> @@ -100,9 +100,8 @@ static __always_inline long
->> syscall_trace_enter(struct pt_regs *regs, unsigned l
->>         /* Do seccomp after ptrace, to catch any tracer changes. */
->>       if (work & SYSCALL_WORK_SECCOMP) {
->> -        ret = __secure_computing();
->> -        if (ret == -1L)
->> -            return ret;
->> +        if (!__secure_computing())
->> +            return -1L;
->>       }
->>         /* Either of the above might have changed the syscall number */
->> @@ -113,7 +112,7 @@ static __always_inline long
->> syscall_trace_enter(struct pt_regs *regs, unsigned l
->>         syscall_enter_audit(regs, syscall);
->>   -    return ret ? : syscall;
->> +    return syscall;
->>   }
->> [...]
-> 
-> Otherwise this feels like a more appropriate change with regards to
-> "safeguarding against new `secure_computing()` return value" !
-> 
-> With the updated Kconfig :
-> Reviewed-by: Ada Couprie Diaz <ada.coupriediaz@arm.com>
-> 
-> Thanks,
-> Ada
-> 
-> [0]: https://lore.kernel.org/r/20260511092103.1974980-2-
-> ruanjinjie@huawei.com
-> 
-> 
+	if (syscallnr != -1L)
+		regs->result = invoke_syscall(regs, syscall;
+
+syscall_enter_from_user_mode() invokes ptrace, seccomp and
+tracing/BPF/Probes. All of them can modify the syscall number.
+
+ptrace and seccomp explicitly set the syscall number to -1L to indicate
+that the syscall invocation needs to be skipped and the result has not to
+be modified as it might have been modified by ptrace or seccomp. The
+tracer/BPF/Probes mechanism can modify the syscall number as well and
+relies implicitly on the -1L logic.
+
+This can obviously not be differentiated from a syscall invocation where
+userspace provided -1 as syscall number.
+
+The general agreement of the discussion was that the current mechanism,
+while functionally correct is non-intuitive and something like Michals
+proposal would make that code clearer and easier to handle on the
+architecture side:
+
+arch_syscall()
+	regs->result = -ENOSYS;
+
+	if (syscall_enter_from_user_mode(regs, &syscall)) 
+		regs->result = invoke_syscall(regs, syscall;
+
+That discussion made me look deeper into the related code and as usual
+there were a lot of other things to discover.
+
+  1) Stack randomization
+
+     add_random_kstack_offset() can only be invoked after
+     enter_from_user_mode() established proper state as it calls into
+     instrumentable code.
+
+     PowerPC got that wrong and the other architectures either invoke it
+     after enter_from_user_mode() or after syscall_enter_from_user_mode().
+
+     The latter is suboptimal as the randomization takes place after all
+     the user mode entry work. Aside of that add_random_kstack_offset()
+     uses get/put_cpu_var(), which makes it usable in preemptible code, but
+     when invoked in the interrupt disabled region that's pointless
+     overhead.
+
+  2) As discussed in the above thread just changing the function signature
+     of syscall_enter_from_user_mode[_work]() so they take a pointer
+     argument for the syscall and then return 0 on success is not really
+     intuitive either. Aside of that this breaks the implicit assumption of
+     the tracer when setting the syscall number to -1.
+
+  3) The x86 entry code has some historically accumulated oddities
+
+The following series addresses this by:
+
+  1) Providing new [syscall_]enter_from_user_mode() variants, which include
+     stack randomization and utilize a new add_random_kstack_offset_irqsoff()
+     variant, which avoids the get/put_cpu_var() overhead and converting all
+     usage sites over
+
+  2) Picking up Jinjie's seccomp patch from:
+
+     https://lore.kernel.org/lkml/20260629130616.642022-2-ruanjinjie@huawei.com
+
+     and addressing the feedback (renaming the seccomp functions)
+
+  3) Making the ptrace and tracer related functions return a boolean value
+     to indicate syscall permission
+
+  4) Addressing the x86 oddities
+
+  5) Converting the tree over to the new scheme
+
+With that all architectures using the generic syscall entry code follow the
+same scheme, apply stack randomization at the correct and earliest possible
+place and skip syscall processing depending on the boolean return value of
+syscall_enter_from_user_mode[_work]().
+
+There should be no functional changes, at least there are none intended.
+
+The resulting text size for the syscall entry code on x8664 is slightly
+smaller than before these changes.
+
+Testing syscall heavy workloads and micro benchmarks shows a small
+performance gain for the general rework, but the last patch, which changes
+the logic to be more understandable has no measurable impact in either
+direction.
+
+The series applies on Linus tree and is also available from git:
+
+        git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-rework-v1
+
+Thanks,
+
+	tglx
+---
+ Documentation/core-api/entry.rst      |   33 +++++---
+ arch/alpha/kernel/ptrace.c            |    4 -
+ arch/arc/kernel/ptrace.c              |    2 
+ arch/arm/kernel/ptrace.c              |    4 -
+ arch/arm64/kernel/ptrace.c            |    4 -
+ arch/csky/kernel/ptrace.c             |    4 -
+ arch/hexagon/kernel/traps.c           |    2 
+ arch/loongarch/kernel/syscall.c       |   17 +---
+ arch/m68k/kernel/ptrace.c             |    4 -
+ arch/microblaze/kernel/ptrace.c       |    2 
+ arch/mips/kernel/ptrace.c             |    4 -
+ arch/nios2/kernel/ptrace.c            |    2 
+ arch/openrisc/kernel/ptrace.c         |    2 
+ arch/parisc/kernel/ptrace.c           |   12 +--
+ arch/powerpc/kernel/syscall.c         |    5 -
+ arch/riscv/kernel/traps.c             |   14 +--
+ arch/s390/kernel/syscall.c            |   11 +-
+ arch/sh/kernel/ptrace_32.c            |    4 -
+ arch/sparc/kernel/ptrace_32.c         |    2 
+ arch/sparc/kernel/ptrace_64.c         |    2 
+ arch/um/kernel/ptrace.c               |    2 
+ arch/um/kernel/skas/syscall.c         |    2 
+ arch/x86/entry/syscall_32.c           |   70 +++++++------------
+ arch/x86/entry/syscall_64.c           |   61 ++++++----------
+ arch/x86/entry/vsyscall/vsyscall_64.c |   14 +--
+ arch/x86/include/asm/entry-common.h   |    1 
+ arch/x86/include/asm/syscall.h        |   10 --
+ arch/xtensa/kernel/ptrace.c           |    5 -
+ include/asm-generic/syscall.h         |    4 -
+ include/linux/entry-common.h          |  125 ++++++++++++++++++++--------------
+ include/linux/irq-entry-common.h      |    6 -
+ include/linux/ptrace.h                |   13 +--
+ include/linux/randomize_kstack.h      |   19 +++++
+ include/linux/seccomp.h               |   12 +--
+ kernel/entry/syscall-common.c         |    7 +
+ kernel/seccomp.c                      |   35 ++++-----
+ 36 files changed, 264 insertions(+), 256 deletions(-)
+
 
 
