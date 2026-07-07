@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDFD6C43602
-	for <linux-um@archiver.kernel.org>; Tue,  7 Jul 2026 19:07:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2AAC44507
+	for <linux-um@archiver.kernel.org>; Tue,  7 Jul 2026 19:07:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	References:Subject:Cc:To:From:Message-ID:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=f3tTBJMZMBmlp5JnKGm6uVp1qFXO+k6bdzgk0bOTjgQ=; b=Qh4XtBIKpCU1sp
-	JXG9sN9OjuQuHxhUw6QRBVRT50pt3kEKo2MjnSP5EsVhCcKsPhdKsrnj9xRhdOBYT7XNO5iT1PrFB
-	fjBmvj77YJX0lCCB+H7L+wZnnv1I62hnaBHuehSPbJ4lM1H17isQ7jpBWXiVzBQE8AGZVrshofRwc
-	Hhl8hdaRx/ucqFBA3f4H7hxXRSJJwzk6hxV05rBzvttPmfFjD4vkb0boVq3BgIfqvYNCKbfpyGtxz
-	6iX85WmO6vkA1fHF7NjqgEJGn7yIaNwhsGUuYBwfNM8Ccaw5ppbeuVaNX6exfDBaxKxcoUGqAz1xo
-	VlyoGCHgn1E+w3AvFS4w==;
+	List-Owner; bh=k5p+gDeGow5od0W2jgXaapJrAZfwc3i2DfCDO4w4k2U=; b=fNlBRPShe++o5x
+	46uXwz9U6WrMwTnXqcrH9Ltc0WoA+n9N57leVhCnkMrtvZKG+gm3oO7rU254+XYh59hzjMZ9b44pc
+	3/uFud84qnBiHlvvmM2HiOg8DocdL8bTpMGY2iD3ic1nWBlLqVqVgQC05JOrmqqknzLF1w/oz8iVv
+	JltyL/IJjzhzk6OEuziZuN05INYK27h6L9L9n/edIKWdFegAgigwmCeq8wfGlnqLe6sOPCkuf26jy
+	ilb92HUbEOV3DEDBhyvf1zGdD4icxvaOur1eHHyW0SzcfRxjFqBYjwT7aWftgUJjL4ndOmuZjQEw7
+	ah4CkTm2pDwVgzl75Lyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whB96-0000000FiZi-0SnM;
-	Tue, 07 Jul 2026 19:07:52 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1whB9B-0000000Fikq-1aua;
+	Tue, 07 Jul 2026 19:07:57 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whB8K-0000000FhfO-40fQ;
-	Tue, 07 Jul 2026 19:07:05 +0000
+	id 1whB8O-0000000Fhk6-2RoO;
+	Tue, 07 Jul 2026 19:07:11 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5941660018;
-	Tue,  7 Jul 2026 19:07:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4431F00A3D;
-	Tue,  7 Jul 2026 19:07:03 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 5455340837;
+	Tue,  7 Jul 2026 19:07:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 691E61F000E9;
+	Tue,  7 Jul 2026 19:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783451224;
-	bh=f3tTBJMZMBmlp5JnKGm6uVp1qFXO+k6bdzgk0bOTjgQ=;
+	s=k20260515; t=1783451228;
+	bh=k5p+gDeGow5od0W2jgXaapJrAZfwc3i2DfCDO4w4k2U=;
 	h=Date:From:To:Cc:Subject:References;
-	b=ix0A1te8r5Eh2ztDr6+QRKYrDxuK9fCJBLeYnU+S/kJiG8kcMUDG0t7haY3angHi3
-	 yEIWiFZVjLpiLcvP+/kNmvwnKBvF77QrS5+dxnyxoTIqPaFj7pKDS2a7mgV2+hH/Jl
-	 1gMgd7gaUkRbKMGi+WBaEVcFz8RZe19KgNDBaCY/H1tfyVuoBQsH9m7Php1EFCLPPi
-	 XVOOmkLS5GR2sX5v8V1m3yamuDFh1+M1HWpsnafwUhS+dPxVAUoYC+PeeEBBvWJ4Cw
-	 UKm+OFP4sfcjyeIRlIp+xzKZPZgNtuvLsVJbilMFjNmhZkDXWLx6bncHi4nCCxb27I
-	 tSHD82yuhX1dw==
-Date: Tue, 07 Jul 2026 21:07:01 +0200
-Message-ID: <20260707190254.493733289@kernel.org>
+	b=jm9Q3Laf3FKmdLmABRbJipEgYAm2Nvq7OuMFuhObrcMDIik3KnCXo3gPTumzB8Ks6
+	 R2Gh5AXPLtOPkX4xGcvEbi6QTXdXx5/QVPzzzZ8xwFmaGErRXW49XMgkYcMa3mHP16
+	 NZyJRjBGh1rQKkdpKB/7+FFOPY0JXZbeyKYhfMwGWmdrM9iFLD57NkK4L8nzez26ia
+	 lSGhDZsXLIy33FDWV2JaQZRiT6U6B6OVrJAobxJY0jyGqtEYE+4QXvbpOMvRDycErW
+	 1QLeEAPw7GwrC8w/3TQxgag4cP6oLp2eSVsbIbk2440lpovAypZ3nvHiufLponi5S1
+	 lFKuBs3QiJDKw==
+Date: Tue, 07 Jul 2026 21:07:05 +0200
+Message-ID: <20260707190254.545214398@kernel.org>
 User-Agent: quilt/0.69
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
@@ -97,7 +97,7 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
  =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
  Jonathan Corbet <corbet@lwn.net>,
  linux-doc@vger.kernel.org
-Subject: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall() indirection
+Subject: [patch 17/18] x86/entry: Simplify the syscall number logic
 References: <20260707181957.433213175@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -115,63 +115,175 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Invoking sys_ni_syscall() from a code path, which already knows that the
-syscall number is invalid just to assign -ENOSYS to regs->ax is a pointless
-exercise. It's even redundant as the low level entry code already has set
-regs->ax to -ENOSYS on entry.
+Converting from int to long, back to int and then to unsigned int is
+confusing at best.
 
-Remove the extra conditionals and the function calls.
+None of this voodoo is required. Negative syscall numbers including -1
+don't need any of this treatment and the low level ASM code already does
+the sign extension to 64-bit on a 64-bit kernel.
+
+The only point where signedness matters is the comparison against the
+maximum syscall number, but that can be simplified by just using a unsigned
+argument for the various syscall invocation functions.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 ---
- arch/x86/entry/syscall_32.c |    2 --
- arch/x86/entry/syscall_64.c |   10 +++-------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ arch/x86/entry/syscall_32.c    |   26 +++++++++++---------------
+ arch/x86/entry/syscall_64.c    |   36 ++++++++++++++----------------------
+ arch/x86/include/asm/syscall.h |    2 +-
+ 3 files changed, 26 insertions(+), 38 deletions(-)
 
 --- a/arch/x86/entry/syscall_32.c
 +++ b/arch/x86/entry/syscall_32.c
-@@ -81,8 +81,6 @@ static __always_inline void do_syscall_3
- 	if (likely(unr < IA32_NR_syscalls)) {
- 		unr = array_index_nospec(unr, IA32_NR_syscalls);
- 		regs->ax = ia32_sys_call(regs, unr);
--	} else if (nr != -1) {
--		regs->ax = __ia32_sys_ni_syscall(regs);
+@@ -41,6 +41,8 @@ const sys_call_ptr_t sys_call_table[] =
+ #endif
+ 
+ #define __SYSCALL(nr, sym) case nr: return __ia32_##sym(regs);
++
++/* The unsigned int @nr argument is intentional as it creates denser code in a 64-bit build */
+ static noinline long ia32_sys_call(const struct pt_regs *regs, unsigned int nr)
+ {
+ 	switch (nr) {
+@@ -49,7 +51,7 @@ static noinline long ia32_sys_call(const
  	}
  }
  
+-static __always_inline int syscall_32_enter(struct pt_regs *regs)
++static __always_inline long syscall_32_enter(struct pt_regs *regs)
+ {
+ 	if (IS_ENABLED(CONFIG_IA32_EMULATION))
+ 		current_thread_info()->status |= TS_COMPAT;
+@@ -70,17 +72,11 @@ early_param("ia32_emulation", ia32_emula
+ /*
+  * Invoke a 32-bit syscall.  Called with IRQs on in CT_STATE_KERNEL.
+  */
+-static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, int nr)
++static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, unsigned long nr)
+ {
+-	/*
+-	 * Convert negative numbers to very high and thus out of range
+-	 * numbers for comparisons.
+-	 */
+-	unsigned int unr = nr;
+-
+-	if (likely(unr < IA32_NR_syscalls)) {
+-		unr = array_index_nospec(unr, IA32_NR_syscalls);
+-		regs->ax = ia32_sys_call(regs, unr);
++	if (likely(nr < IA32_NR_syscalls)) {
++		nr = array_index_nospec(nr, IA32_NR_syscalls);
++		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
+ 	}
+ }
+ 
+@@ -126,7 +122,7 @@ static __always_inline bool int80_is_ext
+  */
+ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
+ {
+-	int nr;
++	long nr;
+ 
+ 	/* Kernel does not use INT $0x80! */
+ 	if (unlikely(!user_mode(regs))) {
+@@ -205,7 +201,7 @@ static __always_inline bool int80_is_ext
+  */
+ DEFINE_FREDENTRY_RAW(int80_emulation)
+ {
+-	int nr;
++	long nr;
+ 
+ 	enter_from_user_mode_randomize_stack(regs);
+ 
+@@ -240,7 +236,7 @@ DEFINE_FREDENTRY_RAW(int80_emulation)
+ /* Handles int $0x80 on a 32bit kernel */
+ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
+ {
+-	int nr = syscall_32_enter(regs);
++	long nr = syscall_32_enter(regs);
+ 
+ 	/*
+ 	 * Subtlety here: if ptrace pokes something larger than 2^31-1 into
+@@ -260,7 +256,7 @@ DEFINE_FREDENTRY_RAW(int80_emulation)
+ 
+ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
+ {
+-	int nr = syscall_32_enter(regs);
++	long nr = syscall_32_enter(regs);
+ 	int res;
+ 
+ 	enter_from_user_mode_randomize_stack(regs);
 --- a/arch/x86/entry/syscall_64.c
 +++ b/arch/x86/entry/syscall_64.c
-@@ -68,7 +68,7 @@ static __always_inline bool do_syscall_x
+@@ -32,6 +32,8 @@ const sys_call_ptr_t sys_call_table[] =
+ #undef  __SYSCALL
+ 
+ #define __SYSCALL(nr, sym) case nr: return __x64_##sym(regs);
++
++/* The unsigned int @nr argument is intentional as it creates denser code */
+ static noinline long x64_sys_call(const struct pt_regs *regs, unsigned int nr)
+ {
+ 	switch (nr) {
+@@ -52,39 +54,29 @@ static noinline long x32_sys_call(const
+ #endif
+ }
+ 
+-static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
++static __always_inline bool do_syscall_x64(struct pt_regs *regs, unsigned long nr)
+ {
+-	/*
+-	 * Convert negative numbers to very high and thus out of range
+-	 * numbers for comparisons.
+-	 */
+-	unsigned int unr = nr;
+-
+-	if (likely(unr < NR_syscalls)) {
+-		unr = array_index_nospec(unr, NR_syscalls);
+-		regs->ax = x64_sys_call(regs, unr);
++	if (likely(nr < NR_syscalls)) {
++		nr = array_index_nospec(nr, NR_syscalls);
++		regs->ax = x64_sys_call(regs, (unsigned int)nr);
+ 		return true;
+ 	}
  	return false;
  }
  
--static __always_inline bool do_syscall_x32(struct pt_regs *regs, int nr)
-+static __always_inline void do_syscall_x32(struct pt_regs *regs, int nr)
+-static __always_inline void do_syscall_x32(struct pt_regs *regs, int nr)
++static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
  {
- 	/*
- 	 * Adjust the starting offset of the table, and convert numbers
-@@ -80,9 +80,7 @@ static __always_inline bool do_syscall_x
- 	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(xnr < X32_NR_syscalls)) {
- 		xnr = array_index_nospec(xnr, X32_NR_syscalls);
- 		regs->ax = x32_sys_call(regs, xnr);
--		return true;
+-	/*
+-	 * Adjust the starting offset of the table, and convert numbers
+-	 * < __X32_SYSCALL_BIT to very high and thus out of range
+-	 * numbers for comparisons.
+-	 */
+-	unsigned int xnr = nr - __X32_SYSCALL_BIT;
+-
+-	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(xnr < X32_NR_syscalls)) {
+-		xnr = array_index_nospec(xnr, X32_NR_syscalls);
+-		regs->ax = x32_sys_call(regs, xnr);
++	/* Adjust the starting offset of the table */
++	nr -= __X32_SYSCALL_BIT;
++
++	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
++		nr = array_index_nospec(nr, X32_NR_syscalls);
++		regs->ax = x32_sys_call(regs, (unsigned int)nr);
  	}
--	return false;
  }
  
  /* Returns true to return using SYSRET, or false to use IRET */
-@@ -92,10 +90,8 @@ static __always_inline bool do_syscall_x
+-__visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
++__visible noinstr bool do_syscall_64(struct pt_regs *regs, long nr)
+ {
+ 	nr = syscall_enter_from_user_mode_randomize_stack(regs, nr);
  
- 	instrumentation_begin();
+--- a/arch/x86/include/asm/syscall.h
++++ b/arch/x86/include/asm/syscall.h
+@@ -164,7 +164,7 @@ static inline int syscall_get_arch(struc
+ 		? AUDIT_ARCH_I386 : AUDIT_ARCH_X86_64;
+ }
  
--	if (!do_syscall_x64(regs, nr) && !do_syscall_x32(regs, nr) && nr != -1) {
--		/* Invalid system call, but still a system call. */
--		regs->ax = __x64_sys_ni_syscall(regs);
--	}
-+	if (!do_syscall_x64(regs, nr))
-+		do_syscall_x32(regs, nr);
+-bool do_syscall_64(struct pt_regs *regs, int nr);
++bool do_syscall_64(struct pt_regs *regs, long nr);
+ void do_int80_emulation(struct pt_regs *regs);
  
- 	instrumentation_end();
- 	syscall_exit_to_user_mode(regs);
+ #endif	/* CONFIG_X86_32 */
 
 
