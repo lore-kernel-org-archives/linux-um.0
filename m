@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E28C44503
-	for <linux-um@archiver.kernel.org>; Wed,  8 Jul 2026 17:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BDD2C44503
+	for <linux-um@archiver.kernel.org>; Wed,  8 Jul 2026 17:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oMlf4rzg7sFMgtBO8f/rqo4QHF22NzBws1cUSUO+r80=; b=uszBRDJ3nptZxYwLfiIFjPIGGE
-	GsVQdRVw3MeifgDswbMIYJJHy2VaIXZwBMaGw0DEhKe5CD+Mo02IGQQe/4uH/iduodp7V84wT3HjM
-	nqK5kE/J9L7Eb7UsOfzB4+DZNh/rkFuUNvCWaM4Wk+rP3Fu3zD5Qobhgp5qTL0x3t/Q4qLxrDjf4R
-	66prbo9qpyY4qmRowGhKJ3bqlrLnCr3iRCefx34O9nnEg/1gdGlyU8nfkbG8k+2Pei0jze01XF0vF
-	zLLuME/NUEis92BSN75esVJkmGMUpp9V8lHXWb9ArxdwGOGndy0/R6N620suiHotWeYpMZcKmP9Pz
-	EhidUSDA==;
+	bh=1gcsmXz67IjQqMY0eBQ3O8esAmywA90IGOEUSqxZHJQ=; b=U0ULqGEOw6SaxrLBUQFEAzRyDs
+	3utMKJlxsehQsFNl8Ny1TfqrY8gbdu99yPxNEGBwCGS7dkYpelCG0Dg3ZeLexql+Z5xYj/gC+EAur
+	M2GhPmAFxbIK92aiGhtnTS2Ht9WZWU7YNsDHkVUnQn/HV7amduovb6BsSlVSt8mKzG3fv5Y4W19HD
+	02Q0SKf7cEYDDmgSrNX7JCv+kz0Z64IkK6wp4tnJBOuSDoMr2i3JGOfKiv4sNvhNAY17jfl5tn/cp
+	TTSpaKEWtGqxi43BbvfB56ncod+YhTooGE0YPRo9pdcU3T6SHLygfF5wZ3R2xRr4HIieIXEr1xNL3
+	XrFFY6Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whW1K-000000006C6-0kd1;
-	Wed, 08 Jul 2026 17:25:14 +0000
+	id 1whW31-000000006U3-2XAf;
+	Wed, 08 Jul 2026 17:26:59 +0000
 Received: from xs1.mindbit.ro ([80.86.107.70] helo=mail.mindbit.ro)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whW1G-000000006Ak-0SDf;
-	Wed, 08 Jul 2026 17:25:11 +0000
+	id 1whW2y-000000006TB-0N1r;
+	Wed, 08 Jul 2026 17:26:57 +0000
 Received: from bat.kanata.rendec.net (unknown [24.114.111.125])
-	by mail.mindbit.ro (Postfix) with ESMTPSA id 1E89DC2B1F;
-	Wed,  8 Jul 2026 20:24:38 +0300 (EEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.mindbit.ro 1E89DC2B1F
+	by mail.mindbit.ro (Postfix) with ESMTPSA id 1B198C343D;
+	Wed,  8 Jul 2026 20:26:25 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.mindbit.ro 1B198C343D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rendec.net;
-	s=default; t=1783531507;
-	bh=oMlf4rzg7sFMgtBO8f/rqo4QHF22NzBws1cUSUO+r80=;
+	s=default; t=1783531613;
+	bh=1gcsmXz67IjQqMY0eBQ3O8esAmywA90IGOEUSqxZHJQ=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=OJuzJLG2oJHC8E6/z6u4YL1brifg3n0KypZd9zeBUsdEd6uLxd+9vUKIXm8fNb+sD
-	 40TB/onHyQSWEZ0oPdpje/xAjGna37MjawhgGr3bVxva9cjLjk1XfUhqToNdmtUx7z
-	 YMvmViVzUq9/FTET4wtq/Yhx/L0ZlUxPuNUXmfoDanL5GBZtufQoF3ZbsskDV434aw
-	 kxDRuhqvAGGem4j2hDVIoI59nXr2IxQ3aAqoNF0TEbKK88RSrx6CqBol40sxnwMfxK
-	 rd7e4S6y5Zb6OYXlWmLIfxqvBAfINm0f8D7u03YVplchQ7tuJ84O05FoHalkh1Nik9
-	 f0YRdybiCZuUQ==
-Message-ID: <db4b8c27df9be997f935928f2624a863a1f998d6.camel@rendec.net>
-Subject: Re: [patch 02/18] randomize_kstack: Provide
- add_random_kstack_offset_irqsoff()
+	b=Z6pyfRb1XnNrJb7Iy5l8RXt+U4vqsGvqqzStbhN7435vjpK29RR4S8ie2UFwESgWv
+	 CcSG+nZyfqWkQNIiMihfXIe5SU5d9xFxuT/FVpIkY2si8YfqZBiGdxwpOgc4+v6GTu
+	 NSt9pFgzwrUImE/LpJy0sei+Lk+GBqVAsmPsiJ8VtpU8nMjFtYkmKduWX13Ouy9uBJ
+	 1ENXVXzDYQWjK4BhPh/7z7U3FCNNVQhlgPxqvAWAfKgmRqCj2sxf9iIIgCC2PgpYcH
+	 RSMOv3KD/QpK9l25WlQ3grvgf5R2LttSDjfKaawhSgxe9j5XVHCFPDPCqOj6a4P2dQ
+	 eMxeS2+WglD9w==
+Message-ID: <8b21dbb1e167b4a50b72613f09fdbb800a420fb8.camel@rendec.net>
+Subject: Re: [patch 03/18] entry: Provide
+ [syscall_]enter_from_user_mode_randomize_stack()
 From: Radu Rendec <radu@rendec.net>
 To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Kees Cook <kees@kernel.org>, 
- Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde
- <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,  Huacai Chen
+Cc: Peter Zijlstra <peterz@infradead.org>, Michael Ellerman
+ <mpe@ellerman.id.au>,  Shrikanth Hegde <sshegde@linux.ibm.com>,
+ linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, Huacai Chen	
  <chenhuacai@kernel.org>, loongarch@lists.linux.dev, Paul Walmsley
- <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ <pjw@kernel.org>,  Palmer Dabbelt <palmer@dabbelt.com>,
  linux-riscv@lists.infradead.org, Sven Schnelle <svens@linux.ibm.com>, 
 	linux-s390@vger.kernel.org, x86@kernel.org, Mark Rutland
  <mark.rutland@arm.com>,  Jinjie Ruan <ruanjinjie@huawei.com>, Andy
@@ -73,17 +73,17 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Kees Cook <kees@kernel.org>,
 	linux-arch@vger.kernel.org, Michal =?ISO-8859-1?Q?Such=E1nek?=	
  <msuchanek@suse.de>, Jonathan Corbet <corbet@lwn.net>, 
 	linux-doc@vger.kernel.org
-Date: Wed, 08 Jul 2026 13:24:33 -0400
-In-Reply-To: <20260707190253.768842729@kernel.org>
+Date: Wed, 08 Jul 2026 13:26:19 -0400
+In-Reply-To: <20260707190253.816918647@kernel.org>
 References: <20260707181957.433213175@kernel.org>
-	 <20260707190253.768842729@kernel.org>
+	 <20260707190253.816918647@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260708_102510_328407_D7EE7987 
-X-CRM114-Status: GOOD (  14.46  )
+X-CRM114-CacheID: sfid-20260708_102656_305113_9BC8A24B 
+X-CRM114-Status: GOOD (  22.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,51 +99,119 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On Tue, 2026-07-07 at 21:06 +0200, Thomas Gleixner wrote:
-> add_random_kstack_offset() uses get/put_cpu_var() which is pointless
-> overhead when it is invoked from low level entry code with interrupts
-> disabled.
+> Randomizing the syscall stack can only happen after state is established
+> via enter_from_user_mode() or syscall_enter_from_user_mode(). The earlier
+> it happens the better.
 >=20
-> Provide a irqsoff() variant, which avoids that.
+> Provide two new macros to consolidate that:
+>=20
+> =C2=A0 - enter_from_user_mode_randomize_stack()
+> 	enter_from_user_mode();
+> 	add_random_kstack_offset_irqsoff();
+>=20
+> =C2=A0 - syscall_enter_from_user_mode_randomize_stack()
+> 	enter_from_user_mode_randomize_stack();
+> 	syscall_enter_from_user_mode_work();
+> =C2=A0=C2=A0=C2=A0=20
+> to reduce boiler plate code.
+>=20
+> Those are macros and not inline functions as the latter would limit the
+> stack randomization scope to the inline function itself.
 >=20
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Kees Cook <kees@kernel.org>
 > ---
-> =C2=A0include/linux/randomize_kstack.h |=C2=A0=C2=A0 19 +++++++++++++++++=
-++
-> =C2=A01 file changed, 19 insertions(+)
+> =C2=A0include/linux/entry-common.h |=C2=A0=C2=A0 56 +++++++++++++++++++++=
+++++++++++++++++++++++
+> =C2=A01 file changed, 56 insertions(+)
 >=20
-> --- a/include/linux/randomize_kstack.h
-> +++ b/include/linux/randomize_kstack.h
-> @@ -77,8 +77,27 @@ static __always_inline u32 get_kstack_of
-> =C2=A0	}								\
-> =C2=A0} while (0)
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -6,6 +6,7 @@
+> =C2=A0#include <linux/irq-entry-common.h>
+> =C2=A0#include <linux/livepatch.h>
+> =C2=A0#include <linux/ptrace.h>
+> +#include <linux/randomize_kstack.h>
+> =C2=A0#include <linux/resume_user_mode.h>
+> =C2=A0#include <linux/seccomp.h>
+> =C2=A0#include <linux/sched.h>
+> @@ -150,6 +151,61 @@ static __always_inline long syscall_ente
+> =C2=A0}
 > =C2=A0
-> +/**
-> + * add_random_kstack_offset_irqsoff - Increase stack utilization by a ra=
-ndom offset.
+> =C2=A0/**
+> + * enter_from_user_mode_randomize_stack - Establish state and add stack =
+randomization
+> + *					=C2=A0 before invoking syscall_enter_from_user_mode_work()
+> + * @regs:	Pointer to currents pt_regs
+                           ^^^^^^^^
+
+Nit: current
+
 > + *
-> + * This should be used in the syscall entry path after user registers ha=
-ve been
-> + * stored to the stack. Interrupts must be still disabled.
+> + * Invoked from architecture specific syscall entry code with interrupts
+> + * disabled. The calling code has to be non-instrumentable. When the fun=
+ction
+> + * returns all state is correct, interrupts are still disabled and the
+> + * subsequent functions can be instrumented.
+> + *
+> + * Implemented as a macro so that the stack randomization is effective
+> + * throughout the function in which it is invoked. An inline would only =
+make it
+> + * effective in the scope of the inline function.
 > + */
-> +#define add_random_kstack_offset_irqsoff()					\
-> +do {										\
-> +	lockdep_assert_irqs_disabled();						\
-> +	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,		\
-> +				&randomize_kstack_offset)) {			\
-> +		u32 offset =3D prandom_u32_state(raw_cpu_ptr(&kstack_rnd_state));	\
-> +		u8 *ptr =3D __kstack_alloca(KSTACK_OFFSET_MAX(offset));		\
-> +		/* Keep allocation even after "ptr" loses scope. */		\
-> +		asm volatile("" :: "r"(ptr) : "memory");			\
-> +	}									\
+> +#define enter_from_user_mode_randomize_stack(regs)			\
+> +do {									\
+> +	enter_from_user_mode(regs);					\
+> +	instrumentation_begin();					\
+> +	add_random_kstack_offset_irqsoff();				\
+> +	instrumentation_end();						\
 > +} while (0)
 > +
-> =C2=A0#else /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
-> =C2=A0#define add_random_kstack_offset()		do { } while (0)
-> +#define add_random_kstack_offset_irqsoff()	do { } while (0)
-> =C2=A0#endif /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
-> =C2=A0
-> =C2=A0#endif
+> +/**
+> + * syscall_enter_from_user_mode_randomize_stack - Establish state and ch=
+eck and handle work
+> + *						=C2=A0 before invoking a syscall
+> + * @regs:	Pointer to currents pt_regs
+                           ^^^^^^^^
+
+Same here.
+
+> + * @syscall:	The syscall number
+> + *
+> + * Invoked from architecture specific syscall entry code with interrupts
+> + * disabled. The calling code has to be non-instrumentable. When the
+> + * function returns all state is correct, interrupts are enabled and the
+> + * subsequent functions can be instrumented.
+> + *
+> + * This is the combination of enter_from_user_mode_randomize_stack() and
+> + * syscall_enter_from_user_mode_work() to be used when there is no
+> + * architecture specific work to be done between the two.
+> + *
+> + * Returns: The original or a modified syscall number. See
+> + * syscall_enter_from_user_mode_work() for further explanation.
+> + *
+> + * Implemented as a macro to make stack randomization effective in the c=
+alling
+> + * scope.
+> + */
+> +#define syscall_enter_from_user_mode_randomize_stack(regs, syscall)	\
+> +({									\
+> +	enter_from_user_mode_randomize_stack(regs);			\
+> +									\
+> +	instrumentation_begin();					\
+> +	local_irq_enable();						\
+> +	long _ret =3D syscall_enter_from_user_mode_work(regs, syscall);	\
+> +	instrumentation_end();						\
+> +									\
+> +	_ret;								\
+> +})
+> +
+> +/**
+> =C2=A0 * syscall_enter_from_user_mode - Establish state and check and han=
+dle work
+> =C2=A0 *				=C2=A0 before invoking a syscall
+> =C2=A0 * @regs:	Pointer to currents pt_regs
+
+With the above nits,
 
 Reviewed-by: Radu Rendec <radu@rendec.net>
 
