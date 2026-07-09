@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1C00C44501
-	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 18:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49C5FC44507
+	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 18:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v3NWG3nzWzn0lD5brSEphHHDIxNRitNNFv0e1po41sA=; b=jwbR8vQN+D7/tcQDol6vgkMvZ6
-	26yeUG6pzBR83LMbnqe8YywzTGGspVxzI+J6oj0sRvPRIO6DJdaQ2/xniIIZt26izr6UrN45aHcev
-	9fNiIu23+DdQMC8eHqNsJNiItFuoJcV5Ab7hjGWRxwTPsG2tYPlN7jdba2CArBg0cZRmw0GmNKRQK
-	sSOf2xzwkWCGW28Qll2rFldTzRGc30MT3Hnr7M6xrUhX/CcVLthcVY9YpKeVwG/nx1xD48mNw+qgk
-	yEVwXxI62Whnyq/HQCjgYKSYsHzGanzjM//v59O/1fjWLtiyVkBFnK90aPxWjLV+F/I7Hd+ufdG/B
-	giZ4+LtQ==;
+	bh=aq4oHRjffhbqNLpraCJHXQbfXmiONMD/vVc6qcgWJtk=; b=lkYKA3TnIQkaQFL+4AsPXTAPXD
+	U3QeihRs+o+8LRrGjL3s54/3l+CxKOnmv4I5M9DGtXwZezQMyDYA+gnEIaoIR+uwC5pTUPMNdzJBh
+	wjfqQ1dbQf881ONK2eKANCD59e/Vd99oqg7OA4QJPJ7URPCb1L4dMPusLbVMFvRY9ut6VI6RhVB/N
+	f0f6E7xBtCgL2KjduG5Ej0uIATydL3qpppD9dyP27SZYIiCjyZQ9jmIpgLMaRm5VTm3bAeCB3gTkh
+	wpuqMEa2FClRQpm+C5BSMu7mVfyTQNrhFOJpASFjfKEzZyxxyRsNc5aiKT5woAC/yxU/CSP+JoRol
+	rZk5+/uQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whtfd-00000003Eyp-0sh7;
-	Thu, 09 Jul 2026 18:40:25 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1whtgf-00000003GGK-2pM3;
+	Thu, 09 Jul 2026 18:41:29 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whtfX-00000003EtV-3noK
+	id 1whtgc-00000003G9f-0IDx
 	for linux-um@lists.infradead.org;
-	Thu, 09 Jul 2026 18:40:21 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-2ccdb73f0e1so717445ad.3
-        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:40:19 -0700 (PDT)
+	Thu, 09 Jul 2026 18:41:28 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2cc6dd436c6so956495ad.2
+        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783622419; x=1784227219; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1783622485; x=1784227285; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=v3NWG3nzWzn0lD5brSEphHHDIxNRitNNFv0e1po41sA=;
-        b=p5kKHYrpdQSLL+MYP0Z8dH3RCa/j+KeV/Syj9MXwevDvyVsgM1iJiz5kIdM0Q45TXj
-         ukWeWczEwy7/pNfhTk0j8Thv3UeORc+Dvql09cRJetiOCcFkjbNXxSK8zs1a6xSZ/uNf
-         gahoLjki7veMMuI8SVoU3Iuk3JKA6ekCPIHwbCtPFuwby1N9b5e9c6XusMms0N5NeFI6
-         BFluYhpwszGrLBYUICvvE3iHroskakHIzNL1fw68xJyH0qcp4vcSzbWz2Goco9DnTbUp
-         3aqvhU0Z1JEeArwobKQfQLdOOAhI/M1A8KHC61505LpK/D+LHcOzcqUS2G0Jiun/C95E
-         GeTw==
+        bh=aq4oHRjffhbqNLpraCJHXQbfXmiONMD/vVc6qcgWJtk=;
+        b=pgu9KFgfGTA2cA2ZA2fpXnnCJmC+78Wb5Oy2T4Uxqa47V3MGKckwckNrQHjYwxBa5G
+         j4F9aD/ttkQ64tDpqH1KQIBBkAJOaN4uGHN3Ye0PkWuEfaHS6zDvV0WtNaQI4FQ2zO+N
+         Dqoqjn22uf8hrrlLF8iVgQ+pMF0+QieEZ5o9nacQN6D6y1EuWX2zeAJTZQMINS1RUmAn
+         E6ApyHZvjqJ5bRoa565kgd9iAOczg9HwkyQ7bHu9hgKxvq0+1q5XzyWApW8/FWAy+yxg
+         KNM2f2hESX9NHHJEDMj+Zd1hOmw/3j772BAS02mIZXVCtt/DZuCL9KYFyZpuvKE7mbnN
+         lyUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783622419; x=1784227219;
+        d=1e100.net; s=20251104; t=1783622485; x=1784227285;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=v3NWG3nzWzn0lD5brSEphHHDIxNRitNNFv0e1po41sA=;
-        b=kT2fnC6oWiqD+HYjF8GzoL2UHUS622F4tnYvdt2bV9+HiXe673iqdKEodgV8ezVolH
-         X7EDSAajG5fiMVw3xZtD/muS+glqYPmTlUI1XDosi9w/TreJDiqBBQ98AMWezdhCK2MU
-         /BIVmtrHHCsbbF+EdWgZ8ZVZYKJ4Zu4oGVoB3Xk+pGCq9Gzk99vUEizvhyEyAvr9xv+H
-         Q/4Og0M5Io3tqIaX8gtBVPbrPE/xRn2EixYiCqndkII++bY/zIpGAqudj8NCx6WtT7l0
-         RhQ+n/PCFUexYC9SFtkPkJDCRkZNTjCSfRBfdjX/ijr8mfXpDzKz/ZADxH65FpWru5XZ
-         IINA==
-X-Forwarded-Encrypted: i=1; AHgh+RosYTUYpnsNN7pYiknE1j/PscjM8tpgoXZh/Q35fHGGXg3E/SYEJCZO8za0TGvm7DWWMoynkb1jaA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy/KztSzTPytRx1DB6KHffPL42fS12JRe9/+648/juGchTlQMlG
-	CzhDwGulgDR1bVcnukrsfi1T+6N+nH7Ib4FXFqEQjS0tPV72rbCnzdb4
-X-Gm-Gg: AfdE7cnd8YsSRYl2iW0hjHrAHpU2Zdy0SpMAjQCNXAHQpr60iwDl4+mfhesIbYxRAo3
-	+HqzLUr2kozmx4pZJY+drvnUdXdgkzlKwx89YYBZ9NZNs0iLB8U49bcQm+ly7TAoRtDOVDO+XAl
-	M9wSWY5DwtFZ3r1A33cx/Y7FEGE4BNpYSYtP7s5eDAZF0+Ul7tvNvftAx5dI5jUDVTQX2ooMfV5
-	FDqgJisAbPqcmuRfO0yIWFAdZeRN4wiVtHMbUsEOYrgnWZ097wSm5fdSNjMNWmVyKVSd2QY3JQA
-	uRcSOnbCIvOjbnlK0wk6sZmDd/qnC+QmKSufzbzbCL/PiI8K3yNyxcjYZMuDKPmW75cH2lQg8Ia
-	geJkRoDWLW8zjf27Fb3elbg3pd/PCD4UETwTz2VcsFwqFVxd4GqlPx4hAETAnh9CjRfVfJ9ry5P
-	yk0V2+/zpi78soU5abONLz8fqptmo0vpMffUXGu8fCCj5LzLxxPRkGj4NET/ER
-X-Received: by 2002:a05:6a21:4902:b0:3b4:8300:7019 with SMTP id adf61e73a8af0-3c0bcf656a1mr10343651637.18.1783622418932;
-        Thu, 09 Jul 2026 11:40:18 -0700 (PDT)
+        bh=aq4oHRjffhbqNLpraCJHXQbfXmiONMD/vVc6qcgWJtk=;
+        b=DgHo48EAurzWS2CR8gkRIXxcFHBVccK/niIGdRgHcC8gRcTY5wdcu3JeKJDp03s7wi
+         9gKZUDhKdeI9F6IIff8EJorLJfzoqwwjm8CsjoOWpiz2pa+vUL+EBpzZFOGFRnG3DE/X
+         8oK+mPF9IKlEjWFbqjD6aDAEhNx5DTp0rPdPg7PItj42b/R1MOctH0uMWLMbyuxQ9R1U
+         Mclca92eEBodNnPm1QAgNsqDLHUtKfJxVuvdaMGFf2RdurmKbfax5lAEcQjNQMeLWo42
+         FT5ZUW45wCwjhYDvH7DDdWhpishHinEIj+CJ4Df0z0DCBEvzeGdVCjd7rllO4TVOzR4x
+         aDqA==
+X-Forwarded-Encrypted: i=1; AHgh+RqsZgc95aiVqOSCNOq8zXQ5hkJOFnZhyqmOflX1BjPFHMjR55x+GP9uFvmCTHjIL9sMl36RVg7TAA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw2RfohNuJ6xxLjg6rXJwbAoEmLVkbAAD2zRqdMP1rlgMkyocYM
+	BPtN61lRBjtM8qSOKzlV3BuOP8LCs5zqVJPrTdjsnB1DthLZ66Fh/qlN
+X-Gm-Gg: AfdE7cl9DkgLA2qZaDvZ+8bpUuSu9ldV7hDKm0QmvLoiHBjAnmXiTTYTkUqCKRq2CKQ
+	HvMyiXnNxmasHyQoS283mrEry30xLHArefF31nFHUsbF9t5iv69DAHLv9C/aQIhG25dRp+VkNJ6
+	EftQIomB5zh0yFoE9BeF78SAUQFHkfKuR/c+7eXLv7datERg3BZn1QMimL1TsHNTcnEdljpSgx+
+	GEWHxaoKe2C5viWsmQrXexEFK52hoP41XCc3t723Kx0e8AnCc3ugcMU5ftoY8qHkjnB8MYLvjav
+	Jlb6hQ+DGqkG9rlPO4e4byaKYF/b23xhJ+SVVkLtShpoErLPeAQNhcF9l/b7JfXNmkrcci+Ar9M
+	Zc/x6xOGzc3LOdAkeryc48VZCV/wZGq3hGpZ9EWNiJEeIgYv5JaZWePkhfHYrDNbwmfDscqvytZ
+	zecRGHWw69W9qqWuCULcRThk+/NtN8KX8WD8QkmQTHTRj6JxV4jojzOAThBv81
+X-Received: by 2002:a05:6a20:3d0c:b0:3bf:80b8:9c8a with SMTP id adf61e73a8af0-3c0bcead1e2mr9967332637.6.1783622485265;
+        Thu, 09 Jul 2026 11:41:25 -0700 (PDT)
 Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([106.51.160.236])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3118ee6091dsm28653518eec.14.2026.07.09.11.40.03
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-13b659d7c8bsm35321002c88.12.2026.07.09.11.41.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 11:40:18 -0700 (PDT)
-Date: Fri, 10 Jul 2026 00:10:01 +0530
+        Thu, 09 Jul 2026 11:41:24 -0700 (PDT)
+Date: Fri, 10 Jul 2026 00:11:04 +0530
 From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
 To: Thomas Gleixner <tglx@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, Paul Walmsley <pjw@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, 
 	Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
 	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
 	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
@@ -95,18 +95,18 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, 
 	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, 
 	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 04/18] loongarch/syscall: Use
+Subject: Re: [patch 05/18] powerpc/syscall: Use
  syscall_enter_from_user_mode_randomize_stack()
-Message-ID: <ak_q9qWuifFdo_9S@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+Message-ID: <ak_rL1RfdQVJ6zeq@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
 References: <20260707181957.433213175@kernel.org>
- <20260707190253.865955911@kernel.org>
+ <20260707190253.918861529@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260707190253.865955911@kernel.org>
+In-Reply-To: <20260707190253.918861529@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260709_114019_961675_0BA8BD80 
-X-CRM114-Status: GOOD (  17.16  )
+X-CRM114-CacheID: sfid-20260709_114126_151652_96CC9017 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,7 +121,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 07, 2026 at 09:06:11PM +0200, Thomas Gleixner wrote:
+On Tue, Jul 07, 2026 at 09:06:15PM +0200, Thomas Gleixner wrote:
 > syscall_enter_from_user_mode_randomize_stack() replaces
 > syscall_enter_from_user_mode() and the subsequent invocation of
 > add_random_kstack_offset().
@@ -133,38 +133,33 @@ On Tue, Jul 07, 2026 at 09:06:11PM +0200, Thomas Gleixner wrote:
 > No functional change.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> Cc: loongarch@lists.linux.dev
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
 > ---
->  arch/loongarch/kernel/syscall.c |    5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  arch/powerpc/kernel/syscall.c |    4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> --- a/arch/loongarch/kernel/syscall.c
-> +++ b/arch/loongarch/kernel/syscall.c
-> @@ -11,7 +11,6 @@
->  #include <linux/linkage.h>
->  #include <linux/nospec.h>
->  #include <linux/objtool.h>
+> --- a/arch/powerpc/kernel/syscall.c
+> +++ b/arch/powerpc/kernel/syscall.c
+> @@ -2,7 +2,6 @@
+>  
+>  #include <linux/compat.h>
+>  #include <linux/context_tracking.h>
 > -#include <linux/randomize_kstack.h>
->  #include <linux/syscalls.h>
->  #include <linux/unistd.h>
+>  #include <linux/entry-common.h>
 >  
-> @@ -70,9 +69,7 @@ void noinstr __no_stack_protector do_sys
->  	regs->orig_a0 = regs->regs[4];
->  	regs->regs[4] = -ENOSYS;
+>  #include <asm/interrupt.h>
+> @@ -19,8 +18,7 @@ notrace long system_call_exception(struc
+>  	long ret;
+>  	syscall_fn f;
 >  
-> -	nr = syscall_enter_from_user_mode(regs, nr);
-> -
+> -	r0 = syscall_enter_from_user_mode(regs, r0);
 > -	add_random_kstack_offset();
-> +	nr = syscall_enter_from_user_mode_randomize_stack(regs, nr);
+> +	r0 = syscall_enter_from_user_mode_randomize_stack(regs, r0);
 >  
->  	if (nr < NR_syscalls) {
->  		syscall_fn = sys_call_table[array_index_nospec(nr, NR_syscalls)];
-> 
+>  	if (unlikely(r0 >= NR_syscalls)) {
+>  		if (unlikely(trap_is_unsupported_scv(regs))) {
 > 
 Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
-> _______________________________________________
-> linux-snps-arc mailing list
-> linux-snps-arc@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-snps-arc
 
