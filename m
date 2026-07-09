@@ -4,109 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48D0CC43458
-	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 11:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C377EC44501
+	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 11:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OP+BLCmg7XOu9OIoY1nTg278DC95imbUOhUvbiFMd6M=; b=ORQ44J+L2haRdnEYoRHoXk0hhE
-	5KCekoIareWTT42NPTHKhPaUIqXLg2geEbxJ5K8TjDJXVeR/AhHZLkWd9SE1JX4b0Yrr2kxCNWccr
-	vNii34CfpyQ6J+FJgcHmiS+sbsZBmRvZXsz4lQNN5OVtN/Uq9Z/oUpTcaGvRy+awtkMzb9CBRIxLS
-	9+Rg8FNHxsLnJ8/Ir6+hXzFCgxbrMKe/CRJcECXELgEit6UCH2RhfjMqS+ITLAv9W+MmZu1AWGa38
-	RKRDq50R5GnFEzNb7ea3JW4XI6SZ+AiQB9Ub/F/dhCcgI09Ami0rxr/t+00z6wKUwOHSJjH1Fn6lJ
-	Lb0W9Zfg==;
+	bh=6mSNoqY3wyokI6LMIu3gKte85FSyTicRshSy0RusydY=; b=ydSNohA5MmQ6hQoeQMR5ktopzw
+	Did7e8SdY7HOG6qWGbnUCaPFd61zzFl/YGeejmlt/5fDMJ8JBEGY380s4Chb6dOTECAslvvGpd04m
+	p2TXOfrhwZpfdkhxKB0a/3oyarSJXsnSB+RvA2hJdTAq9pmjHZMdNTR0xjLgsCKwSzJFs52nSgcsr
+	OgT1pXbuB2sb/2VV8HwfxC9Nqp1I5dzZGrguADBVh6hDV/oSRMaFMZ8FjQaE9xCzyjOebmnoNtH54
+	8RraLbOgUytaMe6Jn7MOf5KDJZDbo67YjqG41MXLrtpGfMqsn+9NfUOKeGz6L3ihpBu5jlYLXoq3r
+	ul/pfPng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whmkX-000000027mz-077j;
-	Thu, 09 Jul 2026 11:17:01 +0000
+	id 1whmkv-000000027yY-2DmU;
+	Thu, 09 Jul 2026 11:17:25 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whmkT-000000027km-0ddz
+	id 1whmks-000000027wU-2UIr
 	for linux-um@lists.infradead.org;
-	Thu, 09 Jul 2026 11:16:59 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 669Ax3SO1603540
-	for <linux-um@lists.infradead.org>; Thu, 9 Jul 2026 11:16:56 GMT
+	Thu, 09 Jul 2026 11:17:24 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 669Awtw81660527
+	for <linux-um@lists.infradead.org>; Thu, 9 Jul 2026 11:17:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	OP+BLCmg7XOu9OIoY1nTg278DC95imbUOhUvbiFMd6M=; b=bZBcJAam+ibbXFwx
-	fYme4cr8sBqjGZ8/bhY813m3zZdemgRcv+ZZn5hEkMKaS7vw0Lsk0C+lZaMW/4N7
-	48Ti3b9W5djrMW6C6sRvr/fRMwvlr3Xwdk0O8mST92o98b2JRkz34WzfXmdlRdyc
-	+GNzKHdNyJRx4XFA9Y/FW2dL+68kjj0jsC9rEzLvB9U2wtPREHvCZncHnjBH0nco
-	DqfIf8EOVkC/PQXn3R9FFwNfO+c4fAiAxBDB9r3vKIUe0k0qjSg4thZ00H8jr+97
-	7VzXtBysfy4u+kGoa711kKXXJoacuD/Fbabaj49b91/ZVeI4dz7AgvccLaeW9YDn
-	oHnuIA==
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fa6p3s7c8-1
+	6mSNoqY3wyokI6LMIu3gKte85FSyTicRshSy0RusydY=; b=L5+SzP63bgPAWhp4
+	W0cUVg2l9n9I+4k0Akz43rpejx4oS0/IbbWAmLMXE7C9F37E36sY/GsXk3zuJt0e
+	7WRl8xWn74pDgWLAKB7VqpUweKGfDHpjZadrDE/thxVaWuDjHJ729famrINqKMDx
+	0upb87A5cv2e3e9cOgTo/VDABpH4Tf/6q96s0WSa2IFCTqdWIxx3GVEJhdklhdir
+	gMzNGoVv54cFMR8lTrj5sNzMMQDcUrBjV8bPTBpznG6YMJOrkgy1v18t2RPVEfx/
+	2v3dDdCotvg9oshrPidheW6ip0HZ0YECDQHkCxRsQPUi1HLjdw3FRE6oVFrVR41W
+	qvGWIw==
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f9v4vug3y-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:16:56 +0000 (GMT)
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-51c2af04aeeso10817501cf.0
-        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 04:16:56 -0700 (PDT)
+	for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:17:22 +0000 (GMT)
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-51c19493ac2so11529711cf.1
+        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 04:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1783595816; x=1784200616; darn=lists.infradead.org;
+        d=oss.qualcomm.com; s=google; t=1783595841; x=1784200641; darn=lists.infradead.org;
         h=content-transfer-encoding:content-type:in-reply-to:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=OP+BLCmg7XOu9OIoY1nTg278DC95imbUOhUvbiFMd6M=;
-        b=Mm6+MDzC4XSOzyF/BU87cVEU5DQi4Us5FswUTOiB4exVOzb5b5ZXAEmUbFABuMewsE
-         HrmWHWfmI+HbbR7wUbBL5rn0dUDKstCPczdZIFrt2LV0Aa3DQZCCcmFHN89tLwZvZ/Tl
-         FeEtSdUpDF6KhumFo9v1A1acNHb74zuC8rq5aF+jLngzs4mFroVqBlX/zd+FEML3AjmA
-         EMgjEf4gLFeGaq5iK10tjtlE8kbj+sgk17XxHMq9L01QqAEwdZJhIOJ+5VzCWF4B7f3Y
-         hfz5SccOI1OBFaFkFvVENO05yLoza40b/37pJg/ZGKwxc2b5fIxDBx1+HhZfKeMuR9jt
-         lcnA==
+        bh=6mSNoqY3wyokI6LMIu3gKte85FSyTicRshSy0RusydY=;
+        b=AefqBe/5MSqmtGKVRmMQcKqlhluRSXcwJY1rMF4+kHMFAKkhJpBiXFJ5qIf+y77ses
+         4pQoce9Sg3Vq2J9iuWXxZ0Jye9DaWCvoLOVe/+OygS1d0V1cqZA6gNlmPQk020tEzbvK
+         ZHfxXuS8caOUsCh+rOnLtuX9wI+qKzrA0agSMprRi0mANZGlHA8mUK/f1fswXhaOzYj+
+         iziXv6GGW7phSr2jDXliACHazNc1dIp+/kAeH+M4Mrbp6asAA3JaXsg0GzEH7QATc0Kj
+         o+dmGYFxg9YAfsAgUtCnhjBgTMR8EEzdG2BViSSSvcqRc/Q1/1OgOd4XToPyQsYlaib+
+         +J3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783595816; x=1784200616;
+        d=1e100.net; s=20251104; t=1783595841; x=1784200641;
         h=content-transfer-encoding:content-type:in-reply-to:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=OP+BLCmg7XOu9OIoY1nTg278DC95imbUOhUvbiFMd6M=;
-        b=h25RLsWthCggIEmLNmtBDG/9a2fDhUn3nwfkqxLeYZgy6+mTPl3ooVtIO5+LADFVtA
-         XTj3RenixU6gGjCAuGK+qjGfhe5DW3/1gvPGZrqPv6OGWbDhxUCjzCWZoo35AtldYB/D
-         GebRF+VbI7gs3DY79f8SyvcbzyiIHpKiRp0PkJva0AHshTjYpoObddkvFnrXDEc24vBz
-         iAX0GnGSqToZ4C2ayT7ooE+igoBGMw1DCVj5Uq83xqw7Xtfc1E8AzPDW2Y8xpi5AvHVP
-         iHn7gAA6gnqWB37RS+XCAYl2pBSVLHrboLcbKgUcZDRvDMEduJRBlGJtQdJfbrblQqbl
-         cexw==
-X-Forwarded-Encrypted: i=1; AHgh+RqqJ8euLNfHAzwV0O9EJmJTNXRjrJ+++SJWvh3zuuP560EU7zoIlzdu4TqsUJPBSTrDpqTGNtxBiA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwO4B0/3SGD11Y+LiwD8rWmkM7QZPhS35yft3gJ2by/MmdMbwNy
-	pcxeWp76Pe4UJW86CSf+s47neS4wrI3TMLIdImh57nC09af8RTq88bmBcDD+TWJlTI9gK+x28VP
-	5tAW0oevd5OCD4g2WCaue+Ip0ChfsN7YA95HsVJTCI/s9FqIjXY2zn0u0ZI2s3CNF49w=
-X-Gm-Gg: AfdE7clKYsRDBww6/zmjXnLM27nNP4VRa2nsNO+FVJzHi0tMLEmnc9ENltZNajlZNlo
-	6PirHNLtbKFXzjQx/TMQBCSKdZlOW/gobXa2ERdCbJObY/NYea+X8gsbol777co1gFjkgqp57jx
-	TGLci0fURY5/L2iXy8NM6NKujSU5phLR4WS+gfIhm1KC1gvrSTmqItrr69CUBqmDqZU2hJayubW
-	0FSOa1dOITT0urtZDTMLyiVfG+IX44cDwtq/P9bGsfjfn21HLvRBwrFqIZ/1CJpYsFXBE5aRXBS
-	VROiRyEs1OqmGhBrll7xvxBN+0oBzRymAXKyl+/L6HnUvWPUvEKtxUOZ4QTCZujUpPtovbRuh6k
-	erUb6JCf/uVRDbviVxAdZVyVnRa7nz1l7gf6uiAzwhykZZFOMV65U8/6zKaIwAg==
-X-Received: by 2002:a05:622a:1cce:b0:51c:558:cbbd with SMTP id d75a77b69052e-51c9ba21545mr21236591cf.41.1783595815672;
-        Thu, 09 Jul 2026 04:16:55 -0700 (PDT)
-X-Received: by 2002:a05:622a:1cce:b0:51c:558:cbbd with SMTP id d75a77b69052e-51c9ba21545mr21236071cf.41.1783595815288;
-        Thu, 09 Jul 2026 04:16:55 -0700 (PDT)
+        bh=6mSNoqY3wyokI6LMIu3gKte85FSyTicRshSy0RusydY=;
+        b=Rf5ckX2lU+Ghs03mRJq+1vZen3+ns0I2Y8xRmodM8/LLL9YJV10BEUG8i6oB28oS0D
+         4/wo+Zea/mTmdsWvnx4sqDnTa8Gr0RGkxGzWZ0Hq89k+bHK5D7nBh/8kaB5zjU2u3gQ8
+         lazCiGdXnwdOge8If6RPIaB+9T9iNAur00updJU/iFIEzIzOy2/bmwQUdzEEcKf5qpLZ
+         NgOxBV+ipwEHGdXQunQB+E4lMNItuJe9eCk2GnuwllNdXvAe6Ls+L6zkXUX1l7jbborn
+         ILG73ke5cwP2mJ/p0YdFgXGYvFSfoBuXL7hkKebRmOKe9eJArkJ5E+/z1gHnJEtFlSjA
+         nhAQ==
+X-Forwarded-Encrypted: i=1; AHgh+RobvjwylZA2u1JTjr56OeFRxRxJGynbuZqfaL/3xB7/++pmlvZoS+DXzZgP8/jQPNitUpCDzq3v2g==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxo1gf6mf6aB8f6Xs2JVehU3DubbRoUdmWGs/YF9NvCNPUemKkl
+	XmNCrRcCGqO8LFBUteFBwTtsaPaoEfw4PGkn+bPFSceKfkdGpR3TJxj0fCskEaYKDhsz25xoiYL
+	SSl8+5OTEzfNtkA+wdIYzk/revqKjHfLYaOd+/K7MU9s64GtDkN+W+sgmzxJIIJyouFE=
+X-Gm-Gg: AfdE7clY0c5fvvUOmGD0sNqD6clifN1AY0vXGWHKZW5QyYjvWuiOl0PSSukeMQzaG4x
+	0ZOvtZwlj6pZMARMwRmWBQJr1zxzsbbQeaKL9eSEd/0w/IabgW9+slMCTcbNprim5Ustzp3jMY3
+	r1FNoK0ZawAb+hoIJc8Y04on+A5J9JepJjqeRyFBv14+9aE/vTmgr//wLe0nr6lv0M45M9VLnGZ
+	ccFBdrNdEE/A38CZgATSjzqwKYJbPuuOmu9YPx79zmZGRq+701eeh1AGeNWtn3Wi3ubcZX2tjc1
+	2KpMnXQ3uOSn7PZ2gPXDIYmCaZcJpUwqB5uIJorda8ZwUOaudjf3NEfXsx2cYcmoBiaKTGA5sI7
+	cAF6xSmyUwHBrZMHdgif/v5++0hFnLTqyueA50Dm87VPcvTExZfsHMuN918EVhw==
+X-Received: by 2002:a05:622a:c86:b0:51c:7b11:41b2 with SMTP id d75a77b69052e-51c8b51c97cmr72541611cf.78.1783595841155;
+        Thu, 09 Jul 2026 04:17:21 -0700 (PDT)
+X-Received: by 2002:a05:622a:c86:b0:51c:7b11:41b2 with SMTP id d75a77b69052e-51c8b51c97cmr72541381cf.78.1783595840774;
+        Thu, 09 Jul 2026 04:17:20 -0700 (PDT)
 Received: from [192.168.69.219] (88-187-86-199.subs.proxad.net. [88.187.86.199])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9e4d8410sm51612968f8f.15.2026.07.09.04.16.51
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493eb6cccfdsm54034235e9.1.2026.07.09.04.17.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2026 04:16:54 -0700 (PDT)
-Message-ID: <b2ca1416-e2c1-46ac-8a26-ce671c76883f@oss.qualcomm.com>
-Date: Thu, 9 Jul 2026 13:16:51 +0200
+        Thu, 09 Jul 2026 04:17:20 -0700 (PDT)
+Message-ID: <8d15c107-30b1-48df-9e69-a7e8520f4e36@oss.qualcomm.com>
+Date: Thu, 9 Jul 2026 13:17:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [patch 06/18] riscv/syscall: Use
- syscall_enter_from_user_mode_randomize_stack()
+Subject: Re: [patch 07/18] s390/syscall: Use
+ enter_from_user_mode_randomize_stack()
 Content-Language: en-US
-To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Paul Walmsley <pjw@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+To: Jinjie Ruan <ruanjinjie@huawei.com>, Thomas Gleixner <tglx@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+        Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
         Michael Ellerman <mpe@ellerman.id.au>,
         Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
         Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        loongarch@lists.linux.dev, Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, x86@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
+        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
         Richard Henderson <richard.henderson@linaro.org>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
@@ -131,42 +132,42 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Paul Walmsley <pjw@kernel.org>,
         =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 References: <20260707181957.433213175@kernel.org>
- <20260707190253.974626922@kernel.org>
+ <20260707190254.030598804@kernel.org>
+ <499eca86-8def-4044-8b69-8f290528e10f@huawei.com>
 From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
-In-Reply-To: <20260707190253.974626922@kernel.org>
+In-Reply-To: <499eca86-8def-4044-8b69-8f290528e10f@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: QhNMXlWjBgvKjsWQgCujftpTSH-62_Sj
-X-Proofpoint-GUID: QhNMXlWjBgvKjsWQgCujftpTSH-62_Sj
-X-Authority-Analysis: v=2.4 cv=TPh1jVla c=1 sm=1 tr=0 ts=6a4f8328 cx=c_pps
- a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
+X-Proofpoint-GUID: MC7cKmsbTbjz-eyouepQZPxzN4GECoxQ
+X-Proofpoint-ORIG-GUID: MC7cKmsbTbjz-eyouepQZPxzN4GECoxQ
+X-Authority-Analysis: v=2.4 cv=GIg41ONK c=1 sm=1 tr=0 ts=6a4f8342 cx=c_pps
+ a=WeENfcodrlLV9YRTxbY/uA==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
  a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=M51BFTxLslgA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
- a=VwQbUJbxAAAA:8 a=_O3DOGVWAAAA:8 a=JfrnYn6hAAAA:8 a=EUspDBNiAAAA:8
- a=DoJJhcVa48uSEvU2-xUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=dawVfQjAaf238kedN5IG:22 a=2TKV-7w1aU1AVAwN0oqT:22 a=1CNFftbPRP8L7MoqJWF3:22
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfXwkUWR1JhpriY
- p4j82r1WsW9iWUORX2fGSRrjvFkGw7maAod7wkb6Ah6z7UvhZPNRFn9IaQ0AQm3yX55cnhPRzUE
- bmWA5UOii071U7SOm8K9WY5i8aVv9so=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfX6MFbge8KOUAE
- GOTIiMGCi5Rr7cm2plOHj/zxYRjJMuhUMrclWj69avNNLi2PA3aCGfQFqsSQNMPz6qW+mfUoVIE
- n+q/ZuM5P6+E7Vt1DOmXMNfXkF6xyIrnF5DyJR8hqy7qF6fLLpEKskVBwxyxXHBYUynZ5NFJNVd
- FvR5q76QjJBV4nqNgNy2Gw2iYgugyd3mGl2umlaTS1GGrvoAnZlYhzcYtQpIJ89UI7cV84gnEKB
- fY69VXhvSmGmde4u5fz//RzXO8xR1Y+aiSbRAIOzr6MSct5N6ZTbmbN5Ybz7Rbj63W6PPJJUvZQ
- FCVP7o9nNeWTr79H19WpSKVcVNY3gVPFTUXcAWXzOqz1KlM0BVovtaCYFAlyo4r4bAzlrvSQy4N
- 4p3oYptlPeb0EqIG/ZczOQuGbyD4LG7yuOLEZlRB5yDffyvC9jN1E1FmALfp5dsSWqjck5e9b8M
- ZPOoE50hfrxB1ETqijg==
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=EUspDBNiAAAA:8 a=LfsA7Cq2GQzuzbZ-N0YA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=kacYvNCVWA4VmyqE58fU:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfX10m/FhCAxmmL
+ xAWw8/Rcd5pLer69u6J77Xc/MeCWUF1lSKrioAWqUDNuv09KEM0BNkAt0UqpdpSGwetp2Xo/xZr
+ Ti0VY/ayX8DI3F2ign4vId4Y0ZxZf/AfnKtLB1FniFCXGYP1TXtOOXIEFr/+h7qYoaLjyENe41R
+ JtEP9b19canwY0+wiWtZ5Se9A1K6Ga7yWLCp4zg5Vcz6p6I+cJnruxjzimHqj99NeUP9YpFO+NP
+ +yqmiezvH8547VfTwZudkJMFKNUFdgwFVyfQodKRPqXmnVXAa2TANBLAU1MxEPsM1Xj92bGpyIM
+ XOkFi6fg9urcLPp7YDV1qDcmtQb2g+lasI9lLWLq8pIixkSl6YarMTbNdAq2GXYGh9KCjnx3Srz
+ j2L2wAdUH3Rmpsx/znf4E0VE/KgMz+HjMUjx8HRU0t9ffiEQeX6pA88X1OCQOiW6+n/oLZ0BafL
+ vd8VWPSJ4ZmwtkPuoUQ==
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfX0OnIFkwkykJp
+ 1/xBTYKDtWj30cbyEeeSobsTtwRNe69n665YAF3zI2pIB/asv8iUKg4w9FwHN55VquLwfPajNxC
+ yxz965q5HQYANvEChVJfZvg681F9SSM=
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-07-09_02,2026-07-09_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 suspectscore=0 adultscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607090108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260709_041657_190385_448CCF35 
-X-CRM114-Status: GOOD (  14.18  )
+X-CRM114-CacheID: sfid-20260709_041722_629642_EBCC385C 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -181,24 +182,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 7/7/26 21:06, Thomas Gleixner wrote:
-> syscall_enter_from_user_mode_randomize_stack() replaces
-> syscall_enter_from_user_mode() and the subsequent invocation of
-> add_random_kstack_offset().
+On 9/7/26 04:46, Jinjie Ruan wrote:
 > 
-> The advantage is that it applies the stack randomization right after
-> enter_from_user_mode() and thereby avoids the overhead of get/put_cpu_var()
-> as that code is invoked with interrupts disabled.
 > 
-> No functional change.
+> On 7/8/2026 3:06 AM, Thomas Gleixner wrote:
+>> enter_from_user_mode_randomize_stack() replaces enter_from_user_mode() and
+>> the subsequent invocation of add_random_kstack_offset_irqsoff().
+>>
+>> As a bonus this avoids the overhead of get/put_cpu_var() in
+>> add_random_kstack_offset().
+>>
+>> No functional change.
+>>
+>> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+>> Cc: Sven Schnelle <svens@linux.ibm.com>
+>> Cc: linux-s390@vger.kernel.org
+>> ---
+>>   arch/s390/kernel/syscall.c |    4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> --- a/arch/s390/kernel/syscall.c
+>> +++ b/arch/s390/kernel/syscall.c
+>> @@ -97,8 +97,8 @@ void noinstr __do_syscall(struct pt_regs
+>>   {
+>>   	unsigned long nr;
+>>   
+>> -	enter_from_user_mode(regs);
+>> -	add_random_kstack_offset();
+>> +	enter_from_user_mode_randomize_stack(regs);
 > 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Paul Walmsley <pjw@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: linux-riscv@lists.infradead.org
-> ---
->   arch/riscv/kernel/traps.c |    5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
+> The #include <linux/randomize_kstack.h> can be removed.
 
 Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
+
 
