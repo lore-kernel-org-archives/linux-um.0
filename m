@@ -4,112 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3290DC43458
-	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 11:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DF1AC43458
+	for <linux-um@archiver.kernel.org>; Thu,  9 Jul 2026 11:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E2VXUkO/1Nfb5542An87XlKwD9GRDm4PLC6Ooi7YQSk=; b=Ibkbp6eWF2YFMlw2DE6LJKlp92
-	7iTWqg1tQ6HlKnMqaEbnnWYeHGyT3sA4aXjJVc3mS/uUBvDHBZCmaViqVvaJ3aGYyLYpCAFTJMTWJ
-	D6tu2pB5U/aKa8LWlaa2Piy4KWMuFdqcxpuAuqy6fgJfl3q6tee/LWrWhq2+pKw+xuKOOMs14xQpV
-	k4GSxbz+bK/URx4yvlKN43aDfACiaWR9Klbv9j3LLm3ksFsrAyDXhtsYcb7OT1aPKe0u8TpTn0XPq
-	QA21S3iXqtWn79r+W1XZ4OhuoEHoB1LaKLi5ZT5BjHe2oI3IohQX/INYr964CC0zoWZhZiU9E7f7q
-	pxENNVcg==;
+	bh=GMTUKuNW7nHEjTmJYQtVLsm+lxP07KtZQHvvJ99eHNs=; b=Dk9lU8F2Fjx3PlfccDOjQGKbwE
+	7UgEaKh4mxgpTgMZwWmcQSHLj4EXeNwBRZkUXZSsGEPZyEdup2eteaE8JbJJVF8/Ixkp6auI7UcmH
+	3ob84BYw7T/3JVcT9SGyjv27X87lp/C6Z+WLxPxBxELlzM9NubbsYyPXPiOq0MWOaDSsYDiZq0baJ
+	dn8AG+bH6zLwtuNsjvq6pbx8UnqxYiCFqEkhUumWvIinYDqmwdA1DnCfxM5BC1wo/39jd6Fybdb1d
+	iIBUpIN+YNFnH/GRgxYCvzie/Bu+6yXE2rtwL5MUKqfnzgFVf+6Hw6s9obLKtyqhF1WcCGZc4L6ZA
+	1ATyaM9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whmoK-000000028rU-2Wqd;
-	Thu, 09 Jul 2026 11:20:56 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1whmoJ-000000028qM-36CS
-	for linux-um@bombadil.infradead.org;
-	Thu, 09 Jul 2026 11:20:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=E2VXUkO/1Nfb5542An87XlKwD9GRDm4PLC6Ooi7YQSk=; b=rO03TR/pOyRuGNJPF7T/P/abXb
-	FAO2agNk8Vb79N3YtIzZN9UOHGWzHhMUhzqFoeC8zQDiYS+ZwDvJnvrwgmwbr9qMo7dv910yUl2Hs
-	lcOLVQGUJUkcXRVLJc/+2mh/l1TknXjkDJasNfW817cQHnGcazI/LCeoUcAh7rqyo+5Kj8dukDL+4
-	VHNxcmr+7HQDkzelGErexXdpMg+O1GCR2zs/uGwEi3aHGrdvjFGGY3EGj7c1bvIIc5nmitZx+kdG4
-	r2ySrmbxcL7iyBx9fN3HxkrtZnzhE1tEX1M5CbY12EdhYH15p2V0TdhAuwN7jW5Lt98AFtqnLY2Ma
-	QB4BNrsg==;
+	id 1whmpv-000000029RT-0R9S;
+	Thu, 09 Jul 2026 11:22:35 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1whmoF-000000097pr-0nWS
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1whmps-000000029Pv-0d8B
 	for linux-um@lists.infradead.org;
-	Thu, 09 Jul 2026 11:20:53 +0000
+	Thu, 09 Jul 2026 11:22:33 +0000
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 669Ax4031603551
-	for <linux-um@lists.infradead.org>; Thu, 9 Jul 2026 11:20:49 GMT
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 669AxAhM1603599
+	for <linux-um@lists.infradead.org>; Thu, 9 Jul 2026 11:22:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	E2VXUkO/1Nfb5542An87XlKwD9GRDm4PLC6Ooi7YQSk=; b=iOWfjmK8f8Y+DVJW
-	EcnBVbRqoFetWpR+MvbIm0rNsCYEYiCVdv/jb+r7ZZuAst5pdACVTyVPX1hk4M4R
-	UloW32yrnx0br0O0OZPBTsUXsGcPSz6fo0b7Z9SsSAlawkneGV3knPcGuKS4ecbQ
-	qUgL7kJ1kZwezKuA1OHch6fG0wR/9IjoD0gaRXopgi656DtKQN7lmNG5nDcMpELo
-	+2tydKrnvkk1mYPsPWN5nD/hRUDpTxejd9pRgo55t5XyFzKGEVSWfHJeObs1qXCX
-	o+wuU7kKSC/wnWW5kZ8U0x7Pvu4fl9GPrm5rLmSBf6RmcKnNqHf8RgkEBJ09ZjsD
-	t7y3cw==
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fa6p3s7ya-1
+	GMTUKuNW7nHEjTmJYQtVLsm+lxP07KtZQHvvJ99eHNs=; b=jTI7fkXQl7cmfY8u
+	/6bNS+Fwu0N0JYJjqKlpNE/bUkl2mhzeMCIy9YTKs/eoShIUpl8OQCJgxUcCe1Qs
+	3cJw4qK9vv+hDmJX2IozRyra6X37WE8v8Vxl6bxaUL0j5/MLQKzhvIKs34reKXrh
+	QWs1Vb41u8wIG/o9knrL4GgKq2/ZBNYGTwPnHTuT5u7jJ3EMLnaiRdEBXGlLErlS
+	QMBDjPbvcSMQgesyK7qkf9Xbt4GVvlCDF7pU0Ep4e6tiqGpO14UiKVK+WJIifgMb
+	eFDVUlYtLgbk+5e07s9PeDWnBLvsQTPHVnHxEKk6PFxWS/VH6saUNZqOsHQv410+
+	3wCVHw==
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fa6p3s88y-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:20:48 +0000 (GMT)
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-51c01ff996dso17579791cf.2
-        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 04:20:48 -0700 (PDT)
+	for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 11:22:31 +0000 (GMT)
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-51c1d7886cdso16217301cf.1
+        for <linux-um@lists.infradead.org>; Thu, 09 Jul 2026 04:22:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1783596048; x=1784200848; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
+        d=oss.qualcomm.com; s=google; t=1783596150; x=1784200950; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:in-reply-to:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=E2VXUkO/1Nfb5542An87XlKwD9GRDm4PLC6Ooi7YQSk=;
-        b=h7QJriVZuTgvOrv07H1eaxDeYk/QN3U8KHvfIPc3JdCOyxq95QEbKkHDoZpkgz2dr4
-         Mh7Whc7viyChmYq+uUSCxtff4YSSFByb9VlrF2k+zC+TsO3GohB2FVkrdWuvtBjm4mEY
-         kjuZwX3MbRvHBvxU3yM2G5kI+KsXxgmPpKQJTCYSqUTe4qlzuoZMlGTcr/LnnXbc4IzO
-         idi8k3QE30mMA8+8NG5tUJY4/V7NKpwdLgS6p4OsJXiWQ34yucq49lXE7/U2Uy53G3DT
-         8Gb2cbzdDegvp9hy/zXpKWWYCNj6YORet4O+saDIyUC1O+VjTpcof89Q+lAocVyPCIY4
-         aSDQ==
+        bh=GMTUKuNW7nHEjTmJYQtVLsm+lxP07KtZQHvvJ99eHNs=;
+        b=B9b6LhShy8NFKbrYlFawzpA9BW5sL3WZIaor3JjJN5dijFUSLMn4TTHJBumJ1jHmLB
+         4pkeQ3NABLEWGRyxm0d4IuZnWvzE5LtJYPUfbihACAZon1Z6AqGPttvlnU0QV9H5jHNN
+         RIgLUe2B8o3Qgk0ROk8+MybzDAzgqFINgGSsz7yrr5hsqLqLUMxNUD9C1oElwqIAfvxM
+         JleHAL9jT8ewb18K92fVCE3GT20YSxSVCK8zdsIUGJip5Lu8rf6fxnmixj40lGvhqq/X
+         UNkXjhP2l3bG069E9FgKnVGCDin6v52/TCUh7BwYIHk8ih237Y0IfkUzecjrUdtEiBkG
+         HOBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783596048; x=1784200848;
-        h=content-transfer-encoding:content-type:in-reply-to:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
+        d=1e100.net; s=20251104; t=1783596150; x=1784200950;
+        h=content-transfer-encoding:content-type:in-reply-to:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=E2VXUkO/1Nfb5542An87XlKwD9GRDm4PLC6Ooi7YQSk=;
-        b=k2/VHJew5Chgug+iTe18L1F8EJg11w7zsnIjgyRENf2L0Z15Yl2dsMPKK8LWJvMp6g
-         cCuhsV/ODKq87dScy6CFsgT7d2vFvSBM1u01JMFcKyqAoFNY16RzhAUPF1DOImunUSVC
-         wiAOh8YRQiRa06OQ/nRh/pFuuxFOmiLDg/1eQfZcvZiqqxExyAs7s6dltjzwQlVP69DL
-         4QnA4H1ElxDs5YzdB5YDHSTfSh/sYGVYKssOTtA9gyACNIRufvmkcTo8wI6IUL1QnOy0
-         ly57q0cwJLyj9jMyQHieRhFKerBMkyKZRG1iMRNW9OTvnFhS8dAWX7kYls8WjWPeI5bS
-         EQDA==
-X-Forwarded-Encrypted: i=1; AHgh+RoNQlpRoQjJG6KVWOmLx8Kj4whcQ2h8WBtJ10vNOA7uP66GEmOK6tYO3Ixq8UhRBoxJo9F0VAHxrQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxB7TnwPVXizWyZpsqDTj9asqnY6vDIJFiPeEtJU91NI+dlOHWp
-	g+vTasmkeNpnuhx7uA/fWs0Vpzp/kMBpWqLg32JLr9k4SeZvXuVvStHzXsTSn5q3tpxKyxcETBB
-	h3h3Pf8fawMIoAZtu7klCQfIJ0YJRqsf4qJyK+rqE952iAUoRsSE4Igb3AVjqFrV1ZoU=
-X-Gm-Gg: AfdE7cmtK/YEVVAe4RxoZmMBRiYpnFOD3aa2+yiw8U5bkF+0FxzrdEx60AVLpWbdCgp
-	3ibwVa1wJxxd0xJdrWtPMPzVpVGUV80qOSV4Szc6IS8slSWAxIr7uAUJnNvmJkWUSEHgGQwf9jm
-	XmEx6cbOUnRzMtre0wDdiqHuJaSWMO2kBudn04G7FsQ6qcg6dhltv12X/YBLeK8CD/PLAKAZLNa
-	ma06XTbTlL9GEY4pfqTJClbwK9W45jKvrJzaX7skh3FfSaD8PE/0qgDr6XYlVD83bZj3RGYDGeF
-	s1PuRO6RRfHwn5PO0NFubRwdHMS5aF+zNZ6aLtvvP2JIFwiuo9uVkx4685deIPYIIwsxu7ZQhdq
-	8OqgR2RMQbpaoEl0yDm5hInVu9/4SfRwCm3oRLU3LzIapnucrVKrteD7ebCDnKQ==
-X-Received: by 2002:a05:622a:251:b0:50b:4491:a2cf with SMTP id d75a77b69052e-51c8b30365emr71755001cf.27.1783596047580;
-        Thu, 09 Jul 2026 04:20:47 -0700 (PDT)
-X-Received: by 2002:a05:622a:251:b0:50b:4491:a2cf with SMTP id d75a77b69052e-51c8b30365emr71754181cf.27.1783596047072;
-        Thu, 09 Jul 2026 04:20:47 -0700 (PDT)
+        bh=GMTUKuNW7nHEjTmJYQtVLsm+lxP07KtZQHvvJ99eHNs=;
+        b=c6LDSQPDJARWeQEN/4CA2ZBAj84SDUUAX5rwPIAeu/d9QREDTJt+EbCURwah9f/jqA
+         FiqWtPe1bNPHBXg2C5gAdkA9CHIoIe342GtKDC+Zws50rkMsw4ynnVfnzSU5thBgtjs3
+         Ztz5Om+kVT0lazEMlsD3ys+DUSxgCMwowJQwrXr/GoV82P5TU9qg6fgxegtJSnX3tvbt
+         stru8zY9Dp/NDqtyqAce3vHMUeP3p9Kjb+05RHK1h+MMgd8HoDqW2RD10MR16Sk5zb1A
+         sIBC2zpJejgvpPIyu+KEuZIqCg1N61qd8vwIW1WxvGq6dKObdHilrPCeJ4bNYNVu+5KP
+         6HrQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqSAdUOEWOLIL25PkayCjEVuFrhq+G1FmGEeh/wYohzUoMUAkDHzS7fCT7atpXqIEq/Mj090kpOkg==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzhr+WtTUCRVHtMbq7BbEaxeCJl31YuISma02O6riuD77QuAlX4
+	Vqun0koZzZQUJ/U3DTYRzDY2a5NsRdmrUG1r4h52tbj+WSo4EjDURQvjZUaGqIrIXbIj5PHYdxu
+	YJzqQyHe3DgNb5hyMbisiDqUxOSMC6GxMvkqQTaiqNOSvXe4H2hIDUB/BUhsoII2a3io=
+X-Gm-Gg: AfdE7ckbiauNJ+Lw5t+iabeg/Dpek05fZozYLzmrCGqTl/uWeWgJ93skC5gV0UqVOTI
+	J6LBvim8l+zFduqn6QNFAXTUkPQZRJlh1ZXUzRDVtNTEZ9R2StuJI0LUnJQpNYQFTiNR0lJxbck
+	4qyn4nboAd+65wPOJX0+A+JgMJ9NtfDObQQ0whiCP6IU8nAEh9jMAlGUT6Lm3VEtIObXjgE/ng6
+	hRgywMtjgNlSUTE6kyW1Nhm4cIHiqC31u03rSK1+d+Y4kF7uJsoUYPqz/m2NiiTQ2JxSay09CPu
+	ZnceEMKsvChiCL4eqb0rK5yTLb52bn+yCMgIXL1GY4zKccRZsothf2oLkiK6exA8I6wSVyysHcr
+	HoqqZ89/QeCMBvA9WAVOOrDnrWjOmiBvtvUnpJEYQj0iH3SSG7qhB40Sqmoz9xA==
+X-Received: by 2002:ac8:58d4:0:b0:51a:8c86:bd4a with SMTP id d75a77b69052e-51c8b407e1cmr74987961cf.71.1783596150601;
+        Thu, 09 Jul 2026 04:22:30 -0700 (PDT)
+X-Received: by 2002:ac8:58d4:0:b0:51a:8c86:bd4a with SMTP id d75a77b69052e-51c8b407e1cmr74987351cf.71.1783596150195;
+        Thu, 09 Jul 2026 04:22:30 -0700 (PDT)
 Received: from [192.168.69.219] (88-187-86-199.subs.proxad.net. [88.187.86.199])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-69acd1d32c6sm1861799a12.31.2026.07.09.04.20.43
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9de1e6ccsm50814277f8f.5.2026.07.09.04.22.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2026 04:20:46 -0700 (PDT)
-Message-ID: <73b82749-2df3-4c12-bc2a-ff7628dc8292@oss.qualcomm.com>
-Date: Thu, 9 Jul 2026 13:20:43 +0200
+        Thu, 09 Jul 2026 04:22:29 -0700 (PDT)
+Message-ID: <ea24e611-91e0-4397-a49c-1493966094f9@oss.qualcomm.com>
+Date: Thu, 9 Jul 2026 13:22:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [patch 10/18] entry: Use syscall number instead of rereading it
 Content-Language: en-US
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
 To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -146,29 +132,29 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 References: <20260707181957.433213175@kernel.org>
  <20260707190254.181086755@kernel.org>
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@oss.qualcomm.com>
-In-Reply-To: <20260707190254.181086755@kernel.org>
+ <73b82749-2df3-4c12-bc2a-ff7628dc8292@oss.qualcomm.com>
+In-Reply-To: <73b82749-2df3-4c12-bc2a-ff7628dc8292@oss.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 5i-QWvhzvwqWBcLSVNfpWf4T2D6fVTRI
-X-Proofpoint-GUID: 5i-QWvhzvwqWBcLSVNfpWf4T2D6fVTRI
-X-Authority-Analysis: v=2.4 cv=TPh1jVla c=1 sm=1 tr=0 ts=6a4f8410 cx=c_pps
- a=WeENfcodrlLV9YRTxbY/uA==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: JYIV_KLEW5WOIufb3SXNo0vH7R70IV3w
+X-Proofpoint-GUID: JYIV_KLEW5WOIufb3SXNo0vH7R70IV3w
+X-Authority-Analysis: v=2.4 cv=TPh1jVla c=1 sm=1 tr=0 ts=6a4f8477 cx=c_pps
+ a=mPf7EqFMSY9/WdsSgAYMbA==:117 a=4s3hRJSeHn4rkQlkrse1kQ==:17
  a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=M51BFTxLslgA:10 a=s4-Qcg_JpJYA:10
  a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
- a=VwQbUJbxAAAA:8 a=uucGcSui7XbmpEV0VHgA:9 a=QEXdDO2ut3YA:10
- a=kacYvNCVWA4VmyqE58fU:22
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfX8/PpB0EZoWqu
- aiyhuqyTcCc+QKSuFDfKIhYWR53jPHTOq7YJBD0zR2ks/wp41uyMWTN3ruEW6yx+o1g09DqsfbA
- Z+4DZ8wxoRHXUC2h24iJOiYuRbkTylo=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfX2MSCKGMzTGO6
- kIm6qDkKkokIViuUlAyxZjGWfGRlzJu4Kn1HvHKqxC1/+jfq/NEo3wBY2REgwFk8Hjp7i8qlcSA
- YQwHbiSYvL1lGe8dIENvu221PtKs8tZL55QjZ43moDzSm/QVRbwUeKvi8TKzQnShJXmkfivtzBw
- gbr6ZUsQWkqfNDuD1vTN5S4p5Sln5AiL0lV0Y8tX3Xp8sfyfxmbA0oDpPwOEb7cchH7epYa8+nj
- COOCavvOpjGe2a5r9XY1E8OymcytNTyZFFybzp6bEEhiaqH+NlVxqFT209gjkKDZWp71vDZ+WXv
- zSm4GRor9cP+KTV/I+NkqvlwbiWkXRcp4BG2s2EPr8+I5iq13uPrksTYH0vKmO1y251Tl0oOIgU
- 685vRHhoZpRKN+M8IyJ7KP9vJ1b3FoKKzhdpMa1HLjKZTqB7DG7zOIIgTVFoW49KWSCt0IbrELt
- rcVur6/0OyUbgpLc+vw==
+ a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=1tSEMpTH9XP_W59IOagA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=dawVfQjAaf238kedN5IG:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfXxQ0vVF5dfauI
+ QoLQT5lxym98uSvlXHkw2aVH1r4PFnbF2hYO2tkd10YGlX84Fow8AvvTJ+9ujIlj+fWlbjcRilY
+ EAAabGw6dRdoCacq9V3cOgK7AzwVRgI=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA5MDEwOCBTYWx0ZWRfXzvvv3xsXCOwX
+ jhWA/g0iwQHemsmKfHhu106W2y7edmup5GKBmFve/Oaw152Tuh01mQ9NWx8wL3MmU31SR95iaU3
+ Nn0tc+F3cE2FM7udD9fyrpm9+81/ltgF2s87RweOwCkVaxadgmYnR70q2J7laYVKgd9Y+jbJpNf
+ jC6ljHjlYpeYkiAT79ON61oDPSTZHFsQYjP+oSvtDo+wtMOsB3x1m8ST2dQTJ5q3OhXcrDW92HW
+ nR5v86J6/DHn6r1gDSGjuIvP6CUu/S9iOPBVELZ1vgTZJVt5SVpvQr+bseFoD5m1T6RL9PisOIw
+ acK8RYRT9jAWEdvLKq1d/n9KE35KI1cogaHVa8+mCZKKilRpaUT3YQc4GHQvUjZ38qVHPSczVLL
+ B7MKLrd2ECSej3upK7uU3RU3uKhCBPjsbjTTHx7UHU55yfhRlBmTttfb+8KVNwlnitt+lOFKPUz
+ 3vf32cSSUJP+awD6x4g==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-07-09_02,2026-07-09_01,2025-10-01_01
@@ -178,8 +164,8 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607090108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260709_122052_155405_08673654 
-X-CRM114-Status: GOOD (  12.40  )
+X-CRM114-CacheID: sfid-20260709_042232_208414_DD99A70C 
+X-CRM114-Status: GOOD (  12.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -194,14 +180,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 7/7/26 21:06, Thomas Gleixner wrote:
-> rseq_syscall_enter_work() is invoked before the syscall number can be
-> modified. So there is no point in rereading it from pt_regs.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> ---
->   include/linux/entry-common.h |    9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
+On 9/7/26 13:20, Philippe Mathieu-DaudÃ© wrote:
+> On 7/7/26 21:06, Thomas Gleixner wrote:
+>> rseq_syscall_enter_work() is invoked before the syscall number can be
+>> modified. So there is no point in rereading it from pt_regs.
+>>
+>> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+>> ---
+>>   include/linux/entry-common.h |    9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
 
+Reviewed-by: Philippe Mathieu-Daudé <philmd@oss.qualcomm.com>
 
 
