@@ -4,89 +4,162 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCFA2C44506
-	for <linux-um@archiver.kernel.org>; Mon, 13 Jul 2026 07:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5E31C44507
+	for <linux-um@archiver.kernel.org>; Mon, 13 Jul 2026 15:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MaoMLNzrQSdilHBAPxvn7cFGYo6KCQRZiQrYmmdeSDg=; b=GOh24ucCsLZXlij8L1R3aXtxm6
-	9ULrYQA7IN7CAg1R2hzdp45omB5iwYoPSkvhSGowNr4i6nCgHwS9Rz/sOmZ3sRv1pFJ7FOyi3ookc
-	zqoeOGk7tvvgHDySVVrHhFTtV45iC//UJgWAgMN8kwq9UdX3JZg182oiy8B0l/lMuLu+i8hGVl3fa
-	exExYyOVyznxHz1R66Hpr5pQxwHbLSrtsAjMg0ITc4ZYqiHRVNJnyVaWwsafkZojKqPPP0XolHVFF
-	uj/BrQ6dTm15/Vd3qm/VXbpL639Q7XPobnazNIhpXrWlt8VjSar22osKt0ZuOu17tyLjm/MeHlldV
-	2KCiQqGQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=; b=n2uOlpULBYmH9ZOlp1Tt/7TXHV
+	tyMdlTB6ZPB86MA2AIkJBTIRit+PyblFtjn7bDdL4uxs5D83S5udaGjei3IuSt7hE/n3bea+LKcMh
+	mPxAAeajRjB/e4dQRr9DFDbtPBvwxFeUgudymGGALH/S4y6w4QScp31WfoW97C5c2vX3p8SuxehvF
+	J8JZnmYN5xpq9mlB2AepixdJhClBSD2JTZfdmZec4iCp0awX5QX83Q0bnag2mvM6qSn/wxicgMCzT
+	FdfAIvYdjm0OSRFjTg+Fz6aw8vzbA/GAx1GGTRh4DtwfY44QSWdgVFPTBfNEYRuK3+UBjp1Ejdq9o
+	62MVV7VQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjAkE-00000008KiN-3gel;
-	Mon, 13 Jul 2026 07:06:26 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wjIHO-00000009kQN-1wjL;
+	Mon, 13 Jul 2026 15:09:10 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjAkD-00000008Khd-010C
+	id 1wi8yf-00000004lbr-2Tjb
 	for linux-um@lists.infradead.org;
-	Mon, 13 Jul 2026 07:06:25 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6C0B143B1C
-	for <linux-um@lists.infradead.org>; Mon, 13 Jul 2026 07:06:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF9F1F01563
-	for <linux-um@lists.infradead.org>; Mon, 13 Jul 2026 07:06:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783926384;
-	bh=MaoMLNzrQSdilHBAPxvn7cFGYo6KCQRZiQrYmmdeSDg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=TbglOxZrZc+8ho1Z2BcK0IhS3egNUSq0c5Yekd6nxDBKZQhVPPnrHghm6ItjXrvW8
-	 myYXJ6x6lFh7QX5ecmuh/vq7Qwc4aN3eTk8kvvmFs1d8wRQY7vrvAGfQK8ML7sZ4Yj
-	 k2WeLrzUteazWoeRwgjCCUDZJ2+PWRLzL1ozd2prV95l5uW3ki91C/T/KpUndY2saf
-	 +I1D4H0CLwMJu74DptZISJOOYDmUct5uhnCyLsAUx2HSrcK3fC5VZsBannIxQYZ7Rq
-	 GNjV6d1+IgN8jsegZ7lli5dbQ5dULez5iyH6dt+oUZzipNLSJVSN9n9AB3HDQyztKw
-	 NLk2nciGwWqEA==
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-47defd0c1c5so1762673f8f.3
-        for <linux-um@lists.infradead.org>; Mon, 13 Jul 2026 00:06:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RqXZ1yeDW5W03HfxrFHF4iOGLzfBjVjYIeZ10GNrw2aAIq4HQI330Pz6vaBEhA5mp7dNe2p9sKvmA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxrI4jvViUQkgs37z9kqnN1ZeYBzEgsPqBOGakESZ8ainwGwZxl
-	Wd1lGPsOWZFUoiBMoiZxPPEyfDpmc4F3Uod9R/6sTr0GsxT+h0Rvl3+mNULAc76gbxucjGfZwf/
-	AKbOWYzMBxwFKGXSZAysh7SFx9KPwPJ4=
-X-Received: by 2002:a05:6000:186c:b0:476:d13f:bb74 with SMTP id
- ffacd0b85a97d-47f2dc9bac8mr8770361f8f.15.1783926382749; Mon, 13 Jul 2026
- 00:06:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20260707181957.433213175@kernel.org> <20260707190253.974626922@kernel.org>
-In-Reply-To: <20260707190253.974626922@kernel.org>
-From: Guo Ren <guoren@kernel.org>
-Date: Mon, 13 Jul 2026 15:06:10 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTjW0RfZsJmHVAqrRsHpK4cJ+01G_Kkytt=0Wpm4sZpkg@mail.gmail.com>
-X-Gm-Features: AUfX_mzuKA4JwmuMUWB774bzpkP7q4a7PrJvxtp8N1GWwrENQwGP0BULxiqlyqc
-Message-ID: <CAJF2gTTjW0RfZsJmHVAqrRsHpK4cJ+01G_Kkytt=0Wpm4sZpkg@mail.gmail.com>
-Subject: Re: [patch 06/18] riscv/syscall: Use syscall_enter_from_user_mode_randomize_stack()
+	Fri, 10 Jul 2026 11:01:06 +0000
+Received: from kunlun.suse.cz (unknown [IPv6:2a07:de40:b306:2000::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8391876715;
+	Fri, 10 Jul 2026 11:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1783681263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
+	b=O6RrK+c+yEUCBz7JS8C/n3uvL2/ffj5axWsd+OY7/CEczrcwTTxEsLs/dGrk0viRn5MzUe
+	GtnTNGDpvD2O3TvWKyCZYWhXnzThvycDzjVezp2doDQRDuZWsQfOU+4cVOIOZhNJKRbxfw
+	fx3PQHPrPfFlb6kdRd1H2jQ1bqYybjk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1783681263;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
+	b=ZOMjVeZgmcYQW+gxCYgmXBRA3lul7pjSYwltV7OQTpYYU1+O+3dJHoeOdjPx+vWowECub2
+	kiZTkZ3pFRD1rDAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=O6RrK+c+;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZOMjVeZg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1783681263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
+	b=O6RrK+c+yEUCBz7JS8C/n3uvL2/ffj5axWsd+OY7/CEczrcwTTxEsLs/dGrk0viRn5MzUe
+	GtnTNGDpvD2O3TvWKyCZYWhXnzThvycDzjVezp2doDQRDuZWsQfOU+4cVOIOZhNJKRbxfw
+	fx3PQHPrPfFlb6kdRd1H2jQ1bqYybjk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1783681263;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
+	b=ZOMjVeZgmcYQW+gxCYgmXBRA3lul7pjSYwltV7OQTpYYU1+O+3dJHoeOdjPx+vWowECub2
+	kiZTkZ3pFRD1rDAw==
+Date: Fri, 10 Jul 2026 13:01:02 +0200
+From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
 To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
-	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, 
-	Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
-	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-arch@vger.kernel.org, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-riscv@lists.infradead.org,
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Richard Weinberger <richard@nod.at>,
+	Chris Zankel <chris@zankel.net>,
+	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
+Message-ID: <alDQ7isUKJFl8Va4@kunlun.suse.cz>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.338083894@kernel.org>
+ <ak5ySpil83TNWxeq@kunlun.suse.cz>
+ <87se5tqkyp.ffs@fw13>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87se5tqkyp.ffs@fw13>
+X-Rspamd-Action: add header
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [15.15 / 50.00];
+	SPAM_FLAG(5.00)[];
+	NEURAL_SPAM_LONG(3.50)[1.000];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_SPAM_SHORT(2.96)[0.988];
+	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
+	RDNS_NONE(2.00)[];
+	ONCE_RECEIVED(1.20)[];
+	HFILTER_HELO_IP_A(1.00)[kunlun.suse.cz];
+	HFILTER_HELO_NORES_A_OR_MX(0.30)[kunlun.suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,infradead.org,ellerman.id.au,linux.ibm.com,lists.ozlabs.org,kernel.org,lists.linux.dev,dabbelt.com,lists.infradead.org,arm.com,huawei.com,redhat.com,linaro.org,armlinux.org.uk,linux-m68k.org,alpha.franken.de,gmx.de,users.sourceforge.jp,nod.at,zankel.net,lists.linux-m68k.org,arndb.de,monstr.eu,davemloft.net,gaisler.com,lwn.net];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b306:2000::2:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[52];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_ZERO(0.00)[0];
+	DKIM_TRACE(0.00)[suse.de:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLs1yuyu6ywojxyk8y3ncu5g39)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
+X-Spamd-Bar: +++++++++++++++
+X-Rspamd-Queue-Id: 8391876715
+X-Spam: Yes
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260710_040105_805095_A5152BB7 
+X-CRM114-Status: GOOD (  53.83  )
+X-Mailman-Approved-At: Mon, 13 Jul 2026 08:09:08 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,51 +174,176 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 8, 2026 at 3:06=E2=80=AFAM Thomas Gleixner <tglx@kernel.org> wr=
-ote:
->
-> syscall_enter_from_user_mode_randomize_stack() replaces
-> syscall_enter_from_user_mode() and the subsequent invocation of
-> add_random_kstack_offset().
->
-> The advantage is that it applies the stack randomization right after
-> enter_from_user_mode() and thereby avoids the overhead of get/put_cpu_var=
-()
-> as that code is invoked with interrupts disabled.
->
-> No functional change.
->
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Paul Walmsley <pjw@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: linux-riscv@lists.infradead.org
-> ---
->  arch/riscv/kernel/traps.c |    5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -7,7 +7,6 @@
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/irqflags.h>
-> -#include <linux/randomize_kstack.h>
->  #include <linux/sched.h>
->  #include <linux/sched/debug.h>
->  #include <linux/sched/signal.h>
-> @@ -333,9 +332,7 @@ void do_trap_ecall_u(struct pt_regs *reg
->
->                 riscv_v_vstate_discard(regs);
->
-> -               syscall =3D syscall_enter_from_user_mode(regs, syscall);
-> -
-> -               add_random_kstack_offset();
-> +               syscall =3D syscall_enter_from_user_mode_randomize_stack(=
-regs, syscall);
+On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
+> On Wed, Jul 08 2026 at 17:52, Michal Suchánek wrote:
+> > On Tue, Jul 07, 2026 at 09:06:48PM +0200, Thomas Gleixner wrote:
+> >> In preparation of converting the return value of
+> >> syscall_enter_from_user_mode[_work]() bool, rework trace_syscall_enter() to
+> >> 
+> >>  - update the syscall number via a pointer argument
+> >> 
+> >>  - Return True if the syscall number is != -1, False otherwise
+> >
+> > This does not achieve the goal of the initial RFC: To detangle the
+> > return value of syscall_enter_from_user_mode from the syscall number.
+> 
+> As I explained to you before: Your RFC broke the implicit assumption of
+> tracing, which is way worse than having this oddity.
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+It would be so nice to make the assumptions about the entry API explicit
+so that platforms can agree on the semantics.
 
---=20
-Best Regards
- Guo Ren
+> 
+> > This still conflates them, making it impossible to tell if the syscall
+> > was rejected or syscall number was -1 to start with. Now also obfuscated
+> > by performing the check deeper inside the common code.
+> 
+> That's where it belongs. It's a problem to solve within the given
+> semantics of trace_syscall_enter() and not a problem to be worked around
+> at the call sites if you want to have consolidated semantics.
+> 
+> >> The only difference is that this also returns False, when the syscall
+> >> number was already -1 to begin with, but there is not much which can be
+> >> done about that. As the architecture has to preset the return value to
+> >> -ENOSYS anyway, that results in the correct return value for such an
+> >> invalid syscall.
+> >
+> > That's not possible to do for architectures where the syscall number and
+> > the syscall return value are in the same register.
+> >
+> > You suggested that it is possible to not write the return value into an
+> > actual register but use an additional field for that, and have the exit
+> > code write the register.
+> >
+> > However, that's not what is documented, nor what is currently done.
+> 
+> Just because S390 screwed up their ABI and then on top of that failed to
+> do what _every_ other architecture in the kernel does, i.e. having a
+> result storage which is preset to -ENOSYS does not mean that S390 did
+> the right thing just because it was not documented. Kernel documentation
+> is known to be incomplete and I fixed it up in the last patch as you
+> might have noticed.
+> 
+> Just for the record. Presetting the return value to -ENOSYS has been
+> practice for three decades. I couldn't be bothered to do a full search
+
+No, it isn't practice anymore for decades.
+
+The moment ppc and s390 support was merged they do not preset the
+syscall return value to -ENOSYS, for obvious reason.
+
+That is how the undocumented, implicit, 'as implemented' API goes. It
+silently changes as the implementation evolves.
+
+> in the history trees to figure out the exact point, but as of 2.1.9,
+> which was released in Nov. 1996, this is definitely the case.
+> 
+> So don't tell me that because S390 missed the train when it was
+> added to mainline in 2007 (, i.e. 11 years _after_ this "undocumented" rule was
+> established that now 20 years later the world has to revolve around S390
+> and your personal idea of "clear and intelligible":
+
+Don't tell me you missed the train on what the actual API of syscall
+entry is.
+
+> 
+> > While this is an improvement in some respects the goal to have clear and
+> > intelligible API around the generic entry is not acheived.
+> 
+> I'm honestly not sure whether I should laugh or cry.
+> 
+> You are completely missing the point:
+> 
+>   1) The set in stone rule is that if the entry code returns -1L as the
+>      syscall number then the architecture code has to skip the syscall
+>      invocation _and_ is not supposed to change the return value.
+
+Which stone?
+
+Pics or it did not happen.
+
+> 
+>   2) There is no guarantee and never has been that any of the involved
+>      mechanisms (ptrace, seccomp, tracing) will change the return value
+>      when it sets the syscall number to -1L.
+
+For ptrace to correctly emulate a syscall it needs to set the syscall nr
+to an invalid value on entry, and the desired result if the syscall on
+exit AFAICT.
+
+Relying on platfrom quirk to assume that the return valu is set to
+ENOSYS is insufficient.
+
+I doubt many platfroms have an ABI that dictates that the register that
+has the syscal nr is set to -1 on exit from syscal. Then even if the
+-ENOSYS is preset by the kernel the syscall nr needs to be poked back on
+exit for the emulation to be correct.
+
+> 
+>      Quite the contrary there has been a long time (30 years at least)
+>      expectation that the return value has been preset to -ENOSYS.
+
+That is your opinion, not the fact. Multiple platforms do not work like
+that.
+
+> 
+>   3) It's trivial as demonstrated to make ptrace and seccomp more
+>      comprehensible but that does not invalidate #2
+> 
+>   4) Due to the historical integration of tracing (+probes/BPF) there is
+>      an implicit assumption that the return code is preset to -ENOSYS.
+>      See #2
+
+False again
+
+> 
+>   5) There is an obvious ambiguity between the initial syscall number
+>      being -1 and the change of syscall number to -1 in the case of
+>      tracing, but that's not unique to tracing:
+> 
+>      If e.g. seccomp() observes the handed in syscall number to be -1
+>      and tells in the return code to skip the syscall, then it can
+>      rightfully assume that the return code will be -ENOSYS and has no
+>      obligation to set it explicitly. See #2
+
+False again
+
+> 
+> Q: Is it perfect?
+> A: No
+> 
+> Q: Can it be made perfect?
+> A: No, because you can't change history and established practice.
+> 
+> Just for illustration. Changing the logic in trace_syscall_enter() to:
+> 
+> --- a/kernel/entry/syscall-common.c
+> +++ b/kernel/entry/syscall-common.c
+> @@ -9,13 +9,15 @@
+>  
+>  bool trace_syscall_enter(struct pt_regs *regs, long *syscall)
+>  {
+> +	long orig_syscall = *syscall;
+> +
+>  	trace_sys_enter(regs, *syscall);
+>  	/*
+>  	 * Probes or BPF hooks in the tracepoint may have changed the
+>  	 * system call number. Reread it.
+>  	 */
+>  	*syscall = syscall_get_nr(current, regs);
+> -	return *syscall != -1L;
+> +	return *syscall == orig_syscall || *syscall != -1L;
+>  }
+>  
+>  void trace_syscall_exit(struct pt_regs *regs, long ret)
+> 
+> does not make #2 magically go away. It's still the same problem whether
+> you like it or not.
+
+However, reading the syscall number from pt_regs only after
+syscall_enter_from_user_mode exits does.
+
+Thanks
+
+Michal
 
