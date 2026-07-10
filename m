@@ -4,80 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5E31C44507
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2CD4C44501
 	for <linux-um@archiver.kernel.org>; Mon, 13 Jul 2026 15:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=; b=n2uOlpULBYmH9ZOlp1Tt/7TXHV
-	tyMdlTB6ZPB86MA2AIkJBTIRit+PyblFtjn7bDdL4uxs5D83S5udaGjei3IuSt7hE/n3bea+LKcMh
-	mPxAAeajRjB/e4dQRr9DFDbtPBvwxFeUgudymGGALH/S4y6w4QScp31WfoW97C5c2vX3p8SuxehvF
-	J8JZnmYN5xpq9mlB2AepixdJhClBSD2JTZfdmZec4iCp0awX5QX83Q0bnag2mvM6qSn/wxicgMCzT
-	FdfAIvYdjm0OSRFjTg+Fz6aw8vzbA/GAx1GGTRh4DtwfY44QSWdgVFPTBfNEYRuK3+UBjp1Ejdq9o
-	62MVV7VQ==;
+	bh=wqonpxFX8zA5SeJ9aTNAypPJBKqme2/IRuMVAQVXJW8=; b=2iqS3sn9+scfaEUK8v5UTcUQ//
+	Uur3ZDvL2j9qBXSNN6G0tFLHi1rPawIg15USvWSJ1hbWJQ3Xcw6okqWGGrX5jfdtSY/zYyQRyBI8+
+	z75fi310FOU1vofVtZheaGj76G4MiI8tugWVug4FOLYuUv3GtMZNyUC1Hqexgf6T4jC0/TsAl9pmP
+	8biJe0xS8nkqREuF7t0phijLFOJH8eMzDRovAdn01/972/hT59qFoQDqk0IxZ5mMV2C2baQDaupeI
+	WZHEUCSsA9JiAJ/xDDx80j9qEc6ij/56s3bis+DC7Y/5qp5MJZYv5008Eiu9rggiaKALPu+N0sSqE
+	hxvSOxeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjIHO-00000009kQN-1wjL;
-	Mon, 13 Jul 2026 15:09:10 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1wjIHN-00000009kQG-1lEd;
+	Mon, 13 Jul 2026 15:09:09 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wi8yf-00000004lbr-2Tjb
+	id 1wi8gj-00000004jQd-2j1g
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jul 2026 11:01:06 +0000
+	Fri, 10 Jul 2026 10:42:39 +0000
 Received: from kunlun.suse.cz (unknown [IPv6:2a07:de40:b306:2000::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8391876715;
-	Fri, 10 Jul 2026 11:01:03 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3EFD4759FF;
+	Fri, 10 Jul 2026 10:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1783681263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1783680150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
-	b=O6RrK+c+yEUCBz7JS8C/n3uvL2/ffj5axWsd+OY7/CEczrcwTTxEsLs/dGrk0viRn5MzUe
-	GtnTNGDpvD2O3TvWKyCZYWhXnzThvycDzjVezp2doDQRDuZWsQfOU+4cVOIOZhNJKRbxfw
-	fx3PQHPrPfFlb6kdRd1H2jQ1bqYybjk=
+	bh=wqonpxFX8zA5SeJ9aTNAypPJBKqme2/IRuMVAQVXJW8=;
+	b=WJq+UOU11TT2m9tXBVk/bNw3hAZ2LfII0cW2H4+490h7XznM25yW12rBJ1x5ih/0rLqQIy
+	tcWwfm0Dv6lzhHg5eWH1Mm8hKBAs/ciJTj/F0EAuQcJulOj3LnAX2WygYo/JdQqubgRMgN
+	KZtFnzYN4wUCl6W6sgerpL9+2Tmk6qc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1783681263;
+	s=susede2_ed25519; t=1783680150;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
-	b=ZOMjVeZgmcYQW+gxCYgmXBRA3lul7pjSYwltV7OQTpYYU1+O+3dJHoeOdjPx+vWowECub2
-	kiZTkZ3pFRD1rDAw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=O6RrK+c+;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZOMjVeZg
+	bh=wqonpxFX8zA5SeJ9aTNAypPJBKqme2/IRuMVAQVXJW8=;
+	b=yhVXiWXCXfk628eQRtIWwPPJd4fTAa9yD5daNa5F7LmEHToZq/fS+jdsUyiOEtNTOx0/oK
+	GqhMVCOhvfolypAA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=WJq+UOU1;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yhVXiWXC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1783681263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1783680150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
-	b=O6RrK+c+yEUCBz7JS8C/n3uvL2/ffj5axWsd+OY7/CEczrcwTTxEsLs/dGrk0viRn5MzUe
-	GtnTNGDpvD2O3TvWKyCZYWhXnzThvycDzjVezp2doDQRDuZWsQfOU+4cVOIOZhNJKRbxfw
-	fx3PQHPrPfFlb6kdRd1H2jQ1bqYybjk=
+	bh=wqonpxFX8zA5SeJ9aTNAypPJBKqme2/IRuMVAQVXJW8=;
+	b=WJq+UOU11TT2m9tXBVk/bNw3hAZ2LfII0cW2H4+490h7XznM25yW12rBJ1x5ih/0rLqQIy
+	tcWwfm0Dv6lzhHg5eWH1Mm8hKBAs/ciJTj/F0EAuQcJulOj3LnAX2WygYo/JdQqubgRMgN
+	KZtFnzYN4wUCl6W6sgerpL9+2Tmk6qc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1783681263;
+	s=susede2_ed25519; t=1783680150;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UYsS2vBan7uQzdgEWEddgopbLcVe02BSX1ZYLs9ZgnU=;
-	b=ZOMjVeZgmcYQW+gxCYgmXBRA3lul7pjSYwltV7OQTpYYU1+O+3dJHoeOdjPx+vWowECub2
-	kiZTkZ3pFRD1rDAw==
-Date: Fri, 10 Jul 2026 13:01:02 +0200
+	bh=wqonpxFX8zA5SeJ9aTNAypPJBKqme2/IRuMVAQVXJW8=;
+	b=yhVXiWXCXfk628eQRtIWwPPJd4fTAa9yD5daNa5F7LmEHToZq/fS+jdsUyiOEtNTOx0/oK
+	GqhMVCOhvfolypAA==
+Date: Fri, 10 Jul 2026 12:42:29 +0200
 From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
 To: Thomas Gleixner <tglx@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+	Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Brian Cain <bcain@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>, Helge Deller <deller@gmx.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Chris Zankel <chris@zankel.net>, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
 	Shrikanth Hegde <sshegde@linux.ibm.com>,
 	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
 	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
@@ -86,79 +103,55 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
 	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
 	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Andy Lutomirski <luto@kernel.org>,
 	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alDQ7isUKJFl8Va4@kunlun.suse.cz>
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [patch 12/18] ptrace, treewide: Rename
+ ptrace_report_syscall_entry() to ptrace_report_syscall_permit_entry()
+Message-ID: <alDMlSYN1eKkjNCL@kunlun.suse.cz>
 References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org>
- <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13>
+ <20260707190254.280015701@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87se5tqkyp.ffs@fw13>
+In-Reply-To: <20260707190254.280015701@kernel.org>
 X-Rspamd-Action: add header
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [15.15 / 50.00];
+X-Spamd-Result: default: False [13.38 / 50.00];
 	SPAM_FLAG(5.00)[];
 	NEURAL_SPAM_LONG(3.50)[1.000];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_SPAM_SHORT(2.96)[0.988];
 	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
 	RDNS_NONE(2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ONCE_RECEIVED(1.20)[];
 	HFILTER_HELO_IP_A(1.00)[kunlun.suse.cz];
-	HFILTER_HELO_NORES_A_OR_MX(0.30)[kunlun.suse.cz];
 	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
+	NEURAL_HAM_SHORT(-0.01)[-0.034];
+	ARC_NA(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	ARC_NA(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,infradead.org,ellerman.id.au,linux.ibm.com,lists.ozlabs.org,kernel.org,lists.linux.dev,dabbelt.com,lists.infradead.org,arm.com,huawei.com,redhat.com,linaro.org,armlinux.org.uk,linux-m68k.org,alpha.franken.de,gmx.de,users.sourceforge.jp,nod.at,zankel.net,lists.linux-m68k.org,arndb.de,monstr.eu,davemloft.net,gaisler.com,lwn.net];
+	DKIM_TRACE(0.00)[suse.de:+];
+	MIME_TRACE(0.00)[0:+];
 	DNSWL_BLOCKED(0.00)[2a07:de40:b306:2000::2:from];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,infradead.org,arndb.de,redhat.com,linaro.org,kernel.org,armlinux.org.uk,arm.com,linux-m68k.org,monstr.eu,alpha.franken.de,gmx.de,users.sourceforge.jp,davemloft.net,gaisler.com,zankel.net,lists.infradead.org,lists.linux-m68k.org,ellerman.id.au,linux.ibm.com,lists.ozlabs.org,lists.linux.dev,dabbelt.com,huawei.com,nod.at,lwn.net];
 	RCPT_COUNT_GT_50(0.00)[52];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_ZERO(0.00)[0];
-	DKIM_TRACE(0.00)[suse.de:+];
 	R_RATELIMIT(0.00)[to_ip_from(RLs1yuyu6ywojxyk8y3ncu5g39)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
-X-Spamd-Bar: +++++++++++++++
-X-Rspamd-Queue-Id: 8391876715
+	TO_DN_SOME(0.00)[]
+X-Spamd-Bar: +++++++++++++
+X-Rspamd-Queue-Id: 3EFD4759FF
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260710_040105_805095_A5152BB7 
-X-CRM114-Status: GOOD (  53.83  )
+X-CRM114-CacheID: sfid-20260710_034233_988787_EBC334F0 
+X-CRM114-Status: GOOD (  30.62  )
 X-Mailman-Approved-At: Mon, 13 Jul 2026 08:09:08 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -174,176 +167,414 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
-> On Wed, Jul 08 2026 at 17:52, Michal Suchánek wrote:
-> > On Tue, Jul 07, 2026 at 09:06:48PM +0200, Thomas Gleixner wrote:
-> >> In preparation of converting the return value of
-> >> syscall_enter_from_user_mode[_work]() bool, rework trace_syscall_enter() to
-> >> 
-> >>  - update the syscall number via a pointer argument
-> >> 
-> >>  - Return True if the syscall number is != -1, False otherwise
-> >
-> > This does not achieve the goal of the initial RFC: To detangle the
-> > return value of syscall_enter_from_user_mode from the syscall number.
-> 
-> As I explained to you before: Your RFC broke the implicit assumption of
-> tracing, which is way worse than having this oddity.
+Hello,
 
-It would be so nice to make the assumptions about the entry API explicit
-so that platforms can agree on the semantics.
+why is the syscall -1 special-cased here?
 
-> 
-> > This still conflates them, making it impossible to tell if the syscall
-> > was rejected or syscall number was -1 to start with. Now also obfuscated
-> > by performing the check deeper inside the common code.
-> 
-> That's where it belongs. It's a problem to solve within the given
-> semantics of trace_syscall_enter() and not a problem to be worked around
-> at the call sites if you want to have consolidated semantics.
-> 
-> >> The only difference is that this also returns False, when the syscall
-> >> number was already -1 to begin with, but there is not much which can be
-> >> done about that. As the architecture has to preset the return value to
-> >> -ENOSYS anyway, that results in the correct return value for such an
-> >> invalid syscall.
-> >
-> > That's not possible to do for architectures where the syscall number and
-> > the syscall return value are in the same register.
-> >
-> > You suggested that it is possible to not write the return value into an
-> > actual register but use an additional field for that, and have the exit
-> > code write the register.
-> >
-> > However, that's not what is documented, nor what is currently done.
-> 
-> Just because S390 screwed up their ABI and then on top of that failed to
-> do what _every_ other architecture in the kernel does, i.e. having a
-> result storage which is preset to -ENOSYS does not mean that S390 did
-> the right thing just because it was not documented. Kernel documentation
-> is known to be incomplete and I fixed it up in the last patch as you
-> might have noticed.
-> 
-> Just for the record. Presetting the return value to -ENOSYS has been
-> practice for three decades. I couldn't be bothered to do a full search
+Wouldn't any invalid syscall number such as -2 work equally well, making
+this whole 'permit' pinned on the -1 value bogus?
 
-No, it isn't practice anymore for decades.
-
-The moment ppc and s390 support was merged they do not preset the
-syscall return value to -ENOSYS, for obvious reason.
-
-That is how the undocumented, implicit, 'as implemented' API goes. It
-silently changes as the implementation evolves.
-
-> in the history trees to figure out the exact point, but as of 2.1.9,
-> which was released in Nov. 1996, this is definitely the case.
+On Tue, Jul 07, 2026 at 09:06:44PM +0200, Thomas Gleixner wrote:
+> The return value of that function is boolean and tells the caller whether
+> to permit the syscall processing or not.
 > 
-> So don't tell me that because S390 missed the train when it was
-> added to mainline in 2007 (, i.e. 11 years _after_ this "undocumented" rule was
-> established that now 20 years later the world has to revolve around S390
-> and your personal idea of "clear and intelligible":
-
-Don't tell me you missed the train on what the actual API of syscall
-entry is.
-
+> Rename the function so the purpose is clear and make the return type bool.
 > 
-> > While this is an improvement in some respects the goal to have clear and
-> > intelligible API around the generic entry is not acheived.
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Richard Henderson <richard.henderson@linaro.org>
+> Cc: Vineet Gupta <vgupta@kernel.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Brian Cain <bcain@kernel.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Dinh Nguyen <dinguyen@kernel.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Andreas Larsson <andreas@gaisler.com>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-csky@vger.kernel.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-openrisc@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-arch@vger.kernel.org
+> ---
+>  arch/alpha/kernel/ptrace.c      |    2 +-
+>  arch/arc/kernel/ptrace.c        |    2 +-
+>  arch/arm/kernel/ptrace.c        |    2 +-
+>  arch/arm64/kernel/ptrace.c      |    2 +-
+>  arch/csky/kernel/ptrace.c       |    2 +-
+>  arch/hexagon/kernel/traps.c     |    2 +-
+>  arch/m68k/kernel/ptrace.c       |    2 +-
+>  arch/microblaze/kernel/ptrace.c |    2 +-
+>  arch/mips/kernel/ptrace.c       |    2 +-
+>  arch/nios2/kernel/ptrace.c      |    2 +-
+>  arch/openrisc/kernel/ptrace.c   |    2 +-
+>  arch/parisc/kernel/ptrace.c     |   10 ++++------
+>  arch/sh/kernel/ptrace_32.c      |    2 +-
+>  arch/sparc/kernel/ptrace_32.c   |    2 +-
+>  arch/sparc/kernel/ptrace_64.c   |    2 +-
+>  arch/um/kernel/ptrace.c         |    2 +-
+>  arch/xtensa/kernel/ptrace.c     |    2 +-
+>  include/asm-generic/syscall.h   |    4 ++--
+>  include/linux/entry-common.h    |   25 ++++++++++++-------------
+>  include/linux/ptrace.h          |   13 ++++++-------
+>  20 files changed, 40 insertions(+), 44 deletions(-)
 > 
-> I'm honestly not sure whether I should laugh or cry.
-> 
-> You are completely missing the point:
-> 
->   1) The set in stone rule is that if the entry code returns -1L as the
->      syscall number then the architecture code has to skip the syscall
->      invocation _and_ is not supposed to change the return value.
-
-Which stone?
-
-Pics or it did not happen.
-
-> 
->   2) There is no guarantee and never has been that any of the involved
->      mechanisms (ptrace, seccomp, tracing) will change the return value
->      when it sets the syscall number to -1L.
-
-For ptrace to correctly emulate a syscall it needs to set the syscall nr
-to an invalid value on entry, and the desired result if the syscall on
-exit AFAICT.
-
-Relying on platfrom quirk to assume that the return valu is set to
-ENOSYS is insufficient.
-
-I doubt many platfroms have an ABI that dictates that the register that
-has the syscal nr is set to -1 on exit from syscal. Then even if the
--ENOSYS is preset by the kernel the syscall nr needs to be poked back on
-exit for the emulation to be correct.
-
-> 
->      Quite the contrary there has been a long time (30 years at least)
->      expectation that the return value has been preset to -ENOSYS.
-
-That is your opinion, not the fact. Multiple platforms do not work like
-that.
-
-> 
->   3) It's trivial as demonstrated to make ptrace and seccomp more
->      comprehensible but that does not invalidate #2
-> 
->   4) Due to the historical integration of tracing (+probes/BPF) there is
->      an implicit assumption that the return code is preset to -ENOSYS.
->      See #2
-
-False again
-
-> 
->   5) There is an obvious ambiguity between the initial syscall number
->      being -1 and the change of syscall number to -1 in the case of
->      tracing, but that's not unique to tracing:
-> 
->      If e.g. seccomp() observes the handed in syscall number to be -1
->      and tells in the return code to skip the syscall, then it can
->      rightfully assume that the return code will be -ENOSYS and has no
->      obligation to set it explicitly. See #2
-
-False again
-
-> 
-> Q: Is it perfect?
-> A: No
-> 
-> Q: Can it be made perfect?
-> A: No, because you can't change history and established practice.
-> 
-> Just for illustration. Changing the logic in trace_syscall_enter() to:
-> 
-> --- a/kernel/entry/syscall-common.c
-> +++ b/kernel/entry/syscall-common.c
-> @@ -9,13 +9,15 @@
+> --- a/arch/alpha/kernel/ptrace.c
+> +++ b/arch/alpha/kernel/ptrace.c
+> @@ -375,7 +375,7 @@ asmlinkage unsigned long syscall_trace_e
+>  	struct pt_regs *regs = current_pt_regs();
 >  
->  bool trace_syscall_enter(struct pt_regs *regs, long *syscall)
->  {
-> +	long orig_syscall = *syscall;
-> +
->  	trace_sys_enter(regs, *syscall);
->  	/*
->  	 * Probes or BPF hooks in the tracepoint may have changed the
->  	 * system call number. Reread it.
->  	 */
->  	*syscall = syscall_get_nr(current, regs);
-> -	return *syscall != -1L;
-> +	return *syscall == orig_syscall || *syscall != -1L;
->  }
->  
->  void trace_syscall_exit(struct pt_regs *regs, long ret)
-> 
-> does not make #2 magically go away. It's still the same problem whether
-> you like it or not.
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -		ptrace_report_syscall_entry(regs)) {
+> +		!ptrace_report_syscall_permit_entry(regs)) {
+>  		syscall_set_nr(current, regs, -1);
 
-However, reading the syscall number from pt_regs only after
-syscall_enter_from_user_mode exits does.
+Why is this done here?
+
+Presumably the ptrace_report_syscall_entry returns false here becasue
+the tracer put -1 into whatever register specifies the syscall number
+(or it was there to start with) which was then read back, compared to
+-1, leading to returning false.  Now it's set to -1 again?
 
 Thanks
 
 Michal
+
+>  		if (regs->r19 == 0 && regs->r0 == (unsigned long)-1)
+>  			syscall_set_return_value(current, regs, -ENOSYS, 0);
+> --- a/arch/arc/kernel/ptrace.c
+> +++ b/arch/arc/kernel/ptrace.c
+> @@ -342,7 +342,7 @@ long arch_ptrace(struct task_struct *chi
+>  asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+>  {
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+> -		if (ptrace_report_syscall_entry(regs))
+> +		if (!ptrace_report_syscall_permit_entry(regs))
+>  			return ULONG_MAX;
+>  
+>  #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+> --- a/arch/arm/kernel/ptrace.c
+> +++ b/arch/arm/kernel/ptrace.c
+> @@ -840,7 +840,7 @@ static void report_syscall(struct pt_reg
+>  
+>  	if (dir == PTRACE_SYSCALL_EXIT)
+>  		ptrace_report_syscall_exit(regs, 0);
+> -	else if (ptrace_report_syscall_entry(regs))
+> +	else if (!ptrace_report_syscall_permit_entry(regs))
+>  		current_thread_info()->abi_syscall = -1;
+>  
+>  	regs->ARM_ip = ip;
+> --- a/arch/arm64/kernel/ptrace.c
+> +++ b/arch/arm64/kernel/ptrace.c
+> @@ -2379,7 +2379,7 @@ static int report_syscall_entry(struct p
+>  	int regno, ret;
+>  
+>  	saved_reg = ptrace_save_reg(regs, PTRACE_SYSCALL_ENTER, &regno);
+> -	ret = ptrace_report_syscall_entry(regs);
+> +	ret = !ptrace_report_syscall_permit_entry(regs);
+>  	if (ret)
+>  		forget_syscall(regs);
+>  	regs->regs[regno] = saved_reg;
+> --- a/arch/csky/kernel/ptrace.c
+> +++ b/arch/csky/kernel/ptrace.c
+> @@ -320,7 +320,7 @@ long arch_ptrace(struct task_struct *chi
+>  asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+>  {
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+> -		if (ptrace_report_syscall_entry(regs))
+> +		if (!ptrace_report_syscall_permit_entry(regs))
+>  			return -1;
+>  
+>  	if (!seccomp_permit_syscall())
+> --- a/arch/hexagon/kernel/traps.c
+> +++ b/arch/hexagon/kernel/traps.c
+> @@ -345,7 +345,7 @@ void do_trap0(struct pt_regs *regs)
+>  
+>  		/* allow strace to catch syscall args  */
+>  		if (unlikely(test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -			ptrace_report_syscall_entry(regs)))
+> +			!ptrace_report_syscall_permit_entry(regs)))
+>  			return;  /*  return -ENOSYS somewhere?  */
+>  
+>  		/* Interrupts should be re-enabled for syscall processing */
+> --- a/arch/m68k/kernel/ptrace.c
+> +++ b/arch/m68k/kernel/ptrace.c
+> @@ -279,7 +279,7 @@ asmlinkage int syscall_trace_enter(void)
+>  	int ret = 0;
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+> -		ret = ptrace_report_syscall_entry(task_pt_regs(current));
+> +		ret = !ptrace_report_syscall_permit_entry(task_pt_regs(current));
+>  
+>  	if (!seccomp_permit_syscall())
+>  		return -1;
+> --- a/arch/microblaze/kernel/ptrace.c
+> +++ b/arch/microblaze/kernel/ptrace.c
+> @@ -139,7 +139,7 @@ asmlinkage unsigned long do_syscall_trac
+>  	secure_computing_strict(regs->r12);
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -	    ptrace_report_syscall_entry(regs))
+> +	    !ptrace_report_syscall_permit_entry(regs))
+>  		/*
+>  		 * Tracing decided this syscall should not happen.
+>  		 * We'll return a bogus call number to get an ENOSYS
+> --- a/arch/mips/kernel/ptrace.c
+> +++ b/arch/mips/kernel/ptrace.c
+> @@ -1324,7 +1324,7 @@ asmlinkage long syscall_trace_enter(stru
+>  	user_exit();
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
+> -		if (ptrace_report_syscall_entry(regs))
+> +		if (!ptrace_report_syscall_permit_entry(regs))
+>  			return -1;
+>  	}
+>  
+> --- a/arch/nios2/kernel/ptrace.c
+> +++ b/arch/nios2/kernel/ptrace.c
+> @@ -133,7 +133,7 @@ asmlinkage int do_syscall_trace_enter(vo
+>  	int ret = 0;
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+> -		ret = ptrace_report_syscall_entry(task_pt_regs(current));
+> +		ret = !ptrace_report_syscall_permit_entry(task_pt_regs(current));
+>  
+>  	return ret;
+>  }
+> --- a/arch/openrisc/kernel/ptrace.c
+> +++ b/arch/openrisc/kernel/ptrace.c
+> @@ -293,7 +293,7 @@ asmlinkage long do_syscall_trace_enter(s
+>  	long ret = 0;
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -	    ptrace_report_syscall_entry(regs))
+> +	    !ptrace_report_syscall_permit_entry(regs))
+>  		/*
+>  		 * Tracing decided this syscall should not happen.
+>  		 * We'll return a bogus call number to get an ENOSYS
+> --- a/arch/parisc/kernel/ptrace.c
+> +++ b/arch/parisc/kernel/ptrace.c
+> @@ -326,7 +326,7 @@ long compat_arch_ptrace(struct task_stru
+>  long do_syscall_trace_enter(struct pt_regs *regs)
+>  {
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
+> -		int rc = ptrace_report_syscall_entry(regs);
+> +		bool permit = ptrace_report_syscall_permit_entry(regs);
+>  
+>  		/*
+>  		 * As tracesys_next does not set %r28 to -ENOSYS
+> @@ -334,12 +334,10 @@ long do_syscall_trace_enter(struct pt_re
+>  		 */
+>  		regs->gr[28] = -ENOSYS;
+>  
+> -		if (rc) {
+> +		if (!permit) {
+>  			/*
+> -			 * A nonzero return code from
+> -			 * ptrace_report_syscall_entry() tells us
+> -			 * to prevent the syscall execution.  Skip
+> -			 * the syscall call and the syscall restart handling.
+> +			 * Skip the syscall call and the syscall restart
+> +			 * handling.
+>  			 *
+>  			 * Note that the tracer may also just change
+>  			 * regs->gr[20] to an invalid syscall number,
+> --- a/arch/sh/kernel/ptrace_32.c
+> +++ b/arch/sh/kernel/ptrace_32.c
+> @@ -455,7 +455,7 @@ long arch_ptrace(struct task_struct *chi
+>  asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
+>  {
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -	    ptrace_report_syscall_entry(regs)) {
+> +	    !ptrace_report_syscall_permit_entry(regs)) {
+>  		regs->regs[0] = -ENOSYS;
+>  		return -1;
+>  	}
+> --- a/arch/sparc/kernel/ptrace_32.c
+> +++ b/arch/sparc/kernel/ptrace_32.c
+> @@ -441,7 +441,7 @@ asmlinkage int syscall_trace(struct pt_r
+>  		if (syscall_exit_p)
+>  			ptrace_report_syscall_exit(regs, 0);
+>  		else
+> -			ret = ptrace_report_syscall_entry(regs);
+> +			ret = !ptrace_report_syscall_permit_entry(regs);
+>  	}
+>  
+>  	return ret;
+> --- a/arch/sparc/kernel/ptrace_64.c
+> +++ b/arch/sparc/kernel/ptrace_64.c
+> @@ -1093,7 +1093,7 @@ asmlinkage int syscall_trace_enter(struc
+>  		user_exit();
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+> -		ret = ptrace_report_syscall_entry(regs);
+> +		ret = !ptrace_report_syscall_permit_entry(regs);
+>  
+>  	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+>  		trace_sys_enter(regs, regs->u_regs[UREG_G1]);
+> --- a/arch/um/kernel/ptrace.c
+> +++ b/arch/um/kernel/ptrace.c
+> @@ -135,7 +135,7 @@ int syscall_trace_enter(struct pt_regs *
+>  	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+>  		return 0;
+>  
+> -	return ptrace_report_syscall_entry(regs);
+> +	return !ptrace_report_syscall_permit_entry(regs);
+>  }
+>  
+>  void syscall_trace_leave(struct pt_regs *regs)
+> --- a/arch/xtensa/kernel/ptrace.c
+> +++ b/arch/xtensa/kernel/ptrace.c
+> @@ -547,7 +547,7 @@ int do_syscall_trace_enter(struct pt_reg
+>  		regs->areg[2] = -ENOSYS;
+>  
+>  	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+> -	    ptrace_report_syscall_entry(regs)) {
+> +	    !ptrace_report_syscall_permit_entry(regs)) {
+>  		regs->areg[2] = -ENOSYS;
+>  		regs->syscall = NO_SYSCALL;
+>  		return 0;
+> --- a/include/asm-generic/syscall.h
+> +++ b/include/asm-generic/syscall.h
+> @@ -58,8 +58,8 @@ void syscall_set_nr(struct task_struct *
+>   *
+>   * It's only valid to call this when @task is stopped for system
+>   * call exit tracing (due to %SYSCALL_WORK_SYSCALL_TRACE or
+> - * %SYSCALL_WORK_SYSCALL_AUDIT), after ptrace_report_syscall_entry()
+> - * returned nonzero to prevent the system call from taking place.
+> + * %SYSCALL_WORK_SYSCALL_AUDIT), after ptrace_report_syscall_permit_entry()
+> + * returned False to prevent the system call from taking place.
+>   *
+>   * This rolls back the register state in @regs so it's as if the
+>   * system call instruction was a no-op.  The registers containing
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -38,21 +38,22 @@
+>  				 SYSCALL_WORK_SYSCALL_EXIT_TRAP)
+>  
+>  /**
+> - * arch_ptrace_report_syscall_entry - Architecture specific ptrace_report_syscall_entry() wrapper
+> + * arch_ptrace_report_syscall_permit_entry - Architecture specific wrapper for
+> + *					     ptrace_report_syscall_permit_entry()
+>   * @regs: Pointer to the register state at syscall entry
+>   *
+> - * Invoked from syscall_trace_enter() to wrap ptrace_report_syscall_entry().
+> + * Invoked from syscall_trace_enter() to wrap ptrace_report_syscall_permit_entry().
+>   *
+> - * This allows architecture specific ptrace_report_syscall_entry()
+> + * This allows architecture specific ptrace_report_syscall_permit_entry()
+>   * implementations. If not defined by the architecture this falls back to
+> - * to ptrace_report_syscall_entry().
+> + * to ptrace_report_syscall_permit_entry().
+>   */
+> -static __always_inline int arch_ptrace_report_syscall_entry(struct pt_regs *regs);
+> +static __always_inline bool arch_ptrace_report_syscall_permit_entry(struct pt_regs *regs);
+>  
+> -#ifndef arch_ptrace_report_syscall_entry
+> -static __always_inline int arch_ptrace_report_syscall_entry(struct pt_regs *regs)
+> +#ifndef arch_ptrace_report_syscall_permit_entry
+> +static __always_inline bool arch_ptrace_report_syscall_permit_entry(struct pt_regs *regs)
+>  {
+> -	return ptrace_report_syscall_entry(regs);
+> +	return ptrace_report_syscall_permit_entry(regs);
+>  }
+>  #endif
+>  
+> @@ -73,8 +74,6 @@ static inline void syscall_enter_audit(s
+>  static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work,
+>  						long syscall)
+>  {
+> -	long ret = 0;
+> -
+>  	/*
+>  	 * Handle Syscall User Dispatch.  This must comes first, since
+>  	 * the ABI here can be something that doesn't make sense for
+> @@ -95,8 +94,8 @@ static __always_inline long syscall_trac
+>  
+>  	/* Handle ptrace */
+>  	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
+> -		ret = arch_ptrace_report_syscall_entry(regs);
+> -		if (ret || (work & SYSCALL_WORK_SYSCALL_EMU))
+> +		if (!arch_ptrace_report_syscall_permit_entry(regs) ||
+> +		    (work & SYSCALL_WORK_SYSCALL_EMU))
+>  			return -1L;
+>  	}
+>  
+> @@ -137,7 +136,7 @@ static __always_inline long syscall_trac
+>   * It handles the following work items:
+>   *
+>   *  1) syscall_work flag dependent invocations of
+> - *     ptrace_report_syscall_entry(), __seccomp_permit_syscall(), trace_sys_enter()
+> + *     ptrace_report_syscall_permit_entry(), __seccomp_permit_syscall(), trace_sys_enter()
+>   *  2) Invocation of audit_syscall_entry()
+>   */
+>  static __always_inline long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall)
+> --- a/include/linux/ptrace.h
+> +++ b/include/linux/ptrace.h
+> @@ -405,13 +405,13 @@ extern void sigaction_compat_abi(struct
+>  /*
+>   * ptrace report for syscall entry and exit looks identical.
+>   */
+> -static inline int ptrace_report_syscall(unsigned long message)
+> +static inline bool ptrace_report_syscall(unsigned long message)
+>  {
+>  	int ptrace = current->ptrace;
+>  	int signr;
+>  
+>  	if (!(ptrace & PT_PTRACED))
+> -		return 0;
+> +		return true;
+>  
+>  	signr = ptrace_notify(SIGTRAP | ((ptrace & PT_TRACESYSGOOD) ? 0x80 : 0),
+>  			      message);
+> @@ -424,11 +424,11 @@ static inline int ptrace_report_syscall(
+>  	if (signr)
+>  		send_sig(signr, current, 1);
+>  
+> -	return fatal_signal_pending(current);
+> +	return !fatal_signal_pending(current);
+>  }
+>  
+>  /**
+> - * ptrace_report_syscall_entry - task is about to attempt a system call
+> + * ptrace_report_syscall_permit_entry - task is about to attempt a system call
+>   * @regs:		user register state of current task
+>   *
+>   * This will be called if %SYSCALL_WORK_SYSCALL_TRACE or
+> @@ -438,7 +438,7 @@ static inline int ptrace_report_syscall(
+>   * call number and arguments to be tried.  It is safe to block here,
+>   * preventing the system call from beginning.
+>   *
+> - * Returns zero normally, or nonzero if the calling arch code should abort
+> + * Returns True normally, or False if the calling architecture code should abort
+>   * the system call.  That must prevent normal entry so no system call is
+>   * made.  If @task ever returns to user mode after this, its register state
+>   * is unspecified, but should be something harmless like an %ENOSYS error
+> @@ -447,8 +447,7 @@ static inline int ptrace_report_syscall(
+>   *
+>   * Called without locks, just after entering kernel mode.
+>   */
+> -static inline __must_check int ptrace_report_syscall_entry(
+> -	struct pt_regs *regs)
+> +static inline __must_check bool ptrace_report_syscall_permit_entry(struct pt_regs *regs)
+>  {
+>  	return ptrace_report_syscall(PTRACE_EVENTMSG_SYSCALL_ENTRY);
+>  }
+> 
 
