@@ -4,115 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10F00C44501
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jul 2026 13:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF33C44501
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jul 2026 20:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XTxMckJ71iKdcnC625lbZ9WJQgTp+gyXuVTaxsSZYeA=; b=yS88tC46tCKeAD309wFcApMLI4
-	04P5BvSGOgD2bLDsSuLc5nDzvV1tRwxTsiksChemOGk+2pan23gtp+m5YBNVFbPfJskt2Mxb4SUFF
-	p2eb6qq1VvPz2Qddp792RF8p08kOGZzteQXgNUEvIcEfl7Sh9zbZGxYEVjS5oUuv1Y9Z39cFPEv/o
-	26GW801LXkW+A0NSryNkfRKV06ozkpf9Z1K5MppyhlgdwbJt6A0TuEzesalQyNz3fmHlCCKvOBK9v
-	gTvtFtqhvWSPtgwTIrq4dEGDYReVVr/1s3VNSk09LAN63xS2xymwLknjWK4tEN5bMP1Ro6V+rUIgL
-	tv8xt5aA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=13qA2fJAs5tJqvbMzl890ijH0mJhzYe7F+N4H+bA7a0=; b=hC6ba8Dv0afD1ifa319QAuZTMj
+	67wYMBUVQM2UOGb7glRoMQEeNPyUDUkqwtVgUvy8d0ZBQvH/qtzXkw39zftl2zZ8YB95pAAQY6mrS
+	FFEw1l3Y3QAgGYYSYOYr8x/WWD/d6/XAz//7sQzfBfLnCV1Ij5ewN/DtHZOqdUmioWPZ06ei0WOq6
+	CQAF2NYuOMQmRCzqmr4/eqbixtStMaSfgHNjsHlUxIVn3dAvgggQc8yUHoaOXWp0AwbSSMAoUUrZW
+	TiUB+EXafdTF7IHqFRFgx5WRfIj7Z4asGJ4/mhHUkbhk55XhYCn/gYL5Ck7n95ElCJtpEo2umQhpo
+	W9glNOwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wiAps-00000004xqk-0I1n;
-	Fri, 10 Jul 2026 13:00:08 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1wiIEQ-00000005jel-11jV;
+	Fri, 10 Jul 2026 20:53:58 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wiApp-00000004xqG-1qRG
+	id 1wiIEN-00000005jds-3OOq
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jul 2026 13:00:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783688404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XTxMckJ71iKdcnC625lbZ9WJQgTp+gyXuVTaxsSZYeA=;
-	b=ivj0ZgG1/Z7mkv6l6hC7im8uGS5cMvScrm2GicJ2bm7ruXftEYIsvtTtgnZkFTj9CBDS8J
-	OKKfo0lTE21nTFCfqryJ0YXXTtq8/d0sYVdBT5Dzr+xXbRe5jLXMCP5INXwxBk6QZot5rN
-	hQLgWnfqDZf5N7AeMCN0j7I8e8uvm+M=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-640-duefXCb_NOaqJcpTJsNlCw-1; Fri,
- 10 Jul 2026 08:53:17 -0400
-X-MC-Unique: duefXCb_NOaqJcpTJsNlCw-1
-X-Mimecast-MFC-AGG-ID: duefXCb_NOaqJcpTJsNlCw_1783687991
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AAE061801379;
-	Fri, 10 Jul 2026 12:53:07 +0000 (UTC)
-Received: from fedora (unknown [10.44.49.164])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8AEF2180029C;
-	Fri, 10 Jul 2026 12:52:47 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 10 Jul 2026 14:53:07 +0200 (CEST)
-Date: Fri, 10 Jul 2026 14:52:40 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alDrGBMdTuoLcVyy@redhat.com>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org>
- <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13>
- <alDQ7isUKJFl8Va4@kunlun.suse.cz>
- <alDaOw8t-e3rxIPm@redhat.com>
- <alDmTcgzMlKiio9H@kunlun.suse.cz>
+	Fri, 10 Jul 2026 20:53:57 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-381c51fde6bso1379918a91.2
+        for <linux-um@lists.infradead.org>; Fri, 10 Jul 2026 13:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783716834; x=1784321634; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=13qA2fJAs5tJqvbMzl890ijH0mJhzYe7F+N4H+bA7a0=;
+        b=XN+GFoE28RMqWCDNyrTNJupPhtGKmE4/Fn/QQIp96GYDfRz2n59Ltjb8plXVV7WizM
+         KeUPkyjBBpPy833DxtXFTB8Ono7zS3eoEfDK3zE/lZOhmhIZp2pLwEmzZZkUNJ5T1OVq
+         OJnBuwnCpBuNguegapbcM69fkCe0RcTWz68QbJWOopBAK1T3l99x2Eo50TP6cvQNjpoT
+         r1r+utEpoWnd1dt3jCXoFJn/bO2eQ9i1H/nT5y/7GDqfAr+UsL1ZAVQWoUMFgYxISkCY
+         r2P3zpK5iVf8zoXxZgjhF0+aQHhWgV98f2BeMjPnVDngx3P8RIM9kOgPteoMeXsxESx8
+         /iqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783716834; x=1784321634;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=13qA2fJAs5tJqvbMzl890ijH0mJhzYe7F+N4H+bA7a0=;
+        b=DLyfaoe7iEktGrRRB907ysI3AyE82FFF/K8JqUN+U9IBHzqTEaMUUTCqHX+nocXNB2
+         JDgVEbCbxQnvTKggyr9A1aZ4+HJLEQtZU09Qj8UyfP53lvS8GBae0EKd5Xk3Cwq9mlTb
+         uMFMck8ruFqEjX5jFl8mhCPKXsFvADZNotpiY0+SnMVEboBmx5diFcDz1Czj1EouIIxY
+         mgx9aAB3G9Hb0x1srybrOpnSwTgH4jZ93JfXWG0PW57z1Vt2gZDFWsCELkGyFgm7Oy56
+         LdT9KWSLvK7QVDZZ25ioiKzTzJLw5l0UGFKC/iVvoFyftykO5fk0T/qxeHQNM5nIQEUG
+         NSEg==
+X-Forwarded-Encrypted: i=1; AHgh+RoG4BPwFEWrMFIGgOEoOYVUa1Tg+05Nrx95XvmIkxpfuNNY+Gi5sAo+7YMWFmB/2xiflVkkTMxRMA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yx63OM6JaobBKzFmK3Gus4U/fzhMx2dKNBwKYGkpsybExPrOS42
+	Vk7eLlgo9vIcw8CozFWCOMWPpDcI9SqxqR+FP9KyW/UAFMrhphHNJoJX
+X-Gm-Gg: AfdE7cnEGA20F/sKESgmwb71ywhjFZ9tmDueDoOph4swKyvN7DOldLmdjWE07YZH5X7
+	1SD4+R6kiyBQ5HqTYJxXOXQG8fR0bPePDMbjfWaQc0qoYVEd68euAFPFw5xZKF654cJcwyEL5NC
+	pH/XGcpKt/k8oEVoprSS7yYbj2Ldc2Ey5FBGXqjkdlyiNch6RtRAwspmQqoksf8oeDTA9LU2iHU
+	200azwvmUYoarJ8kj3F9P8TlpSPOfvBERyGFbIe5n95z+Vr0WK/DLeiA8UwP+OjEuW9uwxAL4Xa
+	G3R4pbVLy6kxi5jdupPluWmyGg7j0o+7BJZL9ycUcUwfOhiUP+YJ5aSEa/KNWwHVV2R4qCJcoKl
+	7CCh9dxfDr9R071LoGqnJFyabBUAQMiYd9mJLDYW8P2JMgIZcRwRvKbvVdnqMXDuYrryA+QADCQ
+	g3Iax6hQmUHPuArCw9pDWZ+2/7BDrpnkkfyocMXslUtsvhVK0pw/qeWZ0=
+X-Received: by 2002:a05:6a21:9f17:b0:3c0:9c19:65c4 with SMTP id adf61e73a8af0-3c110aaff03mr652395637.76.1783716834255;
+        Fri, 10 Jul 2026 13:53:54 -0700 (PDT)
+Received: from pop-os.scu.edu ([129.210.115.107])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3119c2a7bb5sm21724371eec.25.2026.07.10.13.53.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2026 13:53:53 -0700 (PDT)
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [RFC PATCH 0/6] um: introduce pidfd_mmap()/pidfd_munmap() syscalls
+Date: Fri, 10 Jul 2026 13:53:18 -0700
+Message-ID: <20260710205324.1343217-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-In-Reply-To: <alDmTcgzMlKiio9H@kunlun.suse.cz>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
-X-Mimecast-MFC-PROC-ID: RCVJn3MghxE9ICkHZFPkFpBUJE_3eYIfBZ3sUrlRqXc_1783687991
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260710_060005_548749_CD439737 
-X-CRM114-Status: GOOD (  23.35  )
+X-CRM114-CacheID: sfid-20260710_135355_852939_0F8ED50D 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,47 +99,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 07/10, Michal Suchánek wrote:
->
-> On Fri, Jul 10, 2026 at 01:40:43PM +0200, Oleg Nesterov wrote:
-> >
-> > I can only say that ptrace users do want to skip the syscall and set the
-> > return value on entry.
-> >
-> > See
-> > 	[PATCH v5 1/2] ptrace: add PTRACE_SET_SYSCALL_INFO syscall skipping support
-> > 	https://lore.kernel.org/all/20260709100949.94345-2-renzo@cs.unibo.it/
-> >
-> > The changelog explains that currently this doesn't work because
-> > among the arches which define HAVE_ARCH_TRACEHOOK (at least) arch/mips is
-> > broken in this regard.
->
-> Or it could be documented that setting the return value has to be done
-> in the exit trace, and that would than work on any architecture AFAICT.
+This RFC adds two syscalls, pidfd_mmap() and pidfd_munmap(), that let a
+supervisor install or remove a mapping in another process's address space
+without target-side cooperation, and converts User Mode Linux to use them.
 
-Well, ptrace users know the problem. And this what they have to do
-currently.
+  pidfd_mmap(int pidfd, struct pidfd_mmap_args *uargs, unsigned int flags)
+  pidfd_munmap(int pidfd, unsigned long addr, unsigned long len)
 
-> With ppc and s390 using the same register for the syscall number and
-> syscall return value it's very much impossible to poke the return value
-> on entry into a register using the generic register access function. As
-> of now there is no place to store the value ot of the return value
-> outside of the registers, either.
+The backing fd (if any) is resolved in the *caller's* fd table, mirroring
+pidfd_getfd()'s cross-task install model. Both are gated by
+ptrace_may_access(PTRACE_MODE_ATTACH_REALCREDS); LSM/fsnotify hooks run
+against the caller. pidfd_mmap() takes an extensible, size-versioned
+argument struct (clone3/openat2 style) since an mmap-shaped call exceeds
+the 6-argument syscall limit.
 
-I know nothing about ppc and s390. Can't comment right now.
+They build on the mm-side remote-install primitives vm_mmap_remote()/
+vm_munmap_remote(), posted separately as:
 
-> And the current PTRACE_SET_SYSCALL_INFO indeed sets the syscall nr and
-> arguments on entry and the syscall return value on exit, that
-> disctincion is implemented.
->
-> Not sure how the patchset you point out is relevant, it only adds
-> changes in the exit case.
+  https://lore.kernel.org/all/20260704231831.354543-2-xiyou.wangcong@gmail.com/
 
-No. It allows to skip-and-set-retval on PTRACE_EVENT_SECCOMP.
+UML is the motivating user. Its SKAS monitor previously installed guest
+mappings by driving the stub to execute mmap/munmap itself: in seccomp
+mode it passed the physmem fd to the stub over SCM_RIGHTS, and in ptrace
+mode it batched STUB_SYSCALL_MMAP/MUNMAP entries for the stub to run.
+pidfd_mmap() lets the monitor install mappings into the stub's mm
+directly, so the stub never touches the fd or executes mmap/munmap. With
+both modes converted, the entire stub-syscall batcher and the SCM_RIGHTS
+fd-passing become dead code and are removed (net ~530 lines). The ptrace
+conversion (patch 5) is included mainly to demonstrate the primitive's
+reach; the security caveats pidfd_mmap() does *not* address (e.g. a guest
+blocking SIGALRM to dodge scheduling) are preserved in stub.c.
 
-But ENTRY -> EXIT transition is not yet allowed due to the problems
-above.
+As this is an RFC, the UML side _intentionally_ does not handle host
+portability: it assumes a host kernel that provides pidfd_mmap() and
+deliberately omits any detection or fallback for older hosts (which would
+otherwise pick the ptrace path, or fail the seccomp probe). That belongs
+in a non-RFC version and is left out here to keep the series focused on
+demonstrating the impact on UML.
 
-Oleg.
+---
+
+Cong Wang (6):
+  pidfd: add pidfd_mmap()/pidfd_munmap() syscalls
+  um: acquire a stub pidfd via CLONE_PIDFD in seccomp mode
+  um: install guest mappings via pidfd_mmap() in seccomp mode
+  um: forbid mmap/munmap in the stub seccomp filter
+  um: install guest mappings via pidfd_mmap() in both modes
+  selftests/pidfd: add pidfd_mmap()/pidfd_munmap() tests
+
+ arch/um/include/shared/os.h                   |   4 -
+ arch/um/include/shared/skas/mm_id.h           |   8 +-
+ arch/um/include/shared/skas/stub-data.h       |  28 --
+ arch/um/kernel/skas/mmu.c                     |   9 +-
+ arch/um/kernel/skas/stub.c                    | 151 ++--------
+ arch/um/kernel/skas/stub_exe.c                |  20 +-
+ arch/um/os-Linux/skas/mem.c                   | 275 ++----------------
+ arch/um/os-Linux/skas/process.c               |  92 ++----
+ arch/um/os-Linux/start_up.c                   |   8 +-
+ arch/x86/entry/syscalls/syscall_64.tbl        |   2 +
+ include/linux/syscalls.h                      |   5 +
+ include/uapi/linux/pidfd.h                    |  18 ++
+ kernel/pid.c                                  | 132 +++++++++
+ scripts/syscall.tbl                           |   2 +
+ tools/testing/selftests/pidfd/Makefile        |   3 +-
+ tools/testing/selftests/pidfd/pidfd.h         |  34 +++
+ .../testing/selftests/pidfd/pidfd_mmap_test.c | 234 +++++++++++++++
+ 17 files changed, 520 insertions(+), 505 deletions(-)
+ create mode 100644 tools/testing/selftests/pidfd/pidfd_mmap_test.c
+
+
+base-commit: 69288464b0af40a988958c0e1b29ff15ccd2acb7
+-- 
+2.43.0
 
 
