@@ -4,90 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02D4EC44506
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jul 2026 20:54:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 111DAC44506
+	for <linux-um@archiver.kernel.org>; Sat, 11 Jul 2026 12:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RNCHCTp2HRwWejyccEraGcBIln8xR0gwETjSA5NC5cY=; b=Bz2/X1wTVsYOxoG+cYpktW7Dgt
-	dAglxV/b0oEx2IxrTP2KqQgsFYlCPH5mFCHNm6cg79dajuqa30joaEMJ6r7zVN06FH52/TEhYzv3L
-	BdfJ/14CZa7jsh/CS/DDCF8tCCWSNmkH37eGiINsruJ/bC4uOx5U1Re+Xzvvb2dHDjU6wUQVROwxn
-	yoN7RtkZ/gm3vvFLO4zcLicv+gg+4oVnoYSPIVt0QNPoVnUld/kD3lbwuhwSCxCjFrObKj+bQLqQg
-	zPE427ASiWk0/HYBlJZRX84kTsJJ8lLN0u7hw3/4zvBEpgnNgIPHyhGkV4lxn1AbAwaTxe8/4qqs3
-	K7SrR0AA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=; b=yytvvJ1EpqsxQT3GubxaoMlNxn
+	8foLkfbrf0cPM1wTHHoxS1fGDDDsBHBczRUvEEF1uZ0JsyfdCA6fTdrkTYLjS+xDB9ta+ZzfXXHLQ
+	0FKdoutEl/I6fpKAUnuYUn2jHNy5XJ28wpVB/mqki8bzoRlYhPerF0qf5+dHR948ajZGSgR7wlCsm
+	YbypVFHWzMcJdz99P9At56vn7ZhoHIBJFWojC1eR2IPEuAb5WKmscIFCpHhAFKy9Jsq1fTFM7BhJg
+	kdKMFvwYgPy1PxCgzKHme3cA5GFlUiQOzr2LzFBfdH6VdnGK/sAPifJkYPrgg5wO0Zq7Hr5oFEZhr
+	ZgwIUNCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wiIEa-00000005jly-3EYc;
-	Fri, 10 Jul 2026 20:54:08 +0000
-Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
+	id 1wiWpn-00000006XDS-0iAu;
+	Sat, 11 Jul 2026 12:29:31 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wiIEX-00000005jiw-2Hko
+	id 1wiWpi-00000006XBD-2XTG
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jul 2026 20:54:07 +0000
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-c9e607d81fcso869815a12.2
-        for <linux-um@lists.infradead.org>; Fri, 10 Jul 2026 13:54:05 -0700 (PDT)
+	Sat, 11 Jul 2026 12:29:29 +0000
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-698bf053053so2732021a12.3
+        for <linux-um@lists.infradead.org>; Sat, 11 Jul 2026 05:29:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1783772964; cv=none;
+        d=google.com; s=arc-20260327;
+        b=GA0jL0s2tVkzwhEz+w4lRGFAMI7NU2+JUgCxjFLGcG7Dw/Xd01z7pvrZscMC5uNkOG
+         qo9vMPMDCtO8mIvvc8Bc/2zffsREo8T5VNV2likU2I5jp7wVhGHacHRKJzZzVGDGGrnF
+         9wAgsYXrB9c3c2/ycPJx74FtPZlpdyTWi660vBgYOdt7RjpOfNT8emD6Kqgm6UnTPxyJ
+         xm3U9l5xi4yyCY6S3ZFxF+jfAL+dmQOa1Op6p383uEtBuAHrbLC5zMHowFF0WjqnTmQa
+         CsVJDSOtfp/F0Nt9B8Uh3sSoQ/7VobMSsjd0gdyocziSSDOrwNfIdi9x+QnmneJprtQ0
+         7oTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        fh=6QQ7fNpFeoVwbNWbz5RRPdsaxOFUAiynly6CGfAwguw=;
+        b=pdd4ZRfb6jb1VWBwCMHz93oQrJUOT4DxaEdsuvhV/89dwj4eBVO2XZZA4YuQts78zo
+         gNwRGyJrx5RplspRso0/BU0yZzOluwrBIVauo0fmk47pY3TQoATMHlIF3yPWojfLcof2
+         Ob94xmsiRo1fBflXTdox/4SkWsNhSELLMq3CGx3KPzPL49+0W2G3nSSmekCkAkyq11zn
+         fV4eZS4sHMVFnJoy9/bIwT/m3w4PYrNcNU1mpSePi+vtDByj60bjOT6q1L//SWOBUIbr
+         nPHAGxRUZZbHwBHB1najiy/936sWW0fvwjL8ALIcEkcmL1O+aX4yu5JhgjC9uEJNFaIX
+         o5eA==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783716845; x=1784321645; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=RNCHCTp2HRwWejyccEraGcBIln8xR0gwETjSA5NC5cY=;
-        b=o94IjsVrGLCawLe8xCK663LLessIa550lZ8Q2Vpgy+9Aio5+tTnqGlgIn7WpGx7zxi
-         TmwuyC/5/39DJCZa5UeQtiOI2x56YFna6/rm1lWkoz/rBFKV7jVeA/yAF1Sd+OMOGBTl
-         N9YOwBwLjTB0PxtVtioUk9h9npGqZkY85fTjZlRn9h1RB0AVAo2le8rvZg1Ut7gmJEUd
-         YWUvSqXN15oyQmUdUazdyCIHRI2LbpNn85z/FGLQn2RjcRMufIGXXhnPPrhYzkDdP8gU
-         n9p8zdxqWNgNXdj7+uAxMhhJoW+jZvWKE8p3gOhdwKLRol3MAxkg5Rgs9Jk9l4Efm4X+
-         ImFA==
+        d=gmail.com; s=20251104; t=1783772964; x=1784377764; darn=lists.infradead.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        b=AEPV4U7oDhfoNmqPDLaJ5QJXi/cv5i1t9ID+/SIMQcOTMF855h0YJxeIClVcO8nsxU
+         /QHXNkyvYDFV9l9RfKYAv27CiZkFIhxggU4ZZ7em2xpr/rQMXmPbiGmKE0RiRswiq2en
+         r1geol2s09atm+oDNqTF6Q867dOKKrsIfc1uNwZkJ2KXqTUVPbIKR/0YYRauvd/x50qj
+         du+9HvPAU8TAwFLofxhJsiR5yT2kUBK/M6Zw3ksqFF3R2KB6SEgskVOEdZbT752LCQmX
+         k1iHJ5ok59FaSc3Ka0tBupMMcM1rSw+2KcNHmwiaPfY4B8N+SQF6lFVqIbbpZrAqoNZM
+         f0ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783716845; x=1784321645;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=RNCHCTp2HRwWejyccEraGcBIln8xR0gwETjSA5NC5cY=;
-        b=Fu/h+NbeHcKVyj0UasbNEUOLobMS9Ncy5PEijC6xMhc3qCMdNCCu0VkzJHGthfGoKB
-         IqXk8r5OQ1buXGRKm/oARHMBg08M8QJOOtmmN75kvVtfHvmlFLcqYQM2wwI4v9Axl723
-         sihQir6snAoOh2VLdwSjtD4XGi3/YQLHuGTJ5qp31f4JNAWBr6PhLWJPXM/fxiwIXL6G
-         yvhPLq9XNd3zgVSQIWGhM4EyLgSlT88MCqMXno1w+d849oXw9mGgYL4DsXIdB8VyObGJ
-         rS5hdwZaQpu1AMQ1OHdhLmCTgq75QRoSwAoAocr6hLgcoGfUtdUMGBWRH9S2iyC3vi6c
-         L2Ng==
-X-Forwarded-Encrypted: i=1; AHgh+Rq4Y7Giso9p1bdONSElQ6lQhL79+DcKC/CM5Y3CdH15+RgttSHRojh6hCTmEJfnuEYA6tAmPbD7YQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxRiwmeXX6jaNZl0+RglZXujWwSkoc7YN0bIiboqFQaKO5CFe5n
-	Ja4C99v8VGI28DEkrivAvxmUk87ROqrFwRP2XuaEoQHS5Hly6gATZ1QZ
-X-Gm-Gg: AfdE7clRzcwQ9EAebmQaXo+TibFugWC8NPjabbemvreVohjdTPHaD7lrgBS4UsA+ERy
-	OBTtr3anDJ0TbvoJKX0ljRQzfPJWyJNFE5vQsd8pj7oJ3WGXOD1PPs1j9RQo7Bi9710N2elTwFu
-	L2q4wfDhrrfqaj9zv48x3npirkMR1+3ACTcW1/5h3UY4GY9Amw2PeDw5oBYs8cobDSpEk5mbD97
-	BAZX2mfExYEx68FHhKp6YUPN3DF83XgCKoNGUDuKMqdpsa503tnqiDQKuyKOhIE3DK8llfoT6qK
-	Aaw36sej2h/WWZ7e3VRdpbGHKosjNNwL7GcuXmAVjGbK0sbPxHLxnGSgtG8uXkNnRhhSkBjDGGh
-	aeyvXfVFz8eEMek72cqbpD8ITNgTPl8tEhGj7mXiCN3E2TOSGhKQn6GC1ZS5oLIVo/c7C5lpqfh
-	YH0um2OaMrWpSWs9Apd4Hb1duEB5/253E/URiWFakt+eu7DJDbBRtfLpBj5RvUFatkqw==
-X-Received: by 2002:a05:6a20:3d11:b0:3bd:4698:e7c4 with SMTP id adf61e73a8af0-3c110b166e1mr591264637.42.1783716844587;
-        Fri, 10 Jul 2026 13:54:04 -0700 (PDT)
-Received: from pop-os.scu.edu ([129.210.115.107])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3119c2a7bb5sm21724371eec.25.2026.07.10.13.54.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 13:54:03 -0700 (PDT)
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Cong Wang <cwang@multikernel.io>
-Subject: [RFC PATCH 6/6] selftests/pidfd: add pidfd_mmap()/pidfd_munmap() tests
-Date: Fri, 10 Jul 2026 13:53:24 -0700
-Message-ID: <20260710205324.1343217-7-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260710205324.1343217-1-xiyou.wangcong@gmail.com>
-References: <20260710205324.1343217-1-xiyou.wangcong@gmail.com>
+        d=1e100.net; s=20251104; t=1783772964; x=1784377764;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        b=qbPAknR8L9T8jbjRbn+t/sOw4WDR9O6lNidxwnFMrcS1+9tCTmowsGYUlp2SaP/F+d
+         TPxlpHDtb1b2UX734i5M4/vaoruXvYncyc0X5Xeqf9exAQAFkQfQL8IxFrS012OriALQ
+         jZFx48Z+vveVhqruRltDyQsYDyU6eGxvy9IemUiFV5uyhQXNjH14fibhyk9lmV9jwRJ5
+         SwX7pcegjiT/zm4X8YSwABcW2SXj4msh1Caa3z3ZDt/fTpiaWA1xotVcfffMftTnE4OX
+         1Hf9UAQQRBRTtSIue2RMjLD8otirYYh/MO5yJ6K5nRPifu6XJi/UhmeHUYkSpSUCcf2w
+         72zg==
+X-Forwarded-Encrypted: i=1; AHgh+RoC/8weCCggScehdikDBnrXmPua+3q90P+Xgbq2P2VXJECXiOlQU4P+OIw1xhTiPYUjQFY4vsKrmA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxQv0HXvGrppGqttRp3GXomHBCaB0sY9YF7az9oIQtW6BOjITLu
+	lK6QIAiTK0kPU9+JkU+izi43m5TBtdOE7g4jub167+iOAeOK0XxPvllD8tIqGJM/bnb9zS9ARZt
+	0pqYG9uTC5lMYiPgStcz6QwrxayNQuNY=
+X-Gm-Gg: AfdE7cmVZJAvmrum9zPCmTsk+c0tSwJExvsbbJmYU+VRtMQ9W3LWeS97rphu+EbDmuk
+	MEM7ZE1gKh5CWec7gzRwUD78nARgRoOt6ABdhPi/ArOr8hajH+ftFB5GnxoXX5g5NTVHC/uIiA2
+	MZB/nhEdYVGR8R0MZxUcwBSVX9J9mxvwbl7SCnsgOOiYIKvlPlEWVAzHEEE5xWQF2Id0BsD4TKx
+	CIXb4gbTjcFH0Hc7UvZSTfBDB6yYMhjdUICx2J37WiM2PfpWyc+N9Sdq1FjqByjka6D5IzVDbZg
+	AIcroqj0GkEwybnyPZEi4iBR/bsStd6YB7Rw+Hj9B285rs4Zs/f5BcjUW8d3ywY=
+X-Received: by 2002:a05:6402:3512:b0:699:728e:48b9 with SMTP id
+ 4fb4d7f45d1cf-69c5edb9cb3mr1210325a12.0.1783772963919; Sat, 11 Jul 2026
+ 05:29:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260707181957.433213175@kernel.org>
+In-Reply-To: <20260707181957.433213175@kernel.org>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Sat, 11 Jul 2026 14:29:12 +0200
+X-Gm-Features: AUfX_mzOlRB8ana7x7qPQc4frMU9J060tNH0Z2GPCNvL1LYqDKQBjM-XzHbrvno
+Message-ID: <CA+=Fv5RpgQ-UeGAT+VcLufte2gAp0H=J5GqZEFR_SuQsmnzy=A@mail.gmail.com>
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
+	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
+	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-arch@vger.kernel.org, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260710_135405_614713_EA4E8A61 
-X-CRM114-Status: GOOD (  27.53  )
+X-CRM114-CacheID: sfid-20260711_052926_672701_140259C3 
+X-CRM114-Status: GOOD (  18.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,342 +137,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Cong Wang <cwang@multikernel.io>
+>
+> With that all architectures using the generic syscall entry code follow the
+> same scheme, apply stack randomization at the correct and earliest possible
+> place and skip syscall processing depending on the boolean return value of
+> syscall_enter_from_user_mode[_work]().
+>
+> There should be no functional changes, at least there are none intended.
+>
+> The resulting text size for the syscall entry code on x8664 is slightly
+> smaller than before these changes.
+>
+> Testing syscall heavy workloads and micro benchmarks shows a small
+> performance gain for the general rework, but the last patch, which changes
+> the logic to be more understandable has no measurable impact in either
+> direction.
+>
+> The series applies on Linus tree and is also available from git:
+>
+>         git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-rework-v1
+>
 
-Exercise the new syscalls against a forked target reached by pidfd:
 
- - install_and_read: map a parent-owned memfd into the target, verify the
-   target's new mapping shows the memfd contents (read via
-   process_vm_readv), that MAP_SHARED writes propagate, and that
-   pidfd_munmap() removes it. This also covers the key semantic that the
-   backing fd is resolved in the *caller's* fd table (the target never
-   sees the memfd).
- - anonymous: MAP_ANONYMOUS install + write-back round-trip.
- - bad_args: __spare != 0, undersized @size, non-zero reserved flags, and
-   a bad backing fd are all rejected.
- - no_ptrace_access: a non-dumpable target (no ptrace access) yields
-   -EPERM, matching the ptrace_may_access() gate.
+Hi Thomas,
 
-The suite skips cleanly (TAP "SKIP") when the kernel lacks the syscall.
-The pidfd_mmap ABI definitions are kept in pidfd.h alongside the existing
-local uapi copies (struct pidfd_info, etc.).
+Thanks for the series.
 
-Assisted-by: Claude:claude-opus-4.8
-Signed-off-by: Cong Wang <cwang@multikernel.io>
----
- tools/testing/selftests/pidfd/Makefile        |   3 +-
- tools/testing/selftests/pidfd/pidfd.h         |  34 +++
- .../testing/selftests/pidfd/pidfd_mmap_test.c | 234 ++++++++++++++++++
- 3 files changed, 270 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/pidfd/pidfd_mmap_test.c
+I have an Alpha GENERIC_ENTRY series posted and planned for the next
+merge window:
 
-diff --git a/tools/testing/selftests/pidfd/Makefile b/tools/testing/selftests/pidfd/Makefile
-index 4211f91e9af8..f1c421bf725a 100644
---- a/tools/testing/selftests/pidfd/Makefile
-+++ b/tools/testing/selftests/pidfd/Makefile
-@@ -4,7 +4,8 @@ CFLAGS += -g $(KHDR_INCLUDES) $(TOOLS_INCLUDES) -pthread -Wall
- TEST_GEN_PROGS := pidfd_test pidfd_fdinfo_test pidfd_open_test \
- 	pidfd_poll_test pidfd_wait pidfd_getfd_test pidfd_setns_test \
- 	pidfd_file_handle_test pidfd_bind_mount pidfd_info_test \
--	pidfd_xattr_test pidfd_setattr_test pidfd_autoreap_test
-+	pidfd_xattr_test pidfd_setattr_test pidfd_autoreap_test \
-+	pidfd_mmap_test
- 
- TEST_GEN_PROGS_EXTENDED := pidfd_exec_helper
- 
-diff --git a/tools/testing/selftests/pidfd/pidfd.h b/tools/testing/selftests/pidfd/pidfd.h
-index 5a4e78c10f43..91e65283d5fe 100644
---- a/tools/testing/selftests/pidfd/pidfd.h
-+++ b/tools/testing/selftests/pidfd/pidfd.h
-@@ -203,6 +203,28 @@ struct pidfd_info {
- 	__u64 supported_mask;
- };
- 
-+#ifndef __NR_pidfd_mmap
-+#define __NR_pidfd_mmap 472
-+#endif
-+
-+#ifndef __NR_pidfd_munmap
-+#define __NR_pidfd_munmap 473
-+#endif
-+
-+#ifndef PIDFD_MMAP_ARGS_SIZE_VER0
-+struct pidfd_mmap_args {
-+	__u64 size;
-+	__u64 addr;
-+	__u64 len;
-+	__u64 prot;
-+	__u64 flags;
-+	__u64 pgoff;
-+	__s32 fd;
-+	__u32 __spare;
-+};
-+#define PIDFD_MMAP_ARGS_SIZE_VER0	56
-+#endif
-+
- /*
-  * The kernel reserves 300 pids via RESERVED_PIDS in kernel/pid.c
-  * That means, when it wraps around any pid < 300 will be skipped.
-@@ -267,6 +289,18 @@ static inline int sys_pidfd_getfd(int pidfd, int fd, int flags)
- 	return syscall(__NR_pidfd_getfd, pidfd, fd, flags);
- }
- 
-+static inline long sys_pidfd_mmap(int pidfd, struct pidfd_mmap_args *args,
-+				  unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_mmap, pidfd, args, flags);
-+}
-+
-+static inline long sys_pidfd_munmap(int pidfd, unsigned long addr,
-+				    unsigned long len)
-+{
-+	return syscall(__NR_pidfd_munmap, pidfd, addr, len);
-+}
-+
- static inline int sys_memfd_create(const char *name, unsigned int flags)
- {
- 	return syscall(__NR_memfd_create, name, flags);
-diff --git a/tools/testing/selftests/pidfd/pidfd_mmap_test.c b/tools/testing/selftests/pidfd/pidfd_mmap_test.c
-new file mode 100644
-index 000000000000..39d623ce7b9d
---- /dev/null
-+++ b/tools/testing/selftests/pidfd/pidfd_mmap_test.c
-@@ -0,0 +1,234 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <syscall.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <sys/prctl.h>
-+#include <sys/socket.h>
-+#include <sys/uio.h>
-+#include <sys/wait.h>
-+
-+#include "pidfd.h"
-+#include "kselftest_harness.h"
-+
-+#define UID_NOBODY 65535
-+#define PATTERN 0xab
-+#define MAP_LEN (4 * 1024)
-+
-+static struct pidfd_mmap_args mmap_args(int fd)
-+{
-+	struct pidfd_mmap_args args = {
-+		.size	= sizeof(args),
-+		.addr	= 0,		/* let the kernel choose */
-+		.len	= MAP_LEN,
-+		.prot	= PROT_READ | PROT_WRITE,
-+		.flags	= MAP_SHARED,
-+		.pgoff	= 0,
-+		.fd	= fd,
-+	};
-+
-+	return args;
-+}
-+
-+static int read_remote(pid_t pid, unsigned long addr, void *buf, size_t len)
-+{
-+	struct iovec local = { .iov_base = buf, .iov_len = len };
-+	struct iovec remote = { .iov_base = (void *)addr, .iov_len = len };
-+
-+	return process_vm_readv(pid, &local, 1, &remote, 1, 0) == (ssize_t)len ?
-+	       0 : -1;
-+}
-+
-+static int target(int sk)
-+{
-+	char buf;
-+	int ret;
-+
-+	prctl(PR_SET_PDEATHSIG, SIGKILL);
-+
-+	if (send(sk, "R", 1, 0) != 1)		/* ready */
-+		return -1;
-+
-+	while ((ret = recv(sk, &buf, sizeof(buf), 0)) > 0) {
-+		if (buf == 'P' && prctl(PR_SET_DUMPABLE, 0) < 0)
-+			return -1;
-+		if (send(sk, &buf, 1, 0) != 1)
-+			return -1;
-+	}
-+
-+	return ret < 0 ? -1 : 0;
-+}
-+
-+FIXTURE(pidfd_mmap)
-+{
-+	pid_t pid;
-+	int pidfd;
-+	int sk;		/* parent side of the socketpair */
-+	int memfd;	/* lives in the PARENT fd table */
-+	void *local;	/* the parent's own mapping of memfd */
-+};
-+
-+FIXTURE_SETUP(pidfd_mmap)
-+{
-+	struct pidfd_mmap_args probe;
-+	int sk_pair[2];
-+	char c;
-+
-+	/*
-+	 * The backing fd is resolved in the *caller's* (parent's) fd table,
-+	 * so the target never needs to see it.
-+	 */
-+	self->memfd = sys_memfd_create("pidfd_mmap", 0);
-+	ASSERT_GE(self->memfd, 0);
-+	ASSERT_EQ(0, ftruncate(self->memfd, MAP_LEN));
-+
-+	self->local = mmap(NULL, MAP_LEN, PROT_READ | PROT_WRITE, MAP_SHARED,
-+			   self->memfd, 0);
-+	ASSERT_NE(MAP_FAILED, self->local);
-+	memset(self->local, PATTERN, MAP_LEN);
-+
-+	ASSERT_EQ(0, socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair));
-+	self->sk = sk_pair[0];
-+
-+	self->pid = fork();
-+	ASSERT_GE(self->pid, 0);
-+	if (self->pid == 0) {
-+		close(sk_pair[0]);
-+		_exit(target(sk_pair[1]) ? EXIT_FAILURE : EXIT_SUCCESS);
-+	}
-+	close(sk_pair[1]);
-+
-+	self->pidfd = sys_pidfd_open(self->pid, 0);
-+	ASSERT_GE(self->pidfd, 0);
-+
-+	ASSERT_EQ(1, recv(self->sk, &c, 1, 0));		/* wait for "R" */
-+
-+	/* Skip the whole suite if the kernel does not have pidfd_mmap(). */
-+	probe = mmap_args(self->memfd);
-+	sys_pidfd_mmap(self->pidfd, &probe, 1);		/* reserved flags -> EINVAL */
-+	if (errno == ENOSYS)
-+		SKIP(return, "pidfd_mmap() is not supported");
-+}
-+
-+FIXTURE_TEARDOWN(pidfd_mmap)
-+{
-+	EXPECT_EQ(0, close(self->pidfd));
-+	EXPECT_EQ(0, close(self->sk));		/* tells the target to exit */
-+	munmap(self->local, MAP_LEN);
-+	close(self->memfd);
-+	EXPECT_EQ(0, wait_for_pid(self->pid));
-+}
-+
-+TEST_F(pidfd_mmap, install_and_read)
-+{
-+	struct pidfd_mmap_args args = mmap_args(self->memfd);
-+	char buf[MAP_LEN];
-+	long addr;
-+	int i;
-+
-+	addr = sys_pidfd_mmap(self->pidfd, &args, 0);
-+	ASSERT_GE(addr, 0);
-+	ASSERT_EQ(0, addr & (sysconf(_SC_PAGESIZE) - 1));	/* page aligned */
-+
-+	/* The target's new mapping must show the memfd contents. */
-+	ASSERT_EQ(0, read_remote(self->pid, addr, buf, MAP_LEN));
-+	for (i = 0; i < MAP_LEN; i++)
-+		ASSERT_EQ((unsigned char)PATTERN, (unsigned char)buf[i]);
-+
-+	/* MAP_SHARED: a write the parent makes to memfd is visible remotely. */
-+	memset(self->local, 0xcd, MAP_LEN);
-+	ASSERT_EQ(0, read_remote(self->pid, addr, buf, sizeof(buf)));
-+	ASSERT_EQ((unsigned char)0xcd, (unsigned char)buf[0]);
-+
-+	/* pidfd_munmap() removes it. */
-+	ASSERT_EQ(0, sys_pidfd_munmap(self->pidfd, addr, MAP_LEN));
-+	EXPECT_EQ(-1, read_remote(self->pid, addr, buf, MAP_LEN));
-+}
-+
-+TEST_F(pidfd_mmap, anonymous)
-+{
-+	struct pidfd_mmap_args args = mmap_args(-1);
-+	struct iovec local, remote;
-+	char in[64], out[64];
-+	long addr;
-+
-+	args.flags = MAP_PRIVATE | MAP_ANONYMOUS;
-+
-+	addr = sys_pidfd_mmap(self->pidfd, &args, 0);
-+	ASSERT_GE(addr, 0);
-+
-+	memset(out, 0x5a, sizeof(out));
-+	local.iov_base = out;
-+	local.iov_len = sizeof(out);
-+	remote.iov_base = (void *)addr;
-+	remote.iov_len = sizeof(out);
-+	ASSERT_EQ((ssize_t)sizeof(out),
-+		  process_vm_writev(self->pid, &local, 1, &remote, 1, 0));
-+
-+	ASSERT_EQ(0, read_remote(self->pid, addr, in, sizeof(in)));
-+	ASSERT_EQ((unsigned char)0x5a, (unsigned char)in[0]);
-+
-+	ASSERT_EQ(0, sys_pidfd_munmap(self->pidfd, addr, MAP_LEN));
-+}
-+
-+TEST_F(pidfd_mmap, bad_args)
-+{
-+	struct pidfd_mmap_args args;
-+
-+	/* The reserved padding must be zero. */
-+	args = mmap_args(self->memfd);
-+	args.__spare = 1;
-+	EXPECT_EQ(-1, sys_pidfd_mmap(self->pidfd, &args, 0));
-+	EXPECT_EQ(EINVAL, errno);
-+
-+	/* @size below the first published version is rejected. */
-+	args = mmap_args(self->memfd);
-+	args.size = 8;
-+	EXPECT_EQ(-1, sys_pidfd_mmap(self->pidfd, &args, 0));
-+	EXPECT_EQ(EINVAL, errno);
-+
-+	/* The reserved flags argument must be zero. */
-+	args = mmap_args(self->memfd);
-+	EXPECT_EQ(-1, sys_pidfd_mmap(self->pidfd, &args, 1));
-+	EXPECT_EQ(EINVAL, errno);
-+
-+	/* A bad backing fd (resolved in the caller's table) is -EBADF. */
-+	args = mmap_args(-1);
-+	EXPECT_EQ(-1, sys_pidfd_mmap(self->pidfd, &args, 0));
-+	EXPECT_EQ(EBADF, errno);
-+
-+	/* A bad pidfd fails. */
-+	args = mmap_args(self->memfd);
-+	EXPECT_EQ(-1, sys_pidfd_mmap(-1, &args, 0));
-+}
-+
-+TEST_F(pidfd_mmap, no_ptrace_access)
-+{
-+	struct pidfd_mmap_args args = mmap_args(self->memfd);
-+	int uid = getuid();
-+	char c;
-+
-+	/* Drop privilege so CAP_SYS_PTRACE can't bypass the dumpable check. */
-+	if (uid == 0)
-+		ASSERT_EQ(0, seteuid(UID_NOBODY));
-+
-+	ASSERT_EQ(1, send(self->sk, "P", 1, 0));	/* target: PR_SET_DUMPABLE 0 */
-+	ASSERT_EQ(1, recv(self->sk, &c, 1, 0));
-+
-+	EXPECT_EQ(-1, sys_pidfd_mmap(self->pidfd, &args, 0));
-+	EXPECT_EQ(EPERM, errno);
-+
-+	if (uid == 0)
-+		ASSERT_EQ(0, seteuid(0));
-+}
-+
-+TEST_HARNESS_MAIN
--- 
-2.43.0
+https://lore.kernel.org/linux-alpha/20260706170019.2941459-1-linmag7@gmail.com/T/#t
 
+Only its final patch intersects with this work.
+
+That patch removes Alpha's architecture-specific syscall_trace_enter()
+and syscall_trace_leave() implementations, so the Alpha changes in
+patches 11 and 12 will disappear once the GENERIC_ENTRY conversion is
+applied.
+
+It also currently uses syscall_enter_from_user_mode(), so I will need to
+rebase it onto the new entry interface introduced by this series. I
+expect the integration to be confined to the final GENERIC_ENTRY patch.
+
+The Alpha-specific changes in patches 11 and 12 look correct to me.
+
+Acked-by: Magnus Lindholm <linmag7@gmail.com>
 
