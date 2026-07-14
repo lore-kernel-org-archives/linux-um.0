@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BACCC44508
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:07:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F9BC4450A
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=865cl54nJQTbOF3eykkMxymd6hEBxnf3a3hksIMsfuE=; b=0PG+KSfroilnhWqV2jCqmzh8It
-	/JMOJAuDzwNxPatP+iFCGSUjZNh3xMTIkIOofJpJfkmqv69LOst9d4pSdtxsWcH7GSoQuoPU8wFVi
-	Iut/2n2djj+BqS2rFRWCFZjwDkzUXqFmzDa11ccSckwCBgCOvCd6ZC5twnOgg6yH7gghgc10buB3i
-	Ct+wQptGRoMyR7TT1BfmYUFVxQX9ZxTXu8/dmllaHxodnPTGeEO7DZLbFNzy4yoVYMV3uaafvpklX
-	zI1vKyIzrcFpzf0DpH/5WVUpbj5v3WV91JzuWANxaqLEHNHtmfyvltnygg0iI1dWD2uwwdOfrm3+n
-	2GVzDuKw==;
+	bh=KoCRR95PLYnVxjBQ0+K98Mlg61rzeKsyaOHBI9FlQ+0=; b=cGY0xEilobiORjnSMPlwMtz0FM
+	6wX9cuRX0jp8onSiZUn/iJiPWHnsgr2cDoWgIBb+s/kTCIVn6Ps1CM43M9eJ/Eo5AWi2I45ICJ7En
+	9NkbLOskrHxnQbodBc8WxH2G8EO0o6P5CZz3X5MK7WdKLAjV8th4wvXeOSHYYP/QQJrfVdgEWrSit
+	XM5yCWNhjEca9894t6Hg1jW7FMLGgRpr3uIEVnRD3S7T/Pk4tHQq/AhsoVWtqdyutO/nhYvg/YF2Y
+	6MDZ3MQu4OIqDcd4qmL93zExT/m0/a2QGnJ37ouvcM8ZMy4lwx7ywRB7PayuXOjB6XN182tRKO+XX
+	G6YJVH0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdnN-0000000CJli-0VsZ;
-	Tue, 14 Jul 2026 14:07:37 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1wjdnV-0000000CJto-1nea;
+	Tue, 14 Jul 2026 14:07:45 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdnL-0000000CJjO-0Ivz;
-	Tue, 14 Jul 2026 14:07:35 +0000
+	id 1wjdnS-0000000CJrJ-0r05;
+	Tue, 14 Jul 2026 14:07:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=865cl54nJQTbOF3eykkMxymd6hEBxnf3a3hksIMsfuE=; b=nBNQX4+mbigCJBhnTmF58J7kYl
-	xbYJmiw5HVx6s5ZPr2i0+t5RCYc941t9nJAXz9pjoMaTmkTTKmClCKxie1aXhZnBNhGIy0ZQiNXbj
-	F1WSRIxd6juWL6/BCTZoSH2LF40GslVY/03znwmUCspeuWvhkCH9M0KbFaFzLPKaCL+yVgzgoz/it
-	/qwm/7qQlMFFTCU+lHQIogm6FMR90n4XkBHbFhvTssKF33MWg0DAFvHHiNuuSLPBonu+dyKY2Vvry
-	fAA4HMM42JvyE2crmRdfFcMZVlEciZghabqyXRVPqPqFf3GOF8pXkTKCV4LxzWXBKitOZV4j3bVs6
-	ojH8MspA==;
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=KoCRR95PLYnVxjBQ0+K98Mlg61rzeKsyaOHBI9FlQ+0=; b=RVhDY+cchUV5PrzgcRRc2FHCHf
+	KdbMrBO+HVvQPqxakQomEz6FGcYC0J7Y7LwtXtn4Xy7Jo4+AiwCccYz/xYthjNnjmmYjKFhRshiSL
+	EneWCNgydeBXxEW680FCLPUqop7CFUjP4Hciv44s4LZVqfZRRnIdzffZuWHPnvNcIqG+zUcTGKtJo
+	iWSEYDsmvGzrzyYBz1/QrI7F7SXqOFeWIubQyKpni+gIEzquPK1bbxrAI/7u4TZRzFnJpZDye+FxI
+	/U4Xfx0FW3E1y9Umatz2P9p8Oo0WuvP/Sncutu16RntVjl7zZh5GT7JFh3gwwksTcCzMxH9vqiSc6
+	4U+SOs5w==;
 Received: from foss.arm.com ([217.140.110.172])
-	by desiato.infradead.org with esmtp (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wjdnG-0000000CZWG-3Q0y;
-	Tue, 14 Jul 2026 14:07:34 +0000
+	by casper.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wjdnO-0000000FCwy-3shv;
+	Tue, 14 Jul 2026 14:07:41 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0350F1C25;
-	Tue, 14 Jul 2026 07:07:25 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B74CB1D14;
+	Tue, 14 Jul 2026 07:07:32 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2ACB3F7B4;
-	Tue, 14 Jul 2026 07:07:21 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FA7E3F7B4;
+	Tue, 14 Jul 2026 07:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784038049; bh=VE9T6pQuQsM82lM79rZVxS9mOIiIj6SKheB2t7eP+e8=;
+	t=1784038057; bh=VrWlMtHqgM/vx22jiN3vYsU+W1Lh9jxCM8/DJ3H1HHw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=LM6l4iVarrFVDA4j9SWJAplc2WkKEHlGEtdlAtv7pOYj1y3dATl0KnbkElc5xhenP
-	 ErHq3OM3B9mOaLihBDgBjY6YaXcTg/I+07sfZRGvHPhPtHlUZIL/cU1EpblJJAXbkJ
-	 UH/xAtOtw9tn/FqSE+wrtOg61lpQnXFpNRh+nTaw=
+	b=X2EPALpiGXj7jZ//umW0i2ZiscPs5c3b9FVhjQsTjSc/roIUOCw5ccwKbAM8AZVT0
+	 R190qpIisEqdGcWQOaI8LP3WSMdBvOg2L0DaCq9z+740FCzemmIORnkMA6TGphJBf+
+	 c9VjfZElkzX4N0E1s95w/Vtd50JJkhxZY+d0MtYw=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:04:07 +0100
-Subject: [PATCH 18/22] arm64: mm: drop explicit mm_is_efi() check in
- contpte
+Date: Tue, 14 Jul 2026 15:04:08 +0100
+Subject: [PATCH 19/22] x86/tboot: mark tboot_mm as a kernel mm
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-18-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-19-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -98,16 +97,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2365;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=1553;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=VE9T6pQuQsM82lM79rZVxS9mOIiIj6SKheB2t7eP+e8=;
- b=IJb3I/i6HXAVQpbcZffARFaIRNRmoRCmPcfDA+y7q25vE/t36H63xBNhz/u8eBXK9/0ECckK8
- YJz0OELUjVVA+CXShhe5YzEf7ewVjSRMYhD9KGxFsYnbUmRuESOa0pX
+ bh=VrWlMtHqgM/vx22jiN3vYsU+W1Lh9jxCM8/DJ3H1HHw=;
+ b=m8zZWjxysI7gu08ZC5WjroF8ppS2XmCi+NSg9AchPnK6c6wz3EcnLIwt4UrkZ1Tknhd8Uq+lO
+ humwu8pswzNB3IZSFZsQqWeKm+RG8SsPRg6CN1eLU7ZKufXomLaUKal
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_150731_261885_FDEB2107 
-X-CRM114-Status: GOOD (  15.22  )
+X-CRM114-CacheID: sfid-20260714_150739_293441_DABA4406 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,79 +121,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-efi_mm is now marked as a kernel mm, like init_mm. mm_is_kernel()
-therefore gives the right answer for efi_mm and mm_is_user() is now
-equivalent to !mm_is_kernel().
+tboot_mm is a kernel-owned address space used to build the
+identity map for tboot shutdown. Mark it with MMF_KERNEL so
+page table allocation and initialisation code treats its page tables
+as kernel page tables.
 
-Remove mm_is_user() and directly use mm_is_kernel() instead.
+Having marked tboot_mm as a kernel mm, we also need to convert
+pte_alloc_map() (user PTE) to pte_alloc_kernel() (kernel PTE), and
+drop the matching pte_unmap().
 
 Assisted-by: Codex:GPT-5.5
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- arch/arm64/mm/contpte.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
+ arch/x86/kernel/tboot.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-index ad5c04cf66ff..e21e279101ca 100644
---- a/arch/arm64/mm/contpte.c
-+++ b/arch/arm64/mm/contpte.c
-@@ -4,23 +4,9 @@
-  */
+diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+index 46b8f1f16676..08c899f88e41 100644
+--- a/arch/x86/kernel/tboot.c
++++ b/arch/x86/kernel/tboot.c
+@@ -99,6 +99,7 @@ static struct mm_struct tboot_mm = {
+ 	.pgd            = swapper_pg_dir,
+ 	.mm_users       = ATOMIC_INIT(2),
+ 	.mm_count       = ATOMIC_INIT(1),
++	.flags          = MM_FLAGS_INIT(MMF_KERNEL_MASK),
+ 	.write_protect_seq = SEQCNT_ZERO(tboot_mm.write_protect_seq),
+ 	MMAP_LOCK_INITIALIZER(init_mm)
+ 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+@@ -129,11 +130,10 @@ static int map_tboot_page(unsigned long vaddr, unsigned long pfn,
+ 	pmd = pmd_alloc(&tboot_mm, pud, vaddr);
+ 	if (!pmd)
+ 		return -1;
+-	pte = pte_alloc_map(&tboot_mm, pmd, vaddr);
++	pte = pte_alloc_kernel(pmd, vaddr);
+ 	if (!pte)
+ 		return -1;
+ 	set_pte_at(&tboot_mm, vaddr, pte, pfn_pte(pfn, prot));
+-	pte_unmap(pte);
  
- #include <linux/mm.h>
--#include <linux/efi.h>
- #include <linux/export.h>
- #include <asm/tlbflush.h>
- 
--static inline bool mm_is_user(struct mm_struct *mm)
--{
--	/*
--	 * Don't attempt to apply the contig bit to kernel mappings, because
--	 * dynamically adding/removing the contig bit can cause page faults.
--	 * These racing faults are ok for user space, since they get serialized
--	 * on the PTL. But kernel mappings can't tolerate faults.
--	 */
--	if (unlikely(mm_is_efi(mm)))
--		return false;
--	return !mm_is_kernel(mm);
--}
--
- static inline pte_t *contpte_align_down(pte_t *ptep)
- {
- 	return PTR_ALIGN_DOWN(ptep, sizeof(*ptep) * CONT_PTES);
-@@ -263,7 +249,13 @@ void __contpte_try_fold(struct mm_struct *mm, unsigned long addr,
- 
- 	int i;
- 
--	if (!mm_is_user(mm))
-+	/*
-+	 * Don't attempt to apply the contig bit to kernel mappings, because
-+	 * dynamically adding/removing the contig bit can cause page faults.
-+	 * These racing faults are ok for user space, since they get serialized
-+	 * on the PTL. But kernel mappings can't tolerate faults.
-+	 */
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	page = pte_page(pte);
-@@ -302,7 +294,7 @@ void __contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
- 	 * We have already checked that the ptes are contiguous in
- 	 * contpte_try_unfold(), so just check that the mm is user space.
- 	 */
--	if (!mm_is_user(mm))
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	pte = pte_mknoncont(pte);
-@@ -465,7 +457,7 @@ void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
- 	 */
- 	VM_WARN_ON(nr == 1);
- 
--	if (!mm_is_user(mm))
-+	if (mm_is_kernel(mm))
- 		return __set_ptes(mm, addr, ptep, pte, nr);
- 
- 	end = addr + (nr << PAGE_SHIFT);
+ 	/*
+ 	 * PTI poisons low addresses in the kernel page tables in the
 
 -- 
 2.51.2
