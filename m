@@ -4,61 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76CD1C44508
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:05:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F6CC4450B
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7PpIAAceAbqpH6jG5ButaBQ+a0RsBJ8pT2Nb7B+4whg=; b=SUodnMPW4jaMnkpm334PTsqIfo
-	AFdibugCZhmAZuTwN8IxjWPQrrviJIYO6b/rdZEgxPjU1Atq8RDuZGmAKBt0j3qFhHbj3BaB+fOO1
-	Wf2E9O1kGFYBNvXdyZ+b0tHS3Y+VLRVTRqfmfRNzmLBKrvaokin5vs7XThs+glNLqIYfOpgtKMRyl
-	PJAklfLjkzWQWvv4O6+0VB7DpFmzDCxF8g6Efv7hGpWLaKr/OcE8OCdbDb1USeUgeDIRmLy2ecFh9
-	eW6+3chgE5U/J4DJLHW016zlMX4E6iytYFvF6IEXZvIR9ihCvV96BdTDz9eoxinfeIZ6TkqQsLFHP
-	fPaEsUgQ==;
+	bh=2FKZ3XNFEytxwIypQEaTGz4aBKlj8CjSZVpVOVmWyTY=; b=w1HQ07ByixeLhccmiK4NGDZz2+
+	d65B0+jsZq+RY702pevQ77UabGx60C0RbEld6Ayx4jDRUJWJSwJKJsViaik9IQNNU9jtMzenhBzNa
+	6l7hg1PFPoyu5S85U2BaqcXudA7UTJya+hxOSRn2acbUe3U/UlTczAblfZa02dMFTUynGNCRrxAZN
+	iip20x1a9yBZ9sEKCjEuOXO+uuQXHsw4tWDFRTKHRY8Szm+O3cebf57Kazeyngdw12A+pQUfAcqsv
+	sILJ8/ctzOtHjJR6T8ifRw8mJHYh5hAuYCYXKKLFEaAom3AJGBk92L9H0Bx2YL5n3J4OR7gObaj8P
+	EgmFKnnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdlf-0000000CHyE-0dlu;
-	Tue, 14 Jul 2026 14:05:51 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdla-0000000CHv7-3APF;
-	Tue, 14 Jul 2026 14:05:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=7PpIAAceAbqpH6jG5ButaBQ+a0RsBJ8pT2Nb7B+4whg=; b=H39z3PGnZDTRrNCyorqiyFUFl2
-	H/LmtkAFRDT8nX39rCFlmgA+QJQ0HDzJzwGW9r5X8jiXPNyN7wKPZ/PqDhSaoDkcd5VSNThNoqG0X
-	RBHxZjkEsUxYLDL2BWmNtBCtg5GcxzpQPcG6rzAx0FSMEpUWtppYdBSZyTEmeRJ9EPgw3sbCBGyfm
-	LNzNs1LTONLwNzib6NOrlyL2CWoZeik9dgRavkYLZbb/BJBgTTTAEmYJu2Aopv884241NJ6u76vFo
-	/gyc41fkGBitjEdNbXrh9g85mAC+mGdUzymSYBGmbJtSFYbDxh8ojt6TIrHl0dzDkt3zZeCJURzxw
-	wpZBjRTA==;
+	id 1wjdlh-0000000CI17-3ECI;
+	Tue, 14 Jul 2026 14:05:53 +0000
 Received: from foss.arm.com ([217.140.110.172])
-	by desiato.infradead.org with esmtp (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wjdlX-0000000CYsl-2ZtW;
-	Tue, 14 Jul 2026 14:05:45 +0000
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wjdld-0000000CHwf-1zhJ;
+	Tue, 14 Jul 2026 14:05:50 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0068153B;
-	Tue, 14 Jul 2026 07:05:36 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 887551516;
+	Tue, 14 Jul 2026 07:05:44 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8C023F7B4;
-	Tue, 14 Jul 2026 07:05:33 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 656AE3F7B4;
+	Tue, 14 Jul 2026 07:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784037941; bh=5/MiBpHs0ErPi8rhCKmMSpm6ldHtuokM4yv1ELNR2HE=;
+	t=1784037948; bh=81hPHNKy6+kTl2+35lvgI+YoSAV+lxYrdESi+BeMQ9o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=KYO9cDN7rDizxe3v/je6cSxNCJeEVFPUnXsSWSe2BPhKaPCn7aqwcwGf5Fv/X2xeM
-	 fJX9X0ToA3Vm5csdSfShGsy263erMfQnPGfY2VsiME2prC8a3J844A9rhhh46ZY371
-	 B0aQM0b2gjQo2R4Q0Ts/ynPMN9wstMhZsk8mylek=
+	b=J3x7thz6DDIFd0T672gJo0MMnvLqrsR4ffqXjRuw6y/FJl0Sv4brx2AvsrenCXyub
+	 hNeHOpm1dGW6Ol7r4E98ejCd2H2xHFjmSYxf0TFC/EKx6I3nhvG3tmBb0uG3LlhJwX
+	 CsqR3L3Byysgiom9B50gJLtZIUOotRrLJXVN3jH4=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:03:53 +0100
-Subject: [PATCH 04/22] mm: use mm_is_kernel() in generic page table code
+Date: Tue, 14 Jul 2026 15:03:54 +0100
+Subject: [PATCH 05/22] arm64: mm: use mm_is_kernel() for kernel mm checks
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-4-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-5-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -97,16 +83,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=7589;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=3632;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=5/MiBpHs0ErPi8rhCKmMSpm6ldHtuokM4yv1ELNR2HE=;
- b=uo2OhW6qUc5pqzt9VsrUNdo1IYgeBBnT6lqfK5Ys8RZJ6rVRF5aIis0fNbkhks1ozPQyi/VUC
- pyQWphyWV1oCOOAp4DOjVmApiSewKKEeH9vCDbxc96BlDrMTGs1NvYU
+ bh=81hPHNKy6+kTl2+35lvgI+YoSAV+lxYrdESi+BeMQ9o=;
+ b=x1sfUWl36JCNbyA4SXGcEWPKjJ2W9GBoHx+AU6SimhVKBjyOGOssy6XRkSm07LMGEZVJbSnP4
+ NXfCyMO7l0VD8qsDQe1L21uTIP7w+5/eot3+ExiUATLVcbhzhw7kG6L
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_150543_965140_E122C339 
-X-CRM114-Status: GOOD (  15.63  )
+X-CRM114-CacheID: sfid-20260714_070549_619774_023FD1B9 
+X-CRM114-Status: GOOD (  13.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,237 +107,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Generic page-table allocation, constructor and walker code uses
-init_mm comparisons to select kernel page table handling. Use
-mm_is_kernel() instead so kernel-owned mm's can share that handling
-once they are marked with MMF_KERNEL.
+The new MMF_KERNEL flag identifies kernel-owned mm's. Checking the
+flag with mm_is_kernel() is preferred over comparing directly
+against &init_mm.
 
-No functional change as only init_mm has MMF_KERNEL set for now.
+In some cases, such as show_pte(), the handling is truly specific to
+init_mm and we leave those comparisons with &init_mm unchanged.
+
+No functional change, as only init_mm has MMF_KERNEL set for now.
+
+mm_is_user() will eventually be replaced with !mm_is_kernel(), once
+efi_mm is also marked with MMF_KERNEL.
 
 Assisted-by: Codex:GPT-5.5
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- include/asm-generic/pgalloc.h | 16 ++++++++--------
- include/linux/mm.h            |  4 ++--
- mm/memory.c                   |  6 +++---
- mm/page_table_check.c         | 14 +++++++-------
- mm/pagewalk.c                 |  4 ++--
- 5 files changed, 22 insertions(+), 22 deletions(-)
+ arch/arm64/include/asm/pgalloc.h | 10 +++++-----
+ arch/arm64/mm/contpte.c          |  2 +-
+ arch/arm64/mm/hugetlbpage.c      |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index 051aa1331051..a283280e3140 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -138,7 +138,7 @@ static inline pmd_t *pmd_alloc_one_noprof(struct mm_struct *mm, unsigned long ad
- 	struct ptdesc *ptdesc;
- 	gfp_t gfp = GFP_PGTABLE_USER;
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		gfp = GFP_PGTABLE_KERNEL;
- 	ptdesc = pagetable_alloc_noprof(gfp, 0);
- 	if (!ptdesc)
-@@ -148,7 +148,7 @@ static inline pmd_t *pmd_alloc_one_noprof(struct mm_struct *mm, unsigned long ad
- 		return NULL;
- 	}
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		ptdesc_set_kernel(ptdesc);
- 
- 	return ptdesc_address(ptdesc);
-@@ -175,7 +175,7 @@ static inline pud_t *__pud_alloc_one_noprof(struct mm_struct *mm, unsigned long
- 	gfp_t gfp = GFP_PGTABLE_USER;
- 	struct ptdesc *ptdesc;
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		gfp = GFP_PGTABLE_KERNEL;
- 
- 	ptdesc = pagetable_alloc_noprof(gfp, 0);
-@@ -184,7 +184,7 @@ static inline pud_t *__pud_alloc_one_noprof(struct mm_struct *mm, unsigned long
- 
- 	pagetable_pud_ctor(ptdesc);
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		ptdesc_set_kernel(ptdesc);
- 
- 	return ptdesc_address(ptdesc);
-@@ -232,7 +232,7 @@ static inline p4d_t *__p4d_alloc_one_noprof(struct mm_struct *mm, unsigned long
- 	gfp_t gfp = GFP_PGTABLE_USER;
- 	struct ptdesc *ptdesc;
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		gfp = GFP_PGTABLE_KERNEL;
- 
- 	ptdesc = pagetable_alloc_noprof(gfp, 0);
-@@ -241,7 +241,7 @@ static inline p4d_t *__p4d_alloc_one_noprof(struct mm_struct *mm, unsigned long
- 
- 	pagetable_p4d_ctor(ptdesc);
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		ptdesc_set_kernel(ptdesc);
- 
- 	return ptdesc_address(ptdesc);
-@@ -279,7 +279,7 @@ static inline pgd_t *__pgd_alloc_noprof(struct mm_struct *mm, unsigned int order
- 	gfp_t gfp = GFP_PGTABLE_USER;
- 	struct ptdesc *ptdesc;
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		gfp = GFP_PGTABLE_KERNEL;
- 
- 	ptdesc = pagetable_alloc_noprof(gfp, order);
-@@ -288,7 +288,7 @@ static inline pgd_t *__pgd_alloc_noprof(struct mm_struct *mm, unsigned int order
- 
- 	pagetable_pgd_ctor(ptdesc);
- 
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		ptdesc_set_kernel(ptdesc);
- 
- 	return ptdesc_address(ptdesc);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7a4b8e7ac8f4..b336eb32faa0 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3818,7 +3818,7 @@ static inline void pagetable_dtor_free(struct ptdesc *ptdesc)
- static inline bool pagetable_pte_ctor(struct mm_struct *mm,
- 				      struct ptdesc *ptdesc)
+diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+index 1b4509d3382c..33db4fa3c619 100644
+--- a/arch/arm64/include/asm/pgalloc.h
++++ b/arch/arm64/include/asm/pgalloc.h
+@@ -30,7 +30,7 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
  {
--	if (mm != &init_mm && !ptlock_init(ptdesc))
-+	if (!mm_is_kernel(mm) && !ptlock_init(ptdesc))
- 		return false;
- 	__pagetable_ctor(ptdesc);
- 	return true;
-@@ -3909,7 +3909,7 @@ static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
- static inline bool pagetable_pmd_ctor(struct mm_struct *mm,
- 				      struct ptdesc *ptdesc)
- {
--	if (mm != &init_mm && !pmd_ptlock_init(ptdesc))
-+	if (!mm_is_kernel(mm) && !pmd_ptlock_init(ptdesc))
- 		return false;
- 	ptdesc_pmd_pts_init(ptdesc);
- 	__pagetable_ctor(ptdesc);
-diff --git a/mm/memory.c b/mm/memory.c
-index d5e87624f692..c0244c0b0756 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3394,13 +3394,13 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 	spinlock_t *ptl;
+ 	pudval_t pudval = PUD_TYPE_TABLE | PUD_TABLE_AF;
  
- 	if (create) {
--		mapped_pte = pte = (mm == &init_mm) ?
-+		mapped_pte = pte = mm_is_kernel(mm) ?
- 			pte_alloc_kernel_track(pmd, addr, mask) :
- 			pte_alloc_map_lock(mm, pmd, addr, &ptl);
- 		if (!pte)
- 			return -ENOMEM;
- 	} else {
--		mapped_pte = pte = (mm == &init_mm) ?
-+		mapped_pte = pte = mm_is_kernel(mm) ?
- 			pte_offset_kernel(pmd, addr) :
- 			pte_offset_map_lock(mm, pmd, addr, &ptl);
- 		if (!pte)
-@@ -3422,7 +3422,7 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 
- 	lazy_mmu_mode_disable();
- 
--	if (mm != &init_mm)
-+	if (!mm_is_kernel(mm))
- 		pte_unmap_unlock(mapped_pte, ptl);
- 	return err;
+-	pudval |= (mm == &init_mm) ? PUD_TABLE_UXN : PUD_TABLE_PXN;
++	pudval |= mm_is_kernel(mm) ? PUD_TABLE_UXN : PUD_TABLE_PXN;
+ 	__pud_populate(pudp, __pa(pmdp), pudval);
  }
-diff --git a/mm/page_table_check.c b/mm/page_table_check.c
-index 3fb995e5d40d..a5382c245b32 100644
---- a/mm/page_table_check.c
-+++ b/mm/page_table_check.c
-@@ -148,7 +148,7 @@ void __page_table_check_zero(struct page *page, unsigned int order)
- void __page_table_check_pte_clear(struct mm_struct *mm, unsigned long addr,
- 				  pte_t pte)
+ #else
+@@ -52,7 +52,7 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
  {
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
+ 	p4dval_t p4dval = P4D_TYPE_TABLE | P4D_TABLE_AF;
  
- 	if (pte_user_accessible_page(mm, addr, pte))
-@@ -159,7 +159,7 @@ EXPORT_SYMBOL(__page_table_check_pte_clear);
- void __page_table_check_pmd_clear(struct mm_struct *mm, unsigned long addr,
- 				  pmd_t pmd)
+-	p4dval |= (mm == &init_mm) ? P4D_TABLE_UXN : P4D_TABLE_PXN;
++	p4dval |= mm_is_kernel(mm) ? P4D_TABLE_UXN : P4D_TABLE_PXN;
+ 	__p4d_populate(p4dp, __pa(pudp), p4dval);
+ }
+ 
+@@ -81,7 +81,7 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgdp, p4d_t *p4dp)
  {
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
+ 	pgdval_t pgdval = PGD_TYPE_TABLE | PGD_TABLE_AF;
  
- 	if (pmd_user_accessible_page(mm, addr, pmd))
-@@ -170,7 +170,7 @@ EXPORT_SYMBOL(__page_table_check_pmd_clear);
- void __page_table_check_pud_clear(struct mm_struct *mm, unsigned long addr,
- 				  pud_t pud)
+-	pgdval |= (mm == &init_mm) ? PGD_TABLE_UXN : PGD_TABLE_PXN;
++	pgdval |= mm_is_kernel(mm) ? PGD_TABLE_UXN : PGD_TABLE_PXN;
+ 	__pgd_populate(pgdp, __pa(p4dp), pgdval);
+ }
+ 
+@@ -108,7 +108,7 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t ptep,
+ static inline void
+ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
  {
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	if (pud_user_accessible_page(mm, addr, pud))
-@@ -201,7 +201,7 @@ void __page_table_check_ptes_set(struct mm_struct *mm, unsigned long addr,
+-	VM_BUG_ON(mm && mm != &init_mm);
++	VM_BUG_ON(mm && !mm_is_kernel(mm));
+ 	__pmd_populate(pmdp, __pa(ptep),
+ 		       PMD_TYPE_TABLE | PMD_TABLE_AF | PMD_TABLE_UXN);
+ }
+@@ -116,7 +116,7 @@ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
+ static inline void
+ pmd_populate(struct mm_struct *mm, pmd_t *pmdp, pgtable_t ptep)
  {
- 	unsigned int i;
+-	VM_BUG_ON(mm == &init_mm);
++	VM_BUG_ON(mm_is_kernel(mm));
+ 	__pmd_populate(pmdp, page_to_phys(ptep),
+ 		       PMD_TYPE_TABLE | PMD_TABLE_AF | PMD_TABLE_PXN);
+ }
+diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+index 2de12656b4d8..ad5c04cf66ff 100644
+--- a/arch/arm64/mm/contpte.c
++++ b/arch/arm64/mm/contpte.c
+@@ -18,7 +18,7 @@ static inline bool mm_is_user(struct mm_struct *mm)
+ 	 */
+ 	if (unlikely(mm_is_efi(mm)))
+ 		return false;
+-	return mm != &init_mm;
++	return !mm_is_kernel(mm);
+ }
  
--	if (&init_mm == mm)
+ static inline pte_t *contpte_align_down(pte_t *ptep)
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 25f04d01aabe..4d054fadf51c 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -212,7 +212,7 @@ static void clear_flush(struct mm_struct *mm,
+ 	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
+ 		__ptep_get_and_clear_anysz(mm, addr, ptep, pgsize);
+ 
+-	if (mm == &init_mm)
 +	if (mm_is_kernel(mm))
- 		return;
- 
- 	page_table_check_pte_flags(pte);
-@@ -231,7 +231,7 @@ void __page_table_check_pmds_set(struct mm_struct *mm, unsigned long addr,
- 	unsigned long stride = PMD_SIZE >> PAGE_SHIFT;
- 	unsigned int i;
- 
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	page_table_check_pmd_flags(pmd);
-@@ -249,7 +249,7 @@ void __page_table_check_puds_set(struct mm_struct *mm, unsigned long addr,
- 	unsigned long stride = PUD_SIZE >> PAGE_SHIFT;
- 	unsigned int i;
- 
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	for (i = 0; i < nr; i++)
-@@ -263,7 +263,7 @@ void __page_table_check_pte_clear_range(struct mm_struct *mm,
- 					unsigned long addr,
- 					pmd_t pmd)
- {
--	if (&init_mm == mm)
-+	if (mm_is_kernel(mm))
- 		return;
- 
- 	if (!pmd_bad(pmd) && !pmd_leaf(pmd)) {
-diff --git a/mm/pagewalk.c b/mm/pagewalk.c
-index ed4860c01936..a3f47d1de3c5 100644
---- a/mm/pagewalk.c
-+++ b/mm/pagewalk.c
-@@ -72,13 +72,13 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
- 		 * fit its pmd_bad() check (_PAGE_NX set and _PAGE_RW clear),
- 		 * and CONFIG_EFI_PGT_DUMP efi_mm goes so far as to walk them.
- 		 */
--		if (walk->mm == &init_mm || addr >= TASK_SIZE)
-+		if (mm_is_kernel(walk->mm) || addr >= TASK_SIZE)
- 			pte = pte_offset_kernel(pmd, addr);
- 		else
- 			pte = pte_offset_map(pmd, addr);
- 		if (pte) {
- 			err = walk_pte_range_inner(pte, addr, end, walk);
--			if (walk->mm != &init_mm && addr < TASK_SIZE)
-+			if (!mm_is_kernel(walk->mm) && addr < TASK_SIZE)
- 				pte_unmap(pte);
- 		}
- 	} else {
+ 		flush_tlb_kernel_range(saddr, addr);
+ 	else
+ 		__flush_hugetlb_tlb_range(&vma, saddr, addr, pgsize, TLBF_NOWALKCACHE);
 
 -- 
 2.51.2
