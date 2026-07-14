@@ -4,47 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11EA1C4450A
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB0E9C44508
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xrTKSUYe+o4yYeiHIfdmZfk/VD/VvZ4yWrfSjmZcls0=; b=vfSP/4U5z5pm4v5hfNFyeEkrxa
-	XVrkpaY+ln3Qf1WURaDZ7LonVYlWCJbzlW8SxyF+SCzWZNL1OQe7pkgteGjD7XnScyeDDsXVT566R
-	G5onWuEAtpj80BV5/IB/tB1OqAxGAxemmP8KN0C8VTV8NITLSBU4+TbYQWy6kOgVkVQ7Pq7pZ98Fy
-	kn6wJJ7RSkTttyV/jkpAqgW4ir9EsEBwlPFXcdMdxjsLDY60mh+x1gfyQmKaHC6G9kRizLsGNyvOk
-	eKlDYQSpUslQzk56xQbtKnE6ofNFltf9D9xMSqgLcDEwb+jcxO4GkF5PtUk2DvCdoZEgJwKLUe3uc
-	nQhOh/qg==;
+	bh=WEPAEMG15c2gH/O6ihAUxmO/06ck6asqsv3XqqkfCYY=; b=SiiYrRQf8fTsGU1h6q1D866SfY
+	X5nmy/i8giE/eL+quMBoF3D6LoOI6YTMc5J+b/6+E/yQiMlc2+G312xVoF1Q0+Hipb1rAUfqFnUlZ
+	XPLWPLA8caHm/jHt/PHA3+o3e6qks+sf8XOP+AeCHNpyPj5wEsotG3lLgPsdQx+JEaMioOYm6eUxZ
+	B1Sq6OnXgLxjTQ/b12l/6rjsQda6usmhVJH8+IJ/fDtQJ/P/yYOZdtFMvLJrzWWLBoqxk5vfAfl6A
+	mFdKkNykIbyyihJv+RERfvrTQUnCYXwwvy4unxp1WF7G73BRCvS9HXr3APXVRodPVvOhE/GM/uTVH
+	F89HXB7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdm5-0000000CIPf-17cU;
-	Tue, 14 Jul 2026 14:06:17 +0000
+	id 1wjdmJ-0000000CIeX-2BeG;
+	Tue, 14 Jul 2026 14:06:31 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wjdmC-0000000CIY4-1rav;
+	Tue, 14 Jul 2026 14:06:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=WEPAEMG15c2gH/O6ihAUxmO/06ck6asqsv3XqqkfCYY=; b=hD15cyNr3ed382SCFl5JnN+ANK
+	kvpX38r6dYm/gYI2OdsDAs7Ca1IHvzWCvrrcOxl0A5GLLeka6zqG4pOlkJnYyNspHQFPmljfJOGzI
+	tBpsMkETagUDUeo0+v7fH2C1n1i6BEdjO2WtKdJMCVYYchMU8MlELElZYjv0TEm1D+gsp9AIdbuNz
+	H1e/Ks2AnHhNCx8TeeBdHbRoW1zgKAc0acXJmzWULecWSb9XyJf4JWjJWE0Fl4trH2TiqECDYFTBj
+	xfIH0pqGiEDEjsO35HuMnCx1Ju6CCAenE0WJOcJHDiwGJARmPDZQ19G1cmMJyX1YYyzcZEoYyvFLL
+	4px+IX+w==;
 Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdm1-0000000CILT-14nR;
-	Tue, 14 Jul 2026 14:06:14 +0000
+	by desiato.infradead.org with esmtp (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1wjdm9-0000000CZ3J-0HLl;
+	Tue, 14 Jul 2026 14:06:23 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C95291691;
-	Tue, 14 Jul 2026 07:06:07 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79F011BB2;
+	Tue, 14 Jul 2026 07:06:15 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 923CB3F7B4;
-	Tue, 14 Jul 2026 07:06:04 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FE263F7B4;
+	Tue, 14 Jul 2026 07:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784037972; bh=wjWPKE4gokVm0n43Fz8OrYiTdEX4ZJIt+9rA3rzslZA=;
+	t=1784037979; bh=NDusZRNCWoEozZsjG5aWosyCUDI8Y1KKdd/tV+nqCY0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=UsBpoovPpZ85RSIZfXEnSBfVHOZtFnPkX47Kj5gg3LsgzJNhCVgTUWCtTOeVOPaNp
-	 HKjlV2fnQGGYMeGqcjyozlJa7a3QA1IlDMrT8hf3JRzN2w2i+9FSRlqOzr8/QB6/Qf
-	 Q0z0BAmzTk1fTpNEZ3NiarWVCe9KoxmszHFZ5aSw=
+	b=g68p8jn2r/BRs15OVDSJM5PC0vX+xZEjL9qs6O4bNrlLAmFr23nxaTMwPJrtgFVSe
+	 PO42BSv3F1n/0/KY29fSo68pViH3svUbemsg+2g8ZALHR7Gb34DvnaAe4yB7K0yUyn
+	 X1Qg4PRgk23qfvxdXOP4RJxy06FeoAcjmt/U8Rmo=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:03:57 +0100
-Subject: [PATCH 08/22] powerpc: mm: use mm_is_kernel() for kernel mm checks
+Date: Tue, 14 Jul 2026 15:03:58 +0100
+Subject: [PATCH 09/22] s390: mm: use mm_is_kernel() for kernel mm checks
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-8-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-9-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -83,16 +97,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2458;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2701;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=wjWPKE4gokVm0n43Fz8OrYiTdEX4ZJIt+9rA3rzslZA=;
- b=mGXIMwx7mP+wc+PdjO+ERefisoZsiZf5NJNBVQYllixOIGkiZykJ/6wIrBXI36cbJ4lbGAtZA
- wL42KEsLctGAHh95szgDEyWgp6+51aO6Iy65UQOmRkiEbYbzhv701ws
+ bh=NDusZRNCWoEozZsjG5aWosyCUDI8Y1KKdd/tV+nqCY0=;
+ b=EN7VJwlPWQ2mLOV0RQXIAGmFgLbZqozbS12jiAz8t5flCb4LBC8CQLf9qAbAsIdiWxuJ/h34z
+ +bgdLqbZMrPAgQeOceVSuzYyrvq4LTVvYRTcF4wG9fcsRmwk6IO2SXA
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_070613_404065_4265588C 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20260714_150621_504679_40C2B0B1 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,64 +130,75 @@ No functional change, as only init_mm has MMF_KERNEL set for now.
 Assisted-by: Codex:GPT-5.5
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- arch/powerpc/include/asm/pgalloc.h | 2 +-
- arch/powerpc/mm/book3s64/pgtable.c | 2 +-
- arch/powerpc/mm/mmu_context.c      | 2 +-
- arch/powerpc/mm/pgtable.c          | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/s390/include/asm/mmu_context.h | 2 +-
+ arch/s390/include/asm/pgtable.h     | 6 +++---
+ arch/s390/mm/pgalloc.c              | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/pgalloc.h b/arch/powerpc/include/asm/pgalloc.h
-index 3a971e2a8c73..88acccc5b06e 100644
---- a/arch/powerpc/include/asm/pgalloc.h
-+++ b/arch/powerpc/include/asm/pgalloc.h
-@@ -7,7 +7,7 @@
- #ifndef MODULE
- static inline gfp_t pgtable_gfp_flags(struct mm_struct *mm, gfp_t gfp)
+diff --git a/arch/s390/include/asm/mmu_context.h b/arch/s390/include/asm/mmu_context.h
+index bd1ef5e2d2eb..675f270d0b70 100644
+--- a/arch/s390/include/asm/mmu_context.h
++++ b/arch/s390/include/asm/mmu_context.h
+@@ -69,7 +69,7 @@ static inline void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *
  {
--	if (unlikely(mm == &init_mm))
-+	if (unlikely(mm_is_kernel(mm)))
- 		return gfp;
- 	return gfp | __GFP_ACCOUNT;
+ 	int cpu = smp_processor_id();
+ 
+-	if (next == &init_mm)
++	if (mm_is_kernel(next))
+ 		get_lowcore()->user_asce = s390_invalid_asce;
+ 	else
+ 		get_lowcore()->user_asce.val = next->context.asce;
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index e882663a58e7..f7741e6b417e 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -1836,21 +1836,21 @@ static inline int has_transparent_hugepage(void)
+ #ifdef CONFIG_PAGE_TABLE_CHECK
+ static inline bool pte_user_accessible_page(struct mm_struct *mm, unsigned long addr, pte_t pte)
+ {
+-	VM_BUG_ON(mm == &init_mm);
++	VM_BUG_ON(mm_is_kernel(mm));
+ 
+ 	return pte_present(pte);
  }
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index 85ab6723c8f2..eb365f7c8907 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -395,7 +395,7 @@ static pmd_t *__alloc_for_pmdcache(struct mm_struct *mm)
+ 
+ static inline bool pmd_user_accessible_page(struct mm_struct *mm, unsigned long addr, pmd_t pmd)
+ {
+-	VM_BUG_ON(mm == &init_mm);
++	VM_BUG_ON(mm_is_kernel(mm));
+ 
+ 	return pmd_leaf(pmd) && (pmd_val(pmd) & _SEGMENT_ENTRY_READ);
+ }
+ 
+ static inline bool pud_user_accessible_page(struct mm_struct *mm, unsigned long addr, pud_t pud)
+ {
+-	VM_BUG_ON(mm == &init_mm);
++	VM_BUG_ON(mm_is_kernel(mm));
+ 
+ 	return pud_leaf(pud);
+ }
+diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
+index 7ac44543e051..d0456b7e73d4 100644
+--- a/arch/s390/mm/pgalloc.c
++++ b/arch/s390/mm/pgalloc.c
+@@ -20,7 +20,7 @@ unsigned long *crst_table_alloc_noprof(struct mm_struct *mm)
  	struct ptdesc *ptdesc;
- 	gfp_t gfp = GFP_KERNEL_ACCOUNT | __GFP_ZERO;
+ 	unsigned long *table;
  
 -	if (mm == &init_mm)
 +	if (mm_is_kernel(mm))
  		gfp &= ~__GFP_ACCOUNT;
- 	ptdesc = pagetable_alloc(gfp, 0);
+ 	ptdesc = pagetable_alloc_noprof(gfp, CRST_ALLOC_ORDER);
  	if (!ptdesc)
-diff --git a/arch/powerpc/mm/mmu_context.c b/arch/powerpc/mm/mmu_context.c
-index 3e3af29b4523..b51934c511f3 100644
---- a/arch/powerpc/mm/mmu_context.c
-+++ b/arch/powerpc/mm/mmu_context.c
-@@ -48,7 +48,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 
- 	/* Mark this context has been used on the new CPU */
- 	if (!cpumask_test_cpu(cpu, mm_cpumask(next))) {
--		VM_WARN_ON_ONCE(next == &init_mm);
-+		VM_WARN_ON_ONCE(mm_is_kernel(next));
- 		cpumask_set_cpu(cpu, mm_cpumask(next));
- 		inc_mm_active_cpus(next);
- 
-diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-index a9be337be3e4..d04f4fecfc7c 100644
---- a/arch/powerpc/mm/pgtable.c
-+++ b/arch/powerpc/mm/pgtable.c
-@@ -393,7 +393,7 @@ void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
- 	pte_t *pte;
- 	spinlock_t *ptl;
+@@ -120,7 +120,7 @@ unsigned long *page_table_alloc_noprof(struct mm_struct *mm)
+ 	struct ptdesc *ptdesc;
+ 	unsigned long *table;
  
 -	if (mm == &init_mm)
 +	if (mm_is_kernel(mm))
- 		return;
- 	pgd = mm->pgd + pgd_index(addr);
- 	BUG_ON(pgd_none(*pgd));
+ 		gfp &= ~__GFP_ACCOUNT;
+ 	ptdesc = pagetable_alloc_noprof(gfp, 0);
+ 	if (!ptdesc)
 
 -- 
 2.51.2
