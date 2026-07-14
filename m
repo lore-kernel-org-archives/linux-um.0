@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12DB0C44501
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8939AC44508
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bBoBfUS5WMssGgUA/Wo3+dYqN4HjYGy3oqxDSlnyggk=; b=Q9R3WYNi7H5cI1kNzZ7MNhwNFK
-	7BzX70Iw9UGPm10rEcxPlqKEZWm9xP/fCTtGMKI2EdcVGK0QO1/vPJmcBf+LHEYKVrI0hVgkoeuGx
-	0Bu9VRkUni1HtWZsXysySfUgG98zKbKEw9WMIDmUKXr1dwZEKxkvhF98Z4AH9Yi3/XCEsXKIkVTNN
-	0glVzASTDrw8FifhpxlQeNw3CUDkYNZQcNoDaldLSDDmBWO4IONOuhZC6g7vKXSkwpGakXhdAGhAS
-	VfweBqPOEGMcZ0pERC0PDExy7pR3B0okTF9/GtmFyirc86bMFuPUrbAgTFgZCu+OUkoZERhOgrpb3
-	AW9Tg39A==;
+	bh=q94qKUmqqfiS4paWyf1M/XhTiz69R/ac7pRDBBb2HYc=; b=hcznwQIhY3jBj3dZAVXT5xGLTA
+	B8SETZJ/h4ActtvADjnXgK/oeZWfgobYh8rXqciG9MQ98sAbcpLonR8JtTtpkoUKJwTYhOATsa8mP
+	Hmwf43uN+OIjZpQ7zbB/hUrUUt8LlYS2SiHe1lDXmQLaQcC3i3otMRJVrhJZuuw4ObFbI3Zl/a85K
+	6e5BafeOeX9ncnoK9QZi+FQ6LEgDWJ/F4VfivEiN/T4LSAykx5rYGId63JCgoQLcUuIloEpx0g7uV
+	ILXNEtzU1W5QBGMJdtMnwV2jaxO2jJQVEBZ7d9P5t87PJO3bsn9ah87NTBwGKMpoflPtWpzQISkXA
+	/z55EyRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdmb-0000000CIzB-2itE;
-	Tue, 14 Jul 2026 14:06:49 +0000
+	id 1wjdml-0000000CJ9c-0mbf;
+	Tue, 14 Jul 2026 14:06:59 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdma-0000000CIxK-1hVr;
-	Tue, 14 Jul 2026 14:06:48 +0000
+	id 1wjdmi-0000000CJ5g-25ao;
+	Tue, 14 Jul 2026 14:06:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=bBoBfUS5WMssGgUA/Wo3+dYqN4HjYGy3oqxDSlnyggk=; b=UuJ8HVQvPhmEDggDu+4Qk70zKG
-	ZhGk+w/87sAliibjzcd3DJYitDE7BTIY7FrvSoPE909MmIkWS95KEp+5R2X8ScO7ppr6TugTP3hgG
-	NJlDj2o0NWkBVpv3Hyw7OncTIV8IoNrYt++yOt8VL8oPTfRQ8wmmAR4RdUHdk0tc6TgXI5BQfD9ww
-	wYMEFGAjvHy++qU5UuhsIsi3pXYI1RlsdNH1UZ7MFzJFICZMn6JIEMcr6Re4nQ0TYZRVI92YvqbGx
-	CLenrgKQM80FJvlmMwvX9bDkt2GrmXR294EQV0XYFhK7GKt6f/sTJO97YRz5Q3PSn5DMzqenMvtnS
-	ZAo5vwPQ==;
+	bh=q94qKUmqqfiS4paWyf1M/XhTiz69R/ac7pRDBBb2HYc=; b=OjjJRHdQSarSV55GIY7NR+RELH
+	oV4DjY4adNhkY+lQIUF6vYhJSeDX1TBOAlMak1qg1gUsgU6dfX07QNTaI3Bl93nsj5RoElPRqRTi0
+	wmuysFO7LrBL8c8fOmpG2WJDwiO3653RC3VDh/VPZgCrHyQhB/N2LlOroQTNxa1sNNdXHNjWsyVQD
+	7sfvavvmKBkvwhyzkMXL8tv+LXL6WE1Gh4354Ty3b3Rk9zqp6DuWmzxX3r/rcuFZ9Qwfsl1hJx+MW
+	XMwVZXMxv9JoqQUrTneOyPDqmQzuyUaDQsVo7vKsXzs9dpENp7VGwb9HeWGjWaD2Bdlfz5y6OC43T
+	g14+ADCQ==;
 Received: from foss.arm.com ([217.140.110.172])
 	by desiato.infradead.org with esmtp (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wjdmW-0000000CZCY-0jc4;
-	Tue, 14 Jul 2026 14:06:46 +0000
+	id 1wjdme-0000000CZFg-0LE9;
+	Tue, 14 Jul 2026 14:06:55 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5A831BF7;
-	Tue, 14 Jul 2026 07:06:38 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 648F91C01;
+	Tue, 14 Jul 2026 07:06:46 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BDF53F7B4;
-	Tue, 14 Jul 2026 07:06:35 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3991D3F7B4;
+	Tue, 14 Jul 2026 07:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784038002; bh=mkvNiLNNU7+2GzQNF8eqTlv1xCMmv8/GPTLyXVohroo=;
+	t=1784038010; bh=xWTuMpf6qcthpUhdZ9Vhm6UlW2cWk5z6914Plajhwho=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=HIiwhwiW5/FaoSRBjo11aX1AZpPuYcroDE7X41LVr/xwN0xxR7sqYi+EShBKHthpF
-	 n4f8woYlTVlDt26juvjhHDNOK/I92UerlQVr0VVHNOso4VCLR4Gq0Tj1gOY6PCuWSc
-	 FVgEvZfyeKpZuGic61DbMkRghFHRNE75lpgzlmYM=
+	b=GMJ+Mweg4iK/hY2NAgr6zHJe6LPOAI5rsbTNiAYQyxWefiCu+6VoxAQ21IJMDkVx+
+	 ivh2GnjSQemn2gdz2SposUZ6wFQonR0LDcZWwnq1rZX1jAwRhXlTvacd46t1gd3VoM
+	 7DeK6ToDs/ry10Z8LOV9mjtgQLtlBMud0j8fDq/U=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:04:01 +0100
-Subject: [PATCH 12/22] x86/mm: use mm_is_kernel() for kernel mm checks
+Date: Tue, 14 Jul 2026 15:04:02 +0100
+Subject: [PATCH 13/22] mm: account page table pages when allocated
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-12-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-13-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -97,16 +97,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=3862;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2350;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=mkvNiLNNU7+2GzQNF8eqTlv1xCMmv8/GPTLyXVohroo=;
- b=TL/ATO2WidViUjXp4JukAFDeik9Bhx9UKyamDJVrFhja594xcdOFPLXtYE8/VvFDMq3oXLjVT
- 9Ry1qd/NBLGBGmKjBP3mLajDf99Eimk93BsQgUsx2B9iCCZoXZcZow+
+ bh=xWTuMpf6qcthpUhdZ9Vhm6UlW2cWk5z6914Plajhwho=;
+ b=Xnk+oBg7ELc/ZeSLJzK7tAUlR2bpnh9Zc229tTiVuKMeFbivMucrP27RTRDStMzPBnxxJrXcn
+ geH5EZLthaDBgWisWH5/sH0N2po6PG3n0k30stRCmsudF2ar5ckSV8d
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_150644_636933_E8781E83 
-X-CRM114-Status: GOOD (  15.85  )
+X-CRM114-CacheID: sfid-20260714_150652_487807_9BB00760 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,101 +121,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The new MMF_KERNEL flag identifies kernel-owned mm's. Checking the
-flag with mm_is_kernel() is preferred over comparing directly
-against &init_mm.
+As a step towards removing pagetable ctor/dtor calls for kernel
+mm's, move the memory accounting from the ctor/dtor to
+pagetable_{alloc,free}.
 
-No functional change, as only init_mm has MMF_KERNEL set for now.
+The ctor is normally called after pagetable_alloc() (and dtor before
+pagetable_free()) so this patch should have no functional effect in
+most cases. Where calls to ctor/dtor are currently missing (e.g.
+x86's split_large_page()), this patch should improve the accounting.
 
-Assisted-by: Codex:GPT-5.5
+This patch is based on Matthew's earlier implementation linked
+below, with the difference that when freeing the accounting is
+updated in __pagetable_free(), meaning that the update is delayed
+until the pages are actually freed in the
+CONFIG_ASYNC_KERNEL_PGTABLE_FREE case. This shouldn't matter in
+practice.
+
+Suggested-by: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Link: https://lore.kernel.org/r/20251113140448.1814860-3-willy@infradead.org
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- arch/x86/include/asm/tlbflush.h | 8 ++++----
- arch/x86/mm/pgtable.c           | 2 +-
- arch/x86/mm/tlb.c               | 9 +++++----
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ include/linux/mm.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 0545fe75c3fa..4af1cf711a60 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -159,10 +159,10 @@ struct tlb_state_shared {
- 	 *  - Actively using an mm.  Our CPU's bit will be set in
- 	 *    mm_cpumask(loaded_mm) and is_lazy == false;
- 	 *
--	 *  - Not using a real mm.  loaded_mm == &init_mm.  Our CPU's bit
--	 *    will not be set in mm_cpumask(&init_mm) and is_lazy == false.
-+	 *  - Not using a real mm. loaded_mm is a kernel mm. Our CPU's bit
-+	 *    will not be set in mm_cpumask(loaded_mm) and is_lazy == false.
- 	 *
--	 *  - Lazily using a real mm.  loaded_mm != &init_mm, our bit
-+	 *  - Lazily using a real mm. loaded_mm is not a kernel mm, our bit
- 	 *    is set in mm_cpumask(loaded_mm), but is_lazy == true.
- 	 *    We're heuristically guessing that the CR3 load we
- 	 *    skipped more than makes up for the overhead added by
-@@ -188,7 +188,7 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct tlb_state_shared, cpu_tlbstate_shared);
- #define enter_lazy_tlb enter_lazy_tlb
- static __always_inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index b336eb32faa0..361a0d7b74c5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3681,6 +3681,11 @@ static inline struct ptdesc *pagetable_alloc_noprof(gfp_t gfp, unsigned int orde
  {
--	if (this_cpu_read(cpu_tlbstate.loaded_mm) == &init_mm)
-+	if (mm_is_kernel(this_cpu_read(cpu_tlbstate.loaded_mm)))
- 		return;
+ 	struct page *page = alloc_pages_noprof(gfp | __GFP_COMP, order);
  
- 	this_cpu_write(cpu_tlbstate_shared.is_lazy, true);
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index f32facdb3035..91d2a6f2ac5a 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -168,7 +168,7 @@ static int preallocate_pmds(struct mm_struct *mm, pmd_t *pmds[], int count)
- 	bool failed = false;
- 	gfp_t gfp = GFP_PGTABLE_USER;
++	if (!page)
++		return NULL;
++
++	lruvec_stat_add_folio(page_folio(page), NR_PAGETABLE);
++
+ 	return page_ptdesc(page);
+ }
+ #define pagetable_alloc(...)	alloc_hooks(pagetable_alloc_noprof(__VA_ARGS__))
+@@ -3689,6 +3694,8 @@ static inline void __pagetable_free(struct ptdesc *pt)
+ {
+ 	struct page *page = ptdesc_page(pt);
  
--	if (mm == &init_mm)
-+	if (mm_is_kernel(mm))
- 		gfp &= ~__GFP_ACCOUNT;
- 	gfp &= ~__GFP_HIGHMEM;
++	lruvec_stat_sub_folio(page_folio(page), NR_PAGETABLE);
++
+ 	__free_pages(page, compound_order(page));
+ }
  
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 1023acadd8f8..5517cab8ad00 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -594,7 +594,7 @@ void leave_mm(void)
- 	 * This needs to happen before any other sanity checks due to
- 	 * intel_idle's shenanigans.
- 	 */
--	if (loaded_mm == &init_mm)
-+	if (mm_is_kernel(loaded_mm))
- 		return;
+@@ -3797,7 +3804,6 @@ static inline void __pagetable_ctor(struct ptdesc *ptdesc)
+ 	struct folio *folio = ptdesc_folio(ptdesc);
  
- 	/* Warn if we're not lazy. */
-@@ -855,7 +855,7 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
- 		 * cpu_tlbstate_shared.is_lazy whether or not to send an IPI.
- 		 */
- 		if (IS_ENABLED(CONFIG_DEBUG_VM) &&
--		    WARN_ON_ONCE(prev != &init_mm && !is_notrack_mm(prev) &&
-+		    WARN_ON_ONCE(!mm_is_kernel(prev) && !is_notrack_mm(prev) &&
- 				 !cpumask_test_cpu(cpu, mm_cpumask(next))))
- 			cpumask_set_cpu(cpu, mm_cpumask(next));
+ 	__folio_set_pgtable(folio);
+-	lruvec_stat_add_folio(folio, NR_PAGETABLE);
+ }
  
-@@ -932,7 +932,8 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
- 		 * This way switch_mm() must see the new tlb_gen or
- 		 * flush_tlb_mm_range() must see the new loaded_mm, or both.
- 		 */
--		if (next != &init_mm && !cpumask_test_cpu(cpu, mm_cpumask(next)))
-+		if (!mm_is_kernel(next) &&
-+		    !cpumask_test_cpu(cpu, mm_cpumask(next)))
- 			cpumask_set_cpu(cpu, mm_cpumask(next));
- 		else
- 			smp_mb();
-@@ -1134,7 +1135,7 @@ static void flush_tlb_func(void *info)
- 		return;
- 	}
+ static inline void pagetable_dtor(struct ptdesc *ptdesc)
+@@ -3806,7 +3812,6 @@ static inline void pagetable_dtor(struct ptdesc *ptdesc)
  
--	if (unlikely(loaded_mm == &init_mm))
-+	if (unlikely(mm_is_kernel(loaded_mm)))
- 		return;
+ 	ptlock_free(ptdesc);
+ 	__folio_clear_pgtable(folio);
+-	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+ }
  
- 	/* Reload the ASID if transitioning into or out of a global ASID */
+ static inline void pagetable_dtor_free(struct ptdesc *ptdesc)
 
 -- 
 2.51.2
