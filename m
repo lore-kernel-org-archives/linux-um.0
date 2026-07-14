@@ -4,62 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2FEBC4450B
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DC01C4450A
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Dz69MptF58JspLJ2rtF7ybUAV2FIyyNhQ9HifHNaDpQ=; b=bFrjeSZk2KfZxab1vH3Le44Tma
-	2SYPVXDBw9z341ir4MxkGvXgPBm4YiRpKoZa/JaSGeTONkKyGrzvDv6PVkrXqCQvkJrHY+ET40JqT
-	++FF9cg0b53gFpFcIC0bpmbnAB6nY+PfISZ9x+5t2n3wBQxu2LXwvpj1U7g04bZbzpSKLr5UJhbn2
-	dm09ADI+c+rwdFoF5a//8z6WUC8F2lV5yZgvQAx/O0BfPyr7LLDGxZjihETIYk49FQmmjHzzGGNrV
-	jeMZr+sWhfMIGOs5G5wWLS2xybdW/QOhkkB3qcHvTzMyYX/208HiBqOVv2NU/s8Tw1zpHDCctU71G
-	Koq5WyEQ==;
+	bh=oa1CtGB6O+ipLkqxSVLPYawR7pVmeA+m5qsDYuMHpVY=; b=yWKVW3kUF1uLGyqhJhECM8MPTl
+	csUqCniR/T0nPrahkkFuoivNoYEQvMAo5i4sIVrbt6WXHEJ9oi6HntfAzJYGhbkZVG9Eq0H68TwLT
+	R5nNta5RFFL7gri5wcw3tfOyqr8VInIr37zzoHCw9sf0a4yOKu1DQPT6Xle2ZdK9X6QuybBYQLK7k
+	qegSXdOQZuLg8JhXMOZ+r81AAsraSwRdM2S5yI1PVbqcmg84KqA9OHiIO7gPVsJY/Nh1wgOv3AVbO
+	0su/1mgHSpyNjWNzB6gKx7dEKtq1Wme/CJFq01Nr3pP0p7dcaOUoC+YlhIq9j6tK1rom01LWDzIoJ
+	kk6N1UAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdlt-0000000CICd-2NiS;
-	Tue, 14 Jul 2026 14:06:05 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdlr-0000000CIAa-2MNJ;
-	Tue, 14 Jul 2026 14:06:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=Dz69MptF58JspLJ2rtF7ybUAV2FIyyNhQ9HifHNaDpQ=; b=MVhHg+VTAxmCvEtRQqqmK6tGxz
-	6KtPmDY65y7T37DyobcCNKT+XFwUCtDsuJ/UrYCQNKvKc92AUm8D+o+Jm0G3ZTYIiFo+ErpdxnhH6
-	Uiskz6v88Joqgybfidb/qwdN23qHaPi4N4M+kYIRSGqlCkaGkYDdJFJvKSgOKKYXBKWEn+K8xrrS4
-	eXDLnEyGqsb2oV8kp/TsUlngv39WTBJ2xN7kivdRda8hmRGLUskC9YwRMoAk0DaIRoiAwQtrgilsg
-	VlhJryElRNQWBPsJiPVaNsIfZhnIsKfdaDpKeJyvGFA6P1Pj3gVdULsINTWax0Taot1hzk2g4ENKa
-	BpNz8S5Q==;
+	id 1wjdlx-0000000CIHL-3O0R;
+	Tue, 14 Jul 2026 14:06:09 +0000
 Received: from foss.arm.com ([217.140.110.172])
-	by desiato.infradead.org with esmtp (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wjdlm-0000000CYvz-2kCs;
-	Tue, 14 Jul 2026 14:06:02 +0000
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wjdls-0000000CIC0-3ngh;
+	Tue, 14 Jul 2026 14:06:06 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46E591570;
-	Tue, 14 Jul 2026 07:05:52 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0839A1595;
+	Tue, 14 Jul 2026 07:06:00 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21DE63F7B4;
-	Tue, 14 Jul 2026 07:05:49 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4CBA3F7B4;
+	Tue, 14 Jul 2026 07:05:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784037956; bh=VE+lHAHWK4dpsc9V3W/UPtkE4aBmXym2FNHO+k6axB4=;
+	t=1784037964; bh=n3wqVkoRE0XrCf49SeUd/3zMbBniK8cKIbHpgqpyHxU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=GBHbIxSv6yx6lpCATNlxlwrGWzZkjE50qqNWmTtSfC55Qij6ibNwZaI+5R9T7uiWd
-	 i/VIOmdvMtutA0FQwIru3Tr0+8ZG+pxZmXfmR5SvbAQB1BQh7BgutmvfbwIFq0TwaI
-	 MOql+/rIhlaU8c8MGd+SNjdFNyN/NAYTkzmX9Pu0=
+	b=gLbEbpAvFzCqe/uk00cuBVEyk86ImDFUKg9+DAxOfE+6fXLZiWwmczq+TYqacIij9
+	 dzObBv+9qrGLnOJGKWs94LTFpTVFSye5m9UY9LBRCiPUb+bTNDGQ4mEUs5d8asduh+
+	 urPZbHaQ9KgT1hC0YSHV6N5wgcZRQb27Ns4Uao8I=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:03:55 +0100
-Subject: [PATCH 06/22] loongarch: mm: use mm_is_kernel() in
- switch_mm_irqs_off()
+Date: Tue, 14 Jul 2026 15:03:56 +0100
+Subject: [PATCH 07/22] parisc: mm: use mm_is_kernel() for kernel mm checks
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-6-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-7-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -98,16 +83,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=1057;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2128;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=VE+lHAHWK4dpsc9V3W/UPtkE4aBmXym2FNHO+k6axB4=;
- b=vNqbzx2iMvV1fGidU2iKtjDvRxNSiS8E7MvYIjkLSIIndPb41plWi7UyNf7PU14qsGJzzjbPF
- x7c/ZLWX2B8DhFd7ct6QVQiE/yCdMoFkL2mbSBPv7/C7wV2jkBlaVC2
+ bh=n3wqVkoRE0XrCf49SeUd/3zMbBniK8cKIbHpgqpyHxU=;
+ b=NiOLSLM4Bju3NE/MJk1JSg+adlOz6kSqOBN5Q1Ojo91j2+7DutkOZ20lco5JkeakYm3HADh4V
+ WLZkvqMg2QAA0cYBkRVmiWNUb4u1J8+jQygFQcLGfYdNrt+hwaqOb94
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_150559_501172_16BF8A02 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20260714_070605_028172_ED3CEB7A 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,22 +116,50 @@ No functional change, as only init_mm has MMF_KERNEL set for now.
 Assisted-by: Codex:GPT-5.5
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- arch/loongarch/include/asm/mmu_context.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/parisc/include/asm/mmu_context.h | 2 +-
+ arch/parisc/include/asm/pgalloc.h     | 2 +-
+ arch/parisc/include/asm/tlbflush.h    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/mmu_context.h b/arch/loongarch/include/asm/mmu_context.h
-index 304363bd3935..6d51f11427b4 100644
---- a/arch/loongarch/include/asm/mmu_context.h
-+++ b/arch/loongarch/include/asm/mmu_context.h
-@@ -95,7 +95,7 @@ static inline void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *
- 	if (!asid_valid(next, cpu))
- 		get_new_mmu_context(next, cpu, &need_flush);
+diff --git a/arch/parisc/include/asm/mmu_context.h b/arch/parisc/include/asm/mmu_context.h
+index c9187fe836a3..e265da67559e 100644
+--- a/arch/parisc/include/asm/mmu_context.h
++++ b/arch/parisc/include/asm/mmu_context.h
+@@ -87,7 +87,7 @@ static inline void activate_mm(struct mm_struct *prev, struct mm_struct *next)
+ 	 * already, so we should be OK.
+ 	 */
  
--	if (next != &init_mm)
-+	if (!mm_is_kernel(next))
- 		atomic_update_pgd_asid(cpu_asid(cpu, next), (unsigned long)next->pgd);
- 	else
- 		atomic_update_pgd_asid(cpu_asid(cpu, next), (unsigned long)invalid_pg_dir);
+-	BUG_ON(next == &init_mm); /* Should never happen */
++	BUG_ON(mm_is_kernel(next)); /* Should never happen */
+ 
+ 	if (next->context.space_id == 0)
+ 		next->context.space_id = alloc_sid();
+diff --git a/arch/parisc/include/asm/pgalloc.h b/arch/parisc/include/asm/pgalloc.h
+index 3b84ee93edaa..9f09cc4fa5dd 100644
+--- a/arch/parisc/include/asm/pgalloc.h
++++ b/arch/parisc/include/asm/pgalloc.h
+@@ -34,7 +34,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ 	struct ptdesc *ptdesc;
+ 	gfp_t gfp = GFP_PGTABLE_USER;
+ 
+-	if (mm == &init_mm)
++	if (mm_is_kernel(mm))
+ 		gfp = GFP_PGTABLE_KERNEL;
+ 	ptdesc = pagetable_alloc(gfp, PMD_TABLE_ORDER);
+ 	if (!ptdesc)
+diff --git a/arch/parisc/include/asm/tlbflush.h b/arch/parisc/include/asm/tlbflush.h
+index 5ffd7c17f593..a5a6cfff295c 100644
+--- a/arch/parisc/include/asm/tlbflush.h
++++ b/arch/parisc/include/asm/tlbflush.h
+@@ -35,7 +35,7 @@ int __flush_tlb_range(unsigned long sid,
+ 
+ static inline void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	BUG_ON(mm == &init_mm); /* Should never happen */
++	BUG_ON(mm_is_kernel(mm)); /* Should never happen */
+ 
+ #if 1 || defined(CONFIG_SMP)
+ 	/* Except for very small threads, flushing the whole TLB is
 
 -- 
 2.51.2
