@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B852C4450B
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F110C44508
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jul 2026 14:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ng20Y1WVsLH0VrG9X7Anb28wNw6mpkVst635uOI6nRo=; b=vBDcC1Oi/Ajv5fY2rhCIYIrNXS
-	PKuCBcyCdLBxsFak6ttdADWxoCxWnLTtXeOpWL7gvxZGXugnDUEVZNKBQakLtG5w6G1FWQkY+VRUt
-	LZam+PtTK9U8ZxpSJrc0rS5nLtGZhSGy4Kqt5E27ql5DznR4fahfB6+ZW4cJlDK7Fqhy4YitYw8NJ
-	mNRQ0H1rh6ny65DwYctiGp7bSpe732JdYCDRpcnmOhyL0eYj8kHoxO4uT/q7CkIFQO3VLvYC7WeDI
-	qP4fSTmQzh90hUWGFLemixS4GCusVyFB19ZZbrnxNiV4ZTC0QW1LRZbNIHRe9hgpoaAihodvdPAwF
-	9NlkSqLQ==;
+	bh=Sn+zU8yNJHIyNq+aM/0w0FGWDdrVU1gUm/tv5PTPfjM=; b=TjtFChxbwC9bhocGzYOaW2sjw4
+	bprTwKc3MDusYJPZeg/ZM3WaaS9vKYK/9TJBv+eMP6ZluRrYyceyut5SHAXBJf6KONGc2AW3SMGtT
+	8F/JuwGL7NVUKIbg5U9sR7hIO82d0P/szxwTj+A4AWp4K+1bF8Fp3kC6vMa4EpzQ5IoJcs+o0ww9b
+	ny6f7GiBRtXDknBchpbBqSTMorA786xIXOrAkp06S72sY5dEEMV/jiWWly82fXk6XHwnVTbvItbkb
+	f4taGGGulxu56mMcusnefI/G5AbWGj5OLrelKLwSmjb5Lubd0kYZ0plYFEUxdJt6t5tyTTi9uUYQS
+	UIjsD5cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdlK-0000000CHgs-0q3q;
-	Tue, 14 Jul 2026 14:05:30 +0000
+	id 1wjdlT-0000000CHpK-33sy;
+	Tue, 14 Jul 2026 14:05:39 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjdlG-0000000CHep-3OrC;
-	Tue, 14 Jul 2026 14:05:28 +0000
+	id 1wjdlP-0000000CHlu-2yfG;
+	Tue, 14 Jul 2026 14:05:37 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63C3B339;
-	Tue, 14 Jul 2026 07:05:21 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 224CC152B;
+	Tue, 14 Jul 2026 07:05:29 -0700 (PDT)
 Received: from localhost.localdomain (e123572-lin.cambridge.arm.com [10.2.208.46])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A07F3F7B4;
-	Tue, 14 Jul 2026 07:05:18 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECA813F7B4;
+	Tue, 14 Jul 2026 07:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784037925; bh=xWJCKsvCSbOTf1MrL+nqfsWcuzx4IBI4MMfjRE6PTH4=;
+	t=1784037933; bh=FInc2gTxhVQc4LYtwtKoJPw43dSvFTnMs+LPVQ5s9u0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=L/UyKrDH31P2AxfsB5zaY1mh6o9sykjNj6yB/yMXG8ePSNTlccGqvWENIvdaG1tfJ
-	 Wk0YZEQWyX1mVS8XhODJBz5n9MI25kkc+YIk8/N9y9yuoLWoSBYTDhb1fyTBkqd7HI
-	 cav7VW0lg3rVkGLnx2wAlICXEbNLvp2RP9uBMl74=
+	b=Bm1/z7nw3ZrVQHSoXKrtxTQs91wc4RUrXfic6nvC1VPB3At2KepfWXr7Aw3HYFpkn
+	 ioHo5OCLJkJiU6MHz48diP4nr6YFWtjQg3UL72aeFoQQSfWxPSBxVE10gNTyxwI//k
+	 BrtCJZVqyK4Ji57oD58xPcYajyNM3z8AN78Fhrlw=
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-Date: Tue, 14 Jul 2026 15:03:51 +0100
-Subject: [PATCH 02/22] mm: move mm_flags helpers to mm_types.h
+Date: Tue, 14 Jul 2026 15:03:52 +0100
+Subject: [PATCH 03/22] mm: introduce MMF_KERNEL flag and set it for init_mm
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260714-remove_pgtable_cdtor-v1-2-44be8a7685d7@arm.com>
+Message-Id: <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 In-Reply-To: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
 To: linux-mm@kvack.org
@@ -83,16 +83,16 @@ Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=3490;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1784037902; l=2504;
  i=kevin.brodsky@arm.com; s=20260427; h=from:subject:message-id;
- bh=xWJCKsvCSbOTf1MrL+nqfsWcuzx4IBI4MMfjRE6PTH4=;
- b=hjHVW6q/l9oVND5egfxNDc6FE64eNht6hv1NYHcLYYfk3GK4zKlatRLYEID3yBr+Cr2y6GvLX
- wE73qcbXnDpDJQn8OyUXgdNbqTA1wZVDqiAytR24UH8BGEWoTGJECyr
+ bh=FInc2gTxhVQc4LYtwtKoJPw43dSvFTnMs+LPVQ5s9u0=;
+ b=LLyApQy3cCX+sEK7+yEv+wdSQwFfqhZ/PtGYmJI+JJbZMoulhtvHZSYrG2onhzlRcBnCeJhTe
+ oQ14mia3FhGBEfCDsSpVX5EPWBdyUPXpBCd8WmZOxEP54NLEVWz9CaD
 X-Developer-Key: i=kevin.brodsky@arm.com; a=ed25519;
  pk=N2QG+eJKrvkNovwhhwJhnJ4+ScVfsGCHldmqLfcMTFs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_070526_937310_44425AAC 
-X-CRM114-Status: GOOD (  12.07  )
+X-CRM114-CacheID: sfid-20260714_070535_865145_B5A37BDC 
+X-CRM114-Status: GOOD (  13.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,112 +107,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Some of the mm_flags helpers are defined in <linux/mm_types.h>,
-while others are defined in <linux/mm.h>. We will soon need to call
-one of the latter helpers from mm_types.h.
+mm code often needs to know whether some mm represents a kernel or
+user address space. This is currently done by comparing the mm
+pointer with &init_mm; besides not being particularly elegant, this
+ignores the fact that other mm's (e.g. efi_mm) may also represent
+parts of the kernel address space.
 
-Regroup all the helpers in mm_types.h to keep things simple.
+Introduce a new mm flag MMF_KERNEL and set it for init_mm.
+Subsequent patches will use this flag to replace comparisons with
+&init_mm. No functional change is introduced for now.
 
-Also remove #include's that were added specifically for these
-helpers in mm.h.
-
+Assisted-by: Codex:GPT-5.5
 Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
 ---
- include/linux/mm.h       | 32 --------------------------------
- include/linux/mm_types.h | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+), 32 deletions(-)
+ include/linux/mm_types.h | 10 ++++++++++
+ mm/init-mm.c             |  1 +
+ 2 files changed, 11 insertions(+)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 32bb723ffbb9..7a4b8e7ac8f4 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -34,8 +34,6 @@
- #include <linux/slab.h>
- #include <linux/cacheinfo.h>
- #include <linux/rcuwait.h>
--#include <linux/bitmap.h>
--#include <linux/bitops.h>
- #include <linux/iommu-debug-pagealloc.h>
- #include <linux/kcsan-checks.h>
- 
-@@ -948,36 +946,6 @@ static inline void assert_fault_locked(const struct vm_fault *vmf)
- }
- #endif /* CONFIG_PER_VMA_LOCK */
- 
--static inline bool mm_flags_test(int flag, const struct mm_struct *mm)
--{
--	return test_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
--}
--
--static inline bool mm_flags_test_and_set(int flag, struct mm_struct *mm)
--{
--	return test_and_set_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
--}
--
--static inline bool mm_flags_test_and_clear(int flag, struct mm_struct *mm)
--{
--	return test_and_clear_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
--}
--
--static inline void mm_flags_set(int flag, struct mm_struct *mm)
--{
--	set_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
--}
--
--static inline void mm_flags_clear(int flag, struct mm_struct *mm)
--{
--	clear_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
--}
--
--static inline void mm_flags_clear_all(struct mm_struct *mm)
--{
--	bitmap_zero(ACCESS_PRIVATE(&mm->flags, __mm_flags), NUM_MM_FLAG_BITS);
--}
--
- extern const struct vm_operations_struct vma_dummy_vm_ops;
- 
- static inline void vma_init(struct vm_area_struct *vma, struct mm_struct *mm)
 diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index b4129beb9c4a..a2e0dc5892ff 100644
+index a2e0dc5892ff..7838ea3aac00 100644
 --- a/include/linux/mm_types.h
 +++ b/include/linux/mm_types.h
-@@ -1414,6 +1414,36 @@ struct mm_struct {
+@@ -1414,6 +1414,8 @@ struct mm_struct {
  	char flexible_array[] __aligned(__alignof__(unsigned long));
  };
  
-+static inline bool mm_flags_test(int flag, const struct mm_struct *mm)
-+{
-+	return test_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
-+}
++#define MM_FLAGS_INIT(flags)	{ .__mm_flags = { BITMAP_FROM_U64(flags) } }
 +
-+static inline bool mm_flags_test_and_set(int flag, struct mm_struct *mm)
-+{
-+	return test_and_set_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
-+}
-+
-+static inline bool mm_flags_test_and_clear(int flag, struct mm_struct *mm)
-+{
-+	return test_and_clear_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
-+}
-+
-+static inline void mm_flags_set(int flag, struct mm_struct *mm)
-+{
-+	set_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
-+}
-+
-+static inline void mm_flags_clear(int flag, struct mm_struct *mm)
-+{
-+	clear_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
-+}
-+
-+static inline void mm_flags_clear_all(struct mm_struct *mm)
-+{
-+	bitmap_zero(ACCESS_PRIVATE(&mm->flags, __mm_flags), NUM_MM_FLAG_BITS);
-+}
-+
- /* Copy value to the first system word of mm flags, non-atomically. */
- static inline void __mm_flags_overwrite_word(struct mm_struct *mm, unsigned long value)
+ static inline bool mm_flags_test(int flag, const struct mm_struct *mm)
  {
+ 	return test_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
+@@ -2001,6 +2003,9 @@ enum {
+ #define MMF_TOPDOWN		31	/* mm searches top down by default */
+ #define MMF_TOPDOWN_MASK	BIT(MMF_TOPDOWN)
+ 
++#define MMF_KERNEL		32	/* mm belongs to the kernel */
++#define MMF_KERNEL_MASK		BIT_ULL(MMF_KERNEL)
++
+ #define MMF_INIT_LEGACY_MASK	(MMF_DUMP_FILTER_MASK |\
+ 				 MMF_DISABLE_THP_MASK | MMF_HAS_MDWE_MASK |\
+ 				 MMF_VM_MERGE_ANY_MASK | MMF_TOPDOWN_MASK)
+@@ -2008,6 +2013,11 @@ enum {
+ /* Legacy flags must fit within 32 bits. */
+ static_assert((u64)MMF_INIT_LEGACY_MASK <= (u64)UINT_MAX);
+ 
++static inline bool mm_is_kernel(const struct mm_struct *mm)
++{
++	return mm && mm_flags_test(MMF_KERNEL, mm);
++}
++
+ /*
+  * Initialise legacy flags according to masks, propagating selected flags on
+  * fork. Further flag manipulation can be performed by the caller.
+diff --git a/mm/init-mm.c b/mm/init-mm.c
+index 3e792aad7626..93773269bf87 100644
+--- a/mm/init-mm.c
++++ b/mm/init-mm.c
+@@ -34,6 +34,7 @@ struct mm_struct init_mm = {
+ 	.pgd		= swapper_pg_dir,
+ 	.mm_users	= ATOMIC_INIT(2),
+ 	.mm_count	= ATOMIC_INIT(1),
++	.flags		= MM_FLAGS_INIT(MMF_KERNEL_MASK),
+ 	.write_protect_seq = SEQCNT_ZERO(init_mm.write_protect_seq),
+ 	MMAP_LOCK_INITIALIZER(init_mm)
+ 	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
 
 -- 
 2.51.2
