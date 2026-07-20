@@ -4,62 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF71CC44515
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 19:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72D87C4452D
+	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 19:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bznKShHtfkBFVelF+5JPRZMQIQ3/WV9LoW3BQU5V2F0=; b=SDHhDpU0bnIK2DE03NZEafIQfx
-	3ZEHzKGSd9qGGBIcFgyidKSj0hEd3weE/jvDJAx6jTKQqlYCZUfuaG6iU/flLqFKtgqXvDCOwr1i3
-	NJvd4IpAs/ts726x5DuynJE2QKVVuXqrs2eVbgDL33OCz+KWTK2uRhnOsrrjH6zO7tBaDBhimvEaM
-	dzAwD27n1+1wXEphHZxdMcO85koAXLJ/uVYDx2mhe4XbX+bTregureIY33WlL/9ghMRLojAdTk2vX
-	AHDcm0GDULMOLDqHIwG7O1QXKVcDOSpd7ycLQkUxF97nGx5ptWWS0nXp37Zzf7986H3WmdbfDX0NS
-	IiQmGDYw==;
+	bh=y4vTZRCmYUoacTgRQeb9iD10u8BLXmQ5njXvIgguyco=; b=Rnv/6/OrBflBYjrDgUrj3XM9jt
+	HNIscxzfYnmsgUrhpVQANhHuPcacGyHY78jWmZXxMRRQb4JKOXs/FTGErx2CLXcpe8p346Vooy17Z
+	EEddyP3NAfHoqIaxP7QnuRKrLWsn/AXKCE1HgDHUrVEePMu/zTu7C+BwKiCrBh/yCcYH4ahbaCWYA
+	++ryFNKy2N9PAUFAhFdw3n335tk/JnuQLBG7TSHtpEb8wFCqTCbZlT+5ZsLaRJwAJss7iXUkTc7NX
+	pU3Njwxbwm3k1fK5hNG364voXCKU2IrkuPP9WE4OGZIZsJ00rQDDB3etGYL0FhsyH5g1ZVtnuazm0
+	6D0vGxyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wltNQ-00000007j6c-0qDi;
-	Mon, 20 Jul 2026 19:10:08 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1wltY9-00000007jkz-1iUB;
+	Mon, 20 Jul 2026 19:21:13 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wltNN-00000007j5x-2Pd2
-	for linux-um@lists.infradead.org;
-	Mon, 20 Jul 2026 19:10:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=bznKShHtfkBFVelF+5JPRZMQIQ3/WV9LoW3BQU5V2F0=;
-	t=1784574605; x=1785784205; b=gIU9IJg3jdDOImIO+xQjET/lOoROJ7Z/b3GYxx23e2ZD/Qa
-	lrvKmyT1gpiVmBdCQw52FgQ+zeIAexxPVPJVMpepgzypPfKY0UrB1ygqwOjyjEJW5Gk938hkdhxg6
-	OiR2M6YPlY38Ir7qdteIKlZfQsCiZqGkKlFDEboYiNv5p8xfcpzzT5Y0cxvhRbVpso6fQ8PXn1hFJ
-	SxUvPgw/bwwfGzAqyakIzKMmgsuVk3e36yRE7OXy433XUe/R7ITutIZWy6OaBKUIbMB4UV26ktY6k
-	ZTfnTwkzoW5dkZktP0L2TUAHUmd0EDiYjOFwLJFI7B11/oLXgXBoextvbeCaeT8g==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1wltNK-0000000Gt4X-21mj;
-	Mon, 20 Jul 2026 21:10:02 +0200
-Message-ID: <d8847ea88be191bc1e2ccb6d6e6e79119e653179.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH 7/9] um: nommu: add SMP futex operations
-From: Johannes Berg <johannes@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Hajime Tazaki <thehajime@gmail.com>
-Date: Mon, 20 Jul 2026 21:10:01 +0200
-In-Reply-To: <c88c02961cb99d80ef1a0e88d321b5f86bd5eae1.camel@sipsolutions.net>
-References: <20260720185103.530603-11-johannes@sipsolutions.net>
-		 <20260720205103.4b4ce01cd017.I0a83e5ca6be6c95a81d4b2ec69677bbea5889d7d@changeid>
-	 <c88c02961cb99d80ef1a0e88d321b5f86bd5eae1.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	id 1wltY7-00000007jkY-3ETM;
+	Mon, 20 Jul 2026 19:21:11 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id A5984433B7;
+	Mon, 20 Jul 2026 19:21:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC12B1F000E9;
+	Mon, 20 Jul 2026 19:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784575270;
+	bh=y4vTZRCmYUoacTgRQeb9iD10u8BLXmQ5njXvIgguyco=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=Spav0GWz3rWmeiOvTkSHmoLaFmA0dsmghrTMMUGIy7BsnbqtE0r1vEIJpGCtqeWB+
+	 BpTJQ6xzB/KOaDAAkoTPfDvyF002TmAYBtSyKK5uExFq/Cj1mLr43Z33qJ2sRMi9Nf
+	 nJuZqLg2J7TvcdvdFpFOL3PuoTONb0yf3DbORivGivTO7zCY0H72Bu+OkktKpqh03L
+	 Vksh67h0wy7gmPYEI4mwGb9sleMrzw8Jsb1sLuHLmScVy2tv/f+VR08LYTxzvzqe4C
+	 b/ZkM/7+AGeKxhezpkSh009TVoxiBEuZvcET+KD3PE+3fxGAVYAS/3R9Y8DzfgWlkp
+	 U2Lg+Wsg/dkOQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Magnus Lindholm <linmag7@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
+ Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
+ <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
+ Henderson <richard.henderson@linaro.org>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
+ Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
+ <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
+ <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
+ <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
+ <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
+In-Reply-To: <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
+References: <20260707181957.433213175@kernel.org>
+ <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
+Date: Mon, 20 Jul 2026 21:21:07 +0200
+Message-ID: <87wluplb6k.ffs@fw13>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260720_121005_614859_4594A046 
-X-CRM114-Status: GOOD (  10.72  )
+Content-Type: text/plain
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,54 +93,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2026-07-20 at 21:06 +0200, Johannes Berg wrote:
-> On Mon, 2026-07-20 at 20:26 +0200, Johannes Berg wrote:
-> >=20
-> > +static inline int
-> > +arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *=
-uaddr)
-> > +{
-> > +	u32 oldval, newval;
-> > +	u32 *p =3D (u32 __force *)uaddr;
-> > +
-> > +	do {
-> > +		oldval =3D READ_ONCE(*p);
-> > +
-> > +		switch (op) {
-> > +		case FUTEX_OP_SET:
-> > +			newval =3D oparg;
-> > +			break;
-> > +		case FUTEX_OP_ADD:
-> > +			newval =3D oldval + oparg;
-> > +			break;
-> > +		case FUTEX_OP_OR:
-> > +			newval =3D oldval | oparg;
-> > +			break;
-> > +		case FUTEX_OP_ANDN:
-> > +			newval =3D oldval & ~oparg;
-> > +			break;
-> > +		case FUTEX_OP_XOR:
-> > +			newval =3D oldval ^ oparg;
-> > +			break;
-> > +		default:
-> > +			return -ENOSYS;
-> > +		}
-> > +	} while (!try_cmpxchg(p, &oldval, newval));
-> > +
-> > +	*oval =3D oldval;
->=20
-> Wait ... this is also garbage, it should just be the switch() and then
->=20
-> 	*oval =3D cmpxchg(p, oldval, newval);
->=20
-> not the loop...
+Magnus!
 
-Err, no. But our uaccess.c implementation here also seems wrong and
-should be more like this one?
+On Sun, Jul 19 2026 at 13:25, Magnus Lindholm wrote:
+> One Alpha-specific wrinkle I hit while rebasing the GENERIC_ENTRY patch is
+> that Alpha cannot unconditionally pre-seed the normal -ENOSYS return state
+> before calling into the generic entry code: syscall_set_return_value() also
+> updates r19/a3, which is still syscall argument 4 on the normal entry path.
+> Doing that too early broke early userspace mmap() during boot.
 
-OK I'm confused, but I think we need to clean up uaccess.c before
-implementing this for real...
+Similar to what Peter and me suggested in the related discussion
+vs. s390 which has a similar issue, you can just have a dedicated
+syscall_return member in your pt_regs struct, which is preset to -ENOSYS
+and operate on that. You have an unused padding entry there which means
+it won't even change the size.
 
+> Are you planning to send a v2 with the seccomp recheck fix and any other
+> review fixups folded in? Is the intention to route this upstream
+> during the next merge window?
 
-johannes
+You were on CC for the V2, no?
+
+The whole pile including Jinjie's seccomp bypass fix is in
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/entry
+
+and is targeted for the 7.3 merge window.
+
+If you want to base your stuff on that for 7.3, I can add a tag which
+makes it immutable so it can be pulled into the alpha tree.
+
+Thanks,
+
+        tglx
+
 
