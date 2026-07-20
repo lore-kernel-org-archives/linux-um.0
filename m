@@ -4,164 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45AA2C44515
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 15:04:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 110F1C44515
+	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 18:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=; b=g432EVgPA5FFaEbTQppA+X8Up5
-	vLKAcHXwalhsuLKYEZxG/V9CUmyYZt0b5HffDo1UIo2JejDmO4VGjYNY6xqr7BL3KZtC5XhQCBdpB
-	Y5myun7neQqK/JXe1SQojTjPcwuMjI9YUJfzuxKBDH02C1p8yaXXX4GOqzkujI/6kc0aldZ6s/aa7
-	6djpWTPEGzGc48bnHa5ap41WH5i2qtO+xHAnj46J8MtrKNFgBEcVjyBhC9qficUurw5GznKTUwGq0
-	uyZifTiBUiVBlbOttt8qe2bWwK13yHHdp0uQ90hVTL2qcsDzNPRyJkAOJy60lNNrYnQnH3SIQlwD3
-	hN/PPitg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=HuZWe+pS4IP2bIRYdBPTEGT6dSajs/6clZcJQ78N0nY=; b=Xq5NyS0y3dBmUMUaGFnH72SUdH
+	RHzNn6RQs8GiAdoJXimT8g6aJhTgJqScT5+eQDXV5QlNKTlW5niVyIXNTUOmfa/99acH1//s5+iBW
+	Tb49rC9YINerCVD44Es6t3WLKBluC+lDXdstCVAoEZwy+2bKJKFqXNWhrji30oWONUIDZpqeO/yQj
+	JZLTShWVJCmBLrvF6XJmHB03tB9DgyfgoVCRMcq93dlurZYx4l6qC9c40vC7IuZ6jnYJn+wvgM2tI
+	oq8Lc6UczR6NTaJum3qsj2nUKVycG3Ehk0sBJggylFBVlt8RrF5U9JPudfOAkwmY5ZrjHIdLOMi5R
+	uTpKtScg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlpXK-000000074fk-2ZPl;
-	Mon, 20 Jul 2026 15:04:06 +0000
-Received: from smtp-out1.suse.de ([195.135.223.130])
+	id 1wlt5C-00000007h45-1tRj;
+	Mon, 20 Jul 2026 18:51:18 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wjYNL-0000000BHep-2EQ9
+	id 1wlt59-00000007h0t-2i7B
 	for linux-um@lists.infradead.org;
-	Tue, 14 Jul 2026 08:20:24 +0000
-Received: from kunlun.suse.cz (unknown [IPv6:2a07:de40:b306:2000::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5B37B77D67;
-	Tue, 14 Jul 2026 08:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1784017221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=DKJ09ll/zFwCXlbl6voF6Ew/i+nGfuIXvwr6+pPYyJYkjrugeEud/q+Ki5j7VPl5fqg4RU
-	7v0Fr5aEHfh6wFz8BRS8uap35P8g2QzVdrMcXNhwITMtJjhdQjQ/wGAESjusjginjvTIaB
-	s/IaH99ENQnMIs5WMPNIymEU1PqEzNQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784017221;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=kyKADJBodi7qpCF8SOU3elSKX6/nsxl0ZSGyW3McIGkcmKNlth+AD/XvcaQdtO7s/xaBLW
-	/BdlcT2IZYRDreCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="DKJ09ll/";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=kyKADJBo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1784017221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=DKJ09ll/zFwCXlbl6voF6Ew/i+nGfuIXvwr6+pPYyJYkjrugeEud/q+Ki5j7VPl5fqg4RU
-	7v0Fr5aEHfh6wFz8BRS8uap35P8g2QzVdrMcXNhwITMtJjhdQjQ/wGAESjusjginjvTIaB
-	s/IaH99ENQnMIs5WMPNIymEU1PqEzNQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784017221;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1nzoIiIS1i6/8kifcmUM+0AdKBs7HiZlyka0H+4a9w=;
-	b=kyKADJBodi7qpCF8SOU3elSKX6/nsxl0ZSGyW3McIGkcmKNlth+AD/XvcaQdtO7s/xaBLW
-	/BdlcT2IZYRDreCA==
-Date: Tue, 14 Jul 2026 10:20:20 +0200
-From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alXxRMjQsBas4AJv@kunlun.suse.cz>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org>
- <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13>
- <alDQ7isUKJFl8Va4@kunlun.suse.cz>
- <87a4rxqnar.ffs@fw13>
+	Mon, 20 Jul 2026 18:51:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=HuZWe+pS4IP2bIRYdBPTEGT6dSajs/6clZcJQ78N0nY=; t=1784573475; x=1785783075; 
+	b=tD7e05C01W/c+IxG+vG+otxWf1wup8b2TZVcg+ecWBgLEwKnffxmqRUimV1S3VYCEdEyEs9eVGK
+	MuwshbohEkAyPf16tsRx/nfco7gEr4DqpmTzzjVXGOoBhBywJkXUloA5kXOtMyL+uYq71gqeEwfdf
+	L/dSFdtkLYxOJJy1P/PAyI06claACtEGWkpUY2d6rEltygtCyAQ0GZurfE1p0RSCj1IlR8c/QFzkl
+	pcykXmXdyRLqQuxeocfAwiMF85tnut7qlavtTb+K8SYozP/G9lMQPlNf1GOWPuZMogbmsTXaeqXO2
+	xn3+HHF+8rpyuXI47MH3KAI/DRD5t+v4uU1g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wlt52-0000000GsPP-0OWT;
+	Mon, 20 Jul 2026 20:51:08 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Hajime Tazaki <thehajime@gmail.com>
+Subject: [RFC PATCH 0/9] simplified UML/NOMMU approach
+Date: Mon, 20 Jul 2026 20:26:50 +0200
+Message-ID: <20260720185103.530603-11-johannes@sipsolutions.net>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a4rxqnar.ffs@fw13>
-X-Spamd-Bar: +++++++++++++
-X-Rspamd-Queue-Id: 5B37B77D67
-X-Rspamd-Action: add header
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [13.02 / 50.00];
-	SPAM_FLAG(5.00)[];
-	NEURAL_SPAM_LONG(3.50)[1.000];
-	BAYES_HAM(-3.00)[100.00%];
-	HFILTER_HOSTNAME_UNKNOWN(2.50)[];
-	RDNS_NONE(2.00)[];
-	ONCE_RECEIVED(1.20)[];
-	HFILTER_HELO_IP_A(1.00)[kunlun.suse.cz];
-	NEURAL_SPAM_SHORT(0.83)[0.278];
-	HFILTER_HELO_NORES_A_OR_MX(0.30)[kunlun.suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,infradead.org,ellerman.id.au,linux.ibm.com,lists.ozlabs.org,kernel.org,lists.linux.dev,dabbelt.com,lists.infradead.org,arm.com,huawei.com,redhat.com,linaro.org,armlinux.org.uk,linux-m68k.org,alpha.franken.de,gmx.de,users.sourceforge.jp,nod.at,zankel.net,lists.linux-m68k.org,arndb.de,monstr.eu,davemloft.net,gaisler.com,lwn.net];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b306:2000::2:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_ZERO(0.00)[0];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLs1yuyu6ywojxyk8y3ncu5g39)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
-X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260714_012023_733858_AE04A95F 
-X-CRM114-Status: GOOD (  24.36  )
-X-Mailman-Approved-At: Mon, 20 Jul 2026 08:04:04 -0700
+X-CRM114-CacheID: sfid-20260720_115115_983418_100B21B1 
+X-CRM114-Status: GOOD (  13.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -176,78 +69,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jul 11, 2026 at 10:33:16PM +0200, Thomas Gleixner wrote:
-> Michal!
-> 
-> On Fri, Jul 10 2026 at 13:01, Michal Suchánek wrote:
-> > On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
-> >> does not make #2 magically go away. It's still the same problem whether
-> >> you like it or not.
-> >
-> > However, reading the syscall number from pt_regs only after
-> > syscall_enter_from_user_mode exits does.
-> 
-> That does not solve anything at all.
-> 
-> TBH, your communication style is annoying as hell. You fail to provide
-> any useful arguments and explanations despite me giving you a proper
-> analysis. And I'm absolutely tired of this.
-> 
-> So let me try again for _ONE_ last time to explain you why your ppc/s390
-> world view is broken and let's look at the current code (irrelevant
-> portions omitted).
-> 
-> static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work)
-> {
-> 	if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
-> #1		if (syscall_user_dispatch(regs))
-> 			return -1L;
-> 	}
->         
-> 	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
-> #2		ret = arch_ptrace_report_syscall_entry(regs);
-> 		if (ret || (work & SYSCALL_WORK_SYSCALL_EMU))
-> 			return -1L;
-> 	}
-> 
-> 	/* Do seccomp after ptrace, to catch any tracer changes. */
-> 	if (work & SYSCALL_WORK_SECCOMP) {
-> #3		ret = __secure_computing();
-> 		if (ret == -1L)
-> 			return ret;
-> 	}
-> 
-> 	/* Either of the above might have changed the syscall number */
-> #4	syscall = syscall_get_nr(current, regs);
-> 
-> 	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
-> #5		syscall = trace_syscall_enter(regs, syscall);
-> 
->         return syscall;
-> }
-> 
-> #1) The user dispatch mechanism does not modify the syscall return
->     value, but it can rollback the syscall and tell the call site to
->     skip the invocation.
-> 
->     The mechanism used in upstream today is to return -1L as the syscall
->     number which makes the architecture specific entry code skip the
->     syscall and refrain from touching the return value.
-> 
-> #2) ptrace
-> 
->     ptrace can poke whatever it wants into the syscall number storage
->     via ptrace_set_syscall_info_entry() -> syscall_set_nr()
-> 
->     It does not set the return code.
-> 
->     It does not abort the syscall when the poked syscall number is -1L.
+Hi,
 
-Indeed, it does not abort on -1 syscall number anymore although there
-are still comments around that claim that setting the syscall number to
--1 is special.
+After Hajime's talk at netdevconf 0x1A I was this time really
+tempted into implementing an approach to NOMMU UML that I'd
+thought about quite a while ago, and here's the resulting
+code. I had prototyped some of this with LLM help, but now
+have pretty much reworked most of it (except boilerplate).
 
-Thanks
+Instead of using a wholly new architectural interface, new
+process/thread handling, new seccomp machinery etc. this
+just reuses all the existing infrastructure (we're not in
+fact trying to run UML on nommu, but run _as_ nommu), but
+makes runner processes for each CPU instead of each userspace
+MM (as it would be on MMU).
 
-Michal
+This eventually results in a far simpler implementation that
+doesn't have all the complexity of the syscall handling yet
+again.
+
+It's also more capable:
+ - continues working with ptrace
+ - doesn't require disabling SMP
+   (just has a runner per CPU)
+ - should work on 32-bit (untested)
+ - keeps physmem FD, which in theory should allow virtio
+   PCI devices, but PCI doesn't build on !MMU right now
+
+However, it does go in an entirely different direction
+and while it doesn't entirely close off all things for
+optimisations wrt. syscall speed that the much older
+versions of the NOMMU patchset did, it does create the
+infrastructure in a way that doesn't make that easier.
+
+Personally, I think the only real use case for this
+whole thing is NOMMU testing (which was requested), and
+we don't really need everything else.
+
+Note: the futex thing seems odd. I mirrored the existing
+implementation, but I think it's just wrong. There's a
+FIXME in the code for now.
+
+It does boot ghcr.io/thehajime/alpine:3.20.3-um-nommu
+as was documented before.
+
+johannes
+
 
