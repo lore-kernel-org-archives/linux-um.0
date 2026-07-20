@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAD29C44531
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 18:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16613C44532
+	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 18:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QrJKKq615eowMNiqBOwZgz2tTG/RnnXjRQ9K3pWGHbY=; b=C0j4xM+kWUaLNk8IhLeq8vYM5I
-	cHiNCiwvqHIsREHgmAZU1gSDTTYbEnJXH4S1Q2/X9HqQ9ZF7Y/HZoIB1ObCv50ye5QMtCNGUg06ns
-	wFJppgxWhWpoUMdox1jE0ZctNryjq6DQ/fR5qaEpDo0mniYgvk25eHcPF3OjcOJXbOEUT5y45qHAu
-	CGaoIf54gXOIwM5aeG+O1k4yA/pJFlEUX/SoZVzbPgdj3xJWoCPcYXsqm65jsqyDA/N2FPOlwcFzi
-	D9C63HcMuoEEcHHk0rJugrMIKD69vR9NSt5z7mPAJt4qvdDreVPjWLI7USGDat1/9Dr2J7asUvZWR
-	w4HUzuAQ==;
+	bh=PLQrycrKJpGn8OQk9ozd2ZN+MpkNzHo+k5op2DKDjqY=; b=TfCFUw75Q/ZhXyibp6P9tXTpxE
+	AIiUqMCtlsnGV5CI7ojt99Qckbk7rfASmrnX0yFDFfIQlu0U6CvP3fLA2arCoTrht31nXRWxWN3UL
+	dn0P1K4SOllwSD67mOmDMTOC15hvXdMCLwEtV1LhEzVF/+6u69CdY5m0hnJF847ruJyDD1o4nWxVZ
+	6P5y03ovdmO+VgwQ3GqxgxfwfFC3WeirWiPZZVD4B87OYqzOEZ5H1vvmTgTpABRgCopsbMpZWdvsW
+	GhYf/2ZzCu0uY8JFWdiyP4HavZb7hmQzYaqM60MUwievSAFQ0St2cBM+Tsg3fVB8XH8+Z1ZSVXnBQ
+	OiE/kd4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlt5I-00000007h8m-1rSP;
+	id 1wlt5I-00000007h9z-2iqB;
 	Mon, 20 Jul 2026 18:51:24 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlt5A-00000007h19-1kOC
+	id 1wlt59-00000007h17-46s5
 	for linux-um@lists.infradead.org;
 	Mon, 20 Jul 2026 18:51:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=QrJKKq615eowMNiqBOwZgz2tTG/RnnXjRQ9K3pWGHbY=;
-	t=1784573476; x=1785783076; b=mlRMxeZlA4FdoLhLMc0j9fhNW8au9p+684WnEFgkFrF8kd6
-	ZFjN4fPcYrKAEcUcRnuL4al/vZHwCbAuqhE/X9n6oMmPbWejxk91e2zEQsc5iAzCGy+/z/WRvPIPc
-	agk4PHiwwoW4b23kHxdaRRxuOof6qJDOCEGz25C2ZWy+FDn/xpF2L+JVTwtb7h1JyHlQVjIClM8Ph
-	cPg5jAKRd0nBBxAsDWgBKPuOdjPr5PcwIdsvJ4RxJt1KDqu382OV7ZgQ5RhhPHCkP3aSpymcnJDHS
-	SRJgfoV6Nc2vHMKmd0ZSwN/EifflZb3JCthU1aR4JmYTUoXrP/9c0oPN2kdulv1A==;
+	Resent-Cc:Resent-Message-ID; bh=PLQrycrKJpGn8OQk9ozd2ZN+MpkNzHo+k5op2DKDjqY=;
+	t=1784573475; x=1785783075; b=tOOeGB4O9pjdcnfzuO01shvBfmsizhm/25X/aZrWa9+fIQm
+	B4q7+pH75/BxTrhLMMLaSoQABJdoh4QB5lVUtTWSd1YVPflcjus7FnWLMy10ESPdwn8e4c5pi5AHw
+	KfYf6FOgMHmjx4vgueaawdBOKX3GTYcjy022neGv52ksDpcmt4NC9VmHL9nQmG8jka9/qW9SkiF1k
+	1uMqS9U0AVG2x7UtF7WkeYeoU8qObWWIstIw88izLgaYMZQDSBo4ZswDhZSJAhlIZHn/qJbQBPUAy
+	Bf4ksaZ08Weu19u+OgZXhac9Ailz4oEy5OnseLx8n1h8bcGBejabiQSUvvOM6eDA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wlt58-0000000GsPP-1PYP;
-	Mon, 20 Jul 2026 20:51:14 +0200
+	id 1wlt57-0000000GsPP-0GiQ;
+	Mon, 20 Jul 2026 20:51:13 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
-Cc: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 9/9] um: nommu: plug nommu code into build system
-Date: Mon, 20 Jul 2026 20:26:59 +0200
-Message-ID: <20260720185103.530603-17-johannes@sipsolutions.net>
+Cc: Hajime Tazaki <thehajime@gmail.com>,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: [RFC PATCH 7/9] um: nommu: add SMP futex operations
+Date: Mon, 20 Jul 2026 20:26:57 +0200
+Message-ID: <20260720205103.4b4ce01cd017.I0a83e5ca6be6c95a81d4b2ec69677bbea5889d7d@changeid>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260720185103.530603-11-johannes@sipsolutions.net>
 References: <20260720185103.530603-11-johannes@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260720_115116_454707_AC9500EE 
-X-CRM114-Status: UNSURE (   8.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260720_115116_050176_FD5F8DF9 
+X-CRM114-Status: GOOD (  11.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,78 +71,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Hajime Tazaki <thehajime@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-Add nommu kernel for um build.  defconfig is also provided.
+The asm-generic futex implementation only supports UP operations,
+and the normal (MMU) implementation from uaccess.c isn't built
+nor would it work.
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Ricardo Koller <ricarkol@google.com>
-Link: https://patch.msgid.link/d6057e2fb8584671e259fbc2d94959e2b04117db.1770170302.git.thehajime@gmail.com
-[drop defconfig file, minor adjustments/fixes]
+Since NOMMU shares address space anyway, it's all trivial and we
+can just make a trivial implementation.
+
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/Kconfig | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ arch/um/include/asm/futex.h | 53 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index d9541d13d9eb..d17bcdd200c4 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -17,9 +17,9 @@ config UML
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_STRNCPY_FROM_USER
- 	select ARCH_HAS_STRNLEN_USER
--	select ARCH_HAS_STRICT_KERNEL_RWX
-+	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
- 	select HAVE_ARCH_AUDITSYSCALL
--	select HAVE_ARCH_KASAN if X86_64
-+	select HAVE_ARCH_KASAN if X86_64 && MMU
- 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
-@@ -37,18 +37,23 @@ config UML
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TTY # Needed for line.c
--	select HAVE_ARCH_VMAP_STACK
-+	select HAVE_ARCH_VMAP_STACK if MMU
- 	select HAVE_RUST
- 	select ARCH_HAS_UBSAN
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select THREAD_INFO_IN_TASK
- 	select SPARSE_IRQ
--	select MMU_GATHER_RCU_TABLE_FREE
-+	select MMU_GATHER_RCU_TABLE_FREE if MMU
-+	select UACCESS_MEMCPY if !MMU
-+	select GENERIC_STRNLEN_USER if !MMU
-+	select GENERIC_STRNCPY_FROM_USER if !MMU
- 
- config MMU
--	bool
-+	bool "MMU support"
- 	default y
-+	help
-+	  Turning this off allows a nommu build, say Y.
- 
- config UML_DMA_EMULATION
- 	bool
-@@ -229,8 +234,15 @@ config MAGIC_SYSRQ
- 	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
- 	  unless you really know what this hack does.
- 
-+config ARCH_FORCE_MAX_ORDER
-+	int "Order of maximal physically contiguous allocations" if EXPERT
-+	default "10" if MMU
-+	default "16" if !MMU
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+index 785fd6649aa2..ecfaad61acc0 100644
+--- a/arch/um/include/asm/futex.h
++++ b/arch/um/include/asm/futex.h
+@@ -12,7 +12,58 @@ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 			      u32 oldval, u32 newval);
+ #else
++#include <linux/atomic.h>
+ #include <asm-generic/futex.h>
+-#endif
 +
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
-+	default 3 if !MMU
-+	range 3 10 if !MMU
- 	default 2 if 64BIT
- 	range 2 10 if 64BIT
- 	default 1 if !64BIT
++#ifdef CONFIG_SMP
++static inline int
++arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
++{
++	u32 oldval, newval;
++	u32 *p = (u32 __force *)uaddr;
++
++	do {
++		oldval = READ_ONCE(*p);
++
++		switch (op) {
++		case FUTEX_OP_SET:
++			newval = oparg;
++			break;
++		case FUTEX_OP_ADD:
++			newval = oldval + oparg;
++			break;
++		case FUTEX_OP_OR:
++			newval = oldval | oparg;
++			break;
++		case FUTEX_OP_ANDN:
++			newval = oldval & ~oparg;
++			break;
++		case FUTEX_OP_XOR:
++			newval = oldval ^ oparg;
++			break;
++		default:
++			return -ENOSYS;
++		}
++	} while (!try_cmpxchg(p, &oldval, newval));
++
++	*oval = oldval;
++	return 0;
++}
++
++static inline int
++futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
++			      u32 oldval, u32 newval)
++{
++	u32 *p = (u32 __force *)uaddr;
++
++	/* FIXME - shouldn't it be *uval = cmpxchg()? */
++	*uval = *p;
++	cmpxchg(p, oldval, newval);
++
++	return 0;
++}
++#endif /* CONFIG_SMP */
++
++#endif /* CONFIG_MMU */
+ 
+ #endif
 -- 
 2.53.0
 
