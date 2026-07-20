@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41F76C4452F
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 18:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44DC3C44515
+	for <linux-um@archiver.kernel.org>; Mon, 20 Jul 2026 18:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cQnRnQbJdHqbLRRCYY1+dYJfAGeRnWHhs4WFz0ff9Og=; b=BUrfuLV2Mns9kkeqYwal7hJ8Pw
-	ZbCWtv51AngVXLEKbEiDE4eIgkzB47zoISjA6rlhtn805wzLT7lx0OAoGatbN8RcA5B1uyIjZ62Oa
-	BquggOuubOaQgXGgDYEsSa+ZWqiasLefqUo9IzN4zDZOwmStdDh7yTQdvnJnjIHVdNHUXFTcQUi7w
-	SrRtHWTYHdDzV5LaTELE3A65n5CwnPG0mktZLO4EwckAminDabWufTxHd5goOFjL/PrXEVzcWLy7Q
-	gaQJ+c1lX9WbrxdjtO+40mSX7BFqxNZTDcLsNf7XzBnvfdfREscaOBYLNVPhsOlZ2tI2FDmPQVk58
-	A69ZwGcw==;
+	bh=/F0gLIXEHQKtITcFNUGNgYsj5Jw+d4DdJ6halZSMTHo=; b=w935CtHZVxQJjOylhsETEWWWQ6
+	r4OabfAsfdTIbd73fa4j4DCz5sTvO7Jb5ZDYkJfeglETwfdsGMx9vDKksfy90+bdn4LfEjgGc4hLH
+	Kt7g6UP1MvQE7eL0o0poAZfW+uDlMrY6dNJTUDx0tGzH/HgeyDCABxYm51fQl9QTt/Cosz6QBkHBk
+	F6qyi758UJjk0CD37DgoyNb6KCyU7lFCoFVbfOdPgLZX+XxosgMPo2pAvhC3YLCVfXhOZuvRYgGGU
+	SPDK7IwbzAvpXFgDZjZG9tBRW1Axj7t3pNNtvXbvPpHaO0gddSohTh/vvGPT37MKt8q+eSqAo9JYf
+	meJmYpXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlt5E-00000007h5C-3Oo9;
-	Mon, 20 Jul 2026 18:51:20 +0000
+	id 1wlt5H-00000007h7v-43U8;
+	Mon, 20 Jul 2026 18:51:23 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wlt59-00000007h0x-2mKU
+	id 1wlt59-00000007h0w-2gri
 	for linux-um@lists.infradead.org;
-	Mon, 20 Jul 2026 18:51:19 +0000
+	Mon, 20 Jul 2026 18:51:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cQnRnQbJdHqbLRRCYY1+dYJfAGeRnWHhs4WFz0ff9Og=;
-	t=1784573475; x=1785783075; b=ZDhAmMEicSbbbIACd1sHPPpZvIMQhmG8CjeDtOtePEs1Atr
-	7GtrII7QtLke2n4pZnkt1AxCNLOzs2N8nLhfOwSQQGFzgFvKrAImAt+Kosw88FGtiFNemmKu3mw9g
-	w9Mdw5lXEkdBmQhZDKFJCl39Te9A9gujdDD5RG17brLPZP8Q+WC4QQ0w6ubQQgElL5rI9IwqzaVim
-	yJ8TymoSKXA7onM1+lzvZ9maykXO6U2bQNaKpK6qLki/M4xlTkjt2LEouN6ioazwBYgDa5lOd0Lau
-	c5F/rXoou806KHOdRPzRoWsJ9EwmfOt+YJyhMgEfnpmouADEBD4URMtcMQlC+i0g==;
+	Resent-Cc:Resent-Message-ID; bh=/F0gLIXEHQKtITcFNUGNgYsj5Jw+d4DdJ6halZSMTHo=;
+	t=1784573475; x=1785783075; b=IUdghqMTTmm1OPmtzJ23VfJImHZzQtgBriACkE0CrAa3TPf
+	qIz1yIJll842jl1/Zrs0J+ipXM1sPmeoO5x8NNaqUBZbs7YY1cXfJRciVdeb1cAuiDxoeM0RLvq5a
+	Kv2L14v7qovHROSA9jgnPmap6hHtWsBvRPXjSnUyl/WSwRqTvaUPGyW61r1FW3LJqDZoSsUNDk9RD
+	wJC39wxJKEFiWjOrKuBKOdsPcn5zmKTBYXiH5FBW/DBAHJw9J3O3pJVHLTPsb1xdY2ipSB1yqJLRA
+	VviUxukS7LQ5wHnfRFtp7trUM3TanAPtlgGIlonoBHp4IHCe/+ydJEB2e4NKpdHw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wlt53-0000000GsPP-1dCk;
-	Mon, 20 Jul 2026 20:51:09 +0200
+	id 1wlt53-0000000GsPP-4AhU;
+	Mon, 20 Jul 2026 20:51:10 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Hajime Tazaki <thehajime@gmail.com>
-Subject: [RFC PATCH 2/9] um: decouple MMU specific code from the common part
-Date: Mon, 20 Jul 2026 20:26:52 +0200
-Message-ID: <20260720185103.530603-13-johannes@sipsolutions.net>
+Subject: [RFC PATCH 3/9] um: nommu: memory handling
+Date: Mon, 20 Jul 2026 20:26:53 +0200
+Message-ID: <20260720185103.530603-14-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260720185103.530603-11-johannes@sipsolutions.net>
 References: <20260720185103.530603-11-johannes@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260720_115116_027562_BD0C62E7 
-X-CRM114-Status: GOOD (  15.90  )
+X-CRM114-CacheID: sfid-20260720_115116_014060_2F4EE18A 
+X-CRM114-Status: GOOD (  13.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,156 +72,123 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Hajime Tazaki <thehajime@gmail.com>
 
-This splits the memory, process related code with common and MMU
-specific parts in order to avoid ifdefs in .c file and duplication
-between MMU and !MMU.
+This commit adds memory operations on UML under !MMU environment.
+
+Some part of the original UML code relying on CONFIG_MMU are excluded
+from compilation when !CONFIG_MMU.  Additionally, generic functions such as
+uaccess, futex, memcpy/strnlen/strncpy can be used as user- and
+kernel-space share the address space in !CONFIG_MMU mode.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Link: https://patch.msgid.link/e789a6ce3204b7697adba6d70e52e1ec3b61a451.1770170302.git.thehajime@gmail.com
-[drop many unnecessary changes]
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
+Link: https://patch.msgid.link/0e06cec4e7b715cd3c0a3fa8bec7e00c4e4c27ec.1770170302.git.thehajime@gmail.com
+[drop unnecessary bits]
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/kernel/Makefile      |  3 +-
- arch/um/kernel/mem-pgtable.c | 55 ++++++++++++++++++++++++++++++++++++
- arch/um/kernel/mem.c         | 35 -----------------------
- 3 files changed, 57 insertions(+), 36 deletions(-)
- create mode 100644 arch/um/kernel/mem-pgtable.c
+ arch/um/include/asm/futex.h       | 4 ++++
+ arch/um/include/asm/mmu.h         | 3 +++
+ arch/um/include/asm/mmu_context.h | 2 ++
+ arch/um/include/asm/uaccess.h     | 6 ++++--
+ arch/um/kernel/mem.c              | 3 ++-
+ 5 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index be60bc451b3f..d56fe6d829cc 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -16,9 +16,10 @@ always-$(KBUILD_BUILTIN) := vmlinux.lds
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+index 780aa6bfc050..785fd6649aa2 100644
+--- a/arch/um/include/asm/futex.h
++++ b/arch/um/include/asm/futex.h
+@@ -7,8 +7,12 @@
+ #include <asm/errno.h>
  
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
--	signal.o sysrq.o time.o tlb.o trap.o \
-+	signal.o sysrq.o time.o trap.o \
- 	um_arch.o umid.o kmsg_dump.o capflags.o skas/
- obj-y += load_file.o
-+obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
-new file mode 100644
-index 000000000000..549da1d3bff0
---- /dev/null
-+++ b/arch/um/kernel/mem-pgtable.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ */
++#ifdef CONFIG_MMU
+ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 			      u32 oldval, u32 newval);
++#else
++#include <asm-generic/futex.h>
++#endif
+ 
+ #endif
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index 82a919132aff..c0b9ce3215c4 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -22,10 +22,13 @@ typedef struct mm_context {
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
+ 
++#ifndef CONFIG_MMU
++	unsigned long   end_brk;
+ #ifdef CONFIG_BINFMT_ELF_FDPIC
+ 	unsigned long   exec_fdpic_loadmap;
+ 	unsigned long   interp_fdpic_loadmap;
+ #endif
++#endif /* !CONFIG_MMU */
+ } mm_context_t;
+ 
+ #define INIT_MM_CONTEXT(mm)						\
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index c727e56ba116..528b217da285 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -18,11 +18,13 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ {
+ }
+ 
++#ifdef CONFIG_MMU
+ #define init_new_context init_new_context
+ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
+ 
+ #define destroy_context destroy_context
+ extern void destroy_context(struct mm_struct *mm);
++#endif
+ 
+ #include <asm-generic/mmu_context.h>
+ 
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 4417c8b1d37a..e493596f6663 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -18,6 +18,7 @@
+ #define __addr_range_nowrap(addr, size) \
+ 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+ 
++#ifdef CONFIG_MMU
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+@@ -29,8 +30,6 @@ static inline int __access_ok(const void __user *ptr, unsigned long size);
+ 
+ #define INLINE_COPY_USER
+ 
+-#include <asm-generic/uaccess.h>
+-
+ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ {
+ 	unsigned long addr = (unsigned long)ptr;
+@@ -62,5 +61,8 @@ do {									\
+ 	barrier();							\
+ 	current->thread.segv_continue = NULL;				\
+ } while (0)
++#endif
 +
-+#include <linux/stddef.h>
-+#include <linux/module.h>
-+#include <linux/memblock.h>
-+#include <linux/swap.h>
-+#include <linux/slab.h>
-+#include <asm/page.h>
-+#include <asm/pgalloc.h>
-+#include <as-layout.h>
-+#include <init.h>
-+#include <kern.h>
-+#include <kern_util.h>
-+#include <mem_user.h>
-+#include <os.h>
-+#include <um_malloc.h>
-+
-+
-+/* Allocate and free page tables. */
-+
-+pgd_t *pgd_alloc(struct mm_struct *mm)
-+{
-+	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
-+
-+	if (pgd) {
-+		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
-+		memcpy(pgd + USER_PTRS_PER_PGD,
-+		       swapper_pg_dir + USER_PTRS_PER_PGD,
-+		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
-+	}
-+	return pgd;
-+}
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_READONLY,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
-+};
-+DECLARE_VM_GET_PAGE_PROT
++#include <asm-generic/uaccess.h>
+ 
+ #endif
 diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 1eef0e42ef5d..4b84760b5e55 100644
+index 4b84760b5e55..bc03bf3d114d 100644
 --- a/arch/um/kernel/mem.c
 +++ b/arch/um/kernel/mem.c
-@@ -6,7 +6,6 @@
- #include <linux/stddef.h>
- #include <linux/module.h>
- #include <linux/memblock.h>
--#include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
- #include <linux/init.h>
-@@ -91,45 +90,11 @@ void free_initmem(void)
- {
- }
- 
--/* Allocate and free page tables. */
--
--pgd_t *pgd_alloc(struct mm_struct *mm)
--{
--	pgd_t *pgd = __pgd_alloc(mm, 0);
--
--	if (pgd)
--		memcpy(pgd + USER_PTRS_PER_PGD,
--		       swapper_pg_dir + USER_PTRS_PER_PGD,
--		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
--
--	return pgd;
--}
--
- void *uml_kmalloc(int size, int flags)
- {
- 	return kmalloc(size, flags);
- }
- 
--static const pgprot_t protection_map[16] = {
--	[VM_NONE]					= PAGE_NONE,
--	[VM_READ]					= PAGE_READONLY,
--	[VM_WRITE]					= PAGE_COPY,
--	[VM_WRITE | VM_READ]				= PAGE_COPY,
--	[VM_EXEC]					= PAGE_READONLY,
--	[VM_EXEC | VM_READ]				= PAGE_READONLY,
--	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
--	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
--	[VM_SHARED]					= PAGE_NONE,
--	[VM_SHARED | VM_READ]				= PAGE_READONLY,
--	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
--	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
--};
--DECLARE_VM_GET_PAGE_PROT
--
- void mark_rodata_ro(void)
- {
- 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
+@@ -64,7 +64,8 @@ void __init arch_mm_preinit(void)
+ 	 * to be turned on.
+ 	 */
+ 	brk_end = PAGE_ALIGN((unsigned long) sbrk(0));
+-	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
++	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1,
++		   !IS_ENABLED(CONFIG_MMU));
+ 	memblock_free((void *)brk_end, uml_reserved - brk_end);
+ 	uml_reserved = brk_end;
+ 	min_low_pfn = PFN_UP(__pa(uml_reserved));
 -- 
 2.53.0
 
