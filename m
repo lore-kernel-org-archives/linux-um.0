@@ -4,84 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 764CFC4452D
-	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 08:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39120C44529
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 08:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:References:In-Reply-To:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=T6g9AHg6Msysl37eYnjnLtQmEqUs+OTtZKGs9WFjvSk=; b=RzX5wTPhWVoJy278ayMQADQ+08
-	rF8UqOViqohq849vPTAt6E5qw7pPqdTFXJcrz3HJSCMbEkEkcSqaPyPrCOvSTPzy3u35p8jPtSzfX
-	nQ5zdQQnLEHFRiPZjlNBW5MSZlvMJcQwxtdnFWDXCSoETnYb7t4ciqo7H2YwFaiNNaVhowsFzOZX9
-	wZI1kXq5SUWsaWWPylTq5FyiRDSoZZKcxwxfSnnnMxDyslb4J1NKpHWzvKLJY4o5hL9+mlo0Vi2yQ
-	zkCqByPA933uDMVfK47gJncSbaYc1m6EhJYszKgi8oP1rECn45FHRhDO55qX4Sk0iw+8tKgycDjow
-	O88NXllQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=QZaB4MLKRKwDA2fsXnGtGt0bmHZ+33pYqPCd4hiAnZQ=; b=feabmmxjJ+pA+Yk9QxHzlcgRAY
+	fVSoygWg/jorYJEeEtS14q+oKF8MmJVqv3IQ3RC3M71qmroOJm4SufJ9I0H8WSGqNjRjW+yY9HSIm
+	YfErcCUznuWzE6ai5Nf6Uq59tiKzMlKo10+3bMd0dGUQveQryoFEJtfNYTUK9LBsH6CYxsRygX65g
+	wZ7JYNm9KiIbXRYespE1tVOHSQ//eumj4uaQ4dO5ToN08jC3ErO7qGrqGMWGShJ7aXLsHfnOiSKA9
+	SLBQgv9enR1r6CmrIAxLk3joWK/UoQqS5XP8vu+wVdlOdXcVBFZ6cqUiM13P6Ox3PRLlT59b8F1ib
+	En3HrWCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5fr-00000008mAv-2w3A;
-	Tue, 21 Jul 2026 08:17:59 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wm5yC-00000008qGK-2wAw;
+	Tue, 21 Jul 2026 08:36:56 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5fl-00000008m8y-1SvW;
-	Tue, 21 Jul 2026 08:17:53 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 684E260A9B;
-	Tue, 21 Jul 2026 08:17:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7485D1F000E9;
-	Tue, 21 Jul 2026 08:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784621872;
-	bh=T6g9AHg6Msysl37eYnjnLtQmEqUs+OTtZKGs9WFjvSk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=gzjjESdF8CyzkjGgzLW39bNILuphzcta3sLi1URSjyAFzJLipC3UmTrXu3jFFA61P
-	 pi0PV5sSxroT5MC4vSB4irmB8zkSTQpTKtCfEXUbyhmwF4wWaIQ7lbNCZq0H7DmKFK
-	 8I7OxSO8hwMcqfwnwS7791wWvgudq6KYGJc2fT4Fg1b9+hIgTc7vYx2BwdLm81gs4i
-	 wUS79qiWoSovsixtK4st1zKQHQc+AVAWsjP8+JuFDiWzJmzXtUEBmK6h+qeN8XDX1T
-	 q37KCU+p9yvcznsgWiTAyqiGmNVH8Q7lJHO4++M0Slhqh7kAciZtfiGRWhaqAlyvHz
-	 9t2nZgwHDG8hg==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Magnus Lindholm <linmag7@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
-In-Reply-To: <CA+=Fv5Sd5+-K3-MOiEc2N8z_5CoLQPVPUwjiugSj3u8cBWJXXQ@mail.gmail.com>
-References: <20260707181957.433213175@kernel.org>
- <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
- <87wluplb6k.ffs@fw13>
- <CA+=Fv5Sd5+-K3-MOiEc2N8z_5CoLQPVPUwjiugSj3u8cBWJXXQ@mail.gmail.com>
-Date: Tue, 21 Jul 2026 10:17:49 +0200
-Message-ID: <87ecgwlpsi.ffs@fw13>
+	id 1wm5yA-00000008qFo-2uFM
+	for linux-um@lists.infradead.org;
+	Tue, 21 Jul 2026 08:36:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=QZaB4MLKRKwDA2fsXnGtGt0bmHZ+33pYqPCd4hiAnZQ=; t=1784623014; x=1785832614; 
+	b=hPqvODMkkGHG0xWIdwO6MXOofEEboAQDyqqARLyEhR1+TbiMlHKeYxkjZ2macgzJoH03hZ2iNz5
+	WJHX4i5nGLdiJmiUMUyQ+EfNZJW8zFcEio8qYFijawCFSjZ5s6+EhJh5rhikrWW3o7+eg63FU3N+y
+	+DfsXRoELhl7g3N3UxKAp+Mbh/+yRJxVckgIkYghYOcBo5kPz0wNOhXPQphXhLvBxogjzZTKyFb8l
+	JEA4wFYNihSo9hexUwh32u1dM8HOjGAu21UgIpsvOBvCEQlY0xywnxmwocmsx9522QLQdDBaP19A7
+	PvnS2nVAsK8c4hr5F7OYwBJXvOQ0SQmQEtVw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wm5y5-00000001t8U-2xUw;
+	Tue, 21 Jul 2026 10:36:49 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: [RFC PATCH] um: fix futex implementation
+Date: Tue, 21 Jul 2026 10:36:45 +0200
+Message-ID: <20260721103647.6389fa1c77b9.I0fd77a631c19219f79fd88788fa334437becafe9@changeid>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260721_013654_732317_FD6D184C 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,24 +70,214 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Magnus!
+From: Johannes Berg <johannes.berg@intel.com>
 
-On Tue, Jul 21 2026 at 00:01, Magnus Lindholm wrote:
-> On Mon, Jul 20, 2026 at 9:21=E2=80=AFPM Thomas Gleixner <tglx@kernel.org>=
- wrote:
->> If you want to base your stuff on that for 7.3, I can add a tag which
->> makes it immutable so it can be pulled into the alpha tree.
->
-> Yes, please. There is still some ongoing testing/review of my Alpha
-> GENERIC_ENTRY series, but assuming it is ready in time for the 7.3 merge
-> window, an immutable tag would be very helpful.
+The futex operations are both now wrong, neither have proper
+atomic semantics, which are needed for SMP. Even if we don't
+have SMP across threads of a process yet, multiple processes
+can use futexes to synchronize.
 
-Here you go:
+Also remove the documentation that's duplicated (and wrong,
+as this implementation never returns -EAGAIN).
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-entry-for=
--arch-07-21-26
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/kernel/skas/uaccess.c | 134 +++++++++++++---------------------
+ 1 file changed, 51 insertions(+), 83 deletions(-)
 
-Thanks,
+diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
+index caef1deef795..3e6c4884f8c0 100644
+--- a/arch/um/kernel/skas/uaccess.c
++++ b/arch/um/kernel/skas/uaccess.c
+@@ -231,116 +231,90 @@ long strnlen_user(const char __user *str, long len)
+ }
+ EXPORT_SYMBOL(strnlen_user);
+ 
+-/**
+- * arch_futex_atomic_op_inuser() - Atomic arithmetic operation with constant
+- *			  argument and comparison of the previous
+- *			  futex value with another constant.
+- *
+- * @op:		operation to execute
+- * @oparg:	argument to operation
+- * @oval:	old value at uaddr
+- * @uaddr:	pointer to user space address
+- *
+- * Return:
+- * 0 - On success
+- * -EFAULT - User access resulted in a page fault
+- * -EAGAIN - Atomic operation was unable to complete due to contention
+- * -ENOSYS - Operation not supported
+- */
+-
+ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr)
+ {
+-	int oldval, ret;
+-	struct page *page;
+ 	unsigned long addr = (unsigned long) uaddr;
++	u32 *p, oldval, newval;
++	struct page *page;
+ 	pte_t *pte;
+ 
+-	ret = -EFAULT;
+ 	if (!access_ok(uaddr, sizeof(*uaddr)))
+ 		return -EFAULT;
++
++	switch (op) {
++	case FUTEX_OP_SET:
++	case FUTEX_OP_ADD:
++	case FUTEX_OP_OR:
++	case FUTEX_OP_ANDN:
++	case FUTEX_OP_XOR:
++		break;
++	default:
++		return -ENOSYS;
++	}
++
+ 	preempt_disable();
+ 	pte = maybe_map(addr, 1);
+-	if (pte == NULL)
+-		goto out_inuser;
++	if (pte == NULL) {
++		preempt_enable();
++		return -EFAULT;
++	}
+ 
+ 	page = pte_page(*pte);
+ #ifdef CONFIG_64BIT
+ 	pagefault_disable();
+-	addr = (unsigned long) page_address(page) +
+-			(((unsigned long) addr) & ~PAGE_MASK);
++	p = page_address(page) + (addr & ~PAGE_MASK);
+ #else
+-	addr = (unsigned long) kmap_atomic(page) +
+-		((unsigned long) addr & ~PAGE_MASK);
++	p = kmap_atomic(page) + (addr & ~PAGE_MASK);
+ #endif
+-	uaddr = (u32 *) addr;
+-	oldval = *uaddr;
+ 
+-	ret = 0;
++	do {
++		oldval = READ_ONCE(*uaddr);
++
++		switch (op) {
++		case FUTEX_OP_SET:
++			newval = oparg;
++			break;
++		case FUTEX_OP_ADD:
++			newval = oldval + oparg;
++			break;
++		case FUTEX_OP_OR:
++			newval = oldval | oparg;
++			break;
++		case FUTEX_OP_ANDN:
++			newval = oldval & ~oparg;
++			break;
++		case FUTEX_OP_XOR:
++			newval = oldval ^ oparg;
++			break;
++		}
++	} while (!try_cmpxchg(p, &oldval, newval));
++
++	*oval = oldval;
+ 
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-		*uaddr = oparg;
+-		break;
+-	case FUTEX_OP_ADD:
+-		*uaddr += oparg;
+-		break;
+-	case FUTEX_OP_OR:
+-		*uaddr |= oparg;
+-		break;
+-	case FUTEX_OP_ANDN:
+-		*uaddr &= ~oparg;
+-		break;
+-	case FUTEX_OP_XOR:
+-		*uaddr ^= oparg;
+-		break;
+-	default:
+-		ret = -ENOSYS;
+-	}
+ #ifdef CONFIG_64BIT
+ 	pagefault_enable();
+ #else
+ 	kunmap_atomic((void *)addr);
+ #endif
+-
+-out_inuser:
+ 	preempt_enable();
+-
+-	if (ret == 0)
+-		*oval = oldval;
+-
+-	return ret;
++	return 0;
+ }
+-EXPORT_SYMBOL(arch_futex_atomic_op_inuser);
+-
+-/**
+- * futex_atomic_cmpxchg_inatomic() - Compare and exchange the content of the
+- *				uaddr with newval if the current value is
+- *				oldval.
+- * @uval:	pointer to store content of @uaddr
+- * @uaddr:	pointer to user space address
+- * @oldval:	old value
+- * @newval:	new value to store to @uaddr
+- *
+- * Return:
+- * 0 - On success
+- * -EFAULT - User access resulted in a page fault
+- * -EAGAIN - Atomic operation was unable to complete due to contention
+- */
+ 
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+-			      u32 oldval, u32 newval)
++				  u32 oldval, u32 newval)
+ {
+ 	struct page *page;
+ 	pte_t *pte;
+-	int ret = -EFAULT;
+ 
+ 	if (!access_ok(uaddr, sizeof(*uaddr)))
+ 		return -EFAULT;
+ 
+ 	preempt_disable();
+ 	pte = maybe_map((unsigned long) uaddr, 1);
+-	if (pte == NULL)
+-		goto out_inatomic;
++	if (pte == NULL) {
++		preempt_enable();
++		return -EFAULT;
++	}
+ 
+ 	page = pte_page(*pte);
+ #ifdef CONFIG_64BIT
+@@ -350,19 +324,13 @@ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 	uaddr = kmap_atomic(page) + ((unsigned long) uaddr & ~PAGE_MASK);
+ #endif
+ 
+-	*uval = *uaddr;
+-
+-	ret = cmpxchg(uaddr, oldval, newval);
++	*uval = cmpxchg(uaddr, oldval, newval);
+ 
+ #ifdef CONFIG_64BIT
+ 	pagefault_enable();
+ #else
+ 	kunmap_atomic(uaddr);
+ #endif
+-	ret = 0;
+-
+-out_inatomic:
+ 	preempt_enable();
+-	return ret;
++	return 0;
+ }
+-EXPORT_SYMBOL(futex_atomic_cmpxchg_inatomic);
+-- 
+2.53.0
 
-        tglx
 
