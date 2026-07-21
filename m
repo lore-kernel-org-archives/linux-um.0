@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39120C44529
-	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 08:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D50EC44529
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 08:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QZaB4MLKRKwDA2fsXnGtGt0bmHZ+33pYqPCd4hiAnZQ=; b=feabmmxjJ+pA+Yk9QxHzlcgRAY
-	fVSoygWg/jorYJEeEtS14q+oKF8MmJVqv3IQ3RC3M71qmroOJm4SufJ9I0H8WSGqNjRjW+yY9HSIm
-	YfErcCUznuWzE6ai5Nf6Uq59tiKzMlKo10+3bMd0dGUQveQryoFEJtfNYTUK9LBsH6CYxsRygX65g
-	wZ7JYNm9KiIbXRYespE1tVOHSQ//eumj4uaQ4dO5ToN08jC3ErO7qGrqGMWGShJ7aXLsHfnOiSKA9
-	SLBQgv9enR1r6CmrIAxLk3joWK/UoQqS5XP8vu+wVdlOdXcVBFZ6cqUiM13P6Ox3PRLlT59b8F1ib
-	En3HrWCw==;
+	bh=HeeA2LyVYkBrApZ3FSmYX3HkeM/3RILmw/o0Nn3SWoQ=; b=bQYKa9mNhcaYWP35ms7eTNBneO
+	BdEzXQVpm2OvAMDSCCjNRgLD+MsQ8+SCjtafSwiMBE2wxE8VxGbzHZp187HhL9vSZJUmvzia2VaKl
+	rNGEYoGjRSU0pyAusFqB+yHeKfWj/X1bfXX29a1kbPo7Sqzu5S2dOV0HDs014CtIaiUw7/rqsfUgg
+	aflPboExYbfS5GRN2qCdoadW8R5eA5+ejJ/aDQfSIXPgxsk93MH+n4qDggckWrjdrDOhdyaG83Mfi
+	HXFQs12I/p3pnFdWG3VgC5UbR/h2jUEEBvQC+zYiPwtp8Bu43fwWgo3ORBi6kIIrHl33w3B00t/ic
+	eje91Tnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5yC-00000008qGK-2wAw;
-	Tue, 21 Jul 2026 08:36:56 +0000
+	id 1wm659-00000008rle-2q1d;
+	Tue, 21 Jul 2026 08:44:07 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wm5yA-00000008qFo-2uFM
+	id 1wm656-00000008rku-40P4
 	for linux-um@lists.infradead.org;
-	Tue, 21 Jul 2026 08:36:55 +0000
+	Tue, 21 Jul 2026 08:44:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=QZaB4MLKRKwDA2fsXnGtGt0bmHZ+33pYqPCd4hiAnZQ=; t=1784623014; x=1785832614; 
-	b=hPqvODMkkGHG0xWIdwO6MXOofEEboAQDyqqARLyEhR1+TbiMlHKeYxkjZ2macgzJoH03hZ2iNz5
-	WJHX4i5nGLdiJmiUMUyQ+EfNZJW8zFcEio8qYFijawCFSjZ5s6+EhJh5rhikrWW3o7+eg63FU3N+y
-	+DfsXRoELhl7g3N3UxKAp+Mbh/+yRJxVckgIkYghYOcBo5kPz0wNOhXPQphXhLvBxogjzZTKyFb8l
-	JEA4wFYNihSo9hexUwh32u1dM8HOjGAu21UgIpsvOBvCEQlY0xywnxmwocmsx9522QLQdDBaP19A7
-	PvnS2nVAsK8c4hr5F7OYwBJXvOQ0SQmQEtVw==;
+	bh=HeeA2LyVYkBrApZ3FSmYX3HkeM/3RILmw/o0Nn3SWoQ=; t=1784623444; x=1785833044; 
+	b=D0beFEwgBte/WSQvirV1TCLbly7uJT6sr38k5dCPT6opG74h6Tz0vRY8rVggfgDusDgNexq/gPp
+	T530mnA7GytHh92RWMV1l5G9UjlVcPZkeDobzbz21YkczgL5PBT2nSQSpyYFv3DWkdIFyz87lsw8c
+	LI55VdG3hIOwQMDNI9sCOs+hAAj2PiVw3mLlaPXRNnVJHJ4VFMuT84Ek4Wz6hKZ9TL6ulgR5ONAzu
+	ePnSnbeeYwdGnnBTUKwuRKVr723Zu4Hxwd0H/RbDmHiPqy++Ay0nj7i2JePGEKoPHfCSgmAgaOe4H
+	8HjsDY7qa4FUjksYD6qkHRZR5G8ZJntaI2Pw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wm5y5-00000001t8U-2xUw;
-	Tue, 21 Jul 2026 10:36:49 +0200
+	id 1wm651-00000001tQy-0aeC;
+	Tue, 21 Jul 2026 10:43:59 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes.berg@intel.com>
-Subject: [RFC PATCH] um: fix futex implementation
-Date: Tue, 21 Jul 2026 10:36:45 +0200
-Message-ID: <20260721103647.6389fa1c77b9.I0fd77a631c19219f79fd88788fa334437becafe9@changeid>
+Subject: [RFC PATCH v2] um: fix futex implementation
+Date: Tue, 21 Jul 2026 10:43:56 +0200
+Message-ID: <20260721084356.290579-2-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260721_013654_732317_FD6D184C 
-X-CRM114-Status: GOOD (  15.77  )
+X-CRM114-CacheID: sfid-20260721_014404_993843_D1450CAA 
+X-CRM114-Status: GOOD (  15.96  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,11 +82,13 @@ as this implementation never returns -EAGAIN).
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
+v2: fix oldval read
+---
  arch/um/kernel/skas/uaccess.c | 134 +++++++++++++---------------------
  1 file changed, 51 insertions(+), 83 deletions(-)
 
 diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index caef1deef795..3e6c4884f8c0 100644
+index caef1deef795..f48f0e7c2497 100644
 --- a/arch/um/kernel/skas/uaccess.c
 +++ b/arch/um/kernel/skas/uaccess.c
 @@ -231,116 +231,90 @@ long strnlen_user(const char __user *str, long len)
@@ -159,7 +161,7 @@ index caef1deef795..3e6c4884f8c0 100644
  
 -	ret = 0;
 +	do {
-+		oldval = READ_ONCE(*uaddr);
++		oldval = READ_ONCE(*p);
 +
 +		switch (op) {
 +		case FUTEX_OP_SET:
