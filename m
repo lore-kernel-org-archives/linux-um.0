@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C345C44529
-	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 15:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF39AC44532
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 15:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KvFlBOSAAN25BmqEyf7MAcVM6Drefi3m8EoY83MJzfk=; b=2XQjzUOAQ7sGdyQzKXy+bl9Xrq
-	dAcyc2GN9SoDlmlUgQbsiEHvqAHgcjDG/7MG0QfC1dKd7aa7FDHbnP8wOywAXUuu6IacHnbMxqTzR
-	CllAq8hC+X3nZcJpf8C/oMWm0LNg3iRewVnyhXqjf79euISfOcSLVxfuFIXjhwNRiGzOaez7MjbQr
-	b9rxkzGLrFThr4Hs41okc1ZkNarWNNN9JmEo7ZKTaQ+o3/NyAYE2Qa0oslMgyTUwptTRYDi4K81an
-	CQdeKU6tWfy8dBNOe0PWoEO7dc5fgBeupG+xQ3knP/Bq52MWtogvM0Ik2sj1zse3AdY6LV6iJzUZs
-	+k34vR9Q==;
+	bh=mM22wXNqV+CNPvkdpjW41Isrw3g8nd8xGQ5BFOB02PI=; b=vflBt3pK8U3Zwqv43ObzNaaVII
+	hARDeT+IHhB36NgVNgFkz/zAQMfzE3nGUAcdGjxZoIlyYhHpOR5txTsQhKzWnh7y4G5Qe78p1rHqe
+	KgMPMRAUOgMNn6huq/WsL0/1aunnIA9xTzVS78RsZUVlxYCXnRgRIe5JgHH5Z5Aic0HfrRhYTEgzM
+	VT//hQANigEG6l26DRnLEwJm8/Sl2YDgdO8MroycQdisms8J4pHhZbtftgfEcLQgaz0XsK9b5UngV
+	jWbB7kGaGLeGoKYQ0CEGjXZpkMW/xnDHJd5nxpTowKuLSTAPdRIiL0u1PGoE9LqBEd4tz9x9ikN+R
+	LAz28FuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmC1Z-00000009jUI-1f8f;
-	Tue, 21 Jul 2026 15:04:49 +0000
+	id 1wmC4J-00000009k7v-3IYf;
+	Tue, 21 Jul 2026 15:07:39 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmC1Y-00000009jU1-1Aaq;
-	Tue, 21 Jul 2026 15:04:48 +0000
+	id 1wmC4H-00000009k7O-1QYn;
+	Tue, 21 Jul 2026 15:07:37 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CAC91414B7;
-	Tue, 21 Jul 2026 15:04:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 253511F000E9;
-	Tue, 21 Jul 2026 15:04:34 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id F2A9042A16;
+	Tue, 21 Jul 2026 15:07:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6A151F000E9;
+	Tue, 21 Jul 2026 15:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784646287;
-	bh=KvFlBOSAAN25BmqEyf7MAcVM6Drefi3m8EoY83MJzfk=;
+	s=k20260515; t=1784646456;
+	bh=mM22wXNqV+CNPvkdpjW41Isrw3g8nd8xGQ5BFOB02PI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=A7zv8FYYS3BagE62jjvD73Uo/224uS+6js4DUo1TwI40rxRLe9Jy+r9SjEyOaqeU5
-	 rrJBY4oVg3W901xWvxUgvAaN9pRWVrH2l4W2I/qQ5dqtTJ7UGaFX2JCrkU4eOJlqcD
-	 jxL2cK2LvZK45Y/FKSigYw2lIsYEm8O2UBS6UV1NJX6apyOK6foKBUIuE2snq0pRW2
-	 8XXBKWZtHyGR2+qVvCUv9YcmaWJjt6iRu03x4OeaKWzLsttCkNZ0wQAKhXTJ1cXNRV
-	 6VmOsoQBDpTz9vZqaykrZj3UP9etcPWzq5QO5kU0Ljog+5Hjy2ATYcv4TUr/wX9mdf
-	 dN7NNkgocFuig==
-Message-ID: <0bab816d-5de9-4814-b97d-11e89322c413@kernel.org>
-Date: Tue, 21 Jul 2026 17:04:33 +0200
+	b=RN3uJG0MKYkntwW4hxDo3qUFPMhpku3GDnQrJrwqiNxB7yZEM6TnuHnBDCWJO90it
+	 02gHwiFiCaHCVJOPhX0VNJDXeMofaa0s0BJ2/Drvm9eVZnTluHf4BI+Ddgb6gKi9KX
+	 AzFrBF9yts9UMP5t+O0NQcrIuKnhMfh2wM8Yqn1Ej+X0uuOXq0Q0R28VM7PbeIEvI/
+	 m0PhFOrHuwevuAEA7lPzJb1FsAYH0FKc5nvki+6pXx7+QRWF7swgYuqaD1KZSwY/wp
+	 LYnK2HBN/1j2D2AqEsFiRRHEoPYFEtsrpUEIWiS6UM1lANNVXU6k4KoJt5clL++S4O
+	 +vfed+lG/TEOw==
+Message-ID: <0d75daa4-a034-4094-bce5-57938d294163@kernel.org>
+Date: Tue, 21 Jul 2026 17:07:22 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/22] mm: introduce MMF_KERNEL flag and set it for
- init_mm
-To: Kevin Brodsky <kevin.brodsky@arm.com>,
- "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, Dave Hansen <dave.hansen@intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, Pasha Tatashin <pasha.tatashin@soleen.com>,
+Subject: Re: [PATCH 04/22] mm: use mm_is_kernel() in generic page table code
+To: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Pasha Tatashin <pasha.tatashin@soleen.com>,
  Russell King <linux@armlinux.org.uk>,
  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
  Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
  Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
  Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
  Madhavan Srinivasan <maddy@linux.ibm.com>,
  Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
@@ -82,9 +81,8 @@ Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>,
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
- <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
- <71045fa8-89fe-4a0b-a05b-67e19ce89834@intel.com> <alZOs30ziqa7l_Lq@lucifer>
- <5ce00109-c0ea-43f0-881d-f58a0fda8dcb@arm.com>
+ <20260714-remove_pgtable_cdtor-v1-4-44be8a7685d7@arm.com>
+ <02565237-d777-4c63-8b17-817df59feac4@arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -131,7 +129,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <5ce00109-c0ea-43f0-881d-f58a0fda8dcb@arm.com>
+In-Reply-To: <02565237-d777-4c63-8b17-817df59feac4@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -148,62 +146,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 7/16/26 11:33, Kevin Brodsky wrote:
-> On 14/07/2026 17:04, Lorenzo Stoakes (ARM) wrote:
->> On Tue, Jul 14, 2026 at 07:47:43AM -0700, Dave Hansen wrote:
->>> Could we give this some nice comments explaining what a kernel mm is,
->>> please? Part of the problem with the init_mm checks is that they're
->>> magic and it's not always clear what's special about init_mm.
+On 7/16/26 11:35, Kevin Brodsky wrote:
+> On 14/07/2026 16:03, Kevin Brodsky wrote:
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index d5e87624f692..c0244c0b0756 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -3394,13 +3394,13 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
+>>  	spinlock_t *ptl;
+>>  
+>>  	if (create) {
+>> - mapped_pte = pte = (mm == &init_mm) ?
+>> + mapped_pte = pte = mm_is_kernel(mm) ?
+>>  			pte_alloc_kernel_track(pmd, addr, mask) :
+>>  			pte_alloc_map_lock(mm, pmd, addr, &ptl);
 > 
-> Agreed, we need to define what this property means exactly, and your
-> comments on patch 14 show that extending it to efi_mm isn't necessarily
-> as benign as it appeared to me at first.
+> As noted by Sashiko, this is a little problematic because if
+> apply_to_page_range() is called on efi_mm, then we will end up with
+> __pte_alloc_kernel() taking the init_mm lock, since that's hardcoded.
 > 
-> My motivation really is about how page tables are handled (in particular
-> whether ptlocks are used), so as you suggested on patch 19 maybe this
-> flag should be narrower in scope, and the naming should reflect it.
-> Possibly MMF_KERNEL_PGTABLES? That's at least one thing that should be
-> true of all of init_mm, efi_mm and tboot_mm: their page tables use
-> kernel permissions, not user, and should follow the same rules including
-> not using ptlocks.
-> 
->>> Maybe start with this list?
->>>
->>> 1. There's only one of them.
->>> 2. All kernel threads share it. tsk->mm is the same for all kernel
->>>    threads.
->>> 3. It holds the reference copy of the kernel page tables
->>> 4. Userspace can't be entered when it is the current mm
->>> 5. It has different TLB flushing rules than userspace mms
->>>
->>> I _think_ those are universal across all architectures.
->> Well point 1 isn't true of efimm or tboot_mm so we possibly need a better
->> name :)
->>
->> "Special" is overloaded too much already. I quite like "eternal" so:
->>
->> 	static inline bool mm_is_eternal(const struct mm_struct *mm)
->> 	{
->> 		return mm && mm_flags_test(MMF_ETERNAL, mm);
->> 	}
-> 
-> Cheeky but why not! I do wonder whether this conveys the right idea
-> though. The main point of this flag is that page tables are
-> allocated/initialised/locked differently; in principle you could have a
-> temporary non-user mm.
+> That probably means we should pass the mm to __pte_alloc_kernel().
 
-I mean, we talk about MMs that are not used for actual user space processes?
+Agreed.
 
-IOW, the following:
-
-arch/x86/kernel/tboot.c:static struct mm_struct tboot_mm = {
-drivers/firmware/efi/efi.c:struct mm_struct efi_mm = {
-drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-test.c:static struct mm_struct sva_mm = {
-mm/init-mm.c:struct mm_struct init_mm = {
-
-
-So "user" vs. "kernel" is quite intuitive. Sure, there can be multiple
-"kernel" ones, but each with a distinct purpose (IOW, we don't have multiple init_mm MMs).
+I guess we have to audit all existing init_mm usage?
 
 -- 
 Cheers,
