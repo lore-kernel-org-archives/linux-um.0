@@ -4,134 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E4ECC44529
-	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 15:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C07C4452D
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jul 2026 21:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dKHsQTtEuYgX66yr5l7qTAts/c0fmhleRyEHOKKYymE=; b=twTDDXumF9jhx6nQ76S6apM60f
-	MF1fITz3bLtoMBWl7VkljxGXHhSEGvffy3V1jmiOmHnI0me4b05OcRP0j7YzTW+t8Lx27tSqOZrxj
-	hBD8eOBTzc38M6gQG0BT/DpVd/FQeGMad3EUxmu/GGEmOhJmSCqo/JneVsm/PReUB/fyiijkTT0r2
-	9UGvnr7PDae1RCWc5aBSLo0twlS8mBlQ9Z3zP5XBkgQlkXn7+a4rioS4h449tFq/lC9RC52u0Cyl4
-	8hPPJYZPCNnBItuSSqiM/s1hBuWmydnUo7Ao/KRqMEJscidizaO3TogpP1znuGyvcH3OCoIsUSxgj
-	A6RdYpoQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=t0EKOOTPC6Wcvspeiwbymff4lN9OcE6VC1ybxIJ2cwg=; b=3bqD3VUY9D4JQrPW8jFzrMxCsN
+	SUE+AA8CmLs8QSeLgO++PWocWxIoRGdwKaKxdpjYcMqOn52Rkw4uAYG2J8pPDrIu0rTnr34fPz1zp
+	GBQ1L4IxHCGKgM1rk6d/bxH/LM0xQyZX9vxLh54g4WoeIDNGQHClUXJxBm7zsgMXl2gvjziEc1FJ4
+	THbXDHZUAC3+IltHtz94DL286KQVpqineAblukGNQz1SeHX2FqaJk/OG5+5YJyiczJMIQxO0BCw80
+	owWUuO5XkCsZQkdWYcF1wxbV0Yu6B+VXhVzMMXSx4bp+QGnoXO9lIlD+ecUzEtxHyAu3RtwIQTD4j
+	W3p7/ZUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmC90-00000009lGU-0pTQ;
-	Tue, 21 Jul 2026 15:12:30 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wmIUF-0000000AUSw-0nSb;
+	Tue, 21 Jul 2026 21:58:51 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmC8y-00000009lFv-37eg;
-	Tue, 21 Jul 2026 15:12:28 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id DBCE460204;
-	Tue, 21 Jul 2026 15:12:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A02A41F000E9;
-	Tue, 21 Jul 2026 15:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784646747;
-	bh=dKHsQTtEuYgX66yr5l7qTAts/c0fmhleRyEHOKKYymE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=SAHldLLtU7xQLUi26xcrFkkKYS9P2o0TLlkOjzUmM1ZX+ko0k4a5qoTy1XIzPnGuR
-	 cUwpVC2pjk/AcJZnO2ck/hKhSbf0g7wXo4wDqxpuQwgnlryAB+OI4sFQmwKGpjwACd
-	 enYLSrkvYR2jeki4Otq+ltW90hWiBaTrF/JNXyF+yRPm5yNU9EjacdD6Eez4RxQWkS
-	 R/vMNpXomL7UbrNL+StWd5DkroEC3h3/ANJZihtyBxVHJDlK0GJboY1KU7BdfMJaKq
-	 VKu4K28N8WCS7Gwfe+dJ3I52jWqP8Ne73GQo4qa4GIm81yq4+MD6smuws6cHVq8Lwc
-	 157dab58h6V9g==
-Message-ID: <e95aabc0-522b-4660-958a-d648c1cfa78f@kernel.org>
-Date: Tue, 21 Jul 2026 17:12:13 +0200
+	id 1wmIUB-0000000AUSR-1xoP
+	for linux-um@lists.infradead.org;
+	Tue, 21 Jul 2026 21:58:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=t0EKOOTPC6Wcvspeiwbymff4lN9OcE6VC1ybxIJ2cwg=;
+	t=1784671127; x=1785880727; b=fIzmCkUDK9uLUIB2qW1XSY/T1CsWOypl7rjUhrtZdsDgRHb
+	+oSGMXj+Vi+w2md6yoTbflCamtzfJGoxg2p8sLyXPRCUOHRbVtgaB7wv0DQG2YeoQVBara01s8hqx
+	lHUqqH+eSASGYCHiNAJiACedWpASUVXxsbHo9ImNJYna7Y/l0ZSctZFJ/lBCNmHrp7leTuU51tE6/
+	RYdVq3qe+UnwiEIQB5Myafj5s8dntjwC+In/f926OZ4iZ2TFxLwRGR1wOBSZzE1YCyw+tPvaJiUFv
+	oJW29EYjqFlH70SbsKcxMxdnZ4I8Cdk9+lzFBIgvTUrydcZjZZpaFwTDXoChmj6g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wmIU2-00000002wLl-0Nc3;
+	Tue, 21 Jul 2026 23:58:38 +0200
+Message-ID: <743d1be771381c86c7f264810d88876976cc508f.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: Allow multiple symbol definitions for GCOV builds
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Alex Hung <alex.hung@amd.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc: Bhawanpreet.Lakha@amd.com
+Date: Tue, 21 Jul 2026 23:58:37 +0200
+In-Reply-To: <20260708224006.3405038-1-alex.hung@amd.com>
+References: <20260708224006.3405038-1-alex.hung@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/22] mm: only initialise pt_share_count for user
- pgtables
-To: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Pasha Tatashin <pasha.tatashin@soleen.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
- Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>, linux-s390@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, sparclinux@vger.kernel.org,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ning Sun <ning.sun@intel.com>,
- x86@kernel.org, tboot-devel@lists.sourceforge.net,
- Ard Biesheuvel <ardb@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-efi@vger.kernel.org,
- Vishal Moola <vishal.moola@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
- <20260714-remove_pgtable_cdtor-v1-15-44be8a7685d7@arm.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260714-remove_pgtable_cdtor-v1-15-44be8a7685d7@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260721_145847_793863_E37B3510 
+X-CRM114-Status: UNSURE (   9.29  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,45 +74,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 7/14/26 16:04, Kevin Brodsky wrote:
-> ptdesc_pmd_pts_init() initialises the pt_share_count ptdesc field.
-> That field is only used for hugetlb tracking purposes, so there is
-> no need to initialise it for kernel page tables. Skip the call for
-> kernel page tables, like pmd_ptlock_init().
-> 
-> From now on pagetable_*_ctor() and pagetable_dtor() do nothing for
-> kernel page tables.
-> 
-> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
-> ---
->  include/linux/mm.h | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 94f0fb1c662a..b217ccbed5a3 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3905,9 +3905,12 @@ static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
->  static inline bool pagetable_pmd_ctor(struct mm_struct *mm,
->  				      struct ptdesc *ptdesc)
->  {
-> -	if (!mm_is_kernel(mm) && !pmd_ptlock_init(ptdesc))
-> -		return false;
-> -	ptdesc_pmd_pts_init(ptdesc);
-> +	if (!mm_is_kernel(mm)) {
-> +		if (!pmd_ptlock_init(ptdesc))
-> +			return false;
-> +		ptdesc_pmd_pts_init(ptdesc);
-> +	}
-> +
+On Wed, 2026-07-08 at 16:40 -0600, Alex Hung wrote:
+> GCOV-enabled UML builds link GCC's libgcov into the final vmlinux
+> image. libgcov provides helper symbols such as mangle_path(), which
+> collide with kernel symbols of the same name (for example the one in
+> fs/seq_file.o). This makes the link fail:
+>=20
+>   ld: libgcov.a(_gcov.o): in function `mangle_path':
+>   multiple definition of `mangle_path';
+>   fs/seq_file.o: first defined here
+>=20
+> Pass --allow-multiple-definition to the linker when CONFIG_GCOV is set
+> so the final UML link succeeds while keeping the kernel-provided
+> definition.
+>=20
 
-I'd have said "the initialization is cheap, why bother", but we already do have
-the mm_is_kernel() check in place, so
+I cannot see how that would possibly result in correct behaviour (beyond
+being able to link)??
 
-Acked-by: David Hildenbrand (Arm) <david@kernel.org>
-
--- 
-Cheers,
-
-David
+johannes
 
