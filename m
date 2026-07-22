@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C571EC4452D
-	for <linux-um@archiver.kernel.org>; Wed, 22 Jul 2026 07:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEFB2C44536
+	for <linux-um@archiver.kernel.org>; Wed, 22 Jul 2026 12:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1H7aEXK0x6mRwxyB5LvlwVmHFEMmdKncNYzC7iBD1dQ=; b=cuXuCpXvqtFVPDenw9NA+s7Z+B
-	wCPli3SdRshQ7bZWQEoPUVxazkkw0vHB51nYOxSyY50xx85hGCJVtD1IfCjBf57ExsTx3ve1U2y4z
-	T1nA+APInK+aXlvUgEnYXOiRhqxds2SFgZVoj5118SaeEgXmjHnHaP/rH1++Fa3CgNVDAM/V1TixV
-	Uh1vGyAb0Goo9JywgJQk3P4EK0BjHw6DtvFKO7aukFBTIpFErYuMYJ21Zy0Yamh1GGl7XFgd8N71b
-	OsZkfRbcyPpOapRJEsf5w8ix63NWg+yflNyVCrWwlnmyy8UE2Au/4Fq5NJ6yywrmqtSEAh2wXoC+r
-	D0sZ1giQ==;
+	bh=WtNxc9/g2Rz85YgdfmohMEkgq5L2gbQZ7hBKp1+Oppc=; b=zbz1nUrwXj3+WNCtnXmTXc3weN
+	Wagx/gUiyaNLDGQPZcMYtLl+yL6s2oUa8+XWo8ZyWijJFX7r270GFlCWO/BnWYLSKHysUq3BcN0zT
+	vh9f4dNKMZqCEfMSLBri2ZinuHmvcjq5G+I5eyYaOHCm99nCN9uBvmRUcZ7ScoEIWfMlzTI93b8tW
+	4yCYAWk+f9iPcIvispi7j1lfYyfApJyMP2VpjYJzon9o4yuO0FMEwPC2EXQ8sRt7NMgNZsewIlC1I
+	jK9qdCkoQ8ND+k2uGCk2cQQNFM0D3TkohV49QdhsDZsJPbdz2v5I+gnB0tCWX92akVFErQPRMazAz
+	Ka+n+cSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmRf5-0000000B908-1kGF;
-	Wed, 22 Jul 2026 07:46:39 +0000
+	id 1wmWJs-0000000BnBV-35tN;
+	Wed, 22 Jul 2026 12:45:04 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmRf3-0000000B8zm-1otS
+	id 1wmWJp-0000000BnAg-2L3p
 	for linux-um@lists.infradead.org;
-	Wed, 22 Jul 2026 07:46:38 +0000
+	Wed, 22 Jul 2026 12:45:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=1H7aEXK0x6mRwxyB5LvlwVmHFEMmdKncNYzC7iBD1dQ=;
-	t=1784706397; x=1785915997; b=WR794jt2voMga3dl9siw+Xff7mavEpbFKyGcYoR6GleFbdQ
-	P9VvdbPfrJtcQLy+ebeu6ke0YCSx1jhhUqc1GhZ8xR1IfM4reUeMc1AzH3aRibxyzShd4tQspiyan
-	g/guiJIq3cBQPL9+wUnUlvL9Zl8vvkhDrNZ4a0k6mJrzqflXm22vBfOBGStX6QsrbWZ1v5MpN4fNW
-	TVBVplIAEctZpC3iC0SKWlMCV3QbyNw5EHpXaRKHlwRjvSscFwLMiyVS7v8xT8GMCvIFBkxspc/hE
-	6q/Fqe6DLL0zBpcENigEK4255xDaTacMiSk8qSctXaHPrKLMmLV9DVbmNT/gVYvw==;
+	Resent-Cc:Resent-Message-ID; bh=WtNxc9/g2Rz85YgdfmohMEkgq5L2gbQZ7hBKp1+Oppc=;
+	t=1784724301; x=1785933901; b=KMlPzrlOw+QDHY/1Urp7LJjHXWi1gpCcK8uhN6ycBADrweI
+	DHziQJI6Ox0Ovv6Rfw0dQ5BC/FlkcjjaIiN5gRcDSYtH7WghmYOGlT8oHni2cFfyLCGnRCGJD1voY
+	wGGL1Zyc02Hnega7sqgp2YJ8w5EOeguCLjkxVfmPAmO9144UK7RYz5tXistSrYVGmMzPSrdwvVUlC
+	pyFB23DFwV0wkqQGnSPeAX6UDKq3U9oQzjHkUeU+qdVXA5qZxA7fKWtE7MpghdghIgNGYJ9oGnZjU
+	jMHXPPMFjcWpXIaobyK8fTUN8O2Rhd/ln8lN16erBu8NdDQw4clajh7aGF5jqY8Q==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wmRey-00000004bt9-1avc;
-	Wed, 22 Jul 2026 09:46:32 +0200
-Message-ID: <860318a2d3434c35c3bf188776093cb46f2fe152.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH 0/9] simplified UML/NOMMU approach
+	id 1wmWJl-00000004l4a-0NF3;
+	Wed, 22 Jul 2026 14:44:57 +0200
+Message-ID: <f749582f2e2fe9219a854b8645c58df3f6b9ebf7.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 8/9] um: nommu: add userspace runner processes
 From: Johannes Berg <johannes@sipsolutions.net>
 To: Hajime Tazaki <thehajime@gmail.com>
 Cc: linux-um@lists.infradead.org
-Date: Wed, 22 Jul 2026 09:46:31 +0200
-In-Reply-To: <m28q735044.wl-thehajime@gmail.com> (sfid-20260722_023912_379022_3E549241)
+Date: Wed, 22 Jul 2026 14:44:56 +0200
+In-Reply-To: <m27bmn4xqv.wl-thehajime@gmail.com> (sfid-20260722_033022_984146_07686A60)
 References: <20260720185103.530603-11-johannes@sipsolutions.net>
-	 <m28q735044.wl-thehajime@gmail.com> (sfid-20260722_023912_379022_3E549241)
+		<20260720205103.5a666eac428b.I9f810f3ed177d6dc980cad36c231f8c745dee48f@changeid>
+	 <m27bmn4xqv.wl-thehajime@gmail.com> (sfid-20260722_033022_984146_07686A60)
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260722_004637_474187_006DB2A9 
-X-CRM114-Status: GOOD (  20.13  )
+X-CRM114-CacheID: sfid-20260722_054501_614937_06CACB67 
+X-CRM114-Status: GOOD (  29.43  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,62 +74,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Wed, 2026-07-22 at 10:30 +0900, Hajime Tazaki wrote:
+> I was wondering where kernel address is located in this mode.
+> although it doesn't have to be, under nommu, kernel address is located
+> in the same address space with all userspace processes in my
+> understanding.
 
-> thanks, this is really nice.
+Why wouldn't it have to be? If you have a real nommu system, then
+there's no MMU, and so it has to be, no? (but see below)
 
-Thanks for looking!
+> the kernel address is accessible (danger but it's !MMU) from userspace
+> thus __access_ok() always returns 1.  so just wondering what is the
+> case with this runner process approach.
 
-> I quickly read the patchset and found that [RFC PATCH 8/9] is the core
-> of your idea,
+It's still the case, in the runner startup I mapped the whole thing into
+the runner process(es):
 
-Right, of course. There's a bunch of prep work, and I obviously picked
-up a bunch of your prep work too.
++ map(&r->mm_id, uml_reserved, high_physmem - uml_reserved,
++ UM_PROT_READ | UM_PROT_WRITE | UM_PROT_EXEC, fd, offset);
 
-> I also understand the need of futex implementation instead of
-> asm-generic, which only works with !CONFIG_SMP.
+> a program accessing kernel address may fail (or crash in some case),
+> but with the runner it won't ?
 
-Right.
+It still will, I believe, since it is mapped into the same address
+space.
 
->   um-nommu(seccomp)        3533=20
->   um-nommu-skas           27844
->   um-nommu-skas(seccomp)  26387
+I did consider some other things:
 
-I'm a bit surprised these have such a huge difference, do you see any
-obvious explanation for that?
+   1. Using clone(CLONE_VM) instead - however that means I cannot use
+      the stub as-is, and to work without it requires doing a bunch of
+      setup in the runner process(es) - which is mostly equivalent to
+      the stub.
+     =20
+      I did get this working (at least in seccomp mode, not sure now if
+      it worked in ptrace too), but it requires shuffling around and
+      duplicating quite a bit more code (e.g. the seccomp setup etc.).
+     =20
+      This would've made it more obvious, but has a fairly high code
+      cost and no real (other) benefit.
+     =20
+   2. Conversely, with this approach, it *is* possible to not map the
+      whole kernel into the userspace runners. I didn't try this yet,
+      but it shouldn't actually be hard - just adjust the above map()
+      call a bit? OK, it's a bit trickier with the VDSO etc.
+     =20
+      This would possibly be a benefit for testing, although userspace
+      processes still need to be able to reach (and crash) each other
+      anyway, so it'd just crash them if they tried to erroneously
+      access the kernel.
+     =20
+      I don't think this would be very hard to do, but I also didn't
+      fully think through the consequences - is the VDSO really the only
+      thing the kernel assumes can be accessed?
+     =20
+   3. Some real nommu devices have MPUs instead, e.g. CONFIG_ARM_MPU. I
+      didn't look into what this actually ends up protecting, but I
+      could imagine that e.g. we actually make read-only sections read-
+      only, etc. I don't see any general infrastructure for this though,
+      and the ARM code (arch/arm/mm/pmsa-v7.c, arch/arm/mm/pmsa-v8.c)
+      just seems to set up some static, more or less hard-coded,
+      protections. But I didn't really look into that in detail.
+     =20
+   4. We could perhaps support XIP? But that's a whole different can of
+      worms. Maybe it's not even NOMMU related.
 
-But I'm also still not really convinced that it matters at all.
 
-> What is your plan for this RFC ?
+Anyway, I also decided that all of this (except 1, which I discarded as
+a design decision to simplify, after prototyping it) could be done as
+later additional patches.
 
-Well, first I wanted to hear what you think :-)
+I also just realized I didn't really respond fully to your question
+about what I want to do with this ... so if you're happy with this set
+and I can hopefully get some of the others to review it, then I think
+I'll send it as real [PATCH] and we can merge it, and go from there. I
+also had some docs (based on yours) that I didn't include here, but that
+I should include then.
 
-> I'm pretty fine with this (skas nommu) mode for nommu UML; it
-> is certainly useful to detect more bugs if it is available in UML.
-
-Yeah, that was mostly my intent - to show a path forward for the nommu
-(kunit) testing in UML, without all the other complexity.
-
-> I would also like to ask maintainers if my nommu approach can be an
-> opt-in feature only when specific kernel config is added, probably
-> marking as '(EXPERIMENTAL)' or `if EXPERT` condition, as there is
-> potential benefits (speed, less host process use, etc.).
->=20
-> But if you (maintainers) wish and feel this as not an easy option,
-> I can work for it with later patches as an extension.
-
-Personally, I've always mostly thought that there isn't really a good
-use case (or perhaps that you haven't really convinced me of one) that
-actually requires the speed benefit, but I guess I can't really decide
-that by myself. :)
-
-> btw, maybe I need a better name for (my) nommu code using different
-> syscall handling, with regard to skas (i.e., separate kernel address
-> space) mode (e.g., CONFIG_UML_NOMMU_SAS (single address space) etc.).
-
-Oh, I didn't even remember now that "skas" was meant to mean "separate
-kernel address space". To me this is all a quirk of history ... we
-probably shouldn't read too much into it now.
+And then we can see - maybe we want to rename "skas" (after you pointed
+out what that really means), maybe we want to more generally clean up or
+separate out the code a bit?
 
 johannes
 
