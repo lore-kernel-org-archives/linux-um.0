@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12818C531CF
-	for <linux-um@archiver.kernel.org>; Thu, 23 Jul 2026 09:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A52EC531D0
+	for <linux-um@archiver.kernel.org>; Thu, 23 Jul 2026 09:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WhdL3FJY/vrUjM1Ql6morukiStYtwnJEKtLRpl2jO28=; b=bAtXU9fuUWg6En9s6wzpKWRn5F
-	mJuKfeC5elQhuPRorXGaX5U8+zW5w8W3ag5w7E81pC3kQNWxwRJOS36qjFQk5vesw7/LOxikX96re
-	kStLNLE6s/VCZR9glvhfPTvKh7JDR+YNpbW5m61iqSntnmdv3HC2tFQgu46mwfNjTM4RqorShxzlO
-	IE4LrOpWlPJ9kBoeDvc4K8huG7h+j+N0mfE2g1iRcv/r1pj6rk4UeLE5j+TDHl9uUNpZuw0s1yqDD
-	g4muvtkMTqPUAO97ZkGY+kkxnGwD7l0lI0ZuDR1xLi4P+Yil+ULUZO0p0ylTZpMQnGilRbmeH+bXm
-	bO4m79Sw==;
+	bh=zuK9kjYuLYH5fJVUJ1xOJ0MgG7rhBBdfgYqVI0gD8Rc=; b=U0bMgWSfNnqR+CoO/9oonuLb2o
+	MBB2QHfsOW+nNKtXv/36k7p/TTB83KsjHT8yRqVh9xE/OTLm5tjpdlIqPxBsf0dk3Yg4emt/knslP
+	5H7ShVecv4avuuYcXqtYCwB2eR9bna8nz3+lM0hbeszzxbPVbn9HDQacVIRcGnxN8zdXkyYopXbIT
+	bDymYMC8TBckdn+sSF0pZZnqyzOc+bm7P3XvVpp830BT/q0TW8+t9yOVcMORkp0JlsaMGPB6EgAHb
+	GCIaQI4mFzYodJKj8ABHcQsAmy1y2VtYsCise45W8p8lF5Pwp7PeyP29xLvCYJmLZamE2S2YpjrLo
+	BNZfwBuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmprF-0000000Drxj-31S8;
-	Thu, 23 Jul 2026 09:36:49 +0000
+	id 1wmprB-0000000Drpk-0RRV;
+	Thu, 23 Jul 2026 09:36:45 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmprB-0000000Drp2-3r0I
+	id 1wmpr6-0000000DrkS-2L5C
 	for linux-um@lists.infradead.org;
-	Thu, 23 Jul 2026 09:36:49 +0000
+	Thu, 23 Jul 2026 09:36:43 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=WhdL3FJY/vrUjM1Ql6morukiStYtwnJEKtLRpl2jO28=;
-	t=1784799405; x=1786009005; b=KO+YCQrpIOdob3TVdwkDM6TMFc1tRD3uNm5SPJblgbdqX+J
-	fWRAWB2zljhi+VmF7tAmsojhxibd62DQpUbQ3wpAKG/ASa2NGe5m3d9p+pa5hJ0xqG7i09S82J7dp
-	a36fhythiJFOXLJYE/cDQA3I2z+usvxNa2qouUW2iZGw0bt4fsZL+isVpriXJJE1Ig450wBbnnclM
-	bClFlmOG8A0lTW0drrgTx1hGcGLKrY1lXX7yTN0g3NJW6nJGqf99s0spusHhNx64UA+xdXyPqFZfy
-	ZryGwgNQ9Asrbqz8djdadMWiONoEpfXnKtX2Di5n9YKIj2Et3lTCcJj3fhcwNrpg==;
+	Resent-Cc:Resent-Message-ID; bh=zuK9kjYuLYH5fJVUJ1xOJ0MgG7rhBBdfgYqVI0gD8Rc=;
+	t=1784799400; x=1786009000; b=HN3knNN+tCpL5O/IeQMPgTQ66OF3xvYV0PUF9Lqd4KuE1Ws
+	2owFoL593wnwDJbnbsQoWWTvwokWjYr5C9CJlt2OTUu2WvVSzcKHiBhK5Au9IviZPfsfsj88vCaQA
+	0CEVEYCP39Hs8Eyxahpv+DY6MNtSVMr0q0cZetHYcVublsvOg8NhPdZjbJMaSYYzWJc4zJ2bO2Lvy
+	uVO4k2kag/qH2NpDb0cmTyQrVqhHzDnkgKA4SdqODp5vVlDKLhs/ZAbiHoVnPSNDP1jcVaj9xKkGU
+	fuHnoJvM659LGObPWBjRwGblD5Vws29M2/LUVXPNLX7tp1BKz2CjpuaM3iHA3R/Q==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wmpr8-0000000Aeqq-3zMb;
-	Thu, 23 Jul 2026 11:36:43 +0200
+	id 1wmpr3-0000000Aeqq-2FcN;
+	Thu, 23 Jul 2026 11:36:37 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Hajime Tazaki <thehajime@gmail.com>,
 	liam@infradead.org,
 	ljs@kernel.org,
-	Ricardo Koller <ricarkol@google.com>,
-	Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH v2 08/10] um: nommu: add userspace runner processes
-Date: Thu, 23 Jul 2026 11:35:49 +0200
-Message-ID: <20260723113633.2184dce9413e.I9f810f3ed177d6dc980cad36c231f8c745dee48f@changeid>
+	Ricardo Koller <ricarkol@google.com>
+Subject: [PATCH v2 02/10] um: decouple MMU specific code from the common part
+Date: Thu, 23 Jul 2026 11:35:43 +0200
+Message-ID: <20260723113633.af7d6a109c22.Ie82119143778b91fa5585ea3493cf4014113da47@changeid>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260723093633.140989-12-johannes@sipsolutions.net>
 References: <20260723093633.140989-12-johannes@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_023646_024503_CF20401F 
-X-CRM114-Status: GOOD (  20.83  )
+X-CRM114-CacheID: sfid-20260723_023640_647346_2600DEF4 
+X-CRM114-Status: GOOD (  15.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,215 +73,157 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Hajime Tazaki <thehajime@gmail.com>
 
-For NOMMU there are not separate address spaces for
-each userspace process group, which on the one hand
-means we cannot start them on demand, but on the
-other means we can just have one for each (virtual)
-CPU, and map all of the memory into them.
+This splits the memory, process related code with common and MMU
+specific parts in order to avoid ifdefs in .c file and duplication
+between MMU and !MMU.
 
-Implement such processes, and the remaining bits
-needed to compile the kernel without CONFIG_MMU.
-
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+[drop many unnecessary changes]
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/kernel/Makefile      |  3 ++
- arch/um/kernel/skas/Makefile |  3 ++
- arch/um/kernel/skas/nommu.c  | 91 ++++++++++++++++++++++++++++++++++++
- arch/um/kernel/smp.c         |  3 +-
- arch/um/kernel/time.c        |  3 +-
- arch/um/kernel/trap-nommu.c  | 13 ++++++
- 6 files changed, 114 insertions(+), 2 deletions(-)
- create mode 100644 arch/um/kernel/skas/nommu.c
- create mode 100644 arch/um/kernel/trap-nommu.c
+ arch/um/kernel/Makefile      |  3 +-
+ arch/um/kernel/mem-pgtable.c | 55 ++++++++++++++++++++++++++++++++++++
+ arch/um/kernel/mem.c         | 35 -----------------------
+ 3 files changed, 57 insertions(+), 36 deletions(-)
+ create mode 100644 arch/um/kernel/mem-pgtable.c
 
 diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 5cd1bd4b23ac..b087b4278173 100644
+index be60bc451b3f..d56fe6d829cc 100644
 --- a/arch/um/kernel/Makefile
 +++ b/arch/um/kernel/Makefile
-@@ -20,6 +20,9 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+@@ -16,9 +16,10 @@ always-$(KBUILD_BUILTIN) := vmlinux.lds
+ 
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o sysrq.o time.o tlb.o trap.o \
++	signal.o sysrq.o time.o trap.o \
  	um_arch.o umid.o kmsg_dump.o capflags.o skas/
  obj-y += load_file.o
- obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o trap-mmu.o
-+ifneq ($(CONFIG_MMU),y)
-+obj-y += trap-nommu.o
-+endif
++obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o
  
  obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
  obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
-index 28dd33580abc..c098d087c3f2 100644
---- a/arch/um/kernel/skas/Makefile
-+++ b/arch/um/kernel/skas/Makefile
-@@ -6,6 +6,9 @@
- obj-y := stub.o process.o syscall.o \
- 	 stub_exe_embed.o
- obj-$(CONFIG_MMU) += mmu.o uaccess.o
-+ifneq ($(CONFIG_MMU),y)
-+obj-y += nommu.o
-+endif
- 
- # Stub executable
- 
-diff --git a/arch/um/kernel/skas/nommu.c b/arch/um/kernel/skas/nommu.c
+diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
 new file mode 100644
-index 000000000000..80d5c4eaa96b
+index 000000000000..549da1d3bff0
 --- /dev/null
-+++ b/arch/um/kernel/skas/nommu.c
-@@ -0,0 +1,91 @@
++++ b/arch/um/kernel/mem-pgtable.c
+@@ -0,0 +1,55 @@
 +// SPDX-License-Identifier: GPL-2.0
-+#include <linux/cpumask.h>
-+#include <linux/gfp.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/log2.h>
-+#include <linux/mutex.h>
-+#include <linux/panic.h>
-+#include <linux/smp.h>
-+#include <linux/threads.h>
++/*
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ */
++
++#include <linux/stddef.h>
++#include <linux/module.h>
++#include <linux/memblock.h>
++#include <linux/swap.h>
++#include <linux/slab.h>
++#include <asm/page.h>
++#include <asm/pgalloc.h>
 +#include <as-layout.h>
-+#include <mem.h>
++#include <init.h>
++#include <kern.h>
++#include <kern_util.h>
++#include <mem_user.h>
 +#include <os.h>
-+#include <skas.h>
-+#include <mm_id.h>
++#include <um_malloc.h>
 +
-+struct nommu_runner {
-+	struct mm_id mm_id;
-+	struct mutex turnstile;
-+};
 +
-+static struct nommu_runner nommu_runners[NR_CPUS];
++/* Allocate and free page tables. */
 +
-+static struct nommu_runner *this_runner(void)
++pgd_t *pgd_alloc(struct mm_struct *mm)
 +{
-+	return &nommu_runners[raw_smp_processor_id()];
-+}
++	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
 +
-+struct mutex *__get_turnstile(struct mm_id *mm_id)
-+{
-+	return &container_of(mm_id, struct nommu_runner, mm_id)->turnstile;
-+}
-+
-+void enter_turnstile(struct mm_id *mm_id)
-+{
-+	mutex_lock(__get_turnstile(mm_id));
-+}
-+
-+void exit_turnstile(struct mm_id *mm_id)
-+{
-+	mutex_unlock(__get_turnstile(mm_id));
-+}
-+
-+unsigned long current_stub_stack(void)
-+{
-+	return this_runner()->mm_id.stack;
-+}
-+
-+struct mm_id *current_mm_id(void)
-+{
-+	return &this_runner()->mm_id;
-+}
-+
-+void current_mm_sync(void)
-+{
-+}
-+
-+static int __init nommu_start_runners(void)
-+{
-+	unsigned long long offset;
-+	struct nommu_runner *r;
-+	int cpu, err, fd;
-+
-+	fd = phys_mapping(uml_reserved - uml_physmem, &offset);
-+
-+	for_each_possible_cpu(cpu) {
-+		r = &nommu_runners[cpu];
-+		mutex_init(&r->turnstile);
-+
-+		r->mm_id.stack = __get_free_pages(GFP_KERNEL | __GFP_ZERO,
-+						  ilog2(STUB_DATA_PAGES));
-+		if (!r->mm_id.stack)
-+			panic("OOM allocating userspace stack for CPU %d", cpu);
-+
-+		err = start_userspace(&r->mm_id);
-+		if (err < 0)
-+			panic("userspace startup for CPU %d failed: %d",
-+			      cpu, err);
-+
-+		map(&r->mm_id, uml_reserved, high_physmem - uml_reserved,
-+		    UM_PROT_READ | UM_PROT_WRITE | UM_PROT_EXEC, fd, offset);
-+
-+		err = syscall_stub_flush(&r->mm_id);
-+		if (err < 0)
-+			panic("physmem map/flush failed for CPU%d: %d",
-+			      cpu, err);
++	if (pgd) {
++		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
++		memcpy(pgd + USER_PTRS_PER_PGD,
++		       swapper_pg_dir + USER_PTRS_PER_PGD,
++		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
 +	}
-+
-+	return 0;
++	return pgd;
 +}
-+arch_initcall(nommu_start_runners);
-diff --git a/arch/um/kernel/smp.c b/arch/um/kernel/smp.c
-index f1e52b7348fb..92ea1beaed8b 100644
---- a/arch/um/kernel/smp.c
-+++ b/arch/um/kernel/smp.c
-@@ -20,6 +20,7 @@
- #include <init.h>
- #include <kern.h>
- #include <os.h>
-+#include <skas.h>
- #include <smp.h>
- 
- enum {
-@@ -66,7 +67,7 @@ static void ipi_handler(int vector, struct uml_pt_regs *regs)
- 	irq_enter();
- 
- 	if (current->mm)
--		os_alarm_process(current->mm->context.id.pid);
-+		os_alarm_process(current_mm_id()->pid);
- 
- 	switch (vector) {
- 	case UML_IPI_RES:
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index b344a36b44eb..d620b6d6310a 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -19,6 +19,7 @@
- #include <asm/param.h>
- #include <kern_util.h>
- #include <os.h>
-+#include <skas.h>
- #include <linux/delay.h>
- #include <linux/time-internal.h>
- #include <linux/um_timetravel.h>
-@@ -873,7 +874,7 @@ static irqreturn_t um_timer(int irq, void *dev)
- 	if (time_travel_mode != TT_MODE_INFCPU &&
- 	    time_travel_mode != TT_MODE_EXTERNAL &&
- 	    get_current()->mm)
--		os_alarm_process(get_current()->mm->context.id.pid);
-+		os_alarm_process(current_mm_id()->pid);
- 
- 	evt->event_handler(evt);
- 
-diff --git a/arch/um/kernel/trap-nommu.c b/arch/um/kernel/trap-nommu.c
-new file mode 100644
-index 000000000000..891a9cefa935
---- /dev/null
-+++ b/arch/um/kernel/trap-nommu.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/types.h>
-+#include <linux/errno.h>
-+#include <linux/signal.h>
-+#include <shared/kern_util.h>
 +
-+int handle_page_fault(unsigned long address, unsigned long ip,
-+		      int is_write, int is_user, int *code_out)
-+{
-+	/* everything that's valid is already mapped in NOMMU */
-+	*code_out = SEGV_MAPERR;
-+	return -EFAULT;
-+}
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++};
++DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 1eef0e42ef5d..4b84760b5e55 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -6,7 +6,6 @@
+ #include <linux/stddef.h>
+ #include <linux/module.h>
+ #include <linux/memblock.h>
+-#include <linux/mm.h>
+ #include <linux/swap.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+@@ -91,45 +90,11 @@ void free_initmem(void)
+ {
+ }
+ 
+-/* Allocate and free page tables. */
+-
+-pgd_t *pgd_alloc(struct mm_struct *mm)
+-{
+-	pgd_t *pgd = __pgd_alloc(mm, 0);
+-
+-	if (pgd)
+-		memcpy(pgd + USER_PTRS_PER_PGD,
+-		       swapper_pg_dir + USER_PTRS_PER_PGD,
+-		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
+-
+-	return pgd;
+-}
+-
+ void *uml_kmalloc(int size, int flags)
+ {
+ 	return kmalloc(size, flags);
+ }
+ 
+-static const pgprot_t protection_map[16] = {
+-	[VM_NONE]					= PAGE_NONE,
+-	[VM_READ]					= PAGE_READONLY,
+-	[VM_WRITE]					= PAGE_COPY,
+-	[VM_WRITE | VM_READ]				= PAGE_COPY,
+-	[VM_EXEC]					= PAGE_READONLY,
+-	[VM_EXEC | VM_READ]				= PAGE_READONLY,
+-	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
+-	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
+-	[VM_SHARED]					= PAGE_NONE,
+-	[VM_SHARED | VM_READ]				= PAGE_READONLY,
+-	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+-	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
+-};
+-DECLARE_VM_GET_PAGE_PROT
+-
+ void mark_rodata_ro(void)
+ {
+ 	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
 -- 
 2.53.0
 
