@@ -4,46 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ADDBC531CA
-	for <linux-um@archiver.kernel.org>; Thu, 23 Jul 2026 11:51:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9AF7C531CA
+	for <linux-um@archiver.kernel.org>; Thu, 23 Jul 2026 12:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YGZ8WLIYtOXEV5jsz7vZ9bwtjKxNaB7on2xYq5douJ4=; b=hlkfJld6+sNRgnfFngQ0e8Cbto
-	rlkMPwFEFCWXd2/XEJmFTlaSl/uD+bhdzqFDadVFESZd1ua9xm+9xdsE39nS08xE1mJzd62A8F65s
-	9iw6X5q6u1N8HEx58pVZvsz5k6WS3XJneGZl9THQDc13Oaz4SB4gHnZ311EiRSrLtU7LItqf83V8+
-	Sb/HFfjk9hJ/7GqbwzYUof72dZi1KPBy8m/YpPFYmbBiws/GscOxOGJBL/8St8C5rP25DVaDBVmAb
-	zIW94G8vlUktPqvLRkmlRa4IB8cBNPR1PGltGfSATpqncxvYLeHxU6F+dTsSlTw3UFpPzCYD6n1He
-	2plMrbhA==;
+	bh=HnYuyydajNOkyDo7yMJK3bEOrLzTKhCqSDD/DQcxFKM=; b=PYBLYAYr1XcqLlUGqEiHRuSRb9
+	gXdRXCJUl9aKd4HZWF7KTSMg4sNfOrKMq6pqlzum35rtneF9PB5yMYN4KEUR1ojWJ5hyYSJvIvSQN
+	VRdIn73QfFwvCIp7P3jNATdOp2GyAHxPQPKtvCnfaMNpV++pgwXDyGxuPlNaqp48ds6HGobgL8kdC
+	nn9dChP6n8xt+6DUcVYQCPYzzHi2qFNTTVCtnhFWZXw9L3HQlq/MtF7lDEkIGBhaVEAX+lGonf6Bn
+	99JRPzm2ihYjaFcoAazciFRzsRgziuWNQb56syHePPRCkRJZzeGmem4LWnI78GdJpNlPN4jwr/tK6
+	VjxjHzIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmrxC-0000000EC6I-0EKg;
-	Thu, 23 Jul 2026 11:51:06 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wmsS3-0000000EECh-1qBW;
+	Thu, 23 Jul 2026 12:22:59 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wmrxB-0000000EC62-0ktu
+	id 1wmsRz-0000000EEBs-127o
 	for linux-um@lists.infradead.org;
-	Thu, 23 Jul 2026 11:51:05 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A11BC600AD;
-	Thu, 23 Jul 2026 11:51:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B281F000E9;
-	Thu, 23 Jul 2026 11:51:02 +0000 (UTC)
-Date: Thu, 23 Jul 2026 12:50:45 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
+	Thu, 23 Jul 2026 12:22:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=HnYuyydajNOkyDo7yMJK3bEOrLzTKhCqSDD/DQcxFKM=;
+	t=1784809375; x=1786018975; b=tHKkTxUAi9wSMC1OSnNoMN9mp0UWE/z9Pk/Lrh2t8pnAA2N
+	8RA1O5kOEgOoUSOgDGJz7U5R0KnPV9qVuHcyjTGXHFel0OhMuZT2m9AXLYsWcvOrHU866xdagWUiE
+	8af2btOi0c0PzZnahbMaMBh3p8Bq7Le4FLDMkAZAzRsK1TUJ03oc2XSDH1xJBb8CieUjYZ7brE6mg
+	PR+qlmhEHmJAenc/ypgfXbYJmLv67deCim9/T506Te15EBMg0u62JDvrJ49LjNtw75w9gV67lD0wQ
+	najGOe24c3ojH9OqZh9fNObOB4CSSTmnvD+QUUrrmEgz4cpnqjIZhKSNak4ufuZg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1wmsRu-0000000Bm69-3rKw;
+	Thu, 23 Jul 2026 14:22:51 +0200
+Message-ID: <07b3c945a5aeeb08fb25955fb072308e3744402e.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 00/10] simplified UML/NOMMU approach
+From: Johannes Berg <johannes@sipsolutions.net>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 Cc: linux-um@lists.infradead.org, Hajime Tazaki <thehajime@gmail.com>, 
 	liam@infradead.org, Ricardo Koller <ricarkol@google.com>
-Subject: Re: [PATCH v2 00/10] simplified UML/NOMMU approach
-Message-ID: <amH-fdSinCFd6sQ_@lucifer>
+Date: Thu, 23 Jul 2026 14:22:50 +0200
+In-Reply-To: <amH-fdSinCFd6sQ_@lucifer>
 References: <20260723093633.140989-12-johannes@sipsolutions.net>
+	 <amH-fdSinCFd6sQ_@lucifer>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260723093633.140989-12-johannes@sipsolutions.net>
+X-malware-bazaar: not-scanned
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260723_052255_795234_F44EC7CE 
+X-CRM114-Status: GOOD (  13.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -58,34 +74,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 23, 2026 at 11:35:41AM +0200, Johannes Berg wrote:
-> Prior RFC/v1 was here:
-> https://lore.kernel.org/linux-um/20260720185103.530603-11-johannes@sipsolutions.net/
+On Thu, 2026-07-23 at 12:50 +0100, Lorenzo Stoakes (ARM) wrote:
+> On Thu, Jul 23, 2026 at 11:35:41AM +0200, Johannes Berg wrote:
+> > Prior RFC/v1 was here:
+> > https://lore.kernel.org/linux-um/20260720185103.530603-11-johannes@sips=
+olutions.net/
+>=20
+> Thanks for this! I really really want a nommu UML mode for testing purpos=
+es so
+> I'm very happy you're doing this :)
 
-Thanks for this! I really really want a nommu UML mode for testing purposes so
-I'm very happy you're doing this :)
+:)
 
-One mildly annoying note though - it'd be good for the cover letter to summarise
-what the series is about, what it achieves, how it compares for instance to
-Hajime's original approach ([0]).
+> One mildly annoying note though - it'd be good for the cover letter to su=
+mmarise
+> what the series is about, what it achieves, how it compares for instance =
+to
+> Hajime's original approach ([0]).
+>=20
+> I guess how cover letters are used varies by subsystem somewhat but I fin=
+d it
+> really actively useful to see a summary in the cover letter.
+>=20
+> Anyway reading thorugh the RFC which already covers this seems that this
+> achieves nommu UML with less changes needed which sounds really interesti=
+ng!
 
-I guess how cover letters are used varies by subsystem somewhat but I find it
-really actively useful to see a summary in the cover letter.
+Right, sorry, I got lazy and didn't copy/paste the RFC cover letter but
+only put the link to it instead. Is there something beyond what I wrote
+there that you were looking for?
 
-Anyway reading thorugh the RFC which already covers this seems that this
-achieves nommu UML with less changes needed which sounds really interesting!
 
-I may pull this series locally and have a play... :)
+> I may pull this series locally and have a play... :)
 
->
-> I cleaned up and added the docs commit now, other changes:
->  - fixed futex implementation after discussions
->  - fixed regression in earlier uname change
->
-> johannes
->
+If you do, let us know how it goes :)
 
-Cheers, Lorenzo
-
-[0]:https://lore.kernel.org/all/m2framxerm.wl-thehajime@gmail.com/
+johannes
 
