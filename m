@@ -4,89 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C751CC531C9
-	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 06:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26B90C531F9
+	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 06:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ECAq2HHkx64xjQNq4vcplIK5gaCkU9CTmJdsLvKXm0A=; b=DKVpLLHKZMifkXBlz8815w2xV7
-	MVCGUGPwojp/IgLlX6reuVChcUTnRc6Sup6pQAZDC2fW8tzNwIt/Q+IvS054KsqBImPL8JW8T08mP
-	hi3fvdtekeKn/A0mKON29RrCIScTCvKlNHnjNoMntYtAMdLSi8PZDd8UTfohQzybYqAoeQpLykVVm
-	7zOQrPLjL3CWTY+/6Q3htVkl65RlGIdBLWdAiHhj1loohU2uC6AKFvUNdX7WhiPCl4HMjKzdggaQi
-	JNGiEXZwmESbwelh8siUd1+Ka/6H+CWW3JMmGfIx9MAWpGHH0WnohnSzuoDkKz5kW/S6PPQBbXOLX
-	cP9rDHtQ==;
+	bh=EgJ7WGmLghzBHWuXRFX7MDf35xLvpeCrf+L63h4agAs=; b=IWDJLX7xAuRBZduOS6FpCNgKOW
+	AS9BXdlrmCB5TP3gm44jaDaI6Y/eZv9LW2TqZudFNxNjbqtij5BAjC0NIk4KCmK745SppmW9JyeCx
+	Il/0S51FzidOagBMFnSYnRr5T7F2eteg3KbWOH4A8Ozgt3spQI6sA199qkdTD+gSW3HAXba9N1HvU
+	bpjLSRSAVRcpHeVjJ5ipKa86O1bSETFuNUb1B16BB6nrzARQLEGg0avuiGweJfZNvZ5mXRHIYn24i
+	7zv5oygP27SfryV8JWOmcgitam9m+/WMzQU4AhCn/Q0mxD/v9RfIYs2HcZIkJU/wXD4Vb/AQ8Cvpy
+	4MZ0v4hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wn9jk-0000000Fdcm-2NOT;
-	Fri, 24 Jul 2026 06:50:24 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1wn9nI-0000000Fdq8-0jWS;
+	Fri, 24 Jul 2026 06:54:04 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wn9ji-0000000FdcN-0Pvz
+	id 1wn9nF-0000000Fdpk-1RSd
 	for linux-um@lists.infradead.org;
-	Fri, 24 Jul 2026 06:50:23 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-c9fe3c9bd5fso810690a12.0
-        for <linux-um@lists.infradead.org>; Thu, 23 Jul 2026 23:50:21 -0700 (PDT)
+	Fri, 24 Jul 2026 06:54:02 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-2cf50c6f235so1526185ad.0
+        for <linux-um@lists.infradead.org>; Thu, 23 Jul 2026 23:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784875821; x=1785480621; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1784876040; x=1785480840; darn=lists.infradead.org;
         h=content-type:mime-version:user-agent:references:in-reply-to:subject
          :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=ECAq2HHkx64xjQNq4vcplIK5gaCkU9CTmJdsLvKXm0A=;
-        b=j+OZd75IbgQFEKP+s+Qbbcu1WF+9zJDYgj1HtxaQbPx/MWRqA1oVUL8aoC7QDQDjcM
-         iWTOAJtk8S3nyIZokKctLZZxqEjOSuJ39spcUOWEOvKJ/CKVipz6WGC926OxbYdZXpHh
-         0xRK6WDtICIbeR9WASKh1G5PanIQglm/FJKUBw/1hw4F8k0D0TncEJSRINmgEuai5oSC
-         p2UQyyUXMTEpmZw89ErCQAAnZUGIWRfUBr41azWzYw1FEb44ZaxCdq+K0DmDyAL8WCOW
-         YYwCyUCK6emX87GzJP47uSAS88O9E7ORkXZZCcRLHna3DCf1XM5FNEVdfqy557fR0PRJ
-         Sh3A==
+        bh=EgJ7WGmLghzBHWuXRFX7MDf35xLvpeCrf+L63h4agAs=;
+        b=cyTqfOaoRk6vxWe28VpLqOqg1hwoHZQG0e6atlecohTHiBI+heoUXjwRIbytvZ44wS
+         EbXLPpkZsd4r/ViCuTAYCSnloxMl5TiJLQnR1+hGMIUNbMh5q2WA7CJt7uUuSahM5ITY
+         +d07sh3DvcttCEKLI8gwk0t2Scs8vjy6O0ohO0PpKZ++go//m5hs6lJgn3gzpY2sMnq8
+         KylwZCjzWRYWURAxuSw+XZBr3iNERmBuKskaa6XR3IBQklpZuEft7W7cK3lKGA95DHPW
+         +Jsv03xqaqXPhJ1Nb/rg//Qp7g9S3JCxTw4Ry559yYTTca5O/nkI/B2SQ18dn5RdgeFu
+         W84g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784875821; x=1785480621;
+        d=1e100.net; s=20251104; t=1784876040; x=1785480840;
         h=content-type:mime-version:user-agent:references:in-reply-to:subject
          :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=ECAq2HHkx64xjQNq4vcplIK5gaCkU9CTmJdsLvKXm0A=;
-        b=KBFYZ+AceGsqJCtpM2tvBQY//AtashkamCKYd4++/byJ1r8snuXXNCV1g0jj6CHsrS
-         KFTB/YUG8WfilpZlIXvGFbLpmAVVsaLklIK/S0FoY+3UVQTPVSsYjbHqhXEdn1ST6tqk
-         Omgc9Rqp1nN9XIiDLI1PZ61rNujaCxad5UTByDS6dcLNzlkyUvqhJQefeOlwNLhUz3CK
-         xggJGyTBmg4QPPtbVdJXE/rjtaiVO9qQzeSZftyg5m6F+JruXMF5DEDUzrVtXE+pySc0
-         DWuFFJne5IjzqpL2TBxmKMMZT6wh/c3BdENt2sTxOpcS6OToIZn8T/8x+zYchJnN9EeR
-         gUGg==
-X-Gm-Message-State: AOJu0Yy/Ntw5R9QZuOYim4VuwtxyVpQwheNAmqKfTwRU80Eqle6RnlZv
-	swj8luWC9wFLTwXpEjI8PAPxEbjPirk4MtMte2tNnZ6xngoSy/sUqMvo
-X-Gm-Gg: AR+sD11FSv2NrTNxP0GwbWsINUvjdtEZJmhPlnTAu2SrxFVGjUkt2BbaJZFMVpvyPmd
-	A01diaJfmZCIucRqWqTkKEXQOgQtBdJiAAC8x0LXtE48tm2F9OHyeueHAw5UFH+XTIqEpOfI5P9
-	zmBF3SPDhTpARF9Fi7JODc1w4l94g8SwkluMVHsLvD8lbXvVLHfkSdp5RnB5SPfdOI7ThNe8GQt
-	RrUS6w3+6vL9dQ8WBtomhvr6F2x9VEjrPTOfzvlYnav/ipbla//BO2pM8JjneCsIkUH+OAd+ELN
-	Ey8RoVCpSqkVbntosY7sHa8TFq9spmorfe/JsOK6RuuqdqQmNAhyL60SJ68RppMQpYIsIZbAQR+
-	/aAJlf0LOwOF18EJunZF1vglodFUOeqaghDkYlfWaTERpb+z96INpEPJgst633iDeChe1DZCW20
-	8uGxi149XwC99IMg/yPRsSFSp2+wTTExSvxV+2iZa93K8VfWncwFhBa5373IVfMPZax+RVSnJHE
-	5fxUKJfbhCMqdnuOEFt
-X-Received: by 2002:a05:6a21:6e86:b0:3a3:adea:83bc with SMTP id adf61e73a8af0-3c44c9b25cemr6542196637.15.1784875821022;
-        Thu, 23 Jul 2026 23:50:21 -0700 (PDT)
+        bh=EgJ7WGmLghzBHWuXRFX7MDf35xLvpeCrf+L63h4agAs=;
+        b=KQjQnXF6DENejisWlt7uPi7Th4whc8zWr2ViHBkecSgSbrT4YzgYuSCmfZ0RYEKrXg
+         hMW4TlLHxafeof+lVdc3mWoNkPLqitSvAXCTMf9kVmWLpqo2cAq8Z/OJpa2pnfxYm74G
+         febGiw8Jls2UR5/IMM4hbSQgsZFcu+eQudTAAUHMvQxP/u6cPfgPaH+aGaFCEjApS9D9
+         dFk7PYn+0YHdnDKuT9+W3105uif+ijkRE0hb83Qwc6Zm//FkMqXDqAxIs/bCTosgn59p
+         sBC9Bnwz7ftwjA/xK6uQQydIZ0MqkjEG4N7Dhqf9KmXe22PqJPbLR+8bWD5WJAAm6AUY
+         RI4g==
+X-Gm-Message-State: AOJu0YyJHKIxPQXt2zcymRFDEYIcF3LtVWIbCJgN2/LbUu8jdtfqpxxH
+	bKsrK3zZtyg4e/cMDQTNDC6tu2KHeRr5xcyQl+ZbMnZ55y61A8fSTMFAkuLVuQ==
+X-Gm-Gg: AR+sD10fOcl8AxTjYU12AZCKPT3Fdn96gFe6G9NOXbloFGZ10f2Wis+r1HPs/kg24Xk
+	5r4/O4nhFzN8+LkGVskWs9llcKz9AuXUWRxDtio9ks44+AGq2bdNx1Yn6CQO2w9I6qWrvIG5OcJ
+	hLNgAg3DGVEiiWbJB3qfm/cUJYu/p4kTaQuJ/zeSuFuXIliRChgrNUReXtLRoXct8+7fMrlFodJ
+	fy6ZxjHfOIHLBbdxvGyrkhQ51U73/4Dcf69KXCuhMfpfYuAJpq0wDCk3A5efixAbTaDnnwHlkSG
+	/xGCnHjz7BLzbWMAjTVANIAM7Rk2z1fpATJyQoQEYygRJXBGDUvb3rh/f+O0Cv50hw45xKch6JK
+	hYF/+R4Q8CnLhx0saA10lveKzy9EGSVkaxXYY8mqPpuo+CKXeIabzZmqQ4wvKxX0SKouFzyVwOi
+	lH7IboI1Vop1GNVWO16TDFc62ceFRiAUxBLiIdNL8HQJIMdcALX0vZFdb6/8+ycI71NCoyp2aU8
+	o0Bxwk6qZExXG3HqUKC
+X-Received: by 2002:a17:903:f8b:b0:2c8:4c29:afeb with SMTP id d9443c01a7336-2cfa730e98amr70411855ad.8.1784876040088;
+        Thu, 23 Jul 2026 23:54:00 -0700 (PDT)
 Received: from jupiter.local.gmail.com (179.62.31.150.dy.iij4u.or.jp. [150.31.62.179])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cbb8f0d7c16sm3745642a12.5.2026.07.23.23.50.18
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2cf8f350560sm46337545ad.68.2026.07.23.23.53.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2026 23:50:19 -0700 (PDT)
-Date: Fri, 24 Jul 2026 15:50:15 +0900
-Message-ID: <m1ecgs9908.wl-thehajime@gmail.com>
+        Thu, 23 Jul 2026 23:53:59 -0700 (PDT)
+Date: Fri, 24 Jul 2026 15:53:55 +0900
+Message-ID: <m1cxwc98u4.wl-thehajime@gmail.com>
 From: Hajime Tazaki <thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
 	liam@infradead.org,
 	ljs@kernel.org,
 	ricarkol@google.com
-Subject: Re: [PATCH v2 04/10] um: change machine name for uname output
-In-Reply-To: <20260723113633.bcaf234695c5.I226381aaaf6dd46c559b0e694b29370d0102ce3f@changeid>
+Subject: Re: [PATCH v2 10/10] Documentation: um: document nommu UML
+In-Reply-To: <d3df4236387840a77c74de7cb006771897a0ac68.camel@sipsolutions.net>
 References: <20260723093633.140989-12-johannes@sipsolutions.net>
-	<20260723113633.bcaf234695c5.I226381aaaf6dd46c559b0e694b29370d0102ce3f@changeid>
+	<20260723113633.19c6669dc151.Ibd7a532eef856a1ea39699a263dfa8a9ded9dc20@changeid>
+	<m1fr189ael.wl-thehajime@gmail.com>
+	<d3df4236387840a77c74de7cb006771897a0ac68.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_235022_146858_D59BDB11 
-X-CRM114-Status: GOOD (  17.26  )
+X-CRM114-CacheID: sfid-20260723_235401_390655_589C54A9 
+X-CRM114-Status: GOOD (  27.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,46 +104,48 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Thu, 23 Jul 2026 18:35:45 +0900,
+On Fri, 24 Jul 2026 15:49:08 +0900,
 Johannes Berg wrote:
 > 
-> From: Hajime Tazaki <thehajime@gmail.com>
+> On Fri, 2026-07-24 at 15:20 +0900, Hajime Tazaki wrote:
+> > > UML models this with
+> > > +a **userspace runner** - an ordinary uml-userspace stub host process, started
+> > > +exactly like an MMU userspace process, but with the whole of "physical" memory
+> > > +(the physmem file) mapped into it at the kernel's addresses:
+> > > +
+> > > +- The runner ``exec()``'s the stub just like the MMU case.  The only extra step
+> > > +  is that, once it is up, the kernel maps the entire physmem file into it in one
+> > > +  go, at the same addresses the kernel uses.
+> > > +- Because NOMMU never remaps, that single mapping is all a runner ever needs:
+> > 
+> > I was actually not sure what you mean here: "NOMMU never remaps".
+> > could you care to elaborate ?
+> > the subsequent parts are clear to me.
 > 
-> This commit tries to display MMU/!MMU mode from the output of uname(2)
-> so that users can distinguish which mode of UML is running right now.
+> Yeah maybe, that's a bit cryptic. I mean, we have an MMU-less base
+> kernel, so there's never any request to remap for anything, so
 > 
-> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-> [remove / to fix regression with systemd userspace]
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> ---
-> v2: regression fix
-
-I'd like to know what kind of regression did you see.
-
-> ---
->  arch/um/Makefile | 6 ++++++
->  1 file changed, 6 insertions(+)
+> > > +  there is no per-mm host process, no TLB sync and no ``mmap()`` of individual
+> > > +  page-table entries into a child.  Userspace code and data - placed in memory
+> > > +  by the loader - are directly executable and accessible.
 > 
-> diff --git a/arch/um/Makefile b/arch/um/Makefile
-> index 937639edc295..1f85b73d4abb 100644
-> --- a/arch/um/Makefile
-> +++ b/arch/um/Makefile
-> @@ -148,6 +148,12 @@ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) $(CC_FLAGS_
->  CLEAN_FILES += linux x.i gmon.out
->  MRPROPER_FILES += $(HOST_DIR)/include/generated
->  
-> +ifeq ($(CONFIG_MMU),y)
-> +UTS_MACHINE := "um"
-> +else
-> +UTS_MACHINE := "um\(nommu\)"
-> +endif
-> +
+> the original mapping that we make into that process is left alone
+> forever. The map machinery in the stub is used only exactly once.
 
-with only this diff, there is no visible changes with uname command on
-UML (both mmu/nommu), as setup_machinename() overwrite this.
+make sense to me, thanks.
 
-maybe we could drop this patch if we cannot put a name 'um' in the
-machine name ?
+> > For the alpine packages, I'll contact the distribution once this UML
+> > is upstreamed.  And update this part with more proper information
+> > rather than my personal repository.
+> 
+> Sure. It seemed far simpler to point to it than to try to have
+> instructions on how to build it (I didn't even try), and I'm assuming
+> you don't plan to remove it :)
+
+I will keep this image location but using version number will easily
+outdate while it's useful to present a snapshot for users.
 
 -- Hajime
+
+
 
