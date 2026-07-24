@@ -4,51 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC57CC531F9
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5B7C531FC
 	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 21:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+0zUFHEzzdZXFCtrKy3ziBj52ixYryIKIdOAO7bOZcw=; b=o6gd2954plz+eRjSsEr+74yy+0
-	XGu04L9lRc8yt+TXk174Ah6+owOGPdQ+gYysxg2ljbBGiiROTGMyPKemtcmkrM0sn2zCnQmlcloyN
-	qlfUmwtMzBFAutzvVGZgRgLn9UJqvHlkjGQch7i0HIjY4pjtKJETqoGHGUuIlrSeB1wXD5OvObTdg
-	y/Jm2uNVhv0ipa6NkzCh7k9xJZa4Ppcnjx4rY8Jo7o8jk8/DMDyX8Ge05vsyMVRaMmLhxFQEeipYY
-	eeffZb5V3JxxHCB5JP8NhXsmj2GI0MmP97IeakkCJgPV7/QJWm7cimCIt4cn80t3OfJNymo1UWPiM
-	KEa1j7vg==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=Dao2iqXCWyRPq3hK3bPK+RzJkKKL67akXCH650mrRjM=; b=F/sx0jM32s+egeHvsE4OG5DUdl
+	WhjNaJ4QLkPX0sU6KPAf1e6FrTrEnssQvGkpEh+nwBM+ZBBDaTkxBAntDkqe+vM48B6nZMa3Se7Lq
+	LYKePInDdCfZFD2bBwmEbRjfiRJfe1eMj97HGXL/oEpGE6mX3tk/fVlBEvibuF1CVrla+HDZMaFZe
+	eLA8unTDlzTH6UX7T8IfLQPkBjwjANCP1i8QpFznDSZoi44IkA2g0+A5AjLQZ22ZUBIVMQFtrHPET
+	NnOgnEaYg+ZsRb737i1pbCAUa1NOttM44IXqgzZC8GeRx3tOP+9DxZI58Rh5FRcIJLmaicw1/Pmrf
+	EIh81uSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnNe4-0000000HGkn-2czY;
+	id 1wnNe4-0000000HGkK-0szo;
 	Fri, 24 Jul 2026 21:41:28 +0000
-Received: from lpdvsmtp12.broadcom.com ([192.19.144.207] helo=relay.smtp-ext.broadcom.com)
+Received: from lpdvsmtp09.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnNe0-0000000HGgs-3R1z
+	id 1wnNe0-0000000HGh0-39Cq
 	for linux-um@lists.infradead.org;
-	Fri, 24 Jul 2026 21:41:27 +0000
+	Fri, 24 Jul 2026 21:41:26 +0000
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 8F7AAC0003F1;
-	Fri, 24 Jul 2026 14:41:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 8F7AAC0003F1
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 41717C0000FA;
+	Fri, 24 Jul 2026 14:41:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 41717C0000FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1784929282;
-	bh=MwClynYi4UNnl6Qv2z6qYYcDGD0umclzy3mfRtl6KE4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HbkSZXF6FeBLqDbu0mITagG9fU09UAuSao2iEKeVgkTycc0QhkXC2sweyCb6I/Khp
-	 4Wd0zWkWNTtKYEQra0UTqgsbQw0SY234WytDNj/pEC+EShYu4DkntRbX5BBq4Jvdix
-	 lVi6CmVFZE4nw6kxfLM7C7RPodBNw+9HqKY4YOcA=
+	s=dkimrelay; t=1784929281;
+	bh=WeY6EXWLASPU5s4Pi3iS3gMMXxDyW++YTi7U1oRTEl4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BaWmbRWz2li0YD34PDN3e0Mj+sEwGhWboDX3sY/fqc0Kwd1jp8fibwt3kqmyRjbXj
+	 7vzE2m61rE+cy+C4NfMEz3BN8ebpb8tNMGxlnN5zB+jvheM3uZLH/bAp/1uMLT9x+n
+	 xgEhEpsGAaqwiS84y1iYFd4RfgEdkbLqEfhhsPvw=
 Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 295C8ACD;
-	Fri, 24 Jul 2026 14:41:22 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 0ED55ACD;
+	Fri, 24 Jul 2026 14:41:21 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: stable@vger.kernel.org
-Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
@@ -58,22 +56,22 @@ Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
 	Kees Cook <kees@kernel.org>,
 	Jens Axboe <axboe@kernel.dk>,
 	Al Viro <viro@zeniv.linux.org.uk>,
+	Tiwei Bie <tiwei.btw@antgroup.com>,
 	linux-um@lists.infradead.org (open list:USER-MODE LINUX (UML)),
 	linux-kernel@vger.kernel.org (open list),
 	linux-kselftest@vger.kernel.org (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
 	kunit-dev@googlegroups.com (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
 	bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH stable 6.12 5/9] um: Set parent-death signal for write_sigio thread/process
-Date: Fri, 24 Jul 2026 14:41:15 -0700
-Message-Id: <20260724214119.1066665-6-florian.fainelli@broadcom.com>
+Subject: [PATCH stable 6.12 0/9] Kunit backports for older systems
+Date: Fri, 24 Jul 2026 14:41:10 -0700
+Message-Id: <20260724214119.1066665-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260724214119.1066665-1-florian.fainelli@broadcom.com>
-References: <20260724214119.1066665-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260724_144124_952137_B551F948 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20260724_144124_858324_7C2414CD 
+X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,34 +86,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Tiwei Bie <tiwei.btw@antgroup.com>
+This patch series addresses an issue we encountered on older Ubuntu
+20.04.6 LTS servers whereby running Kunit would not return to a prompt
+and it would not be possible to Ctrl-C the running session either.
 
-commit c6c4adee65969218b0b7b13f568fd2c6f2333373 upstream
+Benjamin Berg (2):
+  um: Set parent death signal for winch thread/process
+  um: Set parent death signal for userspace process
 
-The write_sigio thread is not really a traditional thread. Set
-the parent-death signal for it to ensure that it will be killed
-if the UML kernel dies unexpectedly without proper cleanup.
+David Gow (1):
+  kunit: tool: Terminate kernel under test on SIGINT
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-Link: https://patch.msgid.link/20241024142828.2612828-4-tiwei.btw@antgroup.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- arch/um/os-Linux/sigio.c | 1 +
- 1 file changed, 1 insertion(+)
+Shuvam Pandey (1):
+  kunit: tool: skip stty when stdin is not a tty
 
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 9e71794839e8..9aac8def4d63 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -55,6 +55,7 @@ static int write_sigio_thread(void *unused)
- 	int i, n, respond_fd;
- 	char c;
- 
-+	os_set_pdeathsig();
- 	os_fix_helper_signals();
- 	fds = &current_poll;
- 	while (1) {
+Tiwei Bie (5):
+  um: Add os_set_pdeathsig helper function
+  um: Use os_set_pdeathsig helper in winch thread/process
+  um: Set parent-death signal for ubd io thread/process
+  um: Set parent-death signal for write_sigio thread/process
+  um: Preserve errno within signal handler
+
+ arch/um/drivers/chan_user.c            |  2 ++
+ arch/um/drivers/ubd_kern.c             |  1 +
+ arch/um/include/shared/os.h            |  2 ++
+ arch/um/os-Linux/process.c             |  6 ++++
+ arch/um/os-Linux/sigio.c               |  1 +
+ arch/um/os-Linux/signal.c              |  3 ++
+ arch/um/os-Linux/skas/process.c        |  3 ++
+ tools/testing/kunit/kunit_kernel.py    | 39 +++++++++++++++++-------
+ tools/testing/kunit/kunit_tool_test.py | 42 ++++++++++++++++++++++++++
+ 9 files changed, 88 insertions(+), 11 deletions(-)
+
 -- 
 2.34.1
 
