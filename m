@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CEAC531F9
-	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 06:42:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E068C531C9
+	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 06:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DRcgh4bYq48CJCxqiYKMTGPXUS/1arq4Ayaag0zi99s=; b=qSmb9wzPSV3VHOcSX3B3AdNBWV
-	79mcd6Sy/9q3gb4tXGQS7savxdHYWX83guP53lARKNs96M1uV7ADU2DOwAmP5kwl1iViP50XQLOHB
-	mL/XeRDJ0bi1CaTuNWfS5WrXE8ItanDAr5nZ3hWbCKRBFRvZUxtY/QBJgcH6eL33JJVGbK0JTsj9f
-	Yrmv7NdmKAd5Kj/b+BOg3nuzxDFHcSleBf6LWg2bf4Q7XqmPsCishuDwHO4XZP3rHGlE2Sb5MZHGq
-	yAGN+rqNjV4Bg50sKjOlA/K2AiOEeATwqY9A4wTNb45qUf8tkqWBrqhXUoiOfwhStV2ytJhp5EPXO
-	Dg35LqTg==;
+	bh=4aC+5JJRva2sGlK9ilJsruLTwzkRy334sCagEv1fugA=; b=s1jw26jdTqVpSkNNpMuhp/R8Tx
+	s+mv53mRTpgkOybR4PyzMFBWe85SDBV0WXqRFzy7Bb7MLnfLD0N00DJs5vQopimVAG2AUtI7hglZ/
+	zQVHENDsqEqP2B8iPadaMmjw7Q3LSCIMjlN0DouCpODrbhwZEXlxU8re46+O7V31MkPgH1SyMN0fP
+	zrMu19em9bJWZ4GbXNKhgujTV26SPDVKntlANUziuhthY74fGWtzuOUUQJOYyzqEVYKOtAAxc4tQp
+	gtIKQRK/7+qsRKcojA9pXkX4N3VDbjb+/M5aVDAVOa5xBZ5pyPukaqfjL3SRRw/4XURinrsQfE5Tf
+	Xfe90PBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wn9c8-0000000FcwZ-48UH;
-	Fri, 24 Jul 2026 06:42:32 +0000
+	id 1wn9ie-0000000FdXl-1pOB;
+	Fri, 24 Jul 2026 06:49:16 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wn9c6-0000000Fcvo-3GB6
+	id 1wn9ic-0000000FdXQ-23BK
 	for linux-um@lists.infradead.org;
-	Fri, 24 Jul 2026 06:42:31 +0000
+	Fri, 24 Jul 2026 06:49:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=DRcgh4bYq48CJCxqiYKMTGPXUS/1arq4Ayaag0zi99s=;
-	t=1784875350; x=1786084950; b=X3QurAKpbaTYG1B7VV/8Y2fAzA9R1wGC1ZndjBfgtZcUTSo
-	Wpq9mfFG0eFtAy6MZF/UxEf7AK6ieXnXZ18rcFgsSoFEaszkLd35ijAqKOaYBcguWztySoeL3+3ZD
-	lltNRcJpSEsURZ4tnoPLQsTJA/LbKOzsQGMt1YWCumT5oZDZHvTnauihlxVaNIWxgSnx9OAsgQkhI
-	6OfRXHYREtw8MIch8HJLl0GcWqjY8oFgAmTR/f+jLNAikuq9kjaVWCm0P6iXC+sbZzS9bd5sXHZEJ
-	2XaIstH2JWzTsm85UmLRwpXGPWhmTDROLVl5PhlFKrZ4I4nMZvEcfKUdOd3Ordmg==;
+	Resent-Cc:Resent-Message-ID; bh=4aC+5JJRva2sGlK9ilJsruLTwzkRy334sCagEv1fugA=;
+	t=1784875754; x=1786085354; b=cuIHmuYYqVNOHkHSyUCr+S3vYS/YAawGwzsh+D6aypfeu0V
+	oXUx0xATNked4v3ZEm5V1LbHDKuqMPYv8gqiE730zPZpFStiQXvQpD7wtdfpmO9VtYT0o/HdFBpIw
+	Faj4MFPY4oZDgBZvPx6cD9jAqCbiXA/WuvnGXVLmMCuE3SXB8td6ZplIRxIGFdC9CCxnfY0/i4y5X
+	1da2Zr5TRVZ/SWbjEXHzh5O92ziTAnXo1JTf6P8qsUNHquUyanmfM5Ccd4vZbp/REx+rM4SA4jxNC
+	Jub4GBPCUn/9w21hKKZFnZd+hrB0377NjoDzTPiE0rJ1dcY0CllVQaqFwo2fM3LA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1wn9c2-000000020ls-00Si;
-	Fri, 24 Jul 2026 08:42:26 +0200
-Message-ID: <82a386088c9505e38e00bed8367c96bf5ea0636f.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Allow multiple symbol definitions for GCOV builds
+	id 1wn9iX-000000020xn-02rz;
+	Fri, 24 Jul 2026 08:49:09 +0200
+Message-ID: <d3df4236387840a77c74de7cb006771897a0ac68.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 10/10] Documentation: um: document nommu UML
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Alex Hung <alex.hung@amd.com>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
-Cc: Bhawanpreet.Lakha@amd.com
-Date: Fri, 24 Jul 2026 08:42:25 +0200
-In-Reply-To: <13c06f83-ffb9-4834-9112-6da54a93ecbb@amd.com>
-References: <20260708224006.3405038-1-alex.hung@amd.com>
-	 <743d1be771381c86c7f264810d88876976cc508f.camel@sipsolutions.net>
-	 <75f2f98c-78df-46df-9961-6ddf2870d044@amd.com>
-	 <8b710b01b8117d41281595265da43ab0add10214.camel@sipsolutions.net>
-	 <313f6cf4-91a1-42e7-8e19-d2883c5c4f73@amd.com>
-	 <a30db44d0711d41065b1407aa5c20e062fec890c.camel@sipsolutions.net>
-	 <13c06f83-ffb9-4834-9112-6da54a93ecbb@amd.com>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, liam@infradead.org, ljs@kernel.org, 
+	ricarkol@google.com
+Date: Fri, 24 Jul 2026 08:49:08 +0200
+In-Reply-To: <m1fr189ael.wl-thehajime@gmail.com> (sfid-20260724_082009_043274_DA4AC8AB)
+References: <20260723093633.140989-12-johannes@sipsolutions.net>
+		<20260723113633.19c6669dc151.Ibd7a532eef856a1ea39699a263dfa8a9ded9dc20@changeid>
+	 <m1fr189ael.wl-thehajime@gmail.com> (sfid-20260724_082009_043274_DA4AC8AB)
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260723_234230_814304_C6F4965B 
-X-CRM114-Status: UNSURE (   7.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260723_234914_547909_83706D56 
+X-CRM114-Status: GOOD (  16.90  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,21 +75,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2026-07-23 at 18:44 -0600, Alex Hung wrote:
+On Fri, 2026-07-24 at 15:20 +0900, Hajime Tazaki wrote:
+> > UML models this with
+> > +a **userspace runner** - an ordinary uml-userspace stub host process, =
+started
+> > +exactly like an MMU userspace process, but with the whole of "physical=
+" memory
+> > +(the physmem file) mapped into it at the kernel's addresses:
+> > +
+> > +- The runner ``exec()``'s the stub just like the MMU case.  The only e=
+xtra step
+> > +  is that, once it is up, the kernel maps the entire physmem file into=
+ it in one
+> > +  go, at the same addresses the kernel uses.
+> > +- Because NOMMU never remaps, that single mapping is all a runner ever=
+ needs:
 >=20
->=20
-> I think the two patches are relevant today
->=20
->    um: fix CONFIG_GCOV for built-in code
->    seq_file: rename mangle_path to seq_mangle_path
->=20
-> I will update the patch date and add my SoB, and then send them to=20
-> mailing list, if that's okay.
+> I was actually not sure what you mean here: "NOMMU never remaps".
+> could you care to elaborate ?
+> the subsequent parts are clear to me.
 
-Sure. The first is probably the same as your prior RFC anyway?
+Yeah maybe, that's a bit cryptic. I mean, we have an MMU-less base
+kernel, so there's never any request to remap for anything, so
 
-I'd probably send them separately - good chance they might (need to) go
-through different trees.
+> > +  there is no per-mm host process, no TLB sync and no ``mmap()`` of in=
+dividual
+> > +  page-table entries into a child.  Userspace code and data - placed i=
+n memory
+> > +  by the loader - are directly executable and accessible.
+
+the original mapping that we make into that process is left alone
+forever. The map machinery in the stub is used only exactly once.
+
+> For the alpine packages, I'll contact the distribution once this UML
+> is upstreamed.  And update this part with more proper information
+> rather than my personal repository.
+
+Sure. It seemed far simpler to point to it than to try to have
+instructions on how to build it (I didn't even try), and I'm assuming
+you don't plan to remove it :)
 
 johannes
 
