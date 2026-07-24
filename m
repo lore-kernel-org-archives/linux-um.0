@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 524BDC531F9
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6127AC53209
 	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 21:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,69 +12,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rwL6wxnKddJXSKzDl/SaHxfcvabP6bVVdgQ1DVVdgKk=; b=QY3KuXP5w8pf0wBEL24W0q7/Ck
-	Wcqs7k8Z3ACX3QWcFs9lRkeaHzaSqz8GF4qlY0j0oKJAf2FxCr3t1e4Ckyg5etlrvH4PmS/ZZZVGl
-	CAfeE4xxphuDEOgHSBr1n9lrLmPdMzMVl1jdtgjPUJkQ2PU4ofhcbaB+JQEWsBfWmWuVKkBW/6jDz
-	G1vkURhto7f+at/gTzKMZnbdJQ7mOJ7R8/CwM0tn6+zStgJKlizwjrP8Du4JT0mfzbPk+/ttNdavE
-	SQ79+YG0hQVJE/Xkv50putcs2/n5Fk+hqv/8fFcgECX9HS39YYb50kp1hr78Jb5dxXA87y/TNGYWu
-	CbRi8xsA==;
+	bh=Nkq5ULqMRYGwjw+xLtrYJPITeI0l2K4PaMHFDVUKiEk=; b=WzE2a+VewA7J8QUFJnoM/XpWAP
+	UtXfz4NhASAUqw1BzNoSlKXUt2436qvFYJnkfsaAxv9XQ24CgM/o/cZUPGSiazuhJN6/ZXtw5UdXK
+	bYRzMrdG17vgHaWnh81HFmUiK+gxr9hWVH7JIIL0msvNWwXynW1OYsXiqFOEhxTsExSkJ3IdB1pmw
+	5EWiyviJhb3x8D5YxCKT9CgcAZS+MRv9suFBIrKZvGNAg5HsJakTj9PTFX/QXHSvlLKnECUGV9OwQ
+	DGvgMBmIryCMrMc2mI0KzwH4NhOifx/prtmFKnzV/vZGWWHJycAmV6VymjuoZS8t2iSdUdlSTX67l
+	Y7yigoCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnNe8-0000000HGpr-491V;
+	id 1wnNe8-0000000HGpj-3sFx;
 	Fri, 24 Jul 2026 21:41:32 +0000
-Received: from lpdvsmtp10.broadcom.com ([192.19.144.205] helo=relay.smtp-ext.broadcom.com)
+Received: from relay.smtp-ext.broadcom.com ([192.19.144.207])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnNe1-0000000HGh3-07HA
+	id 1wnNe0-0000000HGh9-3fGh
 	for linux-um@lists.infradead.org;
-	Fri, 24 Jul 2026 21:41:29 +0000
+	Fri, 24 Jul 2026 21:41:28 +0000
 Received: from mail-lvn-it-01.broadcom.com (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 551F3C0000F9;
-	Fri, 24 Jul 2026 14:41:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 551F3C0000F9
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B50A5C0003E3;
+	Fri, 24 Jul 2026 14:41:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B50A5C0003E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1784929283;
-	bh=6bIR/igc8vtJnwe2y1aD78jUwOu4p7lxaqy0G9VYVCo=;
+	s=dkimrelay; t=1784929281;
+	bh=rP/30eNjoWdGI0nVXvPpYsc/XoqP1bck1OwJZBCRtDk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CJYyCdcUFWFjlHqsjLXkitcJEJLrYg5So/9dA5K9khMILJItPWq+fSa7EpoblrrC1
-	 Q6RVdH6yrSkXeo8KTkmSgb+yNXfkVpJmcZEG6h5oLZLPzAucn/HaObTiCeWgaf7fHl
-	 OYit4J/S9heBFS62V4P24EEYQCSr0lV77OXgeaCo=
+	b=tCZhj/aoM02YOJgrXSJuLE5MsTsniRiQLjDAj2lRvUIAJfR33ONYYRCRCgL+5uS3H
+	 9bR772mRXHQsgJTXu2JgZMi9GkUihcHfzFhfRwBJP7xaHslKMDYGK7+F83gfJNCLXk
+	 vjMadfh8ZYqiFoCAN0PfLwtJDCCOCe6KE7+Oej1w=
 Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id D0CF5ACD;
-	Fri, 24 Jul 2026 14:41:22 -0700 (PDT)
+	by mail-lvn-it-01.broadcom.com (Postfix) with ESMTPSA id 43C9BACE;
+	Fri, 24 Jul 2026 14:41:21 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: stable@vger.kernel.org
-Cc: Shuvam Pandey <shuvampandey1@gmail.com>,
-	David Gow <david@davidgow.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
+Cc: Tiwei Bie <tiwei.btw@antgroup.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Florian Fainelli <florian.fainelli@broadcom.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <david@davidgow.net>,
 	Rae Moar <raemoar63@gmail.com>,
 	Kees Cook <kees@kernel.org>,
 	Jens Axboe <axboe@kernel.dk>,
 	Al Viro <viro@zeniv.linux.org.uk>,
-	Tiwei Bie <tiwei.btw@antgroup.com>,
 	linux-um@lists.infradead.org (open list:USER-MODE LINUX (UML)),
 	linux-kernel@vger.kernel.org (open list),
 	linux-kselftest@vger.kernel.org (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
 	kunit-dev@googlegroups.com (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
 	bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH stable 6.12 8/9] kunit: tool: skip stty when stdin is not a tty
-Date: Fri, 24 Jul 2026 14:41:18 -0700
-Message-Id: <20260724214119.1066665-9-florian.fainelli@broadcom.com>
+Subject: [PATCH stable 6.12 1/9] um: Add os_set_pdeathsig helper function
+Date: Fri, 24 Jul 2026 14:41:11 -0700
+Message-Id: <20260724214119.1066665-2-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260724214119.1066665-1-florian.fainelli@broadcom.com>
 References: <20260724214119.1066665-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260724_144125_194885_801A0A2F 
-X-CRM114-Status: GOOD (  13.79  )
+X-CRM114-CacheID: sfid-20260724_144125_009060_B84B8C2D 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,125 +88,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Shuvam Pandey <shuvampandey1@gmail.com>
+From: Tiwei Bie <tiwei.btw@antgroup.com>
 
-commit e42c349f4cdfa43cb39a68c8f764f8cafc23a9a9 upstream
+commit 4e5adbe447db382cc76e05613581f96aef4f91d2 upstream
 
-run_kernel() cleanup and signal_handler() invoke stty unconditionally.
-When stdin is not a tty (for example in CI or unit tests), this writes
-noise to stderr.
+This helper can be used to set the parent-death signal of the calling
+process to SIGKILL to ensure that the process will be killed if the
+UML kernel dies unexpectedly without proper cleanup. This helper will
+be used in the follow-up patches.
 
-Call stty only when stdin is a tty.
-
-Add regression tests for these paths:
-- run_kernel() with non-tty stdin
-- signal_handler() with non-tty stdin
-- signal_handler() with tty stdin
-
-Signed-off-by: Shuvam Pandey <shuvampandey1@gmail.com>
-Reviewed-by: David Gow <david@davidgow.net>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-[florian: add missing 'import sys' required by sys.stdin.isatty(); the
-module was already present in the mainline tree before this commit but
-was absent from the 6.12 base of kunit_kernel.py]
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Link: https://patch.msgid.link/20241024142828.2612828-2-tiwei.btw@antgroup.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- tools/testing/kunit/kunit_kernel.py    | 11 +++++--
- tools/testing/kunit/kunit_tool_test.py | 42 ++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 2 deletions(-)
+ arch/um/include/shared/os.h | 2 ++
+ arch/um/os-Linux/process.c  | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 3f2979f2f6ea..c09b66ba734b 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -14,6 +14,7 @@ import os
- import shlex
- import shutil
- import signal
-+import sys
- import threading
- from typing import Iterator, List, Optional, Tuple, Any
- from types import FrameType
-@@ -333,6 +334,12 @@ class LinuxSourceTree:
- 			return False
- 		return self.validate_config(build_dir)
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 77a8593f219a..2a0843cc2208 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -219,6 +219,8 @@ extern int os_unmap_memory(void *addr, int len);
+ extern int os_drop_memory(void *addr, int length);
+ extern int can_drop_memory(void);
  
-+	def _restore_terminal_if_tty(self) -> None:
-+		# stty requires a controlling terminal; skip headless runs.
-+		if sys.stdin is None or not sys.stdin.isatty():
-+			return
-+		subprocess.call(['stty', 'sane'])
++void os_set_pdeathsig(void);
 +
- 	def run_kernel(self, args: Optional[List[str]]=None, build_dir: str='', filter_glob: str='', filter: str='', filter_action: Optional[str]=None, timeout: Optional[int]=None) -> Iterator[str]:
- 		# Copy to avoid mutating the caller-supplied list. exec_tests() reuses
- 		# the same args across repeated run_kernel() calls (e.g. --run_isolated),
-@@ -380,11 +387,11 @@ class LinuxSourceTree:
- 			output.close()
- 
- 			waiter.join()
--			subprocess.call(['stty', 'sane'])
-+			self._restore_terminal_if_tty()
- 
- 	def signal_handler(self, unused_sig: int, unused_frame: Optional[FrameType]) -> None:
- 		logging.error('Build interruption occurred. Cleaning console.')
- 		if self._process:
- 				self._process.terminate()
- 				self._process.wait()
--		subprocess.call(['stty', 'sane'])
-+		self._restore_terminal_if_tty()
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 70e5d0abe87f..6e6200d52540 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -503,6 +503,48 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 				self.assertIn('kunit.filter_glob=suite.test1', start_calls[0])
- 				self.assertIn('kunit.filter_glob=suite.test2', start_calls[1])
- 
-+	def test_run_kernel_skips_terminal_reset_without_tty(self):
-+		def fake_start(unused_args, unused_build_dir):
-+			return subprocess.Popen(['printf', 'KTAP version 1\n'],
-+						text=True, stdout=subprocess.PIPE)
+ /* execvp.c */
+ extern int execvp_noalloc(char *buf, const char *file, char *const argv[]);
+ /* helper.c */
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 2686120ab232..4015d3dc3958 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -12,6 +12,7 @@
+ #include <fcntl.h>
+ #include <sys/mman.h>
+ #include <sys/ptrace.h>
++#include <sys/prctl.h>
+ #include <sys/wait.h>
+ #include <asm/unistd.h>
+ #include <init.h>
+@@ -234,3 +235,8 @@ void init_new_thread_signals(void)
+ 	set_handler(SIGIO);
+ 	signal(SIGWINCH, SIG_IGN);
+ }
 +
-+		non_tty_stdin = mock.Mock()
-+		non_tty_stdin.isatty.return_value = False
-+
-+		with tempfile.TemporaryDirectory('') as build_dir:
-+			tree = kunit_kernel.LinuxSourceTree(build_dir, kunitconfig_paths=[os.devnull])
-+			with mock.patch.object(tree._ops, 'start', side_effect=fake_start), \
-+			     mock.patch.object(kunit_kernel.sys, 'stdin', non_tty_stdin), \
-+			     mock.patch.object(kunit_kernel.subprocess, 'call') as mock_call:
-+				for _ in tree.run_kernel(build_dir=build_dir):
-+					pass
-+
-+				mock_call.assert_not_called()
-+
-+	def test_signal_handler_skips_terminal_reset_without_tty(self):
-+		non_tty_stdin = mock.Mock()
-+		non_tty_stdin.isatty.return_value = False
-+		tree = kunit_kernel.LinuxSourceTree('', kunitconfig_paths=[os.devnull])
-+
-+		with mock.patch.object(kunit_kernel.sys, 'stdin', non_tty_stdin), \
-+		     mock.patch.object(kunit_kernel.subprocess, 'call') as mock_call, \
-+		     mock.patch.object(kunit_kernel.logging, 'error') as mock_error:
-+			tree.signal_handler(signal.SIGINT, None)
-+			mock_error.assert_called_once()
-+			mock_call.assert_not_called()
-+
-+	def test_signal_handler_resets_terminal_with_tty(self):
-+		tty_stdin = mock.Mock()
-+		tty_stdin.isatty.return_value = True
-+		tree = kunit_kernel.LinuxSourceTree('', kunitconfig_paths=[os.devnull])
-+
-+		with mock.patch.object(kunit_kernel.sys, 'stdin', tty_stdin), \
-+		     mock.patch.object(kunit_kernel.subprocess, 'call') as mock_call, \
-+		     mock.patch.object(kunit_kernel.logging, 'error') as mock_error:
-+			tree.signal_handler(signal.SIGINT, None)
-+			mock_error.assert_called_once()
-+			mock_call.assert_called_once_with(['stty', 'sane'])
-+
- 	def test_build_reconfig_no_config(self):
- 		with tempfile.TemporaryDirectory('') as build_dir:
- 			with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
++void os_set_pdeathsig(void)
++{
++	prctl(PR_SET_PDEATHSIG, SIGKILL);
++}
 -- 
 2.34.1
 
