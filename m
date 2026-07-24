@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C2CC531FA
-	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 16:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24802C531FA
+	for <linux-um@archiver.kernel.org>; Fri, 24 Jul 2026 16:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZObIlia0bF/5KoAO7QHOC3KkZX1rkeg1RIL22kW+K4Y=; b=YMRPxnxcgsFMwgYiXTI38cdbim
-	3PgvoWhRepLDXZvEcPvpUb2MPv15t7HiXZyDCbe5F/5IWj5vDMdgeUxJ6jdRttHKduX2RqYL0os12
-	uIp8mel7+AgOzh46D1jQHBKr+gdS0izQq8sRV9AQvub64lb9og1ChiX66p7XHpBUBWS8wxRtpuEup
-	5bS2if8IsX1SepUmdmFHk2anFK3SCALc+3M0hFzTkDZQHCJOYSzISoUMx0Zv9yFy1lmQ9XGg5RTDi
-	WyeiO00EMTmujq+iKnA2Yi8LcXoTLS1lDZXC31AySwj4F37SQjp6BHwzFHkQeOjFsohK0T6BkGB55
-	EMc1DWYA==;
+	bh=NEwnT35D7tuzT3xeTQQMHkJEWGepfSu0cwMv30sxXLk=; b=ay25V9l6pfZfm1u2OpJr1eaWLF
+	9z3FDBoyGg87SM3/TBuvgSaDOsmtYyZkW830Il1fXk48DqtaiufRwWv60o8RzXNUQtXuxgwwhLGWz
+	37j9UtQQD4wqVWgTj9w6QgrS2U8r5EZ1v6kuarn+0el8iDsI2IvYuU2On75BB35Yzut/Q17B4y0/r
+	SeA9266cHd4bTpS6pLxZpAsSkzNREN+LWuurGzvskQUxj2Z1FcdrIEJF/sJnWVmkXHyAbqKGO3ZN4
+	QIw+brvBUhBtYZ5aUb5WIuRG6elbz+T+znz7qmXo3N5IApIfsL9VXR1XwY+d4gSD4Qo8NJSwoQKkK
+	kUHlC/dw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnIij-0000000Gq9T-3hVU;
-	Fri, 24 Jul 2026 16:25:57 +0000
+	id 1wnIoR-0000000GqgO-3Na8;
+	Fri, 24 Jul 2026 16:31:51 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wnIig-0000000Gq8j-1OUF;
-	Fri, 24 Jul 2026 16:25:55 +0000
+	id 1wnIoO-0000000GqfJ-3YZM;
+	Fri, 24 Jul 2026 16:31:50 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 820DC1BB0;
-	Fri, 24 Jul 2026 09:25:48 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AE7F1BB2;
+	Fri, 24 Jul 2026 09:31:43 -0700 (PDT)
 Received: from [10.57.0.90] (unknown [10.57.0.90])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D9153F66F;
-	Fri, 24 Jul 2026 09:25:38 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACA703F66F;
+	Fri, 24 Jul 2026 09:31:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784910352; bh=90PjtwWiYZulmqV39H8fGSHBZ8shBRidW6H3XBOLz1E=;
+	t=1784910707; bh=NEwnT35D7tuzT3xeTQQMHkJEWGepfSu0cwMv30sxXLk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LSeaOheALTDiD44xvkD55jNPMvVMiWCKhoAY3QOMhLgjHKQ4vGk/sCbVALnk8LQcs
-	 UGzo+QT8sgIjgylea7jT8NDptv0jyxQHH1Yl0mF7+8llAZ/r++VL9OJQZ9z7INpPWZ
-	 IvaE6ewh0IBZMWQRx7oS05rwa6Tfr8Ub24gxyRR8=
-Message-ID: <13be2648-f68d-46ae-ae8a-5ca9e067cc90@arm.com>
-Date: Fri, 24 Jul 2026 18:25:35 +0200
+	b=rJ2DJJ7D9c7D1FVu9FvWF7Hq7v5HoLI/CdhriAp1fJ4dLBnD8EJRRWBa3d3TSeSRj
+	 y4giJ+zCCtRJVGca1Zy4119yCr4CT8kuPBEs9cPEAEswfrfTiiEZd9fOxFya5yiDAq
+	 5lH15CX22toaprtjLQyFDxQHqVRAyMvOmxdmryBU=
+Message-ID: <c17ccb0b-9f6b-4521-a992-bdc658b91597@arm.com>
+Date: Fri, 24 Jul 2026 18:31:32 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/22] mm: only initialise pt_share_count for user
- pgtables
-To: "David Hildenbrand (Arm)" <david@kernel.org>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Pasha Tatashin <pasha.tatashin@soleen.com>,
+Subject: Re: [PATCH 14/22] mm: set page table page type when allocated
+To: Vishal Moola <vishal.moola@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Pasha Tatashin <pasha.tatashin@soleen.com>,
  Russell King <linux@armlinux.org.uk>,
  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
  Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
  Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
  Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
  Madhavan Srinivasan <maddy@linux.ibm.com>,
  Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
@@ -75,20 +74,21 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  x86@kernel.org, tboot-devel@lists.sourceforge.net,
  Ard Biesheuvel <ardb@kernel.org>,
  Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-efi@vger.kernel.org,
- Vishal Moola <vishal.moola@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Alistair Popple <apopple@nvidia.com>,
  "Matthew Wilcox (Oracle)" <willy@infradead.org>,
  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
- <20260714-remove_pgtable_cdtor-v1-15-44be8a7685d7@arm.com>
- <e95aabc0-522b-4660-958a-d648c1cfa78f@kernel.org>
+ <20260714-remove_pgtable_cdtor-v1-14-44be8a7685d7@arm.com>
+ <alZSwAM4pwmMOeaD@fedora> <f3afa5df-73f3-49da-87a6-d75eb5f3610f@arm.com>
+ <al5xZHiFwatn518I@fedora>
 From: Kevin Brodsky <kevin.brodsky@arm.com>
 Content-Language: en-GB
-In-Reply-To: <e95aabc0-522b-4660-958a-d648c1cfa78f@kernel.org>
+In-Reply-To: <al5xZHiFwatn518I@fedora>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260724_092554_531939_07A8B1D1 
-X-CRM114-Status: GOOD (  17.09  )
+X-CRM114-CacheID: sfid-20260724_093149_025579_A14A7476 
+X-CRM114-Status: GOOD (  18.29  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,49 +103,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 21/07/2026 17:12, David Hildenbrand (Arm) wrote:
-> On 7/14/26 16:04, Kevin Brodsky wrote:
->> ptdesc_pmd_pts_init() initialises the pt_share_count ptdesc field.
->> That field is only used for hugetlb tracking purposes, so there is
->> no need to initialise it for kernel page tables. Skip the call for
->> kernel page tables, like pmd_ptlock_init().
->>
->> From now on pagetable_*_ctor() and pagetable_dtor() do nothing for
->> kernel page tables.
->>
->> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
->> ---
->>  include/linux/mm.h | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index 94f0fb1c662a..b217ccbed5a3 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -3905,9 +3905,12 @@ static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
->>  static inline bool pagetable_pmd_ctor(struct mm_struct *mm,
->>  				      struct ptdesc *ptdesc)
->>  {
->> -	if (!mm_is_kernel(mm) && !pmd_ptlock_init(ptdesc))
->> -		return false;
->> -	ptdesc_pmd_pts_init(ptdesc);
->> +	if (!mm_is_kernel(mm)) {
->> +		if (!pmd_ptlock_init(ptdesc))
->> +			return false;
->> +		ptdesc_pmd_pts_init(ptdesc);
->> +	}
->> +
-> I'd have said "the initialization is cheap, why bother", but we already do have
-> the mm_is_kernel() check in place, so
+On 20/07/2026 21:05, Vishal Moola wrote:
+> On Thu, Jul 16, 2026 at 11:49:31AM +0200, Kevin Brodsky wrote:
+>>> We should switch over from __folio_set_pgtable() to __SetPagePgtable()
+>>> in this patch. Ptdescs and folios should be treated as distinctly
+>>> independent of each other.
+>> I sure remember the previous discussion, but my reading of your comments
+>> [1] is that we cannot really change this as long as pagetable_alloc()
+>> can be called with order > 0, right? Multiple archs still rely on that.
+> Kinda...
+>
+> The concern was about callers accessing tail pages directly for that
+> information. Using the folio API ensures that we always look into the
+> head page.
+>
+> Since we're now doing it at allocation time, we know we always have the
+> head page, so it's fine.
 
-This isn't mainly about the overhead, but rather the fact that from here
-on the ctor/dtor do nothing for kernel page tables. Patch 20-22 rely on
-this, and in part 2 I would go further and only ever call the ctor/dtor
-for user page tables, so that the mm_is_kernel() check can be dropped.
+Ah got it, that makes sense.
 
-> Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+>
+> The dtor/free should be more questionable because the underlying api
+> uses virt_to_page() which could look at a tail page... oopsie. I
+> haven't seen any reports tied to it so its probably fine (the
+> setting/clearing has been using the folio API since ptdescs).
 
-Thanks for the reviews!
+Right, that should be fine - calling pagetable_free() on anything else
+than a ptdesc allocated by pagetable_alloc() is a bug, so if we get any
+crash because of this we should just go and fix the underlying issue.
+I'd still switch to __SetPagePgtable() in a separate commit to improve
+bisectability.
+
+FWIW there are definitely cases where pagetable_free() and
+pagetable_alloc() calls aren't properly matched (see my reply to the
+cover letter), this needs to be addressed for this series anyway.
+
+> We can say thats a happy accident that makes distinguishing ptdescs
+> and folios easier :)
+
+Indeed!
 
 - Kevin
 
