@@ -4,61 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FB24C531D0
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 02:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A01CC531F9
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 03:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YbsvO7a017HSUYN1vqL+XFp68grTBmz5BbENZ4uGlvE=; b=aCEH9dbrewed1MohzeVv7Vpmp8
-	gsJChGKwDW9B/Yezq6lRpmKnrW8AnsPf5Q4L9yT4R5mECsSn9NQY7XgmL/y5Yjix29ODQbXvAQuwm
-	W07NX69Cb2hf+DM/4G42alGi1UzGHXDPtsEHp0KaAvdZHxIY4hV4DFPCTZQBUQylf5mNS0lHq3DMP
-	gkC/n8VJlvemAEvltyrP+/jJLlhRX4vuy91DaK0cZjwtKatbaCBPHvLVBvRCJmW3xrS9IP+MI9YFN
-	4pLO0JWVWouGNzp0kdfEdk9ZflLRadX9pyoCDcyMpNQe8hP6Ew4FoXOcYMyklYl6Jg1kzWsYy5wV9
-	6cZ9GU7w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cA78QBzHmkLvAUUdVIUp/VZli9DJsAoJPO8K/XCSt+o=; b=FnD3a3vpHf5K0b6t6OS33XQE3M
+	5OS12gjc5IH4JmLTtJOv4OM/ur/M78OfQ7QWCNUvvr9EOGdukorl+lu/Jx5FFgOe5gnKWPQj2zSBB
+	L6UWqBms3pxgmGStlcWYYOtRsBXB3Wz+4P6JWR6o/xBaGy7Efe4czwBroi5DdcIkwM3lvuRMcCCHj
+	ZbPM0HcT6Dk/G/ExGT+QNZNPlNKm0ZYt4S84pJrViNb6XzSFWbaAiLspfAqo3XdHtP28hvMsVke3C
+	mbMRBrBVUwKURRrtO1Q9ZVQCBQbOz+0A0oRcjs/cC7wlvdexpNAtM2CAlF9IOATJ9iqVJH0w5U9CI
+	ZViFtLqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPf-00000004Fi8-04TM;
-	Tue, 28 Jul 2026 02:19:23 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1woYgt-00000004Kzq-3Xas;
+	Tue, 28 Jul 2026 03:41:15 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPc-00000004Ff5-00ON
+	id 1woYgr-00000004Kyv-2Oof
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 02:19:20 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7569760A69;
-	Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29841F00A3E;
-	Tue, 28 Jul 2026 02:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785205159;
-	bh=YbsvO7a017HSUYN1vqL+XFp68grTBmz5BbENZ4uGlvE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QktIVMKvztDt3mFWvdgLLApi1XcE2dNDQv4ahIWsDb+bnUPhQV38GyIx/rO9DH9JL
-	 BaIzusTmYXQPzefowlkye+ch3SFusxN5nGrRMuJr4VJ14ysa8Zc1PSpZ4MnNm/w13z
-	 44pyDOzkFERGiNMQlglPsbmR9PLx87vGMcPKxdnYWTaOh3LjLD6Zi9MJDyWs2B5q5I
-	 nwt0Xi6sc5jgWelKU4/WRudYmHFl+Qf7yxWATGS3mtGNlRlaBEXw7YDt8bLYGu+SdO
-	 6hQAsx47ncuxjj/nSAaJXjlC3tyXkKJii5cwdvvzMx+1VwHRjTe3X4rz0ngrTv9TTg
-	 o/1tNw7547moQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: x86@kernel.org
-Cc: linux-um@lists.infradead.org,
-	linux-raid@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 7/8] lib/raid/xor: x86: Remove redundant X86_FEATURE_OSXSAVE check
-Date: Mon, 27 Jul 2026 19:16:02 -0700
-Message-ID: <20260728021603.79870-8-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260728021603.79870-1-ebiggers@kernel.org>
-References: <20260728021603.79870-1-ebiggers@kernel.org>
+	Tue, 28 Jul 2026 03:41:15 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 8775768AFE; Tue, 28 Jul 2026 05:41:05 +0200 (CEST)
+Date: Tue, 28 Jul 2026 05:41:05 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: x86@kernel.org, linux-um@lists.infradead.org,
+	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 7/8] lib/raid/xor: x86: Remove redundant
+ X86_FEATURE_OSXSAVE check
+Message-ID: <20260728034105.GC18902@lst.de>
+References: <20260728021603.79870-1-ebiggers@kernel.org> <20260728021603.79870-8-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260728021603.79870-8-ebiggers@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260727_204113_761655_2A39B405 
+X-CRM114-Status: UNSURE (   7.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,29 +63,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-X86_FEATURE_AVX implies X86_FEATURE_OSXSAVE already.
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- lib/raid/xor/x86/xor_arch.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/lib/raid/xor/x86/xor_arch.h b/lib/raid/xor/x86/xor_arch.h
-index 99fe85a213c66..991abe3f4bbda 100644
---- a/lib/raid/xor/x86/xor_arch.h
-+++ b/lib/raid/xor/x86/xor_arch.h
-@@ -18,8 +18,7 @@ extern struct xor_block_template xor_block_avx;
-  */
- static __always_inline void __init arch_xor_init(void)
- {
--	if (boot_cpu_has(X86_FEATURE_AVX) &&
--	    boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	if (boot_cpu_has(X86_FEATURE_AVX)) {
- 		xor_force(&xor_block_avx);
- 	} else if (IS_ENABLED(CONFIG_X86_64) || boot_cpu_has(X86_FEATURE_XMM)) {
- 		xor_register(&xor_block_sse);
--- 
-2.55.0
+The prefix here should be just xor: to stick with the existing commits.
 
 
