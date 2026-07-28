@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1CDAC54F51
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46D8DC53219
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 02:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iABFr4uz310xMsSqo1LrpgOKNONPa4PvMLDz1Xo/BU0=; b=GUiiQvlGkqR6K3hEtoZFel1oha
-	KE6iSHvu9U0mIusYeIYJazkO/s7aPbZZyhOU1svi9g0RzSCh3u2guJFaOgFxdonUqJPWQdSw4UTPw
-	1UqyokSSZ/zqxBH6J7TrBc0w1xl3iagIWMotb3aNRrk4nC5ckZwNZlYEaw53XzcqpHIFgdVSWGmWv
-	3PvldQTWc6zrlTvM46OuKUWlg3o0XEPFqUvKevf8qNxS9G1Ncx2AYj9roXD3LiNr8BgAHgoat7kI8
-	Un6hz1E/rzag1FG8aC7nWyXTdcnxtqjP7ruCaJ/Vs310ojpUNW3thiz8n+OjjPp4iuUiKMpiG0Qdr
-	6cq8oYtA==;
+	bh=vqunIx6I6P5BO4L84jXf9HBRjWQOIObJRsDL1K0ccjI=; b=WP2zOw5ONCyMwnLEpUAYeOJOvw
+	LKe1holZXpcRhCCjhrTyeKFycQcgwi9f6peZhe6niG5Na9holUIKeiJwbolXnlo+rwJ0WEJOumJlk
+	UG6XVKD0BO15lWhTyuwz7pybyIx7nx79Lor7J3COQROtOUUwcuAhoCp4IUS1LlUqbuhX1B+3ebBVj
+	2bWk5A5ymAIob7HR9ySzTDnlKeax4UBBvaA3HYt5rKplG4CbAOhAf86yhOQ/rjgfYqDeUalXhFcgh
+	6St4Lq7q2+fUwjJR2j4eCxvGK0FIDDLUS6ZmSqXtHFEmmWcLmSLu+34UcmdLosWlocpEpCNoap4Zd
+	GeALQCAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPb-00000004Feq-2LMW;
-	Tue, 28 Jul 2026 02:19:19 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1woXPe-00000004Fhy-40xV;
+	Tue, 28 Jul 2026 02:19:22 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPb-00000004Fdl-09LC
+	id 1woXPb-00000004FeA-3VuJ
 	for linux-um@lists.infradead.org;
 	Tue, 28 Jul 2026 02:19:19 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id F19A9600FC;
-	Tue, 28 Jul 2026 02:19:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 743B01F00AC4;
-	Tue, 28 Jul 2026 02:19:17 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 12D9E60A71;
+	Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EC01F00ACA;
+	Tue, 28 Jul 2026 02:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785205157;
-	bh=iABFr4uz310xMsSqo1LrpgOKNONPa4PvMLDz1Xo/BU0=;
+	s=k20260515; t=1785205158;
+	bh=vqunIx6I6P5BO4L84jXf9HBRjWQOIObJRsDL1K0ccjI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=BfDfOQeOsHqqC5p0xmI7xljR0UjsZR/E/rp/4e0ZQj0Z3g7yxhMbNlSgCGYQVrFQP
-	 5FwusclEudIyLWxcyNMRjSyk3r9fIeyftygbe5pWO6fGbiUHSJoAY+rbKPd/toZn2L
-	 s81lYhJR3BS3niPkUIZIPFUkX3mr/TUfuaNWij4+dLxbHn/aYBE9m7jjbpxx5InQUR
-	 foH8akG/ceSpW5L9Q+7CfgGAq/A/dWA7OrhGYV4Mb5f+20Xn/dI0DCDk6tj+OHqO4T
-	 JtnQjGnWOGO+VHpOXEbe6tgY5HZ64tKWbGLfWTe4iaMINQjj9Mee5SBVIP+gLF/pgL
-	 5GQ+j35ykar9A==
+	b=lf3Kb7s7ERyjF5IypfY0T9KLnfwe00i8m6zFnFXSc2YteyQ+ZWv1B503sLgxDqNRe
+	 Er+zJqLF15HSIAqm5CKZzMQaUw4x0SntnpffzWVoin+W7jxxbRy2Ewh75jnOWIbdzI
+	 TO1wFFuesF/XqTR7+XyDWhemQwfCwV9a/MCxKc3zzAw1zJWoDp65aooOlMhlfrSDPG
+	 VxvuX5nFVBhcBcyHLZ93jSpbQQX1Ncun4To56Q2jpz+9d1DyLdxVFgDvlDxODYnHY2
+	 GIfnhjz18j1AYvkpQbyJbo65GiBCaQKV1naRbqFy8LTbsbOwvgnh968h+9Ws019VCW
+	 ln9b9V1LePxbw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -51,9 +51,9 @@ Cc: linux-um@lists.infradead.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 3/8] crypto: x86 - Stop using cpu_has_xfeatures()
-Date: Mon, 27 Jul 2026 19:15:58 -0700
-Message-ID: <20260728021603.79870-4-ebiggers@kernel.org>
+Subject: [PATCH v2 6/8] x86/fpu: Remove cpu_has_xfeatures()
+Date: Mon, 27 Jul 2026 19:16:01 -0700
+Message-ID: <20260728021603.79870-7-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260728021603.79870-1-ebiggers@kernel.org>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
@@ -73,364 +73,112 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Checking both boot_cpu_has(X86_FEATURE_AVX*) and cpu_has_xfeatures() has
-never really been needed in practice, and it's never been universally
-done (e.g., lib/raid/ omits cpu_has_xfeatures()).  Nevertheless, both
-x86 and UML now explicitly clear the AVX and AVX-512 flags if their
-xfeatures are missing, which should remove any remaining doubts.
+The only remaining caller of cpu_has_xfeatures() is
+print_xstate_features(), which uses it only to check and get the name of
+a single feature.
 
-Thus, remove all the calls to cpu_has_xfeatures(), as well as the
-related checks of boot_cpu_has(X86_FEATURE_OSXSAVE).
+Remove it and just inline the needed code into print_xstate_features().
 
-In a few cases there was no corresponding boot_cpu_has(X86_FEATURE_AVX*)
-check, so add the missing ones.
+This also makes the "unknown xstate feature" entry at index XFEATURE_MAX
+of xfeature_names[] unnecessary, so remove that too.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- arch/x86/crypto/aegis128-aesni-glue.c      |  3 +--
- arch/x86/crypto/aesni-intel_glue.c         |  7 ++-----
- arch/x86/crypto/aria_aesni_avx2_glue.c     | 11 +----------
- arch/x86/crypto/aria_aesni_avx_glue.c      | 11 +----------
- arch/x86/crypto/aria_gfni_avx512_glue.c    | 11 +----------
- arch/x86/crypto/camellia_aesni_avx2_glue.c | 11 +----------
- arch/x86/crypto/camellia_aesni_avx_glue.c  | 11 +----------
- arch/x86/crypto/cast5_avx_glue.c           |  7 ++-----
- arch/x86/crypto/cast6_avx_glue.c           |  7 ++-----
- arch/x86/crypto/serpent_avx2_glue.c        |  9 +--------
- arch/x86/crypto/serpent_avx_glue.c         |  7 ++-----
- arch/x86/crypto/sm4_aesni_avx2_glue.c      | 11 +----------
- arch/x86/crypto/sm4_aesni_avx_glue.c       | 11 +----------
- arch/x86/crypto/twofish_avx_glue.c         |  6 ++----
- 14 files changed, 19 insertions(+), 104 deletions(-)
+ arch/x86/include/asm/fpu/api.h |  9 -------
+ arch/x86/kernel/fpu/xstate.c   | 44 +++-------------------------------
+ 2 files changed, 3 insertions(+), 50 deletions(-)
 
-diff --git a/arch/x86/crypto/aegis128-aesni-glue.c b/arch/x86/crypto/aegis128-aesni-glue.c
-index f1adfba1a76ea..09fc0b15b0e99 100644
---- a/arch/x86/crypto/aegis128-aesni-glue.c
-+++ b/arch/x86/crypto/aegis128-aesni-glue.c
-@@ -265,8 +265,7 @@ static struct aead_alg crypto_aegis128_aesni_alg = {
- static int __init crypto_aegis128_aesni_module_init(void)
- {
- 	if (!boot_cpu_has(X86_FEATURE_XMM4_1) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !cpu_has_xfeatures(XFEATURE_MASK_SSE, NULL))
-+	    !boot_cpu_has(X86_FEATURE_AES))
- 		return -ENODEV;
+diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+index 90c63fe19c0fb..cfed8b24d64f0 100644
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@ -99,15 +99,6 @@ static inline void fpregs_assert_state_consistent(void) { }
+  */
+ extern void switch_fpu_return(void);
  
- 	return crypto_register_aead(&crypto_aegis128_aesni_alg);
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index f522fff9231e8..f6f899db7482d 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -1548,8 +1548,7 @@ static int __init register_avx_algs(void)
- 	if (!boot_cpu_has(X86_FEATURE_AVX2) ||
- 	    !boot_cpu_has(X86_FEATURE_VAES) ||
- 	    !boot_cpu_has(X86_FEATURE_VPCLMULQDQ) ||
--	    !boot_cpu_has(X86_FEATURE_PCLMULQDQ) ||
--	    !cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM, NULL))
-+	    !boot_cpu_has(X86_FEATURE_PCLMULQDQ))
- 		return 0;
- 	err = crypto_register_skciphers(skcipher_algs_vaes_avx2,
- 					ARRAY_SIZE(skcipher_algs_vaes_avx2));
-@@ -1562,9 +1561,7 @@ static int __init register_avx_algs(void)
- 
- 	if (!boot_cpu_has(X86_FEATURE_AVX512BW) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX512VL) ||
--	    !boot_cpu_has(X86_FEATURE_BMI2) ||
--	    !cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM |
--			       XFEATURE_MASK_AVX512, NULL))
-+	    !boot_cpu_has(X86_FEATURE_BMI2))
- 		return 0;
- 
- 	if (boot_cpu_has(X86_FEATURE_PREFER_YMM)) {
-diff --git a/arch/x86/crypto/aria_aesni_avx2_glue.c b/arch/x86/crypto/aria_aesni_avx2_glue.c
-index 1487a49bfbacc..371be2fb64695 100644
---- a/arch/x86/crypto/aria_aesni_avx2_glue.c
-+++ b/arch/x86/crypto/aria_aesni_avx2_glue.c
-@@ -195,22 +195,13 @@ static struct skcipher_alg aria_algs[] = {
- 
- static int __init aria_avx2_init(void)
- {
--	const char *feature_name;
+-/*
+- * Query the presence of one or more xfeatures. Works on any legacy CPU as well.
+- *
+- * If 'feature_name' is set then put a human-readable description of
+- * the feature there as well - this can be used to print error (or success)
+- * messages.
+- */
+-extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
 -
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX2) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX2 or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
+ /* Trap handling */
+ extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
+ extern void fpu_sync_fpstate(struct fpu *fpu);
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 904ff933c0d88..3c185b2828c71 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -66,8 +66,8 @@ static const char *xfeature_names[] =
+ 	"AMX Tile config",
+ 	"AMX Tile data",
+ 	"APX registers",
+-	"unknown xstate feature",
+ };
++static_assert(ARRAY_SIZE(xfeature_names) == XFEATURE_MAX);
  
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
+ static unsigned short xsave_cpuid_features[] __initdata = {
+ 	[XFEATURE_FP]				= X86_FEATURE_FPU,
+@@ -122,44 +122,6 @@ static inline unsigned int next_xfeature_order(unsigned int i, u64 mask)
+ #define XSTATE_FLAG_SUPERVISOR	BIT(0)
+ #define XSTATE_FLAG_ALIGNED64	BIT(1)
+ 
+-/*
+- * Return whether the system supports a given xfeature.
+- *
+- * Also return the name of the (most advanced) feature that the caller requested:
+- */
+-int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
+-{
+-	u64 xfeatures_missing = xfeatures_needed & ~fpu_kernel_cfg.max_features;
+-
+-	if (unlikely(feature_name)) {
+-		long xfeature_idx, max_idx;
+-		u64 xfeatures_print;
+-		/*
+-		 * So we use FLS here to be able to print the most advanced
+-		 * feature that was requested but is missing. So if a driver
+-		 * asks about "XFEATURE_MASK_SSE | XFEATURE_MASK_YMM" we'll print the
+-		 * missing AVX feature - this is the most informative message
+-		 * to users:
+-		 */
+-		if (xfeatures_missing)
+-			xfeatures_print = xfeatures_missing;
+-		else
+-			xfeatures_print = xfeatures_needed;
+-
+-		xfeature_idx = fls64(xfeatures_print)-1;
+-		max_idx = ARRAY_SIZE(xfeature_names)-1;
+-		xfeature_idx = min(xfeature_idx, max_idx);
+-
+-		*feature_name = xfeature_names[xfeature_idx];
 -	}
 -
- 	if (boot_cpu_has(X86_FEATURE_GFNI)) {
- 		aria_ops.aria_encrypt_16way = aria_aesni_avx_gfni_encrypt_16way;
- 		aria_ops.aria_decrypt_16way = aria_aesni_avx_gfni_decrypt_16way;
-diff --git a/arch/x86/crypto/aria_aesni_avx_glue.c b/arch/x86/crypto/aria_aesni_avx_glue.c
-index e4e3d78915a5f..d23fc91c0ebdd 100644
---- a/arch/x86/crypto/aria_aesni_avx_glue.c
-+++ b/arch/x86/crypto/aria_aesni_avx_glue.c
-@@ -182,21 +182,12 @@ static struct skcipher_alg aria_algs[] = {
- 
- static int __init aria_avx_init(void)
+-	if (xfeatures_missing)
+-		return 0;
+-
+-	return 1;
+-}
+-EXPORT_SYMBOL_GPL(cpu_has_xfeatures);
+-
+ static bool xfeature_is_aligned64(int xfeature_nr)
  {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
+ 	return xstate_flags[xfeature_nr] & XSTATE_FLAG_ALIGNED64;
+@@ -302,9 +264,9 @@ static void __init print_xstate_features(void)
+ 
+ 	for (i = 0; i < XFEATURE_MAX; i++) {
+ 		u64 mask = BIT_ULL(i);
+-		const char *name;
++		const char *name = xfeature_names[i];
+ 
+-		if (cpu_has_xfeatures(mask, &name))
++		if (fpu_kernel_cfg.max_features & mask)
+ 			pr_info("x86/fpu: Supporting XSAVE feature 0x%03Lx: '%s'\n", mask, name);
  	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	if (boot_cpu_has(X86_FEATURE_GFNI)) {
- 		aria_ops.aria_encrypt_16way = aria_aesni_avx_gfni_encrypt_16way;
- 		aria_ops.aria_decrypt_16way = aria_aesni_avx_gfni_decrypt_16way;
-diff --git a/arch/x86/crypto/aria_gfni_avx512_glue.c b/arch/x86/crypto/aria_gfni_avx512_glue.c
-index 363cbf4399cca..e05bbeb22d4a9 100644
---- a/arch/x86/crypto/aria_gfni_avx512_glue.c
-+++ b/arch/x86/crypto/aria_gfni_avx512_glue.c
-@@ -196,24 +196,15 @@ static struct skcipher_alg aria_algs[] = {
- 
- static int __init aria_avx512_init(void)
- {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX2) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX512F) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX512VL) ||
--	    !boot_cpu_has(X86_FEATURE_GFNI) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_GFNI)) {
- 		pr_info("AVX512/GFNI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM |
--			       XFEATURE_MASK_AVX512, &feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	aria_ops.aria_encrypt_16way = aria_aesni_avx_gfni_encrypt_16way;
- 	aria_ops.aria_decrypt_16way = aria_aesni_avx_gfni_decrypt_16way;
- 	aria_ops.aria_ctr_crypt_16way = aria_aesni_avx_gfni_ctr_crypt_16way;
-diff --git a/arch/x86/crypto/camellia_aesni_avx2_glue.c b/arch/x86/crypto/camellia_aesni_avx2_glue.c
-index 2d2f4e16537c4..073fa3bb83888 100644
---- a/arch/x86/crypto/camellia_aesni_avx2_glue.c
-+++ b/arch/x86/crypto/camellia_aesni_avx2_glue.c
-@@ -97,22 +97,13 @@ static struct skcipher_alg camellia_algs[] = {
- 
- static int __init camellia_aesni_init(void)
- {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX2) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX2 or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	return crypto_register_skciphers(camellia_algs,
- 					 ARRAY_SIZE(camellia_algs));
  }
-diff --git a/arch/x86/crypto/camellia_aesni_avx_glue.c b/arch/x86/crypto/camellia_aesni_avx_glue.c
-index 5c321f255eb7b..872e5e07220fa 100644
---- a/arch/x86/crypto/camellia_aesni_avx_glue.c
-+++ b/arch/x86/crypto/camellia_aesni_avx_glue.c
-@@ -98,21 +98,12 @@ static struct skcipher_alg camellia_algs[] = {
- 
- static int __init camellia_aesni_init(void)
- {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	return crypto_register_skciphers(camellia_algs,
- 					 ARRAY_SIZE(camellia_algs));
- }
-diff --git a/arch/x86/crypto/cast5_avx_glue.c b/arch/x86/crypto/cast5_avx_glue.c
-index 3aca04d43b34a..5de35e863370c 100644
---- a/arch/x86/crypto/cast5_avx_glue.c
-+++ b/arch/x86/crypto/cast5_avx_glue.c
-@@ -92,11 +92,8 @@ static struct skcipher_alg cast5_algs[] = {
- 
- static int __init cast5_init(void)
- {
--	const char *feature_name;
--
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
-+	if (!boot_cpu_has(X86_FEATURE_AVX)) {
-+		pr_info("AVX instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
-diff --git a/arch/x86/crypto/cast6_avx_glue.c b/arch/x86/crypto/cast6_avx_glue.c
-index c4dd28c303036..3d7ea48007bc0 100644
---- a/arch/x86/crypto/cast6_avx_glue.c
-+++ b/arch/x86/crypto/cast6_avx_glue.c
-@@ -92,11 +92,8 @@ static struct skcipher_alg cast6_algs[] = {
- 
- static int __init cast6_init(void)
- {
--	const char *feature_name;
--
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
-+	if (!boot_cpu_has(X86_FEATURE_AVX)) {
-+		pr_info("AVX instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
-diff --git a/arch/x86/crypto/serpent_avx2_glue.c b/arch/x86/crypto/serpent_avx2_glue.c
-index f5f2121b79567..72a9e2b306d63 100644
---- a/arch/x86/crypto/serpent_avx2_glue.c
-+++ b/arch/x86/crypto/serpent_avx2_glue.c
-@@ -93,17 +93,10 @@ static struct skcipher_alg serpent_algs[] = {
- 
- static int __init serpent_avx2_init(void)
- {
--	const char *feature_name;
--
--	if (!boot_cpu_has(X86_FEATURE_AVX2) || !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	if (!boot_cpu_has(X86_FEATURE_AVX2)) {
- 		pr_info("AVX2 instructions are not detected.\n");
- 		return -ENODEV;
- 	}
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
- 
- 	return crypto_register_skciphers(serpent_algs,
- 					 ARRAY_SIZE(serpent_algs));
-diff --git a/arch/x86/crypto/serpent_avx_glue.c b/arch/x86/crypto/serpent_avx_glue.c
-index 9c8b3a335d5ca..42c4e15696743 100644
---- a/arch/x86/crypto/serpent_avx_glue.c
-+++ b/arch/x86/crypto/serpent_avx_glue.c
-@@ -100,11 +100,8 @@ static struct skcipher_alg serpent_algs[] = {
- 
- static int __init serpent_init(void)
- {
--	const char *feature_name;
--
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
-+	if (!boot_cpu_has(X86_FEATURE_AVX)) {
-+		pr_info("AVX instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
-diff --git a/arch/x86/crypto/sm4_aesni_avx2_glue.c b/arch/x86/crypto/sm4_aesni_avx2_glue.c
-index fec0ab7a63dd4..eef73894e7776 100644
---- a/arch/x86/crypto/sm4_aesni_avx2_glue.c
-+++ b/arch/x86/crypto/sm4_aesni_avx2_glue.c
-@@ -98,22 +98,13 @@ static struct skcipher_alg sm4_aesni_avx2_skciphers[] = {
- 
- static int __init sm4_init(void)
- {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
- 	    !boot_cpu_has(X86_FEATURE_AVX2) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX2 or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	return crypto_register_skciphers(sm4_aesni_avx2_skciphers,
- 					 ARRAY_SIZE(sm4_aesni_avx2_skciphers));
- }
-diff --git a/arch/x86/crypto/sm4_aesni_avx_glue.c b/arch/x86/crypto/sm4_aesni_avx_glue.c
-index 88caf418a06f1..ed383da5ff460 100644
---- a/arch/x86/crypto/sm4_aesni_avx_glue.c
-+++ b/arch/x86/crypto/sm4_aesni_avx_glue.c
-@@ -314,21 +314,12 @@ static struct skcipher_alg sm4_aesni_avx_skciphers[] = {
- 
- static int __init sm4_init(void)
- {
--	const char *feature_name;
--
- 	if (!boot_cpu_has(X86_FEATURE_AVX) ||
--	    !boot_cpu_has(X86_FEATURE_AES) ||
--	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-+	    !boot_cpu_has(X86_FEATURE_AES)) {
- 		pr_info("AVX or AES-NI instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM,
--				&feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
--		return -ENODEV;
--	}
--
- 	return crypto_register_skciphers(sm4_aesni_avx_skciphers,
- 					 ARRAY_SIZE(sm4_aesni_avx_skciphers));
- }
-diff --git a/arch/x86/crypto/twofish_avx_glue.c b/arch/x86/crypto/twofish_avx_glue.c
-index 9e20db0137501..985bc54a23404 100644
---- a/arch/x86/crypto/twofish_avx_glue.c
-+++ b/arch/x86/crypto/twofish_avx_glue.c
-@@ -102,10 +102,8 @@ static struct skcipher_alg twofish_algs[] = {
- 
- static int __init twofish_init(void)
- {
--	const char *feature_name;
--
--	if (!cpu_has_xfeatures(XFEATURE_MASK_SSE | XFEATURE_MASK_YMM, &feature_name)) {
--		pr_info("CPU feature '%s' is not supported.\n", feature_name);
-+	if (!boot_cpu_has(X86_FEATURE_AVX)) {
-+		pr_info("AVX instructions are not detected.\n");
- 		return -ENODEV;
- 	}
- 
 -- 
 2.55.0
 
