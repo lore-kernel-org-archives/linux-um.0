@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD3A8C54F51
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 23:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4838EC53219
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 23:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x/W+IVSURy9beakcVAzhkFhybnnYmzcojVCP73b3+G0=; b=p4G90salRvVitZQxyFCuXHLIto
-	SNod+JXIuPhlgoQuF4ULhI1R1tFOmBx72sqZfBFhcgIpDV2GxdJmJMEErIBiiiloyBetq8ieh8HSv
-	wIwmR+vkYJKlE3l03s5rjUiBD8SQ/fY51iSWv0bHXMv+rvpqt+Dem94qQ3O/ubcuosetUykrDfjwC
-	4Wr6qZS5PBlfbMZGZ6Lk66OYLYFTAJ026A1xpvrqMsOTJM+DsO6+X9IL5d92o4cwKJMcfvKzyY10B
-	gxBmYELr0cEJiwoH8dT8ROfTUGkQQnnL+OovslIqd3uImP6hKqpS5KoQR80Rbgm0824RxNDsW2E27
-	5QkAtZdw==;
+	bh=7Rf8r0g+YlfII72vupDIEDYAxSFoTywGzyQaBsA2xuc=; b=LEAVmvqENnW7R1UrXcOF8T4veL
+	oXpg11jPl5XUl9tkVoHBjcNJbw3kZCIuW6eZz1cgUsOlpk5mqlLxMBj4K4DWzALoE20D0qGfX/PDS
+	LQiD+987J3bH5OtKblylFovfIeGSh42K6rcmkYkb+pQ8HQASALLZts9KxldkmLc58f9dJm1AYuO7T
+	zHEJsjtQEMlLI96+Grxzi3E4fqMPg37VKAWa4J/BSlbQdNeTzKGDq2xPpDi7o+QDA3K3gy8RXVDA+
+	2ZEePUggek59jVSBoBtj6D8LtfUJ1bdz/7j6frDju2lTS+Xs9msJjUtuhbZgXJkBYzaOAjUA72Uz0
+	V37AmHlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1worJl-00000006UQL-3MTl;
-	Tue, 28 Jul 2026 23:34:37 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1worPR-00000006Uf4-3FH8;
+	Tue, 28 Jul 2026 23:40:29 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1worJi-00000006UQF-1cT2
+	id 1worPQ-00000006Ueu-1ENG
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 23:34:34 +0000
+	Tue, 28 Jul 2026 23:40:28 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C45F1411EE;
-	Tue, 28 Jul 2026 23:34:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607051F000E9;
-	Tue, 28 Jul 2026 23:34:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 64EC160A66;
+	Tue, 28 Jul 2026 23:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8BC21F000E9;
+	Tue, 28 Jul 2026 23:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785281672;
-	bh=x/W+IVSURy9beakcVAzhkFhybnnYmzcojVCP73b3+G0=;
+	s=k20260515; t=1785282027;
+	bh=7Rf8r0g+YlfII72vupDIEDYAxSFoTywGzyQaBsA2xuc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=d3iFzTDpDMzb7jxs1ZQDBL+9/U8KyuBJIwhHokpy5yoEyO1OcBHHpD+2EYW2pakv0
-	 k9vrypd+aMGdgnWNnNK8V4sZ3HI5XgUiywzbkDbLTiXdGQN10T0jm4twddhRLwrrtI
-	 HKZGUfUCProAse/O94l9hz8c+iXiirHEwtPw5+BM/8UjN1iACVPp9daOA5Kb0wKhgU
-	 xbc2JH63ga5EjyeXQtlfBzI7Th2uSFGmaB86wiU/8t3wp12BGoewtt3i+8MrgznBXj
-	 pu1rFFnUR6BKDo/ffz1vhIKaGz5WXoQOCg6gz4rY2d/1B75+xd7JQCaOXvyu3PW6Ae
-	 9HLMK3voKIxhw==
-Date: Tue, 28 Jul 2026 16:34:30 -0700
+	b=OfFsplAdU70PzXIlVdB0Es0e0zUjLgTMe8cWC98F+PBq7CLjij+Vx4rfhjM7IdRM6
+	 /xzGeQTnzeunHj3LNDV9/ORKghm9DzEkAWDd5t4UpZ3lMbg8ZU0Nij3OdRXqG+ZJ6C
+	 N9eW4mWM0zZBfomBhDhfghGKh20i0aHqZazmCcoXjzjM6pYoSHz1zaUV2OsM0CgBQS
+	 74myIJiY+C6Lk6ppdVbBESRLFNs9GM85MV6zttNl8EC1f2vgu7KxoT7i0hCBL5rcUG
+	 6SWMxaCpIUMibtroSoUxaycBDOanVMc8/pj2D2NiApLnm2BZk4yIo6q1wGWku7pn/a
+	 je+c9fA9YcsOw==
+Date: Tue, 28 Jul 2026 16:40:25 -0700
 From: Eric Biggers <ebiggers@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
+To: David Laight <david.laight.linux@gmail.com>
 Cc: x86@kernel.org, linux-um@lists.infradead.org,
 	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate
- bits
-Message-ID: <20260728233430.GA3277@quark>
+Subject: Re: [PATCH v2 3/8] crypto: x86 - Stop using cpu_has_xfeatures()
+Message-ID: <20260728234025.GB3277@quark>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
- <20260728021603.79870-2-ebiggers@kernel.org>
- <20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
- <20260728054532.GA99797@sol>
- <20260728182007.GBamjy17zynlWm2gQT@fat_crate.local>
- <20260728183447.GB3355536@google.com>
- <20260728225936.GBamk0WK38PByPFkxz@fat_crate.local>
+ <20260728021603.79870-4-ebiggers@kernel.org>
+ <20260728103018.00938ac6@pumpkin>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260728225936.GBamk0WK38PByPFkxz@fat_crate.local>
+In-Reply-To: <20260728103018.00938ac6@pumpkin>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,84 +72,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 28, 2026 at 03:59:36PM -0700, Borislav Petkov wrote:
-> On Tue, Jul 28, 2026 at 06:34:47PM +0000, Eric Biggers wrote:
-> > The argument is the bitmask of xfeatures that are present.  0 is an
-> > empty bitmask, i.e. no xfeatures are present.
+On Tue, Jul 28, 2026 at 10:30:18AM +0100, David Laight wrote:
+> On Mon, 27 Jul 2026 19:15:58 -0700
+> Eric Biggers <ebiggers@kernel.org> wrote:
 > 
-> Ok, so what does that mean when you see it in the code:
+> > Checking both boot_cpu_has(X86_FEATURE_AVX*) and cpu_has_xfeatures() has
+> > never really been needed in practice, and it's never been universally
+> > done (e.g., lib/raid/ omits cpu_has_xfeatures()).  Nevertheless, both
+> > x86 and UML now explicitly clear the AVX and AVX-512 flags if their
+> > xfeatures are missing, which should remove any remaining doubts.
+> > 
+> > Thus, remove all the calls to cpu_has_xfeatures(), as well as the
+> > related checks of boot_cpu_has(X86_FEATURE_OSXSAVE).
+> > 
+> > In a few cases there was no corresponding boot_cpu_has(X86_FEATURE_AVX*)
+> > check, so add the missing ones.
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> > ---
+> ...
+> > --- a/arch/x86/crypto/aria_gfni_avx512_glue.c
+> > +++ b/arch/x86/crypto/aria_gfni_avx512_glue.c
+> > @@ -196,24 +196,15 @@ static struct skcipher_alg aria_algs[] = {
+> >  
+> >  static int __init aria_avx512_init(void)
+> >  {
+> > -	const char *feature_name;
+> > -
+> >  	if (!boot_cpu_has(X86_FEATURE_AVX) ||
+> >  	    !boot_cpu_has(X86_FEATURE_AVX2) ||
 > 
-> 	clear_cpu_caps_with_missing_xfeatures(0)
+> Doesn't AVX2 require AVX support?
 > 
-> clear the CPU caps with missing xfeatures bitmask 0?
-
-It clears the CPU caps whose xfeature dependencies are missing from the
-given mask, which denotes the present xfeatures.  An empty mask means
-nothing present, i.e. everything is missing.
-
-It could be a separate function that clears unconditionally, but then
-the clearing and the log messages would need to be duplicated.
-
-I don't know what your suggestion is.  Are you still asking for the
-function to be renamed to clear_cpu_caps_xft()?  Note that the
-abbreviation "xft" doesn't appear anywhere else in arch/x86/.  Maybe you
-want the argument inverted?  I don't know what you want, sorry.
-
-> You brought up the UML example upthread. I'm trying to figure out why we care
-> about the UML case. I'm also assuming that case will be fixed with whatever we
-> end up doing here.
-
-The UML update is in this series.  See patch 2.  Maybe you don't care
-about UML but many people do.  kunit.py uses it by default, for example.
-
-> > First, the code being added *is* to fpu__init_system_xstate().  Do you
-> > think it needs to be moved later in the function, and if so why?
+> >  	    !boot_cpu_has(X86_FEATURE_AVX512F) ||
+> >  	    !boot_cpu_has(X86_FEATURE_AVX512VL) ||
 > 
-> Lemme try again:
+> And (less sure) AVX512xxx require AVX2?
 > 
-> there where we sanity check the xfeatures mask, at that same place we can
-> sanity check the X86_FEATURE flags we have set in our internal representation
-> of CPUID flags. At exactly the same place. And we warn and clear the ones are
-> wrong.
+> So the extra checks could be reduced.
 
-This is basically what this patch does already:
-
-	clear_cpu_caps_with_missing_xfeatures(fpu_kernel_cfg.max_features);
-
-	fpu_kernel_cfg.independent_features = fpu_kernel_cfg.max_features &
-					      XFEATURE_MASK_INDEPENDENT;
-
-	/*
-	 * Clear XSAVE features that are disabled in the normal CPUID.
-	 */
-	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
-		unsigned short cid = xsave_cpuid_features[i];
-
-		/* Careful: X86_FEATURE_FPU is 0! */
-		if ((i != XFEATURE_FP && !cid) || !boot_cpu_has(cid))
-			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
-	}
-
-Maybe you want it moved down one statement so that it's immediately
-adjacent to the loop?
-
-Or maybe you want it to be integrated into the loop itself?  It's
-doable, but a bit awkward because the two CPU features we'd like to
-clear each depend on multiple xfeatures rather than just one.  And also
-there are those two cases earlier in the function (XSAVE or FPU being
-disabled) that do an early return and never reach here.  It's nice to
-use the same helper function in those cases.
-
-> > Second, clearing xfeatures is the opposite of what's needed.
-> 
-> I meant clearing X86_FEATURE flags. Basically what you started doing.
-> 
-> All I'm proposing is having the *whole* X86_FEATURE clearing concentrated in
-> a single function so that it is called once per CPU and then we're done.
-
-fpu__init_system_xstate() is already a function called once on the boot
-CPU.  Is your suggestion that the feature clearing should be once per
-CPU instead of just on the boot CPU?
+Yes, but this patch is just intended to clean up the xfeatures and
+OSXSAVE checks.  Further cleanups would be separate patches.
 
 - Eric
 
