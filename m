@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46D8DC53219
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D845C54F56
 	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 02:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vqunIx6I6P5BO4L84jXf9HBRjWQOIObJRsDL1K0ccjI=; b=WP2zOw5ONCyMwnLEpUAYeOJOvw
-	LKe1holZXpcRhCCjhrTyeKFycQcgwi9f6peZhe6niG5Na9holUIKeiJwbolXnlo+rwJ0WEJOumJlk
-	UG6XVKD0BO15lWhTyuwz7pybyIx7nx79Lor7J3COQROtOUUwcuAhoCp4IUS1LlUqbuhX1B+3ebBVj
-	2bWk5A5ymAIob7HR9ySzTDnlKeax4UBBvaA3HYt5rKplG4CbAOhAf86yhOQ/rjgfYqDeUalXhFcgh
-	6St4Lq7q2+fUwjJR2j4eCxvGK0FIDDLUS6ZmSqXtHFEmmWcLmSLu+34UcmdLosWlocpEpCNoap4Zd
-	GeALQCAw==;
+	bh=zOvGjA1rA+f7leLYamAm3+vbaCk4Q3hv4aH/rznS/vY=; b=04iHmUDzsqA+ANl+KRCwsqrPzm
+	QVcuVuvFnw4xbOEC4oOQnbn9csmd8yXmFDzx+3bR+v7vGJWugSCM6sJ8sv6NX9ko4II+k0m6zTirt
+	Jl7gJivUMdJ6PPBu4cSJT6iA1raBDiOCqlhMBVc84J4JVFsWp7QtauDqmBDONvGmm0+pU0+e08k9P
+	7LfOUYGdK3P3bgeKLNiw9VSOYP1IiwGpoagKRetuBbS2Ri3x61A3IiakL0yo2houNDsm2Sv1ooOSA
+	y6IWVH2stCHQpWcBixbbMVo1e9S3mo6N6JOVmWHOcOPVZl0pcoHdOq1qKbS8dq5iclzTQQPv3ZWlI
+	MedB0fbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPe-00000004Fhy-40xV;
-	Tue, 28 Jul 2026 02:19:22 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1woXPf-00000004FiQ-0RsE;
+	Tue, 28 Jul 2026 02:19:23 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPb-00000004FeA-3VuJ
+	id 1woXPc-00000004FfQ-1il4
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 02:19:19 +0000
+	Tue, 28 Jul 2026 02:19:20 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 12D9E60A71;
+	by tor.source.kernel.org (Postfix) with ESMTP id D505D60A62;
 	Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89EC01F00ACA;
-	Tue, 28 Jul 2026 02:19:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5100C1F00ACF;
+	Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785205158;
-	bh=vqunIx6I6P5BO4L84jXf9HBRjWQOIObJRsDL1K0ccjI=;
+	s=k20260515; t=1785205159;
+	bh=zOvGjA1rA+f7leLYamAm3+vbaCk4Q3hv4aH/rznS/vY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=lf3Kb7s7ERyjF5IypfY0T9KLnfwe00i8m6zFnFXSc2YteyQ+ZWv1B503sLgxDqNRe
-	 Er+zJqLF15HSIAqm5CKZzMQaUw4x0SntnpffzWVoin+W7jxxbRy2Ewh75jnOWIbdzI
-	 TO1wFFuesF/XqTR7+XyDWhemQwfCwV9a/MCxKc3zzAw1zJWoDp65aooOlMhlfrSDPG
-	 VxvuX5nFVBhcBcyHLZ93jSpbQQX1Ncun4To56Q2jpz+9d1DyLdxVFgDvlDxODYnHY2
-	 GIfnhjz18j1AYvkpQbyJbo65GiBCaQKV1naRbqFy8LTbsbOwvgnh968h+9Ws019VCW
-	 ln9b9V1LePxbw==
+	b=RHpaeRM2xA1wTgxAAzmzdCqpQ6EDfUJdcm96xpk63ZOn8jxAYeuOWBqqMRpeHsBLr
+	 xLkuZoFXWiB+GnSUqIZ0s2+syZumzIAnwJG9CcP5DcwjFc0O32YJIMCik+P7wntGnx
+	 6u7dFaGYeDbr0om5Vo0rXJYJgFRy5SjOhzScRWhEn7ljEPYmqJ+dOnlasOACDaaZFP
+	 Hx2eFtaJ79YhoEvq37UUG/28ddSg3tzXKb6Vwx39D0/mwO2i9UtfnAsSEQOVXEFhEr
+	 UgMro4LhwdmynXiso2FbLy8I1lwKyXhxMaIeCr9yHvghf4MRs+OJznEMfOOi1ckg/C
+	 imvd6kfzOKpsA==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -50,10 +50,11 @@ Cc: linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 6/8] x86/fpu: Remove cpu_has_xfeatures()
-Date: Mon, 27 Jul 2026 19:16:01 -0700
-Message-ID: <20260728021603.79870-7-ebiggers@kernel.org>
+	Eric Biggers <ebiggers@kernel.org>,
+	David Laight <david.laight.linux@gmail.com>
+Subject: [PATCH v2 8/8] lib/raid/xor: x86: Add AVX-512 optimized xor_gen()
+Date: Mon, 27 Jul 2026 19:16:03 -0700
+Message-ID: <20260728021603.79870-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260728021603.79870-1-ebiggers@kernel.org>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
@@ -73,112 +74,229 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The only remaining caller of cpu_has_xfeatures() is
-print_xstate_features(), which uses it only to check and get the name of
-a single feature.
+Add an implementation of xor_gen() using AVX-512.
 
-Remove it and just inline the needed code into print_xstate_features().
+It uses 512-bit vectors, i.e. ZMM registers.  It also uses the
+vpternlogq instruction to do three-input XORs when applicable.
 
-This also makes the "unknown xstate feature" entry at index XFEATURE_MAX
-of xfeature_names[] unnecessary, so remove that too.
+It's enabled on x86_64 CPUs that have AVX512F && !PREFER_YMM.  In
+practice that means:
 
+    - AMD Zen 4 and later (client and server)
+    - Intel Sapphire Rapids and later (server)
+    - Intel Rocket Lake (client)
+    - Intel Nova Lake and later (client)
+
+The !PREFER_YMM condition excludes the older AVX-512 implementations in
+Intel Skylake Server and Intel Ice Lake.  They could run this code, but
+they're known to have overly-eager downclocking when ZMM registers are
+used.  This is the same policy that the crypto and CRC code uses.
+
+Benchmark on AMD Ryzen 9 9950X (Zen 5):
+
+    src_cnt    avx          avx512       Improvement
+    =======    ==========   ==========   ===========
+    1          56353 MB/s   75388 MB/s   33%
+    2          54274 MB/s   68409 MB/s   26%
+    3          44649 MB/s   64042 MB/s   43%
+    4          41315 MB/s   55002 MB/s   33%
+
+Reviewed-by: David Laight <david.laight.linux@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- arch/x86/include/asm/fpu/api.h |  9 -------
- arch/x86/kernel/fpu/xstate.c   | 44 +++-------------------------------
- 2 files changed, 3 insertions(+), 50 deletions(-)
+ lib/raid/xor/Makefile         |   2 +-
+ lib/raid/xor/x86/xor-avx512.c | 121 ++++++++++++++++++++++++++++++++++
+ lib/raid/xor/x86/xor_arch.h   |  30 ++++++---
+ 3 files changed, 142 insertions(+), 11 deletions(-)
+ create mode 100644 lib/raid/xor/x86/xor-avx512.c
 
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 90c63fe19c0fb..cfed8b24d64f0 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -99,15 +99,6 @@ static inline void fpregs_assert_state_consistent(void) { }
-  */
- extern void switch_fpu_return(void);
+diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
+index e8ecec3c09f9f..4a0e5c6d8298f 100644
+--- a/lib/raid/xor/Makefile
++++ b/lib/raid/xor/Makefile
+@@ -29,7 +29,7 @@ xor-$(CONFIG_SPARC32)		+= sparc/xor-sparc32.o
+ xor-$(CONFIG_SPARC64)		+= sparc/xor-sparc64.o sparc/xor-sparc64-glue.o
+ xor-$(CONFIG_S390)		+= s390/xor.o
+ xor-$(CONFIG_X86_32)		+= x86/xor-avx.o x86/xor-sse.o x86/xor-mmx.o
+-xor-$(CONFIG_X86_64)		+= x86/xor-avx.o x86/xor-sse.o
++xor-$(CONFIG_X86_64)		+= x86/xor-avx.o x86/xor-sse.o x86/xor-avx512.o
+ obj-y				+= tests/
+ 
+ CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU) -I$(src)/$(SRCARCH)
+diff --git a/lib/raid/xor/x86/xor-avx512.c b/lib/raid/xor/x86/xor-avx512.c
+new file mode 100644
+index 0000000000000..17f57900d8274
+--- /dev/null
++++ b/lib/raid/xor/x86/xor-avx512.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * AVX-512 optimized implementation of xor_gen()
++ *
++ * Copyright 2026 Google LLC
++ */
++
++#include <linux/types.h>
++#include <asm/fpu/api.h>
++#include "xor_impl.h"
++#include "xor_arch.h"
++
++/*
++ * Implementation notes:
++ *
++ * Unrolling by the number of buffers (2-5) is very important.
++ *
++ * Unrolling by length is less important, especially when using register-indexed
++ * addressing with negative indices from the end of the buffers.  That approach
++ * results in just two loop control instructions being needed per iteration,
++ * regardless of the number of buffers.
++ *
++ * In fact, benchmarks showed that the 2 and 3 buffer cases require only 2x
++ * unrolling by length, while the 4 and 5 buffer cases don't require any
++ * unrolling by length.  Benchmarks also showed that the register-indexed
++ * addressing isn't a bottleneck either; i.e., we can't do any better by
++ * incrementing the pointers as we go along, even with more unrolling.
++ */
++
++static void xor_avx512_2(long bytes, u8 *p1, const u8 *p2)
++{
++	long i = -bytes;
++
++	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
++		     "vmovdqa64 64(%1,%0), %%zmm1\n"
++		     "vpxorq (%2,%0), %%zmm0, %%zmm0\n"
++		     "vpxorq 64(%2,%0), %%zmm1, %%zmm1\n"
++		     "vmovdqa64 %%zmm0, (%1,%0)\n"
++		     "vmovdqa64 %%zmm1, 64(%1,%0)\n"
++		     "add $128, %0\n"
++		     "jnz 1b\n"
++		     : "+&r"(i)
++		     : "r"(p1 + bytes), "r"(p2 + bytes)
++		     : "memory", "cc");
++}
++
++static void xor_avx512_3(long bytes, u8 *p1, const u8 *p2, const u8 *p3)
++{
++	long i = -bytes;
++
++	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
++		     "vmovdqa64 64(%1,%0), %%zmm1\n"
++		     "vmovdqa64 (%2,%0), %%zmm2\n"
++		     "vmovdqa64 64(%2,%0), %%zmm3\n"
++		     "vpternlogq $0x96, (%3,%0), %%zmm2, %%zmm0\n"
++		     "vpternlogq $0x96, 64(%3,%0), %%zmm3, %%zmm1\n"
++		     "vmovdqa64 %%zmm0, (%1,%0)\n"
++		     "vmovdqa64 %%zmm1, 64(%1,%0)\n"
++		     "add $128, %0\n"
++		     "jnz 1b\n"
++		     : "+&r"(i)
++		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes)
++		     : "memory", "cc");
++}
++
++static void xor_avx512_4(long bytes, u8 *p1, const u8 *p2, const u8 *p3,
++			 const u8 *p4)
++{
++	long i = -bytes;
++
++	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
++		     "vmovdqa64 (%2,%0), %%zmm1\n"
++		     "vpxorq (%3,%0), %%zmm0, %%zmm0\n"
++		     "vpternlogq $0x96, (%4,%0), %%zmm1, %%zmm0\n"
++		     "vmovdqa64 %%zmm0, (%1,%0)\n"
++		     "add $64, %0\n"
++		     "jnz 1b\n"
++		     : "+&r"(i)
++		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes),
++		       "r"(p4 + bytes)
++		     : "memory", "cc");
++}
++
++static void xor_avx512_5(long bytes, u8 *p1, const u8 *p2, const u8 *p3,
++			 const u8 *p4, const u8 *p5)
++{
++	long i = -bytes;
++
++	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
++		     "vmovdqa64 (%2,%0), %%zmm1\n"
++		     "vpternlogq $0x96, (%3,%0), %%zmm1, %%zmm0\n"
++		     "vmovdqa64 (%4,%0), %%zmm1\n"
++		     "vpternlogq $0x96, (%5,%0), %%zmm1, %%zmm0\n"
++		     "vmovdqa64 %%zmm0, (%1,%0)\n"
++		     "add $64, %0\n"
++		     "jnz 1b\n"
++		     : "+&r"(i)
++		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes),
++		       "r"(p4 + bytes), "r"(p5 + bytes)
++		     : "memory", "cc");
++}
++
++DO_XOR_BLOCKS(avx512_inner, xor_avx512_2, xor_avx512_3, xor_avx512_4,
++	      xor_avx512_5);
++
++/*
++ * Preconditions: bytes is a nonzero multiple of 512, and all buffers are
++ * 64-byte aligned.
++ */
++static void xor_gen_avx512(void *dest, void **srcs, unsigned int src_cnt,
++			   unsigned int bytes)
++{
++	kernel_fpu_begin();
++	xor_gen_avx512_inner(dest, srcs, src_cnt, bytes);
++	kernel_fpu_end();
++}
++
++struct xor_block_template xor_block_avx512 = {
++	.name = "avx512",
++	.xor_gen = xor_gen_avx512,
++};
+diff --git a/lib/raid/xor/x86/xor_arch.h b/lib/raid/xor/x86/xor_arch.h
+index 991abe3f4bbda..ed5921d2e2aad 100644
+--- a/lib/raid/xor/x86/xor_arch.h
++++ b/lib/raid/xor/x86/xor_arch.h
+@@ -6,21 +6,31 @@ extern struct xor_block_template xor_block_p5_mmx;
+ extern struct xor_block_template xor_block_sse;
+ extern struct xor_block_template xor_block_sse_pf64;
+ extern struct xor_block_template xor_block_avx;
++extern struct xor_block_template xor_block_avx512;
  
 -/*
-- * Query the presence of one or more xfeatures. Works on any legacy CPU as well.
+- * When SSE is available, use it as it can write around L2.  We may also be able
+- * to load into the L1 only depending on how the cpu deals with a load to a line
+- * that is being prefetched.
 - *
-- * If 'feature_name' is set then put a human-readable description of
-- * the feature there as well - this can be used to print error (or success)
-- * messages.
-- */
--extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
--
- /* Trap handling */
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern void fpu_sync_fpstate(struct fpu *fpu);
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 904ff933c0d88..3c185b2828c71 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -66,8 +66,8 @@ static const char *xfeature_names[] =
- 	"AMX Tile config",
- 	"AMX Tile data",
- 	"APX registers",
--	"unknown xstate feature",
- };
-+static_assert(ARRAY_SIZE(xfeature_names) == XFEATURE_MAX);
- 
- static unsigned short xsave_cpuid_features[] __initdata = {
- 	[XFEATURE_FP]				= X86_FEATURE_FPU,
-@@ -122,44 +122,6 @@ static inline unsigned int next_xfeature_order(unsigned int i, u64 mask)
- #define XSTATE_FLAG_SUPERVISOR	BIT(0)
- #define XSTATE_FLAG_ALIGNED64	BIT(1)
- 
--/*
-- * Return whether the system supports a given xfeature.
+- * When AVX2 is available, force using it as it is better by all measures.
 - *
-- * Also return the name of the (most advanced) feature that the caller requested:
+- * 32-bit without MMX can fall back to the generic routines.
 - */
--int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
--{
--	u64 xfeatures_missing = xfeatures_needed & ~fpu_kernel_cfg.max_features;
--
--	if (unlikely(feature_name)) {
--		long xfeature_idx, max_idx;
--		u64 xfeatures_print;
--		/*
--		 * So we use FLS here to be able to print the most advanced
--		 * feature that was requested but is missing. So if a driver
--		 * asks about "XFEATURE_MASK_SSE | XFEATURE_MASK_YMM" we'll print the
--		 * missing AVX feature - this is the most informative message
--		 * to users:
--		 */
--		if (xfeatures_missing)
--			xfeatures_print = xfeatures_missing;
--		else
--			xfeatures_print = xfeatures_needed;
--
--		xfeature_idx = fls64(xfeatures_print)-1;
--		max_idx = ARRAY_SIZE(xfeature_names)-1;
--		xfeature_idx = min(xfeature_idx, max_idx);
--
--		*feature_name = xfeature_names[xfeature_idx];
--	}
--
--	if (xfeatures_missing)
--		return 0;
--
--	return 1;
--}
--EXPORT_SYMBOL_GPL(cpu_has_xfeatures);
--
- static bool xfeature_is_aligned64(int xfeature_nr)
+ static __always_inline void __init arch_xor_init(void)
  {
- 	return xstate_flags[xfeature_nr] & XSTATE_FLAG_ALIGNED64;
-@@ -302,9 +264,9 @@ static void __init print_xstate_features(void)
- 
- 	for (i = 0; i < XFEATURE_MAX; i++) {
- 		u64 mask = BIT_ULL(i);
--		const char *name;
-+		const char *name = xfeature_names[i];
- 
--		if (cpu_has_xfeatures(mask, &name))
-+		if (fpu_kernel_cfg.max_features & mask)
- 			pr_info("x86/fpu: Supporting XSAVE feature 0x%03Lx: '%s'\n", mask, name);
- 	}
- }
+-	if (boot_cpu_has(X86_FEATURE_AVX)) {
++	if (IS_ENABLED(CONFIG_X86_64) && boot_cpu_has(X86_FEATURE_AVX512F) &&
++	    !boot_cpu_has(X86_FEATURE_PREFER_YMM)) {
++		/*
++		 * Use the AVX-512 code on CPUs that support AVX-512 without
++		 * overly-eager downclocking.  On such CPUs the AVX-512 code
++		 * should always work at least as well as the AVX code, so
++		 * runtime selection is unnecessary.
++		 *
++		 * The AVX-512 code can work on X86_32.  However, due to lack of
++		 * use case for that, for now it's built only for X86_64.
++		 */
++		xor_force(&xor_block_avx512);
++	} else if (boot_cpu_has(X86_FEATURE_AVX)) {
++		/* AVX will be the best; no need to try others. */
+ 		xor_force(&xor_block_avx);
+ 	} else if (IS_ENABLED(CONFIG_X86_64) || boot_cpu_has(X86_FEATURE_XMM)) {
++		/*
++		 * When SSE is available, use it as it can write around L2.  We
++		 * may also be able to load into the L1 only depending on how
++		 * the cpu deals with a load to a line that is being prefetched.
++		 */
+ 		xor_register(&xor_block_sse);
+ 		xor_register(&xor_block_sse_pf64);
+ 	} else if (boot_cpu_has(X86_FEATURE_MMX)) {
 -- 
 2.55.0
 
