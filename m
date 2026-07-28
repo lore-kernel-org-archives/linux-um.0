@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE81C53219
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D640EC54F53
 	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 02:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MCVeeNdoxXfPsfpQPY8gX2ITb7N+ezoKC7QMn07irFk=; b=sQO5LkFn79jsrNA5YV0L141fwH
-	1QN4MzRU1i/MPe11xzv8eTQsX/9354T+ninfTngXOshmSu399dZTRVD9RKLe8ICO5YCcFzcb+Aj86
-	FV0PpAarfSXQlHiUOLvNrvW5qQ1MERZMI3FHFuBCYdxMbiCmKkMXvsLp9abisgFM4gZtrrCvBoWhg
-	GElLf2IqhnGzhtDlBm7VCH/g8Oh7FVXeCNjtD98Nu1JkuSdTDE5cbc0LMV9oOOy2PjabWwzQDh25q
-	EH3sl0P0ydQj0uFRKXPLrhb+lW+Q6Uc/JpM91Q75u2RpOkWmZ3I4uQ3FgIiZRhtNY1Ou/6hNg0Y+q
-	PLFRDthA==;
+	bh=TxdxesZL18DYv+BtbnHTQMnsRojgJD62AU2Qj40/G4g=; b=Bc02frS0IvNvzUArdfha/RTYvL
+	ubaL8fBASszHWj3dWF+D1XsHxPjbYC1cTf2aI+D92Tkdm/UyT/QH2yPsLrfm9kFh6V2HCJXRIMmgs
+	v2CdbVLsyUPHUCvdx9dYNRYLexPItaP8EFttTtORKVmGxhoxkrHWiLtHm0ezLP50qm3N3efw8KF7p
+	1gzYe8rz3SgNViZXUhYyYqHp39vrC51ieUpv/xMhMXTRHmAeD9jgemorVD+EvA1GyeRUFTQ54ibCM
+	4aZiLcVgQZvgBDyUBVYHyKn/03X3H6mVhz+uauNY6K7Lc1eR83iEcgGqZE2sSN34XK1J1/f8jAC1n
+	YM0zdrEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPa-00000004Fdv-1dOQ;
-	Tue, 28 Jul 2026 02:19:18 +0000
+	id 1woXPb-00000004FeV-1od8;
+	Tue, 28 Jul 2026 02:19:19 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woXPZ-00000004FdK-1F8t
+	id 1woXPZ-00000004Fdc-2lVt
 	for linux-um@lists.infradead.org;
 	Tue, 28 Jul 2026 02:19:17 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1401543B64;
+	by sea.source.kernel.org (Postfix) with ESMTP id 6CA5643B9F;
 	Tue, 28 Jul 2026 02:19:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B70D71F00A3E;
-	Tue, 28 Jul 2026 02:19:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6E81F00A3A;
+	Tue, 28 Jul 2026 02:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1785205157;
-	bh=MCVeeNdoxXfPsfpQPY8gX2ITb7N+ezoKC7QMn07irFk=;
+	bh=TxdxesZL18DYv+BtbnHTQMnsRojgJD62AU2Qj40/G4g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=GfsfHvyyOAHyP6ZKanOnAHzJ0qgB9nTYymqSkDgkiqF90LytugcETR+egj33wXCm/
-	 KUDR+sXyRHVnX95TzapiMFAQ9S/88F0mLxe786heodJ2w8Z8aph5EtXRiUCYbfVshk
-	 BfRnHQGJoT+xItyC7/7db325j5yEj6W6JihcpNGWD1mg4cdb8DdEpuD516+bnAgExe
-	 FhNIAutgDhFesr6ICNBsFW++npqUy3FhajVERauogUSPZ0oRywDLdcEez4TGrpSG36
-	 ryF0bB8G6wjYFkRdEobG8Swgf97desrnX21dfv0qwa8zU3632SZlrgE9bGMgJIq+TD
-	 1ZFrNPWx2BM4A==
+	b=ikigeG6yT+rsre9P5IYljLo8CYgeR0QHiiTS07u8JU/P9EHBR8xxtJ159iBUZ/tuQ
+	 mcxTixckhbaUeVJzj5mweQ8gdmdh6tx5J/7JolP20G3Jcn8XfAz+t8dK4gQ392e9gT
+	 Db18PXaTq2qNYyfUbZoSXOSDNDnzMlc5sy0AYYt1bvTr3fDCTQ/1U/cRN8uBXegU8M
+	 wHdvWYTsaLmdcHWySKPw8YDX9sXNooQzR9xNdMSK2KdvvshwlKn9Gp/bXzUMkA+k0H
+	 p/p4ASPo2690wGKhdoBMg6SyEc5Tq2MFOp9tb7xBcJs4RNMiND0M8N2OI0Z4GQ8P14
+	 81RLtmQtGAm8A==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -51,9 +51,9 @@ Cc: linux-um@lists.infradead.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate bits
-Date: Mon, 27 Jul 2026 19:15:56 -0700
-Message-ID: <20260728021603.79870-2-ebiggers@kernel.org>
+Subject: [PATCH v2 2/8] um: Check for missing AVX and AVX-512 xstate bits
+Date: Mon, 27 Jul 2026 19:15:57 -0700
+Message-ID: <20260728021603.79870-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260728021603.79870-1-ebiggers@kernel.org>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
@@ -73,70 +73,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the CPU declares AVX or AVX-512 support, verify that the
-corresponding xstate bits are also set.  If not, warn and clear them.
+If the CPU declares AVX or AVX-512 support, verify that all the
+corresponding bits are set in the XCR0 register.  If any are missing,
+warn and don't set the corresponding X86_FEATURE_* flags.
 
-This eliminates the perceived need for AVX and AVX-512 optimized code in
-the kernel to call cpu_has_xfeatures().  That has never been universally
-done, which strongly suggests that it has never really been needed in
-practice, but this should remove any remaining doubt.
+This eliminates the perceived need for UML-supporting AVX and AVX-512
+optimized code in the kernel (that is, lib/raid/ currently) to start
+checking the XCR0 bits in addition to X86_FEATURE_AVX*.
+
+This aligns UML with the vast majority of userspace programs, which
+check the XCR0 bits before considering AVX and AVX-512 to be supported,
+as per the procedure documented in Intel's CPU manual.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- arch/x86/kernel/fpu/xstate.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/um/kernel/um_arch.c | 78 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index a7b6524a9dea2..904ff933c0d88 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -799,6 +799,23 @@ static u64 __init guest_default_mask(void)
- 	return ~(u64)XFEATURE_MASK_USER_DYNAMIC;
- }
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 2141f5f1f5a20..aafbaef2ae82f 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -264,12 +264,88 @@ unsigned long brk_start;
  
-+/* Clear any X86_FEATURE_* used by the kernel whose xfeatures are missing. */
-+static void __init clear_cpu_caps_with_missing_xfeatures(u64 xfeatures)
+ #define MIN_VMALLOC (32 * 1024 * 1024)
+ 
++static u64 __init read_xcr0(void)
 +{
-+	u64 mask;
++	u32 a, b, c, d;
 +
-+	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM;
-+	if (boot_cpu_has(X86_FEATURE_AVX) && (xfeatures & mask) != mask) {
-+		pr_err("x86/fpu: Disabling AVX support due to missing xstate features\n");
-+		setup_clear_cpu_cap(X86_FEATURE_AVX);
++	asm volatile("cpuid"
++		     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++		     : "a"(0), "c"(0));
++	if (a >= 1) { /* max_leaf >= 1 */
++		asm volatile("cpuid"
++			     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++			     : "a"(1), "c"(0));
++		if (c & (1 << 27)) { /* XSAVE enabled by OS */
++			asm volatile("xgetbv" : "=d"(d), "=a"(a) : "c"(0));
++			return ((u64)d << 32) | a;
++		}
 +	}
-+	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM | XFEATURE_MASK_AVX512;
-+	if (boot_cpu_has(X86_FEATURE_AVX512F) && (xfeatures & mask) != mask) {
-+		pr_err("x86/fpu: Disabling AVX-512 support due to missing xstate features\n");
-+		setup_clear_cpu_cap(X86_FEATURE_AVX512F);
-+	}
++	return 0;
 +}
 +
- /*
-  * Enable and initialize the xsave feature.
-  * Called once per system bootup.
-@@ -812,12 +829,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
- 
- 	if (!boot_cpu_has(X86_FEATURE_FPU)) {
- 		pr_info("x86/fpu: No FPU detected\n");
-+		clear_cpu_caps_with_missing_xfeatures(0);
- 		return;
- 	}
- 
- 	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
- 		pr_info("x86/fpu: x87 FPU will use %s\n",
- 			boot_cpu_has(X86_FEATURE_FXSR) ? "FXSAVE" : "FSAVE");
-+		clear_cpu_caps_with_missing_xfeatures(0);
- 		return;
- 	}
- 
-@@ -855,6 +874,8 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
- 		goto out_disable;
- 	}
- 
-+	clear_cpu_caps_with_missing_xfeatures(fpu_kernel_cfg.max_features);
++static void __init validate_and_set_cpu_cap(int cap, u64 xcr0)
++{
++	/*
++	 * Check for missing xstate features right away, so that there's no
++	 * perceived need for all optimized code in the kernel to do so.
++	 */
++	switch (cap) {
++	case X86_FEATURE_AVX:
++	case X86_FEATURE_AVX2:
++	case X86_FEATURE_AVX_VNNI:
++	case X86_FEATURE_FMA:
++	case X86_FEATURE_VAES:
++	case X86_FEATURE_VPCLMULQDQ:
++		if ((xcr0 & 0x7) != 0x7) {
++			static bool warned;
 +
- 	fpu_kernel_cfg.independent_features = fpu_kernel_cfg.max_features &
- 					      XFEATURE_MASK_INDEPENDENT;
++			if (!warned) {
++				os_warn("Disabling AVX support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	case X86_FEATURE_AVX512F:
++	case X86_FEATURE_AVX512BW:
++	case X86_FEATURE_AVX512CD:
++	case X86_FEATURE_AVX512DQ:
++	case X86_FEATURE_AVX512ER:
++	case X86_FEATURE_AVX512IFMA:
++	case X86_FEATURE_AVX512PF:
++	case X86_FEATURE_AVX512VBMI:
++	case X86_FEATURE_AVX512VL:
++	case X86_FEATURE_AVX512_4FMAPS:
++	case X86_FEATURE_AVX512_4VNNIW:
++	case X86_FEATURE_AVX512_BF16:
++	case X86_FEATURE_AVX512_BITALG:
++	case X86_FEATURE_AVX512_FP16:
++	case X86_FEATURE_AVX512_VBMI2:
++	case X86_FEATURE_AVX512_VNNI:
++	case X86_FEATURE_AVX512_VP2INTERSECT:
++	case X86_FEATURE_AVX512_VPOPCNTDQ:
++		if ((xcr0 & 0xe7) != 0xe7) {
++			static bool warned;
++
++			if (!warned) {
++				os_warn("Disabling AVX-512 support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	}
++	set_cpu_cap(&boot_cpu_data, cap);
++}
++
+ static void __init parse_host_cpu_flags(char *line)
+ {
++	u64 xcr0 = read_xcr0();
+ 	int i;
++
+ 	for (i = 0; i < 32*NCAPINTS; i++) {
+ 		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
+-			set_cpu_cap(&boot_cpu_data, i);
++			validate_and_set_cpu_cap(i, xcr0);
+ 	}
+ }
  
 -- 
 2.55.0
