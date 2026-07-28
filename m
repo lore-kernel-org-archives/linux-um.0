@@ -4,60 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4838EC53219
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 23:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56293C53219
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 23:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7Rf8r0g+YlfII72vupDIEDYAxSFoTywGzyQaBsA2xuc=; b=LEAVmvqENnW7R1UrXcOF8T4veL
-	oXpg11jPl5XUl9tkVoHBjcNJbw3kZCIuW6eZz1cgUsOlpk5mqlLxMBj4K4DWzALoE20D0qGfX/PDS
-	LQiD+987J3bH5OtKblylFovfIeGSh42K6rcmkYkb+pQ8HQASALLZts9KxldkmLc58f9dJm1AYuO7T
-	zHEJsjtQEMlLI96+Grxzi3E4fqMPg37VKAWa4J/BSlbQdNeTzKGDq2xPpDi7o+QDA3K3gy8RXVDA+
-	2ZEePUggek59jVSBoBtj6D8LtfUJ1bdz/7j6frDju2lTS+Xs9msJjUtuhbZgXJkBYzaOAjUA72Uz0
-	V37AmHlw==;
+	bh=rSZ4EZdIcRdfM0sSFblZMIqtReqX+mJVV6LvsiMMjS4=; b=xiZsDTZpjE8/twwlkBpYOJ63yN
+	nvRuKquLFYieHr3Jj5bVTi6/JjBAEUQ9cK3L4YVosh7L9H2z0sJjmtOqCONwUENBwfmBcEYVTD/OS
+	+5Jjm+kFRFE7iKWSZrDzYV2T1jboZ5JJvP4STsAN20JMyHb6MNM4zK0m/0Iuja5LED2D4kxVYgYQt
+	8Ai+Ed2HFwWC6Hsyvs6kvxAeYGPEr4EgEfLlHp7HPDRAuK6CLtWdkG4mxWntaQ52uyL1ZWLOq2tYL
+	B+1CfaCKMhmq5MzgEdYkCn/uiHG1SgB3IIOsdR1Ri3mUmdG3PneAoxEr9+E9xK5siBuoy75JZQvGd
+	s6shWsEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1worPR-00000006Uf4-3FH8;
-	Tue, 28 Jul 2026 23:40:29 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1worWf-00000006UrV-1eP8;
+	Tue, 28 Jul 2026 23:47:57 +0000
+Received: from mail.alien8.de ([2a01:4f9:3051:3f93::2])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1worPQ-00000006Ueu-1ENG
+	id 1worWc-00000006Ur7-2i0K
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 23:40:28 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 64EC160A66;
-	Tue, 28 Jul 2026 23:40:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8BC21F000E9;
-	Tue, 28 Jul 2026 23:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785282027;
-	bh=7Rf8r0g+YlfII72vupDIEDYAxSFoTywGzyQaBsA2xuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=OfFsplAdU70PzXIlVdB0Es0e0zUjLgTMe8cWC98F+PBq7CLjij+Vx4rfhjM7IdRM6
-	 /xzGeQTnzeunHj3LNDV9/ORKghm9DzEkAWDd5t4UpZ3lMbg8ZU0Nij3OdRXqG+ZJ6C
-	 N9eW4mWM0zZBfomBhDhfghGKh20i0aHqZazmCcoXjzjM6pYoSHz1zaUV2OsM0CgBQS
-	 74myIJiY+C6Lk6ppdVbBESRLFNs9GM85MV6zttNl8EC1f2vgu7KxoT7i0hCBL5rcUG
-	 6SWMxaCpIUMibtroSoUxaycBDOanVMc8/pj2D2NiApLnm2BZk4yIo6q1wGWku7pn/a
-	 je+c9fA9YcsOw==
-Date: Tue, 28 Jul 2026 16:40:25 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: David Laight <david.laight.linux@gmail.com>
+	Tue, 28 Jul 2026 23:47:56 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9780640E00E6;
+	Tue, 28 Jul 2026 23:47:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id N2YSIUGj4ISB; Tue, 28 Jul 2026 23:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1785282458; bh=rSZ4EZdIcRdfM0sSFblZMIqtReqX+mJVV6LvsiMMjS4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GK4kPxgXotMXlZPW3zhJC8bWtnAYYkkC2uUIW+/hRRmuhtZBn6CT8Tvz4znYANNkG
+	 jE5WfzpwSZ8v6c1vErnMGlDIBkyavfRuQuXpdzvoCVmMzwJrDCcL1oDt2EgNDaJjFm
+	 XvM2kw3BGJY6nvI27gbrFE0Siiv//xwgd/Hctr5k+L11c3DzJk+zMOqkE9034uq89A
+	 Csx3l+1TG7L2j+iITJTpyJiE+y9cfym85bo/LzX4aihWwK8p32I+GTkDxxg5KibrT9
+	 rwK7BCUUxZS7X52mxecaD5wC5G4on9hnH03O7u08DfEd07NHOv7Pcw9nhyLgAd39T6
+	 D/skCRPQBHoJnKUYtyV6GbwWLR4Wi0jYWZ7MhNXR+gxNuVKzUxl+7sr+duTyT857Lo
+	 qfJI9RwcUFCUIoEbIcXK8efw3vxco18z5MueueLNwvvPPYVEjkNfWmfs1EZ9+UsFpq
+	 q1fWkuhKUIV2gs2iqmk/AtMGlAnkwLQ//Bw6KEfk6Gyr94DCO/ZFa4tIZDFaJRNypW
+	 gJ1hPX6QmspD/fSxdzEKdIudCXxi8M0u8LleX4lkDWl5Xe8PbYfsR7miMnX5SzHE2q
+	 kusZ2PRApVBzmQRfCOiU8fP5JsfSLY2iRPMOOYj5xpEl9YLYh54TaxvgHNy/grUh16
+	 chKGhaBOMb3iuONHN55P2fKM=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 18C8B40E00C3;
+	Tue, 28 Jul 2026 23:47:29 +0000 (UTC)
+Date: Tue, 28 Jul 2026 16:47:26 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Eric Biggers <ebiggers@kernel.org>
 Cc: x86@kernel.org, linux-um@lists.infradead.org,
 	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 3/8] crypto: x86 - Stop using cpu_has_xfeatures()
-Message-ID: <20260728234025.GB3277@quark>
+Subject: Re: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate
+ bits
+Message-ID: <20260728234726.GCamk_jnl3LtfGbxoC@fat_crate.local>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
- <20260728021603.79870-4-ebiggers@kernel.org>
- <20260728103018.00938ac6@pumpkin>
+ <20260728021603.79870-2-ebiggers@kernel.org>
+ <20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
+ <20260728054532.GA99797@sol>
+ <20260728182007.GBamjy17zynlWm2gQT@fat_crate.local>
+ <20260728183447.GB3355536@google.com>
+ <20260728225936.GBamk0WK38PByPFkxz@fat_crate.local>
+ <20260728233430.GA3277@quark>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260728103018.00938ac6@pumpkin>
+In-Reply-To: <20260728233430.GA3277@quark>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260728_164754_846561_CA622B36 
+X-CRM114-Status: GOOD (  15.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,47 +95,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 28, 2026 at 10:30:18AM +0100, David Laight wrote:
-> On Mon, 27 Jul 2026 19:15:58 -0700
-> Eric Biggers <ebiggers@kernel.org> wrote:
-> 
-> > Checking both boot_cpu_has(X86_FEATURE_AVX*) and cpu_has_xfeatures() has
-> > never really been needed in practice, and it's never been universally
-> > done (e.g., lib/raid/ omits cpu_has_xfeatures()).  Nevertheless, both
-> > x86 and UML now explicitly clear the AVX and AVX-512 flags if their
-> > xfeatures are missing, which should remove any remaining doubts.
-> > 
-> > Thus, remove all the calls to cpu_has_xfeatures(), as well as the
-> > related checks of boot_cpu_has(X86_FEATURE_OSXSAVE).
-> > 
-> > In a few cases there was no corresponding boot_cpu_has(X86_FEATURE_AVX*)
-> > check, so add the missing ones.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> > ---
-> ...
-> > --- a/arch/x86/crypto/aria_gfni_avx512_glue.c
-> > +++ b/arch/x86/crypto/aria_gfni_avx512_glue.c
-> > @@ -196,24 +196,15 @@ static struct skcipher_alg aria_algs[] = {
-> >  
-> >  static int __init aria_avx512_init(void)
-> >  {
-> > -	const char *feature_name;
-> > -
-> >  	if (!boot_cpu_has(X86_FEATURE_AVX) ||
-> >  	    !boot_cpu_has(X86_FEATURE_AVX2) ||
-> 
-> Doesn't AVX2 require AVX support?
-> 
-> >  	    !boot_cpu_has(X86_FEATURE_AVX512F) ||
-> >  	    !boot_cpu_has(X86_FEATURE_AVX512VL) ||
-> 
-> And (less sure) AVX512xxx require AVX2?
-> 
-> So the extra checks could be reduced.
+On Tue, Jul 28, 2026 at 04:34:30PM -0700, Eric Biggers wrote:
+> I don't know what your suggestion is.  Are you still asking for the
+> function to be renamed to clear_cpu_caps_xft()?  Note that the
+> abbreviation "xft" doesn't appear anywhere else in arch/x86/.  Maybe you
+> want the argument inverted?  I don't know what you want, sorry.
 
-Yes, but this patch is just intended to clean up the xfeatures and
-OSXSAVE checks.  Further cleanups would be separate patches.
+That's fine - I'll take a look at the final version after having gone through
+the whole pile and then holler if I still see a need.
 
-- Eric
+> The UML update is in this series.  See patch 2.  Maybe you don't care
+> about UML but many people do.  kunit.py uses it by default, for example.
+
+So I've heard.
+
+> fpu__init_system_xstate() is already a function called once on the boot
+> CPU.  Is your suggestion that the feature clearing should be once per
+> CPU instead of just on the boot CPU?
+
+Yes, we need it to run on every CPU if we're going to enforce the same
+xfeatures and CPUID bits configuration everywhere.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
