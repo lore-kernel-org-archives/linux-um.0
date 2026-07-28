@@ -4,61 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BE3EC54F4C
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 05:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891B7C53219
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 09:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/WvQzs9YepCJcng+hHY8F+2scwCSw2dfE4FzGWyO5dg=; b=qiQ9+uWvmiHXT0ss+tzylZZgdf
-	GTGyjx+hM8RbvqBE3Sdy5o11vsSxo40Mx+PdUV+m4pxXOBOgwnqyovpddaoZbPW9liwvL1a958WBO
-	MXlOIVBzj0G4VQY0iLqeurDk5+mlO/ZDTGGdIvxk50IYsPY0B5Xu97Dfn21vYaE0o1Fwx4mAm6GOF
-	/eMsp9/ygw9Bbif3GpWymXZSbVpmScD6zLibDdrILvlD2len5fZj+zrVcd83KvR4gJqz3QhFHcmUq
-	8kaFDyt4U0sYseaclJHQaoz1LEUBGIglwuDCcvW4kpjFdOPeT5D1vZZ28WtCjTgMVj+Xkp1HUzgR4
-	ubTQcUyQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+5wzvt8StBpeLA5peqV/1tOOI9hQR8xx+Ocy8vLCtJg=; b=dczn2/5InpRx2x5FkirVqvbrr8
+	/j2ZMtlc4kUtmoMOVh3D1XRoGeJwLsR8MzTTWJoJ24RMpo4AyoEvBE4MckX8i0CKjkyq69xdTMF1d
+	FzY8g1JXN2+fo87CpyzBiJZfj7flowQ9vDYZWoD8v9ha3u8hx3/rQNesn3Lfpxa43gq94FzGwfuwL
+	8OBk/Tj/X4+xmU87++bOlaXRZqGmrLnbQJOrMW8MbxxFCK67RHbGQU8Jt4LHGasyDOeUat7rJZ/A1
+	F8UzmZeBS0+AdUclb6VPj7if4uNEd6q85q7UTR6UYk9GaX3uOKCOVu8Kk56rj/m5OEfM6I15O4VWx
+	OFBA1vXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woaf5-00000004UYR-1T4w;
-	Tue, 28 Jul 2026 05:47:31 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1woe24-00000004nxo-2wYy;
+	Tue, 28 Jul 2026 09:23:28 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woaf3-00000004UYL-2wPv
+	id 1woe21-00000004nx5-48On
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 05:47:29 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 60F096013A;
-	Tue, 28 Jul 2026 05:47:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEEF31F000E9;
-	Tue, 28 Jul 2026 05:47:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785217647;
-	bh=/WvQzs9YepCJcng+hHY8F+2scwCSw2dfE4FzGWyO5dg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=J/wFEFj+O0iRwvaDbNvQ5HxxU5s7m3c1yqItx22/2mL56DTnTev0+GIpWnab3sNzA
-	 phXBUloWblfcosZe357mj2tNsXZzwvHHpeaOyq1I9kEoCPua2xTzz1AMCG5bfOlWm4
-	 7o95g3wZ615OORPKnPnuBjMR1/TL2rekOe+BtYMzzPZgbtPtkpw2U95cMwHFnt+1zT
-	 9nJ9X1/2/zq8EPe1MdOGRCOnnnXqQyJ+sFO3HL94K+iIj3PqZM0ukmKhcOKq9mVR5p
-	 +HVUaYWCfTEzBwbwVpnJreQany677gtBW5mPk8Xr9YjFLKI8BExrKcqIAPtJbYyQs1
-	 0q5dIWiM9BRrg==
-Date: Mon, 27 Jul 2026 22:45:32 -0700
-From: Eric Biggers <ebiggers@kernel.org>
+	Tue, 28 Jul 2026 09:23:27 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-49554ebb87dso32992025e9.3
+        for <linux-um@lists.infradead.org>; Tue, 28 Jul 2026 02:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785230603; x=1785835403; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=+5wzvt8StBpeLA5peqV/1tOOI9hQR8xx+Ocy8vLCtJg=;
+        b=foiK64934Jnm2d7uO5ulaPCy4O0bDx+F4KXyMpvVIN+PfM08FBdwjQb+/7/Fwe7JXR
+         9SnMU4xLR5JoA/+94x6GXsqNOeAbQAq9qWWi7rXlnxhTqNafxJmxhvEcdvrAWbqeNRSK
+         xZUXJKsOSjqxKA23tODtbddMgEDIJG0MXoJXrxIekAxC369ZupqktLo3dtbWsQmIPVVp
+         D/qEoCYmB85K9GQvJnIlQGNskhT0VOl+XsYMnRLq8oP+gQboWUqwbS2C5W85OWvg+XaJ
+         w8AyCW+uK50pSivYei138ilaSdgSsDmf12ERhXYfnQyFHBX9d5AtLE+wzVDZgMSAIfbZ
+         BjHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785230603; x=1785835403;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=+5wzvt8StBpeLA5peqV/1tOOI9hQR8xx+Ocy8vLCtJg=;
+        b=YAaMaePXjzLXvXGr2/Wb8y9aMUgPF+cCYUsFwh+vvMYdVYbCQUsaV7ccfa5SH+Jz5O
+         BL0DLVG3DG2yTTKn8GXv7XCZuGRXRODRuCETVPkBsUnhvINt0NOvHfHZvk20Mvu81/XA
+         9h4dGNmsBZXK4vmi6k+pKQfXsc2Qi1LXIMJvRJ2hNmkQQmyCQualjFvdJJ9PDMLWqb5v
+         JU/jcQngexyTlF6ZiW5aIWc4HX9jKOqWBzzuOFVHtIdd/IO8oqJwph3CcK6Khmjo10If
+         XF4NE2W2dpvD/pZLCSqj9N2bDukk49xF84FdpeRq5M1H+XaO5E5GHBPUtavijGk6cvza
+         jwpg==
+X-Forwarded-Encrypted: i=1; AHgh+RqrJYZRyNcnq3zS7rmmed1/QxOBgO6fdP+yrEVIDSkAui4bUMhv3Q9zboneLSCLPLx29crWeNZuPw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwxB1CH9EzWhLgMz9L4YIAY2x+DWW0esveJyWCcggtst/ci/1u6
+	NL8Ur9+L5FUjLm4dBwC7YShSYL2+cv87TChcwiIuThxWzc860UmKiA5t
+X-Gm-Gg: AR+sD12SyAZBc1Z+IJBLUTuLHfrtP1K9PZI1j1MMUegOaSUEj0H3ex0qNM5JZMjzjBe
+	GM68Bh2aJeSDHNQPqEHsTSiuVf/s2g4nrIIAaf5lY8jfy+DXmStz3LNzEVt6hrUYtbF2X7U5Avn
+	sbbPm1Gg8UeiwVcbqYRPHcdP8PHgVPe7ah3278bfikrGxpvcu3076UCgHyAHeGNerr0qZ5bd40r
+	D2hArILSPr+ftHBJHfAhelWMPRcCJT8fSdzpBmVNP3viKcvpY5OcXC34pLqEmxjDIyL6RZz7/Ci
+	qAbKoVAf/WBnZwG4S7R/KLGD7vLmc5LZHzddMesrsWg3hDVc5DqjVf+UHOkgfI0xArj4EmI4w2f
+	KRITSYI27dGGjBLZs4mJY9Whwy6ZY/rdinV9VMCyVSGkWW+ltvAB9Cyi/dWrwe7bMzM8nr5TVWx
+	VpjjBgUjta4FlIj3TAkycXXuYYKT9QSewt3ASTThGMbBLSBRKO2g==
+X-Received: by 2002:a05:600c:630d:b0:495:4572:21af with SMTP id 5b1f17b1804b1-496c65458e1mr19199285e9.9.1785230603192;
+        Tue, 28 Jul 2026 02:23:23 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f85b9a60asm60761545f8f.3.2026.07.28.02.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2026 02:23:22 -0700 (PDT)
+Date: Tue, 28 Jul 2026 10:23:21 +0100
+From: David Laight <david.laight.linux@gmail.com>
 To: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org, linux-um@lists.infradead.org,
-	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate
- bits
-Message-ID: <20260728054532.GA99797@sol>
-References: <20260728021603.79870-1-ebiggers@kernel.org>
- <20260728021603.79870-2-ebiggers@kernel.org>
- <20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: Eric Biggers <ebiggers@kernel.org>, x86@kernel.org,
+ linux-um@lists.infradead.org, linux-raid@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, Christoph
+ Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512
+ xstate bits
+Message-ID: <20260728102321.78f4c947@pumpkin>
 In-Reply-To: <20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
+References: <20260728021603.79870-1-ebiggers@kernel.org>
+	<20260728021603.79870-2-ebiggers@kernel.org>
+	<20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260728_022326_057734_D39E6A5F 
+X-CRM114-Status: GOOD (  37.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,7 +105,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jul 27, 2026 at 10:27:27PM -0700, Borislav Petkov wrote:
+On Mon, 27 Jul 2026 22:27:27 -0700
+Borislav Petkov <bp@alien8.de> wrote:
+
+> On Mon, Jul 27, 2026 at 07:15:56PM -0700, Eric Biggers wrote:
+> > If the CPU declares AVX or AVX-512 support, verify that the
+> > corresponding xstate bits are also set.  If not, warn and clear them.
+> > 
+> > This eliminates the perceived need for AVX and AVX-512 optimized code in  
+> 
+> s/This eliminates/Eliminate/
+> 
+> > the kernel to call cpu_has_xfeatures().  That has never been universally
+> > done, which strongly suggests that it has never really been needed in
+> > practice, but this should remove any remaining doubt.
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> > ---
+> >  arch/x86/kernel/fpu/xstate.c | 21 +++++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > index a7b6524a9dea2..904ff933c0d88 100644
+> > --- a/arch/x86/kernel/fpu/xstate.c
+> > +++ b/arch/x86/kernel/fpu/xstate.c
+> > @@ -799,6 +799,23 @@ static u64 __init guest_default_mask(void)
+> >  	return ~(u64)XFEATURE_MASK_USER_DYNAMIC;
+> >  }
+> >  
+> > +/* Clear any X86_FEATURE_* used by the kernel whose xfeatures are missing. */
+> > +static void __init clear_cpu_caps_with_missing_xfeatures(u64 xfeatures)  
+> 
+> That function name is a bit too long. How about:
+> 
+> clear_cpu_caps_xft()
+
+That is too terse.
+Since none of the uses are overlong lines it really doesn't matter.
+
+> 
+> or so.
+> 
+> > +{
+> > +	u64 mask;
+> > +
+> > +	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM;
+> > +	if (boot_cpu_has(X86_FEATURE_AVX) && (xfeatures & mask) != mask) {
+> > +		pr_err("x86/fpu: Disabling AVX support due to missing xstate features\n");
+> > +		setup_clear_cpu_cap(X86_FEATURE_AVX);
+> > +	}
+> > +	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM | XFEATURE_MASK_AVX512;
+> > +	if (boot_cpu_has(X86_FEATURE_AVX512F) && (xfeatures & mask) != mask) {
+> > +		pr_err("x86/fpu: Disabling AVX-512 support due to missing xstate features\n");
+> > +		setup_clear_cpu_cap(X86_FEATURE_AVX512F);
+> > +	}
+> > +}
+> > +
+> >  /*
+> >   * Enable and initialize the xsave feature.
+> >   * Called once per system bootup.
 > > @@ -812,12 +829,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
 > >  
 > >  	if (!boot_cpu_has(X86_FEATURE_FPU)) {
@@ -85,7 +175,7 @@ On Mon, Jul 27, 2026 at 10:27:27PM -0700, Borislav Petkov wrote:
 > >  	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
 > >  		pr_info("x86/fpu: x87 FPU will use %s\n",
 > >  			boot_cpu_has(X86_FEATURE_FXSR) ? "FXSAVE" : "FSAVE");
-> > +		clear_cpu_caps_with_missing_xfeatures(0);
+> > +		clear_cpu_caps_with_missing_xfeatures(0);  
 > 
 > Also, I'm not really clear on the usage here: if the CPU doesn't have FPU or
 > XSAVE, we pass in xfeature 0 which is XFEATURE_FP in both cases. And then we
@@ -94,32 +184,34 @@ On Mon, Jul 27, 2026 at 10:27:27PM -0700, Borislav Petkov wrote:
 > The 0 is basically forcing the checks in the function to match, i.e., it looks
 > to me like we're defining a new interface but then we're misusing it so that
 > those basic CPU flags are cleared.
-
-*xfeatures* 0, not *xfeature* 0.  It's a bitmask.
-
+> 
 > What are we even protecting against here?
 > 
 > AVX and AVX-512 code needs to check whether it has FPU and XSAVE support?
 > 
 > I.e., we're protecting against some weird guests?
+
+More likely userspace running an old kernel on a new cpu.
+While unlikely to be a problem with AVX and AVX-512, it did happen when they
+were first added and might happen when the next feature is added.
+
 > 
 > I wanna say, we should not protect but let them crash'n'burn in big big flames
 > which can be seen from a mile away.
+
+I don't want to see the bug reports.
+The flames aren't big, what happens is that the registers don't get preserved
+across a process switch - so code tends to work a lot of the time.
+
+For userspace the XCR bits are the important ones.
+
+	David
+
 > 
 > Or do you have a sensible use case in mind which we really wanna protect
 > against and this all actually makes sense?
+> 
+> Thx.
+> 
 
-Hypervisors that set AVX CPUID bits without their prerequisite
-xfeatures.  Or the host OS, in the case of the UML patch.
-
-There are about 25 sites where kernel code is checking for this.  This
-is just checking it at the architectural level instead.
-
-We could try taking the position that this is not supported at all and
-just delete all the cpu_has_xfeatures() checks without replacing them
-with anything, and see what bug reports we receive (other than all the
-AI ones which we'd need to just ignore).  This would mean just taking
-patches 3-8.  Is that what you'd prefer?
-
-- Eric
 
