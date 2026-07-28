@@ -4,91 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E78D9C54EFC
-	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 09:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97D8AC54F54
+	for <linux-um@archiver.kernel.org>; Tue, 28 Jul 2026 18:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fd4u7HbSw7LmAIg2c748Ol/BOezHkKcbVf+2ouQF5V0=; b=OWreWboMH43JuxIQlLBKmXSzrr
-	CuLNEXf70ODgGe2b5alo23A0URaHHVrVt+rhC2nWwccabgR8ikBSc16m9WxOBc6ILnYUxbzZDsDpe
-	EiA4Hq1wNfq6BPhwZOPKHZWV7Jf7Jw/LXN2DtteUlerh3VoTh0tEIvUm46otoPZJoRX9uCBKBjHTp
-	9vUORxAC1PBEbY+bp6Zy97XlHsygVDfTMH5aTkrYjgg6h2U2CEKpigACJAi530u9I6p2XxBwmwZxw
-	mlz2systpUkvYiTdHzRBm4kxbhLwHYvcQtj7xjv0wFMvEDxCUrcT8gNQy6JE1OMHIs2JcOVNcx6/T
-	pC7FHHCQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8CnK7b3OTZ846KlpC71LjrQLtB6ehd01yLmJwk1SIFk=; b=JNPLs5NHnLBEdNbJPu4r6/rIAP
+	BZh+OnAzy+MqDrOgjzP06sqq7z+nphwrg2i4kZoumji+GpulTsn5J+Yvl1b1pMxdJYUV2OujY2OWp
+	kRD1EDOTPzBnjNExFUM+sC44uENcOIWyn5zRKgCZyD/LLbHlOO7lRldjuRM/bvzuOjbqgMyiqCGiu
+	uu1MSispsXmlCrV2a8RoYNFPlgDKZ64dGK2CaE1+pLO8gSXjq4Y+BPLm2WYnVKZAFYaj7Oeau75gM
+	Hq6+JlH0jlhrG9LiRvstZHp9JM0teAcwJCgMJT/AkW9VIJfmd/7REM1SInPcAkikgDNxkx+PoTq/H
+	GI2oZ6mQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woe8m-00000004pbN-0qeG;
-	Tue, 28 Jul 2026 09:30:24 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1womPt-000000063y3-1F5A;
+	Tue, 28 Jul 2026 18:20:37 +0000
+Received: from mail.alien8.de ([65.109.113.108])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1woe8k-00000004pan-0fO8
+	id 1womPp-000000063x6-4Bww
 	for linux-um@lists.infradead.org;
-	Tue, 28 Jul 2026 09:30:23 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4957eefd361so26703985e9.1
-        for <linux-um@lists.infradead.org>; Tue, 28 Jul 2026 02:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785231020; x=1785835820; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=fd4u7HbSw7LmAIg2c748Ol/BOezHkKcbVf+2ouQF5V0=;
-        b=i6UaKNVd76GYhgLr//seFPUe9QQI7tZbUp0Oi8qXfvnYihzvTCqVaYEYasBLqkxN4L
-         CaPv7LRRbFZNa6Ak8yF3km/4tAGoAlV2QXtYr9DN3yrwQfjJpDGZCfq1XU8fioAofPCo
-         3F0mi7+M4iPFL5d3vPfhjZU9ENLHS5rQN4WV1lhvKOx6JdGb/56ErGIxtAnKAFRxIf71
-         TSUgwp2jODEW6v/O++8q4SxwwgPjotM5wh2LosCb1H+bh/GAzGyoBCv0CRNWp5zOCVof
-         1mt++bl008IsucnmRV8LH5ImjODNSqbnvdqXekpTFbzCYWBaHMjoRCLWPCdxs1JZ/vlw
-         +Q7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785231020; x=1785835820;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=fd4u7HbSw7LmAIg2c748Ol/BOezHkKcbVf+2ouQF5V0=;
-        b=s7hDOl3wNwCnNEh3tNPr9t4l3o6O8kiSy3Yvt+5YFwutCx8i7uP3QW867HrybcOAAC
-         YboD7kfrU0eGvwVtxoR0ujxBcRonNjZls6dpGuplxUoOA195Vd3y7f2NQMkKlrue/5Jq
-         3TZ+CW9bQfMcRw0x+sV5SNw5REmhQM5L2oBWvAMqa83Z+7daddpt0Nmcp/Mw4ZhP478y
-         uNfTQRRW1FHGU99HvsgzGzO9GmbC+2oo59AcC/r/5Fyqf66/v8/Q4sBzaxJyqy0pFF/+
-         MXbV8EKDQm6779T2Fk4SrHQnAthj9esU/iOhUapEZhN2MzIv2gB0yIAiL2D94CZgoFKZ
-         S41Q==
-X-Forwarded-Encrypted: i=1; AHgh+RoQE9XFZfzxPTtO/+Ml6GIoScCduqRzjKqUHVhHNp7wxd+oM9oifyIivgRTQmNUDtVpykbZyVs8dw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyDQKhhaNUiXe4R0Z5+wvsaMfLU0AQsV5o0btJI4xtB29OXnA+y
-	SYnL/UBJwT2LakwI7D6WiLNcRaVPKZRbqg23rhJh9fzDm1ShLnPVqyQt
-X-Gm-Gg: AR+sD10HjHLM+IP4DNAjDnLuH/UuooRUSKdZMSubTDER94zxCr6XmwNyXj3h/Sstm3w
-	1G8Ek2YjSrFP6+7ZRwv3F3hVpK7nHOBtNC8CQX+tnLa0DKe2DRYmQEY9XmclY87CDPGYXcj3wBG
-	WnjrLfPRMznQ5+hhXPkack70ldYeh/C2tpodsCpJBXiJSPoV2peTTfMbKl5g/CDucp1nAUSDdf8
-	Q33C3SeM5dIGsEKxmCecKQ13w+jiq1yck1KDm/gydhwNmv+GgH+L+Crg0S1Wjx0jxB4O97xj/va
-	HYF3BDsQ27mvLzmd3LOYKqR8OUxn1ugGWU2Z0tp+ywU7bpQIx5XOTp6SDSuF750KSOovh9bZFh9
-	eDRPJlIlEKoNIz9R0yE81TcQscwMaRW0W9Y4Gbcx2OYHj13/s7wOIDu13VNLg364qvxVhq9Kd+t
-	Xj4zolJeFIc/fxfMET805F5BS3wa2XWyVmFfXWISk=
-X-Received: by 2002:a05:600c:310b:b0:495:779c:fbef with SMTP id 5b1f17b1804b1-496c65aaf28mr16540495e9.37.1785231020039;
-        Tue, 28 Jul 2026 02:30:20 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-496c44b84edsm99732275e9.5.2026.07.28.02.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2026 02:30:19 -0700 (PDT)
-Date: Tue, 28 Jul 2026 10:30:18 +0100
-From: David Laight <david.laight.linux@gmail.com>
+	Tue, 28 Jul 2026 18:20:35 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 155DB40E01CE;
+	Tue, 28 Jul 2026 18:20:30 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id AcccxxVkgJBi; Tue, 28 Jul 2026 18:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1785262820; bh=8CnK7b3OTZ846KlpC71LjrQLtB6ehd01yLmJwk1SIFk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i2NveApB2bcpTxHUhfxcBwFN4YZh1p27MCcgVUP2fS8ZtZmrPivBps4btIhHbjFOt
+	 J6/xzZWXS+IyFzuEpbSyFqyBQI7CCLk4xF4osEuK6BoScAfU+q+b1eWyPYjCWwEKnG
+	 mMrwhKYomIW3UXY3ivGFN4zJyo6Vy5i5wmlyg/jXEjzqJH1/m+Ft/OY2FXEUd/H4o4
+	 innjIm9EdrKYFABLrpBtamfKAplHx6Aw6sz9em+DuMtZPmBgfTIrH5/BsUyw5/nCcq
+	 RCyzmF93d9Fg1+angkSh/FyO5tet9fM0ccA8zsMxHGI29qPuoSc+Pe1oZtI8hDTjBJ
+	 BQPnpod5Siq9dJ8YdCPu1ZF9pSoUOdv8Oi5C3qy+Nfp0aePNw098iK0+ZqYIRWHWsf
+	 EWv77BB/Cx8QHGoBg4f/49yinqdRzw/0m2imwG08BW05MA3jCznzrWL/UuSddmfBeC
+	 FRtDuSncpasi85S4Ef6KU3wMBXf7WdXUVkJsEotK5lOWmbATBxEUVc1DZlE81UWE+I
+	 gK6LF8DvSp4y1UmvZlTqpHleQ5zBDxzGSPyqTOf0/01UIg9d312IiV7h0c2rTqf1kc
+	 Kkjsqfr71Ku0UlVRUcybUZUYlKjdc4bPLf7AWHIzCB9SDGl0kZvkOLSUyFDUmlvcsn
+	 5jjl+zjT3Y7QyGZSbaMpRsoc=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8193740E00C3;
+	Tue, 28 Jul 2026 18:20:11 +0000 (UTC)
+Date: Tue, 28 Jul 2026 11:20:07 -0700
+From: Borislav Petkov <bp@alien8.de>
 To: Eric Biggers <ebiggers@kernel.org>
 Cc: x86@kernel.org, linux-um@lists.infradead.org,
- linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>, Andrew Morton
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 3/8] crypto: x86 - Stop using cpu_has_xfeatures()
-Message-ID: <20260728103018.00938ac6@pumpkin>
-In-Reply-To: <20260728021603.79870-4-ebiggers@kernel.org>
+	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate
+ bits
+Message-ID: <20260728182007.GBamjy17zynlWm2gQT@fat_crate.local>
 References: <20260728021603.79870-1-ebiggers@kernel.org>
-	<20260728021603.79870-4-ebiggers@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+ <20260728021603.79870-2-ebiggers@kernel.org>
+ <20260728052727.GCamg9v5WxNieTMUwE@fat_crate.local>
+ <20260728054532.GA99797@sol>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260728054532.GA99797@sol>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260728_023022_229405_2F175D42 
-X-CRM114-Status: GOOD (  16.61  )
+X-CRM114-CacheID: sfid-20260728_112034_198500_AA5B4BD9 
+X-CRM114-Status: GOOD (  18.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,47 +91,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 27 Jul 2026 19:15:58 -0700
-Eric Biggers <ebiggers@kernel.org> wrote:
+On Mon, Jul 27, 2026 at 10:45:32PM -0700, Eric Biggers wrote:
+> *xfeatures* 0, not *xfeature* 0.  It's a bitmask.
 
-> Checking both boot_cpu_has(X86_FEATURE_AVX*) and cpu_has_xfeatures() has
-> never really been needed in practice, and it's never been universally
-> done (e.g., lib/raid/ omits cpu_has_xfeatures()).  Nevertheless, both
-> x86 and UML now explicitly clear the AVX and AVX-512 flags if their
-> xfeatures are missing, which should remove any remaining doubts.
-> 
-> Thus, remove all the calls to cpu_has_xfeatures(), as well as the
-> related checks of boot_cpu_has(X86_FEATURE_OSXSAVE).
-> 
-> In a few cases there was no corresponding boot_cpu_has(X86_FEATURE_AVX*)
-> check, so add the missing ones.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> ---
-...
-> --- a/arch/x86/crypto/aria_gfni_avx512_glue.c
-> +++ b/arch/x86/crypto/aria_gfni_avx512_glue.c
-> @@ -196,24 +196,15 @@ static struct skcipher_alg aria_algs[] = {
->  
->  static int __init aria_avx512_init(void)
->  {
-> -	const char *feature_name;
-> -
->  	if (!boot_cpu_has(X86_FEATURE_AVX) ||
->  	    !boot_cpu_has(X86_FEATURE_AVX2) ||
+That doesn't make it more clear. It does "clear cpu caps with missing
+xfeatures 0". I can't parse that code, maybe I don't see it yet.
 
-Doesn't AVX2 require AVX support?
+> Hypervisors that set AVX CPUID bits without their prerequisite
+> xfeatures. 
 
->  	    !boot_cpu_has(X86_FEATURE_AVX512F) ||
->  	    !boot_cpu_has(X86_FEATURE_AVX512VL) ||
+Yeah, those are the ones I don't care about.
 
-And (less sure) AVX512xxx require AVX2?
+> Or the host OS, in the case of the UML patch.
 
-So the extra checks could be reduced.
+That was because UML didn't have cpu_has_xfeatures(), right?
+ 
+> There are about 25 sites where kernel code is checking for this.  This
+> is just checking it at the architectural level instead.
 
-	David
+So tglx mentioned another case - firmware. Apparently we can have firmware
+which fumbles the configuration of those bits and I can very much see that
+happening - it is firmware, doh, ofc.
 
-> -	    !boot_cpu_has(X86_FEATURE_GFNI) ||
-> -	    !boot_cpu_has(X86_FEATURE_OSXSAVE)) {
-> +	    !boot_cpu_has(X86_FEATURE_GFNI)) {
+> We could try taking the position that this is not supported at all and
+> just delete all the cpu_has_xfeatures() checks without replacing them
+> with anything, and see what bug reports we receive (other than all the
+> AI ones which we'd need to just ignore).  This would mean just taking
+> patches 3-8.  Is that what you'd prefer?
+
+I had another idea this morning: towards the end of fpu__init_system_xstate(),
+we have figured out everything we support, components, buffer sizes, etc.
+There we also do a paranoia check on the xfeatures mask.
+
+How about we go through the final xfeatures mask and then clear bits which are
+wrong?
+
+This way we'll have all the checking done in one place, if checks pass we can
+say the machine is ok to do xstate handling and then we can drop all other
+checks around the tree.
+
+How does that sound?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
