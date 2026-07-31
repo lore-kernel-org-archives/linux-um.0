@@ -4,84 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2066C55172
-	for <linux-um@archiver.kernel.org>; Fri, 31 Jul 2026 14:51:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A407C55173
+	for <linux-um@archiver.kernel.org>; Fri, 31 Jul 2026 18:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=o2VHmdt8Eh1f32ArKt8xyaH3k693sx+i8Cpcrk82yxU=; b=GCFRn7Nq9+4ZPb+XhbNnntPJzz
-	WaTdCnbNi7+LceCkKuHbm6gejWENQ4wnkZtYaXvd66MqBbZEMbWwNUMP1HzlEKzEs54M7SV6/WBE1
-	uxihns3ZUhnmeFDcIveEq03YgMasYLBYrHOki7V8K4pviDf/Pyqn61HXNJTDNwA6RJ5xDfAxbA1lr
-	S8jbRIY8GacpspgZ41IIS4lM7SfFEsrPCu1rcdmSt3lH6Hz2OGbbudPmaKX2xhfdBtVN3t2GsRaCE
-	Xss5hedQnVkFhYdo2vIIT2u0J/QVi9XaOKgh5xSSYmtgnreNYSCMFP8mXwUttwn+8m6OVdgfEFT+8
-	oP+PsArA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=y9j1TjlyaztVjSl6eBVMkrysbU9q/GMXZwx/H99GjOo=; b=SgF6qBqwp2k8rvB0tctvE/IoLQ
+	DOa2Y7SFWgP+FyLIg02tEu4NC9DYMAwqYhU67WZ8qlmfTZNAY7o+U51V4uQLe7QACI1aEtur0Z6Ag
+	5GofYSyiYcJBQIfh5axGAhsgvXn5ZTfbFFw8cPWxNaWNEsSGxjENP6FyLf8gWjOcV+urElPj+sqWp
+	SvLak3QjdAURFgg63Fx9gz4CFPnYtuGOikxlZ18Z0vqN+8Xr4xcf8guqGWAbowGG0ln+i+nzeojFc
+	OVrrPkYmhYbovZuV37Vx7JpN87RG8rwuYz4KExWYmu4C3CUWholGN2Grp9KHCw6cIL2LQ0UrntGKh
+	73w34NTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpoZv-0000000Cpz6-43Bx;
-	Fri, 31 Jul 2026 14:51:15 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+	id 1wps83-0000000DOUe-1xM2;
+	Fri, 31 Jul 2026 18:38:43 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpoZp-0000000Cpxe-26gh
+	id 1wps82-0000000DOUQ-2pHM
 	for linux-um@lists.infradead.org;
-	Fri, 31 Jul 2026 14:51:12 +0000
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-47db714766aso1313208f8f.0
-        for <linux-um@lists.infradead.org>; Fri, 31 Jul 2026 07:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1785509467; x=1786114267; darn=lists.infradead.org;
-        h=content-type:content-transfer-encoding:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=o2VHmdt8Eh1f32ArKt8xyaH3k693sx+i8Cpcrk82yxU=;
-        b=OTmuzjEZaTx2fscJITZtltyFcsV2Cz6wE/6HXnlN7NCqlq0or0del4wCMSF4mq22Y0
-         TJu/dH9ynIUYXJapPP0iHSO9gsyyFygRWrRXO6M5+8JBion+fk3hw6qZrRlMvnEQ7R3H
-         Sm5pc+uPzRrqq1Kwxu7PrxUcNmgJqZ+gnKGPCp+zSjRKc6Av8ow0729UGgmfzWiGlzjF
-         j53RFO+syu0JrKQmqu4kmFt0hCxS/OeJni/2GeU0Q3DPpCDcgL6Bl2I4sN8EvGlzh8Xs
-         u4rYZKtQuHKWkmH6rJNcT7bbTydf5XuaZlsqFOIA4/psR7G2tPmaxXHYCRfl/SEfeotX
-         KjWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785509467; x=1786114267;
-        h=content-type:content-transfer-encoding:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=o2VHmdt8Eh1f32ArKt8xyaH3k693sx+i8Cpcrk82yxU=;
-        b=i0rSj4k589G7dDNLIHmnz8UphDoHmneeE0c3uX4lUJLiC5lB1yl5bTWwA6kfKVfD32
-         3I/JR5TXfjsSKg2ZAEjfl3lm4tjLBUlKOsuUXwnoWaaBGVFk9oROu7bRXLveRu1ZIe+E
-         i6sHUyo69NhQQOoLLaLrrljCg3HZLt/j1a6n162ETn3TaehdMZxDWc6aoGOKc79bvqv9
-         Xv+5M3/hzy5udnpD/2rB7hlyaZJQAsgVue1l69bqcLaBn7VLByYt/7qHNhNVQGSpcU0x
-         7YF/hq/HcytRgV6j8w//LsFcNACyKbkqpCXarb8dXGU7SvrNLu/zg1Ar266Jv6JwkYpf
-         D/fg==
-X-Gm-Message-State: AOJu0YyBlevAqcu5NNh7aK8ckZ8E4CBHXcqJy8iNoYxrqliAKEr+pEl3
-	Wsfn/H+fBvXoOlJOjyTWMbs+7sFBt41VXjoCLOMVEiDBlSsjufxBz0dNTCUbkO2dgZU=
-X-Gm-Gg: AR+sD13lQPDA/MsBvdI/JK2Tf60B2OYjmPW/aRFPeMsf37QPGtP259p/NOa60z5BXBu
-	xV32/VxounmSmHmlrGHron2M4jf583JLcrMK1GVHAhW7iHReSYtC/bXovl4qX/vRJRLeXxX3Glf
-	ncNvRKMBOiIKaOIJ0jerMOQSmK40VAO+RClGnBZTgAIQJD4qtyeGEC6eb5AjHAv14aYHu9xS4+F
-	N8VLRT89ozH+yujdMQhnRfVO307Y+rFPEGTbXK6bvga0yAQ3tdsMkvw/9WiZWQIDD282w6nhI8V
-	gHIuvoI1QR89OCxjXUVyZYMeMgMKc1Ns8t1150jPWjzIsreLDyQx9V109zgkiMr2VOo1lkPr9Zn
-	I2Gt9WNBKaV3kRcJZExf2rlPYtHQYoqNcY89Gi4N7BrqmZ6YR5iW2pc2+17EDCwVtSG/svij4s9
-	v5e3ZpxEdTWWNiSzWqI+BicTbBDrXnrCwzUr1Moxx4pqIsjUlyK8M+WJeKTFmiJtjo7ziwAHF4/
-	3WUZckrOQvyY6yrQE1gg0ptVK9Buw==
-X-Received: by 2002:a05:6000:2004:b0:46b:70db:2113 with SMTP id ffacd0b85a97d-47fd325ca84mr5402085f8f.0.1785509466844;
-        Fri, 31 Jul 2026 07:51:06 -0700 (PDT)
-Received: from somecomputer (85-127-105-26.dsl.dynamic.surfer.at. [85.127.105.26])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47fd458ab61sm5589563f8f.25.2026.07.31.07.51.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jul 2026 07:51:06 -0700 (PDT)
-From: Richard Weinberger <richard@sigma-star.at>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] uml-for-linus-7.2-rc5
-Date: Fri, 31 Jul 2026 16:51:05 +0200
-Message-ID: <5798606.zjCzTo3RIR@nailgun>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_075109_869262_6B4AFD4A 
-X-CRM114-Status: UNSURE (   6.17  )
-X-CRM114-Notice: Please train this message.
+	Fri, 31 Jul 2026 18:38:42 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id D798640F82;
+	Fri, 31 Jul 2026 18:38:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB1C1F00ACF;
+	Fri, 31 Jul 2026 18:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785523121;
+	bh=y9j1TjlyaztVjSl6eBVMkrysbU9q/GMXZwx/H99GjOo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc;
+	b=DDuFxzWiKU6HRPq5u1/I1W0sPPO5o3BXfuVd6mLpuSB+M2BiX3t6kPPMXYYFtabAC
+	 5fSGPrOcAqHiNic4qtCD+3vwp/Bh5/TMMN4xxGc1MMmmLwpAqySRgQg3tjeMwnsbE8
+	 R/qCPH3s3Em0SGwsNyJED4C5CHVGouxQO9c80g+YVA6tCQbq8f5vlCZ+F0xzewVKbq
+	 wocMh7FgfezaFbRZJoYMquwhavalWhB9bu9eyNV5fNxo9aqMt1tCOnVBSAOZs3XNl7
+	 KuJWGTTRwWJJbQ03Vv+Qev4aHEvXIh2JAgbNh2BrdcPxXsw6faybbd9uNjQmd/K1vx
+	 oP/m57+B9CrBQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0BC139263B9;
+	Fri, 31 Jul 2026 18:38:05 +0000 (UTC)
+Subject: Re: [GIT PULL] uml-for-linus-7.2-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <5798606.zjCzTo3RIR@nailgun>
+References: <5798606.zjCzTo3RIR@nailgun>
+X-PR-Tracked-List-Id: <linux-um.lists.infradead.org>
+X-PR-Tracked-Message-Id: <5798606.zjCzTo3RIR@nailgun>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-7.2-rc5
+X-PR-Tracked-Commit-Id: af421e9aed3920c7ac88c24daa48606c7112feca
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 05b165b6c8ab87e11222f99654f878885fb437f4
+Message-Id: <178552308455.857209.90685511595625617.pr-tracker-bot@kernel.org>
+Date: Fri, 31 Jul 2026 18:38:04 +0000
+To: Richard Weinberger <richard@sigma-star.at>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,32 +74,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Linus,
+The pull request you sent on Fri, 31 Jul 2026 16:51:05 +0200:
 
-The following changes since commit 1590cf0329716306e948a8fc29f1d3ee87d3989f:
+> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-7.2-rc5
 
-  Linux 7.2-rc4 (2026-07-19 13:54:41 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/05b165b6c8ab87e11222f99654f878885fb437f4
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-7.2-rc5
-
-for you to fetch changes up to af421e9aed3920c7ac88c24daa48606c7112feca:
-
-  um: vector: fix use-after-free in vector_mmsg_rx() (2026-07-23 21:31:14 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following bug fixes for UML:
-
-- UAF in UML's vector networking driver
-
-----------------------------------------------------------------
-Michael Bommarito (1):
-      um: vector: fix use-after-free in vector_mmsg_rx()
-
- arch/um/drivers/vector_kern.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
