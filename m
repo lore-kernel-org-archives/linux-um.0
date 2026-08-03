@@ -4,107 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F74DC55171
-	for <linux-um@archiver.kernel.org>; Sat,  1 Aug 2026 02:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FF8CC55184
+	for <linux-um@archiver.kernel.org>; Mon,  3 Aug 2026 13:59:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2NkahgXZy6YDg1lPmebO5GP6GO2GHrUW6hHkjH7vCl4=; b=2XNblejaabHPry0O9Bog5FyBs+
-	rrM+2Ay1g3cE2zy3uM7+tc070wg/nGvnycgiAoj4G7QEgUKbJ68D1BjBb5xx/9fh/uco+0apymZvg
-	UIuM77tr/dp46t66/2ULvgkltARZcHY923ILSXIdgXb/+M6eGV4aOxq2tst+kOUEguUgZBKC1yR7i
-	j/ikcn5QbkbwDOT54+95jIYhZPDIATKbD1sVdkvtY5mQc9L4tMoHTrpk2Pa3F2VDUoVjRwaSJK8r9
-	BhAHOg5QV3WsmzvZ2CMEXFXtcXF6hFNPcY3e8CwCLB4naPPA64KaIrA6qBv1s/afkNi6UtnyBWVUc
-	+j0u9q/Q==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JgJjMGVQwXfN1+lfqi/7mzYbORC4vBXwntqjWOpjj5Y=; b=vJ8gr70NwBFl8zjxlD3E1OWVl+
+	Tk7Ykt1MijwrIpFuGj76Qr28oenBUk8vuL8OxOznkPDHhEJ6rCYvN7qaLDKlC4fFh8v1dJZdETWpp
+	p/SlT0w6tDD5NGIIQm+lUbZuTmnXnOoO1M8PNEcX5wHl7PD+Qn4QBnOpUxeJFz9BFDRJvPoh2/ga3
+	gv4E4MB0lISTJ5hUTYT8uNOo/MqW/QZm0ud5YyIsAgL1UGLUCyxzMVUHLMNQZEKr7A1jpVtsiaVRH
+	UB2lT7Vem9veaVirxy+jEaW8TFvTSq5otYlqdcdo7fVlCEQk+lv0BDcF8UxvlfLxS04CiwqD/Dmmu
+	58XlJYFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpzPi-0000000Dplv-2QIm;
-	Sat, 01 Aug 2026 02:25:26 +0000
-Received: from flow-b7-smtp.messagingengine.com ([202.12.124.142])
+	id 1wqtCp-0000000HHkI-1FDk;
+	Mon, 03 Aug 2026 13:59:51 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wpzPf-0000000DplZ-0MGw
-	for linux-um@lists.infradead.org;
-	Sat, 01 Aug 2026 02:25:24 +0000
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailflow.stl.internal (Postfix) with ESMTP id A1A0713000FB;
-	Fri, 31 Jul 2026 22:25:19 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Fri, 31 Jul 2026 22:25:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flapping.org; h=
-	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1785551119; x=1785554719; bh=2NkahgXZy6YDg1lPmebO5
-	GP6GO2GHrUW6hHkjH7vCl4=; b=WbWcBIaVUqNumIAMbyD/lb9w7tepm/swKiEuv
-	haGd60AtRfw0zsktjoub6OxuivcVg/49ZVFrHRnnEXkAjuzl1SQoeelyxZNSnoW3
-	6coo0dCYNGxXczh4iRJEkJKlZ1P9aRibKIqDyycbTncQeuhbLPYLT3ORbmXkD5aT
-	UxM9v7aGhgshvFZKF8ZOgBeuSQeokBsx51sr/xjNyOiHD3BaOSa1v/IKOJ2myYzk
-	LhD9J4DbrQiIjFXW6MEGKDPUnJA/PvrMBCSLHJ4DFZ84esrJtdKzCxc9iQRvseKl
-	vzvJRsi5qLpbNZcDc0amwB6k3IwNpn7OIDQnh3vtpgvCQooYw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1785551119; x=1785554719; bh=2NkahgXZy6YDg1lPmebO5GP6GO2GHrUW6hH
-	kjH7vCl4=; b=M5d+pvAC+vSztueDF0HPaAcxAkCDZXM40xWoT8TPF0j6kwWpOja
-	gMuJ4rulnI5clpFPyAwT5DIy/6+blQl+91iaNu4uj0FD8+55IJvh36mycW8/nAmY
-	9eJ1UytGjAM5mCXRodFWN5wU4h2P3F459RizY3gk2Fze3lh7jw36HUhcbsi1+oj9
-	bnHJtrDbrIrE9kodYKnNarPw79Hf09FOYYfUm6ON7moysYXfq3g+enNwReFn3Wc9
-	AagaomjoMJeQzJvNBStpBYMXntAuZq3OaoDi9Eu5jq2hhlYMOJ+S/HEhRQXW8qjp
-	xl2U7AfLGIRcjOpx4lKz6AkZsY6EkYHIX3A==
-X-ME-Sender: <xms:Dlltam6w00lsomeB3oZOly55xZ4soLWNMk7CRnck7LW7oERsvGz4vQ>
-    <xme:DlltahSKJwv81NtWn2Huf8K1XVRADpzpVRzAENmu726YEHeEUGfp_75pzWwwsvQef
-    xCGB_cA6kzVmBUQFYY0BynkRQOkNWyK9jqptyc5UdRbIBTuSq8hu6DS>
-X-ME-Received: <xmr:DlltauuBCoTvlc4tWRLhKEEBgZv0S4Et9IQtz9TsUoZLnwLqSuBno7FvQeR35-ugTf5mFJycZU_abhbI_KQ>
-X-ME-Proxy-Cause: dmFkZTFL5J+P3pBhS0sKQbc/ZRVTPm4LUnoO0xtwI75u0TJ+UrrGHSt1EOQOXsM5/8z5v8
-    RmiJ3Ze86Cmxr84EVGJU+ip7PJMLS7+/aDPAuYvkjYYrjMdSZpydaKSYBGMjie0qOf2T5V
-    7lU5SCzo14e+4dAovEVadn9kZcZeDwJHDbZNnCLBT0wynVzw/5vlsHsCUj4W6Y/4l7qJj2
-    q/o6I56dHl0HkTSbLaz5sqN896VMumBGPzvYtBY4N7E0rQrH70J7eY6svBvfo+T0ELbmMn
-    7UHE4dH5RU3HrrgITESCwZT9ncgOf+A5DiIvolGM8vlB6wZm5TP/ZyxAG5+is1iWbaFHUw
-    f+Lwxtsz25XMCmL4X7rzUh+kE/LCUXXUecbEfS0jBLjQVqcxfF2e4+LQvqw5lJMTcNKM+9
-    ZEIlFiLFzjurVFVMvAtF1mFXVKjiqKxLFy5weM2Q/pq91xixMFi5axowRHPRcyfK7aEk4d
-    a1VuhQN4ieCe7tenixgSbqi0r5nKfqJbrG5snrs0Hbx/eqJXemT/jt/ZbRN2natNVZM6uG
-    4lPzSBSG34K30Gdry+MmLu2uYaLJmoVLGhPt7CbM4xwhxKLOqYWbucxNTKpO+vZoyV/dCK
-    8iAwQ1CgeJThd5ghXnRiSBs8gkth0/WEL5TsSEJv9RA1X0+I/N3YAUF+dWrA
-X-ME-Proxy: <xmx:DlltarYpzTsSBbcCSuqzrs5gCvJu5phpVhupDjGBW7gOmzd11BcItw>
-    <xmx:Dlltag9QQif9fch7Bz7czA9sjYSOI05470kQ5QLCl3Bdf78hsq8krQ>
-    <xmx:Dlltavrt4C-ERPoo-jMNB2aawzBooRnUBKtvb5hYe0LsR5aBRCMzlg>
-    <xmx:DlltarFB-1j9yL74dR-VPbOlgpcthvqXWwdAOXiAux-sEZXhStrzzg>
-    <xmx:D1ltalXlFq1a-AQwYXfQ1CpY5iGWkAcYeSLHA0g72jEvbqJ6fFO7mkIB>
-Feedback-ID: i51fe4b43:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 31 Jul 2026 22:25:14 -0400 (EDT)
-From: FUJITA Tomonori <tomo@flapping.org>
-To: ojeda@kernel.org,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: a.hindborg@kernel.org,
-	acourbot@nvidia.com,
-	aliceryhl@google.com,
-	bjorn3_gh@protonmail.com,
-	boqun@kernel.org,
-	dakr@kernel.org,
-	daniel.almeida@collabora.com,
-	gary@garyguo.net,
-	lossin@kernel.org,
-	tamird@kernel.org,
-	tmgross@umich.edu,
-	work@onurozkan.dev,
-	rust-for-linux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>
-Subject: [PATCH v1] rust: bug: fix warn_on macro build error on UML
-Date: Sat,  1 Aug 2026 11:25:01 +0900
-Message-ID: <20260801022501.722493-1-tomo@flapping.org>
-X-Mailer: git-send-email 2.43.0
+	id 1wqtCn-0000000HHjn-1Ryu;
+	Mon, 03 Aug 2026 13:59:49 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 5A2EB60A78;
+	Mon,  3 Aug 2026 13:59:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4B91F000E9;
+	Mon,  3 Aug 2026 13:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785765588;
+	bh=JgJjMGVQwXfN1+lfqi/7mzYbORC4vBXwntqjWOpjj5Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VdJzXRQmCKCQ7JgyKiUD1/ILZ8ALjapAPRXEniDDnzS1EoQJOd2Rh4mnj01mS0kaC
+	 SkdwvAXDVmUbSsA21mXsGUsV6UFqBCfzHqr7sKaMJIwGAPUZ/EuQ/qXVQNy9gbWQou
+	 k9r4ZeSmv7XSpcXC6vcb89age58OUEyz0Y3jtZ3UkudyTNaZ5gI+4+nRjmeVka/o9q
+	 /dN7dYJ78mn13G49euOFXvjaEbz3SgPDfvCdEu2cZqtsnpAXKCLf+lhpTv+wU8hwAu
+	 5uCt9p7JGa3sPVxgYgc/nGl9g631hfgqX2Lq234uZ0mjzzpUHJEqevNTssxpWPfwhD
+	 A251zj+Snu4hw==
+Message-ID: <01f07ea2-8bdd-4450-8a49-548f8b646cfd@kernel.org>
+Date: Mon, 3 Aug 2026 15:59:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260731_192523_496117_86C477A0 
-X-CRM114-Status: GOOD (  13.36  )
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/22] mm: introduce MMF_KERNEL flag and set it for
+ init_mm
+To: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Pasha Tatashin <pasha.tatashin@soleen.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
+ Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, linux-s390@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, sparclinux@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ning Sun <ning.sun@intel.com>,
+ x86@kernel.org, tboot-devel@lists.sourceforge.net,
+ Ard Biesheuvel <ardb@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-efi@vger.kernel.org,
+ Vishal Moola <vishal.moola@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
+ <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,56 +102,102 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: FUJITA Tomonori <fujita.tomonori@gmail.com>
 
-Callers that go through `kernel::prelude` have `CStrExt` in scope, but
-code inside the `kernel` crate imports explicitly and may not. Using
-`warn_on!` from such a module fails to build on UML, which is the only
-configuration where `warn_flags!` needs a C string pointer rather than an
-inline asm bug entry:
 
-error[E0599]: no method named `as_char_ptr` found for reference `&ffi::CStr` in the current scope
-   --> linux/rust/kernel/bug.rs:83:49
-    |
- 83 |                 $crate::c_str!(::core::file!()).as_char_ptr(),
-    |                                                 ^^^^^^^^^^^
-    |
-   ::: linux/rust/kernel/time.rs:427:9
-    |
-427 |         warn_on!(self.nanos < 0);
-    |         ------------------------ in this macro invocation
-    |
-    = help: items from traits can only be used if the trait is in scope
-    = note: this error originates in the macro `$crate::warn_flags` which comes from the expansion of the macro `warn_on` (in Nightly builds, run with -Z mac)
-help: trait `CStrExt` which provides `as_char_ptr` is implemented but not in scope; perhaps you want to import it
-   --> linux/rust/kernel/time.rs:27:1
-    |
- 27 + use crate::str::CStrExt;
+Le 14/07/2026 à 16:03, Kevin Brodsky a écrit :
+> mm code often needs to know whether some mm represents a kernel or
+> user address space. This is currently done by comparing the mm
+> pointer with &init_mm; besides not being particularly elegant, this
+> ignores the fact that other mm's (e.g. efi_mm) may also represent
+> parts of the kernel address space.
+> 
+> Introduce a new mm flag MMF_KERNEL and set it for init_mm.
+> Subsequent patches will use this flag to replace comparisons with
+> &init_mm. No functional change is introduced for now.
 
-Use the free function `as_char_ptr_in_const_context()` instead, as other exported macros already do.
+Did you consider performance impact ? This test is usually done in quite 
+critical memory handling functions.
 
-Fixes: dff64b072708 ("rust: Add warn_on macro")
-Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
----
- rust/kernel/bug.rs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+init_mm is known at link time. Before your patch 08/22 there is just a 
+comparison of mm (r3) with a constant (loaded in r10):
 
-diff --git a/rust/kernel/bug.rs b/rust/kernel/bug.rs
-index ed943960f851..ca1ab69c977b 100644
---- a/rust/kernel/bug.rs
-+++ b/rust/kernel/bug.rs
-@@ -80,7 +80,7 @@ macro_rules! warn_flags {
-         // with a valid null-terminated string.
-         unsafe {
-             $crate::bindings::warn_slowpath_fmt(
--                $crate::c_str!(::core::file!()).as_char_ptr(),
-+                $crate::str::as_char_ptr_in_const_context($crate::c_str!(::core::file!())),
-                 line!() as $crate::ffi::c_int,
-                 $flags as $crate::ffi::c_uint,
-                 ::core::ptr::null(),
+c0014048 <assert_pte_locked>:
+c0014048:	3d 40 c1 09 	lis     r10,-16119
+c001404c:	39 4a 03 98 	addi    r10,r10,920
+c0014050:	7c 03 50 00 	cmpw    r3,r10
+c0014054:	4d 82 00 20 	beqlr
+...
 
-base-commit: 11028ab62899e4191e074ee364c712b77823a9c4
--- 
-2.43.0
+After patch 08/22 we have, it first checks that mm is not 0, then it 
+loads the word located at mm+528 then AND it with 0x1. This load might 
+be costly.
+
+c0014048 <assert_pte_locked>:
+c0014048:	2c 03 00 00 	cmpwi   r3,0
+c001404c:	7c 85 23 78 	mr      r5,r4
+c0014050:	41 82 00 10 	beq     c0014060 <assert_pte_locked+0x18>
+c0014054:	81 23 02 10 	lwz     r9,528(r3)
+c0014058:	71 29 00 01 	andi.   r9,r9,1
+c001405c:	4c 82 00 20 	bnelr
+...
+
+Christophe
+
+> 
+> Assisted-by: Codex:GPT-5.5
+> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
+> ---
+>   include/linux/mm_types.h | 10 ++++++++++
+>   mm/init-mm.c             |  1 +
+>   2 files changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index a2e0dc5892ff..7838ea3aac00 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -1414,6 +1414,8 @@ struct mm_struct {
+>   	char flexible_array[] __aligned(__alignof__(unsigned long));
+>   };
+>   
+> +#define MM_FLAGS_INIT(flags)	{ .__mm_flags = { BITMAP_FROM_U64(flags) } }
+> +
+>   static inline bool mm_flags_test(int flag, const struct mm_struct *mm)
+>   {
+>   	return test_bit(flag, ACCESS_PRIVATE(&mm->flags, __mm_flags));
+> @@ -2001,6 +2003,9 @@ enum {
+>   #define MMF_TOPDOWN		31	/* mm searches top down by default */
+>   #define MMF_TOPDOWN_MASK	BIT(MMF_TOPDOWN)
+>   
+> +#define MMF_KERNEL		32	/* mm belongs to the kernel */
+> +#define MMF_KERNEL_MASK		BIT_ULL(MMF_KERNEL)
+> +
+>   #define MMF_INIT_LEGACY_MASK	(MMF_DUMP_FILTER_MASK |\
+>   				 MMF_DISABLE_THP_MASK | MMF_HAS_MDWE_MASK |\
+>   				 MMF_VM_MERGE_ANY_MASK | MMF_TOPDOWN_MASK)
+> @@ -2008,6 +2013,11 @@ enum {
+>   /* Legacy flags must fit within 32 bits. */
+>   static_assert((u64)MMF_INIT_LEGACY_MASK <= (u64)UINT_MAX);
+>   
+> +static inline bool mm_is_kernel(const struct mm_struct *mm)
+> +{
+> +	return mm && mm_flags_test(MMF_KERNEL, mm);
+> +}
+> +
+>   /*
+>    * Initialise legacy flags according to masks, propagating selected flags on
+>    * fork. Further flag manipulation can be performed by the caller.
+> diff --git a/mm/init-mm.c b/mm/init-mm.c
+> index 3e792aad7626..93773269bf87 100644
+> --- a/mm/init-mm.c
+> +++ b/mm/init-mm.c
+> @@ -34,6 +34,7 @@ struct mm_struct init_mm = {
+>   	.pgd		= swapper_pg_dir,
+>   	.mm_users	= ATOMIC_INIT(2),
+>   	.mm_count	= ATOMIC_INIT(1),
+> +	.flags		= MM_FLAGS_INIT(MMF_KERNEL_MASK),
+>   	.write_protect_seq = SEQCNT_ZERO(init_mm.write_protect_seq),
+>   	MMAP_LOCK_INITIALIZER(init_mm)
+>   	.page_table_lock =  __SPIN_LOCK_UNLOCKED(init_mm.page_table_lock),
+> 
 
 
