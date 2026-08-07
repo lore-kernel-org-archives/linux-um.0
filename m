@@ -4,136 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6906C55ABF
-	for <linux-um@archiver.kernel.org>; Wed,  5 Aug 2026 12:07:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AC2FC5AC7C
+	for <linux-um@archiver.kernel.org>; Fri,  7 Aug 2026 06:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aGl+2n0y8opMkIO+tIk0uV2YGP/4CHQ7NMUa3eVt6C8=; b=ChsqLtZzhQnPWO9ujH23wbrEay
-	6PHv+3USNz9mBQBPmCvhSTJ+flmmQYrrpwVB35ig2KeZUnuxpb5VtGIHqh03hKLcR/3Q7d+QfS46U
-	rKHzGlsoi5R4BmZPKZ7S3CjL3cTC6F2sZHjn6wRh7eMO/CvO412tqe0Xx4j3MJ7HUA2+ykJ/TfW1t
-	ozfgj0z7cYHnu257U+lWmQN1jHSQBXIiU7rbJhzR1mvjWu2hx5vUrqHmFxEMtPyZbnuvgrjIIgnoz
-	xx8JoJ35s0yqiUNtRDYanpHyrgBYEV9LYqePmb00dr1DX8AFH6lOjRi/mfVpoMBcEbShwNefsTtPE
-	gbZN7R5g==;
+	bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=; b=y4pPMy2EChCmYO5YEhD+IeWLs4
+	9/M2ncDWz174PM7niCnbN3dH69zb+59ObMr5TVhi5f/v8MsIsr/1+KHkn1CFYT45hSNS/4GnGr1RL
+	JW3mzvqsDeMF5rr6fvjafgcC0CEXo5YZUZD3HAuhAhawUEJBamOIqRdsptmTqNX5UVUOK5Ba5sPU1
+	RD3u01NB151pMt68aNTvXnR1KcpfNgLEU7HNx5pXShNgPD0BltqUCybAw1eq59HguQqa8kuCbSUnc
+	3qkbXyM2/Pv7rufVyrL/bchFgyZnipZHkTLtndXCvmPF5N/r3abM7pLsH8JUMGSTLI53POPZuns2j
+	Zuas2Skw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wraP3-00000003rvn-2giF;
-	Wed, 05 Aug 2026 12:07:21 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1wsERs-00000007C80-3etJ;
+	Fri, 07 Aug 2026 06:52:56 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wraP1-00000003rv9-2sHQ;
-	Wed, 05 Aug 2026 12:07:19 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id BFC4760A9D;
-	Wed,  5 Aug 2026 12:07:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A82F1F000E9;
-	Wed,  5 Aug 2026 12:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785931638;
-	bh=aGl+2n0y8opMkIO+tIk0uV2YGP/4CHQ7NMUa3eVt6C8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=G08xuQ9vztT8MWAY4GWQjNu0SA3oW0WrAzxB+WUMH6xTvVM4MnCCvAzMX4Y2bXu9/
-	 wMQarK/Q0WzmH8cJs2dytIclXaHZiQrRUQW2XaJHZZyivkVl4Hy24GBiNCN796Df+y
-	 2CzrddHZ/z5jmR+FqtxzKW00oGiX2uY3jNIgcnVBHu+JGJoYG6tUcNsk5lKbqM/zi4
-	 nvu4A4Z/uwi6godbKpH5dHpUVRyOLRICUQPbrtp8FehB8uI3y++d5t0FWhLzy/JTGh
-	 PJ9ozl262SzjHQNrxDhcJRvOBQJo4aA/7EyfOJtrMCFELMOATMaHl0coqmtItf6c/P
-	 aGqVAA3RBHoPw==
-Message-ID: <33fc9d31-2866-4315-9510-0004deb93994@kernel.org>
-Date: Wed, 5 Aug 2026 14:07:01 +0200
+	id 1wsERq-00000007C7h-1hBN
+	for linux-um@lists.infradead.org;
+	Fri, 07 Aug 2026 06:52:55 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-cb20b0a387bso317108a12.0
+        for <linux-um@lists.infradead.org>; Thu, 06 Aug 2026 23:52:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786085573; cv=none;
+        d=google.com; s=arc-20260327;
+        b=EunhCiAUo0alZlcDFF7hH8oa1iZMaHv5WyxtJZPu7z7dUnrW4T+lnIZju3bZNTcl55
+         0kuS31C2OELrFxWeMcacsOqe2vMJ2cJA+gvSySMKSoe+z9GjxM9EO6IePEUgRZ3jvy2g
+         nfmI9umH/0jnngWZxjmRiSOJf0CfX11M+oih/smuARy/+I7eTHZ4qWvXY5XrjL+BskCe
+         j8vy96prtKVP7yJVmI0x5iUyAdleenrcFXccsw3iyA/6rNqXUC3QmZkgSKPMPA9dS9tK
+         xBJZh7/ULmJzTgev4b2tC/IbRFvyLz4PgPow4Qc9708yN/DpYAOuANl9sCKwNHWmPHAi
+         fuFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
+        fh=2utben7IdcOzlqDXuBd3QqXlDkLdVEpJ6OyXzDZjos0=;
+        b=idW2IYseMjDK4Hxlb5NQFSiuOk5SJHbY5JkEeOauk0XdFtVZhrlxrVwzvx9yaYose1
+         qVNAiva+fY0bXQ1bKQE/8viykO8tG/XcXxbgX9hxiGi/oXrmhcefeCznlwJw8FjnNrwv
+         HOSnmBh/oWYZtdvLNMOqhkMvBRq1lGHdf6LnND9KqeP+b2kiablNMZFnpFSHJc2d940z
+         COklat2JXfg9KXZpcEBcgtYO8sk2O5LAXvUnhecoArfsL4Vu7Rs/CyXMRFEieyZdY1/p
+         gwpi+fH5x01KJADWEWszT6iPewSVzkmk1k/bbbgN924XPl3O4RVCvgaySkafVoXtJARV
+         Xhdw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786085573; x=1786690373; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
+        b=LnPXAdWMRuzX0GDusJIeJS0RNpNZCtmTCli9hFv1PcmMVigLUZsqDaKj9D4qQH1GL8
+         kj/S7l3TgjCuOYEGMh19O57UrBH/PCYopfEg+QMn1IMrGcZCzIjcUIg9Kx0/A3U4C7Je
+         IGYl653GitSbfW8Cv6XCDuKl5QERDzjrtYVXGnTTMDSxMFy8ScSZaDKBfub2EgZLkrc6
+         9bfharc8TZh89KAIzgtcqRkAF3tpBtn9WMo6Ah+OXsVvhBa5djorQcQ7Dr+QgSp/g/tM
+         HjwBNOjr3Cd/bTmHI+G6VjcsK8OtyLFAYXlGevzED6G0borcq1YS4y9nIciA9VW4Gvbh
+         nnqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786085573; x=1786690373;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
+        b=b2Rt774LP5HAvQ/NqG4533bpT4e8MRpOCs3cZfa88T1mjkzc9JJ8aHCfWsmQHHACyH
+         xA5r1PlPNSfQbdtTUSD9xzJA2xdw7/HUDuFY4QO0HZ1n9JO2IHNZAYDrNzyuIz/3xq40
+         mjVDpBn3+JliPnAVeCWD4xViQ65JM/W/J8MtZceQJLL0es0Bbbgpo3jQK2Bd6PxHUtti
+         pVebKPZxsB2HUe2ubD1+HUy6VXHk7dMdnq7eSsHl2OlBekbnc0PLOgHOiMa8pvmB2hKE
+         o8PDYPR7uZRIMxX7K08dR9JfmWFWMYWXoCNBmC1majcgyBSGKBxh+fXCKuo5qmCsTP9K
+         O+FA==
+X-Forwarded-Encrypted: i=1; AHgh+Rr+kMki4PWzntkTj+kvffoiYCVa559uNX1SuEpNo9FOwDAC+RbRy59Xsz9A7rn04WEG7UaGoIT60w==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz4gOSmb1FAnWjzD7zJ/qdPcNUYLbmqumSqxVsufoKXKExXTnjH
+	6bvJnc9TVmnpDiGYJ6/19PjNc5lANpm7Ti5X01DYIAG4+clSM4YjuAUv8AU0mVtljkDjI/efsc2
+	AAizcPz5xm2vvQhwbPqAsWcN4SYJ2d6s=
+X-Gm-Gg: AR+sD10g4K+wzqy2TYqGcU4p4ZS3dLk8eImqAxUs1wmz2Yw51Ow0anBSEsrEtZO76Bn
+	RVGYaQ+P+D7eMNP+GR+Dbuo+amiUFgW6aQgbdx40j5uCN1vZNri8+bpRauJGFQZCUSjo3lO2HLv
+	WRJvRJDYB+Bu2CiAoO5bGNv0ZQXiDi0yOOfylkEb6/FFZiiOfGmhaOM4bhzbbmBB9Rk4jzl/khc
+	S2Bk+OMlvycoHpwA0/hTksimcGeOIIdIZLITXjtPzTVJgCSuGdiCFAUIZU9uDZIQVMO3RurYY4O
+	okNkpxGz3IST+frpOtTDofCl3LGorW+p36dUHdl9yKjdfq+71PUJfuqXnmoIR/FEmc2dHQSh8wm
+	7fFZUjzTbTwm1U3g/C8ST3wGaK8txEu+kkhflOBwR47/SRh7s6MNDhMEPi3EM
+X-Received: by 2002:a17:903:184b:b0:2ca:ecf6:9105 with SMTP id
+ d9443c01a7336-2d0ca6010d1mr169669205ad.1.1786085572579; Thu, 06 Aug 2026
+ 23:52:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/22] mm: introduce MMF_KERNEL flag and set it for
- init_mm
-To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Pasha Tatashin <pasha.tatashin@soleen.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ryan Roberts <ryan.roberts@arm.com>, linux-arm-kernel@lists.infradead.org,
- Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>, linux-s390@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, sparclinux@vger.kernel.org,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ning Sun <ning.sun@intel.com>,
- x86@kernel.org, tboot-devel@lists.sourceforge.net,
- Ard Biesheuvel <ardb@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-efi@vger.kernel.org,
- Vishal Moola <vishal.moola@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20260714-remove_pgtable_cdtor-v1-0-44be8a7685d7@arm.com>
- <20260714-remove_pgtable_cdtor-v1-3-44be8a7685d7@arm.com>
- <01f07ea2-8bdd-4450-8a49-548f8b646cfd@kernel.org>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzS5EYXZpZCBIaWxk
- ZW5icmFuZCAoQ3VycmVudCkgPGRhdmlkQGtlcm5lbC5vcmc+wsGQBBMBCAA6AhsDBQkmWAik
- AgsJBBUKCQgCFgICHgUCF4AWIQQb2cqtc1xMOkYN/MpN3hD3AP+DWgUCaYJt/AIZAQAKCRBN
- 3hD3AP+DWriiD/9BLGEKG+N8L2AXhikJg6YmXom9ytRwPqDgpHpVg2xdhopoWdMRXjzOrIKD
- g4LSnFaKneQD0hZhoArEeamG5tyo32xoRsPwkbpIzL0OKSZ8G6mVbFGpjmyDLQCAxteXCLXz
- ZI0VbsuJKelYnKcXWOIndOrNRvE5eoOfTt2XfBnAapxMYY2IsV+qaUXlO63GgfIOg8RBaj7x
- 3NxkI3rV0SHhI4GU9K6jCvGghxeS1QX6L/XI9mfAYaIwGy5B68kF26piAVYv/QZDEVIpo3t7
- /fjSpxKT8plJH6rhhR0epy8dWRHk3qT5tk2P85twasdloWtkMZ7FsCJRKWscm1BLpsDn6EQ4
- jeMHECiY9kGKKi8dQpv3FRyo2QApZ49NNDbwcR0ZndK0XFo15iH708H5Qja/8TuXCwnPWAcJ
- DQoNIDFyaxe26Rx3ZwUkRALa3iPcVjE0//TrQ4KnFf+lMBSrS33xDDBfevW9+Dk6IISmDH1R
- HFq2jpkN+FX/PE8eVhV68B2DsAPZ5rUwyCKUXPTJ/irrCCmAAb5Jpv11S7hUSpqtM/6oVESC
- 3z/7CzrVtRODzLtNgV4r5EI+wAv/3PgJLlMwgJM90Fb3CB2IgbxhjvmB1WNdvXACVydx55V7
- LPPKodSTF29rlnQAf9HLgCphuuSrrPn5VQDaYZl4N/7zc2wcWM7BTQRVy5+RARAA59fefSDR
- 9nMGCb9LbMX+TFAoIQo/wgP5XPyzLYakO+94GrgfZjfhdaxPXMsl2+o8jhp/hlIzG56taNdt
- VZtPp3ih1AgbR8rHgXw1xwOpuAd5lE1qNd54ndHuADO9a9A0vPimIes78Hi1/yy+ZEEvRkHk
- /kDa6F3AtTc1m4rbbOk2fiKzzsE9YXweFjQvl9p+AMw6qd/iC4lUk9g0+FQXNdRs+o4o6Qvy
- iOQJfGQ4UcBuOy1IrkJrd8qq5jet1fcM2j4QvsW8CLDWZS1L7kZ5gT5EycMKxUWb8LuRjxzZ
- 3QY1aQH2kkzn6acigU3HLtgFyV1gBNV44ehjgvJpRY2cC8VhanTx0dZ9mj1YKIky5N+C0f21
- zvntBqcxV0+3p8MrxRRcgEtDZNav+xAoT3G0W4SahAaUTWXpsZoOecwtxi74CyneQNPTDjNg
- azHmvpdBVEfj7k3p4dmJp5i0U66Onmf6mMFpArvBRSMOKU9DlAzMi4IvhiNWjKVaIE2Se9BY
- FdKVAJaZq85P2y20ZBd08ILnKcj7XKZkLU5FkoA0udEBvQ0f9QLNyyy3DZMCQWcwRuj1m73D
- sq8DEFBdZ5eEkj1dCyx+t/ga6x2rHyc8Sl86oK1tvAkwBNsfKou3v+jP/l14a7DGBvrmlYjO
- 59o3t6inu6H7pt7OL6u6BQj7DoMAEQEAAcLBfAQYAQgAJgIbDBYhBBvZyq1zXEw6Rg38yk3e
- EPcA/4NaBQJonNqrBQkmWAihAAoJEE3eEPcA/4NaKtMQALAJ8PzprBEXbXcEXwDKQu+P/vts
- IfUb1UNMfMV76BicGa5NCZnJNQASDP/+bFg6O3gx5NbhHHPeaWz/VxlOmYHokHodOvtL0WCC
- 8A5PEP8tOk6029Z+J+xUcMrJClNVFpzVvOpb1lCbhjwAV465Hy+NUSbbUiRxdzNQtLtgZzOV
- Zw7jxUCs4UUZLQTCuBpFgb15bBxYZ/BL9MbzxPxvfUQIPbnzQMcqtpUs21CMK2PdfCh5c4gS
- sDci6D5/ZIBw94UQWmGpM/O1ilGXde2ZzzGYl64glmccD8e87OnEgKnH3FbnJnT4iJchtSvx
- yJNi1+t0+qDti4m88+/9IuPqCKb6Stl+s2dnLtJNrjXBGJtsQG/sRpqsJz5x1/2nPJSRMsx9
- 5YfqbdrJSOFXDzZ8/r82HgQEtUvlSXNaXCa95ez0UkOG7+bDm2b3s0XahBQeLVCH0mw3RAQg
- r7xDAYKIrAwfHHmMTnBQDPJwVqxJjVNr7yBic4yfzVWGCGNE4DnOW0vcIeoyhy9vnIa3w1uZ
- 3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
- CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
- qIws/H2t
-In-Reply-To: <01f07ea2-8bdd-4450-8a49-548f8b646cfd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20260801022501.722493-1-tomo@flapping.org>
+In-Reply-To: <20260801022501.722493-1-tomo@flapping.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 7 Aug 2026 08:52:38 +0200
+X-Gm-Features: AUfX_mxj2A-IR7_iAbCUKcJ0mhFhqopvk-MPVA4_QBPaPZ6FidBVU90MxLk2040
+Message-ID: <CANiq72kzmPnu_UPHryLMSwGMmTruirNUL5H+aD4tMiNUqqRELw@mail.gmail.com>
+Subject: Re: [PATCH v1] rust: bug: fix warn_on macro build error on UML
+To: FUJITA Tomonori <tomo@flapping.org>
+Cc: ojeda@kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, a.hindborg@kernel.org, acourbot@nvidia.com, 
+	aliceryhl@google.com, bjorn3_gh@protonmail.com, boqun@kernel.org, 
+	dakr@kernel.org, daniel.almeida@collabora.com, gary@garyguo.net, 
+	lossin@kernel.org, tamird@kernel.org, tmgross@umich.edu, work@onurozkan.dev, 
+	rust-for-linux@vger.kernel.org, linux-um@lists.infradead.org, 
+	FUJITA Tomonori <fujita.tomonori@gmail.com>, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260806_235254_445884_895E3315 
+X-CRM114-Status: UNSURE (   7.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,53 +124,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 8/3/26 15:59, Christophe Leroy (CS GROUP) wrote:
-> 
-> 
-> Le 14/07/2026 à 16:03, Kevin Brodsky a écrit :
->> mm code often needs to know whether some mm represents a kernel or
->> user address space. This is currently done by comparing the mm
->> pointer with &init_mm; besides not being particularly elegant, this
->> ignores the fact that other mm's (e.g. efi_mm) may also represent
->> parts of the kernel address space.
->>
->> Introduce a new mm flag MMF_KERNEL and set it for init_mm.
->> Subsequent patches will use this flag to replace comparisons with
->> &init_mm. No functional change is introduced for now.
-> 
-> Did you consider performance impact ? This test is usually done in quite
-> critical memory handling functions.
-> 
-> init_mm is known at link time. Before your patch 08/22 there is just a
-> comparison of mm (r3) with a constant (loaded in r10):
-> 
-> c0014048 <assert_pte_locked>:
-> c0014048:    3d 40 c1 09     lis     r10,-16119
-> c001404c:    39 4a 03 98     addi    r10,r10,920
-> c0014050:    7c 03 50 00     cmpw    r3,r10
-> c0014054:    4d 82 00 20     beqlr
-> ...
-> 
-> After patch 08/22 we have, it first checks that mm is not 0, then it loads the
-> word located at mm+528 then AND it with 0x1. This load might be costly.
-> 
-> c0014048 <assert_pte_locked>:
-> c0014048:    2c 03 00 00     cmpwi   r3,0
-> c001404c:    7c 85 23 78     mr      r5,r4
-> c0014050:    41 82 00 10     beq     c0014060 <assert_pte_locked+0x18>
-> c0014054:    81 23 02 10     lwz     r9,528(r3)
-> c0014058:    71 29 00 01     andi.   r9,r9,1
-> c001405c:    4c 82 00 20     bnelr
+On Sat, Aug 1, 2026 at 5:41=E2=80=AFAM FUJITA Tomonori <tomo@flapping.org> =
+wrote:
+>
+> Use the free function `as_char_ptr_in_const_context()` instead, as other =
+exported macros already do.
 
-Is that a real problem, though?
+I reproduced this and the fix works -- thanks Tomonori!
 
-What we could do is to just keep the == &init_mm check internally on configs
-where we know that there is only a single such MM context.
+Do we need to use the free function? i.e. this is not a const context,
+so should we do e.g.
 
-Just a thought.
+    $crate::str::CStrExt::as_char_ptr
 
--- 
+?
+
+Also:
+
+Cc: stable@vger.kernel.org
+
+And Cc'ing David for UML in case he is interested.
+
 Cheers,
-
-David
+Miguel
 
