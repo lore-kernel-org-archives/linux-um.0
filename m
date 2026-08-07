@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AC2FC5AC7C
-	for <linux-um@archiver.kernel.org>; Fri,  7 Aug 2026 06:52:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F701C5AC7C
+	for <linux-um@archiver.kernel.org>; Fri,  7 Aug 2026 06:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=; b=y4pPMy2EChCmYO5YEhD+IeWLs4
-	9/M2ncDWz174PM7niCnbN3dH69zb+59ObMr5TVhi5f/v8MsIsr/1+KHkn1CFYT45hSNS/4GnGr1RL
-	JW3mzvqsDeMF5rr6fvjafgcC0CEXo5YZUZD3HAuhAhawUEJBamOIqRdsptmTqNX5UVUOK5Ba5sPU1
-	RD3u01NB151pMt68aNTvXnR1KcpfNgLEU7HNx5pXShNgPD0BltqUCybAw1eq59HguQqa8kuCbSUnc
-	3qkbXyM2/Pv7rufVyrL/bchFgyZnipZHkTLtndXCvmPF5N/r3abM7pLsH8JUMGSTLI53POPZuns2j
-	Zuas2Skw==;
+	bh=eXecMis04p/qxD8Q75ODIPsKx6640DQP+yHLlpoDkyE=; b=ArvO09I+ETqOMyzkiAot7AXeT2
+	cBxF9/fdw4MJpoZrpGeASUpjCjbaL5TCGzSwFhug1PqJXBzTtUDpJt/rHkg2wbwcGjQd72V+LSn/n
+	WkIwVaSGZQG+JcbKkMhLAPTIl6fL3GX+pjvEHu0DfEuHL1Ej7lLv5KTEhvvbNEJZWxsQ0WBYALVI0
+	0l538e5D2Tqk+Ry9B7VUtOX5uDFBnN/T4yfv73A/9lyRK7j4NSd48tTHPFh+l1BarwELnwmxEy+5S
+	FCx6mrWX1qsaWWj6NR3WevuouvYXlSoxPG85Atq91yQkVedcJKPLAwHGApcsmrcp6LbZ7zqJ9UASZ
+	iE624IqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsERs-00000007C80-3etJ;
-	Fri, 07 Aug 2026 06:52:56 +0000
-Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
+	id 1wsETr-00000007CIn-0ks7;
+	Fri, 07 Aug 2026 06:54:59 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wsERq-00000007C7h-1hBN
+	id 1wsETp-00000007CIR-2od3
 	for linux-um@lists.infradead.org;
-	Fri, 07 Aug 2026 06:52:55 +0000
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-cb20b0a387bso317108a12.0
-        for <linux-um@lists.infradead.org>; Thu, 06 Aug 2026 23:52:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786085573; cv=none;
+	Fri, 07 Aug 2026 06:54:58 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-84f3ab8751fso483688b3a.2
+        for <linux-um@lists.infradead.org>; Thu, 06 Aug 2026 23:54:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786085697; cv=none;
         d=google.com; s=arc-20260327;
-        b=EunhCiAUo0alZlcDFF7hH8oa1iZMaHv5WyxtJZPu7z7dUnrW4T+lnIZju3bZNTcl55
-         0kuS31C2OELrFxWeMcacsOqe2vMJ2cJA+gvSySMKSoe+z9GjxM9EO6IePEUgRZ3jvy2g
-         nfmI9umH/0jnngWZxjmRiSOJf0CfX11M+oih/smuARy/+I7eTHZ4qWvXY5XrjL+BskCe
-         j8vy96prtKVP7yJVmI0x5iUyAdleenrcFXccsw3iyA/6rNqXUC3QmZkgSKPMPA9dS9tK
-         xBJZh7/ULmJzTgev4b2tC/IbRFvyLz4PgPow4Qc9708yN/DpYAOuANl9sCKwNHWmPHAi
-         fuFw==
+        b=CY0GTEoD4UaehhoilI+Y7iixz7gX3pUVxnyMyvHHCEOskjNXppp0NYL73NWOWz0Cra
+         gGIWjWbPtHqbaPD95bMqP0WJ5ReF38+VScMLYekznYGKb4iabz8iWTVReXPjmDh3WS5L
+         Zwcwck2wWIz/c5BZAN9vuH4N1/vQi602+RQH1Y3i153mauVjsYPM2iK26axipJGqizsU
+         /AgkIflUoiDRJTNYJ6MAb0d1gIRjwjdnTzWX3YvF1+N5uesMmsJk71jE9PhguZo8HD90
+         Alqy2CfaEiCiqGOVioiaoMnrSpewRy23HDqrAuda0PouPbhAW9YxAfGIsLmrN853XEEL
+         Ms1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
-        fh=2utben7IdcOzlqDXuBd3QqXlDkLdVEpJ6OyXzDZjos0=;
-        b=idW2IYseMjDK4Hxlb5NQFSiuOk5SJHbY5JkEeOauk0XdFtVZhrlxrVwzvx9yaYose1
-         qVNAiva+fY0bXQ1bKQE/8viykO8tG/XcXxbgX9hxiGi/oXrmhcefeCznlwJw8FjnNrwv
-         HOSnmBh/oWYZtdvLNMOqhkMvBRq1lGHdf6LnND9KqeP+b2kiablNMZFnpFSHJc2d940z
-         COklat2JXfg9KXZpcEBcgtYO8sk2O5LAXvUnhecoArfsL4Vu7Rs/CyXMRFEieyZdY1/p
-         gwpi+fH5x01KJADWEWszT6iPewSVzkmk1k/bbbgN924XPl3O4RVCvgaySkafVoXtJARV
-         Xhdw==;
+        bh=eXecMis04p/qxD8Q75ODIPsKx6640DQP+yHLlpoDkyE=;
+        fh=lW37kVjvqm0KF6UWb/TNjL4NLMjABRJqipB2LUyGSIM=;
+        b=oreHj1+fZ0hpYhJ6tkZLO4Isu3iYh4kAWYSCelLxkYxpL/tX2RhQuuYbua0QVOl5sV
+         6pLB92iY2ReTWbT8wiDrrAO4qoDCkOLR6ntp1CzP/nfOWF5ZX1L0hobjL4/iw0TpsEaH
+         ROsUCPpwKszVkp41xyygRXt1AyO/j9Z8HaBu61WcTMcxSRJk50jjvUZWQ5U4mlkCRt7k
+         3RrZ83yZQTjCHCLtdicerddhoGOW+yO2JZ/Bl+RtKzLlmB2fIK5t+F8RWZZHoYsSJWHB
+         xbm1w1fEMH08ie65Ya++VsQBGhtpE88DO9KAjbCztbaHk9XcMXfT4+HQGFltnMJ1bbak
+         iZEQ==;
         darn=lists.infradead.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786085573; x=1786690373; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1786085697; x=1786690497; darn=lists.infradead.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
-        b=LnPXAdWMRuzX0GDusJIeJS0RNpNZCtmTCli9hFv1PcmMVigLUZsqDaKj9D4qQH1GL8
-         kj/S7l3TgjCuOYEGMh19O57UrBH/PCYopfEg+QMn1IMrGcZCzIjcUIg9Kx0/A3U4C7Je
-         IGYl653GitSbfW8Cv6XCDuKl5QERDzjrtYVXGnTTMDSxMFy8ScSZaDKBfub2EgZLkrc6
-         9bfharc8TZh89KAIzgtcqRkAF3tpBtn9WMo6Ah+OXsVvhBa5djorQcQ7Dr+QgSp/g/tM
-         HjwBNOjr3Cd/bTmHI+G6VjcsK8OtyLFAYXlGevzED6G0borcq1YS4y9nIciA9VW4Gvbh
-         nnqQ==
+        bh=eXecMis04p/qxD8Q75ODIPsKx6640DQP+yHLlpoDkyE=;
+        b=LRjQF8k2veSeLMKnskXL7xM3gsUGn16qE+1sByJu1LhoVfQMrCPYg52/3ZK2/QEb+/
+         dT4KaMlnEFORDuyyj4NAipFVQDOVNbm+VHXPQOk4G8R2A5ejl2GeAygr97oj+7T+Lq64
+         yank1kbwwb7UkvtHVGmahKIZZULGfN6HcznvEyKPxgl8OgkAuDR2tORqQC7scbz1gQke
+         3Kg7b//znLPpXEasxlUmsjRbA365/hidGUhtzZyh12yWu6hg1oEXYLJB94Op7UpAc5c3
+         NI/U8k+o8ff59HZmCxOStMUAPnRJSdMnTjXpkKlYt0LxoiKvOC0/HmOnnIpqC35W+xo3
+         kx/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786085573; x=1786690373;
+        d=1e100.net; s=20251104; t=1786085697; x=1786690497;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=9ZZb4uA/vUP3DFegyRJn+OPpJApz2OlWvu9RoArL4Bs=;
-        b=b2Rt774LP5HAvQ/NqG4533bpT4e8MRpOCs3cZfa88T1mjkzc9JJ8aHCfWsmQHHACyH
-         xA5r1PlPNSfQbdtTUSD9xzJA2xdw7/HUDuFY4QO0HZ1n9JO2IHNZAYDrNzyuIz/3xq40
-         mjVDpBn3+JliPnAVeCWD4xViQ65JM/W/J8MtZceQJLL0es0Bbbgpo3jQK2Bd6PxHUtti
-         pVebKPZxsB2HUe2ubD1+HUy6VXHk7dMdnq7eSsHl2OlBekbnc0PLOgHOiMa8pvmB2hKE
-         o8PDYPR7uZRIMxX7K08dR9JfmWFWMYWXoCNBmC1majcgyBSGKBxh+fXCKuo5qmCsTP9K
-         O+FA==
-X-Forwarded-Encrypted: i=1; AHgh+Rr+kMki4PWzntkTj+kvffoiYCVa559uNX1SuEpNo9FOwDAC+RbRy59Xsz9A7rn04WEG7UaGoIT60w==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz4gOSmb1FAnWjzD7zJ/qdPcNUYLbmqumSqxVsufoKXKExXTnjH
-	6bvJnc9TVmnpDiGYJ6/19PjNc5lANpm7Ti5X01DYIAG4+clSM4YjuAUv8AU0mVtljkDjI/efsc2
-	AAizcPz5xm2vvQhwbPqAsWcN4SYJ2d6s=
-X-Gm-Gg: AR+sD10g4K+wzqy2TYqGcU4p4ZS3dLk8eImqAxUs1wmz2Yw51Ow0anBSEsrEtZO76Bn
-	RVGYaQ+P+D7eMNP+GR+Dbuo+amiUFgW6aQgbdx40j5uCN1vZNri8+bpRauJGFQZCUSjo3lO2HLv
-	WRJvRJDYB+Bu2CiAoO5bGNv0ZQXiDi0yOOfylkEb6/FFZiiOfGmhaOM4bhzbbmBB9Rk4jzl/khc
-	S2Bk+OMlvycoHpwA0/hTksimcGeOIIdIZLITXjtPzTVJgCSuGdiCFAUIZU9uDZIQVMO3RurYY4O
-	okNkpxGz3IST+frpOtTDofCl3LGorW+p36dUHdl9yKjdfq+71PUJfuqXnmoIR/FEmc2dHQSh8wm
-	7fFZUjzTbTwm1U3g/C8ST3wGaK8txEu+kkhflOBwR47/SRh7s6MNDhMEPi3EM
-X-Received: by 2002:a17:903:184b:b0:2ca:ecf6:9105 with SMTP id
- d9443c01a7336-2d0ca6010d1mr169669205ad.1.1786085572579; Thu, 06 Aug 2026
- 23:52:52 -0700 (PDT)
+        bh=eXecMis04p/qxD8Q75ODIPsKx6640DQP+yHLlpoDkyE=;
+        b=fDSoIWZA3SSO9JHnbMOENh2v1wo/Z+R/axvx9ki2PS1+CogYBbaLw7/in8adF5Fp7q
+         sOYC9jcbQeoa/a6PFR5BAr2Oi2pv8R7d9MHgjArvfNZEFzULlpI6xSswHRllau9FE+1s
+         ddMSxEMpan7c+H4gKWyigGKreWJEPplw6OBTHotG0HkrN2Q+bW127I/f69audoS3iXye
+         sMlQFDALKkuFdPvMggzNOc1J3BUdYHra86IhFx8SKltd4IEo1CyYW2JEcTzZxzPKPAUu
+         w31E/sXV4gmL4FR+rmN1lIVok1QVNTDcEBQob4/gPdL3hx9QdjlB62/TXnZYvO01kCpw
+         JfBQ==
+X-Forwarded-Encrypted: i=1; AHgh+RqzP5NTG41b+FfA6beCItql+Ry9tp/bD4uku7l0w+7Keg3KT9H5/ZqkrL4t2M2wFb8ou22BzqldZA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YywjLoR9rDWPpOSjqKB6nj60lDbAK0uNEPd0ycMO+v9WjL9tmk/
+	F2Gscj+kDLC7ZLD7pV1LBZPrSdUD2Qgljh/ezgGxbtUgl6dmhtvgq7dyVuHrZtmiKU6cXQ1Sh3/
+	b2+bJbZ/aGMccg6VRQlRyMmAxA8ZGA7g=
+X-Gm-Gg: AR+sD11GRLG6QxZpQGAFU6A/3WZ0Quwu3BEpVyPOB6LkBrP5P9nBwtRL79W1TqBzE8o
+	dp/1NYAtMV7hfBuOza0BTp89PWZilwGSu2bXkMRK2P/qruGulilghQi6ra8grjO82WOfDzSIEfO
+	tgSeJSQPuw3h7z469wOMdQaH3SG+vkISssYJtEDoCgQRkDPClpqqir5E4zvy0erPZ9NiOQ4JiXU
+	p3XQuAS5HJJjVeMVDONxNkS2qK0M1t3KLmL3dm5h5yxo0q5Du6a9AKXlETEot1DomVk3joXOOTZ
+	X9Ho/rjUbKwzkcVJfBsEFv2kHWfuWl/UHlbYAQFRAA42eWcsKwTMgvtvAIywhTpxnl0FTee57PI
+	lpGzN9c6BmrwAUJJrkJi6NEiineB1OodwBJh9nxrZyIol8AziLpLNrYjj9TVW
+X-Received: by 2002:a05:6a20:9392:b0:3c3:a491:cd10 with SMTP id
+ adf61e73a8af0-3cb85dcaf65mr15706800637.1.1786085696821; Thu, 06 Aug 2026
+ 23:54:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20260801022501.722493-1-tomo@flapping.org>
-In-Reply-To: <20260801022501.722493-1-tomo@flapping.org>
+References: <20260801022501.722493-1-tomo@flapping.org> <CANiq72kzmPnu_UPHryLMSwGMmTruirNUL5H+aD4tMiNUqqRELw@mail.gmail.com>
+In-Reply-To: <CANiq72kzmPnu_UPHryLMSwGMmTruirNUL5H+aD4tMiNUqqRELw@mail.gmail.com>
 From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 7 Aug 2026 08:52:38 +0200
-X-Gm-Features: AUfX_mxj2A-IR7_iAbCUKcJ0mhFhqopvk-MPVA4_QBPaPZ6FidBVU90MxLk2040
-Message-ID: <CANiq72kzmPnu_UPHryLMSwGMmTruirNUL5H+aD4tMiNUqqRELw@mail.gmail.com>
+Date: Fri, 7 Aug 2026 08:54:43 +0200
+X-Gm-Features: AUfX_myi2BDsNwM3e_swkA6TipakMQGHd_q39mA07wS2XPVsTvKNrOxsIPS0Pck
+Message-ID: <CANiq72mRjEYce052YhAr5MAoiwCqYGbxs8aECjo-=gCqbmJB2w@mail.gmail.com>
 Subject: Re: [PATCH v1] rust: bug: fix warn_on macro build error on UML
 To: FUJITA Tomonori <tomo@flapping.org>
 Cc: ojeda@kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com, 
@@ -103,12 +103,12 @@ Cc: ojeda@kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
 	dakr@kernel.org, daniel.almeida@collabora.com, gary@garyguo.net, 
 	lossin@kernel.org, tamird@kernel.org, tmgross@umich.edu, work@onurozkan.dev, 
 	rust-for-linux@vger.kernel.org, linux-um@lists.infradead.org, 
-	FUJITA Tomonori <fujita.tomonori@gmail.com>, David Gow <davidgow@google.com>
+	FUJITA Tomonori <fujita.tomonori@gmail.com>, David Gow <david@davidgow.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260806_235254_445884_895E3315 
-X-CRM114-Status: UNSURE (   7.99  )
+X-CRM114-CacheID: sfid-20260806_235457_738253_179947F7 
+X-CRM114-Status: UNSURE (   5.81  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -124,26 +124,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Aug 1, 2026 at 5:41=E2=80=AFAM FUJITA Tomonori <tomo@flapping.org> =
-wrote:
+On Fri, Aug 7, 2026 at 8:52=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
 >
-> Use the free function `as_char_ptr_in_const_context()` instead, as other =
-exported macros already do.
+> And Cc'ing David for UML in case he is interested.
 
-I reproduced this and the fix works -- thanks Tomonori!
-
-Do we need to use the free function? i.e. this is not a const context,
-so should we do e.g.
-
-    $crate::str::CStrExt::as_char_ptr
-
-?
-
-Also:
-
-Cc: stable@vger.kernel.org
-
-And Cc'ing David for UML in case he is interested.
+Old email address from the contacts, sorry -- re-Cc'ing.
 
 Cheers,
 Miguel
