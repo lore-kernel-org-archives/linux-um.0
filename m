@@ -4,142 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF85CC5AD5A
-	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEBD6C5B572
+	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 13:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GiRdq+w0PozpCp7HO83flgdAQWcC6RKGzKFbWUYuU3E=; b=At3QejS1yl1y9yYw5BSlCJE6he
-	e3TwljZtJmM3u0bZePUW3DG234wsFlOo7nue4T2bUCaQs8DQ5Bs1hwkESbxAfHZjbdya3JkqBQRtC
-	8uy2/YJPPrVQJZ3S357V3BZgredDHm7AdhSaYJmeK061vnXo7V9CX7L75NrEsvkkbu+3JN1UVbM7C
-	gvjXekCn6lWY+RDq6bLcMDGSjkTL6yiNky+c3k3htwutmiJYs3sZd+qtJHtTIiaKCFjBe70fa3uaC
-	1zOpwjFplLjHN5FKWB/btJEgEpZUwPmwZ5zJKLbhM7Mku4/7NRD1O4/5KanftARB3gzp1iaEUo6Bh
-	/9LUbMIg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=; b=3ttDxLnjfsmaXmoW6tETH7G92R
+	4HXotrM/GLjv+nqjZO4Hg5Fxb/Kqpivnrwf8PObkBT3qaZ9xdfW6poGAlwTdkrfCyo1GybgZzTfJ1
+	9pH5UEIl1s58G0hAI/IL/c36xnEg794uQJ5IMRDM9Y+xbJWg2emLY5rH8zaNcLtRYAIqXx5yj+ROY
+	a1q2OCCWQZcmzmfAv4HKPRbcPJmwntDBhfZ4YAf5kHt1GLIuSyG1dgWKw83zo9ivMkWUGX8g1vhAD
+	SA4HG8EG2m8/tBmeWHCqM8sQ2nz+a+vT8MToUHTcISojLyeHuZf4P69WBcXrfIIQKihAbaNskhKKW
+	xETqArTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu7Hv-0000000G7Fn-3PwD;
-	Wed, 12 Aug 2026 11:38:27 +0000
-Received: from smtp-out1.suse.de ([195.135.223.130])
+	id 1wu8sz-0000000GGcI-44i2;
+	Wed, 12 Aug 2026 13:20:49 +0000
+Received: from mail-southcentralusazon11013019.outbound.protection.outlook.com ([40.93.196.19] helo=SA9PR02CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu7Ht-0000000G7F5-0N4i
+	id 1wu8sw-0000000GGbq-2nol
 	for linux-um@lists.infradead.org;
-	Wed, 12 Aug 2026 11:38:26 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C89DC821A4;
-	Wed, 12 Aug 2026 11:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1786534697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GiRdq+w0PozpCp7HO83flgdAQWcC6RKGzKFbWUYuU3E=;
-	b=mgUQ3KT60b/eSylm2RIjYxXbJVeJerENDh65/fx15NNdQGNrJSrv/FY3V8f9Wvn/0iy1Uo
-	U1BUm0hKXb5xeGzzLphvef5zYW5ZVUajsHCRKKpq/W7urBCtmJT/aJoCWLg0PekCPeFgXF
-	K74gpr36xuCD9mnAQXhPdioJRuTPpOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786534697;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GiRdq+w0PozpCp7HO83flgdAQWcC6RKGzKFbWUYuU3E=;
-	b=dZglaoYaq2kyVKefpeLqXeiXzMS0bZmx4TDi/bEUB5Tu8rviwhYCDQkCsckQQwIDthvXgO
-	yYlpO5A099f9SwDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="Kk/U+rhz";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nhFtDdk7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1786534692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GiRdq+w0PozpCp7HO83flgdAQWcC6RKGzKFbWUYuU3E=;
-	b=Kk/U+rhzHj+IBb9/qBxup7dBaOygsfyg5U92JTQELmXqPpD4miUes+npv2xc7/yYQ8ESOo
-	7c2qWq/5+f+ahy4+3jOB5DVu/TymUPr/bS1G1ZFksD735mdYxt4wKZnlJ1hsOvJzKsDcGQ
-	85IFrROZtOK/d8uJQGS49Sb5OY8d+OI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786534692;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GiRdq+w0PozpCp7HO83flgdAQWcC6RKGzKFbWUYuU3E=;
-	b=nhFtDdk7Ok/obk+6RzjbTwEHQvuYZyfzsjSweHBGbvStIt9YiqDd+Scbr1Q57G9krIvm6f
-	ibB6x5J2ChhmhkAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1037E779B2;
-	Wed, 12 Aug 2026 11:38:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NzmbACJbfGotdwAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Wed, 12 Aug 2026 11:38:10 +0000
-Date: Wed, 12 Aug 2026 12:38:08 +0100
-From: Pedro Falcato <pfalcato@suse.de>
-To: Nikunj A Dadhania <nikunj@amd.com>
-Cc: rppt@kernel.org, akpm@linux-foundation.org, 
-	anton.ivanov@cambridgegreys.com, bp@alien8.de, brendan.higgins@linux.dev, da.gomez@samsung.com, 
-	danielt@kernel.org, dave.hansen@linux.intel.com, davidgow@google.com, 
-	dianders@chromium.org, hpa@zytor.com, jason.wessel@windriver.com, jikos@kernel.org, 
-	joe.lawrence@redhat.com, johannes@sipsolutions.net, jpoimboe@kernel.org, 
-	kgdb-bugreport@lists.sourceforge.net, kirill.shutemov@linux.intel.com, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
-	live-patching@vger.kernel.org, lorenzo.stoakes@oracle.com, luto@kernel.org, 
-	mark.rutland@arm.com, mbenes@suse.cz, mcgrof@kernel.org, mhiramat@kernel.org, 
-	mingo@redhat.com, peterz@infradead.org, petr.pavlu@suse.com, pmladek@suse.com, 
-	richard@nod.at, rmoar@google.com, rostedt@goodmis.org, samitolvanen@google.com, 
-	shuah@kernel.org, song@kernel.org, tglx@linutronix.de, x86@kernel.org, 
-	bharata@amd.com, ananth.narayan@amd.com
-Subject: Re: [PATCH v3 9/9] x86: re-enable EXECMEM_ROX support
-Message-ID: <anxa3VjtukAkY4Cl@pedro-suse>
-References: <20250126074733.1384926-10-rppt@kernel.org>
- <20260812063316.21371-1-nikunj@amd.com>
+	Wed, 12 Aug 2026 13:20:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=a6iqBAcsUigCZQAR4FD9reMQCvbGBWzF9ux4CmcDdJOlyC4s2TrMdd97VaChTEYjQf50gSvxIAhyk6bYFRlOe7xoTio+q3TWLZ0i1/n7mF9YYQB26x1CF/TjZ6pbwVXk7h5fm8/TdJASsElcia3eg9PFSEPfoKYUhLC1K/Veu1AFlWjeZyOA2Z/8Lasi0fRqr0dSGQzXiP8Hr3sOcqVpmDdbothbwizUzhAYoDGE4t0ilzLTKadWjNRowu2u436ZlvRgIZCCdSVWSYalSdqXrvfnmyXZPSxlBNGQlR44B1HW2Jcip2hDIYAAbRMUxfeLISYmWegaXKjdqZhF26SdLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=;
+ b=nkrqGt27O/WKIJkKYiz+sj5ni83S/t/31toQy56v/EXq9t0tVJq5S5fTZqMZEk4pvhED+09NAPEDomJOJD+CcKLD6RpXfM6VnhgZyYhf6akgwl/xXlM1/6rZoYZKC0ZvFudw4Xol2/kHQny1Igs5IQ90+2glude4p5WsGiR49MltQMfF1u+MxHZThfPRmwEYO/ZjvDCJF6FVW3GZ7SxYs9mCHo4ums5H9PhYp0PMUtQtV2+g3iwuLaFjeaUCy8/apfKOi9an4B6Z3cQXC+1Ypz1CQ014zdYDwUXvVSUabm1FO3fNQqkumxKjELU6L3WjyVSiRL60RSGCG+wJV+s59w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=suse.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=;
+ b=ErFaPugiWpSwt43b9mc9PCPRKBbDZ6WXa1Budb8k1zDHBunss6jfrqTQjMpuE9D4Hk5bNwevPFdshU/bfm3i35iwBQlE2hrMJfa/bqj3gNMrTuE6evFnesaY7FSKs/siM/aT0Pq+ViXf7xydhcE+GQimsIm806BK+uHYDDI7+Ls=
+Received: from IA4P220CA0012.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:558::17)
+ by PH7PR12MB6419.namprd12.prod.outlook.com (2603:10b6:510:1fd::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.19; Wed, 12 Aug
+ 2026 13:20:33 +0000
+Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
+ (2603:10b6:208:558:cafe::23) by IA4P220CA0012.outlook.office365.com
+ (2603:10b6:208:558::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.14 via Frontend Transport; Wed,
+ 12 Aug 2026 13:20:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.315.6 via Frontend Transport; Wed, 12 Aug 2026 13:20:32 +0000
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 12 Aug
+ 2026 08:20:32 -0500
+Received: from [10.252.195.98] (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.45 via Frontend
+ Transport; Wed, 12 Aug 2026 08:20:21 -0500
+Message-ID: <e5311d9c-d086-4681-a470-f8b79ade27f5@amd.com>
+Date: Wed, 12 Aug 2026 18:50:20 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260812063316.21371-1-nikunj@amd.com>
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: C89DC821A4
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[47];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLziudqfrzo6b7hzgpxksh1d9i)];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	URIBL_BLOCKED(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,ubuntu.com:url];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 9/9] x86: re-enable EXECMEM_ROX support
+To: Pedro Falcato <pfalcato@suse.de>
+CC: <rppt@kernel.org>, <akpm@linux-foundation.org>,
+	<anton.ivanov@cambridgegreys.com>, <bp@alien8.de>,
+	<brendan.higgins@linux.dev>, <da.gomez@samsung.com>, <danielt@kernel.org>,
+	<dave.hansen@linux.intel.com>, <davidgow@google.com>,
+	<dianders@chromium.org>, <hpa@zytor.com>, <jason.wessel@windriver.com>,
+	<jikos@kernel.org>, <joe.lawrence@redhat.com>, <johannes@sipsolutions.net>,
+	<jpoimboe@kernel.org>, <kgdb-bugreport@lists.sourceforge.net>,
+	<kirill.shutemov@linux.intel.com>, <kunit-dev@googlegroups.com>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-modules@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<live-patching@vger.kernel.org>, <lorenzo.stoakes@oracle.com>,
+	<luto@kernel.org>, <mark.rutland@arm.com>, <mbenes@suse.cz>,
+	<mcgrof@kernel.org>, <mhiramat@kernel.org>, <mingo@redhat.com>,
+	<peterz@infradead.org>, <petr.pavlu@suse.com>, <pmladek@suse.com>,
+	<richard@nod.at>, <rmoar@google.com>, <rostedt@goodmis.org>,
+	<samitolvanen@google.com>, <shuah@kernel.org>, <song@kernel.org>,
+	<tglx@linutronix.de>, <x86@kernel.org>, <bharata@amd.com>,
+	<ananth.narayan@amd.com>
+References: <20250126074733.1384926-10-rppt@kernel.org>
+ <20260812063316.21371-1-nikunj@amd.com> <anxa3VjtukAkY4Cl@pedro-suse>
+Content-Language: en-US
+From: "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <anxa3VjtukAkY4Cl@pedro-suse>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|PH7PR12MB6419:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5bb03f0a-4f55-4dce-2e70-08def8747ce6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700016|23010399003|11063799006|10067099003|56012099006|18002099003|22082099003|4143699003;
+X-Microsoft-Antispam-Message-Info: ZoKC0kyZYWdpGI8twWDSDDwTu998XtttPGzTOOY35QPQqCCcG65RhHQDRNhAxbecIiAiEYlOVrXzVTvUxpLCy2jrUYz3NJnBaNXOuhhy4bgoJ9jtPUfQlNnjgP6+xUkFeT3hrRZ4SnJL23gmrIpQ2+xHItGYdyq25lvhbhQDh4gh5SaXFVUrVlU+LpnbGeFw83zVAW6m85cFBWkHWFH1awW/0jZEq/IQs3/M/hzDK9jNMVTb+dKzidC2LbiQgnEq1ssOphNrQwe8tLqHF2AlryWfCAHXrN3agc4d0A3f4lxtnj3GFda+zQ+EVDepKYUbVM+Omb/osh5CgJm15svIx69ZgruAlDrlw1sOd+C/7apO1j1b+psKbxs4azSr3zHxJ5M/ZZoUpWMCXZp2xbI8HEMI9QwLIriEI2/ofS70JaYaGrLQ2B+um+/LnCuHJ7MICazpiCu2rnn/rnrVdpq/Q2qtqEjmmD6+QCn430aYyqyZAtr9bnfCcr7q9IUMR67NRwfzVXhQzF4razDSko3B18NBb5OQ2/0R03SoxNs/Fs+FnkUYAjLIBGvSis+HsSgKdEfs5V/WBYPKV8FVwL7rGk5/EZj77A+LV6i8hKihloc5JpimCwsdaTf2YeQdQGw7rUdouFro5xo43EVAuMxd/2WoN9Q9FedohT5HoOIauYmnmlqfuOsskrEcY1zFzhPAGkbar35sww1GNuszhny/xQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700016)(23010399003)(11063799006)(10067099003)(56012099006)(18002099003)(22082099003)(4143699003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: S12wl5c9reU3Sw613S69LgE05fnqEQN8C8JUj1kFiJfCAuVa1XJyYTUaDrhqPPTRn1tzcfQ0XCOtxsc6fnQC+VwH/QVJgzpoF3dGGiQHMRFpVrUpn3BHQ8UEYHYmzuieuy86o7gv7Gghs3WGJzz4Jwe83FRvMj2ogFSq8SR0F+sbIXTg+VEZ+RFqH8MIotktIaWyYCPInYCymxZTk2JwCF6v9qLPXBQV4XJdMn1MIdCmPho8Q4b9UTMVMjgm7cm3vfPNPmBOIUfntLdmNtHJ6MNdODuvxcUF8EsdIjp5dpqWWV5WK9GmevaKcmCLpyRAIQE6ubz8EFpoLG3DyWS570e5S5v88LRC46K/dZlqtHknzpdvr0KoPUuepV2GXhwFUb0Hn5umiBkbbkPKufrB7krAXWDycSGn8IpNhTmYpIzlYS3Rv2BbqHVUFCqqAHwU
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2026 13:20:32.8107
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bb03f0a-4f55-4dce-2e70-08def8747ce6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FC.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6419
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260812_043825_437940_FC93949E 
-X-CRM114-Status: GOOD (  27.72  )
+X-CRM114-CacheID: sfid-20260812_062046_716901_C1D2E2DF 
+X-CRM114-Status: UNSURE (   6.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,194 +140,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 12, 2026 at 06:33:15AM +0000, Nikunj A Dadhania wrote:
-> Hi,
-> 
-> A kernel BUG in __text_poke() is observed inside a Ubuntu 26.04 guest 
-> (v7.0.0.28 and also with upstream v7.2-4c5). Host is running on v7.2-rc5.
-> 
-> SETUP
-> -----
-> 
-> 512 QEMU Q35 guests (2 vCPUs, 1G RAM each) boot concurrently across 200
-> iterations. The crash is seen during module loading in early boot.
-> 2-7 guests out of ~100,000 boot attempts crash with the kernel BUG.
-> 
-> Reproduced on:
->   - AMD EPYC, QEMU Q35 guests
->   - Intel Icelake, QEMU Q35 guests
-> 
-> Apparently it was seen once in the non-guest Ubuntu 26.04 environment as well
-> https://discourse.ubuntu.com/t/failed-boot-one-time-on-ubuntu-unity-26-04-educational-mission/85300
-> 
-> SYMPTOMS
-> --------
-> 
-> Either of the below two crash signatures is observed:
-> 
-> Signature 1 — BUG_ON(!pages[0]) in __text_poke():
-> 
->   kernel BUG at arch/x86/kernel/alternative.c:2564!
->   Oops: invalid opcode: 0000 [#1] SMP NOPTI
->   CPU: 0 UID: 0 PID: 741 Comm: (udev-worker) Not tainted 7.0.0-28-generic #28-Ubuntu PREEMPT(lazy)
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)
->   RIP: 0010:__text_poke+0x2a4/0x400
->   Call Trace:
->    <TASK>
->    smp_text_poke_batch_finish+0x25f/0x5b0
->    smp_text_poke_single+0x13/0x30
->    __static_call_transform+0x10e/0x210
->    arch_static_call_transform+0x5c/0xc0
->    __static_call_init+0x154/0x300
->    static_call_module_notify+0x144/0x170
->    notifier_call_chain+0x62/0xf0
->    blocking_notifier_call_chain_robust+0x62/0xc0
->    load_module+0x5ef/0x960
->   Modules linked in: ppdev(+) kvm(+) irqbypass ...
-> 
-> Signature 2 — BUG_ON(memcmp()) in __text_poke():
-> 
->   kernel BUG at arch/x86/kernel/alternative.c:2632!
->   Oops: invalid opcode: 0000 [#1] SMP NOPTI
->   CPU: 0 UID: 0 PID: 742 Comm: (udev-worker) Not tainted 7.0.0-28-generic #28-Ubuntu PREEMPT(lazy)
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)
->   RIP: 0010:__text_poke+0x380/0x400
->   Call Trace:
->    <TASK>
->    smp_text_poke_batch_finish+0x323/0x5b0
->    smp_text_poke_single+0x13/0x30
->    __static_call_transform+0x10e/0x210
->    arch_static_call_transform+0x5c/0xc0
->    __static_call_init+0x154/0x300
->    static_call_module_notify+0x144/0x170
->    notifier_call_chain+0x62/0xf0
->    blocking_notifier_call_chain_robust+0x62/0xc0
->    load_module+0x5ef/0x960
->   Modules linked in: kvm(+) irqbypass ...
-> 
-> INSTRUMENTATION
-> ---------------
-> 
-> The following instrumentation was applied to capture the page table state at
-> the moment of failure:
-> 
->   In mm/vmalloc.c::vmalloc_to_page()
-> 
->     ptep = pte_offset_kernel(pmd, addr);
->     pte = ptep_get(ptep);
->     if (pte_present(pte))
->         page = pte_page(pte);
->     else
->         pr_err("vmalloc_to_page: pte_not_present for addr=%lx "
->                "PGD=%lx P4D=%lx PUD=%lx PMD=%lx PTE=%lx\n",
->                addr, pgd_val(*pgd), p4d_val(*p4d), pud_val(*pud),
->                pmd_val(*pmd), pte_val(pte));
-> 
->   In arch/x86/kernel/alternative.c::__text_poke()
-> 
->     /* BUG 1: pages[0] NULL */
->     if (!pages[0] || ...) {
->         pr_err("%s: vmalloc_to_page failed for addr=%pK pages[0]=%pK pages[1]=%pK cross=%d\n", ...);
->         BUG();
->     }
-> 
->     ...
-> 
->     /* BUG 2: memcmp mismatch */
->     if (memcmp(addr, src, len)) {
->         struct page *page_now = vmalloc_to_page(addr);
->         pr_err("%s: memcmp failed at addr=%pK len=%zu\n", __func__, addr, len);
->         pr_err("%s: expected (src): %*ph\n", __func__, (int)len, src);
->         pr_err("%s: found    (dst): %*ph\n", __func__, (int)len, (u8 *)addr);
->         pr_err("%s: pfn at poke time (vmalloc_to_page): %lx\n", __func__, page_to_pfn(pages[0]));
->         pr_err("%s: pfn at readback time (vmalloc_to_page): %lx\n", __func__, page_to_pfn(page_now));
->         text_poke_dump_pagetable((unsigned long)addr); /* reads CR3 */
->         BUG();
->     }
-> 
-> Signature 1 — vmalloc_to_page() returned NULL:
-> 
->   vmalloc_to_page: pte_not_present for addr=ffffffffc0697979 PGD=28242067 P4D=28243067 PUD=28245067 PMD=3be001a1 PTE=0
->   SMP alternatives: __text_poke: vmalloc_to_page failed for addr=ffffffffc0697979 pages[0]=0000000000000000 pages[1]=0000000000000000 cross=0
-> 
->   PMD was not a leaf, and the code reached a point to check pte_present() and
->   finds the PTE to be not present. But in the dump in else case, pmd_val(*pmd)
->   shows that it is a PMD leaf (PSE bit set).
-> 
-> Signature 2 — vmalloc_to_page() returned a wrong page:
-> 
->   SMP alternatives: __text_poke: memcmp failed at addr=ffffffffc06fc4bd len=1
->   SMP alternatives: __text_poke: expected (src): cc
->   SMP alternatives: __text_poke: found    (dst): e8
->   SMP alternatives: __text_poke: pfn at poke time (vmalloc_to_page): 3884a
->   SMP alternatives: __text_poke: pfn at readback time (vmalloc_to_page): 52fc
->   SMP alternatives: __text_poke: page table dump for addr:
->     PGD 1ba42067  P4D 1ba43067  PUD 1ba45067  PMD 52001a1
-> 
->   vmalloc_to_page() returned pfn=0x3884a when pages[0] was queried. The write
->   of 0xcc landed there. When vmalloc_to_page() was called again during the
->   memcmp readback in the instrumentation code, the vmap mapping resolved through
->   PMD=52001a1 to a different pfn=0x52fc, which contains 0xe8 (existing
->   instruction bytes). This is silent memory corruption — 0xcc was written to
->   the wrong physical page (pfn=0x3884a).
-> 
-> BISECTION
-> ---------
-> 
-> The following experiments all ran 200 iterations of 512 concurrent guest boots
-> with zero crashes.
-> 
->   1. Remove "select ARCH_HAS_EXECMEM_ROX" from arch/x86/Kconfig
-> 
->   2. Boot with "nohugevmalloc"
-> 
->   3. Remove VM_ALLOW_HUGE_VMAP from vm_flags in execmem_cache_populate()
-> 
->        - unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
->        + unsigned long vm_flags = 0;
-> 
->   4. Remove CPA_COLLAPSE from set_memory_rox()
-> 
->        return change_page_attr_set_clr(&addr, numpages, __pgprot(0), clr, 0,
->   -                                    CPA_COLLAPSE, NULL);
->   +                                    0, NULL);
-> 
->      Without CPA_COLLAPSE, set_memory_rox() changes 4K PTE permissions
->      in-place and the PMD stays permanently as a PTE-page pointer after
->      the first split — no re-collapse, no future race window. This
->      confirms that CPA_COLLAPSE is a necessary part of the race sequence.
-> 
->   5. Hold pgd_lock around vmalloc_to_page() in __text_poke()
-> 
->          if (!core_kernel_text((unsigned long)addr)) {
->      +           spin_lock(&pgd_lock);
->                  pages[0] = vmalloc_to_page(addr);
->                  if (cross_page_boundary)
->                          pages[1] = vmalloc_to_page(addr + PAGE_SIZE);
->      +           spin_unlock(&pgd_lock);
->          } else {
-> 
->      __split_large_page() holds pgd_lock while installing the new PMD
->      and populating all 512 4K PTEs. Holding pgd_lock around
->      vmalloc_to_page() prevents CPA from modifying the PMD concurrently
->      with the page table walk. This confirms the race is precisely
->      between vmalloc_to_page() reading the PMD/PTE and
->      __split_large_page() modifying it under pgd_lock.
-> 
->      Note: this is a diagnostic experiment, not a production fix.
-> 
-> The experiments point to a race between vmalloc_to_page() in
-> __text_poke() and __split_large_page() modifying the shared PMD under
-> pgd_lock. __split_large_page() holds pgd_lock while modifying the
-> PMD; vmalloc_to_page() holds no lock and can observe the PMD in an
-> intermediate state.
-> 
-> What would be the correct fix for this issue?
-> 
-> Happy to test any proposed fix or run further experiments.
 
-https://lore.kernel.org/linux-mm/anCK3eWFMwZqq5ka@pedro-suse/
 
--- 
-Pedro
+On 8/12/2026 5:08 PM, Pedro Falcato wrote:
+> 
+> https://lore.kernel.org/linux-mm/anCK3eWFMwZqq5ka@pedro-suse/
+
+Yes, this is the same issue. Thanks for the pointer.
+
+Will get back with test results on the above thread.
+
+Regards,
+Nikunj
+
 
