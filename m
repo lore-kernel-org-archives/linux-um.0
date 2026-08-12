@@ -4,128 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEBD6C5B572
-	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 13:20:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36B9FC5B572
+	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 14:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=; b=3ttDxLnjfsmaXmoW6tETH7G92R
-	4HXotrM/GLjv+nqjZO4Hg5Fxb/Kqpivnrwf8PObkBT3qaZ9xdfW6poGAlwTdkrfCyo1GybgZzTfJ1
-	9pH5UEIl1s58G0hAI/IL/c36xnEg794uQJ5IMRDM9Y+xbJWg2emLY5rH8zaNcLtRYAIqXx5yj+ROY
-	a1q2OCCWQZcmzmfAv4HKPRbcPJmwntDBhfZ4YAf5kHt1GLIuSyG1dgWKw83zo9ivMkWUGX8g1vhAD
-	SA4HG8EG2m8/tBmeWHCqM8sQ2nz+a+vT8MToUHTcISojLyeHuZf4P69WBcXrfIIQKihAbaNskhKKW
-	xETqArTg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=LlCs/u24FiK7/ArOzq0ki4b7bwIUrnC3rdD+NfSbu4k=; b=vHZvHDXPiVfljdveaGZQ0ZnHu/
+	Ql/Iq3WsnDB9svHdyXM68Q2qqbfKE/hstm3ZRnYqYpdMn5TbqlHrc6cGlkA9ze8jgBIk5oAGy2N/p
+	nFF/GDQnr74M+ZGLtpAlqEyV3XP24aBO3rdLviZaE9Hq32ts71f6q3Iv09eJRHng0JX54wTc98upP
+	XFH3WYqV3H+9aLkrMAc4YqxA641b4tQGVZDlduGHQdx7y6DtwCraolVwITiEDjIq6n/+3+YrArsum
+	XEN95We/RKyP8Zi8C8CJxV6mSz97Pi9T7i6DUj+8didL7bXAwphT3BBjfDLbz7n8NhpXXmc/y5XFG
+	vMb4p50A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu8sz-0000000GGcI-44i2;
-	Wed, 12 Aug 2026 13:20:49 +0000
-Received: from mail-southcentralusazon11013019.outbound.protection.outlook.com ([40.93.196.19] helo=SA9PR02CU001.outbound.protection.outlook.com)
+	id 1wu9qs-0000000GNlB-0Iwz;
+	Wed, 12 Aug 2026 14:22:42 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu8sw-0000000GGbq-2nol
+	id 1wu9qq-0000000GNl3-0Ihy
 	for linux-um@lists.infradead.org;
-	Wed, 12 Aug 2026 13:20:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=a6iqBAcsUigCZQAR4FD9reMQCvbGBWzF9ux4CmcDdJOlyC4s2TrMdd97VaChTEYjQf50gSvxIAhyk6bYFRlOe7xoTio+q3TWLZ0i1/n7mF9YYQB26x1CF/TjZ6pbwVXk7h5fm8/TdJASsElcia3eg9PFSEPfoKYUhLC1K/Veu1AFlWjeZyOA2Z/8Lasi0fRqr0dSGQzXiP8Hr3sOcqVpmDdbothbwizUzhAYoDGE4t0ilzLTKadWjNRowu2u436ZlvRgIZCCdSVWSYalSdqXrvfnmyXZPSxlBNGQlR44B1HW2Jcip2hDIYAAbRMUxfeLISYmWegaXKjdqZhF26SdLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=;
- b=nkrqGt27O/WKIJkKYiz+sj5ni83S/t/31toQy56v/EXq9t0tVJq5S5fTZqMZEk4pvhED+09NAPEDomJOJD+CcKLD6RpXfM6VnhgZyYhf6akgwl/xXlM1/6rZoYZKC0ZvFudw4Xol2/kHQny1Igs5IQ90+2glude4p5WsGiR49MltQMfF1u+MxHZThfPRmwEYO/ZjvDCJF6FVW3GZ7SxYs9mCHo4ums5H9PhYp0PMUtQtV2+g3iwuLaFjeaUCy8/apfKOi9an4B6Z3cQXC+1Ypz1CQ014zdYDwUXvVSUabm1FO3fNQqkumxKjELU6L3WjyVSiRL60RSGCG+wJV+s59w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=suse.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8DHCEDBErF1D1EW8S1AgvnN4skuEBB1iUgfTYIbU8dg=;
- b=ErFaPugiWpSwt43b9mc9PCPRKBbDZ6WXa1Budb8k1zDHBunss6jfrqTQjMpuE9D4Hk5bNwevPFdshU/bfm3i35iwBQlE2hrMJfa/bqj3gNMrTuE6evFnesaY7FSKs/siM/aT0Pq+ViXf7xydhcE+GQimsIm806BK+uHYDDI7+Ls=
-Received: from IA4P220CA0012.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:558::17)
- by PH7PR12MB6419.namprd12.prod.outlook.com (2603:10b6:510:1fd::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.19; Wed, 12 Aug
- 2026 13:20:33 +0000
-Received: from BL02EPF0001A0FC.namprd03.prod.outlook.com
- (2603:10b6:208:558:cafe::23) by IA4P220CA0012.outlook.office365.com
- (2603:10b6:208:558::17) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.14 via Frontend Transport; Wed,
- 12 Aug 2026 13:20:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- BL02EPF0001A0FC.mail.protection.outlook.com (10.167.242.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.315.6 via Frontend Transport; Wed, 12 Aug 2026 13:20:32 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 12 Aug
- 2026 08:20:32 -0500
-Received: from [10.252.195.98] (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.45 via Frontend
- Transport; Wed, 12 Aug 2026 08:20:21 -0500
-Message-ID: <e5311d9c-d086-4681-a470-f8b79ade27f5@amd.com>
-Date: Wed, 12 Aug 2026 18:50:20 +0530
+	Wed, 12 Aug 2026 14:22:40 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6C9AD60A92;
+	Wed, 12 Aug 2026 14:22:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 231F71F000E9;
+	Wed, 12 Aug 2026 14:22:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786544559;
+	bh=LlCs/u24FiK7/ArOzq0ki4b7bwIUrnC3rdD+NfSbu4k=;
+	h=From:To:Cc:Subject:Date;
+	b=lQujvENTUUDqJe395lRaNSefTBfJscqxKn7jB9DTWEdUwUAJkJpMc2lQ1++lAMltt
+	 IiSSBXvYVxgbpUWEoVZn/v0oEdrLjCqYkqiTTrzBnaGP1kQjiLeSn51Z7zZa9Feobw
+	 1pWCOGuq8b2R5lF0nvOxAlnb5VEWLEdvayJGZE0u0c+s4nC49cWErcvJ2oLHImUjYD
+	 TBLlumfr8C/OmgxGAjq4kAUCHzFqLS7SR9szirdbSPJwYTHUuqH0AI3FEeo3K24UjR
+	 WG68Hs/cwoOgyIAu9ceRd18vX+xfLxYMleGM1VxO6tIo9PIWQGlygE6r9GdVw4RKZY
+	 khKq/5+jn49Jw==
+Received: from johan by xi.lan with local (Exim 4.99.4)
+	(envelope-from <johan@kernel.org>)
+	id 1wu9qm-00000000EOT-48ey;
+	Wed, 12 Aug 2026 16:22:36 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan@kernel.org>
+Subject: [PATCH RESEND] um: virtio_uml: switch to dynamic root device
+Date: Wed, 12 Aug 2026 16:22:28 +0200
+Message-ID: <20260812142228.55316-1-johan@kernel.org>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 9/9] x86: re-enable EXECMEM_ROX support
-To: Pedro Falcato <pfalcato@suse.de>
-CC: <rppt@kernel.org>, <akpm@linux-foundation.org>,
-	<anton.ivanov@cambridgegreys.com>, <bp@alien8.de>,
-	<brendan.higgins@linux.dev>, <da.gomez@samsung.com>, <danielt@kernel.org>,
-	<dave.hansen@linux.intel.com>, <davidgow@google.com>,
-	<dianders@chromium.org>, <hpa@zytor.com>, <jason.wessel@windriver.com>,
-	<jikos@kernel.org>, <joe.lawrence@redhat.com>, <johannes@sipsolutions.net>,
-	<jpoimboe@kernel.org>, <kgdb-bugreport@lists.sourceforge.net>,
-	<kirill.shutemov@linux.intel.com>, <kunit-dev@googlegroups.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-modules@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
-	<live-patching@vger.kernel.org>, <lorenzo.stoakes@oracle.com>,
-	<luto@kernel.org>, <mark.rutland@arm.com>, <mbenes@suse.cz>,
-	<mcgrof@kernel.org>, <mhiramat@kernel.org>, <mingo@redhat.com>,
-	<peterz@infradead.org>, <petr.pavlu@suse.com>, <pmladek@suse.com>,
-	<richard@nod.at>, <rmoar@google.com>, <rostedt@goodmis.org>,
-	<samitolvanen@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<tglx@linutronix.de>, <x86@kernel.org>, <bharata@amd.com>,
-	<ananth.narayan@amd.com>
-References: <20250126074733.1384926-10-rppt@kernel.org>
- <20260812063316.21371-1-nikunj@amd.com> <anxa3VjtukAkY4Cl@pedro-suse>
-Content-Language: en-US
-From: "Nikunj A. Dadhania" <nikunj@amd.com>
-In-Reply-To: <anxa3VjtukAkY4Cl@pedro-suse>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FC:EE_|PH7PR12MB6419:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5bb03f0a-4f55-4dce-2e70-08def8747ce6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700016|23010399003|11063799006|10067099003|56012099006|18002099003|22082099003|4143699003;
-X-Microsoft-Antispam-Message-Info: ZoKC0kyZYWdpGI8twWDSDDwTu998XtttPGzTOOY35QPQqCCcG65RhHQDRNhAxbecIiAiEYlOVrXzVTvUxpLCy2jrUYz3NJnBaNXOuhhy4bgoJ9jtPUfQlNnjgP6+xUkFeT3hrRZ4SnJL23gmrIpQ2+xHItGYdyq25lvhbhQDh4gh5SaXFVUrVlU+LpnbGeFw83zVAW6m85cFBWkHWFH1awW/0jZEq/IQs3/M/hzDK9jNMVTb+dKzidC2LbiQgnEq1ssOphNrQwe8tLqHF2AlryWfCAHXrN3agc4d0A3f4lxtnj3GFda+zQ+EVDepKYUbVM+Omb/osh5CgJm15svIx69ZgruAlDrlw1sOd+C/7apO1j1b+psKbxs4azSr3zHxJ5M/ZZoUpWMCXZp2xbI8HEMI9QwLIriEI2/ofS70JaYaGrLQ2B+um+/LnCuHJ7MICazpiCu2rnn/rnrVdpq/Q2qtqEjmmD6+QCn430aYyqyZAtr9bnfCcr7q9IUMR67NRwfzVXhQzF4razDSko3B18NBb5OQ2/0R03SoxNs/Fs+FnkUYAjLIBGvSis+HsSgKdEfs5V/WBYPKV8FVwL7rGk5/EZj77A+LV6i8hKihloc5JpimCwsdaTf2YeQdQGw7rUdouFro5xo43EVAuMxd/2WoN9Q9FedohT5HoOIauYmnmlqfuOsskrEcY1zFzhPAGkbar35sww1GNuszhny/xQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700016)(23010399003)(11063799006)(10067099003)(56012099006)(18002099003)(22082099003)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: S12wl5c9reU3Sw613S69LgE05fnqEQN8C8JUj1kFiJfCAuVa1XJyYTUaDrhqPPTRn1tzcfQ0XCOtxsc6fnQC+VwH/QVJgzpoF3dGGiQHMRFpVrUpn3BHQ8UEYHYmzuieuy86o7gv7Gghs3WGJzz4Jwe83FRvMj2ogFSq8SR0F+sbIXTg+VEZ+RFqH8MIotktIaWyYCPInYCymxZTk2JwCF6v9qLPXBQV4XJdMn1MIdCmPho8Q4b9UTMVMjgm7cm3vfPNPmBOIUfntLdmNtHJ6MNdODuvxcUF8EsdIjp5dpqWWV5WK9GmevaKcmCLpyRAIQE6ubz8EFpoLG3DyWS570e5S5v88LRC46K/dZlqtHknzpdvr0KoPUuepV2GXhwFUb0Hn5umiBkbbkPKufrB7krAXWDycSGn8IpNhTmYpIzlYS3Rv2BbqHVUFCqqAHwU
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2026 13:20:32.8107
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5bb03f0a-4f55-4dce-2e70-08def8747ce6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6419
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260812_062046_716901_C1D2E2DF 
-X-CRM114-Status: UNSURE (   6.79  )
-X-CRM114-Notice: Please train this message.
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,17 +74,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Driver core expects devices to be dynamically allocated and will, for
+example, complain loudly when no release function has been provided.
+
+Use __root_device_register() to allocate and register the root device
+instead of open coding using a static device.
+
+Note that root_device_register(), which also creates a link to the
+module, cannot be used as the device is registered when parsing the
+module parameters which happens before the module kobject has been
+set up.
+
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+
+It's been over three months (and one reminder) since this series was
+posted so resending.
+
+Johan
 
 
-On 8/12/2026 5:08 PM, Pedro Falcato wrote:
-> 
-> https://lore.kernel.org/linux-mm/anCK3eWFMwZqq5ka@pedro-suse/
+ arch/um/drivers/virtio_uml.c | 24 ++++++++----------------
+ 1 file changed, 8 insertions(+), 16 deletions(-)
 
-Yes, this is the same issue. Thanks for the pointer.
-
-Will get back with test results on the above thread.
-
-Regards,
-Nikunj
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 7425a8548141..c43afb0af47f 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1274,14 +1274,7 @@ static void virtio_uml_remove(struct platform_device *pdev)
+ 
+ /* Command line device list */
+ 
+-static void vu_cmdline_release_dev(struct device *d)
+-{
+-}
+-
+-static struct device vu_cmdline_parent = {
+-	.init_name = "virtio-uml-cmdline",
+-	.release = vu_cmdline_release_dev,
+-};
++static struct device *vu_cmdline_parent;
+ 
+ static DEFINE_MUTEX(vu_cmdline_lock);
+ static bool vu_cmdline_parent_registered;
+@@ -1333,11 +1326,10 @@ static int vu_cmdline_set_device(const char *device)
+ 		return -EINVAL;
+ 
+ 	if (!vu_cmdline_parent_registered) {
+-		err = device_register(&vu_cmdline_parent);
+-		if (err) {
++		vu_cmdline_parent = __root_device_register("virtio-uml-cmdline", NULL);
++		if (IS_ERR(vu_cmdline_parent)) {
+ 			pr_err("Failed to register parent device!\n");
+-			put_device(&vu_cmdline_parent);
+-			return err;
++			return PTR_ERR(vu_cmdline_parent);
+ 		}
+ 		vu_cmdline_parent_registered = true;
+ 	}
+@@ -1352,7 +1344,7 @@ static int vu_cmdline_set_device(const char *device)
+ 	pr_info("Registering device virtio-uml.%d id=%d at %s\n",
+ 		vu_cmdline_id, virtio_device_id, socket_path);
+ 
+-	pdev = platform_device_register_data(&vu_cmdline_parent, "virtio-uml",
++	pdev = platform_device_register_data(vu_cmdline_parent, "virtio-uml",
+ 					     vu_cmdline_id++, &pdata,
+ 					     sizeof(pdata));
+ 	err = PTR_ERR_OR_ZERO(pdev);
+@@ -1393,7 +1385,7 @@ static int vu_cmdline_get(char *buffer, const struct kernel_param *kp)
+ 
+ 	buffer[0] = '\0';
+ 	if (vu_cmdline_parent_registered)
+-		device_for_each_child(&vu_cmdline_parent, buffer,
++		device_for_each_child(vu_cmdline_parent, buffer,
+ 				      vu_cmdline_get_device);
+ 	return strlen(buffer) + 1;
+ }
+@@ -1417,9 +1409,9 @@ static void vu_unregister_cmdline_devices(void)
+ 	guard(mutex)(&vu_cmdline_lock);
+ 
+ 	if (vu_cmdline_parent_registered) {
+-		device_for_each_child(&vu_cmdline_parent, NULL,
++		device_for_each_child(vu_cmdline_parent, NULL,
+ 				      vu_unregister_cmdline_device);
+-		device_unregister(&vu_cmdline_parent);
++		root_device_unregister(vu_cmdline_parent);
+ 		vu_cmdline_parent_registered = false;
+ 	}
+ }
+-- 
+2.54.0
 
 
