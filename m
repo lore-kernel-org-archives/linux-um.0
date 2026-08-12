@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B4EC5CFEE
-	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:19:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE657C5CFDB
+	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=l/Wc313GCSl3I+9bKCPbE8GI5lwCsPHIrZHzJG1vSW0=; b=lMLL9NhVtL7torHrDyU9pxy53e
-	P6JgvfGPzWsZlbdmhYHVDXEx5VapXzc9Jq1+I7JJyQpWR33iVLjjIK+Wa3bOoetE2PjY5LC/zr3vu
-	ufzLL6hcxMgC00u/jyaeUJcHolTddoQTv6jgwcJ46PHt0w0muGQSOojI+TbwUD58SWhiFy06Y7POC
-	2SIY9J3NnHgcTKzxFEm+sB4BtGyURjfQr1e+DAPBDyO+q0l3QUG2Qmz4qeUAV04zGlYxbCfzhrK0v
-	qFHf7RTlLlj/gnvtO8qJjjJdicrGSmtjlbyHJcvJmDGxjJOqCQ6Ns3KMEhQmXSpaJGiVETUY0UBtX
-	vYif4ODQ==;
+	bh=+TveDZHhaOZxOI6aHVBWLYlU17AabpcT5JTtlV96+eA=; b=eV6JDc0HwCDGXhuhAiAYV2s2M8
+	S14VU+tZtB5jR0U4daN+8huMfueGdJ2SFVHNshdBaUblORDJuwnT5hbFUdzZEH0bjwB547zo1uWcg
+	L+GtLAOunDUtPJOB+IkY6tbJoNCUqaSNCZjljQxS+qwLbmEcKo4moib0ZeTgx7wkCEDjp+NSJgXm3
+	X79C5LtRt+zV3E50Vjchn8AtU1LE7qMYVfC3U1rlgjnQHuCCDaQY5q6U/XqpZYOzQc1MwxXbVbIWz
+	LTiMoJo+Zf4hKo219Vs5JFZb6r4DaP+pDySO3pmBVR4LnKUENKpbKblDjxFSfrbRyhuriukPwIiOQ
+	FwRbTpwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6zh-0000000G1s0-2VcE;
-	Wed, 12 Aug 2026 11:19:37 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1wu71g-0000000G2dn-0bcC;
+	Wed, 12 Aug 2026 11:21:40 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6ze-0000000G1r3-2Jri;
-	Wed, 12 Aug 2026 11:19:35 +0000
+	id 1wu71d-0000000G2cD-2f5I;
+	Wed, 12 Aug 2026 11:21:37 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 041DB436E1;
-	Wed, 12 Aug 2026 11:19:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C931F000E9;
-	Wed, 12 Aug 2026 11:19:27 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A2E4E600E2;
+	Wed, 12 Aug 2026 11:21:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D901F000E9;
+	Wed, 12 Aug 2026 11:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786533573;
-	bh=l/Wc313GCSl3I+9bKCPbE8GI5lwCsPHIrZHzJG1vSW0=;
+	s=k20260515; t=1786533696;
+	bh=+TveDZHhaOZxOI6aHVBWLYlU17AabpcT5JTtlV96+eA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=lEqlYMMDgeTWx8AQyeZDeNvVbDlKRIB4pQGJ6n2Dxbb98LpTz0OaCHQKEnqr3cLQO
-	 F8jABLEmGoA1eFi4yVM0INwhQZjWwbUYh7kTVOrw13k2eL3i2sW9WF2p60zuAyPddP
-	 niXXnwlds6idzM5cDHLT0T+ggPH9mu6eUdpb0cX2zrdJxENvwR165k34SkTa7s6aoc
-	 LFxIZtHzHee3VQz88+b0DgeVjRYMNM3AX4QyDpXnOJXq7kpjD9FuUCvETmfwaJFFh5
-	 2++70MQ443NWiphSX+NfcfZdMz1tERFm69ZeBbb67w/gKKmzYzzoK0vYS8YytEqOHW
-	 l6wOnqNizwyeQ==
-Message-ID: <e0ada89f-26b2-4e82-8273-8ea7b391c147@kernel.org>
-Date: Wed, 12 Aug 2026 13:19:25 +0200
+	b=BmXhqXpH52I2iHHZnRDP6XIleIkxYUTARJtDZTfgN3ma29eqOPVpovsyhj8t0O5tm
+	 eskDXlbDcyfaWVlhD27C21PFw4XwN18QhZN7khcNfE8MEjYA43gycEqOEYgt1Ciu3g
+	 5xGg5iozvCuX6IHRI+TfhTpZ4Cg4BReUlUZhENEqeTN7Jw/GwUinLa0UEsBjUHBdoE
+	 CfvBxbe9NOkQ/YfJoq1NnMsw79f0fDyRytMhym/hkYvQT3AFi59a7w9AEL4FKhh2sv
+	 n952ZvqgZiWGfwjDPVnHtQDOg8lvSVBcbyhNcfKb/MSsXPp4eOmk+Aj6UAJip9v/GY
+	 oYYIElK2eTBFA==
+Message-ID: <94b52871-9cfc-42d6-b30f-545b722e71a0@kernel.org>
+Date: Wed, 12 Aug 2026 13:21:28 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 1/6] loongarch/mm: Stop using pte_ERROR()
+Subject: Re: [RFC V2 4/6] sh/mm: Stop using [p4d|pud|pmd]_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
  akpm@linux-foundation.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
@@ -63,7 +63,7 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-2-anshuman.khandual@arm.com>
+ <20260811042119.3652929-5-anshuman.khandual@arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -110,7 +110,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260811042119.3652929-2-anshuman.khandual@arm.com>
+In-Reply-To: <20260811042119.3652929-5-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -128,55 +128,53 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 8/11/26 06:21, Anshuman Khandual wrote:
-> Directly use pr_err() in __set_fixmap() and drop pte_ERROR() which helps in
-> eventually dropping pte_ERROR() macro across the tree. In this new printing
-> __FILE__ and __LINE__ has been dropped because they are always the same and
-> don't really add any value.
+> Stop using [p4d|pud|pmd]_ERROR() in __get_pte_phys() as the pgtable entries
+> are known to be NULL and hence could not really be accessed.
 > 
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> Cc: WANG Xuerui <kernel@xen0n.name>
-> Cc: loongarch@lists.linux.dev
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Cc: linux-sh@vger.kernel.org
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  arch/loongarch/include/asm/pgtable.h | 2 --
->  arch/loongarch/mm/init.c             | 2 +-
->  2 files changed, 1 insertion(+), 3 deletions(-)
+>  arch/sh/mm/init.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
 > 
-> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
-> index 223528c04d73..a32a8fff70c1 100644
-> --- a/arch/loongarch/include/asm/pgtable.h
-> +++ b/arch/loongarch/include/asm/pgtable.h
-> @@ -128,8 +128,6 @@ struct vm_area_struct;
->  #define ptep_get(ptep) READ_ONCE(*(ptep))
->  #define pmdp_get(pmdp) READ_ONCE(*(pmdp))
->  
-> -#define pte_ERROR(e) \
-> -	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
->  #ifndef __PAGETABLE_PMD_FOLDED
->  #define pmd_ERROR(e) \
->  	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
-> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
-> index 3407030f3e7a..be9b127daef2 100644
-> --- a/arch/loongarch/mm/init.c
-> +++ b/arch/loongarch/mm/init.c
-> @@ -203,7 +203,7 @@ void __init __set_fixmap(enum fixed_addresses idx,
->  
->  	ptep = populate_kernel_pte(addr);
->  	if (!pte_none(ptep_get(ptep))) {
-> -		pte_ERROR(*ptep);
-> +		pr_err("bad pte %016lx\n", pte_val(*ptep));
->  		return;
+> diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+> index b3c7fd84ceb4..0bb8555568a4 100644
+> --- a/arch/sh/mm/init.c
+> +++ b/arch/sh/mm/init.c
+> @@ -58,22 +58,16 @@ static pte_t *__get_pte_phys(unsigned long addr)
 >  	}
 >  
+>  	p4d = p4d_alloc(NULL, pgd, addr);
+> -	if (unlikely(!p4d)) {
+> -		p4d_ERROR(*p4d);
+> +	if (unlikely(!p4d))
+>  		return NULL;
+> -	}
+>  
+>  	pud = pud_alloc(NULL, p4d, addr);
+> -	if (unlikely(!pud)) {
+> -		pud_ERROR(*pud);
+> +	if (unlikely(!pud))
+>  		return NULL;
+> -	}
+>  
+>  	pmd = pmd_alloc(NULL, pud, addr);
+> -	if (unlikely(!pmd)) {
+> -		pmd_ERROR(*pmd);
+> +	if (unlikely(!pmd))
+>  		return NULL;
+> -	}
+>  
+>  	return pte_offset_kernel(pmd, addr);
+>  }
 
-Ah, I missed that we want to print actual values, I somehow thought that we
-would be printing pte_none() ...
+Do we want to print an error like "allocating p4d table failed"?
 
-Maybe we should just be more verbose while at it?
-
-pr_err("unexpected set PTE at %ul in __set_fixmap: %016lx\n",
-       addr, pte_val(*ptep));
+Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
 
 -- 
 Cheers,
