@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B633CC5CFDB
-	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B4EC5CFEE
+	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:19:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YkQoXb0oPuJag9CbgccsDCcg6lD66fmA+f0vn+2nKnc=; b=tzUURP5lUba7EdFKZD8Eb7IQAf
-	9oRxXsP/zN7Yu3vrIGZbXQuhpH8exIKfv1nhXmmgoTkIOdzExnxjWKcj2fLvA3TtBe+jwYhI0OCDE
-	EMaTCQAz0/kPeLiP7YfdVh5A7yTKRtwhy7QhL4kcri0keA3lg3/CPg94RVT92l4BMRuCZuQoNU4yB
-	ESa/VLJqa7ENBqNTTxkmZNSNxjzCKHVIk3w9H66SbbP/grt2g6KOqwyJslIdzX4xRoQc72OQEcLC/
-	+YTzuCwllYhW3T4bibFJ3C2hi4h37rSjFQralIjfnz9sq+bS8CAz9fGxdPgnVI2ei24EqdYXVt6Pb
-	Qq7o04mw==;
+	bh=l/Wc313GCSl3I+9bKCPbE8GI5lwCsPHIrZHzJG1vSW0=; b=lMLL9NhVtL7torHrDyU9pxy53e
+	P6JgvfGPzWsZlbdmhYHVDXEx5VapXzc9Jq1+I7JJyQpWR33iVLjjIK+Wa3bOoetE2PjY5LC/zr3vu
+	ufzLL6hcxMgC00u/jyaeUJcHolTddoQTv6jgwcJ46PHt0w0muGQSOojI+TbwUD58SWhiFy06Y7POC
+	2SIY9J3NnHgcTKzxFEm+sB4BtGyURjfQr1e+DAPBDyO+q0l3QUG2Qmz4qeUAV04zGlYxbCfzhrK0v
+	qFHf7RTlLlj/gnvtO8qJjjJdicrGSmtjlbyHJcvJmDGxjJOqCQ6Ns3KMEhQmXSpaJGiVETUY0UBtX
+	vYif4ODQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6wc-0000000G1Na-3BPP;
-	Wed, 12 Aug 2026 11:16:26 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wu6zh-0000000G1s0-2VcE;
+	Wed, 12 Aug 2026 11:19:37 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu6wV-0000000G1ME-1eEY;
-	Wed, 12 Aug 2026 11:16:21 +0000
+	id 1wu6ze-0000000G1r3-2Jri;
+	Wed, 12 Aug 2026 11:19:35 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B4B1540A54;
-	Wed, 12 Aug 2026 11:16:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67D991F000E9;
-	Wed, 12 Aug 2026 11:16:12 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 041DB436E1;
+	Wed, 12 Aug 2026 11:19:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C931F000E9;
+	Wed, 12 Aug 2026 11:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786533378;
-	bh=YkQoXb0oPuJag9CbgccsDCcg6lD66fmA+f0vn+2nKnc=;
+	s=k20260515; t=1786533573;
+	bh=l/Wc313GCSl3I+9bKCPbE8GI5lwCsPHIrZHzJG1vSW0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=QpYnab0nUAcCJt+cGKDODAg3Qx17qgpheF1kaPKjsEoNN2gGuC0MuGrznO70IIyhN
-	 q50JvXDgyoCv5Jx5qqIDGxWfc6HKUhKU1cTL6H08Bu0/sTb+uVVkxHOr9rNxyxfXN+
-	 uTOwGwCn+zeXNrwSywo8TfLqLOj8YKABP/oehAVFpqhoXslPkdGl4cJu2E5FlZnHvd
-	 OHboyKwgV46xqG0UclX10xA1e/iuxKmzt5h+ORt+lsnPp3+vkZZha97q3G8FyC0e7Y
-	 cjS1vMXaxJ+pGqTfML7xuwxCWKh+43tBp3fxPKAcuInhN6x79dSPFwsyX+48ySeYf2
-	 SVT6YpwBVn8/Q==
-Message-ID: <ac5a912b-fc98-4b77-b453-2f9bd8f9e6db@kernel.org>
-Date: Wed, 12 Aug 2026 13:16:10 +0200
+	b=lEqlYMMDgeTWx8AQyeZDeNvVbDlKRIB4pQGJ6n2Dxbb98LpTz0OaCHQKEnqr3cLQO
+	 F8jABLEmGoA1eFi4yVM0INwhQZjWwbUYh7kTVOrw13k2eL3i2sW9WF2p60zuAyPddP
+	 niXXnwlds6idzM5cDHLT0T+ggPH9mu6eUdpb0cX2zrdJxENvwR165k34SkTa7s6aoc
+	 LFxIZtHzHee3VQz88+b0DgeVjRYMNM3AX4QyDpXnOJXq7kpjD9FuUCvETmfwaJFFh5
+	 2++70MQ443NWiphSX+NfcfZdMz1tERFm69ZeBbb67w/gKKmzYzzoK0vYS8YytEqOHW
+	 l6wOnqNizwyeQ==
+Message-ID: <e0ada89f-26b2-4e82-8273-8ea7b391c147@kernel.org>
+Date: Wed, 12 Aug 2026 13:19:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 2/6] parisc/mm: Directly use generic
- [pmd|pgd]_clear_bad()
+Subject: Re: [RFC V2 1/6] loongarch/mm: Stop using pte_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
  akpm@linux-foundation.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
@@ -64,7 +63,7 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-3-anshuman.khandual@arm.com>
+ <20260811042119.3652929-2-anshuman.khandual@arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -111,7 +110,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260811042119.3652929-3-anshuman.khandual@arm.com>
+In-Reply-To: <20260811042119.3652929-2-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -129,19 +128,55 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 8/11/26 06:21, Anshuman Khandual wrote:
-> Drop [pmd|pgd]_ERROR() followed by [pmd|pgd]_clear() instances. But instead
-> directly use semantically equivalent generic helpers [pmd|pgd]_clear_bad()
-> in unmap_uncached_[pte|pmd]() which helps in dropping their corresponding
-> [pmd|pgd]_ERROR() macros across the tree.
+> Directly use pr_err() in __set_fixmap() and drop pte_ERROR() which helps in
+> eventually dropping pte_ERROR() macro across the tree. In this new printing
+> __FILE__ and __LINE__ has been dropped because they are always the same and
+> don't really add any value.
 > 
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-parisc@vger.kernel.org
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Cc: loongarch@lists.linux.dev
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
+>  arch/loongarch/include/asm/pgtable.h | 2 --
+>  arch/loongarch/mm/init.c             | 2 +-
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+> index 223528c04d73..a32a8fff70c1 100644
+> --- a/arch/loongarch/include/asm/pgtable.h
+> +++ b/arch/loongarch/include/asm/pgtable.h
+> @@ -128,8 +128,6 @@ struct vm_area_struct;
+>  #define ptep_get(ptep) READ_ONCE(*(ptep))
+>  #define pmdp_get(pmdp) READ_ONCE(*(pmdp))
+>  
+> -#define pte_ERROR(e) \
+> -	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>  #define pmd_ERROR(e) \
+>  	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
+> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+> index 3407030f3e7a..be9b127daef2 100644
+> --- a/arch/loongarch/mm/init.c
+> +++ b/arch/loongarch/mm/init.c
+> @@ -203,7 +203,7 @@ void __init __set_fixmap(enum fixed_addresses idx,
+>  
+>  	ptep = populate_kernel_pte(addr);
+>  	if (!pte_none(ptep_get(ptep))) {
+> -		pte_ERROR(*ptep);
+> +		pr_err("bad pte %016lx\n", pte_val(*ptep));
+>  		return;
+>  	}
+>  
 
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
+Ah, I missed that we want to print actual values, I somehow thought that we
+would be printing pte_none() ...
+
+Maybe we should just be more verbose while at it?
+
+pr_err("unexpected set PTE at %ul in __set_fixmap: %016lx\n",
+       addr, pte_val(*ptep));
 
 -- 
 Cheers,
