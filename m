@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A63ECC5CFEB
-	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47015C5DF60
+	for <linux-um@archiver.kernel.org>; Wed, 12 Aug 2026 11:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FcnwOpb20k56OlzwMG66aE8z23tMLTn0GX7RmNBbTuo=; b=lprtw6T/33dQq63gEES6lO0f2e
-	hVCXHmNK+vDgjXG7NG+CYIm08wbzDzRxptYTRKZnqc+n6tHOjJ906tW320+H8JDb+0PumGPWdfRMj
-	GMpze63VCe6BbtqH6C4szGQKA7WoHyGuYkDIn4Wv72W+x/6KVWethfS0vp4AfAi2JeNu2zTaxm3xj
-	v8nu8d4d5gXWzB2qJhBuF/0UarBw7bPQD8VNp6jtrrd5CR2TQGQV29daR72iQ82oVafuyDXVWsx8M
-	BLdTJw8Jb0QB3vypwZLCvxH7kdDmUhq4/34SESQQXvnaP7+xitSJ2/YK3cemwWKhSUvXH96OQozoi
-	ztsfpXGw==;
+	bh=KYWG47sp8qKZimjrJ8C8fF2yBpjkop0LZO2aPuIaAlo=; b=1ohx00USIlLrYXufB9NRxZ9rbp
+	swReRmus3rTV4QvAeYMd2RXmI5bir94mDchYFr2Sy4x/38HQDlO4mXTvZ8XE6/noy5sjMEozmWBOX
+	h3hrFCvn/UJ3swOA2X1SIZwtksf6yYA9jYntj20+CQ8FCsjsosxSY8kNm5wkogJ9XLMgjb5kn3hIk
+	deTzeDsAY4IP9F5J1KDwtHev1mF8ynBIwSTgH4K3BvFrydL9qBVdeSuVy0lBHI1rjR94nbLX5oHOl
+	gjJV7p89KVNyNPvB1USbB+8EemiHnJO6lm2Q2I3k7vjPkcpxSVqVpzH9E+dnjm8JZeRJdy+Cq7i1j
+	lncgN6TQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu78i-0000000G4pn-1V4m;
-	Wed, 12 Aug 2026 11:28:56 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1wu7D8-0000000G6Dk-3NsY;
+	Wed, 12 Aug 2026 11:33:30 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wu78f-0000000G4mF-3O84;
-	Wed, 12 Aug 2026 11:28:53 +0000
+	id 1wu7D0-0000000G6AR-2BbV;
+	Wed, 12 Aug 2026 11:33:24 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5169141447;
-	Wed, 12 Aug 2026 11:28:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662EA1F000E9;
-	Wed, 12 Aug 2026 11:28:46 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 227154168A;
+	Wed, 12 Aug 2026 11:33:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A4B1F000E9;
+	Wed, 12 Aug 2026 11:33:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786534133;
-	bh=FcnwOpb20k56OlzwMG66aE8z23tMLTn0GX7RmNBbTuo=;
+	s=k20260515; t=1786534402;
+	bh=KYWG47sp8qKZimjrJ8C8fF2yBpjkop0LZO2aPuIaAlo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Spd7Z52S+anzxKYwnAgi/AtvjfESL5PwTKgIqubz4s2/gdBKPK1PBUL+UlGOLhMCN
-	 Gx9nQBExt2+4xzfpf19qghT7hdbZtU4r2pYjDOTTMKOgshUiKAvXf9X7JdXURMw0fH
-	 LgT83ZJzz7JUc2cD+zPnkxTRAw1/HGZPrammYkDmxGINgAjpR5xBV9YQn6w7l1PgnI
-	 4NNTDruHwZfVoRA+X5ZvwsdnHZZwvu2aICh2gWtdpmmvvDzh1VFJcxfUX/veCwqvAc
-	 0r7q5ksshsTKLeMxN29WYMJSFA8joiGkiYpaV39tgyHPTesTIKfhF8UTJiSXfjnGlQ
-	 dSxsr7d0sngOw==
-Message-ID: <7d8e17c2-9c9c-409e-ab4d-4e4fb0e51ec4@kernel.org>
-Date: Wed, 12 Aug 2026 13:28:44 +0200
+	b=WAfmOkkk8L6CsdaEyBcNrtXtVZNzObzW4S7aHcGWWKcuSHhZgMshz38NRWFsMIuro
+	 iQNzIOLVcCtVng/Y3s/5/8QQm7aRpslgEDM4EaOx+RrrhQu2QK6SJf1mYWLf0u+bIk
+	 mHgiI8kvImWzfFTKqNN3Q3uzw8gwmf2aEibx251l3EhnWebAqUXVi2yCauOG2EpYpk
+	 qT55BhQsRkzxVJJnOePDFfawyaPzcJ7biVmiXgaHLbICFQsgUR8tlkUIpE02A31EaL
+	 b2GxECR3H98e20PTqvhqig2eBGcYR+8QrQPpKISBdK8go4PyjRDC3+9XMOlZC8fnyy
+	 vp3RCZx1qSNlA==
+Message-ID: <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
+Date: Wed, 12 Aug 2026 13:33:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 5/6] sh/mm: Stop using pgd_ERROR()
+Subject: Re: [RFC V2 6/6] mm: Drop pxd_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
  akpm@linux-foundation.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
@@ -63,7 +63,7 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-6-anshuman.khandual@arm.com>
+ <20260811042119.3652929-7-anshuman.khandual@arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -110,7 +110,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260811042119.3652929-6-anshuman.khandual@arm.com>
+In-Reply-To: <20260811042119.3652929-7-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -128,37 +128,56 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 8/11/26 06:21, Anshuman Khandual wrote:
-> Stop using pgd_ERROR() in __get_pte_phys() when page table entry is already
-> known to be empty.
+> pxd_ERROR() has been used in generic mm just to print the page table entry
+> in pxd_clear_bad() before clearing those out with pxd_clear() later. These
+> pxd_ERROR() macros have been provided by all platforms which basically did
+> the same thing.
 > 
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/sh/mm/init.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
+> page table entries thus completely dropping dependency on platform provided
+> pxd_ERROR() macros which can then be dropped off. First move all required
+> helpers in core MM into a header file which could then be used else where.
 > 
-> diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-> index 0bb8555568a4..585012293632 100644
-> --- a/arch/sh/mm/init.c
-> +++ b/arch/sh/mm/init.c
-> @@ -52,10 +52,8 @@ static pte_t *__get_pte_phys(unsigned long addr)
->  	pmd_t *pmd;
->  
->  	pgd = pgd_offset_k(addr);
-> -	if (pgd_none(*pgd)) {
-> -		pgd_ERROR(*pgd);
-> +	if (pgd_none(*pgd))
->  		return NULL;
-> -	}
->  
->  	p4d = p4d_alloc(NULL, pgd, addr);
->  	if (unlikely(!p4d))
 
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
+It might make sense to split this patch further up to ease review:
+
+Patch 1) provide ptval_to_str() a header.
+
+Patch 2) Stop using pxd_ERROR() and friends in common code, converting to
+pteval_to_str()
+
+Patch 3) Remove now unused pxd_ERROR() and friends from arch code.
+
+...
+> +static inline void
+> +ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
+> +{
+> +	if (WARN_ON_ONCE(buf_size < entry_size * 2 + 1)) {
+> +		snprintf(buf, buf_size, "overflow");
+> +		return;
+> +	}
+> +
+> +	switch (entry_size) {
+> +	case sizeof(u32):
+> +		snprintf(buf, buf_size, "%08x", *(const u32 *)entry);
+> +		break;
+> +	case sizeof(u64):
+> +		snprintf(buf, buf_size, "%016llx", *(const u64 *)entry);
+> +		break;
+> +#if defined(__SIZEOF_INT128__)
+> +	case sizeof(u128):
+> +		snprintf(buf, buf_size, "%016llx%016llx",
+> +			 (unsigned long long)(*(const u128 *)entry >> 64),
+> +			 (unsigned long long)*(const u128 *)entry);
+> +		break;
+> +#endif
+> +	default:
+> +		snprintf(buf, buf_size, "unsupported");
+> +		break;
+> +	}
+> +}
+
+Why not leave ptval_bytes_to_hex_str() in the C file for less churn for now?
 
 -- 
 Cheers,
