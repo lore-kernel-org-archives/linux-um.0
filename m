@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B474C5DF69
-	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 02:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15AD7C5AC67
+	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 04:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q2A0VpZ3jEW63u/fB0uqkGhkDFeSh86cNwd3FvE985o=; b=C7pFE18VwOuK+rWGsbuiLdZYpu
-	YEqWt9iTEl55nPyF4i/wWqAgRIYkbNC5zTWmb4a6XKyyPye2iTvBucwEGCORmCYEXjDPJbwLmsXIT
-	h8lvK/jbQQnDW/ys80qA6LE41EksNA221JzJ6M/gKRWLiQjrfARaxIYmY8flwk8AQcINZdIlAsj3p
-	LKj+NYsAA+fSKhW/dzwc374QRrU5wzhWE0WKTqqgHNqn5ICURmmdDtjf4xh8C0++v1Pvgr00MgQGk
-	FmebbeoxZAT2vnTk0XEflEOV9h1UPgM58OY7Z0oXFzJObm4dLoHW/w0TzrNMuRN2g2o9V8rzRXzld
-	OgzBpPSA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Kny2Ta5Q0Z/mhUSVYxPhv0RFXJl0+qly565KZ2ki+8o=; b=3ajQ+wwANoNBwbAj8fGHp66Aa7
+	I+nHczMuN1/OKfFgyNSbwi0ctyVGOAyj08aViQGJdmoUKAXzFwQkaDnt/FpHfcwtoxdIE0Pxf16Pr
+	EvSUC4u+DJg6+9pCj+5jgTcOnw8LVv6FVrVqIl0i437PtYjXrlA29PdyiLQWZ8MUO91pjizRc1SqN
+	sq349Z+sFklvFG+NfFR6dPaQ4AMWVR4J3uwc0oOUPBbh2WB4KVyhVFBiYnTOzcrm55mLYsx5bJ+dF
+	SpGLWEiQq/rokOCi5cga91vXxZ9VD92CTiDaEDwjSGQvxjv4nYCpAmoVQIMP4xU22/jPK/PDH5ONF
+	7v5skX7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuL3Q-0000000HGy1-04eC;
-	Thu, 13 Aug 2026 02:20:24 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuL3O-0000000HGur-0qJk
-	for linux-um@lists.infradead.org;
-	Thu, 13 Aug 2026 02:20:22 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 53E2660A5D;
-	Thu, 13 Aug 2026 02:20:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C653A1F00A3F;
-	Thu, 13 Aug 2026 02:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786587621;
-	bh=Q2A0VpZ3jEW63u/fB0uqkGhkDFeSh86cNwd3FvE985o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=C4Sg8aE0DUbh5ju4dG+p+6BhIvIC/yloRPIln0CHHzIDIf2bbAcvc/rN9mK785z0Z
-	 ET3+D3+v3rbjhwq3NNJsVpzQjqn0w/bxkuovj2jvDKCNrLrSfn5Win+rMnkAESYmva
-	 SL2JZpIGfPsZaGHUCbLrT8Qv3Mdur8U3On5EqrjwyCsMNGjKYS+jVgs/QKE0fxALEO
-	 EvKT7oO4LGWRao+6g2P5sFAK0OQF0uUI4kOa0vJtjjsBDm8NhDxD3ZKHU8eI5VonW5
-	 1NB5Gj562PVObvKwBsqgEqRN4/lY9feqf5rq5rkYOLdpZLbTBpAup4lnHaNYhPAKwV
-	 9wAlWaeVaQoSA==
-From: Eric Biggers <ebiggers@kernel.org>
-To: x86@kernel.org
-Cc: linux-um@lists.infradead.org,
-	linux-raid@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v3 6/8] x86/fpu: Remove cpu_has_xfeatures()
-Date: Wed, 12 Aug 2026 19:15:04 -0700
-Message-ID: <20260813021506.55129-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260813021506.55129-1-ebiggers@kernel.org>
-References: <20260813021506.55129-1-ebiggers@kernel.org>
+	id 1wuN98-0000000HMRR-0yUZ;
+	Thu, 13 Aug 2026 04:34:26 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wuN94-0000000HMP8-39C9;
+	Thu, 13 Aug 2026 04:34:24 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8A551596;
+	Wed, 12 Aug 2026 21:34:14 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E593D3F632;
+	Wed, 12 Aug 2026 21:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1786595658; bh=mO6mrRKNqP+ykHI/mGROppdDnXxIwgWT7LgXJj+JezI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ucFab0TPnxvbqz3KEVyBy+XPNcRzGlpGCroO3Eciy3LZ0+X/OxqSrfgUvooo+EVnM
+	 CkkbCWk5eaKn4RSc34lEp7tZQ4pnzvhzXI1BWphp8/e5uuWc6hv5uSnA/KhXLfZVFZ
+	 sIXAXG2CvPJZ7I27QA35Hy/JfVFzGZIK3afmsQfQ=
+Date: Thu, 13 Aug 2026 10:04:15 +0530
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2 1/6] loongarch/mm: Stop using pte_ERROR()
+Message-ID: <qymuy4grl654s6jwwyhlwwo6kfr3ongxpfnxifojkvism2ddwg@5lyq7iooel6b>
+References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
+ <20260811042119.3652929-2-anshuman.khandual@arm.com>
+ <e0ada89f-26b2-4e82-8273-8ea7b391c147@kernel.org>
+ <9a66d741-536e-44ac-b02f-395b5fc8ab6d@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a66d741-536e-44ac-b02f-395b5fc8ab6d@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260812_213422_957045_69B93D49 
+X-CRM114-Status: GOOD (  21.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,114 +79,91 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The only remaining caller of cpu_has_xfeatures() is
-print_xstate_features(), which uses it only to check and get the name of
-a single feature.
+On Wed, Aug 12, 2026 at 01:27:54PM +0200, David Hildenbrand (Arm) wrote:
+> On 8/12/26 13:19, David Hildenbrand (Arm) wrote:
+> > On 8/11/26 06:21, Anshuman Khandual wrote:
+> >> Directly use pr_err() in __set_fixmap() and drop pte_ERROR() which helps in
+> >> eventually dropping pte_ERROR() macro across the tree. In this new printing
+> >> __FILE__ and __LINE__ has been dropped because they are always the same and
+> >> don't really add any value.
+> >>
+> >> Cc: Huacai Chen <chenhuacai@kernel.org>
+> >> Cc: WANG Xuerui <kernel@xen0n.name>
+> >> Cc: loongarch@lists.linux.dev
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >> ---
+> >>  arch/loongarch/include/asm/pgtable.h | 2 --
+> >>  arch/loongarch/mm/init.c             | 2 +-
+> >>  2 files changed, 1 insertion(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+> >> index 223528c04d73..a32a8fff70c1 100644
+> >> --- a/arch/loongarch/include/asm/pgtable.h
+> >> +++ b/arch/loongarch/include/asm/pgtable.h
+> >> @@ -128,8 +128,6 @@ struct vm_area_struct;
+> >>  #define ptep_get(ptep) READ_ONCE(*(ptep))
+> >>  #define pmdp_get(pmdp) READ_ONCE(*(pmdp))
+> >>  
+> >> -#define pte_ERROR(e) \
+> >> -	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
+> >>  #ifndef __PAGETABLE_PMD_FOLDED
+> >>  #define pmd_ERROR(e) \
+> >>  	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
+> >> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+> >> index 3407030f3e7a..be9b127daef2 100644
+> >> --- a/arch/loongarch/mm/init.c
+> >> +++ b/arch/loongarch/mm/init.c
+> >> @@ -203,7 +203,7 @@ void __init __set_fixmap(enum fixed_addresses idx,
+> >>  
+> >>  	ptep = populate_kernel_pte(addr);
+> >>  	if (!pte_none(ptep_get(ptep))) {
+> >> -		pte_ERROR(*ptep);
+> >> +		pr_err("bad pte %016lx\n", pte_val(*ptep));
+> >>  		return;
+> >>  	}
+> >>  
+> > 
+> > Ah, I missed that we want to print actual values, I somehow thought that we
+> > would be printing pte_none() ...
+> > 
+> > Maybe we should just be more verbose while at it?
 
-Remove it and just inline the needed code into print_xstate_features().
+Initially thought that these new prints should be right close to the
+original via pxd_ERROR() but I guess making them verbose while doing
+the replacements should be indeed acceptable.
 
-This also makes the "unknown xstate feature" entry at index XFEATURE_MAX
-of xfeature_names[] unnecessary, so remove that too.
+> > 
+> > pr_err("unexpected set PTE at %ul in __set_fixmap: %016lx\n",
+> >        addr, pte_val(*ptep));
+> > 
+> 
+> On second thought, why not simply use ptval_to_str() here as well?
 
-Acked-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- arch/x86/include/asm/fpu/api.h |  9 -------
- arch/x86/kernel/fpu/xstate.c   | 44 +++-------------------------------
- 2 files changed, 3 insertions(+), 50 deletions(-)
+Sure will do the required changes - the following builds successfully.
 
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 90c63fe19c0f..cfed8b24d64f 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -99,15 +99,6 @@ static inline void fpregs_assert_state_consistent(void) { }
-  */
- extern void switch_fpu_return(void);
- 
--/*
-- * Query the presence of one or more xfeatures. Works on any legacy CPU as well.
-- *
-- * If 'feature_name' is set then put a human-readable description of
-- * the feature there as well - this can be used to print error (or success)
-- * messages.
-- */
--extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
--
- /* Trap handling */
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern void fpu_sync_fpstate(struct fpu *fpu);
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 97cfd4fb6cc0..0b17452d1788 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -66,8 +66,8 @@ static const char *xfeature_names[] =
- 	"AMX Tile config",
- 	"AMX Tile data",
- 	"APX registers",
--	"unknown xstate feature",
- };
-+static_assert(ARRAY_SIZE(xfeature_names) == XFEATURE_MAX);
- 
- static unsigned short xsave_cpuid_features[] __initdata = {
- 	[XFEATURE_FP]				= X86_FEATURE_FPU,
-@@ -122,44 +122,6 @@ static inline unsigned int next_xfeature_order(unsigned int i, u64 mask)
- #define XSTATE_FLAG_SUPERVISOR	BIT(0)
- #define XSTATE_FLAG_ALIGNED64	BIT(1)
- 
--/*
-- * Return whether the system supports a given xfeature.
-- *
-- * Also return the name of the (most advanced) feature that the caller requested:
-- */
--int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
--{
--	u64 xfeatures_missing = xfeatures_needed & ~fpu_kernel_cfg.max_features;
--
--	if (unlikely(feature_name)) {
--		long xfeature_idx, max_idx;
--		u64 xfeatures_print;
--		/*
--		 * So we use FLS here to be able to print the most advanced
--		 * feature that was requested but is missing. So if a driver
--		 * asks about "XFEATURE_MASK_SSE | XFEATURE_MASK_YMM" we'll print the
--		 * missing AVX feature - this is the most informative message
--		 * to users:
--		 */
--		if (xfeatures_missing)
--			xfeatures_print = xfeatures_missing;
--		else
--			xfeatures_print = xfeatures_needed;
--
--		xfeature_idx = fls64(xfeatures_print)-1;
--		max_idx = ARRAY_SIZE(xfeature_names)-1;
--		xfeature_idx = min(xfeature_idx, max_idx);
--
--		*feature_name = xfeature_names[xfeature_idx];
--	}
--
--	if (xfeatures_missing)
--		return 0;
--
--	return 1;
--}
--EXPORT_SYMBOL_GPL(cpu_has_xfeatures);
--
- static bool xfeature_is_aligned64(int xfeature_nr)
+--- a/arch/loongarch/mm/init.c
++++ b/arch/loongarch/mm/init.c
+@@ -197,13 +197,15 @@ void __init __set_fixmap(enum fixed_addresses idx,
+                               phys_addr_t phys, pgprot_t flags)
  {
- 	return xstate_flags[xfeature_nr] & XSTATE_FLAG_ALIGNED64;
-@@ -302,9 +264,9 @@ static void __init print_xstate_features(void)
- 
- 	for (i = 0; i < XFEATURE_MAX; i++) {
- 		u64 mask = BIT_ULL(i);
--		const char *name;
-+		const char *name = xfeature_names[i];
- 
--		if (cpu_has_xfeatures(mask, &name))
-+		if (fpu_kernel_cfg.max_features & mask)
- 			pr_info("x86/fpu: Supporting XSAVE feature 0x%03Lx: '%s'\n", mask, name);
- 	}
- }
--- 
-2.55.0
+        unsigned long addr = __fix_to_virt(idx);
++       char str[PTVAL_STR_MAX];
+        pte_t *ptep;
 
+        BUG_ON(idx <= FIX_HOLE || idx >= __end_of_fixed_addresses);
+
+        ptep = populate_kernel_pte(addr);
+        if (!pte_none(ptep_get(ptep))) {
+-               pr_err("bad pte %016lx\n", pte_val(*ptep));
++               ptval_to_str(str, pte_val(*ptep));
++               pr_err("unexpected set PTE at %lx in __set_fixmap: %s\n", addr, str);
+                return;
+        }
+
+> 
+> -- 
+> Cheers,
+> 
+> David
 
