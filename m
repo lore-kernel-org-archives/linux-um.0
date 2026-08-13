@@ -4,117 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43DABC5DF64
-	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 07:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B46EC5CFCF
+	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 17:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FRu9n4mjHkdLoh1auc0+F0uq9mi4uQgSH6ITAa/iuvU=; b=XOwQ2brI+l0WZBe6/Wn/87x+c9
-	Eo2MnNvGZY7Hmuu7z4PbxEpodMesLuhwRIMSOUm4cQAqakM+f3+20SOhputIp0OJdtDYb/rq2CtiQ
-	7CPyzc4c/AcgVRHxFk2HQrbhIcA65ru06YyDEskQMRNehfrLhQJy3QTZOOoYEjPnVUBf7Dd07BMax
-	5LHynOPfqJUZ5V488I2Uh4o73FZQ/EvtXehOENpoFMjye99REzv4zufxfV88gKh3idgofn7VKycO+
-	vZx2GG9dFHtlRhgFwGv1mZJty7AVLFG1ahGOpozc3LOFsNvr81Y2Kkm06mD5gDFxh1IKRHgNImXsn
-	5qh/hr4Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:content-type:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=; b=vJcOEbZZTjTQbgl1e3WJu60Bae
+	VYSPKYMjyiNbCS2ZSvOjJDrctEAqjJA47kDbZ8+ACppSydqPEW9c1rGCB/v6IYvPBf5RkjsR8e6HJ
+	TK5EyMfpnhjv7KTg4t9rC/P/sm2HewZr62hA9fgeLkuRMCAJsDO0LpOhqsoO1NtDZCR2QhLUmxUSo
+	mTnUTtta2/rMUcRepKwvOl7sRGYrCoIYXMDL3M5yMKuEhNFk3DS332azN3VIC7mDjgTg7XOvEq6AK
+	Yt5Ij9q88AEj9krz6/0BN9dy1UXUQJk1lh8zi9MWqttKO1AftEbL9DTOMzj6CJdVBUgu5ZfAQjpPG
+	8fDwEYKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuPiI-0000000HZz4-3Qk1;
-	Thu, 13 Aug 2026 07:18:54 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wuYqc-00000001Dqf-0djl;
+	Thu, 13 Aug 2026 17:04:06 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuPiH-0000000HZxg-0Sbq;
-	Thu, 13 Aug 2026 07:18:53 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6A282600AD;
-	Thu, 13 Aug 2026 07:18:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF6D91F00A3D;
-	Thu, 13 Aug 2026 07:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786605532;
-	bh=FRu9n4mjHkdLoh1auc0+F0uq9mi4uQgSH6ITAa/iuvU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=LQoW8GUUyQqsjsyMSCymikLCl0K/PpYaTCtOqE8smOcqa2DMyAwkHJlcjWeM1J3S+
-	 p7F7YTHDWjjGCL63HV5xpWRhAdsFHo0ku3RZp+dd7ECs9spcYVoBm+vyaaylpUF+PD
-	 H22qTcfvj4D5oNy89mJR0hbJjegsfONgrwhHmtzF+bBi+aGhDM9oGd0P2xzEDI2kou
-	 1E0HF2+DNVjJvv6cBBocYB1eb2SJm99VpExDuZUltvNNZREs8uFacDqc0tyd8Vhkzr
-	 RtyNl40a3quN8bMMpCL9V3232v/KWwZovejB57bX78GVNpy/nQciclUW97AqYJJX/W
-	 0jrUTV5cHJu/Q==
-Message-ID: <fc404670-7194-4ae9-8646-b543869738f3@kernel.org>
-Date: Thu, 13 Aug 2026 09:18:43 +0200
+	id 1wuYqb-00000001Dq5-16ok
+	for linux-um@bombadil.infradead.org;
+	Thu, 13 Aug 2026 17:04:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=content-type:Content-Transfer-Encoding
+	:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=; b=iHgnmYdZmCoZTJmyP22dA+pl9z
+	kO6eBPkvYDA9Sc/n5qFWbFUaTNW0SOtBr+2mYOMHpWbWhTsk32az9JS8Yb2XGRQJdLrldo5G1iQo0
+	PsfLS1wm7sF8lu8En+KP/9msU+yj7rprXySPqTr3ptWnhxp0qMIL8mFuuIUgWwhXfLCAR1p9yqJGm
+	K50NSM/z6ig3TDJiwVaOtQS6Rq3fwkAm9c+x8cqFOiy6mdC4AGjMgleIrd3CKqAo2Q+yl/zAu2TPO
+	Ij8F+yZkzgGoBCuv0Ntrsk/11215fjHhHgB+AGJw9u2hgBWx4JBWXDXpzjKGUkMLys4pt2Lfhl80J
+	TGFf/DFQ==;
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1wuYqY-0000000GMNl-1VU3
+	for linux-um@lists.infradead.org;
+	Thu, 13 Aug 2026 17:04:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1786640631;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=;
+	b=AUiGMuMkTsqDPDXC1KY/NpKJEwrcNdBxMi8lNHUgWaIVk1LObxEcQJcAEYUUd4QYQUwW6d
+	AB+7EVbKb0dIzQMuTxtWsCDRGqyW1rU3jkvhi1rJ+vH/x8P6T9+oQbDvByvpjFPVsFjw/H
+	PwsH/SIT8YqV4CUGOhzAT95SmLOue60=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1786640641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=;
+	b=ARYHGwsjw6PMZq+RpT57Fij5JKucAJQylJ3bqeCCPBIcJJUMiwexQtf/QcbPKP0pRm5byF
+	4kca2ESVN+vCdgxZrrDdbMRVxtUmJ0OIvQuM/Pp+oLdAub4KGVohw56OEeWSKXv7CBxZqg
+	e9L2UadaWNZfTELH6fblt4vJx3l+lKM=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-551-3v5IuKYOPO-SU8jOK2nwmw-1; Thu,
+ 13 Aug 2026 13:03:46 -0400
+X-MC-Unique: 3v5IuKYOPO-SU8jOK2nwmw-1
+X-Mimecast-MFC-AGG-ID: 3v5IuKYOPO-SU8jOK2nwmw_1786640620
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 63C311800650;
+	Thu, 13 Aug 2026 17:03:36 +0000 (UTC)
+Received: from wsxc.redhat.com (unknown [10.96.134.24])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 6F76A195608A;
+	Thu, 13 Aug 2026 17:03:19 +0000 (UTC)
+From: Ricardo Robaina <rrobaina@redhat.com>
+To: audit@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	bpf@vger.kernel.org
+Cc: paul@paul-moore.com,
+	eparis@redhat.com,
+	sgrubb@redhat.com,
+	oleg@redhat.com,
+	richard.henderson@linaro.org,
+	mattst88@gmail.com,
+	linmag7@gmail.com,
+	linux@armlinux.org.uk,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	guoren@kernel.org,
+	monstr@monstr.eu,
+	tsbogend@alpha.franken.de,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com,
+	James.Bottomley@HansenPartnership.com,
+	deller@gmx.de,
+	ysato@users.sourceforge.jp,
+	dalias@libc.org,
+	glaubitz@physik.fu-berlin.de,
+	davem@davemloft.net,
+	andreas@gaisler.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	chris@zankel.net,
+	jcmvbkbc@gmail.com,
+	tglx@kernel.org,
+	peterz@infradead.org,
+	luto@kernel.org,
+	Ricardo Robaina <rrobaina@redhat.com>
+Subject: [PATCH 00/13] audit: log all six syscall arguments in the SYSCALL record
+Date: Thu, 13 Aug 2026 14:02:50 -0300
+Message-ID: <cover.1786626275.git.rrobaina@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 6/6] mm: Drop pxd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-7-anshuman.khandual@arm.com>
- <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
- <2ys7apbnfuj3ugfoqgbptgej3jjcyfpmdgbv6qbxupmwg6mefc@h5p33ua2nzlu>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <2ys7apbnfuj3ugfoqgbptgej3jjcyfpmdgbv6qbxupmwg6mefc@h5p33ua2nzlu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Mimecast-MFC-PROC-ID: fw3k9z7r5xmzQ8KbK1XsGXR6VmmoB4RFReXMXjdzFoc_1786640620
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+content-type: text/plain; charset="US-ASCII"; x-default=true
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260813_180402_589792_9439642D 
+X-CRM114-Status: UNSURE (   6.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,36 +148,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 8/13/26 08:03, Anshuman Khandual wrote:
-> On Wed, Aug 12, 2026 at 01:33:14PM +0200, David Hildenbrand (Arm) wrote:
->> On 8/11/26 06:21, Anshuman Khandual wrote:
->>> pxd_ERROR() has been used in generic mm just to print the page table entry
->>> in pxd_clear_bad() before clearing those out with pxd_clear() later. These
->>> pxd_ERROR() macros have been provided by all platforms which basically did
->>> the same thing.
->>>
->>> Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
->>> page table entries thus completely dropping dependency on platform provided
->>> pxd_ERROR() macros which can then be dropped off. First move all required
->>> helpers in core MM into a header file which could then be used else where.
->>>
->>
->> It might make sense to split this patch further up to ease review:
->>
->> Patch 1) provide ptval_to_str() a header.
->>
->> Patch 2) Stop using pxd_ERROR() and friends in common code, converting to
->> pteval_to_str()
->>
->> Patch 3) Remove now unused pxd_ERROR() and friends from arch code.
-> 
-> Sure but the intiial platform changes which now use ptval_to_str() as well
-> will probably come after the Patch (2) but before the Patch (3).
+The SYSCALL record currently logs only four of the six syscall
+arguments (a0-a3), silently discarding the remaining two. This
+leads to the need for auxiliary records when audit-relevant
+data lands in the 5th or 6th argument of a syscall.
 
-Exactly :)
+This series extends the SYSCALL record to log all six arguments,
+by adding arguments a4 and a5 inline within the existing record.
+
+The audit testsuite runs successfully:
+
+ # make test
+ make -C tests test
+ chmod +x */test
+ Running as   user    root
+        with context unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+        on   system  Fedora
+
+ amcast_joinpart/test ................. ok   
+ backlog_wait_time_actual_reset/test .. ok   
+ bpf/test ............................. ok   
+ coredump/test ........................ ok   
+ exec_execve/test ..................... ok   
+ exec_name/test ....................... ok     
+ fanotify/test ........................ ok   
+ field_compare/test ................... ok     
+ file_create/test ..................... ok   
+ file_delete/test ..................... ok   
+ file_permission/test ................. ok   
+ file_rename/test ..................... ok   
+ filter_device/test ................... ok     
+ filter_exclude/test .................. ok     
+ filter_exit/test ..................... ok   
+ filter_inode/test .................... ok   
+ filter_saddr_fam/test ................ ok   
+ filter_sessionid/test ................ ok   
+ io_uring/test ........................ ok   
+ login_tty/test ....................... ok   
+ lost_reset/test ...................... ok   
+ netfilter_pkt/test ................... ok     
+ signal/test .......................... ok   
+ syscalls_file/test ................... ok   
+ syscall_module/test .................. ok   
+ syscall_socketcall/test .............. ok   
+ time_change/test ..................... ok     
+ user_msg/test ........................ ok   
+ All tests successful.
+ Result: PASS
+
+Ricardo Robaina (13):
+  audit: log all six syscall arguments in the SYSCALL record
+  alpha: pass all six syscall args to audit_syscall_entry()
+  arm: pass all six syscall args to audit_syscall_entry()
+  arm64: pass all six syscall args to audit_syscall_entry()
+  csky: pass all six syscall args to audit_syscall_entry()
+  microblaze: pass all six syscall args to audit_syscall_entry()
+  mips: pass all six syscall args to audit_syscall_entry()
+  openrisc: pass all six syscall args to audit_syscall_entry()
+  parisc: pass all six syscall args to audit_syscall_entry()
+  sh: pass all six syscall args to audit_syscall_entry()
+  sparc64: pass all six syscall args to audit_syscall_entry()
+  um: pass all six syscall args to audit_syscall_entry()
+  xtensa: pass all six syscall args to audit_syscall_entry()
+
+ arch/alpha/kernel/ptrace.c      |  3 ++-
+ arch/arm/kernel/ptrace.c        |  2 +-
+ arch/arm64/kernel/ptrace.c      |  3 ++-
+ arch/csky/kernel/ptrace.c       |  3 ++-
+ arch/microblaze/kernel/ptrace.c |  3 ++-
+ arch/mips/kernel/ptrace.c       | 11 ++++++++---
+ arch/openrisc/kernel/ptrace.c   |  3 ++-
+ arch/parisc/kernel/ptrace.c     |  7 +++++--
+ arch/sh/kernel/ptrace_32.c      |  3 ++-
+ arch/sparc/kernel/ptrace_64.c   |  3 ++-
+ arch/um/kernel/ptrace.c         |  4 +++-
+ arch/xtensa/kernel/ptrace.c     |  3 ++-
+ include/linux/audit.h           | 11 +++++++----
+ include/linux/entry-common.h    |  3 ++-
+ include/uapi/linux/audit.h      |  2 ++
+ kernel/audit.h                  |  2 +-
+ kernel/auditfilter.c            |  2 ++
+ kernel/auditsc.c                | 31 ++++++++++++++++++++-----------
+ 18 files changed, 67 insertions(+), 32 deletions(-)
 
 -- 
-Cheers,
+2.55.0
 
-David
 
