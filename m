@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B46EC5CFCF
-	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 17:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8AACC5B572
+	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 17:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:content-type:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=; b=vJcOEbZZTjTQbgl1e3WJu60Bae
-	VYSPKYMjyiNbCS2ZSvOjJDrctEAqjJA47kDbZ8+ACppSydqPEW9c1rGCB/v6IYvPBf5RkjsR8e6HJ
-	TK5EyMfpnhjv7KTg4t9rC/P/sm2HewZr62hA9fgeLkuRMCAJsDO0LpOhqsoO1NtDZCR2QhLUmxUSo
-	mTnUTtta2/rMUcRepKwvOl7sRGYrCoIYXMDL3M5yMKuEhNFk3DS332azN3VIC7mDjgTg7XOvEq6AK
-	Yt5Ij9q88AEj9krz6/0BN9dy1UXUQJk1lh8zi9MWqttKO1AftEbL9DTOMzj6CJdVBUgu5ZfAQjpPG
-	8fDwEYKw==;
+	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+	:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hcj1jFC26/Dufc2/bYrj4t3DzvO2jGBOUyeCAQas2/U=; b=nbwRx1AbnlN6xwDJTgcHeRhueq
+	tR9Wmkj6ffG1FTWohtcZEXgBs36k9xb2AyK3bLxP083DqWezmwQ+H3ze44lTuR99PMPyyop/Fp6vZ
+	Xy0SR6tyMfUjy3283vCTR/fLt6NpvkbZ0z4Bz/Kkx6JJR7yhx2JIPSV9d1E35XGjwxbIK7joucZdD
+	RQhBiP1Z8hDSK9BPuVsFDYdXcOYxZxhHsTb+dGBEyDkKRSAdqpefFPdh8XfI+M9whzERYOs11LJyG
+	LNQZ6UzyGaDOtLcanMG9jlw2Qtd8P4qfu4SW3ph5tubhoT4Fq/JQgRbYfIDQ8txA1j0XfF3Vzfa0i
+	dTiHD+JA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuYqc-00000001Dqf-0djl;
-	Thu, 13 Aug 2026 17:04:06 +0000
+	id 1wuYqn-00000001Duc-1clc;
+	Thu, 13 Aug 2026 17:04:17 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuYqb-00000001Dq5-16ok
+	id 1wuYqm-00000001Dtj-00sW
 	for linux-um@bombadil.infradead.org;
-	Thu, 13 Aug 2026 17:04:05 +0000
+	Thu, 13 Aug 2026 17:04:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=content-type:Content-Transfer-Encoding
-	:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=; b=iHgnmYdZmCoZTJmyP22dA+pl9z
-	kO6eBPkvYDA9Sc/n5qFWbFUaTNW0SOtBr+2mYOMHpWbWhTsk32az9JS8Yb2XGRQJdLrldo5G1iQo0
-	PsfLS1wm7sF8lu8En+KP/9msU+yj7rprXySPqTr3ptWnhxp0qMIL8mFuuIUgWwhXfLCAR1p9yqJGm
-	K50NSM/z6ig3TDJiwVaOtQS6Rq3fwkAm9c+x8cqFOiy6mdC4AGjMgleIrd3CKqAo2Q+yl/zAu2TPO
-	Ij8F+yZkzgGoBCuv0Ntrsk/11215fjHhHgB+AGJw9u2hgBWx4JBWXDXpzjKGUkMLys4pt2Lfhl80J
-	TGFf/DFQ==;
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=hcj1jFC26/Dufc2/bYrj4t3DzvO2jGBOUyeCAQas2/U=; b=fwIN9ahWjM+Ezp9i7RjRGMgf/e
+	cig6a4X8WLSWjoMgHnz5AXQdEcgKnffrmBToAH/7byCbQhXpiPi7O0Qu514RWg3XGayrHAQnFkmP/
+	ebkApkUt41EBb6ehYil+nJiMP1/LhtfmwT2uYhySEBXgYe4SdGRzGHJDG4zzwkwnuIjnrThBIPgDe
+	pEvpJsDdpENuv8s64GN07LWqzyE3Hxv/N1aOlEh5H181M4RWjhOZjgZ13uSXHh7vyLKvT6DsOtPj9
+	JjpT3MAuAJDQ2NvM7sqeWIBsiH4ZqCSZJuhtXzV8GpRpUhWVoyYqV3MGL1kTwk9PIT1tBvI6NTznN
+	oeKwOB4A==;
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wuYqY-0000000GMNl-1VU3
+	id 1wuYqi-0000000GMP1-3dCM
 	for linux-um@lists.infradead.org;
-	Thu, 13 Aug 2026 17:04:04 +0000
+	Thu, 13 Aug 2026 17:04:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1786640631;
+	s=mimecast20190719; t=1786640644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=;
-	b=AUiGMuMkTsqDPDXC1KY/NpKJEwrcNdBxMi8lNHUgWaIVk1LObxEcQJcAEYUUd4QYQUwW6d
-	AB+7EVbKb0dIzQMuTxtWsCDRGqyW1rU3jkvhi1rJ+vH/x8P6T9+oQbDvByvpjFPVsFjw/H
-	PwsH/SIT8YqV4CUGOhzAT95SmLOue60=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hcj1jFC26/Dufc2/bYrj4t3DzvO2jGBOUyeCAQas2/U=;
+	b=I1etcD6qCw9/4qqfI5J2pbvZKxhj8lrMC9x1nE05WcAopeMgn0UyIlEVeHA6bwsiwwWWj+
+	qEzl/gixG0ZkCS0JAviF6rljbMHZT64+IOD6AqQt/Va3zVMXnaTOxpObDUBzEnDrLaIk7J
+	Z3YAlfcTcxYmw/Ql6u7zMKIJQSlKCWM=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1786640641;
+	s=mimecast20190719; t=1786640651;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=o+r4ruNkApE26fuyn6KtkFW0QuXubfwA1Uwqu5ezEYw=;
-	b=ARYHGwsjw6PMZq+RpT57Fij5JKucAJQylJ3bqeCCPBIcJJUMiwexQtf/QcbPKP0pRm5byF
-	4kca2ESVN+vCdgxZrrDdbMRVxtUmJ0OIvQuM/Pp+oLdAub4KGVohw56OEeWSKXv7CBxZqg
-	e9L2UadaWNZfTELH6fblt4vJx3l+lKM=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hcj1jFC26/Dufc2/bYrj4t3DzvO2jGBOUyeCAQas2/U=;
+	b=W7p0V502mZLHo6j99n95Jg/iqWVCOcHl4U7Sv0FZw6XtXNKi68yTAcqnwq+R3UBPDD+6HF
+	EJLi8jpu9eYX7rbvTU2viqaQTOQgoNluzU5hMsrf+ONfhfBHRt02Qj1T017CCOtZvTM+Q2
+	nhHRUYLOLQsFb7jwA+ZkmnRkSmBe+Jo=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-551-3v5IuKYOPO-SU8jOK2nwmw-1; Thu,
- 13 Aug 2026 13:03:46 -0400
-X-MC-Unique: 3v5IuKYOPO-SU8jOK2nwmw-1
-X-Mimecast-MFC-AGG-ID: 3v5IuKYOPO-SU8jOK2nwmw_1786640620
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-482-LYHm2ovYMG-hpFzaOlC5Pw-1; Thu,
+ 13 Aug 2026 13:04:00 -0400
+X-MC-Unique: LYHm2ovYMG-hpFzaOlC5Pw-1
+X-Mimecast-MFC-AGG-ID: LYHm2ovYMG-hpFzaOlC5Pw_1786640635
 Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 63C311800650;
-	Thu, 13 Aug 2026 17:03:36 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 72D121955F7A;
+	Thu, 13 Aug 2026 17:03:51 +0000 (UTC)
 Received: from wsxc.redhat.com (unknown [10.96.134.24])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 6F76A195608A;
-	Thu, 13 Aug 2026 17:03:19 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D6B8A195DF9A;
+	Thu, 13 Aug 2026 17:03:36 +0000 (UTC)
 From: Ricardo Robaina <rrobaina@redhat.com>
 To: audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -121,19 +123,20 @@ Cc: paul@paul-moore.com,
 	peterz@infradead.org,
 	luto@kernel.org,
 	Ricardo Robaina <rrobaina@redhat.com>
-Subject: [PATCH 00/13] audit: log all six syscall arguments in the SYSCALL record
-Date: Thu, 13 Aug 2026 14:02:50 -0300
-Message-ID: <cover.1786626275.git.rrobaina@redhat.com>
+Subject: [PATCH 01/13] audit: log all six syscall arguments in the SYSCALL record
+Date: Thu, 13 Aug 2026 14:02:51 -0300
+Message-ID: <e869742712017760dec79f20748370a4ac8bfea2.1786626275.git.rrobaina@redhat.com>
+In-Reply-To: <cover.1786626275.git.rrobaina@redhat.com>
+References: <cover.1786626275.git.rrobaina@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-MFC-PROC-ID: fw3k9z7r5xmzQ8KbK1XsGXR6VmmoB4RFReXMXjdzFoc_1786640620
+X-Mimecast-MFC-PROC-ID: XHwlFbGwEyA0QDSnN7cHq5AahuJy12BcA76f-d_9YFQ_1786640635
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 content-type: text/plain; charset="US-ASCII"; x-default=true
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260813_180402_589792_9439642D 
-X-CRM114-Status: UNSURE (   6.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260813_180413_096960_F3167B60 
+X-CRM114-Status: GOOD (  16.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,88 +152,197 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 The SYSCALL record currently logs only four of the six syscall
-arguments (a0-a3), silently discarding the remaining two. This
-leads to the need for auxiliary records when audit-relevant
-data lands in the 5th or 6th argument of a syscall.
+arguments (a0-a3). The remaining two are captured but silently
+discarded before reaching the audit context. This leads to the
+need for auxiliary records when audit-relevant data lands in
+the 5th or 6th argument of a syscall.
 
-This series extends the SYSCALL record to log all six arguments,
-by adding arguments a4 and a5 inline within the existing record.
+Extend the SYSCALL record to log all six arguments, by adding
+arguments a4 and a5 (5th and 6th syscall argument respectively)
+inline within the existing record. Additionally, add the two
+new args to audit rules switch case, so audit rules can filter
+on them. Lastly, as a minor cleanup, rename params from (a1-a4)
+to (a0-a5) in __audit_syscall_entry(), for consistency.
 
-The audit testsuite runs successfully:
+ type=SYSCALL ... syscall=openat ... a3=0x0 a4=0 a5=0 ...
+ type=SYSCALL ... syscall=sendto ... a3=0x0 a4=7fff68843bcc a5=c ...
 
- # make test
- make -C tests test
- chmod +x */test
- Running as   user    root
-        with context unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-        on   system  Fedora
+Link: https://lore.kernel.org/audit/CAHC9VhSjEt_-Bsra4AEqWv+Daw5Ff=gqy7dX4Ah11RVhdyCBUQ@mail.gmail.com/T/#t
+Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
+---
+ include/linux/audit.h        | 11 +++++++----
+ include/linux/entry-common.h |  3 ++-
+ include/uapi/linux/audit.h   |  2 ++
+ kernel/audit.h               |  2 +-
+ kernel/auditfilter.c         |  2 ++
+ kernel/auditsc.c             | 31 ++++++++++++++++++++-----------
+ 6 files changed, 34 insertions(+), 17 deletions(-)
 
- amcast_joinpart/test ................. ok   
- backlog_wait_time_actual_reset/test .. ok   
- bpf/test ............................. ok   
- coredump/test ........................ ok   
- exec_execve/test ..................... ok   
- exec_name/test ....................... ok     
- fanotify/test ........................ ok   
- field_compare/test ................... ok     
- file_create/test ..................... ok   
- file_delete/test ..................... ok   
- file_permission/test ................. ok   
- file_rename/test ..................... ok   
- filter_device/test ................... ok     
- filter_exclude/test .................. ok     
- filter_exit/test ..................... ok   
- filter_inode/test .................... ok   
- filter_saddr_fam/test ................ ok   
- filter_sessionid/test ................ ok   
- io_uring/test ........................ ok   
- login_tty/test ....................... ok   
- lost_reset/test ...................... ok   
- netfilter_pkt/test ................... ok     
- signal/test .......................... ok   
- syscalls_file/test ................... ok   
- syscall_module/test .................. ok   
- syscall_socketcall/test .............. ok   
- time_change/test ..................... ok     
- user_msg/test ........................ ok   
- All tests successful.
- Result: PASS
-
-Ricardo Robaina (13):
-  audit: log all six syscall arguments in the SYSCALL record
-  alpha: pass all six syscall args to audit_syscall_entry()
-  arm: pass all six syscall args to audit_syscall_entry()
-  arm64: pass all six syscall args to audit_syscall_entry()
-  csky: pass all six syscall args to audit_syscall_entry()
-  microblaze: pass all six syscall args to audit_syscall_entry()
-  mips: pass all six syscall args to audit_syscall_entry()
-  openrisc: pass all six syscall args to audit_syscall_entry()
-  parisc: pass all six syscall args to audit_syscall_entry()
-  sh: pass all six syscall args to audit_syscall_entry()
-  sparc64: pass all six syscall args to audit_syscall_entry()
-  um: pass all six syscall args to audit_syscall_entry()
-  xtensa: pass all six syscall args to audit_syscall_entry()
-
- arch/alpha/kernel/ptrace.c      |  3 ++-
- arch/arm/kernel/ptrace.c        |  2 +-
- arch/arm64/kernel/ptrace.c      |  3 ++-
- arch/csky/kernel/ptrace.c       |  3 ++-
- arch/microblaze/kernel/ptrace.c |  3 ++-
- arch/mips/kernel/ptrace.c       | 11 ++++++++---
- arch/openrisc/kernel/ptrace.c   |  3 ++-
- arch/parisc/kernel/ptrace.c     |  7 +++++--
- arch/sh/kernel/ptrace_32.c      |  3 ++-
- arch/sparc/kernel/ptrace_64.c   |  3 ++-
- arch/um/kernel/ptrace.c         |  4 +++-
- arch/xtensa/kernel/ptrace.c     |  3 ++-
- include/linux/audit.h           | 11 +++++++----
- include/linux/entry-common.h    |  3 ++-
- include/uapi/linux/audit.h      |  2 ++
- kernel/audit.h                  |  2 +-
- kernel/auditfilter.c            |  2 ++
- kernel/auditsc.c                | 31 ++++++++++++++++++++-----------
- 18 files changed, 67 insertions(+), 32 deletions(-)
-
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 45abb3722d30..7306d7861159 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -324,7 +324,8 @@ extern void __audit_free(struct task_struct *task);
+ extern void __audit_uring_entry(u8 op);
+ extern void __audit_uring_exit(int success, long code);
+ extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
+-				  unsigned long a2, unsigned long a3);
++				  unsigned long a2, unsigned long a3,
++				  unsigned long a4, unsigned long a5);
+ extern void __audit_syscall_exit(int ret_success, long ret_value);
+ extern void __audit_getname(struct filename *name);
+ extern void __audit_inode(struct filename *name, const struct dentry *dentry,
+@@ -375,10 +376,11 @@ static inline void audit_uring_exit(int success, long code)
+ }
+ static inline void audit_syscall_entry(int major, unsigned long a0,
+ 				       unsigned long a1, unsigned long a2,
+-				       unsigned long a3)
++				       unsigned long a3, unsigned long a4,
++				       unsigned long a5)
+ {
+ 	if (unlikely(audit_context()))
+-		__audit_syscall_entry(major, a0, a1, a2, a3);
++		__audit_syscall_entry(major, a0, a1, a2, a3, a4, a5);
+ }
+ static inline void audit_syscall_exit(void *pt_regs)
+ {
+@@ -613,7 +615,8 @@ static inline void audit_uring_exit(int success, long code)
+ { }
+ static inline void audit_syscall_entry(int major, unsigned long a0,
+ 				       unsigned long a1, unsigned long a2,
+-				       unsigned long a3)
++				       unsigned long a3, unsigned long a4,
++				       unsigned long a5)
+ { }
+ static inline void audit_syscall_exit(void *pt_regs)
+ { }
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index 416a3352261f..cf2d9989e3fe 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -65,7 +65,8 @@ static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
+ 		unsigned long args[6];
+ 
+ 		syscall_get_arguments(current, regs, args);
+-		audit_syscall_entry(syscall, args[0], args[1], args[2], args[3]);
++		audit_syscall_entry(syscall, args[0], args[1], args[2], args[3],
++				    args[4], args[5]);
+ 	}
+ }
+ 
+diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
+index e8f5ce677df7..6726059d6df1 100644
+--- a/include/uapi/linux/audit.h
++++ b/include/uapi/linux/audit.h
+@@ -303,6 +303,8 @@
+ #define AUDIT_ARG1      (AUDIT_ARG0+1)
+ #define AUDIT_ARG2      (AUDIT_ARG0+2)
+ #define AUDIT_ARG3      (AUDIT_ARG0+3)
++#define AUDIT_ARG4      (AUDIT_ARG0+4)
++#define AUDIT_ARG5      (AUDIT_ARG0+5)
+ 
+ #define AUDIT_FILTERKEY	210
+ 
+diff --git a/kernel/audit.h b/kernel/audit.h
+index 92d5e723d570..83011b14af18 100644
+--- a/kernel/audit.h
++++ b/kernel/audit.h
+@@ -117,7 +117,7 @@ struct audit_context {
+ 	struct audit_stamp  stamp;	/* event identifier */
+ 	int		    major;      /* syscall number */
+ 	int		    uring_op;   /* uring operation */
+-	unsigned long	    argv[4];    /* syscall arguments */
++	unsigned long	    argv[6];    /* syscall arguments */
+ 	long		    return_code;/* syscall return code */
+ 	u64		    prio;
+ 	int		    return_valid; /* return code is valid */
+diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
+index 7f791afe5791..4bf539d6937d 100644
+--- a/kernel/auditfilter.c
++++ b/kernel/auditfilter.c
+@@ -358,6 +358,8 @@ static int audit_field_valid(struct audit_entry *entry, struct audit_field *f)
+ 	case AUDIT_ARG1:
+ 	case AUDIT_ARG2:
+ 	case AUDIT_ARG3:
++	case AUDIT_ARG4:
++	case AUDIT_ARG5:
+ 	case AUDIT_PERS: /* <uapi/linux/personality.h> */
+ 	case AUDIT_DEVMINOR:
+ 		/* all ops are valid */
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 6610e667c728..7a9d65a6b1cc 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -728,6 +728,8 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 		case AUDIT_ARG1:
+ 		case AUDIT_ARG2:
+ 		case AUDIT_ARG3:
++		case AUDIT_ARG4:
++		case AUDIT_ARG5:
+ 			if (ctx)
+ 				result = audit_comparator(ctx->argv[f->type-AUDIT_ARG0], f->op, f->val);
+ 			break;
+@@ -1674,11 +1676,13 @@ static void audit_log_exit(void)
+ 						    AUDITSC_SUCCESS),
+ 					 context->return_code);
+ 		audit_log_format(ab,
+-				 " a0=%lx a1=%lx a2=%lx a3=%lx items=%d",
++				 " a0=%lx a1=%lx a2=%lx a3=%lx a4=%lx a5=%lx items=%d",
+ 				 context->argv[0],
+ 				 context->argv[1],
+ 				 context->argv[2],
+ 				 context->argv[3],
++				 context->argv[4],
++				 context->argv[5],
+ 				 context->name_count);
+ 		audit_log_task_info(ab);
+ 		audit_log_key(ab, context->filterkey);
+@@ -1970,10 +1974,12 @@ void __audit_uring_exit(int success, long code)
+ /**
+  * __audit_syscall_entry - fill in an audit record at syscall entry
+  * @major: major syscall type (function)
+- * @a1: additional syscall register 1
+- * @a2: additional syscall register 2
+- * @a3: additional syscall register 3
+- * @a4: additional syscall register 4
++ * @a0: additional syscall register 1
++ * @a1: additional syscall register 2
++ * @a2: additional syscall register 3
++ * @a3: additional syscall register 4
++ * @a4: additional syscall register 5
++ * @a5: additional syscall register 6
+  *
+  * Fill in audit context at syscall entry.  This only happens if the
+  * audit context was created when the task was created and the state or
+@@ -1983,8 +1989,9 @@ void __audit_uring_exit(int success, long code)
+  * will only be written if another part of the kernel requests that it
+  * be written).
+  */
+-void __audit_syscall_entry(int major, unsigned long a1, unsigned long a2,
+-			   unsigned long a3, unsigned long a4)
++void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
++			   unsigned long a2, unsigned long a3,
++			   unsigned long a4, unsigned long a5)
+ {
+ 	struct audit_context *context = audit_context();
+ 	enum audit_state     state;
+@@ -2012,10 +2019,12 @@ void __audit_syscall_entry(int major, unsigned long a1, unsigned long a2,
+ 
+ 	context->arch	    = syscall_get_arch(current);
+ 	context->major      = major;
+-	context->argv[0]    = a1;
+-	context->argv[1]    = a2;
+-	context->argv[2]    = a3;
+-	context->argv[3]    = a4;
++	context->argv[0]    = a0;
++	context->argv[1]    = a1;
++	context->argv[2]    = a2;
++	context->argv[3]    = a3;
++	context->argv[4]    = a4;
++	context->argv[5]    = a5;
+ 	context->context = AUDIT_CTX_SYSCALL;
+ 	context->current_state  = state;
+ 	ktime_get_coarse_real_ts64(&context->stamp.ctime);
 -- 
 2.55.0
 
