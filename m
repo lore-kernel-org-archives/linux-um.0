@@ -4,102 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21E22C5DF69
-	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 12:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9710C5CFDB
+	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 12:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uVL8QQveaA14mGW2dIQPVe+Wbaf5USv9xkXEwll8c7c=; b=kJlU7qVB1I52mFgoEuICDJ2TmT
-	Z42543D8khbEH7peeQQluCt6qVa4dvMA34UWHyHnCgKPAg31gobiOqHrz1a6U71sONUPoxsK1Gr2B
-	jMk2BEiqcSJXPMmDDTd8gHRn6tuxuClkQsUji6e7KE7I3c7dWf/j5zdDzb9bM4NiiJ1jjuoCyr6fc
-	hVfHa2K5mPsIO78y7znF9tU4k98L2RQl0QhDMxbnWyf1UoVBsMorGO9U7bbzQGjW7JmNtT4xppvXE
-	1qJIorGirCAKXjp2gYFkSz4b3yZzQSITa67KN4guHJN8k7MmpjMSbwFYY0QOXXQF/wBj8Vsvgu3o1
-	wImKLvTg==;
+	bh=Yp8F8xjPNWmB+RDW4xJTkvaQ+IS/CNpnMALNCGQ+iGw=; b=fCdqrjne17YfsxcsijFF2Aqj1F
+	GJM802UD045PW+fZylAZc/X7v6rVMHp1vyw3PoKOPThGBhV+fmGt1GZTbWB+dlQNts7iDfgsVJe57
+	cGwP0eELe1dcgf50LKR6E/jhiCZyakU9iUhMl3aff38M9KHKeJvOjMPpnawTIjJJHDXKcbRrPSI7P
+	wRmuQ02E6GXcYVl5w6eYrQGd+AYLqd2Xyfa4yqfflMhXNqoh9xUAxxLk9f6+qWaPKuByXydZKmyhZ
+	f7xDghB+oRk0k44LUYJLSXItKFxxJxV1k6xHqr43tosAPtpsD5zCKaj1jDmEhakyduI9mn+WGJJcI
+	CrYGZINg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wurHK-00000002fe8-1pWH;
-	Fri, 14 Aug 2026 12:44:54 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1wurNS-00000002ftC-3Trp;
+	Fri, 14 Aug 2026 12:51:14 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wurHH-00000002fdl-3QFF
+	id 1wurNO-00000002ft6-0egp
 	for linux-um@lists.infradead.org;
-	Fri, 14 Aug 2026 12:44:53 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-84eb992a881so610024b3a.2
-        for <linux-um@lists.infradead.org>; Fri, 14 Aug 2026 05:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786711490; x=1787316290; darn=lists.infradead.org;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=uVL8QQveaA14mGW2dIQPVe+Wbaf5USv9xkXEwll8c7c=;
-        b=IE1eVLpbWNAHBksUrOZEUkI51gNY6D5MlzC/+M1RKB+QPOQGwB7ampuBi/cYIzaXt6
-         8NlFBXhipoDYIkxCdUhslz/j/5JUNRMIsrKM+qQtj9ZLP037y7L0lWzA5tEF2eU9DD9v
-         B28sz7TNoEALu5wDjyDBV6WZjS1gMX9c5ZU2DRU/KaWgpelo9KTPhqrup4OG6zgPNuD9
-         Nj0hLQ9CHLGl4in5nkBh5y3Vd9O1AdaGREcyXEQBRY4aOzLKPziyZnDHY5VhAHiS3ZWI
-         Q7k9ZOZOZQojvzs6A6UzbsbFtEola1x+wUNXXt98MRhqdKldVvtWo/D9sLXY47liochS
-         wduw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786711490; x=1787316290;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=uVL8QQveaA14mGW2dIQPVe+Wbaf5USv9xkXEwll8c7c=;
-        b=I9ItrClhnhna1o4crWIS/pEbaTqXg5PVHXS6Fh3S+ua8pKFct0ahha3gTG6QsMhDYF
-         oIaRaWLmSile5S7HBWzPBOZuVza1zdQaozOcqDk4KWz24nVgjPZI+UTYvYGEOA28PbfH
-         uvmEmG8hZblE3PUwMKSx+M30IPskMPcdD8xPi2p1tHyz6/SL03RJeaHQbrjEtvFmAsG6
-         0D6N6otFg5I2nioQR/eUvafz7UwkbLwkdAmSbQIPd7FGvsxXJVd2QK46xdKuMftI3nc+
-         sg/8f+PTB6Oz3O6apZAzf1tYNILNKGpU5fq99R9BWdQZDACh1YGFiCjEKxXuHMzLR2P0
-         +6zQ==
-X-Forwarded-Encrypted: i=1; AHgh+RoSB9lvGpr20cK29l6aWkizgznq0Y49OiacVnX8X9cNQSOQtbksqohCXp6tAm9dFY/8PrPuD1pY+A==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw7VISXS7xczWH6z56Q0iGPVT61gB8xDdYcGoQs9+vCJvLK9u2L
-	qh5b1UkwfUh4Zwl3hTzWidlVlTc5PLopiDm7C2ueVuGQYg66ZNwoG/rp
-X-Gm-Gg: AR+sD11eias0T+deYW4z/pCwGUyYFA+jZOVbeSwMv+9YnWacM7uxHM8uVnTjb1PfWfP
-	A4VvCPxVEzRa+XIREuWssGU5f0lhHNWNTGYKCrMzHrEY5Cd3XzL53LFmY05ogNIJeM+L0FgDaka
-	KeQLJSoNSww+p/fOKAu+PCU7MhmwTYm5vtq1Qoz87AIxTVY7My1bCijAMdzUWKQatncpYyMhUMN
-	Mtz9TTo35rgqaHbxnKP8+/Qk9RPh6iAp11otl/NXVSaDd+g+5p241cKRxh77BLGzbr+FpSVQXhC
-	8ukST+Xj5YcW+kZrBmj7DQf1wvq20RweETuRkGjOe8h5WIfjIuOKROlY+6z+n5OkVC4MHKqv+6o
-	wUisVoqlseiTd+eRs59KSJucli4foRr8koahafGRSE84sUVmoMS0uD51ECI0HeU3xDVnOFsSkfX
-	+RD899DtP8ufYFkbpsbskfvwhNYAZvdgQAOQsSJOi/bx2w8PF8Yw+ZUAPd3AD9HAgIyxGbEf+sQ
-	hdyruuKgnkotxddaAZ+3ANMPWPNmk8hcQRuLOehSQBamsqE2bT+i/K8R3QcNNQI65K6nRccKzDL
-	lY2ujA==
-X-Received: by 2002:a05:6a00:3981:b0:848:2eac:bfb2 with SMTP id d2e1a72fcca58-84fde004804mr5805806b3a.13.1786711490219;
-        Fri, 14 Aug 2026 05:44:50 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8517d266e36sm399011b3a.55.2026.08.14.05.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2026 05:44:49 -0700 (PDT)
-Date: Fri, 14 Aug 2026 21:44:45 +0900
-Message-ID: <m24igwrhvm.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: pfalcato@suse.de
-Cc: linux-mm@kvack.org,
-	geert@linux-m68k.org,
-	daniel@thingy.jp,
-	shuah@kernel.org,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	ljs@kernel.org,
-	liam@infradead.org,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	linux-kselftest@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: Re: [RFC PATCH 4/6] selftests: fix build errors on alpine linux
-In-Reply-To: <an7eC0oBvfjB6g54@pedro-suse.lan>
+	Fri, 14 Aug 2026 12:51:11 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 4507A60120;
+	Fri, 14 Aug 2026 12:51:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F271F000E9;
+	Fri, 14 Aug 2026 12:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786711869;
+	bh=Yp8F8xjPNWmB+RDW4xJTkvaQ+IS/CNpnMALNCGQ+iGw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=SRUKVShK72r41Ws8g4FF6a9lZMwbBJEIk0HbBDqZ0N+STbG4WW2td6mK2zyOx+ZqJ
+	 Mw4+Bw7svi7x4saObAoGV+T1A1eOyOzz4ItVk6Pxox+vyGuLwO6R/MKN0TZke5UUuj
+	 OJfMai0xJ4YKMTOwwhg8/vCqnk5yMPAB10U5IibX7bXDcZAtU86RXSU/6vsZBy+c/a
+	 na3v406UmuTXQzQt08BjZkitTPYP2X2lKoC/Z6y35BmGL68aGNnN424sAHWB9gMsZ8
+	 GQUgaMLvNK+b55nEUzFjwjOsnHuv3fr5UZtblxsxIl5tblc20bQJg7RzIDCo2L7YKW
+	 YRcsLTygUrLLg==
+Date: Fri, 14 Aug 2026 13:50:50 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-mm@kvack.org, geert@linux-m68k.org, daniel@thingy.jp, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Mark Brown <broonie@kernel.org>, 
+	Brendan Jackman <jackmanb@google.com>, Hangbin Liu <liuhangbin@gmail.com>, 
+	"Ricardo B. Marliere" <rbm@suse.com>, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [RFC PATCH 5/6] selftests: run tests on nommu architecture
+Message-ID: <an8MlE22U3586R42@lucifer>
 References: <20260813063401.1786548-1-thehajime@gmail.com>
-	<20260813063401.1786548-5-thehajime@gmail.com>
-	<an7eC0oBvfjB6g54@pedro-suse.lan>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260814_054451_870418_19E8E004 
-X-CRM114-Status: GOOD (  34.75  )
+ <20260813063401.1786548-6-thehajime@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260813063401.1786548-6-thehajime@gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,205 +72,188 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Thu, Aug 13, 2026 at 03:34:00PM +0900, Hajime Tazaki wrote:
+> Architectures lacks MMU doesn't support fork(2) syscall and only
+> vfork(2) is available with limitations.  Thus, we cannot run kselftest
+> on nommu architecture as is.
+>
+> This commit addresses this issue with the following changes:
+>
+> - on build stage, add -DCONFIG_NOMMU to CFLAGS when NOMMU=1 variable
+>   added to the build/make argument.
+> - on test run stage, avoid calling timeout command when NOMMU=1 variable
+>   added to environmental variable, since timeout command uses fork
+>   syscall which nommu platform doesn't support.
+> - kselftest_harness.h warns if the file is include when building for
+>   NOMMU platform, as there is no fork(2) syscall.
+> - replace "cd -" use as it is not available a shell supported on nommu
+>   (e.g., busybox hush), use cd "$OLDDIR" instead.
+> - describe the difference of nommu tests in the document.
+>
+> So command line to build/execute tests for nommu should be like below:
+>
+>  $ make ARCH=um NOMMU=1 O=build kselftest
+>  $ make ARCH=um NOMMU=1 -C tools/testing/selftests/mm run_tests
+>  $ NOMMU=1 /tmp/kselftest_install/run_kselftest.sh -s -c mm
+>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Will Drewry <wad@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Brendan Jackman <jackmanb@google.com>
+> Cc: Hangbin Liu <liuhangbin@gmail.com>
+> Cc: "Ricardo B. Marliere" <rbm@suse.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 
-Hello Pedro,
+Not really loving this as mentioned on the cover letter.
 
-thank you for the review and looking at the patch.
+I'm sympathetic to making things work if it's not invasive, but now you've
+essentially asking new test authors be aware of this to some degree.
 
-On Fri, 14 Aug 2026 18:34:21 +0900,
-Pedro Falcato wrote:
-> 
-> /me puts on his libc hat
+And making the harness - which is the defacto way of writing tests - now
+simply not work there is a bit crazy.
 
-thanks, this is really a good news to me.
+I'd ideally like to see _all_ tests use the harness.
 
-> > diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-> > index ae18c491ae53..ac21bf3d802e 100644
-> > --- a/tools/testing/selftests/kselftest.h
-> > +++ b/tools/testing/selftests/kselftest.h
-> > @@ -58,6 +58,7 @@
-> >  #include <string.h>
-> >  #include <stdio.h>
-> >  #include <sys/utsname.h>
-> > +#include <stdint.h>
-> >  #endif
-> >  
-> >  #ifndef ARRAY_SIZE
-> > @@ -81,6 +82,48 @@
-> >  #endif
-> >  #endif /* end arch */
-> >  
-> > +#if !defined(NOLIBC) && !defined(__GLIBC__)
-> > +#ifdef __LP64__
-> > +typedef int64_t __fsword_t;
-> > +#else
-> > +typedef int32_t __fsword_t;
-> > +#endif
-> 
-> The code should not be using __fsword_t. Per statfs(2):
-> 
->        The __fsword_t type used for various fields in the statfs
->        structure definition is a glibc internal type, not intended for
->        public use.  This leaves the programmer in a bit of a conundrum
->        when trying to copy or compare these fields to local variables in
->        a program.  Using unsigned int for such variables suffices on most
->        systems.
-> 
-> and indeed if you look at musl's statvfs definition:
-> struct statvfs {
-> 	/* ... */
-> 	unsigned int f_type;
-> 	/* ... */
-> };
-> 
-> so it should be perfectly cromulent to use unsigned int here. Or use an
-> actual usable interface :)
+Also a bunch of the tests already do forking as part of the testing:
 
-thanks, I will drop this chunk and propose to update mm/gup_longterm.c
-to address the issue with musl.
+$ cd tools/testing/selftests/mm
+$ rg -l "fork\(" | wc -l
+17
 
-> > +
-> > +/*
-> > + * for a workaround to avoid struct conflict under
-> > + * musl-libc (<sys/prctl.h> v.s. <linux/prctl.h>)
-> > + */
-> > +#include <sys/prctl.h>
-> > +#ifndef _LINUX_PRCTL_H
-> > +#define _LINUX_PRCTL_H
-> > +#endif
-> > +
-> > +#ifndef PR_SET_MDWE
-> > +#define PR_SET_MDWE 65
-> > +#endif
-> > +
-> > +#ifndef PR_MDWE_REFUSE_EXEC_GAIN
-> > +#define PR_MDWE_REFUSE_EXEC_GAIN (1UL << 0)
-> > +#endif
-> > +
-> > +#ifndef PR_MDWE_NO_INHERIT
-> > +#define PR_MDWE_NO_INHERIT (1UL << 1)
-> > +#endif
-> > +
-> > +#ifndef PR_GET_MDWE
-> > +#define PR_GET_MDWE 66
-> > +#endif
-> > +
-> > +#ifndef PR_SET_MEMORY_MERGE
-> > +#define PR_SET_MEMORY_MERGE 67
-> > +#endif
-> > +
-> > +#ifndef PR_GET_MEMORY_MERGE
-> > +#define PR_GET_MEMORY_MERGE 68
-> > +#endif
-> > +
-> > +#endif
-> 
-> This looks fine. It's the same old problem with musl and kernel headers.
+So at this point you're not really running much of the selftests at all,
+and are only happening to run those that don't do the very basic stuff
+nommu can't deal with.
 
-noted with thanks.
+I think an audit of existing tests to figure out what works with nommu vs
+what doesn't is really unreasonable again, given nobody tests or seemingly
+uses these arches.
 
-> >  /* define kselftest exit codes */
-> >  #define KSFT_PASS  0
-> >  #define KSFT_FAIL  1
-> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> > index f02cc8a2e4ae..2cc819006424 100644
-> > --- a/tools/testing/selftests/lib.mk
-> > +++ b/tools/testing/selftests/lib.mk
-> > @@ -197,7 +197,7 @@ clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
-> >  	$(CLEAN)
-> >  
-> >  # Build with _GNU_SOURCE by default
-> > -CFLAGS += -D_GNU_SOURCE=
-> > +CFLAGS += -D_GNU_SOURCE= -D_LARGEFILE64_SOURCE
-> 
-> What needs this?
+So this patch might beget more nommu carve outs and exceptions and
+therefore nommu workload and maintenance, which isn't really sustainable.
 
-this is a leftover chunk of patch not for TARGETS=mm, but
-TARGETS=drivers/dma-buf, which generates the following errors.
+I know I complain about lack of testing on nommu, but at the same time I
+don't think running arbitrary tests that happen to work on it and who knows
+if they are valid asserts anyway really fixes things.
 
-udmabuf.c:137:9: error: unknown type name 'off64_t'; did you mean 'off_t'?
-  137 |         off64_t size;
+And given nobody really is doing testing, it's not really a great RoI
+here...
 
-I will drop this chunk from this patch as the patch is only focusing
-on TARGETS=mm.
+...OTOH I suppose it's a minimal change we can largely ignore as long as
+this doesn't lead to additional work/auditing from anybody but nommu
+enthusiasts.
 
-> >  
-> >  # Additional include paths needed by kselftest.h and local headers
-> >  CFLAGS += -I${top_srcdir}/tools/testing/selftests
-> > diff --git a/tools/testing/selftests/mm/hugetlb_dio.c b/tools/testing/selftests/mm/hugetlb_dio.c
-> > index fb4600570e13..aee6be530ccb 100644
-> > --- a/tools/testing/selftests/mm/hugetlb_dio.c
-> > +++ b/tools/testing/selftests/mm/hugetlb_dio.c
-> > @@ -22,12 +22,9 @@
-> >  #include "kselftest.h"
-> >  #include "hugepage_settings.h"
-> >  
-> > -#ifndef STATX_DIOALIGN
-> > -#define STATX_DIOALIGN		0x00002000U
-> > -#endif
-> 
-> Why doesn't this fallback work?
+But I'm just not sure that will be the case :(
 
-I thought that if this macro isn't defined, it's not available in the
-underlying kernel, but that's very idiot modification given that the
-libc headers is not up-to-date but the kernel is supporting this, this
-ifndef should help.
+(I'm amazed we support a mode in linux that can't fork() in 2026 :)
 
-I will look for another approach to address the situation of musl, and
-revert this for the original purpose.
 
-> > -
-> >  static int get_dio_alignment(int fd)
-> >  {
-> > +#ifdef STATX_DIOALIGN
-> >  	struct statx stx;
-> >  	int ret;
-> >  
-> > @@ -43,6 +40,9 @@ static int get_dio_alignment(int fd)
-> >  		return 1;
-> >  
-> >  	return stx.stx_dio_offset_align;
-> > +#else
-> > +	return -1;
-> > +#endif
-> >  }
-> >  
-> >  static bool check_dio_alignment(unsigned int start_off,
-> > diff --git a/tools/testing/selftests/mm/mdwe_test.c b/tools/testing/selftests/mm/mdwe_test.c
-> > index 647779653da0..031c79ed067e 100644
-> > --- a/tools/testing/selftests/mm/mdwe_test.c
-> > +++ b/tools/testing/selftests/mm/mdwe_test.c
-> > @@ -1,5 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  
-> > +#include "kselftest_harness.h"
-> > +
-> >  #ifdef __aarch64__
-> >  #include <asm/hwcap.h>
-> >  #endif
-> > @@ -14,8 +16,6 @@
-> >  #include <sys/wait.h>
-> >  #include <unistd.h>
-> >  
-> > -#include "kselftest_harness.h"
-> > -
-> >  #ifndef __aarch64__
-> >  # define PROT_BTI	0
-> >  #endif
-> > -- 
-> > 2.43.0
-> > 
-> > 
-> 
-> Honestly, I'm surprised you needed so few hacks for this! But if I am to
-> guess, there are certainly much more problematic selftests out there.
+> ---
+>  Documentation/dev-tools/kselftest.rst       | 12 ++++++++++++
+>  tools/testing/selftests/kselftest/runner.sh |  9 +++++++--
+>  tools/testing/selftests/kselftest_harness.h |  4 ++++
+>  tools/testing/selftests/lib.mk              |  8 ++++++++
+>  4 files changed, 31 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+> index 64c0ec7428a2..800b2b688aff 100644
+> --- a/Documentation/dev-tools/kselftest.rst
+> +++ b/Documentation/dev-tools/kselftest.rst
+> @@ -230,6 +230,18 @@ section::
+>
+>  .. _tar's auto-compress: https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
+>
+> +Build and test on nommu target
+> +==============================
+> +
+> +If you (cross-)build kselftests for nommu targets, or run tests on nommu targets, use
+> +``NOMMU=1`` as a make variable/environment setting to tell build system to do the additional
+> +checks.  These nommu targets may differ in several ways, such as not supporting fork(2) or
+> +using musl or another libc.  Set this variable to apply the necessary build and test adjustments.
+> +
+> +  $ make ARCH=um NOMMU=1 O=build kselftest
+> +  $ make ARCH=um NOMMU=1 -C tools/testing/selftests/mm run_tests
+> +  $ NOMMU=1 /tmp/kselftest_install/run_kselftest.sh -s -c mm
+> +
+>  Contributing new tests
+>  ======================
+>
+> diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+> index 311811dc55a0..7287d8290b6c 100644
+> --- a/tools/testing/selftests/kselftest/runner.sh
+> +++ b/tools/testing/selftests/kselftest/runner.sh
+> @@ -38,8 +38,12 @@ tap_prefix()
+>
+>  tap_timeout()
+>  {
+> +	# nommu doesn't support timeout command (missing fork(2))
+> +	if [ "$NOMMU" = "1" ] ; then
+> +		echo "timeout isn't supported for nommu"
+> +		$1
+>  	# Make sure tests will time out if utility is available.
+> -	if [ -x /usr/bin/timeout ] ; then
+> +	elif [ -x /usr/bin/timeout ] ; then
+>  		/usr/bin/timeout --foreground "$kselftest_timeout" \
+>  			/usr/bin/timeout "$kselftest_timeout" $1
+>  	else
+> @@ -130,6 +134,7 @@ run_one()
+>  				return $KSFT_FAIL
+>  			fi
+>  		fi
+> +		OLDDIR=$(pwd)
+>  		cd `dirname $TEST` > /dev/null
+>  		(((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
+>  			tap_prefix >&4) 3>&1) |
+> @@ -147,7 +152,7 @@ run_one()
+>  		*)
+>  			ktap_test_fail "$TEST_HDR_MSG # exit=$rc";;
+>  		esac
+> -		cd - >/dev/null
+> +		cd "$OLDDIR" >/dev/null
+>  	fi
+>
+>  	return $rc
+> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+> index 261e4df94d9d..8eee7b14f824 100644
+> --- a/tools/testing/selftests/kselftest_harness.h
+> +++ b/tools/testing/selftests/kselftest_harness.h
+> @@ -1274,6 +1274,10 @@ static int test_harness_run(int argc, char **argv)
+>  	unsigned int count = 0;
+>  	unsigned int pass_count = 0;
+>
+> +#ifdef CONFIG_NOMMU
+> +	ksft_print_msg("harness test doesn't support on NOMMU architecture (no fork(2)).\n");
+> +	return KSFT_SKIP;
+> +#endif /* CONFIG_NOMMU */
+>  	ret = test_harness_argv_check(argc, argv);
+>  	if (ret != KSFT_PASS)
+>  		return ret;
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index 2cc819006424..4734b5ce613f 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -97,6 +97,14 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
+>  TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
+>  TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
+>
+> +# detect if users request NOMMU build or not
+> +# User can set NOMMU to 1 to build/test for NOMMU platforms
+> +NOMMU ?= 0
+> +ifeq ($(NOMMU),1)
+> +CFLAGS += -DCONFIG_NOMMU
+> +export NOMMU
+> +endif
+> +
+>  all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) \
+>  	$(if $(TEST_GEN_MODS_DIR),gen_mods_dir)
+>
+> --
+> 2.43.0
+>
 
-Currently I only tested with `TARGETS=mm` and didn't look carefully to
-other tests.  I will look more into running other tests on alpine
-(with CONFIG_MMU enabled) first, then will see !MMU environment with
-investigating if those are meaningful to test on nommu.
-
-anyway, (again) thanks for the review.
-
--- Hajime
+--
+Cheers, Lorenzo
 
