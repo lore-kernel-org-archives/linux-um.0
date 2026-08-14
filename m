@@ -4,119 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B48C5CFDB
-	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 09:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C19CCC5CFDB
+	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 12:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cLUyFxQVLdSjfBmCWkDLy4B3Fcl8gZoDogFSRwHO4t4=; b=IavtKtrGbDfzPCm/IBnWl3m4ro
-	g06c4wdMewU/uuoeDlZwl5nXNncXvEsL9aQT/24IkeZ4WFG4/bzviXvPReLiA3PYEPsYeVX8RDIoA
-	a+S0m+UWI2YvoErZhGMI84KBWMTgdeHrIwgUozbZVG21Ad6FLJRcgw+Sj+wk2U6E0jD8UAaXCHARi
-	SUIoIzJaMjlhQcwn4QgekbXdBSTrp+rK9B+fvVRHNMFXWfMITzDIhY1REEnqOGJ+Kx2otBRrvHFwt
-	ubnzktGswu+B3JSLy+Mwhe/sNfTcSGS5UqwHjFZRGQwVxof6cxnFlBldK+LnoAm8CW/mjHYL7ETAy
-	ueLod3xA==;
+	bh=4sg2Fpi/B0x2kWvzgITLa65nTIYhPhK7l7uRWEIj1A8=; b=I3xkCmDlUkrC5/6V12DOR+EXp1
+	l4g7Nx4ZlTeVT04CJH47q/4aTtBOpGfo8ljd5k7j1xfwesSXNdN7OPDgXKjOXZ0KTQiIbabs113yu
+	lluQ0Tp9BNpaYyEST04oSI+l4JrKZ0r77giOsAldYrjm2OE++PPIV+hQAOxXMpRYQGgC7ObFqg/II
+	vV+2Uw2+DimWtIvva1PLsT1QJKM9R2ROL3x9jdKD8S/tCfWPancH3z2KO3SqyPa3nDau1zlJSfMKF
+	MXXOG4T/Hidae5kqTKEFL6rQQooPA57xm3vepz2apVJN0X6FSET3jmVKfTBEjU6Qu8k9PVcjTekrE
+	c56joJXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuoJD-00000002OoL-0Pds;
-	Fri, 14 Aug 2026 09:34:39 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1wurCU-00000002fGs-33uF;
+	Fri, 14 Aug 2026 12:39:54 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuoJ9-00000002OnU-1nnt
+	id 1wurCT-00000002fGl-1UA7
 	for linux-um@lists.infradead.org;
-	Fri, 14 Aug 2026 09:34:37 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DF7DC82E4F;
-	Fri, 14 Aug 2026 09:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1786700068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLUyFxQVLdSjfBmCWkDLy4B3Fcl8gZoDogFSRwHO4t4=;
-	b=hhF35gw/LYvLOC7bzOPZX7IAX7VCpsmamR8rPAxK4T9PEQeKITw8G9Gk/nhimMZKHzB9A/
-	YK+VqcA95PYvxi33jvnkplohRdY6j62ZXFmi4eSNC9zzHiLOxeRjinAIhZvySZvk6PzoGx
-	U8ckiR6gwAfxvMb8u34EmEtlyUhfSbo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786700068;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLUyFxQVLdSjfBmCWkDLy4B3Fcl8gZoDogFSRwHO4t4=;
-	b=vTQ+GhztcQ/SYxO3i4hqHl6/agTaIKB2p264q6D1J8JFym4w7q6xS64wAW1UcG/0akaZ50
-	tcYqZh6IgghUoDDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1786700063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLUyFxQVLdSjfBmCWkDLy4B3Fcl8gZoDogFSRwHO4t4=;
-	b=kRByEFa+u64c03zl4c9aZGcACEi89BLMiT0kj5hSqyelmNEeKzfOrT6xSIJeFiGn7THeHA
-	RIiL4BDbwL0X9guSRyLAPzlTNDPCU7++tfZZVetuTTKJVuZGonK8UEJV+udzKIVTQqc/VW
-	4kscmoaC3F0F3ZNohYOBVRo6J+ag0YE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786700063;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cLUyFxQVLdSjfBmCWkDLy4B3Fcl8gZoDogFSRwHO4t4=;
-	b=xeRQuVjCrGpluq4gLB1As2xY/vI2RmDCzwDRwZU1ukp3fmj7DP+sKd4qYA7Z6kx6YwV7wW
-	bQghStLan0/QwwBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DF8D1782EA;
-	Fri, 14 Aug 2026 09:34:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Xf7UMh7hfmrabgAAD6G6ig
-	(envelope-from <pfalcato@suse.de>); Fri, 14 Aug 2026 09:34:22 +0000
-Date: Fri, 14 Aug 2026 10:34:21 +0100
-From: Pedro Falcato <pfalcato@suse.de>
+	Fri, 14 Aug 2026 12:39:53 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6F133600C3;
+	Fri, 14 Aug 2026 12:39:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C5E1F00A3A;
+	Fri, 14 Aug 2026 12:39:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786711191;
+	bh=4sg2Fpi/B0x2kWvzgITLa65nTIYhPhK7l7uRWEIj1A8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=O+kVpgCiOmkp8MZDf66Mx7mlR3n94nqd1qtfgseHoWHpco+dyzQY2x1b77Q47piJC
+	 V0kVXfP06DjTRL4VxW2tlseUWftYTnTBNL/egp79Z6DW1S8rCm3Q8CEOJBm3LKKVun
+	 AcpBf8WqTSpncOY0zaZOEbsJV9Fp54WVwBa0q8oZPiwBSEGHq7oBdIl77PhbpqA427
+	 50KAv5SH/rqGr8R68XsP71fpTQoKLn/fsoubLPq7CiHz3Bq4IdGQvK6JWOgpcU2Gqy
+	 rJLz4cXoVKBFcNa7WlDSjHBM4EV9z+BpkXq+FYeoSzVtP1r6QtvWfEUlrY7ntZMsF2
+	 zXnQmTbraQe/w==
+Date: Fri, 14 Aug 2026 13:39:33 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 To: Hajime Tazaki <thehajime@gmail.com>
 Cc: linux-mm@kvack.org, geert@linux-m68k.org, daniel@thingy.jp, 
 	Shuah Khan <shuah@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, 
-	"Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org
+	David Hildenbrand <david@kernel.org>, "Liam R. Howlett" <liam@infradead.org>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, linux-kselftest@vger.kernel.org, 
+	linux-um@lists.infradead.org
 Subject: Re: [RFC PATCH 4/6] selftests: fix build errors on alpine linux
-Message-ID: <an7eC0oBvfjB6g54@pedro-suse.lan>
+Message-ID: <an8MHlxZzu6a_1ui@lucifer>
 References: <20260813063401.1786548-1-thehajime@gmail.com>
  <20260813063401.1786548-5-thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20260813063401.1786548-5-thehajime@gmail.com>
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,infradead.org:email,imap1.dmz-prg2.suse.org:helo]
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260814_023435_768812_97079F25 
-X-CRM114-Status: GOOD (  29.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,18 +73,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-/me puts on his libc hat
-
 On Thu, Aug 13, 2026 at 03:33:59PM +0900, Hajime Tazaki wrote:
 > Some nommu architectures only work on Alpine Linux, which doesn't use
 > glibc for the standard library.  It uses musl-libc and is implemented in
 > a different way as glibc, resulting build failures.
-> 
+>
 > This commit fixes this issue by adding missing definitions. The fixes
 > are now only covered to TARGETS=mm which was tested for the moment;
 > future contributions are needed to fully build/execute tests on nommu
 > platforms.
-> 
+>
 > Cc: Shuah Khan <shuah@kernel.org>
 > Cc: Andrew Morton <akpm@linux-foundation.org>
 > Cc: David Hildenbrand <david@kernel.org>
@@ -156,13 +96,18 @@ On Thu, Aug 13, 2026 at 03:33:59PM +0900, Hajime Tazaki wrote:
 > Cc: linux-mm@kvack.org
 > Cc: linux-um@lists.infradead.org
 > Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+
+I mean vaguely looks un-invasive which is the test here.
+
+Couple comments below.
+
 > ---
 >  tools/testing/selftests/kselftest.h      | 43 ++++++++++++++++++++++++
 >  tools/testing/selftests/lib.mk           |  2 +-
 >  tools/testing/selftests/mm/hugetlb_dio.c |  8 ++---
 >  tools/testing/selftests/mm/mdwe_test.c   |  4 +--
 >  4 files changed, 50 insertions(+), 7 deletions(-)
-> 
+>
 > diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
 > index ae18c491ae53..ac21bf3d802e 100644
 > --- a/tools/testing/selftests/kselftest.h
@@ -173,38 +118,18 @@ On Thu, Aug 13, 2026 at 03:33:59PM +0900, Hajime Tazaki wrote:
 >  #include <sys/utsname.h>
 > +#include <stdint.h>
 >  #endif
->  
+>
 >  #ifndef ARRAY_SIZE
 > @@ -81,6 +82,48 @@
 >  #endif
 >  #endif /* end arch */
->  
+>
 > +#if !defined(NOLIBC) && !defined(__GLIBC__)
 > +#ifdef __LP64__
 > +typedef int64_t __fsword_t;
 > +#else
 > +typedef int32_t __fsword_t;
 > +#endif
-
-The code should not be using __fsword_t. Per statfs(2):
-
-       The __fsword_t type used for various fields in the statfs
-       structure definition is a glibc internal type, not intended for
-       public use.  This leaves the programmer in a bit of a conundrum
-       when trying to copy or compare these fields to local variables in
-       a program.  Using unsigned int for such variables suffices on most
-       systems.
-
-and indeed if you look at musl's statvfs definition:
-struct statvfs {
-	/* ... */
-	unsigned int f_type;
-	/* ... */
-};
-
-so it should be perfectly cromulent to use unsigned int here. Or use an
-actual usable interface :)
-
 > +
 > +/*
 > + * for a workaround to avoid struct conflict under
@@ -240,9 +165,6 @@ actual usable interface :)
 > +#endif
 > +
 > +#endif
-
-This looks fine. It's the same old problem with musl and kernel headers.
-
 > +
 >  /* define kselftest exit codes */
 >  #define KSFT_PASS  0
@@ -253,14 +175,14 @@ This looks fine. It's the same old problem with musl and kernel headers.
 > +++ b/tools/testing/selftests/lib.mk
 > @@ -197,7 +197,7 @@ clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
 >  	$(CLEAN)
->  
+>
 >  # Build with _GNU_SOURCE by default
+
+You probably want to update this comment.
+
 > -CFLAGS += -D_GNU_SOURCE=
 > +CFLAGS += -D_GNU_SOURCE= -D_LARGEFILE64_SOURCE
-
-What needs this?
-
->  
+>
 >  # Additional include paths needed by kselftest.h and local headers
 >  CFLAGS += -I${top_srcdir}/tools/testing/selftests
 > diff --git a/tools/testing/selftests/mm/hugetlb_dio.c b/tools/testing/selftests/mm/hugetlb_dio.c
@@ -270,29 +192,29 @@ What needs this?
 > @@ -22,12 +22,9 @@
 >  #include "kselftest.h"
 >  #include "hugepage_settings.h"
->  
+>
 > -#ifndef STATX_DIOALIGN
 > -#define STATX_DIOALIGN		0x00002000U
 > -#endif
-
-Why doesn't this fallback work?
-
 > -
 >  static int get_dio_alignment(int fd)
 >  {
 > +#ifdef STATX_DIOALIGN
 >  	struct statx stx;
 >  	int ret;
->  
+>
 > @@ -43,6 +40,9 @@ static int get_dio_alignment(int fd)
 >  		return 1;
->  
+>
 >  	return stx.stx_dio_offset_align;
 > +#else
 > +	return -1;
 > +#endif
+
+Probably better to declare different functions to make this less hideous.
+
 >  }
->  
+>
 >  static bool check_dio_alignment(unsigned int start_off,
 > diff --git a/tools/testing/selftests/mm/mdwe_test.c b/tools/testing/selftests/mm/mdwe_test.c
 > index 647779653da0..031c79ed067e 100644
@@ -300,7 +222,7 @@ Why doesn't this fallback work?
 > +++ b/tools/testing/selftests/mm/mdwe_test.c
 > @@ -1,5 +1,7 @@
 >  // SPDX-License-Identifier: GPL-2.0
->  
+>
 > +#include "kselftest_harness.h"
 > +
 >  #ifdef __aarch64__
@@ -309,20 +231,16 @@ Why doesn't this fallback work?
 > @@ -14,8 +16,6 @@
 >  #include <sys/wait.h>
 >  #include <unistd.h>
->  
+>
 > -#include "kselftest_harness.h"
 > -
 >  #ifndef __aarch64__
 >  # define PROT_BTI	0
 >  #endif
-> -- 
+> --
 > 2.43.0
-> 
-> 
+>
 
-Honestly, I'm surprised you needed so few hacks for this! But if I am to
-guess, there are certainly much more problematic selftests out there.
-
--- 
-Pedro
+--
+Cheers, Lorenzo
 
