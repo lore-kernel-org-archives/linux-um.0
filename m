@@ -4,115 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30719C5B572
-	for <linux-um@archiver.kernel.org>; Thu, 13 Aug 2026 17:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C958C5DF66
+	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 00:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:content-type:
-	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
-	:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9TxFFtT5q6hhEXv1kvzuRF0i2wkqVQa93JW+RoA9mS8=; b=gksNmaR8Y2ASv2a8xCscI3l2IY
-	D5WIhTPMI7GxgYmgndw7shaCv7eKuNfb7lEgdHLg/l4thUz6Cc0rc/HQuy9LB97Ctprh968AWK0fj
-	3D/uEypV4BL0npvQJEm/JDGod7zHFuKEQO4J0zRygLFa7xa/zRNSpCoINqXNpH591OHOs+YG0Yytj
-	YHYL0IXXUnfXkyLi7XjvjgOgZqtEjXcd2NG4C4e+Wx4NA0Et0qC4sB955KKnDP+1GqA0ugQ2d34K9
-	S6+2tfRoHktPl6aXnucPugJX57J7/aOlo27MYB83cVleIFkA6a/2yNY204i8XEz4sYUxOYISTTKgD
-	uHAyJqLw==;
+	bh=s4whABqcvLZBqYt2AF3I5iHUkpSSVuAbE9B4+2NQSuA=; b=CVJAzEQAmMtBRXLl8+YYPjl7Kg
+	f8f7DmWg2a4M0Y5IThbOOuGKSP0OqEjfP2JJ4guCwc2Nt1Fs/gt5ZuZDnG9/RY1CIxsJ7/S2uAS+r
+	YL6yiHOZKxeMVr63FKMSPQZ+kEyz/v1nx2uu5mmlAw7iy/9tw3lO/dfAhsZok4F1lmAD5RDm0fHsh
+	qGjE7LVjLwD+pmLJlIoy8laYzcI69U7VOd9Q3AhKqR7WXUnBOl0GqXAiJ1SfLguL/LmUyljaA4Zds
+	etGJEEohXFVGnVmzDa11PPcvuXDQuja5cB5kz0WdOIi//4itKMrhMEtXj7BfkWU5DjVEF54MxqkQs
+	7Tsj5JrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuYtA-00000001FJR-3PFu;
-	Thu, 13 Aug 2026 17:06:44 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1wuftz-00000001lzO-38Vk;
+	Fri, 14 Aug 2026 00:36:03 +0000
+Received: from mail.alien8.de ([65.109.113.108])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuYt8-00000001FHg-1uwy
+	id 1wuftv-00000001lyo-0CUL
 	for linux-um@lists.infradead.org;
-	Thu, 13 Aug 2026 17:06:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1786640801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9TxFFtT5q6hhEXv1kvzuRF0i2wkqVQa93JW+RoA9mS8=;
-	b=N3ku9FKmNTEjNRcBj9t+tI2+1+GU/yic5l1Xq+UorHuwYBwqGu1NxVl/6NcA7Y2HSYk8gX
-	6NSAkZTD+F3qNC5a4pXRGWiquZS6wKMXb3hwNKDXcEPTcfnXm5UkTJ9OgoPLpRWoZ3Aqdc
-	/0gp+7Z8QqKzwN33L34r+H8/zBuGNsc=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-448-kZvjQ2dNO5aDefn4CIGjPA-1; Thu,
- 13 Aug 2026 13:06:37 -0400
-X-MC-Unique: kZvjQ2dNO5aDefn4CIGjPA-1
-X-Mimecast-MFC-AGG-ID: kZvjQ2dNO5aDefn4CIGjPA_1786640791
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	Fri, 14 Aug 2026 00:36:01 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E94C640E0031;
+	Fri, 14 Aug 2026 00:35:40 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NvIvzpUUnXDM; Fri, 14 Aug 2026 00:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1786667729; bh=s4whABqcvLZBqYt2AF3I5iHUkpSSVuAbE9B4+2NQSuA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xt98E0gbcBvul2ZQZcLWwQ5acfXZXvWs4JojSzhUpv84WHQZqehIWYwBzvoCt+XhF
+	 x8rv+eKtKf3PGy4bVy8gCblj6e9fbBZKBmJ7zYB4SwG+U0rXHcA8nHLHhgjOr/qkGl
+	 O+Aa8rpN1H2eG6qYtF4ywR5A9yVeo+j1pXjhC192VHXwRwiRuTpvFwjJg/58v8tBlO
+	 iDzULM6jjUiWjmqa6dHqLR6/2dx2ilDiIjEsuruPmkNtqG1gIaisUDbIK96zi9jk18
+	 6Mvv2UZ9s+6EdFrxElmNWJxkDeo7Ahy9rscBF4pLiAJB3T/9+egdKY2WwE4/Pmkv9x
+	 g6zEOPF8k4M3PxpKUkUytIMkHaTelhUQvuLUJk2sx3bVt6gT6RN/bB5nabISpvOjNP
+	 A2GrB5ovG8wjRDcvx6CyZr9hhRJHTipVAT/PH7nulS2Jrf9WMsKscR5vD5ZuMUGxqE
+	 AuRuBOgfVCo2s0zNKGAB1l7FC5yFjJ27C+dhsxuVpnPkS5dAHf+/Mg308F12aiuU9E
+	 rKnP0uVpPoczg4NGe7NYhF38m3y/pD23F+RClGJTFdkAOEpkuUGGBO2x3jvvFiVjoj
+	 RSIfYTqmyPvSc1lBXYCRjN1wZAaTs+CFuy+Icdi1onJug24Tf7p+2ORCGVHsw4+mak
+	 we45huGjhTdaTDIzcdWWUfFI=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1b])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0777C18002C4;
-	Thu, 13 Aug 2026 17:06:31 +0000 (UTC)
-Received: from wsxc.redhat.com (unknown [10.96.134.24])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3411D195608A;
-	Thu, 13 Aug 2026 17:06:18 +0000 (UTC)
-From: Ricardo Robaina <rrobaina@redhat.com>
-To: audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	bpf@vger.kernel.org
-Cc: paul@paul-moore.com,
-	eparis@redhat.com,
-	sgrubb@redhat.com,
-	oleg@redhat.com,
-	richard.henderson@linaro.org,
-	mattst88@gmail.com,
-	linmag7@gmail.com,
-	linux@armlinux.org.uk,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	guoren@kernel.org,
-	monstr@monstr.eu,
-	tsbogend@alpha.franken.de,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	ysato@users.sourceforge.jp,
-	dalias@libc.org,
-	glaubitz@physik.fu-berlin.de,
-	davem@davemloft.net,
-	andreas@gaisler.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	chris@zankel.net,
-	jcmvbkbc@gmail.com,
-	tglx@kernel.org,
-	peterz@infradead.org,
-	luto@kernel.org,
-	Ricardo Robaina <rrobaina@redhat.com>
-Subject: [PATCH 13/13] xtensa: pass all six syscall args to audit_syscall_entry()
-Date: Thu, 13 Aug 2026 14:03:03 -0300
-Message-ID: <0c7aa94c05b08d959d885b3b0434646a6b2fcfd0.1786626275.git.rrobaina@redhat.com>
-In-Reply-To: <cover.1786626275.git.rrobaina@redhat.com>
-References: <cover.1786626275.git.rrobaina@redhat.com>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 44B5440E0171;
+	Fri, 14 Aug 2026 00:35:21 +0000 (UTC)
+Date: Thu, 13 Aug 2026 17:35:17 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: x86@kernel.org, linux-um@lists.infradead.org,
+	linux-raid@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 0/8] x86: Remove cpu_has_xfeatures() and add AVX-512
+ xor_gen()
+Message-ID: <20260814003517.GBan5ixaTArd0Sf6X3@fat_crate.local>
+References: <20260813021506.55129-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Mimecast-MFC-PROC-ID: _5H3-7Z9jTh1JGSstA3l53yDHQs3d4VnwBmaJRJNOAg_1786640791
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-content-type: text/plain; charset="US-ASCII"; x-default=true
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260813021506.55129-1-ebiggers@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260813_100642_561086_0F1E3B1C 
-X-CRM114-Status: UNSURE (   8.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260813_173559_269536_7C2F25BA 
+X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,30 +88,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Update the audit_syscall_entry() call to forward the 5th and 6th
-syscall arguments (areg[8], areg[9]) now that the audit core logs
-all six.
+On Wed, Aug 12, 2026 at 07:14:58PM -0700, Eric Biggers wrote:
+> This series consolidates and cleans up how the kernel handles CPU
+> feature flags for AVX and AVX-512 when the underlying OS or hypervisor
+> (if any) doesn't enable the required xstate features in XCR0.
+> 
+> Specifically, it makes the checks for xstate features be done in a
+> single place at boot time for both UML and native x86, instead of
+> everywhere kernel code wants to check for AVX or AVX-512 support.
+> 
+> Patch 8 then adds an AVX-512 optimized implementation of xor_gen() for
+> RAID, which had been blocked on confusion around cpu_has_xfeatures() and
+> its lack of implementation on UML.
 
-Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
----
- arch/xtensa/kernel/ptrace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Sashiko complains about a missing VZEROUPPER there in patch 8:
 
-diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
-index b80d54b2ea34..122a6ffc0757 100644
---- a/arch/xtensa/kernel/ptrace.c
-+++ b/arch/xtensa/kernel/ptrace.c
-@@ -564,7 +564,8 @@ int do_syscall_trace_enter(struct pt_regs *regs)
- 
- 	audit_syscall_entry(regs->syscall, regs->areg[6],
- 			    regs->areg[3], regs->areg[4],
--			    regs->areg[5]);
-+			    regs->areg[5], regs->areg[8],
-+			    regs->areg[9]);
- 	return 1;
- }
- 
+https://sashiko.dev/#/patchset/20260813021506.55129-1-ebiggers%40kernel.org
+
+Otherwise, LGTM.
+
+I can queue them all into tip after the merge window opens.
+
+Thx.
+
 -- 
-2.55.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
