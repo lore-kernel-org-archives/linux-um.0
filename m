@@ -4,67 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0C89C5CFC1
-	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 14:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212D6C5B572
+	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 18:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WnUIBmU3KRDn2nbquHueUxXwAiL4Yfqk4FNKfUeSxKw=; b=iUTuLmkqr9BfqoOj7wUrNMso0Z
-	5omXUOajmQpQqDD2UX/Rj0JSSM99gQHcfg9Rmujx+lXYftUVvs7rdqFBNxlrIFTcJxs/qvck9JVb7
-	TsVm/CiFMzdOGy6GKk5J3h5qOjw/+lwRhYMKI2NluTgJmPvAWTIFEYBCy0+HRbJ4hJBPVM/Gh8MZk
-	/x9nAGkECEj6DOAMhZTKPglsrl+TSZtDVeH9SRDs3QMslEfxWScrPjfXhQDi2++slR5diiHr1LGjF
-	KoJZOi5aFcyWHgvpxccIEWs/o2VDZq+tzSu+dhSATblJsdIU6OjzqkoRYzOL4xfL0exjPfIi6OBXK
-	sk7vN98Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=h3Bw7xg93wntK2DGSQ+p1dtb5GSU+jYFMAY4ihssDQ0=; b=r2X02MuVlHdf3Jo0JMURMWvJem
+	ZHjPaZVWV/tlNsFrBt3elJ7nmTVx7y2BKpH6xjSxnBvHo3T49GaUGSDyhm0A3y4oaqm56XEwL5H0A
+	p0rwfKVQNROiCT4V5cZfvgO+slk4xcGzcY0tvzp4WDHtQNrMWs34VlPtpKBYho+70RGK33TPcq1rb
+	wF7yR4d32YmTbZK0p+N/v6IFToRokwciZz501lVXeV9oONGQdKXDqJIXqeIAmnttn+fpT53n/U/A4
+	gzHuFWd6KjIdaGUeAYIarCaJTxn0ysGxXLjq14LjzaVV2Rh95DWB3Sb66fqKK1fiMBIU4JU9DBnB0
+	jsQLjPzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuszH-00000002neY-0c9g;
-	Fri, 14 Aug 2026 14:34:23 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1wuwmr-000000033Go-3XcG;
+	Fri, 14 Aug 2026 18:37:49 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wuszF-00000002neD-2iEY
+	id 1wuwmo-000000033G3-3G07
 	for linux-um@lists.infradead.org;
-	Fri, 14 Aug 2026 14:34:21 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id B75D0600C3;
-	Fri, 14 Aug 2026 14:34:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88A81F000E9;
-	Fri, 14 Aug 2026 14:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786718060;
-	bh=WnUIBmU3KRDn2nbquHueUxXwAiL4Yfqk4FNKfUeSxKw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=XFFyRI8MGAIAcpPAoAInDOVPA/wHhF23IygPCfI0YmHvJmF/4hjn8aySLVksV+b0o
-	 PzuIJbQi994J3Jej6AleO2PCYf8WOBu4+Bdfs5nv3SxzUEonxyx63Mx0rUM79DRQmG
-	 gSFZ2CuuI6A3W6Mik7tI0wejnc3cV0GPAxWTd24oV2IsFOoAS54g8oWSAGogpdIwNE
-	 GsJ3aluRWLI2fkBlrJn+wC9TYeslwjjbP9SxcAbUqfXOrK1QcUKE7EJBG4gzJnuWZX
-	 ehuVv9kRFtflPxiw5wVFKZseH0+NnbHBs8RLr0+vxPiEYccedVzJiV/0d7s81j9TJI
-	 5mRBU8XPzMp/w==
-Date: Fri, 14 Aug 2026 15:34:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-mm@kvack.org,
-	geert@linux-m68k.org, daniel@thingy.jp,
-	Shuah Khan <shuah@kernel.org>, Kees Cook <kees@kernel.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>,
-	Brendan Jackman <jackmanb@google.com>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	"Ricardo B. Marliere" <rbm@suse.com>,
-	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [RFC PATCH 5/6] selftests: run tests on nommu architecture
-Message-ID: <4355a510-2e00-41f7-9bb3-8f6b2d95503b@sirena.org.uk>
-References: <20260813063401.1786548-1-thehajime@gmail.com>
- <20260813063401.1786548-6-thehajime@gmail.com>
- <an8MlE22U3586R42@lucifer>
+	Fri, 14 Aug 2026 18:37:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1786732664;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h3Bw7xg93wntK2DGSQ+p1dtb5GSU+jYFMAY4ihssDQ0=;
+	b=hrZu+qdoz3Xn9mJSNltKFNpdHGMnq6olmPGRf4aELEhsFnGrW7xHZ6rqspnCW9wOyXStXC
+	WN/MCTBGnklfTPNI5L02lycGCvPOS//UzyqZGzw22AY8VP6r5IJzqJ+mHVDs894vgxMwhh
+	tr+ub+1uuAOWs2b3AH1+JnG2hEDBtPo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-4Z_7ugT9OTe1W2-yGXUccQ-1; Fri, 14 Aug 2026 14:37:42 -0400
+X-MC-Unique: 4Z_7ugT9OTe1W2-yGXUccQ-1
+X-Mimecast-MFC-AGG-ID: 4Z_7ugT9OTe1W2-yGXUccQ_1786732662
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-6a17c89d8c1so1461438a12.1
+        for <linux-um@lists.infradead.org>; Fri, 14 Aug 2026 11:37:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786732661; x=1787337461;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=h3Bw7xg93wntK2DGSQ+p1dtb5GSU+jYFMAY4ihssDQ0=;
+        b=RhsrFPlDNu8c4hZYay+tqzwKY3QQAKot3suWansqNIaJNrBt4xhPgW6vfj2A81AGEG
+         wIO+xsR/SDlKR2NQGLsI98jiMqw8yVWx6tkPO+kBsms5xw7nHAImDSYA7r7MIt74d6mI
+         +reWLRCqonlCY00GR5tf1vCl+M0EDA22me5CdzAS7ANSzs4Cwkq3ZiVqWBbGIJ5PTAOo
+         +RwO1V4uKFGEVnC+k5R3W7ft5FTzMdlzxvt9satm4BBIrKDGMMi1JdAl3Hgc6YY39Mjd
+         d1S1VpcDU+veUzzAkoAhA2+rB7iEMr2ssT5v93l53B7FdheJqh6KsiGq3eHqOuBzoreO
+         ZfQQ==
+X-Forwarded-Encrypted: i=1; AHgh+RofXLGTKCamiD50WcnOpHEiU47ruFETG1mhk2nk4EhJRYcgk1NXGhvjUt1pvfTaRQDQ/6M15RcKMQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwBYGTolwHyY/qMAEOWrL9Zpqgc8kz26ZRSdPL/VidRpAaz5xCG
+	YWqbSufy0CK8RQoVnouNdW+BCa/3ooHWUAuvbUHsNrA9XdKGSfptNt2XTCyOmuqHbMS3CsMjQLY
+	3Ak0xkeoyXnCn7TyGE7eM9P5D8yEkG/92WHZxedtOCdoLELefDumR3proAcWRZA9Jj61F8gbt4r
+	YXuOXLa/5IOytRxo3W39qCOaGUDy51JMzjlAIhB5dN
+X-Gm-Gg: AR+sD12TTT0EX/cCLYBIhDb1AMApJsrOXOmuIL7GlAegbWtQNAOpLV8UxSyneVnwaTb
+	to+q8JBpd5bJ6G5zPI1yIJ2Tx+a6pRTy0O71cUleoOD4Z/QYcmlyAnTddtAnd+QczyoBiTpstyK
+	w2nexcCkQ3WFun1FUr/o0q0+MJGyaC9qPqexjKJ81ZPuK0O7UsAm7CxvuxV3wyL+/2pI9Eo+a1r
+	2zo4hKZUDhZGtZGBDaKTeU054iFSgU2Gw2oapkkSNtEqg==
+X-Received: by 2002:a17:907:1c94:b0:c20:87f9:875a with SMTP id a640c23a62f3a-c212a23ba41mr343799966b.30.1786732661682;
+        Fri, 14 Aug 2026 11:37:41 -0700 (PDT)
+X-Received: by 2002:a17:907:1c94:b0:c20:87f9:875a with SMTP id
+ a640c23a62f3a-c212a23ba41mr343797466b.30.1786732661284; Fri, 14 Aug 2026
+ 11:37:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="p/oWFWIZW5lIg4+P"
-Content-Disposition: inline
-In-Reply-To: <an8MlE22U3586R42@lucifer>
-X-Cookie: Body by Nautilus, Brain by Mattel.
+References: <cover.1786626275.git.rrobaina@redhat.com> <an7Udt-luZfJO71U@willie-the-truck>
+In-Reply-To: <an7Udt-luZfJO71U@willie-the-truck>
+From: Ricardo Robaina <rrobaina@redhat.com>
+Date: Fri, 14 Aug 2026 15:37:30 -0300
+X-Gm-Features: AUfX_mwn2tCHNr249W_00_JVZBPk2OAqZsqdPsMuBo2JtJrJsV0GhfYgrjHGFrM
+Message-ID: <CAABTaaCcyTLV5TdmzZfpP6LMV+5GeCKqotPoJrb0u9n0h-TaHQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] audit: log all six syscall arguments in the SYSCALL record
+To: Will Deacon <will@kernel.org>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, paul@paul-moore.com, 
+	eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, 
+	richard.henderson@linaro.org, mattst88@gmail.com, linmag7@gmail.com, 
+	linux@armlinux.org.uk, catalin.marinas@arm.com, guoren@kernel.org, 
+	monstr@monstr.eu, tsbogend@alpha.franken.de, jonas@southpole.se, 
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, 
+	ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
+	davem@davemloft.net, andreas@gaisler.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, chris@zankel.net, 
+	jcmvbkbc@gmail.com, tglx@kernel.org, peterz@infradead.org, luto@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: n9AdQqpV_GL96SFH-QmhMEK1NQFIozK-z18bjaczQrA_1786732662
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260814_113746_919915_ADEB27AF 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,186 +119,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
---p/oWFWIZW5lIg4+P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Aug 14, 2026 at 01:50:50PM +0100, Lorenzo Stoakes (ARM) wrote:
-
-> So at this point you're not really running much of the selftests at all,
-> and are only happening to run those that don't do the very basic stuff
-> nommu can't deal with.
-
-> I think an audit of existing tests to figure out what works with nommu vs
-> what doesn't is really unreasonable again, given nobody tests or seemingly
-> uses these arches.
-
-> So this patch might beget more nommu carve outs and exceptions and
-> therefore nommu workload and maintenance, which isn't really sustainable.
-
-> I know I complain about lack of testing on nommu, but at the same time I
-> don't think running arbitrary tests that happen to work on it and who kno=
-ws
-> if they are valid asserts anyway really fixes things.
-
-> And given nobody really is doing testing, it's not really a great RoI
-> here...
-
-Perhaps a good first step here is to start off with getting some public
-CI set up, then build up to getting things running cleanly.  That way
-there'll be visible ongoing coverage which will help motivate getting
-whatever changes integrated, and if the changes are done bit by bit
-there should be clearer explanations for why they make sense on nommu.
-
-You could perhaps use a skiplist to ignore tests that don't work yet so
-the CI starts off clean?
-
->=20
-> ...OTOH I suppose it's a minimal change we can largely ignore as long as
-> this doesn't lead to additional work/auditing from anybody but nommu
-> enthusiasts.
->=20
-> But I'm just not sure that will be the case :(
->=20
-> (I'm amazed we support a mode in linux that can't fork() in 2026 :)
->=20
->=20
-> > ---
-> >  Documentation/dev-tools/kselftest.rst       | 12 ++++++++++++
-> >  tools/testing/selftests/kselftest/runner.sh |  9 +++++++--
-> >  tools/testing/selftests/kselftest_harness.h |  4 ++++
-> >  tools/testing/selftests/lib.mk              |  8 ++++++++
-> >  4 files changed, 31 insertions(+), 2 deletions(-)
+On Fri, Aug 14, 2026 at 5:40=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> On Thu, Aug 13, 2026 at 02:02:50PM -0300, Ricardo Robaina wrote:
+> > The SYSCALL record currently logs only four of the six syscall
+> > arguments (a0-a3), silently discarding the remaining two. This
+> > leads to the need for auxiliary records when audit-relevant
+> > data lands in the 5th or 6th argument of a syscall.
 > >
-> > diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-=
-tools/kselftest.rst
-> > index 64c0ec7428a2..800b2b688aff 100644
-> > --- a/Documentation/dev-tools/kselftest.rst
-> > +++ b/Documentation/dev-tools/kselftest.rst
-> > @@ -230,6 +230,18 @@ section::
+> > This series extends the SYSCALL record to log all six arguments,
+> > by adding arguments a4 and a5 inline within the existing record.
 > >
-> >  .. _tar's auto-compress: https://www.gnu.org/software/tar/manual/html_=
-node/gzip.html#auto_002dcompress
+> > The audit testsuite runs successfully:
 > >
-> > +Build and test on nommu target
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +If you (cross-)build kselftests for nommu targets, or run tests on nom=
-mu targets, use
-> > +``NOMMU=3D1`` as a make variable/environment setting to tell build sys=
-tem to do the additional
-> > +checks.  These nommu targets may differ in several ways, such as not s=
-upporting fork(2) or
-> > +using musl or another libc.  Set this variable to apply the necessary =
-build and test adjustments.
-> > +
-> > +  $ make ARCH=3Dum NOMMU=3D1 O=3Dbuild kselftest
-> > +  $ make ARCH=3Dum NOMMU=3D1 -C tools/testing/selftests/mm run_tests
-> > +  $ NOMMU=3D1 /tmp/kselftest_install/run_kselftest.sh -s -c mm
-> > +
-> >  Contributing new tests
-> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >  # make test
+> >  make -C tests test
+> >  chmod +x */test
+> >  Running as   user    root
+> >         with context unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1=
+023
+> >         on   system  Fedora
 > >
-> > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testin=
-g/selftests/kselftest/runner.sh
-> > index 311811dc55a0..7287d8290b6c 100644
-> > --- a/tools/testing/selftests/kselftest/runner.sh
-> > +++ b/tools/testing/selftests/kselftest/runner.sh
-> > @@ -38,8 +38,12 @@ tap_prefix()
+> >  amcast_joinpart/test ................. ok
+> >  backlog_wait_time_actual_reset/test .. ok
+> >  bpf/test ............................. ok
+> >  coredump/test ........................ ok
+> >  exec_execve/test ..................... ok
+> >  exec_name/test ....................... ok
+> >  fanotify/test ........................ ok
+> >  field_compare/test ................... ok
+> >  file_create/test ..................... ok
+> >  file_delete/test ..................... ok
+> >  file_permission/test ................. ok
+> >  file_rename/test ..................... ok
+> >  filter_device/test ................... ok
+> >  filter_exclude/test .................. ok
+> >  filter_exit/test ..................... ok
+> >  filter_inode/test .................... ok
+> >  filter_saddr_fam/test ................ ok
+> >  filter_sessionid/test ................ ok
+> >  io_uring/test ........................ ok
+> >  login_tty/test ....................... ok
+> >  lost_reset/test ...................... ok
+> >  netfilter_pkt/test ................... ok
+> >  signal/test .......................... ok
+> >  syscalls_file/test ................... ok
+> >  syscall_module/test .................. ok
+> >  syscall_socketcall/test .............. ok
+> >  time_change/test ..................... ok
+> >  user_msg/test ........................ ok
+> >  All tests successful.
+> >  Result: PASS
 > >
-> >  tap_timeout()
-> >  {
-> > +	# nommu doesn't support timeout command (missing fork(2))
-> > +	if [ "$NOMMU" =3D "1" ] ; then
-> > +		echo "timeout isn't supported for nommu"
-> > +		$1
-> >  	# Make sure tests will time out if utility is available.
-> > -	if [ -x /usr/bin/timeout ] ; then
-> > +	elif [ -x /usr/bin/timeout ] ; then
-> >  		/usr/bin/timeout --foreground "$kselftest_timeout" \
-> >  			/usr/bin/timeout "$kselftest_timeout" $1
-> >  	else
-> > @@ -130,6 +134,7 @@ run_one()
-> >  				return $KSFT_FAIL
-> >  			fi
-> >  		fi
-> > +		OLDDIR=3D$(pwd)
-> >  		cd `dirname $TEST` > /dev/null
-> >  		(((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
-> >  			tap_prefix >&4) 3>&1) |
-> > @@ -147,7 +152,7 @@ run_one()
-> >  		*)
-> >  			ktap_test_fail "$TEST_HDR_MSG # exit=3D$rc";;
-> >  		esac
-> > -		cd - >/dev/null
-> > +		cd "$OLDDIR" >/dev/null
-> >  	fi
-> >
-> >  	return $rc
-> > diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testin=
-g/selftests/kselftest_harness.h
-> > index 261e4df94d9d..8eee7b14f824 100644
-> > --- a/tools/testing/selftests/kselftest_harness.h
-> > +++ b/tools/testing/selftests/kselftest_harness.h
-> > @@ -1274,6 +1274,10 @@ static int test_harness_run(int argc, char **arg=
-v)
-> >  	unsigned int count =3D 0;
-> >  	unsigned int pass_count =3D 0;
-> >
-> > +#ifdef CONFIG_NOMMU
-> > +	ksft_print_msg("harness test doesn't support on NOMMU architecture (n=
-o fork(2)).\n");
-> > +	return KSFT_SKIP;
-> > +#endif /* CONFIG_NOMMU */
-> >  	ret =3D test_harness_argv_check(argc, argv);
-> >  	if (ret !=3D KSFT_PASS)
-> >  		return ret;
-> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/l=
-ib.mk
-> > index 2cc819006424..4734b5ce613f 100644
-> > --- a/tools/testing/selftests/lib.mk
-> > +++ b/tools/testing/selftests/lib.mk
-> > @@ -97,6 +97,14 @@ TEST_GEN_PROGS :=3D $(patsubst %,$(OUTPUT)/%,$(TEST_=
-GEN_PROGS))
-> >  TEST_GEN_PROGS_EXTENDED :=3D $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS=
-_EXTENDED))
-> >  TEST_GEN_FILES :=3D $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
-> >
-> > +# detect if users request NOMMU build or not
-> > +# User can set NOMMU to 1 to build/test for NOMMU platforms
-> > +NOMMU ?=3D 0
-> > +ifeq ($(NOMMU),1)
-> > +CFLAGS +=3D -DCONFIG_NOMMU
-> > +export NOMMU
-> > +endif
-> > +
-> >  all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) \
-> >  	$(if $(TEST_GEN_MODS_DIR),gen_mods_dir)
-> >
-> > --
-> > 2.43.0
-> >
->=20
-> --
-> Cheers, Lorenzo
+> > Ricardo Robaina (13):
+> >   audit: log all six syscall arguments in the SYSCALL record
+> >   alpha: pass all six syscall args to audit_syscall_entry()
+> >   arm: pass all six syscall args to audit_syscall_entry()
+> >   arm64: pass all six syscall args to audit_syscall_entry()
+> >   csky: pass all six syscall args to audit_syscall_entry()
+> >   microblaze: pass all six syscall args to audit_syscall_entry()
+> >   mips: pass all six syscall args to audit_syscall_entry()
+> >   openrisc: pass all six syscall args to audit_syscall_entry()
+> >   parisc: pass all six syscall args to audit_syscall_entry()
+> >   sh: pass all six syscall args to audit_syscall_entry()
+> >   sparc64: pass all six syscall args to audit_syscall_entry()
+> >   um: pass all six syscall args to audit_syscall_entry()
+> >   xtensa: pass all six syscall args to audit_syscall_entry()
+>
+> Could audit make use of syscall_get_arguments() instead?
+>
+> Will
+>
 
---p/oWFWIZW5lIg4+P
-Content-Type: application/pgp-signature; name="signature.asc"
+Hi Will,
 
------BEGIN PGP SIGNATURE-----
+Thanks for reviewing this patch. Yes, I think so. I'll fix that in the v2.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmp/J2YACgkQJNaLcl1U
-h9BXcAf/UqWczLxiNOc/Hmk71YZaKMzdL3pklWPu2E6Huj9UoT5KdXtKzHCnqcjs
-bulah3Acd+ap+Xv0VTQ0HQuRbsJnyg/LsIm+xBAvllafk8FXZLWBajhZvmRsb6OG
-pWx/5Udoc45FuL0kXPIKn4IaweB4qQwFBCw7WqopDEkidW5mBveiFblf5lqbwWPN
-U502huc+u7ShUQfKX4M5axSWBTER0HYNQuyROAQMw3BYpARu6YOS16nng5h5adoQ
-zCGgx/XFAMcgHrJZVDlSDqpgDO1FTFYF3h4ROppqt2nYfP8XsnrNKZ2L9BJRotgi
-ttU2bzsTTwccgRjbgI+Z6HGG6OH12w==
-=4XkF
------END PGP SIGNATURE-----
+Thanks,
+-Ricardo
 
---p/oWFWIZW5lIg4+P--
 
