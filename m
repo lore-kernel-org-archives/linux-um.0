@@ -4,101 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D38FC5B572
-	for <linux-um@archiver.kernel.org>; Fri, 14 Aug 2026 22:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15223C5AD5A
+	for <linux-um@archiver.kernel.org>; Sat, 15 Aug 2026 18:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n2EAblvWDRelmfnXh27a45O70JHPB4giXZ+AN2NzhtQ=; b=MenD2ihLuDKmcqHM7xsIEB6kiR
-	wE4p7xJe8KmG0NuG1c1LAUeTbQeLxjstpzoeFF/8eBjhTJUyltMhTbZzx8Qz33tOwFFNzIAyQEsxA
-	oPXdnvsnVW/GrrMTkpxZLQOxlS3cF8tBRjw2lqGm7OWD8cQmDfDRK2DBKMHDMe4rVik4WQ25LWaAx
-	IZxkGLq4DJ4J2QwH3YaU3u+vwvLqDb8wW1RsRypPkaz5LuacyJx66pjqCqyVqav8U/KYj9NqGKFfa
-	5wtMCnppXfoCkXbggYC23kklVGZBTxs1wkx/nRDYalkx18swLXMHgA7MbSCrKIlLu1wU/JU1t+ULW
-	dIVXaF7Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=WCMvK5ohQOFymbdY0OzMDpa7FyF9XhAAUoMQkc808Wk=; b=kirNcUEKhE5cJ0hOax5p2N+0IN
+	xHiz0ITJbk0soWNXZisioZ4NbFWfNyxGsJF6geRSYyH3r6GmzEXHq/P/yhxQUYIlAfphuoTXXFPcm
+	0eQiCgPt5DKmNFsuko32NQXZpdsRPMcKl0K566GlMPYTbfcoep7VkwtquQRSvHhqEZzNxU1kbZSMO
+	LfZLHQcRS/qdRnh+h4mktGA1kyYijGvVeG0M9YWvBBJf1MCjtymj5z8eHYn3Fvxy3iK16meEqLPp7
+	NbA8s8lgFXFqc9k7f16uzTJvSXCHR12GI2v+barnFmRg+s5v7iY5hYR8lpweWXO+V3ZXgET137JJr
+	4FoXrYbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wv0Uy-00000003H0r-0R3R;
-	Fri, 14 Aug 2026 22:35:36 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1wvIry-000000041Ag-2MUg;
+	Sat, 15 Aug 2026 18:12:34 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wv0Ut-00000003H08-3rTu
+	id 1wvIrx-000000041AI-2qKz
 	for linux-um@lists.infradead.org;
-	Fri, 14 Aug 2026 22:35:35 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-38e07ebd263so1131983a91.1
-        for <linux-um@lists.infradead.org>; Fri, 14 Aug 2026 15:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786746931; x=1787351731; darn=lists.infradead.org;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=n2EAblvWDRelmfnXh27a45O70JHPB4giXZ+AN2NzhtQ=;
-        b=k+ZMmgDKaMdFDLJuJgWxaR8suZVM+hjzcmiypkzoTL6IC+jEBu5mrTvkNkjoVh8nMg
-         TFKv5S2fvnKxeIAwZjW80jl2P2MQCt54ADc6FB4yjomkjJ3Mbt+npt1i26RgUfBbBnxR
-         I9pJDWWOkZj84F2KpTmSc3GC+qH8z95uKZxMhR/l0qVW+2D6Lu9gsTdOcy3zknXL7lM5
-         rRqMbHc/MbJkfymiLFxu4mLQVPA6CeNWVZhPn9dHgyD3DdBoOOnX4hVEUkzL6v7AN0oh
-         COZq2PF1XdfFabS0eZ2bDxPItAPgwKEfL7ZZwt0cVYdKQ/EZAY8envImjXD02ZhfQTGH
-         DWFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786746931; x=1787351731;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=n2EAblvWDRelmfnXh27a45O70JHPB4giXZ+AN2NzhtQ=;
-        b=murs50dAix6fkYhVEsZcKh84b4R8hUjoJ1wNkMm2AwBdSLN4Tsu1ADjxrlFmV0a/jL
-         buM5DeCi4aHhCZv6rJGtwlhkfH3Sr+KTMc7s8SD60EdjCqWHoPsmT3dAUeDjQCpd/ypq
-         gccJU2AtC0o6lVd8OEZtyCvmXV8MVkh4NafLgGCJr/OpXJ3o3RXZYvZmYrC+FejS1UQE
-         3pgtjwiHP5MUXY5L9J7AKr+VDo95oUsbZk8ZY45slGt2vvlGIAKY30QkCdhuqrdd+p5J
-         P4OjIWeT1JyPdbL/6d0sdk4RNxEm4TNmbH/FP93RfqIyNVvkoBryK1RF8mGq2lnrFOBA
-         W/Hw==
-X-Forwarded-Encrypted: i=1; AHgh+RqlsEI6JKh+gqusapRf+ANFgSVPDcKPbgrL3jADKyG6GPNjiaQnEW/KJC61K6LCbfkLfvXgzGI6Fg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyCIY+WWMBTWitUFomxvcElO+pfoBinkXUVDkbR6NbuCVEglIye
-	ExzGdUgvbmfgWsvgKArA8FS3xOS0tCQBFYD9rk2uQ9wKofYP72TD8Ji2
-X-Gm-Gg: AR+sD12IsW4wpsJMCYeBzK5QiRMs/yLSrOAh9chT3CcasNgJ8Drxwza7KjxZXaXVBEY
-	eag3UDOmf5zggLZPd6zcJUo1ar3r2ROIRUJay8mwqfoOfVhnO53hupUc9LHLAp/e67QsVOj9Il4
-	sMCQ7HUOAn/GzkUw1NaejmVjgBBljOb0lCm1HnrSdHTo7x3oo+aHkkrSjrnWmtPwEqgasPTbfF6
-	7snkwgjZIe+gOOToSWATIESCixQqjXbxxMdVqqkOxQ3qDUDMVW6nH6dZbKlXsD/iTgiMxRRYZQz
-	Zw6iOiclWd48QVScK8KLZhM4C/VA8W+AaPPnZ1DASnC93CRkVReoik5TPKDrA2ZokatKfaDB4dd
-	JlB6FDuzbn9Jhg+ItyO6c4TmSG6F6qpsd362XUzmH3JBWnhRbAM9xmq3yD/s0VBDV32+NC8lul2
-	Up+t1aspfoyB1TFkxUY4jRwX+k+DOIk+Vv3GswksvWYHqjqQpyhQwLq/rL6klXLaaEYEDw8wlY9
-	xj1bK/9815yI2tXczD+naFb1fIHYujautA4OK2rYDV9pZjGn34KzdRg+lzL/tAmzYlm4hEquLsS
-	Rupljg==
-X-Received: by 2002:a17:90b:3c91:b0:380:f85c:94b4 with SMTP id 98e67ed59e1d1-3933b78e3c2mr11247940a91.7.1786746930611;
-        Fri, 14 Aug 2026 15:35:30 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3933b699e47sm2074781a91.4.2026.08.14.15.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Aug 2026 15:35:29 -0700 (PDT)
-Date: Sat, 15 Aug 2026 07:35:26 +0900
-Message-ID: <m2wltspbyp.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: ljs@kernel.org
-Cc: linux-mm@kvack.org,
-	geert@linux-m68k.org,
-	daniel@thingy.jp,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	liam@infradead.org,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	shuah@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] selftests/mm: add nommu mmap and mremap behavior tests
-In-Reply-To: <an8SvW3jv3JuAFc8@lucifer>
-References: <20260813063401.1786548-1-thehajime@gmail.com>
-	<20260813063401.1786548-7-thehajime@gmail.com>
-	<an8SvW3jv3JuAFc8@lucifer>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260814_153533_726128_06E7F078 
-X-CRM114-Status: GOOD (  26.80  )
+	Sat, 15 Aug 2026 18:12:33 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6FD2F43AE3;
+	Sat, 15 Aug 2026 18:12:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B430E1F00A3E;
+	Sat, 15 Aug 2026 18:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786817553;
+	bh=WCMvK5ohQOFymbdY0OzMDpa7FyF9XhAAUoMQkc808Wk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=moJlEll/LoWBuhJimpjctgnUSMd48Rlal3HXbk/EN1lGeg421MCoog3x364lo0qfH
+	 ofQaiN3HDD5npxbBnMbscR0jAriSH8JhssOsyiDGba9u5+jNP2ufwb4MRTqWFSeB49
+	 i5iKMmUkFzwc8AfnY37k6KNmBhQKwvwxHSIH4Wsr+McfnI0tNOM6nG8WYqHINAtdhc
+	 yVm0KwePY/yKp6F8A+wQVNmgTQCdsiZJIYcYTl/NCxBx5EZjCvOvaXa3juAvkV5Aha
+	 iNuRL9OOzBk6Or4WOAnHg9Zw2p2GYSaI8yyu0Yzo3iWuCwvROWD2mt7Mo/PhY3y2Di
+	 TdrfKUlWklM+A==
+From: Eric Biggers <ebiggers@kernel.org>
+To: x86@kernel.org
+Cc: linux-um@lists.infradead.org,
+	linux-raid@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v4 2/8] um: Check for missing AVX and AVX-512 xstate bits
+Date: Sat, 15 Aug 2026 11:10:18 -0700
+Message-ID: <20260815181024.28924-3-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20260815181024.28924-1-ebiggers@kernel.org>
+References: <20260815181024.28924-1-ebiggers@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,119 +73,119 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+If the CPU declares AVX or AVX-512 support, verify that all the
+corresponding bits are set in the XCR0 register.  If any are missing,
+warn and don't set the corresponding X86_FEATURE_* flags.
 
-On Fri, 14 Aug 2026 22:28:53 +0900,
-Lorenzo Stoakes (ARM) wrote:
-> 
-> On Thu, Aug 13, 2026 at 03:34:01PM +0900, Hajime Tazaki wrote:
-> > Introduce a kselftest utility to validate memory mapping capabilities
-> > under nommu kernels, aligned with
-> > Documentation/admin-guide/mm/nommu-mmap.rst.
-> >
-> > The test implements basic checks into a generic architecture-agnostic
-> > test matrix applicable across nommu targets. It evaluates:
-> >
-> > 1. MAP_FIXED allocation rejections.
-> > 2. Standard MAP_PRIVATE and MAP_ANONYMOUS allocation resilience.
-> > 3. MAP_UNINITIALIZED allocations via optional kernel configurations.
-> > 4. Regular file mappings via standard filesystem storage.
-> > 5. Memory-backed file mapping with /dev/zero
-> > 6. Block device subsystem mappings (gracefully skipping if node is
-> >    missing).
-> > 7. Shared vs Private backing discrepancies under nommu conditions.
-> > 8. mremap limits, ensuring non-expandable restrictions behave properly.
-> 
-> Thanks for adding these.
-> 
-> It's horrible to not have the kselftest harness for these, but as established,
-> fork() doesn't work for nommu (!)
-> 
-> A lot of these tests seem to relate to functionality I'm not really happy with
-> in the rest of the series so let's see how things pan out with the series
-> overall I guess!
+This eliminates the perceived need for UML-supporting AVX and AVX-512
+optimized code in the kernel (that is, lib/raid/ currently) to start
+checking the XCR0 bits in addition to X86_FEATURE_AVX*.
 
-(snip)
+This aligns UML with the vast majority of userspace programs, which
+check the XCR0 bits before considering AVX and AVX-512 to be supported,
+as per the procedure documented in Intel's CPU manual.
 
-> > diff --git a/tools/testing/selftests/mm/nommu_mremap_test.c b/tools/testing/selftests/mm/nommu_mremap_test.c
-> > new file mode 100644
-> > index 000000000000..b1b8a4e64b55
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/mm/nommu_mremap_test.c
-> > @@ -0,0 +1,583 @@
-(snip)
-> > +
-> > +static int get_shared_writable_file_expected_error(const char *path)
-> > +{
-> > +	if (get_fs_type(path) == RAMFS_MAGIC)
-> > +		return EPERM; /* ramfs failed */
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int pre_conf_trim_page(void)
-> > +{
-> > +	return set_nr_trim_pages("0\n");
-> > +}
-> > +
-> > +static int post_conf_trim_page(int value)
-> > +{
-> > +	char buf[32];
-> > +
-> > +	if (snprintf(buf, sizeof(buf), "%d\n", value) < 0)
-> > +		return -EIO;
-> > +
-> > +	return set_nr_trim_pages(buf);
-> > +}
-> > +
-> > +struct mremap_case_t {
-> > +	const char *name;
-> > +	const char *pathname;
-> > +	int open_flags;
-> > +	int mmap_prot;
-> > +	int mmap_flags;
-> > +	int exp_err;
-> > +	int (*resolve_exp_err)(const char *path);
-> > +	unsigned int old_pages;
-> > +	unsigned int new_pages;
-> > +	int (*pre_hook)(void);
-> > +	int (*post_hook)(int value);
-> > +};
-> > +
-> > +static struct mremap_case_t mremap_cases[] = {
-> > +	{
-> > +		.name = "anonymous shrink (r--)",
-> > +		.pathname = NULL,
-> > +		.open_flags = O_CREAT | O_RDWR | O_EXCL,
-> > +		.mmap_prot = PROT_READ,
-> > +		.mmap_flags = MAP_ANONYMOUS | MAP_PRIVATE,
-> > +		.exp_err = 0,
-> > +		.resolve_exp_err = 0,
-> > +	},
-> > +	{
-> > +		.name = "shared file shrink (r--)",
-> > +		.pathname = "/tmp/ksft.nommu-remap-XXXXXX",
-> > +		.open_flags = O_CREAT | O_RDWR | O_EXCL,
-> > +		.mmap_prot = PROT_READ,
-> > +		.mmap_flags = MAP_SHARED,
-> > +		.exp_err = 0,
-> > +#ifdef CONFIG_NOMMU
-> > +		.resolve_exp_err = get_shared_writable_file_expected_error,
-> > +#else
-> 
-> Hmm aren't these all nommu tests anyway?
+Acked-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ arch/um/kernel/um_arch.c | 78 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 1 deletion(-)
 
-those tests are indeed for nommu but also compare with mmu systems.
-actually I was trying to implement test behaviors which are described
-in Documentation/admin-guide/mm/nommu-mmap.rst.
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 2141f5f1f5a2..aafbaef2ae82 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -264,12 +264,88 @@ unsigned long brk_start;
+ 
+ #define MIN_VMALLOC (32 * 1024 * 1024)
+ 
++static u64 __init read_xcr0(void)
++{
++	u32 a, b, c, d;
++
++	asm volatile("cpuid"
++		     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++		     : "a"(0), "c"(0));
++	if (a >= 1) { /* max_leaf >= 1 */
++		asm volatile("cpuid"
++			     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++			     : "a"(1), "c"(0));
++		if (c & (1 << 27)) { /* XSAVE enabled by OS */
++			asm volatile("xgetbv" : "=d"(d), "=a"(a) : "c"(0));
++			return ((u64)d << 32) | a;
++		}
++	}
++	return 0;
++}
++
++static void __init validate_and_set_cpu_cap(int cap, u64 xcr0)
++{
++	/*
++	 * Check for missing xstate features right away, so that there's no
++	 * perceived need for all optimized code in the kernel to do so.
++	 */
++	switch (cap) {
++	case X86_FEATURE_AVX:
++	case X86_FEATURE_AVX2:
++	case X86_FEATURE_AVX_VNNI:
++	case X86_FEATURE_FMA:
++	case X86_FEATURE_VAES:
++	case X86_FEATURE_VPCLMULQDQ:
++		if ((xcr0 & 0x7) != 0x7) {
++			static bool warned;
++
++			if (!warned) {
++				os_warn("Disabling AVX support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	case X86_FEATURE_AVX512F:
++	case X86_FEATURE_AVX512BW:
++	case X86_FEATURE_AVX512CD:
++	case X86_FEATURE_AVX512DQ:
++	case X86_FEATURE_AVX512ER:
++	case X86_FEATURE_AVX512IFMA:
++	case X86_FEATURE_AVX512PF:
++	case X86_FEATURE_AVX512VBMI:
++	case X86_FEATURE_AVX512VL:
++	case X86_FEATURE_AVX512_4FMAPS:
++	case X86_FEATURE_AVX512_4VNNIW:
++	case X86_FEATURE_AVX512_BF16:
++	case X86_FEATURE_AVX512_BITALG:
++	case X86_FEATURE_AVX512_FP16:
++	case X86_FEATURE_AVX512_VBMI2:
++	case X86_FEATURE_AVX512_VNNI:
++	case X86_FEATURE_AVX512_VP2INTERSECT:
++	case X86_FEATURE_AVX512_VPOPCNTDQ:
++		if ((xcr0 & 0xe7) != 0xe7) {
++			static bool warned;
++
++			if (!warned) {
++				os_warn("Disabling AVX-512 support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	}
++	set_cpu_cap(&boot_cpu_data, cap);
++}
++
+ static void __init parse_host_cpu_flags(char *line)
+ {
++	u64 xcr0 = read_xcr0();
+ 	int i;
++
+ 	for (i = 0; i < 32*NCAPINTS; i++) {
+ 		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
+-			set_cpu_cap(&boot_cpu_data, i);
++			validate_and_set_cpu_cap(i, xcr0);
+ 	}
+ }
+ 
+-- 
+2.55.0
 
-this particular case ("shared file shrink (r--)") is not described in
-the doc, but test with a conditional error on nommu, and expects
-success on mmu kernel, which is interesting (at least for nommu folks)
-to validate future regressions.
-
-I think now if I split into several series of this patchset, I would
-drop this particular chunk which is needed for other series, and keep
-only basic tests for nommu kernel which is described in the doc.
-
--- Hajime
 
