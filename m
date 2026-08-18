@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20BABC5DF86
-	for <linux-um@archiver.kernel.org>; Tue, 18 Aug 2026 17:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C8FCC5DF7D
+	for <linux-um@archiver.kernel.org>; Tue, 18 Aug 2026 17:26:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/tRX5gadGxF2TDYvvyHApdMb0Nud4dCL15xxVLvrQqs=; b=GfUS5hExgX+44K4UOq/X6qErg8
-	ciPKiOguc4kunRGuGkS8BUJORiuPPM0+VIxXLBc5DOr9TYfCdao1bHhElIO8P477a7qlA5l0QkvQS
-	68KhQpzmVqwzQqaFAxYCtHMIvakyBiXTMX1Y3fhR44I0I1j6scWemXos1gKLLZS5zT3/hCVn9lEWi
-	W4zL58QJ4SpgMZ3exlXEpqDZlcUtgFkVTzQaLSpMVCh0RdmQF/7hAxPDPyn9uCznpxpOi681pG3EJ
-	sSFMKLKWrTVoYxWUiXPJRawiuFcVgGm+ccVvysZlVCQ2rlF2PBFoJnmI+ImR0Udd/m+OKCdZqtLHN
-	KGMgm01g==;
+	bh=bVsmR2M21o1vKJ3cy/12UmIutLddLn3TpoYg5BwFDD0=; b=VK/1n4fyc7zFNHAsZDw+mFlbhC
+	fRqTdfNyxS8XEdAuYwIdZIVtbc+wfID1KQNKY/bIZcqxzWyQx/BQkpqYGrpf907uX9bDpWeYfVej2
+	ooWZHIN80f+2RXvWhPDJX9GvnVpnN7pyYaxoIZyAmkHGOz+RfyDcY+mQytMkVYj40+p41H6XxHi85
+	63FbSCAljBfJ3A2gNxecu49V2HVLbXSiffad7nZybyb4ok4q3Z4hpla7tC0AElpUHPkUEun4/c/sX
+	5Yj0vx3+K3MXRaVtr+1lIFvqnlC8dZuyP9zW3JPAjAwVSeFX4MJfPcggVUcjpNPidMLBe/gAKYHgt
+	hzmLV9lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwNZH-00000008QDB-3AFJ;
-	Tue, 18 Aug 2026 17:25:43 +0000
+	id 1wwNZe-00000008QOy-14m0;
+	Tue, 18 Aug 2026 17:26:06 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wwNZG-00000008QCI-1RAg;
-	Tue, 18 Aug 2026 17:25:42 +0000
+	id 1wwNZc-00000008QNz-1SbZ;
+	Tue, 18 Aug 2026 17:26:04 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1BAC0434E2;
-	Tue, 18 Aug 2026 17:25:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE5371F000E9;
-	Tue, 18 Aug 2026 17:25:33 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1DD6D403C9;
+	Tue, 18 Aug 2026 17:26:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EAE1F000E9;
+	Tue, 18 Aug 2026 17:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787073942;
-	bh=/tRX5gadGxF2TDYvvyHApdMb0Nud4dCL15xxVLvrQqs=;
+	s=k20260515; t=1787073964;
+	bh=bVsmR2M21o1vKJ3cy/12UmIutLddLn3TpoYg5BwFDD0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=KKnREi4qVhs1cPQdDtJRXNlNIIncHan3KC3+WcJvTRXesZ3TH9rRU+AWP9o/oNQFs
-	 84EN3gCly/2lP52XrRxXa1qYmuDx9pw6ENIhBrPcvWTYd0pbpgmxCS0C+tcYK8+4C3
-	 ET/WibVzGpu1HEF0tcPFrhW973ScvbeeQjiUrk/GaODsKh8hTeTIhJpKjwg7vWSh1F
-	 G87Nz/h1O/fLChNcDf4BKW2aleDSySJSp6StLJjzJ+pM5Yjter/WD50Dh3WNP/GnV3
-	 59faTBhguy6JJXCyJpd6kTBJVxLJPOHtnW1HjFbm02talOyJARmlStEWzG7OXfrxqt
-	 aqVzSoiBKdy5Q==
-Message-ID: <a467da8f-7a84-47c0-8172-4f2e23093f79@kernel.org>
-Date: Tue, 18 Aug 2026 19:25:31 +0200
+	b=Hd4zZqYlsGKEx/jhtQpqKkSx9RTUboWG40nyZZJHu3aMW61Z87euXiGJSy0ADtjyR
+	 m66jdF1q+357id1bqIreIhbEdpZ/sgMPUxHsRL5upT0UyFGrvM6HyCS9SVpJA4TU+d
+	 gassLD90Xeh6KMJaO1fqTs+OebEDB8HnsqsPPn/z3u5gxAPalXv3a4gb1hT5xHadHh
+	 fdg8S8VR8ZQvXv6NBUwwaSAUrE12u/ZJCbhBwd6+Psh5v0mgM7k+65hSQgJg6UjjKK
+	 hdN0pPR0VYT1k9eqEIiOxYwmelrWgOV0PAZslwiEj/BEKTam2bKJR5YLAScDZA3fpC
+	 RmKBXcclg5XyA==
+Message-ID: <1de1adf1-84a6-4247-98c1-406686233d3f@kernel.org>
+Date: Tue, 18 Aug 2026 19:25:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 2/8] mm: Stop using pxd_ERROR()
+Subject: Re: [RFC V3 3/8] loongarch/mm: Stop using pte_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
  akpm@linux-foundation.org
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
@@ -61,9 +61,9 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
  linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>
+ linux-kernel@vger.kernel.org
 References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
- <20260818040041.1891769-3-anshuman.khandual@arm.com>
+ <20260818040041.1891769-4-anshuman.khandual@arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -110,7 +110,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260818040041.1891769-3-anshuman.khandual@arm.com>
+In-Reply-To: <20260818040041.1891769-4-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -128,19 +128,16 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 8/18/26 06:00, Anshuman Khandual wrote:
-> pxd_ERROR() has been used in generic mm just to print the page table entry
-> in pxd_clear_bad() before clearing those out with pxd_clear() later. These
-> pxd_ERROR() macros have been provided by all platforms which basically did
-> the same thing.
+> Directly use pr_err() in __set_fixmap() and drop pte_ERROR() which helps in
+> eventually dropping pte_ERROR() macro across the tree. In this new printing
+> __FILE__ and __LINE__ has been dropped because they are always the same and
+> don't really add any value. The new ptval_to_str() helper is being used for
+> converting pgtable entry value into a string. The error message itself has
+> been cleaned up as well.
 > 
-> Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
-> page table entries thus completely dropping dependency on platform provided
-> pxd_ERROR() macros which can then be dropped off later on.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Hildenbrand <david@kernel.org>
-> Cc: Lorenzo Stoakes <ljs@kernel.org>
-> Cc: linux-mm@kvack.org
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Cc: loongarch@lists.linux.dev
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
