@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EAC9C5DF66
-	for <linux-um@archiver.kernel.org>; Mon, 17 Aug 2026 19:18:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2810C5DF74
+	for <linux-um@archiver.kernel.org>; Tue, 18 Aug 2026 04:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+VUF7ClHIzAxSed6rdWYgpPYHD83ZO/w/ujAalOwtyI=; b=0A3+eZ7CllFVnH7CkUBdigIGgr
-	oqJzbuSDF6vELELVwxl4xEmDNGJ6MvqssjSTOOaFJiTltkX21RmQgrkXpENryAdWTTzrTix0MBlF1
-	KYMie7E/bcfgxGk4btEmyvXxw1o6e+iGZ1/bW7qGLq22x/SKHNuQVEbAeHKODz5UygGVv0M8Cub1A
-	lQ4428FvziUhvIPmVksegnog5hvWbfCnFeBfZ2VEQlv1cVCiGkf0QTVTP1IeErNd9zYxUXg65c2H9
-	36EWIeIfjJKtW9i/+pttTheBEsvldNG6C1ikJje4V48px5LYUxazZFnJOliMtGyAs0uzfZT+Hote+
-	9rQIRonw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JBldtpHBDgaNn5UCzD5QqxCVKi38f4fFGgLWcwhAWyo=; b=EQvymtWLGHSEmzDWWVb36HV4RW
+	6/T36wBVz7+2++z9rGGsvE74ebkOjitfwqpjRAbRc70FaR75X6rTpcXyGvnBbg9XBxEFGVVzowjTB
+	qgWi4JpGyTVe+S3KescqPBRFgMnIJCRsv+lqC0yEH0IRc+iR24wQ7wkKsZzl3udtMNvPFQ1DS+qQh
+	9YUyyvAVW2QCE68x47/9OMTmPahnGxjl4SmMjXHONelgeX476IUlSoYzCtsO1G6HbgCpiU7r5MOPS
+	Z6zwNJ6Pg5uBSyfxhWDIIX0Hx98tzo34N+SN+/fIr9US+0smggwLTCaUppkRPGPm7+wyxdcCtxWu1
+	je1TTSZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1ww2qm-00000006i8G-28WE;
-	Mon, 17 Aug 2026 19:18:24 +0000
-Received: from mgamail.intel.com ([198.175.65.18])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1ww2qj-00000006i7s-1NDG
-	for linux-um@lists.infradead.org;
-	Mon, 17 Aug 2026 19:18:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1786994301; x=1818530301;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lbzjxMpmk0GXxJB/iLVlMyluggamXc2qIxngnzy+5wA=;
-  b=mQr3hMnjg2Jdm4pn/vAD8klL2uBpCunG7HeVJfobvopbGMav51tbGlb5
-   sK8vIFoGJoh1mxdVsQPb8Tt+m7pQLe7GoQqEI1CpKqCVr+cDQlaz1Uryn
-   nT0k7eSTvx/Ok7uUMwCsiXRuwgyJLUefLqYJ4VJbIq+N5QJf/YKiLk3vT
-   TI4dtX4OMIxbakgdbC4IAanqZrZMA5RFThDVo3zzSVldNf2M5QIInKvPu
-   LCLQGiX7nDLA4PLUxgamC8MlKKTL6uZpPRmjI1p78CY0aKmaTqrnx8xxS
-   vj5y9TSlxoDOcSFuJl+IYlzWYmutEFQsinv+f0dqSAZMnAsLoYGXoFF9r
-   Q==;
-X-CSE-ConnectionGUID: q9Y0JLVzQWGHj4czBwbrgw==
-X-CSE-MsgGUID: RY4D+XX5RL2OZzRhS8vFLA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11878"; a="87543994"
-X-IronPort-AV: E=Sophos;i="6.25,229,1779174000"; 
-   d="scan'208";a="87543994"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 12:18:20 -0700
-X-CSE-ConnectionGUID: 8SHjbnmuRZiJuSwJPprAEg==
-X-CSE-MsgGUID: vTiocIbETq6/qxbErWJdwA==
-X-ExtLoop1: 1
-Received: from klitkey1-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.67])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2026 12:18:18 -0700
-Date: Mon, 17 Aug 2026 22:18:16 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH v1 1/1] um: vector: Use %pM format specifier for MAC
- addresses
-Message-ID: <aoNeeJL90rCZWS-F@ashevche-desk.local>
-References: <20260603072958.107215-1-andriy.shevchenko@linux.intel.com>
+	id 1wwB0S-00000007E3i-2Y8E;
+	Tue, 18 Aug 2026 04:00:56 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wwB0N-00000007DzZ-2ZO8;
+	Tue, 18 Aug 2026 04:00:53 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6A7D1713;
+	Mon, 17 Aug 2026 21:00:44 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09A313F66F;
+	Mon, 17 Aug 2026 21:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1787025648; bh=ttb24YxqPfvdlZDv4/6sPaZz7dp5RDI+R8A7FcbdkQc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Nm9wKCIrKirdGI7EsjFmNpzvktBxen3s+Y8bQddcn8JS5ntzJoAry+6wo+3u4vhyn
+	 M7CRYhYAvk1FZnrpGWYeR2L9tvn1Sn/4mF9BXA7BiP3Pw3dmPL/RpL6VcCsRFudXyN
+	 14LSMlFlRUiV28bQxOW5lFnD7s8QFTIgvbWS0vko=
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	david@kernel.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lorenzo Stoakes <ljs@kernel.org>
+Subject: [RFC V3 1/8] mm: Make ptrval_to_str() generally available
+Date: Tue, 18 Aug 2026 09:30:34 +0530
+Message-ID: <20260818040041.1891769-2-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260603072958.107215-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260817_121821_406110_997F9782 
-X-CRM114-Status: UNSURE (   6.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260817_210051_746432_0C6EC817 
+X-CRM114-Status: GOOD (  10.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,14 +94,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 03, 2026 at 09:29:58AM +0200, Andy Shevchenko wrote:
-> Convert to %pM instead of using custom code.
+Move ptrval_to_str() inside a header thus making the helper more generally
+available for new users which are being added later. While here, also move
+another related string size macro PTVAL_STR_MAX inside the header as well.
 
-Any comments on this?
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@kernel.org>
+Cc: Lorenzo Stoakes <ljs@kernel.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ include/linux/mm_types.h | 15 +++++++++++++++
+ mm/memory.c              | 16 ++--------------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index b18c2b2e7d2c..a5b514e55dd7 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -2001,4 +2001,19 @@ static inline unsigned long mmf_init_legacy_flags(unsigned long flags)
+ 	return flags & MMF_INIT_LEGACY_MASK;
+ }
+ 
++void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size);
++
++#define ptval_to_str(buf, val)								\
++	do {										\
++		auto __val = (val);							\
++											\
++		ptval_bytes_to_hex_str((buf), sizeof(buf), &__val, sizeof(__val));	\
++	} while (0)
++
++#if defined(__SIZEOF_INT128__)
++#define PTVAL_STR_MAX	(32 + 1) /* Max 128-bit value in hex + NUL */
++#else
++#define PTVAL_STR_MAX	(16 + 1) /* Max 64-bit value in hex + NUL */
++#endif
++
+ #endif /* _LINUX_MM_TYPES_H */
+diff --git a/mm/memory.c b/mm/memory.c
+index 01893720b6d8..752fc04ef8ac 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -46,6 +46,7 @@
+ #include <linux/sched/numa_balancing.h>
+ #include <linux/sched/task.h>
+ #include <linux/hugetlb.h>
++#include <linux/mm_types.h>
+ #include <linux/mman.h>
+ #include <linux/swap.h>
+ #include <linux/highmem.h>
+@@ -519,7 +520,7 @@ static bool is_bad_page_map_ratelimited(void)
+ 	return false;
+ }
+ 
+-static void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
++void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
+ {
+ 	if (WARN_ON_ONCE(buf_size < entry_size * 2 + 1)) {
+ 		snprintf(buf, buf_size, "overflow");
+@@ -546,19 +547,6 @@ static void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry
+ 	}
+ }
+ 
+-#define ptval_to_str(buf, val)								\
+-	do {										\
+-		auto __val = (val);							\
+-											\
+-		ptval_bytes_to_hex_str((buf), sizeof(buf), &__val, sizeof(__val));	\
+-	} while (0)
+-
+-#if defined(__SIZEOF_INT128__)
+-#define PTVAL_STR_MAX	(32 + 1) /* Max 128-bit value in hex + NUL */
+-#else
+-#define PTVAL_STR_MAX	(16 + 1) /* Max 64-bit value in hex + NUL */
+-#endif
+-
+ static void __print_bad_page_map_pgtable(struct mm_struct *mm, unsigned long addr)
+ {
+ 	char pgd_str[PTVAL_STR_MAX];
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
 
