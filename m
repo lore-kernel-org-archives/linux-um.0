@@ -4,89 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E31C5DF94
-	for <linux-um@archiver.kernel.org>; Fri, 21 Aug 2026 22:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32939C5DF81
+	for <linux-um@archiver.kernel.org>; Sun, 23 Aug 2026 20:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
-	Subject:Message-ID:Mime-Version:Date:Reply-To:Content-Transfer-Encoding:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=PoawpruQ26UxgXhGoUDM/P7VzQ79Tma0wyLntYv3M/I=; b=UtZa8bgZO2WQNyS/OZM/BOaJ5i
-	sqpbUndg7cpeyBHqwfwzfIaD9IJTpuT5yhWhUghcy3c6119TaBs0QnNFF1BycRA3lPS1kSPmAuweF
-	KDJHo2AWAgjFOyhjwA/HVhpH+vyKYvoQH3BKo8e6d/VIexN3JZu4grNH23rjIH/KrnWCRuM+j6doT
-	lH1vRkKvj652S6tuyT8CxZcMx1U1M+qT8q4n7PlgIX+SGykIQaiKLuv9WxwIZ1ccelQsA+86QsFrz
-	1DPmWqyIR/IAmzizZwdITQKGqTH06jSK4+mKt7rUj5EvpI2hVae4jnOtEw3oE/4LEXmDG1QpJoqmM
-	FuZVLtpQ==;
+	bh=MfartcHqwqCIhFwvC4CwiIrHlgQajx9zG1o6pHu7jNE=; b=yjuq7HNkXNzuvNRrYrxCZmtvdm
+	fGo7gf6TG+XcO9srreQu2IHAfmSNzsJAEAv8d4lOuZOXxbYVQ5i12/HJozTnNJsRDp/eN7HqJ4kEC
+	xTE+jGi4sSHlB67MgXa20dfhRyigavF/hRn7SzSt3KTcE3NQlz0Rmbp0apqgHpKgtnKLYS63COPEO
+	Nj278YgmaQuB1w6niYEKw6kk6STTOE4mteCNhKID+2KFNTlVA9r79kFWOtrsQB2zczu2WMWinWrbS
+	sZGI3aEsmXaakwlV/ywjAR+4hOVLtcp0szmDnZYegagtC+Agc5z+4CaU3PVdbGOTAKR1lKeKMadl3
+	/Q7DACQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wxXzx-0000000E7Mh-3vhu;
-	Fri, 21 Aug 2026 22:46:05 +0000
-Received: from mail-pj1-x1047.google.com ([2607:f8b0:4864:20::1047])
+	id 1wyEc5-0000000FanX-1cFT;
+	Sun, 23 Aug 2026 20:16:17 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wxXzu-0000000E7M8-3HtI
+	id 1wyEc0-0000000Fan2-3NEH
 	for linux-um@lists.infradead.org;
-	Fri, 21 Aug 2026 22:46:04 +0000
-Received: by mail-pj1-x1047.google.com with SMTP id 98e67ed59e1d1-38e7b87ce77so3356881a91.0
-        for <linux-um@lists.infradead.org>; Fri, 21 Aug 2026 15:46:01 -0700 (PDT)
+	Sun, 23 Aug 2026 20:16:15 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-c15d111ca99so323199566b.0
+        for <linux-um@lists.infradead.org>; Sun, 23 Aug 2026 13:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1787352361; x=1787957161; darn=lists.infradead.org;
-        h=content-type:cc:to:from:subject:message-id:mime-version:date:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=PoawpruQ26UxgXhGoUDM/P7VzQ79Tma0wyLntYv3M/I=;
-        b=TAqesbfH3azzmaiqEX+9iHbkME3Yh5xB8uJyjWLRebUWKuuOwCAnFK1WoNWAnz7r6M
-         f8Yo0+giKJ7XhxuPsSitrDbxumMF4y8J/gEvmgm4LrSgYMd36hOZ7H/bPZpAonLDukmm
-         mEgBizhxof4H/uHeA+F5Y7aaC5vZsAtzNxL5RyXLCYRE+rRmQ1uUE+sDg3ZnbQQ2ROYX
-         518j3TsNNgLUd7Fj3JMQ3dqw4WqRSBCSHLuUDzheTwTfy/DAejGhqvhW7+sGAOw+0w3a
-         +NrS0DjPrc6sZrvdryJy5W/LtYEWAM7uesAQOVhCP8ZdfF5fcr0WHD+djWlnsbyGbQn+
-         IXgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787352361; x=1787957161;
-        h=content-type:cc:to:from:subject:message-id:mime-version:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+        d=isomorphic-ai.com; s=google; t=1787516170; x=1788120970; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=PoawpruQ26UxgXhGoUDM/P7VzQ79Tma0wyLntYv3M/I=;
-        b=aU+WbbaHTXNK59X2zh7ZV1B1WAznuPkiKzAqWf5MHez1fo1GWFDUOIqFv4npRHs71y
-         y77y3d2uN5tjmM9bWteSyWJANMl2pHh/aftWTK0xA67oyz3d/MUn1/Sn6ZQOg0y5fEYQ
-         RUDb1eGzOYhu8GbAG1e667q+pwgYWeZ8sB8W1pX3AOBeOzmmA3ojE/r7VmcClaWZq3v7
-         hAD8TeWInjRh4/4h4xWSCDUfgZYF5UjqnFU6tuaUirUNX9naUP6Cz0OrZZTZmN/iVGYe
-         locLLENjf7uZ+Iuxxb5m1U0AtXmpf+ezZp0hcROsH5UFEXVNFJ9KsgKboW9DzQGbiwCz
-         l8Lw==
-X-Forwarded-Encrypted: i=1; AHgh+Rpfma1S4c8jAHlxOC4gNYqMr1rMje5XJEBcd4vPUuYvvJ20rpjkT78xKz6ZTVqRt3kUjwlGisBD8Q==@lists.infradead.org
-X-Gm-Message-State: AFuF++kWObnREP7udwcHBrd0lZIUm+r2ztCp8IzCQMWUF8jH67B+TmfH
-	EPztauI4PEXegoof2QFjCikJ49vKHAwe2Zwduu5E5frAyQerz2uhWx1TPCWzGFYD22PfyAz0UQP
-	rBRuP/T0hYjNVdYrjiUP0sNUZj8NmRg==
-X-Received: from dlbcm37.prod.google.com ([2002:a05:7022:68a5:b0:139:d9c7:3cf4])
- (user=ndesaulniers job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:3812:b0:380:fead:448d with SMTP id 98e67ed59e1d1-395c3a09bfemr15847665a91.13.1787352360541;
- Fri, 21 Aug 2026 15:46:00 -0700 (PDT)
-Date: Fri, 21 Aug 2026 15:45:42 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIABXViGoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDCyND3YKSosTk1PjSxIJMXRMzI2NTAwNjs+SkFCWgjoKi1LTMCrBp0bG 1tQCyeUaBXQAAAA==
-X-Change-Id: 20260821-ptrace_uapi-462350036cbd
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=O0COsmvrvggwIeEq7bAuRbULbXScoJmbNMYaRi6RFIw=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1787352358; l=3055;
- i=ndesaulniers@google.com; s=20260611; h=from:subject:message-id;
- bh=OEJp5z39oCqCpxH9dM2BpNCfiPMMeGugZKo1K/SEU98=; b=nXfOMSQEPii8YVDQy8UrkSfJXgJBGvGNfX6ksH6fZLOSUyCwFn0P3gcNXWaQcup2Iz0vj26Ya
- yMecgjBxvjSACYXvNTyBVGj/Mgas2lC8pRpkXstr0/gtjcTYlKP9EOD
-X-Mailer: b4 0.14.3
-Message-ID: <20260821-ptrace_uapi-v1-1-3de8638a29f2@google.com>
-Subject: [PATCH] x86: uapi: ptrace: guard register offset macros with
- __ASSEMBLER__ or __FRAME_OFFSETS
-From: Nick Desaulniers <ndesaulniers@google.com>
-To: Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Oleg Nesterov <oleg@redhat.com>, Nathan Chancellor <nathan@kernel.org>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>
-Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
-	llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
+        bh=MfartcHqwqCIhFwvC4CwiIrHlgQajx9zG1o6pHu7jNE=;
+        b=kLUveqahCr0T3Woyx8lYXFk8poff7xEDZcI+L+kKOeKqe1Ctn5l5gslFVOILps0gHN
+         YUab2uaxMFvmLkUGEewqrg9GRnIMIW7LjQ4DP42N64j5CkDF0yYN7ZiVz1oOluOy5lpU
+         k8aE9jkzNEWCW0sy57W8ETt1tMx7z1glBUVCWQjxFTRLUb4FA8VXYnZexPuVeeUm3wmC
+         BRyJCBtpM/ZBSO5qphimMOy2tm12hFC75XmYgrGnniLJmBRvdU0l74PmX187mfp2O6/S
+         9gmcUrYVkGMBzK7TQ2TiVMd3q7lMe4eopFY+XOBMiLhnAUOmmkT3701IDXnz/z2NymhA
+         CDhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787516170; x=1788120970;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=MfartcHqwqCIhFwvC4CwiIrHlgQajx9zG1o6pHu7jNE=;
+        b=RGSvEICmjJxaymwqFVOP7aQUKBKAOAfqXBsmruIB7L85KacCCIGTntJWDoSO39KK3C
+         RpuDYojeq9534WmcO3uNgvfQ2pCl2G4806y8qEcOw2fAQM8vWnW1iAtaBMGCeG2Ovv47
+         vZeggLDKzHLQhogKQh8TJJHUKnnbOznlzv07FL/CRq+Nx/m4DP2a7BhSOuisvYRUxuqc
+         6J53q4KNu2PeUcvdTISaz3JgggBh4Lcm9gEyqHtNK2svNJ6JPTKyQETQarlIkn+tYzXU
+         F8NW1SMYseV2Cs7MZImj4KPSWOmiJQKSaCXhbciAai8rEFKqpfk6wJfQIBBU/E1adhra
+         WBOg==
+X-Forwarded-Encrypted: i=1; AHgh+Rr5okrxTJIlcgcv4mAeycIy4gs4D6mKzY3TDza76SQYh3qdReWfUXzWL2wyTbCDXXXV8Ns3zKqtMg==@lists.infradead.org
+X-Gm-Message-State: AFuF++nT0pKU8F5nYFm27xHdeSYoCUvjPM4Rfl+imVkA1gId9NwW22gy
+	lKqfw+j64uduCLz23ZCW3f14tu/CfVj7PP3a5X6gCn2LsH675SHy+5+KLtxJBL+zfro=
+X-Gm-Gg: AR+sD12em4HJO3FkG0CBRR/W9PBGKxzOQz+24A0Y35mFVVv9G3ADCY356K53mrSu8XZ
+	sPZJd/Ymh30iSiGbzyTJJ2LQ6UA5TZ+OxNDNc5tjE9en9Zn+PwxmVeAoNz/8cnFc9+kieV9XeBj
+	vV83YvSgjI64Y/oaSVG5RuD3vPuEbDoze4H5sSIKoDcVsMvAZCY0rBQakwErE1stuNjtSG1ZVcY
+	Nnk9V1uhdBkW7gKPuNafN7MvSEeyLC26eFVIWQj0yXwTjeIAsWUh3lbdnE/+Bvl8yFzHebO1dEb
+	lOIBCwgQNHS5orpYYH5ewq1KXzskwV+3Bascc9BvRB6xlWx4GdnUC4Mrdlc7efhw+N6iUH7fa1c
+	ObyFP83r7HiHieVztfWTTXcext8y3QKCKlrC+S+IGEoYRMMNYrBP50m/K1+HEfM8RuuE5NFQdXF
+	6xw/XYmFeKpEEaes6yO8byQF+Q5zy3maAsNpMs9FVh8lPeTAdvCm9/ot9RXEQ4tQ5jyL12/rVKT
+	WWkLqW8FJgWU7/QaR/hT+oY7Z892CugiZyPSpoiOsak8LnoAn52ihPpqL0GUI7+wBB7a7mozp0a
+	TZwX0HGBvF46w5ezr30fPH+7TZSmdf1tgRVHfyCpibKMqARvifWa2m1hTA==
+X-Received: by 2002:a17:907:c8c6:b0:c1f:1520:4de5 with SMTP id a640c23a62f3a-c249257c128mr1492980966b.1.1787516169331;
+        Sun, 23 Aug 2026 13:16:09 -0700 (PDT)
+Received: from ms-103.premium-rootserver.net ([193.32.222.77])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c249606a8fasm1010651166b.8.2026.08.23.13.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Aug 2026 13:16:08 -0700 (PDT)
+From: Fabian Franz <fabian@isomorphic-ai.com>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Fabian Franz <fabian@isomorphic-ai.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	"Xin Li (Intel)" <xin@zytor.com>,
+	Ingo Molnar <mingo@kernel.org>
+Cc: Claude Fable 5 <noreply@anthropic.com>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH REGRESSION] um: Fix cpu_feature_enabled() build breakage
+Date: Sun, 23 Aug 2026 22:14:58 +0200
+Message-ID: <20260823201521.2576344-1-fabian@isomorphic-ai.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260821_154602_832361_4192CA84 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20260823_131612_898044_58E7D74A 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,95 +107,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The register offset macros in <asm/ptrace-abi.h> are guarded by
-`defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)` for 64-bit, but
-were left unguarded for 32-bit. This causes havoc for userspace that
-happens to use identifiers colliding with these short macro names
-(e.g., EBX, ECX, EAX, DS, ES, FS, GS, CS, SS). Without this guard,
-userspace is forced to be super extra careful with include ordering to
-minimize the chance of collision.
+Since commit 3ed403bbc967 ("treewide: Remove CLOCK_TICK_RATE") deleted
+the (otherwise empty) arch/um/include/asm/timex.h, UML builds resolve
+<asm/timex.h> to arch/x86/include/asm/timex.h via the HEADER_ARCH
+include path.  That pulls <asm/tsc.h>, whose get_cycles() uses
+cpu_feature_enabled(), into virtually every translation unit, starting
+with asm-offsets.c.  This newly expands parts of UML's copy of
+<asm/cpufeature.h> that no longer compile, and "make ARCH=um" now dies
+in prepare0:
 
-Wrap both the 32-bit and 64-bit register definitions under
-`#if defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)`, and ensure
-User-Mode Linux (UML) defines `__FRAME_OFFSETS` for 32-bit as well.
+  arch/um/include/asm/cpufeature.h:52:39: error: implicit declaration
+    of function 'DISABLED_MASK_BIT_SET'
+  arch/um/include/asm/cpufeature.h:115:17: error: implicit declaration
+    of function '_static_cpu_has'; did you mean '__static_cpu_has'?
 
-Assisted-by: Gemini
-Link: https://github.com/llvm/llvm-project/issues/217413
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Two independent breakages meet here:
+
+ 1. cpu_feature_enabled() and this_cpu_has() still test
+    DISABLED_MASK_BIT_SET()/REQUIRED_MASK_BIT_SET().  Those used to
+    come from <asm/disabled-features.h>/<asm/required-features.h> via
+    <asm/cpufeatures.h>, but since commit 8f97566c8a81
+    ("x86/cpufeatures: Remove {disabled,required}-features.h") they
+    live in the generated <asm/cpufeaturemasks.h>, which only the
+    arch/x86 archprepare rule generates.  ARCH=um never generates nor
+    includes it, so the references have been dangling since then.
+
+ 2. The _static_cpu_has() macro expands to itself.  Commit
+    3eaa50e1e255 ("x86/cpu: Hide and rename static_cpu_has()") renamed
+    the inline function _static_cpu_has() -> __static_cpu_has() and
+    the macro static_cpu_has() -> _static_cpu_has(), but in the UML
+    header the macro's out-of-line branch kept calling
+    _static_cpu_has(), which now names the macro itself and is left
+    unexpanded by the preprocessor.
+
+Fix the macro to call __static_cpu_has(), as the x86 header does, and
+drop the mask based short-circuits from cpu_feature_enabled() and
+this_cpu_has().  UML has no compile-time feature masking to express:
+capabilities are copied from the host's CPUID at boot, see commit
+d8fb32f4790f ("um: Add support for host CPU flags and alignment"),
+and generating cpufeaturemasks.h from a UML .config would wrongly
+mark features disabled simply because the gating CONFIG_X86_* symbols
+do not exist for ARCH=um.
+
+Fixes: 3eaa50e1e255 ("x86/cpu: Hide and rename static_cpu_has()")
+Fixes: 8f97566c8a81 ("x86/cpufeatures: Remove {disabled,required}-features.h")
+Signed-off-by: Fabian Franz <fabian@isomorphic-ai.com>
+Assisted-By: Claude Fable 5 <noreply@anthropic.com>
 ---
- arch/x86/include/uapi/asm/ptrace-abi.h | 4 ++--
- arch/x86/um/asm/ptrace.h               | 4 +---
- arch/x86/um/ptrace_32.c                | 1 +
- 3 files changed, 4 insertions(+), 5 deletions(-)
+ arch/um/include/asm/cpufeature.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/include/uapi/asm/ptrace-abi.h b/arch/x86/include/uapi/asm/ptrace-abi.h
-index 5823584dea13..3656955c6faa 100644
---- a/arch/x86/include/uapi/asm/ptrace-abi.h
-+++ b/arch/x86/include/uapi/asm/ptrace-abi.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_X86_PTRACE_ABI_H
- #define _ASM_X86_PTRACE_ABI_H
+diff --git a/arch/um/include/asm/cpufeature.h b/arch/um/include/asm/cpufeature.h
+index f7770083c0a4..20b2c7ead62e 100644
+--- a/arch/um/include/asm/cpufeature.h
++++ b/arch/um/include/asm/cpufeature.h
+@@ -37,8 +37,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	 test_cpu_cap(c, bit)
  
-+#if defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)
- #ifdef __i386__
+ #define this_cpu_has(bit)						\
+-	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
+-	 x86_this_cpu_test_bit(bit, cpu_info.x86_capability))
++	 x86_this_cpu_test_bit(bit, cpu_info.x86_capability)
  
- #define EBX 0
-@@ -25,7 +26,6 @@
- 
- #else /* __i386__ */
- 
--#if defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)
  /*
-  * C ABI says these regs are callee-preserved. They aren't saved on kernel entry
-  * unless syscall needs a complete, fully filled "struct pt_regs".
-@@ -57,12 +57,12 @@
- #define EFLAGS 144
- #define RSP 152
- #define SS 160
--#endif /* __ASSEMBLER__ */
+  * This macro is for detection of features which need kernel
+@@ -48,8 +47,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+  * supporting a possible guest feature where host support for it
+  * is not relevant.
+  */
+-#define cpu_feature_enabled(bit)	\
+-	(__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
++#define cpu_feature_enabled(bit)	_static_cpu_has(bit)
  
- /* top of stack page */
- #define FRAME_SIZE 168
+ #define boot_cpu_has(bit)	cpu_has(&boot_cpu_data, bit)
  
- #endif /* !__i386__ */
-+#endif /* defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS) */
+@@ -112,7 +110,7 @@ static __always_inline bool __static_cpu_has(u16 bit)
+ (								\
+ 	__builtin_constant_p(boot_cpu_has(bit)) ?		\
+ 		boot_cpu_has(bit) :				\
+-		_static_cpu_has(bit)				\
++		__static_cpu_has(bit)				\
+ )
  
- /* Arbitrarily choose the same ptrace numbers as used by the Sparc code. */
- #define PTRACE_GETREGS            12
-diff --git a/arch/x86/um/asm/ptrace.h b/arch/x86/um/asm/ptrace.h
-index 2641d28d115c..439c4151f6b7 100644
---- a/arch/x86/um/asm/ptrace.h
-+++ b/arch/x86/um/asm/ptrace.h
-@@ -13,9 +13,7 @@ enum {
- };
- 
- #include <linux/compiler.h>
--#ifndef CONFIG_X86_32
--#define __FRAME_OFFSETS /* Needed to get the R* macros */
--#endif
-+#define __FRAME_OFFSETS /* Needed to get the register macros */
- #include <asm/ptrace-generic.h>
- 
- #define user_mode(r) UPT_IS_USER(&(r)->regs)
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 3af3cb821524..9e9155b0e918 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -7,6 +7,7 @@
- #include <linux/sched.h>
- #include <linux/uaccess.h>
- #include <linux/regset.h>
-+#define __FRAME_OFFSETS
- #include <asm/ptrace-abi.h>
- #include <registers.h>
- #include <skas.h>
-
----
-base-commit: 26260251022fbc2f248a3d747a9b2b961b18d2d8
-change-id: 20260821-ptrace_uapi-462350036cbd
-
-Best regards,
+ #define cpu_has_bug(c, bit)		cpu_has(c, (bit))
 -- 
-Nick Desaulniers <ndesaulniers@google.com>
+2.43.0
 
+Every ARCH=um build has failed since the 7.3 merge window.
+
+#regzbot introduced: 3ed403bbc967
+
+Steps to reproduce on master:
+
+make ARCH=um O=/tmp/um-build defconfig
+make ARCH=um O=/tmp/um-build -j$(nproc)
+
+fails with:
+
+/home/ubuntu/projects/linux/arch/x86/include/asm/tsc.h: In function ‘get_cycles’:
+/home/ubuntu/projects/linux/arch/um/include/asm/cpufeature.h:52:39: error: implicit declaration of function ‘DISABLED_MASK_BIT_SET’ [-Werror=implicit-function-declaration]
+   52 |         (__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
+      |                                       ^~~~~~~~~~~~~~~~~~~~~
+/home/ubuntu/projects/linux/arch/x86/include/asm/tsc.h:79:14: note: in expansion of macro ‘cpu_feature_enabled’
+   79 |         if (!cpu_feature_enabled(X86_FEATURE_TSC))
+      |              ^~~~~~~~~~~~~~~~~~~
+/home/ubuntu/projects/linux/arch/um/include/asm/cpufeature.h:115:17: error: implicit declaration of function ‘_static_cpu_has’; did you mean ‘__static_cpu_has’? [-Werror=implicit-function-declaration]
+  115 |                 _static_cpu_has(bit)                            \
+      |                 ^~~~~~~~~~~~~~~
+/home/ubuntu/projects/linux/arch/um/include/asm/cpufeature.h:52:72: note: in expansion of macro ‘_static_cpu_has’
+   52 | builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
+      |                                                             ^~~~~~~~~~~~~~~
+
+If this is known please disregard. I am also not 100% sure if this is the right fix or if it's better to bring back the macros to um.
+
+In any case it would be good for um to build again on the master branch out of the box.
+
+Thanks,
+Fabian
 
