@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A8B2C5DF81
-	for <linux-um@archiver.kernel.org>; Mon, 24 Aug 2026 14:21:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94700C5DF94
+	for <linux-um@archiver.kernel.org>; Mon, 24 Aug 2026 14:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=t/e3PpeaK5U5W4RUHXokLB2sTjS30zI1NNFQptTXikg=; b=bLJsho8dYelSeDZUhQ12q1dztz
-	BADWkgL+f8QIGcNu9PBAC8u60vOlGI9MBr4eT8F9/s0K7D6/57AIWVeFbiSZBRI4v7HmSHba9vTil
-	OzOZND44hHPID7QKAFu4Zd1NEGuEFwr0WLEW+dCxeBG/3kiRYAp2SrfmmolmxjO34VCeOU4QN6sji
-	0zgGzeccnzMoVX0bLxa57o+VO/w0c1WTMKy6GwEArXo31S3sS3pFfZJq5PHbMRzKar3mgZkO6cqTw
-	iQLatVC5vBA5Hj4oYcpfiaFg+T2ipL2SvpBG58lQlBTkEU6XglTZxF6ejrRvVepA2+C4GJ3NG9aJj
-	hPCqHJpg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=HesIIA5t8gsnUSv4wqfVndklpG//1dx3Rdk/w4jri3c=; b=THR0wtTEIeKHPPb6kSsTiPTFuE
+	B4JfOBpVlf+fkmPvQLERPEpzOLVOBXITxAimduK4L1TJKA5kqH17OdnHWVdIxsDKVXazYwyuwTMbD
+	ES+p5QMwHmldwFbj/pBTKXQZupRM01xqHLZ1tDccGNXuwXT6Wfl/lhbUiFsPbaMh5Eua0KpWkIC+t
+	pEb8PlyEa2EFDfb1xpXWdPr/7sz6di7xr4LbLRpxdjk003/Br9ZNDQRl8d8/vBZ0t9KpgkO53IRXK
+	yV7feaKYZFav+rjw4rAE4G+qOfwV9uXBLX50ty+TFYJfn5aEYAdpbnPQWmcUB549yZ7IYUKfBZpOc
+	ALHXhWOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyVYP-0000000GlWT-0tlK;
-	Mon, 24 Aug 2026 14:21:37 +0000
-Received: from mail.alien8.de ([65.109.113.108])
+	id 1wyVf5-0000000Gmyi-0SR8;
+	Mon, 24 Aug 2026 14:28:31 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyVYH-0000000GlV1-1wNq
+	id 1wyVf0-0000000Gmwe-3vPR
 	for linux-um@lists.infradead.org;
-	Mon, 24 Aug 2026 14:21:32 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5E2FE40E01DA;
-	Mon, 24 Aug 2026 14:21:14 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id LzNTmVnQVH8u; Mon, 24 Aug 2026 14:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1787581264; bh=t/e3PpeaK5U5W4RUHXokLB2sTjS30zI1NNFQptTXikg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UanfX7oZ2ZFw/3sXBjtsg/+UhPYwDAw620awwueeX2K4PsnVlOd0Y+urAQaR3Z31C
-	 dMWn+kCZNnA6m8wg4VAGqYAEvcA4JDAilb6j0AYZuruDq1dp8TlM4cZsh4xTqPD8Lr
-	 NPIFoML1IjJuFasrIMWfvojJSVLxvfjUeMyKOQHh9ZTWOhhE/HvcRz4pj90eYBzUvr
-	 ix5xbnLzU7mKboLPD83sHNvVXIxOJG6tBoukWhRV+t4Tt/obRuQWjoN0KP54uVHoJl
-	 EbfUyPHeot8VLEo7E7nUSSb2m1yunqq4HYOK5mjGxSjTF9QvA0YwW+EqlkwgMM7vuO
-	 lZLOzM7LStqQdL+a19ZkRZgclcQBhCWCMDvie3vHNYqAKSEaH75/sFmwXNDuEHmBBC
-	 S9PbZyftDzsqw1q8nSdx5hHLzdH0XLlDPd4WBHzxGenmpvQIXDysPfIVetamlMz5wP
-	 dUDLLAL6TYSf6rFRKrBHaK68RrKo9+gBNoJGAxPfi6/mFhhijl67BmSGAGoMSYaKaK
-	 vskhGBL9RagruMHxV0zOKnnm3BcFvxLUWw8Bksghe92P/R3tanZM/a19qzwddhqM6V
-	 UbrTjuNdCuDpTDsye02+ceyX9zxm/H63o5aipbNF5VnXnagVZPzPA7Bl1LGAFN9whK
-	 NJFvVr/eu64paiQVu7H++X/I=
-Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1a])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D5A4340E016E;
-	Mon, 24 Aug 2026 14:20:50 +0000 (UTC)
-Date: Mon, 24 Aug 2026 07:20:48 -0700
-From: Borislav Petkov <bp@alien8.de>
-To: Fabian Franz <fabian@isomorphic-ai.com>
-Cc: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
-	Thorsten Leemhuis <regressions@leemhuis.info>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	"Xin Li (Intel)" <xin@zytor.com>, Ingo Molnar <mingo@kernel.org>,
-	Claude Fable 5 <noreply@anthropic.com>,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Linux kernel regressions list <regressions@lists.linux.dev>
+	Mon, 24 Aug 2026 14:28:29 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 87E45100D04;
+	Mon, 24 Aug 2026 16:28:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id T4tmBHccRicX; Mon, 24 Aug 2026 16:28:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id AEE591A8CE4;
+	Mon, 24 Aug 2026 16:28:14 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0JMMrpWcnDJK; Mon, 24 Aug 2026 16:28:14 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 36E2F298569;
+	Mon, 24 Aug 2026 16:28:14 +0200 (CEST)
+Date: Mon, 24 Aug 2026 16:28:13 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: bp <bp@alien8.de>
+Cc: Fabian Franz <fabian@isomorphic-ai.com>, 
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Thorsten Leemhuis <regressions@leemhuis.info>, 
+	anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	Nikolay Borisov <nik.borisov@suse.com>, 
+	"Xin Li (Intel)" <xin@zytor.com>, Ingo Molnar <mingo@kernel.org>, 
+	Claude Fable 5 <noreply@anthropic.com>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	regressions <regressions@lists.linux.dev>
+Message-ID: <2060717447.2694.1787581693960.JavaMail.zimbra@nod.at>
+In-Reply-To: <20260824142048.GBaoxTQKUUtmflxuyB@fat_crate.local>
+References: <20260823201521.2576344-1-fabian@isomorphic-ai.com> <a02b160a-874f-491c-987b-4d7eb0d35a9f@leemhuis.info> <20260824092300-3e9a9d58-b273-421b-a4bf-5609ccb9ab49@linutronix.de> <CAKbYdNEK0TUy+W5g_yGuP-JCC9CQwmeO0q95rYhcebZYB9vLUw@mail.gmail.com> <20260824142048.GBaoxTQKUUtmflxuyB@fat_crate.local>
 Subject: Re: [PATCH REGRESSION] um: Fix cpu_feature_enabled() build breakage
-Message-ID: <20260824142048.GBaoxTQKUUtmflxuyB@fat_crate.local>
-References: <20260823201521.2576344-1-fabian@isomorphic-ai.com>
- <a02b160a-874f-491c-987b-4d7eb0d35a9f@leemhuis.info>
- <20260824092300-3e9a9d58-b273-421b-a4bf-5609ccb9ab49@linutronix.de>
- <CAKbYdNEK0TUy+W5g_yGuP-JCC9CQwmeO0q95rYhcebZYB9vLUw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKbYdNEK0TUy+W5g_yGuP-JCC9CQwmeO0q95rYhcebZYB9vLUw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF153 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Fix cpu_feature_enabled() build breakage
+Thread-Index: VSL7nbNuM0bzsbTKs+Cto7cnhTuI5A==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260824_072129_663594_09576240 
-X-CRM114-Status: GOOD (  16.30  )
+X-CRM114-CacheID: sfid-20260824_072827_130048_84A1C4C4 
+X-CRM114-Status: UNSURE (   3.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,31 +85,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 24, 2026 at 11:22:33AM +0100, Fabian Franz wrote:
-> >
-> > Thanks for this pointer.
-> >
-> > > https://lore.kernel.org/all/20260819-uml-timex-fix-v1-1-f690b514fc9f@linutronix.de/
-> >
-> > Indeed, both our fixes seem to be for the same breakage.
-> >
-> > Personally I prefer my patch, as it reverts the specific change which
-> > introduced the breakage into the tree. Franz' change does not look incorrect
-> > but is a larger change and should go through a regular release cycle.
-> 
-> I also prefer your patch. It is much simpler and doesn't require
-> changing the cpu flags at all.
-> 
-> However, getting the minimal patch for um in ASAP would also be good,
-> as a broken master is not nice for development.
+----- Urspr=C3=BCngliche Mail -----
+> Von: "bp" <bp@alien8.de>
+>> However, getting the minimal patch for um in ASAP would also be good,
+>> as a broken master is not nice for development.
+>=20
+> It happens during the merge window.
 
-It happens during the merge window.
+Agreed. Nobody got hurt. All hamsters still alive.
 
-UML folks, you wanna take Thomas' patch or should I route it through tip?
+>=20
+> UML folks, you wanna take Thomas' patch or should I route it through tip?
 
--- 
-Regards/Gruss,
-    Boris.
+If you don't mind, please carry it through tip.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+//richard
 
