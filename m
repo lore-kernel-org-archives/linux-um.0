@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7498C61DBE
-	for <linux-um@archiver.kernel.org>; Tue, 25 Aug 2026 13:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B903C61DBE
+	for <linux-um@archiver.kernel.org>; Tue, 25 Aug 2026 13:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=y1ooUZqu3n0X6AHMc52e/9cK3btR11yvm1f2GPiErVs=; b=Ge4iSJTV09pFjbT9FKXVaXcmBD
-	NkQXDsjlxq93XYOzbIPNhacOlSfkPY/cyDydozs/+UmerwVFCVxwsfG2MpnubM19vhHSJB4TL52oy
-	cARS3r7AZv92mcXbSvPXSxwiBJIn3/qn+xKvdga+GPYFbjf4p0p/YLqryfytVevBOWrbL3SK+axpg
-	7VH6qWvxviQlogyvcG+X69M5LccXGaDPHN1ZOKjhgfNWjl2YwwLl9LvE97hK4W38/+YyRL/J6L+c4
-	0LMsyR96/pion5yQOmTTYz5NOX5/h2Q1At77sMhxqlFmwgRVnoB5R9GCen5KJfl3ui1FK5BHwpkls
-	al9Vjlyg==;
+	bh=j3O0jUa3F64kLLrL5LogQDPv2j12GdtTejlIkXela4M=; b=o8kkNhVCzZAskKX2Q+gVfUzPxb
+	Wu/AQXO7JW+dIvujmVIR3as2BcB+s/t8XRh++tc4T8htbtIGprnfHZUnGwDcI14wz5Pc2X7iF4jIR
+	MzCBo/9nLdMeEQ7r0jm4Tbh8V9z9iWuKtIYe6vftD7HaCjqwXWHQFdkvlmVJYV1mD1WJDO+3AaPJX
+	bZDe+W4oC8w5rlYR2Rvj88xTCMC8p1Js/5EwHAcHjNuabwpkLchXD+/S4a/QqMDT8SpS/c9RhEt0g
+	Tr/HtVQz6GQqvWk3TJBJ/2pL+gzbSRUsaxfz2J+ly13ps/fQI77kFxIpEc35S5e2jqnzPALU/7CuC
+	GVxgxT+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyqxc-00000000pnf-29At;
-	Tue, 25 Aug 2026 13:13:04 +0000
+	id 1wyrKL-00000000sSg-1YpH;
+	Tue, 25 Aug 2026 13:36:33 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wyqxa-00000000pnQ-1ElS
+	id 1wyrKJ-00000000sSU-3O2t
 	for linux-um@lists.infradead.org;
-	Tue, 25 Aug 2026 13:13:02 +0000
+	Tue, 25 Aug 2026 13:36:31 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 36D0460A6C;
-	Tue, 25 Aug 2026 13:13:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0FF81F00A3A;
-	Tue, 25 Aug 2026 13:12:55 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id D3F2D6011F;
+	Tue, 25 Aug 2026 13:36:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996F61F000E9;
+	Tue, 25 Aug 2026 13:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787663580;
-	bh=y1ooUZqu3n0X6AHMc52e/9cK3btR11yvm1f2GPiErVs=;
+	s=k20260515; t=1787664990;
+	bh=j3O0jUa3F64kLLrL5LogQDPv2j12GdtTejlIkXela4M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=di+7PMDPHKJfCpsQmjVBUEbvXlQaZKb3l1YLxpWKXFvWrDrILEJQmo2eEwwMqWiQ8
-	 3VtqnaEz0JXZZncs8PraIMpk3NIunXnWyDCqt//xeQu4IopzhXaHUWU6Xoy3GWVI+7
-	 s9HuO+Xht7BpCV8TZf5SuXjSRTmpfgUPkO0aW21lYqDwX3vWR92tkUT1ywm9s6MVBj
-	 4r7stbb/zFTi59pT0dBR3+NTuMEQQsX0avCLwwHTxxxqneTZxvVqHZjg+iV38KlDXS
-	 HaF+XUuViD3b9+EpFbB1weCL89MBtsC7Hr25gFh6A02REt3u/GO5SxShPGCtPdBaW5
-	 WHKXpUuewxP+g==
-Date: Tue, 25 Aug 2026 14:12:52 +0100
+	b=bL/6T7PtIl1SE4jX/P04Rg3Ro8uDMTXBR+IfVYE+x9UAvjV6ffKU5KIi2UYbb2Azk
+	 p5jWRud8g9M6fKt/WdbCiANY8IOY6E0GO9tF+/y3HH2CIDHPBZRk4lM4v8EXdA9xIV
+	 vvdmBV3MJpokO9m4uxF0kV9DadEr5xUgE4g1MEcQyIKv4p2QffHM5m8kqMZ5wAcpr1
+	 1OFmbyY/SJk7SamSMGhyjmip1vkbS4m5jfEpR9huTf9xGy3VQG/pSuJr6VdL+amyfz
+	 85Uhn+kpEjV22Ml8U417c58fgjFzYStIqvm9LlIaMeR72+D3VnMuYgSB9ZwSdjt5wy
+	 9BywduZwpF00A==
+Date: Tue, 25 Aug 2026 14:36:22 +0100
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-mm@kvack.org, 
-	liam@infradead.org, rbm@suse.com, akpm@linux-foundation.org, luto@amacapital.net, 
-	brendan.jackman@linux.dev, liuhangbin@gmail.com, corbet@lwn.net, kees@kernel.org, 
-	broonie@kernel.org, mhocko@suse.com, rppt@kernel.org, shuah@kernel.org, 
-	surenb@google.com, vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org, 
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-mm@kvack.org, liam@infradead.org, rbm@suse.com, 
+	akpm@linux-foundation.org, luto@amacapital.net, brendan.jackman@linux.dev, david@kernel.org, 
+	liuhangbin@gmail.com, corbet@lwn.net, kees@kernel.org, broonie@kernel.org, 
+	mhocko@suse.com, rppt@kernel.org, shuah@kernel.org, surenb@google.com, 
+	vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org, 
 	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, geert@linux-m68k.org, 
 	daniel@thingy.jp
-Subject: Re: [PATCH v2 0/2] support kselftest on nommu platform
-Message-ID: <ao2Tl9CLL7WjHYun@gremlin>
+Subject: Re: [PATCH v2 1/2] selftests: run tests on nommu architecture
+Message-ID: <ao2aTD1ZGObPfp4T@gremlin>
 References: <20260825015945.141739-1-thehajime@gmail.com>
- <f2ac9432-4fea-4007-aab0-ad80597b284c@kernel.org>
+ <20260825015945.141739-2-thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f2ac9432-4fea-4007-aab0-ad80597b284c@kernel.org>
+In-Reply-To: <20260825015945.141739-2-thehajime@gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,84 +74,175 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 25, 2026 at 10:37:41AM +0200, David Hildenbrand (Arm) wrote:
-> On 8/25/26 03:59, Hajime Tazaki wrote:
-> > We add an ability to execute kselftest on nommu platforms.
-> >
-> > Currently there are several issues if we wish to run kselftests on nommu
-> > targets:
-> >
-> > - it cannot compile/build test binaries because the current files mainly
-> >   assume to build with glibc,
-> > - some of the tests are not able to run on nommu targets as there are no
-> >   fork(2) syscall.
-> >
-> > The first issue can be avoided if we can build static PIE binaries (if
-> > targets support it), but in our case (build on ubuntu/glibc and run on
-> > alpine/musl-libc), it fails to invoke due to lack of the GNU ifunc
-> > mechanism.  Thus, we need to cross-compile with musl toolchain, which
-> > needs to be solved the first issue.
-> >
-> > The second issue is the lack of fork(2) syscall on those platforms.
-> > Especially the test harness helper (kselftest_harness.h) uses the
-> > syscall, which cannot be simply with vfork(2).  `timeout` command used
-> > in `runner.sh` never works for nommu platform as it uses fork(2).
-> >
-> > nommu component in the mm subsystem has several known issues and having
-> > test cases should help this situation, thus this patchset is very first
-> > step toward enriching test environment which has not been well tested
-> > for a while.  The test cases is implemented based on the document
-> > (Documentation/admin-guide/mm/nommu-mmap.rst).
-> >
-> > So, for the first step, nommu targets only support low-level API of
-> > kselftests (kselftest.h), and implement tests in a new target,
-> > TARGETS=mm/nommu.  Other targets are currently not even able to build
-> > due to toolchain issues but will be addressed once the initial
-> > introduction which mainly focuses on nommu test will be settled.
-> >
-> > The patch was initially combined with other patches but is decoupled to
-> > only focus on test framework and testcases.
-> >
-> > - rfc:
-> > https://lore.kernel.org/linux-mm/20260813063401.1786548-1-thehajime@gmail.com/
-> >
-> > Hajime Tazaki (2):
-> >   selftests: run tests on nommu architecture
-> >   selftests/mm: add nommu mmap and mremap behavior tests
-> >
-> >  Documentation/dev-tools/kselftest.rst         |  14 +
-> >  tools/testing/selftests/Makefile              |   1 +
-> >  tools/testing/selftests/kselftest/runner.sh   |   9 +-
-> >  tools/testing/selftests/kselftest_harness.h   |   4 +
-> >  tools/testing/selftests/lib.mk                |   8 +
-> >  tools/testing/selftests/mm/nommu/Makefile     |   7 +
-> >  .../selftests/mm/nommu/nommu_mmap_test.c      | 265 +++++++++++++
-> >  .../selftests/mm/nommu/nommu_mremap_test.c    | 353 ++++++++++++++++++
+On Tue, Aug 25, 2026 at 10:59:44AM +0900, Hajime Tazaki wrote:
+> Architectures lacks MMU doesn't support fork(2) syscall and only
+> vfork(2) is available with limitations.  Thus, we cannot run kselftest
+> on nommu architecture as is.
 >
-> That's odd.
+> This commit addresses this issue with the following changes:
 >
-> 	tools/testing/selftests/mm
+> - on build stage, add -DCONFIG_NOMMU to CFLAGS when NOMMU=1 variable
+>   added to the build/make argument.
+> - on test run stage, avoid calling timeout command when NOMMU=1 variable
+>   added to environmental variable, since timeout command uses fork
+>   syscall which nommu platform doesn't support.
+> - kselftest_harness.h: skip the tests if the file is include when
+>   executing on NOMMU platform, as there is no fork(2) syscall.
+> - replace "cd -" use as it is not available a shell supported on nommu
+>   (e.g., busybox hush), use cd "$OLDDIR" instead.
+> - describe the difference of nommu tests in the document.
 >
-> itself should know which tests can be built and ran on nommu. nommu-only tests
-> can be placed in mm/nommu, but I would expect tools/testing/selftests/mm's
-> Makefile and run script to compile and run only selftests that are supported on
-> the given platform.
+> So command line to build/execute tests for nommu should be like below:
+>
+>  $ make ARCH=um NOMMU=1 O=build kselftest-all TARGETS=mm/nommu
+>  $ make ARCH=um NOMMU=1 O=build kselftest-install TARGETS=mm/nommu
+>  $ NOMMU=1 ./build/kselftest/kselftest_install/run_kselftest.sh -p \
+>    -c mm/nommu
+>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Will Drewry <wad@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Brendan Jackman <brendan.jackman@linux.dev>
+> Cc: Hangbin Liu <liuhangbin@gmail.com>
+> Cc: "Ricardo B. Marliere" <rbm@suse.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-doc@vger.kernel.org
+> Closes: https://sashiko.dev/#/patchset/20260813063401.1786548-1-thehajime%40gmail.com
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 
-I mean I think at this point with mm/nommu/nommu_xxx.c it'd make more sense to
-simply have selftests/nommu/ + update the mm makefile to not build stuff that's
-broken on nommu there.
-
-That way positively nommu-stuff is put in its own place and what's broken on mm
-specific to nommu can be fixed there.
-
-I'd rather isolate them clearly rather than having them live in a subdirectory
-of mm.
+Doesn't seem too crazy, but some nitty comments below.
 
 >
 > --
-> Cheers,
 >
-> David
+> rfc => v2
+> - reformat ktap header, reported by Sashiko review
+>
+> rfc: https://lore.kernel.org/linux-mm/20260813063401.1786548-1-thehajime@gmail.com/
+> ---
+>  Documentation/dev-tools/kselftest.rst       | 14 ++++++++++++++
+>  tools/testing/selftests/kselftest/runner.sh |  9 +++++++--
+>  tools/testing/selftests/kselftest_harness.h |  4 ++++
+>  tools/testing/selftests/lib.mk              |  8 ++++++++
+>  4 files changed, 33 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+> index 64c0ec7428a2..a65f3ebc5906 100644
+> --- a/Documentation/dev-tools/kselftest.rst
+> +++ b/Documentation/dev-tools/kselftest.rst
+> @@ -230,6 +230,20 @@ section::
+>
+>  .. _tar's auto-compress: https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
+>
+> +Build and test on nommu target
+> +==============================
+> +
+> +If you (cross-)build kselftests for nommu targets, or run tests on nommu targets, use
+> +``NOMMU=1`` as a make variable/environment setting to tell build system to do the additional
+> +checks.  These nommu targets may differ in several ways, such as not supporting fork(2) or
+> +using musl or another libc.  Set this variable to apply the necessary build and test adjustments.
+> +
+> +::
+> +
+> +  $ make ARCH=um NOMMU=1 O=build kselftest-all TARGETS=mm/nommu  # <= build-only
+> +  $ make ARCH=um NOMMU=1 O=build kselftest-install TARGETS=mm/nommu
+> +  $ NOMMU=1 ./build/kselftest/kselftest_install/run_kselftest.sh -p -c mm/nommu
+> +
+>  Contributing new tests
+>  ======================
+>
+> diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+> index 311811dc55a0..7287d8290b6c 100644
+> --- a/tools/testing/selftests/kselftest/runner.sh
+> +++ b/tools/testing/selftests/kselftest/runner.sh
+> @@ -38,8 +38,12 @@ tap_prefix()
+>
+>  tap_timeout()
+>  {
+> +	# nommu doesn't support timeout command (missing fork(2))
+> +	if [ "$NOMMU" = "1" ] ; then
+> +		echo "timeout isn't supported for nommu"
+> +		$1
+>  	# Make sure tests will time out if utility is available.
+> -	if [ -x /usr/bin/timeout ] ; then
+> +	elif [ -x /usr/bin/timeout ] ; then
+>  		/usr/bin/timeout --foreground "$kselftest_timeout" \
+>  			/usr/bin/timeout "$kselftest_timeout" $1
+>  	else
+> @@ -130,6 +134,7 @@ run_one()
+>  				return $KSFT_FAIL
+>  			fi
+>  		fi
+> +		OLDDIR=$(pwd)
+>  		cd `dirname $TEST` > /dev/null
+>  		(((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
+>  			tap_prefix >&4) 3>&1) |
+> @@ -147,7 +152,7 @@ run_one()
+>  		*)
+>  			ktap_test_fail "$TEST_HDR_MSG # exit=$rc";;
+>  		esac
+> -		cd - >/dev/null
+> +		cd "$OLDDIR" >/dev/null
+
+Hmm, why are you changing this bit?
+
+>  	fi
+>
+>  	return $rc
+> diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+> index 261e4df94d9d..0d05946a5e7a 100644
+> --- a/tools/testing/selftests/kselftest_harness.h
+> +++ b/tools/testing/selftests/kselftest_harness.h
+> @@ -1274,6 +1274,10 @@ static int test_harness_run(int argc, char **argv)
+>  	unsigned int count = 0;
+>  	unsigned int pass_count = 0;
+>
+> +#ifdef CONFIG_NOMMU
+
+Let's not prefix with CONFIG_ :) I think this is pretty confusing vs. the kernel
+CONFIG_xxx flags, esp. as this obviously inverts CONFIG_MMU.
+
+maybe just 'NOMMU'?
+
+> +	ksft_print_header();
+> +	ksft_exit_skip("kselftest harness requires fork(2), unavailable on NOMMU\n");
+> +#endif /* CONFIG_NOMMU */
+>  	ret = test_harness_argv_check(argc, argv);
+>  	if (ret != KSFT_PASS)
+>  		return ret;
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index f02cc8a2e4ae..fdb895967768 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -97,6 +97,14 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
+>  TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
+>  TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
+>
+> +# detect if users request NOMMU build or not
+> +# User can set NOMMU to 1 to build/test for NOMMU platforms
+> +NOMMU ?= 0
+> +ifeq ($(NOMMU),1)
+> +CFLAGS += -DCONFIG_NOMMU
+> +export NOMMU
+> +endif
+> +
+
+I wonder if this could be put into testing/selftests/nommu/something.mk? Though
+I guess would have to be included for all builds to account for nommu trying to
+build any kind of tests.
+
+
+>  all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) \
+>  	$(if $(TEST_GEN_MODS_DIR),gen_mods_dir)
+>
+> --
+> 2.43.0
+>
 
 --
 Cheers, Lorenzo
