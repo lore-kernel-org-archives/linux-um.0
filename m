@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B4FC61DBE
-	for <linux-um@archiver.kernel.org>; Tue, 25 Aug 2026 14:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD481C61DB9
+	for <linux-um@archiver.kernel.org>; Thu, 27 Aug 2026 05:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z12uxGrbsG5ycXsxT+NNx4PFXhBYN+3qRQ7WmF+ATxk=; b=ZL3D5cddiS6Y1uWQQm7eXSGp/p
-	CtWhITyFSLJlHDoICU4I9gHFk/TKs8kVko0zh70vHG9qW/bgUapq1p5TbltRg7vsIYh6+PdooDxft
-	5l2CzJLRJdR0QssIc0yeStcLDQ14JEJbxo0f6r8sJyTuov/coXCrWeInKNQgG9IaqaeZUlJxIlqHh
-	fE2E1jkdmsADldvgPxVclZKs8B7Kqj7u9tcbFeZbbWdQkLMw+y0u50lcnCWpOwzX4nZ5NdcCKg38k
-	Qjc0rOoNcPbD1t/uOdWDWV9N4rbMpmaTyFAolEKqLnrhgZjlz+hYy9nG5zbA+p5h6FePK/6GHgPCL
-	c2Ox8BOQ==;
+	bh=1H2HKWXQ51kiTh+XvcBnYz+8AssjoQxnEuTfe7RXVqU=; b=pOV0q9xo7txFxkhDDnBbQr/nJk
+	o/v6f2CX/QYK2nlUS/0uKX0L4W1XmLv6aF/QF3ypZu20+ZHgREwvkbRDMQtmJkvXl/idFNFpaF1oo
+	2RxuLmtru5ajio2q0c7ZK/NfoBdbDFOv8Zq+afIn5tl+KhxfdGLmYXkqu5TmqEFpWCBoJpTym93Oj
+	uwmkAMLFFtDDUSw+YelHa3o30CfyynGifc0aS5kt1L/ioRwyf2xxrgrLAhe0WXxdpH63sfDO8Ccag
+	OWO9Ba8t+TjjsF48I9/DZ17vNT7UDJWGHK7vroGmE2HGgGpoz2S1Bi/PcnNXXZAz23k80RzE7g2ba
+	sIvBTuew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wys8h-00000000xtc-0b5e;
-	Tue, 25 Aug 2026 14:28:35 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wys8g-00000000xtR-02u3
-	for linux-um@lists.infradead.org;
-	Tue, 25 Aug 2026 14:28:34 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0D9F6406B8;
-	Tue, 25 Aug 2026 14:28:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779791F000E9;
-	Tue, 25 Aug 2026 14:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787668112;
-	bh=Z12uxGrbsG5ycXsxT+NNx4PFXhBYN+3qRQ7WmF+ATxk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=HMNJ8UgGmzljeesIDsBPDrDy2/WpRCkDYIvVGSRSEtQjmJ6jQSlfeSO0otHWXQlP5
-	 Rny3tvsqwo+DWFz5VSguGK+SiCFMLx9CfGhXbNqTL0oKe847zFpTCC2LX7b74J7Snk
-	 AzkPS0ko6FzBkT+xTm1y8Y7ZYYeF4paAB74AcSCY/+nJFk9iT0CQzYIJpJRVqlsH/J
-	 6dyTnV0lR5qfRtOvZW0AoX4jvsFiY385MDoSLBTG9zn5yjrVeZPQj4REelusb0VTAf
-	 tEsONApkMcuyyEwIXPPJibZAPowgMKGYHc57P1YA61hxnHrRji3Ub3dI5GL6B25gKl
-	 tvUvR7yZT0WEA==
-Date: Tue, 25 Aug 2026 15:28:24 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-mm@kvack.org, 
-	liam@infradead.org, rbm@suse.com, akpm@linux-foundation.org, luto@amacapital.net, 
-	brendan.jackman@linux.dev, liuhangbin@gmail.com, corbet@lwn.net, kees@kernel.org, 
-	broonie@kernel.org, mhocko@suse.com, rppt@kernel.org, shuah@kernel.org, 
-	surenb@google.com, vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, geert@linux-m68k.org, 
-	daniel@thingy.jp
-Subject: Re: [PATCH v2 0/2] support kselftest on nommu platform
-Message-ID: <ao2l9Ao7BQI6uRKC@gremlin>
-References: <20260825015945.141739-1-thehajime@gmail.com>
- <f2ac9432-4fea-4007-aab0-ad80597b284c@kernel.org>
- <ao2Tl9CLL7WjHYun@gremlin>
- <bb9a3add-4849-4928-8b6a-0afc0c73b112@kernel.org>
+	id 1wzSf3-00000003QSV-3ggy;
+	Thu, 27 Aug 2026 05:28:25 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wzSf0-00000003QQj-14Ip;
+	Thu, 27 Aug 2026 05:28:24 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E07A71691;
+	Wed, 26 Aug 2026 22:28:14 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE0D43F66F;
+	Wed, 26 Aug 2026 22:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1787808498; bh=r3zpWAjSDYwO4obpTt1hi/LzERvjZcV2ma+xAQZJE1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qbvokt9YNMXIimouS57c8IUjHG3UY/NxbyriHVJNF09htLAHlcOYfMdqN9rNk2Y3/
+	 mSu7y20m+SkO9PdnMyXySHrLzwhN7q5RvdaRZuxZGl6y42IopDCGHEBnjAJBHjcg2R
+	 GlMX/PkmQ3bkQo82ApB3CeCPp5qCKqiyYLpu1D5M=
+Date: Thu, 27 Aug 2026 10:58:15 +0530
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-mm@kvack.org, akpm@linux-foundation.org, david@kernel.org
+Subject: Re: [RFC V3 8/8] mm: Drop pxd_ERROR()
+Message-ID: <ajnoyja6a3hi2b7zn52n4dwrnpaa3ofpk6enekdan3babfsmbv@lnc3mbpogtq5>
+References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+ <20260818040041.1891769-9-anshuman.khandual@arm.com>
+ <6dae9cae-9665-4dc8-9a49-d6e5acda221b@sifive.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bb9a3add-4849-4928-8b6a-0afc0c73b112@kernel.org>
+In-Reply-To: <6dae9cae-9665-4dc8-9a49-d6e5acda221b@sifive.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260826_222822_459053_88ACEC59 
+X-CRM114-Status: GOOD (  21.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,114 +78,115 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 25, 2026 at 04:17:54PM +0200, David Hildenbrand (Arm) wrote:
-> On 8/25/26 15:12, Lorenzo Stoakes (ARM) wrote:
-> > On Tue, Aug 25, 2026 at 10:37:41AM +0200, David Hildenbrand (Arm) wrote:
-> >> On 8/25/26 03:59, Hajime Tazaki wrote:
-> >>> We add an ability to execute kselftest on nommu platforms.
-> >>>
-> >>> Currently there are several issues if we wish to run kselftests on nommu
-> >>> targets:
-> >>>
-> >>> - it cannot compile/build test binaries because the current files mainly
-> >>>   assume to build with glibc,
-> >>> - some of the tests are not able to run on nommu targets as there are no
-> >>>   fork(2) syscall.
-> >>>
-> >>> The first issue can be avoided if we can build static PIE binaries (if
-> >>> targets support it), but in our case (build on ubuntu/glibc and run on
-> >>> alpine/musl-libc), it fails to invoke due to lack of the GNU ifunc
-> >>> mechanism.  Thus, we need to cross-compile with musl toolchain, which
-> >>> needs to be solved the first issue.
-> >>>
-> >>> The second issue is the lack of fork(2) syscall on those platforms.
-> >>> Especially the test harness helper (kselftest_harness.h) uses the
-> >>> syscall, which cannot be simply with vfork(2).  `timeout` command used
-> >>> in `runner.sh` never works for nommu platform as it uses fork(2).
-> >>>
-> >>> nommu component in the mm subsystem has several known issues and having
-> >>> test cases should help this situation, thus this patchset is very first
-> >>> step toward enriching test environment which has not been well tested
-> >>> for a while.  The test cases is implemented based on the document
-> >>> (Documentation/admin-guide/mm/nommu-mmap.rst).
-> >>>
-> >>> So, for the first step, nommu targets only support low-level API of
-> >>> kselftests (kselftest.h), and implement tests in a new target,
-> >>> TARGETS=mm/nommu.  Other targets are currently not even able to build
-> >>> due to toolchain issues but will be addressed once the initial
-> >>> introduction which mainly focuses on nommu test will be settled.
-> >>>
-> >>> The patch was initially combined with other patches but is decoupled to
-> >>> only focus on test framework and testcases.
-> >>>
-> >>> - rfc:
-> >>> https://lore.kernel.org/linux-mm/20260813063401.1786548-1-thehajime@gmail.com/
-> >>>
-> >>> Hajime Tazaki (2):
-> >>>   selftests: run tests on nommu architecture
-> >>>   selftests/mm: add nommu mmap and mremap behavior tests
-> >>>
-> >>>  Documentation/dev-tools/kselftest.rst         |  14 +
-> >>>  tools/testing/selftests/Makefile              |   1 +
-> >>>  tools/testing/selftests/kselftest/runner.sh   |   9 +-
-> >>>  tools/testing/selftests/kselftest_harness.h   |   4 +
-> >>>  tools/testing/selftests/lib.mk                |   8 +
-> >>>  tools/testing/selftests/mm/nommu/Makefile     |   7 +
-> >>>  .../selftests/mm/nommu/nommu_mmap_test.c      | 265 +++++++++++++
-> >>>  .../selftests/mm/nommu/nommu_mremap_test.c    | 353 ++++++++++++++++++
-> >>
-> >> That's odd.
-> >>
-> >> 	tools/testing/selftests/mm
-> >>
-> >> itself should know which tests can be built and ran on nommu. nommu-only tests
-> >> can be placed in mm/nommu, but I would expect tools/testing/selftests/mm's
-> >> Makefile and run script to compile and run only selftests that are supported on
-> >> the given platform.
-> >
-> > I mean I think at this point with mm/nommu/nommu_xxx.c it'd make more sense to
-> > simply have selftests/nommu/ + update the mm makefile to not build stuff that's
-> > broken on nommu there.
-> >
-> > That way positively nommu-stuff is put in its own place and what's broken on mm
-> > specific to nommu can be fixed there.
-> >
-> > I'd rather isolate them clearly rather than having them live in a subdirectory
-> > of mm.
->
-> My understanding is that some MM tests could be enabled/changed in the future
-> that support both MMU and NOMMU. Not sure how to best handle that.
+On Mon, Aug 24, 2026 at 10:50:37AM -0500, Samuel Holland wrote:
+> On 2026-08-17 11:00 PM, Anshuman Khandual wrote:
+> > There are no more users left for any pxd_ERROR() either in generic MM or in
+> > the platform MM. Hence all these platform macros along with their generic
+> > fallback could be dropped across the tree.
+> > 
+> > Cc: linux-alpha@vger.kernel.org
+> > Cc: linux-snps-arc@lists.infradead.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-csky@vger.kernel.org
+> > Cc: linux-hexagon@vger.kernel.org
+> > Cc: loongarch@lists.linux.dev
+> > Cc: linux-m68k@lists.linux-m68k.org
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: linux-openrisc@vger.kernel.org
+> > Cc: linux-parisc@vger.kernel.org
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Cc: linux-riscv@lists.infradead.org
+> > Cc: linux-s390@vger.kernel.org
+> > Cc: linux-sh@vger.kernel.org
+> > Cc: sparclinux@vger.kernel.org
+> > Cc: linux-um@lists.infradead.org
+> > Cc: linux-arch@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> > Changes in RFC V3
+> > 
+> > - Moved ptrval_to_str() as header in a [PATCH 1/8]
+> > - Stopped using pxd_ERROR() in generic MM in [PATCH 2/8]
+> > - Dropped pxd_ERRO() macros from all platforms in this patch
+> > 
+> >  arch/alpha/include/asm/pgtable.h               |  7 -------
+> >  arch/arc/include/asm/pgtable-levels.h          | 11 -----------
+> >  arch/arm/include/asm/pgtable.h                 |  7 -------
+> >  arch/arm/kernel/traps.c                        | 17 -----------------
+> >  arch/arm64/include/asm/pgtable.h               | 15 ---------------
+> >  arch/csky/include/asm/pgtable.h                |  4 ----
+> >  arch/hexagon/include/asm/pgtable.h             |  3 ---
+> >  arch/loongarch/include/asm/pgtable.h           | 11 -----------
+> >  arch/m68k/include/asm/mcf_pgtable.h            |  6 ------
+> >  arch/m68k/include/asm/motorola_pgtable.h       |  8 --------
+> >  arch/m68k/include/asm/sun3_pgtable.h           |  7 -------
+> >  arch/microblaze/include/asm/pgtable.h          |  7 -------
+> >  arch/mips/include/asm/pgtable-32.h             | 10 ----------
+> >  arch/mips/include/asm/pgtable-64.h             | 13 -------------
+> >  arch/nios2/include/asm/pgtable.h               |  7 -------
+> >  arch/openrisc/include/asm/pgtable.h            |  7 -------
+> >  arch/parisc/include/asm/pgtable.h              |  9 ---------
+> >  arch/powerpc/include/asm/book3s/32/pgtable.h   |  2 --
+> >  arch/powerpc/include/asm/book3s/64/pgtable.h   |  7 -------
+> >  arch/powerpc/include/asm/nohash/32/pgtable.h   |  2 --
+> >  .../powerpc/include/asm/nohash/64/pgtable-4k.h |  3 ---
+> >  arch/powerpc/include/asm/nohash/64/pgtable.h   |  5 -----
+> >  arch/riscv/include/asm/pgtable-64.h            |  9 ---------
+> >  arch/riscv/include/asm/pgtable.h               |  4 ----
+> >  arch/s390/include/asm/pgtable.h                | 11 -----------
+> >  arch/sh/include/asm/pgtable-3level.h           |  3 ---
+> >  arch/sh/include/asm/pgtable_32.h               |  8 --------
+> >  arch/sparc/include/asm/pgtable_32.h            |  3 ---
+> >  arch/sparc/include/asm/pgtable_64.h            | 10 ----------
+> >  arch/um/include/asm/pgtable-2level.h           |  7 -------
+> >  arch/um/include/asm/pgtable-4level.h           | 13 -------------
+> >  arch/x86/include/asm/pgtable-2level.h          |  5 -----
+> >  arch/x86/include/asm/pgtable-3level.h          | 11 -----------
+> >  arch/x86/include/asm/pgtable_64.h              | 18 ------------------
+> >  arch/xtensa/include/asm/pgtable.h              |  4 ----
+> >  include/asm-generic/pgtable-nop4d.h            |  1 -
+> >  include/asm-generic/pgtable-nopmd.h            |  1 -
+> >  include/asm-generic/pgtable-nopud.h            |  1 -
+> >  38 files changed, 277 deletions(-)
+> > ...
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index 5d5756bda82e..993a6505eb8f 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -559,10 +559,6 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+> >  	return __pte((pte_val(pte) & _PAGE_CHG_MASK) | newprot_val);
+> >  }
+> >  
+> > -#define pgd_ERROR(e) \
+> > -	pr_err("%s:%d: bad pgd " PTE_FMT ".\n", __FILE__, __LINE__, pgd_val(e))
+> 
+> We can drop the PTE_FMT macro now too.
 
-Well by default won't everything run? And it becomes a list of what doesn't
-work with nommu?
+Agreed, will just fold in the following changes.
 
-I really don't want to see any maintainership burden or extra work added
-for nommu as it's afaic deprecated.
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index 709a36fb4323..b4bbae55e931 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -76,12 +76,6 @@ typedef struct page *pgtable_t;
+ #define __pgd(x)       ((pgd_t) { (x) })
+ #define __pgprot(x)    ((pgprot_t) { (x) })
 
->
-> So wiring up mm/nommu as a separate thing did sound wrong to me. So it should
-> either be integrated or the tests in fact completely moved out of mm/
+-#ifdef CONFIG_64BIT
+-#define PTE_FMT "%016lx"
+-#else
+-#define PTE_FMT "%08lx"
+-#endif
+-
+ #if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
+ /*
+  * We override this value as its generic definition uses __pa too early in
 
-Not integrated, because then it starts adding work for people. I'd rather
-have separate nommu tests, any mm tests that aren't compatible with nommu
-can just be somehow excluded.
-
-Having a 'don't run on nommu' or even just some means of setting which
-tests to skip (I think Mark Brown suggested as much in reply to an earlier
-version of the series) seems a good idea.
-
-But yeah, tools/testing/selftests/nommu seems the best place for the
-nommu-specific stuff.
-
-Can maybe do some ../mm/ horror show thing for reducing duplication as
-needed...
-
->
-> --
-> Cheers,
->
-> David
-
---
-Cheers, Lorenzo
+> 
+> Regards,
+> Samuel
+> 
 
