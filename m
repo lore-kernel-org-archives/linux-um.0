@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A51D7C61DD9
-	for <linux-um@archiver.kernel.org>; Sun, 30 Aug 2026 15:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22780C61DF0
+	for <linux-um@archiver.kernel.org>; Mon, 31 Aug 2026 05:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lTn2PwZa/M8+jVj3fJrDpEEh/COhBy7FRr29V6qoiYI=; b=Lrl3JsqIh7Lwpou9LS9q50cn39
-	ncimhKoNcW76A0TlIRZe/V9f9hCLvxTUYk5skydQQ3FBJv8xi5ZFozu2iC0uDbhPoKfn0nEZqJpP0
-	TChHAcjKw7WR0JwlbdvrnIWoSG+VS2aCd5AC92D0imlfpGF5M1iCblejMFYwh8AqhuwQXGOYj7P0I
-	5AWbs3UCBP35pKYP/LaCds9xn64WvedljnCc8q6ziQ/OkCGTgEfwgGDb2YrRBeAm29y4ImcxYWuYr
-	ECXKzjefQygJ11WiBcW2laMfjT/ioJCTY7TJykbnlcgqsKNxVriLUGPIucgvGUvsDS/rP17guxg0C
-	3WtT2PJQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=+sjajWrfj2wM9zCU9qb6V0Zy3xK1fZ/kgY+W3FSBiiw=; b=sEzwx4A/oTO/fHnZSeAPTH71Iu
+	mwEuo5rYJKd4cY+5K1wFl9muzkU2NGWQRH+PUQ7TJewbODU5g0ZG4bhVqgHw/isKjm/23/F7dn7L2
+	yZfetYi2zqGgcKFjlsz9NAliodyVJGQfsjrDTXaej90JgEmOp904lKQt0yRGIC5VecF2MGTqNVBla
+	Gb4Hrz51S4oNAidm8gdKM/rB6cI+BGa037y2EH7EQ0DMIBdFrMyswtxLD17s7t2LFAwUhs8a3xHG+
+	6n8QZBEWAbhSGG7EVe9S7o/tJ6ue26wlvLslgJIwvACWcBSULlVtkqZsjAOZBbQ2FOMraj1xyS2q/
+	Ifj/ghmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x0hpX-00000007spr-2jK7;
-	Sun, 30 Aug 2026 15:52:23 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
-	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x0hpW-00000007spV-1Aty
-	for linux-um@lists.infradead.org;
-	Sun, 30 Aug 2026 15:52:22 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 910F7600C8;
-	Sun, 30 Aug 2026 15:52:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBEF1F000E9;
-	Sun, 30 Aug 2026 15:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788105140;
-	bh=lTn2PwZa/M8+jVj3fJrDpEEh/COhBy7FRr29V6qoiYI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Sk65VCN98VsowdHN+8Zoh22imIXgdBaOP7PxtTldPwfbpfAo/y59yZ/4RYrYu4x5w
-	 iVHCkW+vNye4ghW0ubslfMd/4D+ggCwHAXfpnXhHS6dcp/KzSXfJAeSTVs/RT32Mj8
-	 h3PTGZN1mycvPUnvvKeyFKTgJhoCgNUzKysnH9pKM5K5QNGQcHNVMvJ9RTnNyw71Bc
-	 gAtgNERhBYT9wor5+n1FemtO8LmlnFRlH9WsfMY93jhDxcs1RxILx0mezVHQtbIBdZ
-	 P1HeqziyyP/feTb6f8Me7R/3YceRW5mAYvK5Jwbz4gvrZaqpF1bYGrJYoIH1YtNnhv
-	 dV7Oa369JSrQQ==
-From: SJ Park <sj@kernel.org>
-To: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: SJ Park <sj@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Thomas Gleixner <tglx@kernel.org>,
+	id 1x0uo3-00000008XLE-3bxz;
+	Mon, 31 Aug 2026 05:43:43 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1x0uny-00000008XJ7-0wgE;
+	Mon, 31 Aug 2026 05:43:42 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5511914BF;
+	Sun, 30 Aug 2026 22:43:31 -0700 (PDT)
+Received: from localhost (a085714.arm.com [10.164.19.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B2D73F85F;
+	Sun, 30 Aug 2026 22:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1788155015; bh=QKfwc4zep2ayth9wQau6lhc5F2hRk7N0saDoBUOnEqo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BqfKECU337E7qsCYRaYZ551VunTXFknuFyCaLMIudB5TVUVPy9lcqXU9kDceG55xE
+	 3k/uh1THmhFNmRViRgc/nMwvFC4fkZ8h2ai9fhKnQX7Hczm+O8oU7JE/xv/FBEfkCv
+	 3sSZnJfiyZzjdo3E1Ch5J2JPk2brrk5Zet6wHHlk=
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: samuel.holland@sifive.com,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	David Hildenbrand <david@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
 	linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] um: Use asm-generic/timex.h over the host architecture one
-Date: Sun, 30 Aug 2026 08:52:11 -0700
-Message-ID: <20260830155212.97975-1-sj@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260819-uml-timex-fix-v1-1-f690b514fc9f@linutronix.de>
-References: 
+Subject: [PATCH 0/8] mm: Drop pxd_ERROR()
+Date: Mon, 31 Aug 2026 11:13:22 +0530
+Message-ID: <20260831054331.625505-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260830_224338_527626_159DF3C1 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,71 +94,135 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 19 Aug 2026 09:24:21 +0200 Thomas Weißschuh <thomas.weissschuh@linutronix.de> wrote:
+pxd_ERROR() macros have been provided by all platforms, which are very much
+identical and can be dropped off completely if these pgtable printing could
+be moved to callers in generic MM aka all pxd_clear_bad().
 
-> The removal of the architecture-specific asm/timex.h was meant to fall
-> back to asm-generic/timex.h. However on UML, the host architecture
-> headers are earlier on the include path and therefore asm/timex.h from
-> the host architecture is used.
-> On x86 that header in turn requires the generation of cpufeaturemasks.h,
-> which is not set up for UML and the build fails.
-> 
-> In file included from ../arch/x86/include/asm/tsc.h:9,
->                  from ../arch/x86/include/asm/timex.h:6,
->                  from ../include/linux/timex.h:67,
->                  from ../include/linux/time32.h:13,
->                  from ../include/linux/time.h:60,
->                  from ../include/linux/jiffies.h:10,
->                  from ../include/linux/ktime.h:25,
->                  from ../include/linux/timer.h:6,
->                  from ../include/linux/uprobes.h:18,
->                  from ../include/linux/mm_types.h:16,
->                  from ../include/linux/mmzone.h:22,
->                  from ../include/linux/gfp.h:7,
->                  from ../include/linux/slab.h:17,
->                  from ../include/linux/crypto.h:18,
->                  from ../arch/um/kernel/asm-offsets.c:6:
-> arch/x86/include/asm/tsc.h: In function ‘get_cycles’:
-> arch/um/include/asm/cpufeature.h:52:39: error: implicit declaration of function ‘DISABLED_MASK_BIT_SET’ [-Wimplicit-function-declaration]
->    52 |         (__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
->       |                                       ^~~~~~~~~~~~~~~~~~~~~
-> arch/x86/include/asm/tsc.h:79:14: note: in expansion of macro ‘cpu_feature_enabled’
->    79 |         if (!cpu_feature_enabled(X86_FEATURE_TSC))
->       |              ^~~~~~~~~~~~~~~~~~~
-> arch/um/include/asm/cpufeature.h:115:17: error: implicit declaration of function ‘_static_cpu_has’ [-Wimplicit-function-declaration]
->   115 |                 _static_cpu_has(bit)                            \
->       |                 ^~~~~~~~~~~~~~~
-> arch/um/include/asm/cpufeature.h:52:72: note: in expansion of macro ‘_static_cpu_has’
->    52 |         (__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
->       |                                                                        ^~~~~~~~~~~~~~~
-> arch/x86/include/asm/tsc.h:79:14: note: in expansion of macro ‘cpu_feature_enabled’
->    79 |         if (!cpu_feature_enabled(X86_FEATURE_TSC))
->       |              ^~~~~~~~~~~~~~~~~~~
-> arch/um/include/asm/cpufeature.h:115:17: note: ‘_static_cpu_has’ is a function-like macro and might be used incorrectly
-> arch/um/include/asm/cpufeature.h:52:72: note: in expansion of macro ‘_static_cpu_has’
->    52 |         (__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : _static_cpu_has(bit))
->       |                                                                        ^~~~~~~~~~~~~~~
-> arch/x86/include/asm/tsc.h:79:14: note: in expansion of macro ‘cpu_feature_enabled’
->    79 |         if (!cpu_feature_enabled(X86_FEATURE_TSC))
->       |              ^~~~~~~~~~~~~~~~~~~
-> 
-> The x86-specific timex.h also doesn't make sense on UML in general.
-> 
-> Reintroduce the UML-specific asm/timex.h and add a comment to document
-> its necessity.
+But first cleanups and re-organizations are required in some platforms that
+are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
+macros have been completely dropped from the entire tree.
 
-I got the same issue, and confirmed this patch fixes it on my setup.  Thank you
-for sharing this patch.
+This series is based on v7.3-rc1 after the following patch and has also been
+built tested on multiple platforms.
 
-> 
-> Fixes: 3ed403bbc967 ("treewide: Remove CLOCK_TICK_RATE")
-> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Changes in V1:
 
-Tested-by: SJ Park <sj@kernel.org>
+- Moved ptval_to_str() and adjcent declarations inside <include/linux/pgtable.h>
+- Fixed type s/ptrval_to_str/ptval_to_str in [PATCH 1/8]
+- Dropped PTE_FMT from riscv platform
+- Added all tags received
 
+Changes in RFC V3:
 
-Thanks,
-SJ
+https://lore.kernel.org/all/20260818040041.1891769-1-anshuman.khandual@arm.com/
 
-[...]
+- Moved ptrval_to_str() as header in a separate patch
+- Stopped using pxd_ERROR() in generic MM in a separate patch
+- Dropped pxd_ERRO() macros from all platforms in a separate patch
+- Dropped print_bad_pte() and also cleaned up set_pte_phys()
+- Added some pr_error() messages in __get_pte_phys()
+- Cleaned up error messages and used ptrval_to_str() in platforms
+
+Changes in RFC V2:
+
+https://lore.kernel.org/all/20260811042119.3652929-1-anshuman.khandual@arm.com/
+
+- Added clean up patches for platforms with existing pxd_ERROR() usage
+- Dropped __FILE__ and __LINE__ from all print sections per David
+
+Changes in RFC V1:
+
+https://lore.kernel.org/all/20260806080639.1916749-1-anshuman.khandual@arm.com/
+
+Cc: David Hildenbrand (Arm) <david@kernel.org>
+Cc: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Lorenzo Stoakes <ljs@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (8):
+  mm: Make ptval_to_str() generally available
+  mm: Stop using pxd_ERROR()
+  loongarch/mm: Stop using pte_ERROR()
+  parisc/mm: Directly use generic [pmd|pgd]_clear_bad()
+  sh/mm: Stop using pte_ERROR()
+  sh/mm: Stop using [p4d|pud|pmd]_ERROR()
+  sh/mm: Stop using pgd_ERROR()
+  mm: Drop pxd_ERROR()
+
+ arch/alpha/include/asm/pgtable.h              |  7 -------
+ arch/arc/include/asm/pgtable-levels.h         | 11 ----------
+ arch/arm/include/asm/pgtable.h                |  7 -------
+ arch/arm/kernel/traps.c                       | 17 ----------------
+ arch/arm64/include/asm/pgtable.h              | 15 --------------
+ arch/csky/include/asm/pgtable.h               |  4 ----
+ arch/hexagon/include/asm/pgtable.h            |  3 ---
+ arch/loongarch/include/asm/pgtable.h          | 13 ------------
+ arch/loongarch/mm/init.c                      |  4 +++-
+ arch/m68k/include/asm/mcf_pgtable.h           |  6 ------
+ arch/m68k/include/asm/motorola_pgtable.h      |  8 --------
+ arch/m68k/include/asm/sun3_pgtable.h          |  7 -------
+ arch/microblaze/include/asm/pgtable.h         |  7 -------
+ arch/mips/include/asm/pgtable-32.h            | 10 ----------
+ arch/mips/include/asm/pgtable-64.h            | 13 ------------
+ arch/nios2/include/asm/pgtable.h              |  7 -------
+ arch/openrisc/include/asm/pgtable.h           |  7 -------
+ arch/parisc/include/asm/pgtable.h             |  9 ---------
+ arch/parisc/kernel/pci-dma.c                  |  6 ++----
+ arch/powerpc/include/asm/book3s/32/pgtable.h  |  2 --
+ arch/powerpc/include/asm/book3s/64/pgtable.h  |  7 -------
+ arch/powerpc/include/asm/nohash/32/pgtable.h  |  2 --
+ .../include/asm/nohash/64/pgtable-4k.h        |  3 ---
+ arch/powerpc/include/asm/nohash/64/pgtable.h  |  5 -----
+ arch/riscv/include/asm/page.h                 |  6 ------
+ arch/riscv/include/asm/pgtable-64.h           |  9 ---------
+ arch/riscv/include/asm/pgtable.h              |  4 ----
+ arch/s390/include/asm/pgtable.h               | 11 ----------
+ arch/sh/include/asm/pgtable-3level.h          |  3 ---
+ arch/sh/include/asm/pgtable_32.h              | 13 ------------
+ arch/sh/mm/init.c                             | 16 ++++++++-------
+ arch/sparc/include/asm/pgtable_32.h           |  3 ---
+ arch/sparc/include/asm/pgtable_64.h           | 10 ----------
+ arch/um/include/asm/pgtable-2level.h          |  7 -------
+ arch/um/include/asm/pgtable-4level.h          | 13 ------------
+ arch/x86/include/asm/pgtable-2level.h         |  5 -----
+ arch/x86/include/asm/pgtable-3level.h         | 11 ----------
+ arch/x86/include/asm/pgtable_64.h             | 18 -----------------
+ arch/xtensa/include/asm/pgtable.h             |  4 ----
+ include/asm-generic/pgtable-nop4d.h           |  1 -
+ include/asm-generic/pgtable-nopmd.h           |  1 -
+ include/asm-generic/pgtable-nopud.h           |  1 -
+ include/linux/pgtable.h                       | 14 +++++++++++++
+ mm/memory.c                                   | 15 +-------------
+ mm/pgtable-generic.c                          | 20 +++++++++++++++----
+ 45 files changed, 45 insertions(+), 320 deletions(-)
+
+-- 
+2.43.0
+
 
