@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC6B4C61DD3
-	for <linux-um@archiver.kernel.org>; Mon, 31 Aug 2026 05:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12BBEC624C2
+	for <linux-um@archiver.kernel.org>; Mon, 31 Aug 2026 05:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HX2UJHkvYtIE8Iv3IhpwI5DtNIWDsoCmIUsixatil5Y=; b=sD7D1+ryYR1CVkZOdumVR46ADb
-	ZnJuH/H4ogLyr6n2zMBymuut5484N6fi4UUH4qFeVruAPLvt4q4yjfBta45QDE5td9wYrpFZE3YIu
-	N6jMsHsfhn7F7OF+vEwCJV3rwG+irctmiReyGt7V++mOa6j9qPK0dlTJEcK2ZE1QMOQQifYISaNuk
-	GNKESXbrnrXb9JEZvtLKhXHe6WZAv2jNswptGlxu307Emc9Q2P7i5nPC/aGLT6ENbBjgFD+IJIGu+
-	o7TWoY+c4lTaXN9EUW7toR70q/L67qFAbW4ILtL/TVgz9pLoEICLeoAaJ/Y+mLAywK4k16a5CYmYz
-	z3WiAcpg==;
+	bh=UJYurZV77Ugv5OPsFiZ0YfDrbpkWpLq/Kkn2WQCklUg=; b=nt3BiQYLTzK2TfHPkFtTlYL7w/
+	Ruudn1Py87R3Nt19pkCN3Rt4nTXyMSv9xXXj4JaOUdiVEVFpx2624+R9OwYts/pxKl4eoRCPUAsH8
+	SzK3Ra6GuXOEg01AvJ33Vm+2lJzAOfKN7IRIjEbj5gZaQZLyCmwQnR8xr600+mqE1s0KU1mIrlUin
+	MrMOBCKFgJxPuDqITanpl4+3RwXaMYLcC0LTc99RfrbFT7vyNin9TGMOWqWLxBvd2NTgWy9UOk8UG
+	WwK1cfvh30DLijeLN/Mammu5EHHFBLU5M7wG5sz1K9PtcLdov6UUrdpmS13kSRV6urHrBfUlMD7l9
+	RJhaglwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x0uo9-00000008XP4-15Oa;
-	Mon, 31 Aug 2026 05:43:49 +0000
+	id 1x0uoG-00000008XWN-36Pu;
+	Mon, 31 Aug 2026 05:43:56 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x0uo1-00000008XJq-3Aah;
-	Mon, 31 Aug 2026 05:43:43 +0000
+	id 1x0uo4-00000008XLP-1zLv;
+	Mon, 31 Aug 2026 05:43:45 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3F871692;
-	Sun, 30 Aug 2026 22:43:34 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81995176C;
+	Sun, 30 Aug 2026 22:43:38 -0700 (PDT)
 Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E96B63F85F;
-	Sun, 30 Aug 2026 22:43:37 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D1D3F85F;
+	Sun, 30 Aug 2026 22:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1788155018; bh=GGK9AC8Tv1PQeecS48AIrQ55e9LqtRQAIQ7FmY+hs+k=;
+	t=1788155022; bh=QXu4QCgmr2H1ZCNmIiMG/ZtqTETXJXvgk4Bv9ZBGY20=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CnW75J3DRkRMOvrNTUSCnYFQNOIbOUOnmVJQMtfF42eAuoH7YKNUi6ESpSwqTyfrG
-	 vG0N5mSEM+8VmDd50f9PcBmxjBOkfiS4wh7Lhpjo2rW0nQBSjOK1m4mUYkK3mw+zi4
-	 N5OIrqAwr66EWBpqjhoDF/YwciJOKv9ClphMWYs0=
+	b=bOYCZ7KYkGWJMwi9hv08o8CPIK1B1PpAWsT/CWN6Rgcfw95970wz0SYilqsTPRRdM
+	 jy771f4RrMqp3RlkJj0jL31egGOxLsKMhmyO6mjoCsqu3qGWanVlVBYExkolRR0f08
+	 s6ecC7ZYicemVZWC8wmn+aaVAZnWZ7DbjWG2cN+I=
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-mm@kvack.org
 Cc: samuel.holland@sifive.com,
@@ -71,17 +71,18 @@ Cc: samuel.holland@sifive.com,
 	linux-um@lists.infradead.org,
 	linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] mm: Make ptval_to_str() generally available
-Date: Mon, 31 Aug 2026 11:13:23 +0530
-Message-ID: <20260831054331.625505-2-anshuman.khandual@arm.com>
+Subject: [PATCH 2/8] mm: Stop using pxd_ERROR()
+Date: Mon, 31 Aug 2026 11:13:24 +0530
+Message-ID: <20260831054331.625505-3-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260831054331.625505-1-anshuman.khandual@arm.com>
 References: <20260831054331.625505-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260830_224341_890780_52B6DFDA 
-X-CRM114-Status: GOOD (  11.09  )
+X-CRM114-CacheID: sfid-20260830_224344_611945_FCC9F4C3 
+X-CRM114-Status: UNSURE (   9.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,9 +97,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Move ptval_to_str() inside a header thus making the helper more generally
-available for new users which are being added later. While here, also move
-another related string size macro PTVAL_STR_MAX inside the header as well.
+pxd_ERROR() has been used in generic mm just to print the page table entry
+in pxd_clear_bad() before clearing those out with pxd_clear() later. These
+pxd_ERROR() macros have been provided by all platforms which basically did
+the same thing.
+
+Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
+page table entries thus completely dropping dependency on platform provided
+pxd_ERROR() macros which can then be dropped off later on.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>
@@ -111,71 +117,62 @@ Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V1:
 
-- Moved ptval_to_str() and adjcent declarations inside <include/linux/pgtable.h>
-- Fixed type s/ptrval_to_str/ptval_to_str in [PATCH 1/8]
+- Dropped including mm_type.h
 
- include/linux/pgtable.h | 14 ++++++++++++++
- mm/memory.c             | 15 +--------------
- 2 files changed, 15 insertions(+), 14 deletions(-)
+ mm/pgtable-generic.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 8c093c119e5a..e3c8ab96941c 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -2313,6 +2313,20 @@ static inline const char *pgtable_level_to_str(enum pgtable_level level)
- 	}
- }
+diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+index b91b1a98029c..224c444cf45d 100644
+--- a/mm/pgtable-generic.c
++++ b/mm/pgtable-generic.c
+@@ -26,14 +26,20 @@
  
-+void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size);
-+
-+#define ptval_to_str(buf, val)								\
-+	do {										\
-+		auto __val = (val);							\
-+											\
-+		ptval_bytes_to_hex_str((buf), sizeof(buf), &__val, sizeof(__val));	\
-+	} while (0)
-+
-+#if defined(__SIZEOF_INT128__)
-+#define PTVAL_STR_MAX	(32 + 1) /* Max 128-bit value in hex + NUL */
-+#else
-+#define PTVAL_STR_MAX	(16 + 1) /* Max 64-bit value in hex + NUL */
-+#endif
- #endif /* !__ASSEMBLER__ */
- 
- #if !defined(MAX_POSSIBLE_PHYSMEM_BITS) && !defined(CONFIG_64BIT)
-diff --git a/mm/memory.c b/mm/memory.c
-index 8b0c2c735d3d..aa6b2fc770fc 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -519,7 +519,7 @@ static bool is_bad_page_map_ratelimited(void)
- 	return false;
- }
- 
--static void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
-+void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size)
+ void pgd_clear_bad(pgd_t *pgd)
  {
- 	if (WARN_ON_ONCE(buf_size < entry_size * 2 + 1)) {
- 		snprintf(buf, buf_size, "overflow");
-@@ -546,19 +546,6 @@ static void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry
- 	}
+-	pgd_ERROR(*pgd);
++	char str[PTVAL_STR_MAX];
++
++	ptval_to_str(str, pgd_val(*pgd));
++	pr_err("bad pgd %s.\n", str);
+ 	pgd_clear(pgd);
  }
  
--#define ptval_to_str(buf, val)								\
--	do {										\
--		auto __val = (val);							\
--											\
--		ptval_bytes_to_hex_str((buf), sizeof(buf), &__val, sizeof(__val));	\
--	} while (0)
--
--#if defined(__SIZEOF_INT128__)
--#define PTVAL_STR_MAX	(32 + 1) /* Max 128-bit value in hex + NUL */
--#else
--#define PTVAL_STR_MAX	(16 + 1) /* Max 64-bit value in hex + NUL */
--#endif
--
- static void __print_bad_page_map_pgtable(struct mm_struct *mm, unsigned long addr)
+ #ifndef __PAGETABLE_P4D_FOLDED
+ void p4d_clear_bad(p4d_t *p4d)
  {
- 	char pgd_str[PTVAL_STR_MAX];
+-	p4d_ERROR(*p4d);
++	char str[PTVAL_STR_MAX];
++
++	ptval_to_str(str, p4d_val(*p4d));
++	pr_err("bad p4d %s.\n", str);
+ 	p4d_clear(p4d);
+ }
+ #endif
+@@ -41,7 +47,10 @@ void p4d_clear_bad(p4d_t *p4d)
+ #ifndef __PAGETABLE_PUD_FOLDED
+ void pud_clear_bad(pud_t *pud)
+ {
+-	pud_ERROR(*pud);
++	char str[PTVAL_STR_MAX];
++
++	ptval_to_str(str, pud_val(*pud));
++	pr_err("bad pud %s.\n", str);
+ 	pud_clear(pud);
+ }
+ #endif
+@@ -53,7 +62,10 @@ void pud_clear_bad(pud_t *pud)
+  */
+ void pmd_clear_bad(pmd_t *pmd)
+ {
+-	pmd_ERROR(*pmd);
++	char str[PTVAL_STR_MAX];
++
++	ptval_to_str(str, pmd_val(*pmd));
++	pr_err("bad pmd %s.\n", str);
+ 	pmd_clear(pmd);
+ }
+ 
 -- 
 2.43.0
 
