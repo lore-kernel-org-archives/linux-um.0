@@ -4,96 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC728C624D3
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 17:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21778C61DD3
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 17:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=StaeALLek35hMlcSHa6BZyUhT0ljTsLx6yTS5xCyYM0=; b=Yo7U4ojefih7ceoNOO/n99UoCN
-	B467UVqre48+je1NcOO6seWF9NqSjmEZlLuoR9r8GyktpQNCA7y5lMMLDO44zS0/foDnugAwufUTD
-	ehSS5WtH6wZXlFJr19T5iRxL5CCS5UB4mOIyoIl+p7J/DSRySx/vMye3+coZCQURWI52JvZmQy4UZ
-	OZBMVgGyCvdW5fqgzbXoRDitL52myCQZa1lqmuoT2zR/JBFRh8ed5higF0sJLmpDKiRwroBlOvMgg
-	akixBMPNnVWywla3npbYrnf2hDX2pyq1OiPEURj/6hu0zEkYx06Xq+xaGenis/Ceyeik8wEkr10yk
-	Ap9IFvxQ==;
+	bh=rxSJ6upXAwrCdlBg+zPXUt0hwX65jWSdNQ6WR7zOubA=; b=SPmG3+H3auPklZB1IMQFx5Zguh
+	Ey8IVQ+v87TwSo+7ijVmxeuth4zrxHr48p61IKh5CsGqhR0jxr79OVsDfBveIvYcrrftURj9gOK7o
+	Mct1f82r3LCjh/alLUG9GBaTR5/6Gg42sxSGbPKkDklVdlcI0F4dXAkB3oqhmjT+kNZUGFTBkyW8/
+	tsj4qeZJo/Xg4MQa4MVH4gFXwccruFKGI2LIyzOz3sa9Ey/nlOAsc/WRLk3SolenfLERrwkyHuheW
+	PcjRlNalATx9oWpf/KYSsSrMqirWax2o3i3IKQ3KhjubFXtp/zZPq7ScrZyhZFTLFo/uxCvBi2hFQ
+	ZF7Mj+eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1S25-0000000CmEB-2oUn;
-	Tue, 01 Sep 2026 17:12:25 +0000
+	id 1x1S3j-0000000CmYY-1eN7;
+	Tue, 01 Sep 2026 17:14:07 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1S23-0000000CmDY-38by
-	for linux-um@lists.infradead.org;
-	Tue, 01 Sep 2026 17:12:23 +0000
+	id 1x1S3g-0000000CmWc-3Zqj;
+	Tue, 01 Sep 2026 17:14:04 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1B9756013A;
-	Tue,  1 Sep 2026 17:12:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567FE1F000E9;
-	Tue,  1 Sep 2026 17:12:18 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4A746602BA;
+	Tue,  1 Sep 2026 17:14:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52E281F000E9;
+	Tue,  1 Sep 2026 17:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788282742;
-	bh=StaeALLek35hMlcSHa6BZyUhT0ljTsLx6yTS5xCyYM0=;
+	s=k20260515; t=1788282844;
+	bh=rxSJ6upXAwrCdlBg+zPXUt0hwX65jWSdNQ6WR7zOubA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Juse0t2CRnLclkizU3JyDowVdwlJ0iiAypCeeJBRrMzUuWkIA48/zZoxvPY8ynax5
-	 93+gzbbaOxxd6yRhV4ql7Earf9bVYAmXcQp1apsMu+Q9JCQPkIM5y0xSMnEsDYvX6v
-	 2m2QIAum85lWmt97me6fz/S83bX8ZzmWfL6Pp8nqNuVU53FW4YvFM/T1Z0XmItrBzv
-	 p6K4CvlNWhstOGcDUrFY3zM/GkKi/mg9QppuB2k3p3kNMWoWTsRRNuS43+ZRnbktrm
-	 AeAAbLVSoNyYJvnqJHEpn+uT3X0IsBTxymX/qrlQ/JRx2E0I3Zfvz6CmO5Pa+TDLJo
-	 ZP4Nl5FijSGRA==
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfauth.ams.internal (Postfix) with ESMTP id 509151980082;
-	Tue,  1 Sep 2026 13:12:02 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Tue, 01 Sep 2026 13:12:17 -0400
-X-ME-Sender: <xms:YQeXarupuu8lP4hODV4Kl4cTBMZRESUvNFli0neseEvSVdU6eTqegQ>
-    <xme:YQeXaujYR-JcqcZ5XRB19_Sp4AidO5MknnGtlz5Ss_8D6FAekB1GDKTys9TKm5dQ7
-    9-CzIWyGX5yW7Y4wxP7-FxE2PboOlz7Sija6KJsrP8cvzQQUwq3uQCR>
-X-ME-Received: <xmr:YQeXapWFsxw_1UNeqnO8z4EZg2oOg-FIVaehIEwbl2C9sTmSY05S5RPiU9I>
-X-ME-Proxy-Cause: dmFkZTE95wHRzu4Jku/uqR1uWajKbrR5zJX2cXnYtALksDxTaOWWCUqT0ALShYzFchhR19
-    jABbL3NMpQdq2Q4yk1wxABfpkhz1tXbwJ0ETPbBKtnkrOsetjBDE6HJPSHCSzQ+lV8p7hR
-    m8B5tw0NCYc8nr5KG+JJnI7EqrKbJ9j/iB4uBQ8v3yh2BnmhuMnsKxLkWZCbcUsikaiaIb
-    afOgG11+NHa8fIFfGiaQPV11ZUcZ/PxqcPGfORQq/nrNuM+iA2OtyKWdZtMIzuN7Y+Bitk
-    xOhO/HMBDeF+31R8MKrPNSYAO9QueQgK/MZ6ZozJxRSVjUBLpeca5t06PFY2rHErDLj+iW
-    2yn2As7fL8DmU2YIyhDqY4qqwa2/ZrsmjL2YjjyNf5Ut5V+o1Q2jHYwdnRpVE4qQekDIlA
-    0QFGDvxUI/D1PW8k3h1xG2sm2CMe+07Xc1+6x36TyY7o9SD12A1XaguCEJgvlOl/E4/LPo
-    GFNx+zoYsO4VdClgp1h7hc4suTeM5K0X91cofeEj76CiP8ubXYR9unXAMBRmzaTibsCFRl
-    htnRbe1HGqYqK8cW0PalkL3qgmd3CH6stsr7YLE6PHlCrh2N2VCi400sm4iXeFTUQOgmsx
-    q+kN/77vj/DcD2YNv53dz8Mkn5XTiexA6E9lSNNFtklTEqyElGj/pD/1naEQ
-X-ME-Proxy: <xmx:YQeXaiCrGQOdc0DQyRgUDZV_Q7rbwwtsvYy_6612aWm1Dw459aKeLg>
-    <xmx:YQeXak3aszLb-RuoyQQti3VDFiBgP4eq84UZpaU9PzzzbGI3kIPqQQ>
-    <xmx:YQeXagyRzlL5sf79pX7TX42r92YD-ITwLJRci3UCGMw3KLjWYgQL6Q>
-    <xmx:YQeXan2N5VeJKbhgyOObCD-q2vQfw0NbQQLabtDLgtNHoJWCeTl7HA>
-    <xmx:YQeXanzxgCScGaao3xUiAb6wqDwwmrMtpplfWrXaivHsO8SbqI1rMQni>
+	b=jxDdE4OnFCyPug0QpbjBRqlYgmFiHgueeXQ6LqGSWW/sCWrDZWvsDmVbjZexp/WWR
+	 3I9lVVMjQ3wrPsl3+Z0xMxE8qxTuFeUioxIvPqEFZWbRb1CskKlcOPkDZHU7aR+0+h
+	 TepBCX43AWGHWzpIiXD0IzzMM1DkiW7sRQBlm6DPaWIWprISG4390rTmfqE2G6sh+p
+	 UJEzYEK5d3+XmLVdCWgxXc6twH6VZ43GNOCCSmO9ocv6N/FL2OaRsmcjOFx9L9XHFt
+	 thBHbzALq7m49c4sP6rAZygLH3tuAczJgu99RPhF1WdD7GU7Z9w2kb29P09457E8wO
+	 QFWxyQICSEEvg==
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfauth.ams.internal (Postfix) with ESMTP id 67D9E1980083;
+	Tue,  1 Sep 2026 13:13:42 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Tue, 01 Sep 2026 13:13:57 -0400
+X-ME-Sender: <xms:xQeXaqV8loEGFnZexkyJCxP3rg-N4QYIToRp3rKjkDTxrnVQL1gS6A>
+    <xme:xQeXag4Lh3DDrks_RrbzG2k8C8awQN9zc8XObGUj7pHz_2iNwoMm0pTbNT7CTAPNk
+    vp0PQjkhXlbHPIb4iLRJEEruCXo0FxnN_E9iJQQljRa1p3y5LRtH20>
+X-ME-Received: <xmr:xQeXaqU1oLe_Okvv0a9Qy1njv_x3ymejuVS52bmcLF3DCgzxB4uHGniaR1M>
+X-ME-Proxy-Cause: dmFkZTFsVsS9QxzfNE8Zc/xkNjZIEuir/bwAcyK8hIwM2NebUd4sQatdwIPqNsbpB1XVse
+    5uZUzDbqWNwZ48AG7ZVwmjvFiAKn4L3IYAvaFn4DQPDJPouw0ut3ChVPjAmMCRYrpQks/f
+    1IjUjSdR6rGJ8PH/8ZN/bq9aaNcIwsIHJ+W10sXj73V3Ek8Vpnv1A6OHP+E9dr0YtgEEKV
+    ds5NeYj4TkdU/h2OzTs/e9I3HeHw006SE6KQ22XcXsVtQ5Ridmg+p2UCCPMnSsCFJwXq+o
+    NfKF1bGQIi/LvtSee1L5bRM3w76AYvrF/BqhfAU9qLCyleEU1XUiaHShW9MyXHSbVgJaOX
+    hMwdwR4eftF02GCubB+SFa7Q4QpoVzw7JM1DRHGNHXFwhmRbAVug7W/IdOcLb/nrDMWef0
+    KkUiA7nHVPxKD4AT8RxS/44MjP9xZYwD5jxu4rR1zHMmEvxhsrMZa1SDysOwuA7RUs7KJN
+    4ytLSGjlddPPqpyqvZaXgCDNd6mWeyIrBhFBlxdH7EUzrGV3F7qSsiNCyyHYUX1Cb4RUj4
+    hSni8vyJoXkGiivg9CkTIGCtDY2O1wlpN5xSB3Yzxu8Cf7vy8qmTAqMxZaY3f8YuCqBoRV
+    m1CTaBp39x6fO7SaPEpIs4UyFfLgZpIfwcnGb6I9WUGCyXkqsD4X84Y2L0cQ
+X-ME-Proxy: <xmx:xQeXau5SDPm8X9ZPVmC3nkfvnblsrbXXAB3UELP8S46KGzzjm75ZIw>
+    <xmx:xQeXapmTRhWrJa2dimFLN6HQHdphUKlZ5N9N_s7BRhRL5RYJv6aymA>
+    <xmx:xQeXaoZRRZdtTpR_oYP130ILceFgEOa8W9-fNA_pOWU-V2bjGgKeDQ>
+    <xmx:xQeXalF_s7CzAQ-VbOU7soyFklnjyuRKWmz2tNRVxZ-CNHXwYzKvAg>
+    <xmx:xQeXatt95GT14XoEAnDFWPH6gQb2fRXK3au_NtwTvG7r-BtoMwwQDwVx>
 Feedback-ID: i10464835:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 1 Sep 2026 13:11:59 -0400 (EDT)
-Date: Tue, 1 Sep 2026 18:11:57 +0100
+ 1 Sep 2026 13:13:39 -0400 (EDT)
+Date: Tue, 1 Sep 2026 18:13:38 +0100
 From: Kiryl Shutsemau <kas@kernel.org>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
- 	Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+To: "Liam R. Howlett" <liam@infradead.org>
+Cc: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>,
+ 	Jason Gunthorpe <jgg@ziepe.ca>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ 	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
  	Baolin Wang <baolin.wang@linux.alibaba.com>,
- "Liam R. Howlett" <liam@infradead.org>,
- 	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
- Dev Jain <dev.jain@arm.com>, 	Barry Song <baohua@kernel.org>,
- Lance Yang <lance.yang@linux.dev>, 	Usama Arif <usama.arif@linux.dev>,
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
- 	Geert Uytterhoeven <geert@linux-m68k.org>,
- Dinh Nguyen <dinguyen@kernel.org>,
- 	Simon Schuster <schuster.simon@siemens-energy.com>,
- Jonas Bonn <jonas@southpole.se>,
- 	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
- Stafford Horne <shorne@gmail.com>,
- 	Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>,
- 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Paul Walmsley <pjw@kernel.org>, 	Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, 	Alexandre Ghiti <alex@ghiti.fr>,
- Russell King <linux@armlinux.org.uk>, 	Vineet Gupta <vgupta@kernel.org>,
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
+ Nico Pache <nico.pache@linux.dev>, 	Ryan Roberts <ryan.roberts@arm.com>,
+ Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+ 	Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>,
+ Guo Ren <guoren@kernel.org>, 	Brian Cain <bcain@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ 	Dinh Nguyen <dinguyen@kernel.org>,
+ Simon Schuster <schuster.simon@siemens-energy.com>,
+ 	Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ 	Stafford Horne <shorne@gmail.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ 	Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ 	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ 	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ 	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>,
+ 	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
  	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
  	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
  Nick Piggin <npiggin@gmail.com>, 	Peter Zijlstra <peterz@infradead.org>,
@@ -136,7 +135,7 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>,
  Hugh Dickins <hughd@google.com>, 	Qi Zheng <qi.zheng@linux.dev>
 Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
  RCU grace period
-Message-ID: <apcFUthh0XSFg3JQ@thinkstation>
+Message-ID: <apcHiE7jDQaFYXOM@thinkstation>
 References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
  <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
  <apbOlyF77yDCV4cF@thinkstation>
@@ -144,11 +143,11 @@ References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
  <20260901142408.GA56830@ziepe.ca>
  <apbiB51hjm-9pRzf@gremlin>
  <apbuO_QveZNAz3ns@thinkstation>
- <apbvoN6ttgHfI_xg@gremlin>
+ <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <apbvoN6ttgHfI_xg@gremlin>
+In-Reply-To: <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,26 +162,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 01, 2026 at 04:45:14PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > munmap() of 64G worth of THP should be enough to demonstrate the
-> > problem.
-> 
-> I mean you're going to hit that from RCU freeing page tables already, which
-> most architectures already do right?
+On Tue, Sep 01, 2026 at 11:54:47AM -0400, Liam R. Howlett wrote:
+> Do you have munmap() performance dependent workload that you are
+> concerned about regressing?
 
-Not at the same rate -- tlb_remove_table() batches into struct
-mmu_table_batch. One call_rcu() per MAX_TABLE_BATCH.
-
-> So if RCU saturation is a problem, that problem already exists, but I've
-> not heard of that being a problem at all?
-
-I did quick test and I don't see a measurable difference in munmap()
-wall time of 40G of THPs. I see ~17x more softirqs, but this is
-expected.
-
-The objection is retracted.
-
-We can return to this later if it is going to be visible anywhere.
+exit(2) path is performance critical for many workloads. Like, if you
+need to restart VM.
 
 -- 
   Kiryl Shutsemau / Kirill A. Shutemov
