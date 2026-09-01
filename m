@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26732C624D0
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 11:06:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A9E9C624D0
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 11:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2RQcemfGMYTiDH29zfMnTtdgj0bHtOblVlsFhLPlSxk=; b=nzVl02dVOkiKJ4ZheYVbe6gliI
-	YsjudGPXd9d9J6x2ic3JgTOHIYG0CjTt+b5+SEJznJVlR0JRVdupUjFpZph4Eeu8KSMuxo5YPpq1O
-	0pTNoEbS8oSPllty9SMVrBKFJissLySXNGFZQLmRDZ2zbGcTk1O0nKboZJNAc3EsKBnCM6KyEAPUQ
-	AMK8KOyL530ZNOp1/RQofMdvyrE9lyLon78IUa3ojjn8M7AJDDI4P6hOzjVuAr/oWbcl1uWue4hKg
-	aPe6QJT9wo0Yfa7xJ3QyiruPXSJioeSHVc1MWD0yIcDjawOqRpIt2eMwYD9aEvChi+mclHmkRZE6d
-	HUrUChIQ==;
+	bh=1aimUPxzYaTPXtJhtWkzW57/+8qeslpkAUz+f7GK8/Y=; b=42FFCdyJXamXwqkHJCQ1fsnszp
+	Wa2mItdrHFNmAomaJ2uvhrqo3coX6i6SO6PrDQLs70LBiNMCmGsQ58iASHNjqmBG36Jg8ZZYAcQbQ
+	5kEM9F/27jEsTYnlhVPSk3KFmEeW3qZqh8XSCszeHOnQhCfdwmvmRRXZvc8OEC95NkQ2bTK2ieLc9
+	Gxu7JRLb4b8t+iPMD5h8p5fBxfQJDFfFUMP8TOw91zVr9UywfTAP/IAFQ3zvn9UcxD9ZfqmopnCLo
+	wUabMdiVoP+yA6WDkiCag06dT+JkyS8z/E+KcsdEjYwqelgcoONKzcpj1VGeN0TBQ3jQFDr9U5pz0
+	3cBahl0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1MKF-0000000Bdah-3Uyq;
-	Tue, 01 Sep 2026 11:06:47 +0000
+	id 1x1MKW-0000000BdlD-0qgd;
+	Tue, 01 Sep 2026 11:07:04 +0000
 Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1MKD-0000000BdYf-1jjB;
-	Tue, 01 Sep 2026 11:06:45 +0000
+	id 1x1MKU-0000000BdjB-1wzQ;
+	Tue, 01 Sep 2026 11:07:02 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 207B1407D1;
+	by sea.source.kernel.org (Postfix) with ESMTP id 8E781403FE;
+	Tue,  1 Sep 2026 11:06:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41FFE1F000E9;
 	Tue,  1 Sep 2026 11:06:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00931F00A3E;
-	Tue,  1 Sep 2026 11:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788260803;
-	bh=2RQcemfGMYTiDH29zfMnTtdgj0bHtOblVlsFhLPlSxk=;
+	s=k20260515; t=1788260819;
+	bh=1aimUPxzYaTPXtJhtWkzW57/+8qeslpkAUz+f7GK8/Y=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=NwoKGGKCOsRyUU+EwJ2no2OGs9bmyTM35H3K9gIGh3HV4K+WdFczJU/eOXXaqSq6H
-	 k3HqUQSyYtmLNyQcKklEF3jOnimT477uPD5bPUrY3vzsO0q5rhBaHKvEzLmmOUoTeV
-	 LS7qc1mFdDW4R+qFz8GqeMqUV2SRfwucYXHjjwfClPVzkfmWmA7H119MkFGrVSiy2M
-	 2i+O/pQmB8Q7TQ4gyhr2LkP3WlwncZC4EvmV+llTIKpVYZ5j7ph1KajtR0mHJjWcp3
-	 C3dGZ4dAndriF5N79xdeqD4sLGWw6jUMW2TMEdqkRBXSUrwPC8mBLnJDj1WCNUN1fk
-	 Lsp1rzKfB8Lug==
+	b=XD3oyzIY4msLPQ772JhwLo0AmvI8pJiExLU3e3acDjohAHfqAlS9rlSLlt64WVSfM
+	 r3kRTCUYRFXtwdrLXLd4zIwibTfWMnW/NDIIYUE6lAId+LAAlnedVWBr2YfRCEVFnh
+	 NaU4l0p6UGv9r8gy6ABLmcwKqZFw1aYx2Pz8fy8/zPMOSd7woDX9/45BsOq29uxCFH
+	 t67glyPsR7yypFVn1RgslLR+rEAEHQj1J/iNjz4RcFE6+mZcsM+M0zD52vr+Us6TCk
+	 T4FBgX6sN7RoaCrUvJ6hGpa6JR9artGVasWEmFWwFE4AH8UoYRgRo/FGT9ifPsbukd
+	 aB6GG57pdUC3g==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Tue, 01 Sep 2026 12:01:26 +0100
-Subject: [PATCH 06/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc64
+Date: Tue, 01 Sep 2026 12:01:27 +0100
+Subject: [PATCH 07/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for
+ m68k-coldfire
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260901-rcu-pagetable-freeing-v1-6-5456a81c8212@kernel.org>
+Message-Id: <20260901-rcu-pagetable-freeing-v1-7-5456a81c8212@kernel.org>
 References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
 In-Reply-To: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -110,12 +111,12 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
  Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2421; i=ljs@kernel.org;
- h=from:subject:message-id; bh=+cl/mE+MMAULPxyBPFJXsNZLkn5nuULAZlZa1FGDhyY=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKmbfRoWHu8+2WMGXd53Frn2Q/TfRbbcH08FO0d/tq/O
- 1w/w3BqRykLgxgXg6yYIsvzL+L7g0TC5nVe8HeDmcPKBDKEgYtTACYiZcjIcH3mqoOd6vvZeHat
- LZwryGV6VWy+UWngii1a17n6ItznP2H4Z1P/w3/OzVMba8P0LaVSbs6x8uGbP2Ph03esF2VqH2r
- JMQMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1842; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=qTT+GrBJ7CN/0g7aihQa6c1ZdVlLMdQ0LNJ7aV+6CtQ=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKmbfQIULyUGXJvk7x6z/RM7Xe7feOXy31ul/W6IvyVo
+ XSrazZ/RykLgxgXg6yYIsvzL+L7g0TC5nVe8HeDmcPKBDKEgYtTACbSGsnw33vZ/N1+HBlPyg4d
+ Z9inYfllvWvq5p/7s6qbX3+3iw4rCWRkmG8v0yi5/9js5G+fUmMi34cp/96XPWefUlWg8e7Pkmm
+ cjAA=
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 X-BeenThere: linux-um@lists.infradead.org
@@ -132,73 +133,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Commit 4a0100f7546f ("sparc64: use RCU page table freeing") enabled
-CONFIG_MMU_GATHER_RCU_TABLE_FREE for SMP sparc64 architectures, expressly
-for GUP-fast page table walkers.
+Similar to sun3, the coldfire variant of m68k uses 2-level page tables.
 
-Naturally, UP systems do not have to worry about concurrent GUP fast
-operations.
+Update its __pte_free_tlb() function to use tlb_remove_ptdesc() in order
+that, with CONFIG_MMU_GATHER_RCU_TABLE_FREE, page tables are freed under
+RCU.
 
-However, CONFIG_PREEMPT_RCU is also available even on a UP system, so a
-future pure-RCU page table walker requires MMU_GATHER_RCU_TABLE_FREE to be
-enabled on UP, even if concurrent GUP fast is not possible there.
-
-To enable future pure-RCU page table walkers, enable
-MMU_GATHER_RCU_TABLE_FREE unconditionally.
-
-With this change, it is no longer necessary to have !CONFIG_SMP
-pgtable_free_tlb(), so also remove this now dead code.
+The page tables occupy a page each and have no odd semantics, so this
+change suffices to allow enabling of CONFIG_MMU_GATHER_RCU_TABLE_FREE for
+m68k-coldfire, so do so.
 
 This forms part of an overall effort to switch every architecture to this
 mode.
 
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- arch/sparc/Kconfig                  | 4 ++--
- arch/sparc/include/asm/pgalloc_64.h | 8 --------
- 2 files changed, 2 insertions(+), 10 deletions(-)
+ arch/m68k/Kconfig                   | 2 +-
+ arch/m68k/include/asm/mcf_pgalloc.h | 5 +----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index ab77d3f2536e..8d42ebc6d302 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -75,8 +75,8 @@ config SPARC64
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_KRETPROBES
- 	select HAVE_KPROBES
--	select MMU_GATHER_RCU_TABLE_FREE if SMP
--	select HAVE_ARCH_TLB_REMOVE_TABLE if SMP
-+	select MMU_GATHER_RCU_TABLE_FREE
-+	select HAVE_ARCH_TLB_REMOVE_TABLE
- 	select MMU_GATHER_MERGE_VMAS
- 	select MMU_GATHER_NO_FLUSH_CACHE
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
-diff --git a/arch/sparc/include/asm/pgalloc_64.h b/arch/sparc/include/asm/pgalloc_64.h
-index caa7632be4c2..b5055d259b74 100644
---- a/arch/sparc/include/asm/pgalloc_64.h
-+++ b/arch/sparc/include/asm/pgalloc_64.h
-@@ -74,8 +74,6 @@ void pte_free_defer(struct mm_struct *mm, pgtable_t pgtable);
- 
- void pgtable_free(void *table, bool is_page);
- 
--#ifdef CONFIG_SMP
--
- struct mmu_gather;
- void tlb_remove_table(struct mmu_gather *, void *);
- 
-@@ -96,12 +94,6 @@ static inline void __tlb_remove_table(void *_table)
- 		is_page = true;
- 	pgtable_free(table, is_page);
- }
--#else /* CONFIG_SMP */
--static inline void pgtable_free_tlb(struct mmu_gather *tlb, void *table, bool is_page)
--{
--	pgtable_free(table, is_page);
--}
--#endif /* !CONFIG_SMP */
- 
- static inline void __pte_free_tlb(struct mmu_gather *tlb, pte_t *pte,
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index e29610fd1240..6b8ec67c86fd 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -36,7 +36,7 @@ config M68K
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+-	select MMU_GATHER_RCU_TABLE_FREE if MMU && SUN3
++	select MMU_GATHER_RCU_TABLE_FREE if MMU && (SUN3 || COLDFIRE)
+ 	select MODULES_USE_ELF_REL
+ 	select MODULES_USE_ELF_RELA
+ 	select NO_DMA if !MMU && !COLDFIRE
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+index fc5454d37da3..b53ff0950db2 100644
+--- a/arch/m68k/include/asm/mcf_pgalloc.h
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -39,10 +39,7 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
  				  unsigned long address)
+ {
+-	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+-
+-	pagetable_dtor(ptdesc);
+-	pagetable_free(ptdesc);
++	tlb_remove_ptdesc(tlb, virt_to_ptdesc(pgtable));
+ }
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
 
 -- 
 2.55.0
