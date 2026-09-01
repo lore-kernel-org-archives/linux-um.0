@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73E22C624D4
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6992C624D7
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UTvJDIw3wcg7xi4i0kyVSun0Dn6RIuyJL6Ze7BRUb5M=; b=s4wvb/3nd+SLSi+eRISe/UPe3y
-	2TRFYMdpE1YmW+wARWZi0PP7JjxFGAzdSzW9JcY7UWtoSyKTz6/6hjrrDYX55R1k6pKsnVkswQAO1
-	UetMXba4L8T/vRUx2fCwHjNKqS1CocuYEdyjDbt4TsIoNQzGHcWJHGw/s7VjTr8+X4OJBPdaYMk3V
-	hcBUOQivzYn2ZtSY5+VSczb2hgh23goCCoRefYIfQUq7JQx2xw+34Mr8mLi/kp80bAPb+H8vAbZtR
-	D4FQuRqusHhNNB3Mu+8MsHyLIVajv+yY4y6noqB1RCCyNeCvcxvSGuVvy5t63M7LnlQUlaZOanWQ9
-	BeBjuZMA==;
+	bh=r4lrJRkT6oIO9uz4byVKnhiX3ckXssiVruBvq7U+FfI=; b=CieM7tPlixZTS0JswfHhpPkrGA
+	tpGp2b12P9kurR3fmlzyj/7aUdZRU26UJn30MrsyKtdBOF7u4LTe7Mamo2zQmA2Wf9z+lllorky4x
+	z+WtxCl5/LsX9gQn2OpCARWtWcpUpU0ySwLxLlJMmBSaQGwaIRKyOv1vKdgzeTREXsaqVNq9Dd8uu
+	zg4eq8Va72rvb45p9f/cDq/Hv+zVSpUvBijIry/qscEXkHlOQdARs8K1W+XdAjU9GAN5KS0TMMzAU
+	bf0nQJYXzPY8GrKp5TaDdOAzdb5p7pAmWFNR6fwYKg54K98T/wiL/Et3+pErVnZsZiNNWRhpvVjYT
+	erO9l/9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1PwI-0000000COYr-0BbL;
-	Tue, 01 Sep 2026 14:58:18 +0000
+	id 1x1PwH-0000000COX4-1ckb;
+	Tue, 01 Sep 2026 14:58:17 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1PwG-0000000COVw-1iI6
+	id 1x1PwF-0000000COUp-17Wz
 	for linux-um@lists.infradead.org;
-	Tue, 01 Sep 2026 14:58:16 +0000
+	Tue, 01 Sep 2026 14:58:15 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id D7A10602D0;
-	Tue,  1 Sep 2026 14:58:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF741F00ADE;
-	Tue,  1 Sep 2026 14:58:15 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id AA7BA602BA;
+	Tue,  1 Sep 2026 14:58:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2676D1F00A3F;
+	Tue,  1 Sep 2026 14:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788274695;
-	bh=UTvJDIw3wcg7xi4i0kyVSun0Dn6RIuyJL6Ze7BRUb5M=;
+	s=k20260515; t=1788274694;
+	bh=r4lrJRkT6oIO9uz4byVKnhiX3ckXssiVruBvq7U+FfI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fHmVoYtD48si7U4QBauUocNTZRD1pcYnoGOdDynX3BhCHV/UgsIB+z2JK1nYO11t8
-	 JVRGqHItgAbcTdxPsb66Wk+Ro3HzpCxFUkarQlX9yShbQVZAejZNohwd3QUzip7HTx
-	 kOlFQBv5nTbH304V+gsJvn+5WY3k++rpVpkiiOnLMYI3i/byofcDRs/VEYNnsetO46
-	 AXWLkz3z1eMUD06SvLIF7oLZFGEIqd2oC54Tu7qs/JVJ81jzKMbS+H5YtJFCZe4Z03
-	 OJi+j8iP4uy6xNa0eMsl4tyPxiNMtFDlv0RJU5uAGwo0iMO7kt5OmA+k/MUp8WvYfO
-	 ioQkgoguf72Lg==
+	b=YawVhUJAl4XJC+0lJg0JqnzvyLoGpclba5vFqMseu8aQdeAfRNCqF/n89C5BFnRn4
+	 ZMgZnt00svTZ7gKmJhtJ04BvxTdeX+//rW59BNZmOABb8rXM8WE4tuFSRJOTY0O+a3
+	 wzlzCcKF1wjNushRp8DgVQU/dXj39smX7CyBzSJH1YujqkwHIJgLd/5F0hTLEiXvwp
+	 rpILnJjIGoK4ZqXwRp1daZvUbnKwICqiVWNfsFNqVZML5vihbF6lJP71+QoQZ6nnn8
+	 cGO6BziajnHnrbES/E803CCkdcHeqva1iZHlGmQ767J9u+QH407m0Ng6QB+EJcNiWk
+	 vNW9n5eYCeh4w==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -50,11 +50,10 @@ Cc: linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Eric Biggers <ebiggers@kernel.org>,
-	David Laight <david.laight.linux@gmail.com>
-Subject: [PATCH v5 8/8] xor: Add AVX-512 optimized xor_gen()
-Date: Tue,  1 Sep 2026 07:57:40 -0700
-Message-ID: <20260901145740.42337-9-ebiggers@kernel.org>
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v5 5/8] lib/crc: x86: Stop using cpu_has_xfeatures()
+Date: Tue,  1 Sep 2026 07:57:37 -0700
+Message-ID: <20260901145740.42337-6-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260901145740.42337-1-ebiggers@kernel.org>
 References: <20260901145740.42337-1-ebiggers@kernel.org>
@@ -74,252 +73,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add an implementation of xor_gen() using AVX-512.
+Checking both boot_cpu_has() and cpu_has_xfeatures() has never really
+been needed in practice, and it's never been universally done (e.g.,
+lib/raid/ omits cpu_has_xfeatures()).  Nevertheless, both x86 and UML
+now explicitly clear the AVX and AVX-512 flags if their xfeatures are
+missing, which should remove any remaining doubts.
 
-It uses 512-bit vectors, i.e. ZMM registers.  It also uses the
-vpternlogq instruction to do three-input XORs when applicable.
+Thus, remove all the calls to cpu_has_xfeatures().
 
-It's enabled on x86_64 CPUs that have AVX512F && !PREFER_YMM.  In
-practice that means:
-
-    - AMD Zen 4 and later (client and server)
-    - Intel Sapphire Rapids and later (server)
-    - Intel Rocket Lake (client)
-    - Intel Nova Lake and later (client)
-
-The !PREFER_YMM condition excludes the older AVX-512 implementations in
-Intel Skylake Server and Intel Ice Lake.  They could run this code, but
-they're known to have overly-eager downclocking when ZMM registers are
-used.  This is the same policy that the crypto and CRC code uses.
-
-Results from xor_benchmark on AMD Ryzen 9 9950X (Zen 5):
-
-Before:
-
-    # xor_benchmark:           	 4096 bytes	16384 bytes
-    # xor_benchmark:   4 disks:	  256  GB/s	  185  GB/s
-    # xor_benchmark:   5 disks:	  233  GB/s	  165  GB/s
-    # xor_benchmark:   6 disks:	  243  GB/s	  174  GB/s
-    # xor_benchmark:   7 disks:	  244  GB/s	  176  GB/s
-    # xor_benchmark:   8 disks:	  265  GB/s	  179  GB/s
-    # xor_benchmark:  10 disks:	  249  GB/s	  175  GB/s
-    # xor_benchmark:  12 disks:	  219  GB/s	  173  GB/s
-    # xor_benchmark:  15 disks:	  206  GB/s	  177  GB/s
-    # xor_benchmark:  16 disks:	  212  GB/s	  180  GB/s
-    # xor_benchmark:  32 disks:	  193  GB/s	  177  GB/s
-
-After:
-
-    # xor_benchmark:           	 4096 bytes	16384 bytes
-    # xor_benchmark:   4 disks:	  492  GB/s	  202  GB/s
-    # xor_benchmark:   5 disks:	  436  GB/s	  191  GB/s
-    # xor_benchmark:   6 disks:	  466  GB/s	  193  GB/s
-    # xor_benchmark:   7 disks:	  491  GB/s	  194  GB/s
-    # xor_benchmark:   8 disks:	  513  GB/s	  205  GB/s
-    # xor_benchmark:  10 disks:	  454  GB/s	  199  GB/s
-    # xor_benchmark:  12 disks:	  330  GB/s	  204  GB/s
-    # xor_benchmark:  15 disks:	  266  GB/s	  198  GB/s
-    # xor_benchmark:  16 disks:	  243  GB/s	  177  GB/s
-    # xor_benchmark:  32 disks:	  187  GB/s	  165  GB/s
-
-Reviewed-by: David Laight <david.laight.linux@gmail.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Acked-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- lib/raid/xor/Makefile         |   2 +-
- lib/raid/xor/x86/xor-avx512.c | 122 ++++++++++++++++++++++++++++++++++
- lib/raid/xor/x86/xor_arch.h   |  30 ++++++---
- 3 files changed, 143 insertions(+), 11 deletions(-)
- create mode 100644 lib/raid/xor/x86/xor-avx512.c
+ lib/crc/x86/crc-pclmul-template.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
-index 9b0fad459cdb..e1e3455c219d 100644
---- a/lib/raid/xor/Makefile
-+++ b/lib/raid/xor/Makefile
-@@ -31,7 +31,7 @@ xor-$(CONFIG_SPARC32)		+= sparc/xor-sparc32.o
- xor-$(CONFIG_SPARC64)		+= sparc/xor-sparc64.o sparc/xor-sparc64-glue.o
- xor-$(CONFIG_S390)		+= s390/xor.o
- xor-$(CONFIG_X86_32)		+= x86/xor-avx.o x86/xor-sse.o x86/xor-mmx.o
--xor-$(CONFIG_X86_64)		+= x86/xor-avx.o x86/xor-sse.o
-+xor-$(CONFIG_X86_64)		+= x86/xor-avx.o x86/xor-sse.o x86/xor-avx512.o
- obj-y				+= tests/
- 
- CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU) -I$(src)/$(SRCARCH)
-diff --git a/lib/raid/xor/x86/xor-avx512.c b/lib/raid/xor/x86/xor-avx512.c
-new file mode 100644
-index 000000000000..c11d83441875
---- /dev/null
-+++ b/lib/raid/xor/x86/xor-avx512.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * AVX-512 optimized implementation of xor_gen()
-+ *
-+ * Copyright 2026 Google LLC
-+ */
-+
-+#include <linux/types.h>
-+#include <asm/fpu/api.h>
-+#include "xor_impl.h"
-+#include "xor_arch.h"
-+
-+/*
-+ * Implementation notes:
-+ *
-+ * Unrolling by the number of buffers (2-5) is very important.
-+ *
-+ * Unrolling by length is less important, especially when using register-indexed
-+ * addressing with negative indices from the end of the buffers.  That approach
-+ * results in just two loop control instructions being needed per iteration,
-+ * regardless of the number of buffers.
-+ *
-+ * In fact, benchmarks showed that the 2 and 3 buffer cases require only 2x
-+ * unrolling by length, while the 4 and 5 buffer cases don't require any
-+ * unrolling by length.  Benchmarks also showed that the register-indexed
-+ * addressing isn't a bottleneck either; i.e., we can't do any better by
-+ * incrementing the pointers as we go along, even with more unrolling.
-+ */
-+
-+static void xor_avx512_2(long bytes, u8 *p1, const u8 *p2)
-+{
-+	long i = -bytes;
-+
-+	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
-+		     "vmovdqa64 64(%1,%0), %%zmm1\n"
-+		     "vpxorq (%2,%0), %%zmm0, %%zmm0\n"
-+		     "vpxorq 64(%2,%0), %%zmm1, %%zmm1\n"
-+		     "vmovdqa64 %%zmm0, (%1,%0)\n"
-+		     "vmovdqa64 %%zmm1, 64(%1,%0)\n"
-+		     "add $128, %0\n"
-+		     "jnz 1b\n"
-+		     : "+&r"(i)
-+		     : "r"(p1 + bytes), "r"(p2 + bytes)
-+		     : "memory", "cc");
-+}
-+
-+static void xor_avx512_3(long bytes, u8 *p1, const u8 *p2, const u8 *p3)
-+{
-+	long i = -bytes;
-+
-+	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
-+		     "vmovdqa64 64(%1,%0), %%zmm1\n"
-+		     "vmovdqa64 (%2,%0), %%zmm2\n"
-+		     "vmovdqa64 64(%2,%0), %%zmm3\n"
-+		     "vpternlogq $0x96, (%3,%0), %%zmm2, %%zmm0\n"
-+		     "vpternlogq $0x96, 64(%3,%0), %%zmm3, %%zmm1\n"
-+		     "vmovdqa64 %%zmm0, (%1,%0)\n"
-+		     "vmovdqa64 %%zmm1, 64(%1,%0)\n"
-+		     "add $128, %0\n"
-+		     "jnz 1b\n"
-+		     : "+&r"(i)
-+		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes)
-+		     : "memory", "cc");
-+}
-+
-+static void xor_avx512_4(long bytes, u8 *p1, const u8 *p2, const u8 *p3,
-+			 const u8 *p4)
-+{
-+	long i = -bytes;
-+
-+	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
-+		     "vmovdqa64 (%2,%0), %%zmm1\n"
-+		     "vpxorq (%3,%0), %%zmm0, %%zmm0\n"
-+		     "vpternlogq $0x96, (%4,%0), %%zmm1, %%zmm0\n"
-+		     "vmovdqa64 %%zmm0, (%1,%0)\n"
-+		     "add $64, %0\n"
-+		     "jnz 1b\n"
-+		     : "+&r"(i)
-+		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes),
-+		       "r"(p4 + bytes)
-+		     : "memory", "cc");
-+}
-+
-+static void xor_avx512_5(long bytes, u8 *p1, const u8 *p2, const u8 *p3,
-+			 const u8 *p4, const u8 *p5)
-+{
-+	long i = -bytes;
-+
-+	asm volatile("1: vmovdqa64 (%1,%0), %%zmm0\n"
-+		     "vmovdqa64 (%2,%0), %%zmm1\n"
-+		     "vpternlogq $0x96, (%3,%0), %%zmm1, %%zmm0\n"
-+		     "vmovdqa64 (%4,%0), %%zmm1\n"
-+		     "vpternlogq $0x96, (%5,%0), %%zmm1, %%zmm0\n"
-+		     "vmovdqa64 %%zmm0, (%1,%0)\n"
-+		     "add $64, %0\n"
-+		     "jnz 1b\n"
-+		     : "+&r"(i)
-+		     : "r"(p1 + bytes), "r"(p2 + bytes), "r"(p3 + bytes),
-+		       "r"(p4 + bytes), "r"(p5 + bytes)
-+		     : "memory", "cc");
-+}
-+
-+DO_XOR_BLOCKS(avx512_inner, xor_avx512_2, xor_avx512_3, xor_avx512_4,
-+	      xor_avx512_5);
-+
-+/*
-+ * Preconditions: bytes is a nonzero multiple of 512, and all buffers are
-+ * 64-byte aligned.
-+ */
-+static void xor_gen_avx512(void *dest, void **srcs, unsigned int src_cnt,
-+			   unsigned int bytes)
-+{
-+	kernel_fpu_begin();
-+	xor_gen_avx512_inner(dest, srcs, src_cnt, bytes);
-+	asm volatile("vzeroupper");
-+	kernel_fpu_end();
-+}
-+
-+struct xor_block_template xor_block_avx512 = {
-+	.name = "avx512",
-+	.xor_gen = xor_gen_avx512,
-+};
-diff --git a/lib/raid/xor/x86/xor_arch.h b/lib/raid/xor/x86/xor_arch.h
-index 991abe3f4bbd..ed5921d2e2aa 100644
---- a/lib/raid/xor/x86/xor_arch.h
-+++ b/lib/raid/xor/x86/xor_arch.h
-@@ -6,21 +6,31 @@ extern struct xor_block_template xor_block_p5_mmx;
- extern struct xor_block_template xor_block_sse;
- extern struct xor_block_template xor_block_sse_pf64;
- extern struct xor_block_template xor_block_avx;
-+extern struct xor_block_template xor_block_avx512;
- 
--/*
-- * When SSE is available, use it as it can write around L2.  We may also be able
-- * to load into the L1 only depending on how the cpu deals with a load to a line
-- * that is being prefetched.
-- *
-- * When AVX2 is available, force using it as it is better by all measures.
-- *
-- * 32-bit without MMX can fall back to the generic routines.
-- */
- static __always_inline void __init arch_xor_init(void)
+diff --git a/lib/crc/x86/crc-pclmul-template.h b/lib/crc/x86/crc-pclmul-template.h
+index 02744831c6fa..893119bb7c07 100644
+--- a/lib/crc/x86/crc-pclmul-template.h
++++ b/lib/crc/x86/crc-pclmul-template.h
+@@ -27,16 +27,14 @@ DEFINE_STATIC_CALL(prefix##_pclmul, prefix##_pclmul_sse)
+ static inline bool have_vpclmul(void)
  {
--	if (boot_cpu_has(X86_FEATURE_AVX)) {
-+	if (IS_ENABLED(CONFIG_X86_64) && boot_cpu_has(X86_FEATURE_AVX512F) &&
-+	    !boot_cpu_has(X86_FEATURE_PREFER_YMM)) {
-+		/*
-+		 * Use the AVX-512 code on CPUs that support AVX-512 without
-+		 * overly-eager downclocking.  On such CPUs the AVX-512 code
-+		 * should always work at least as well as the AVX code, so
-+		 * runtime selection is unnecessary.
-+		 *
-+		 * The AVX-512 code can work on X86_32.  However, due to lack of
-+		 * use case for that, for now it's built only for X86_64.
-+		 */
-+		xor_force(&xor_block_avx512);
-+	} else if (boot_cpu_has(X86_FEATURE_AVX)) {
-+		/* AVX will be the best; no need to try others. */
- 		xor_force(&xor_block_avx);
- 	} else if (IS_ENABLED(CONFIG_X86_64) || boot_cpu_has(X86_FEATURE_XMM)) {
-+		/*
-+		 * When SSE is available, use it as it can write around L2.  We
-+		 * may also be able to load into the L1 only depending on how
-+		 * the cpu deals with a load to a line that is being prefetched.
-+		 */
- 		xor_register(&xor_block_sse);
- 		xor_register(&xor_block_sse_pf64);
- 	} else if (boot_cpu_has(X86_FEATURE_MMX)) {
+ 	return boot_cpu_has(X86_FEATURE_VPCLMULQDQ) &&
+-	       boot_cpu_has(X86_FEATURE_AVX2) &&
+-	       cpu_has_xfeatures(XFEATURE_MASK_YMM, NULL);
++	       boot_cpu_has(X86_FEATURE_AVX2);
+ }
+ 
+ static inline bool have_avx512(void)
+ {
+ 	return boot_cpu_has(X86_FEATURE_AVX512BW) &&
+ 	       boot_cpu_has(X86_FEATURE_AVX512VL) &&
+-	       !boot_cpu_has(X86_FEATURE_PREFER_YMM) &&
+-	       cpu_has_xfeatures(XFEATURE_MASK_AVX512, NULL);
++	       !boot_cpu_has(X86_FEATURE_PREFER_YMM);
+ }
+ 
+ /*
 -- 
 2.55.0
 
