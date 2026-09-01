@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84A70C61DFD
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 01:53:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B28C61DFD
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 01:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nfPoQFWa5XJK2n+gLXq+InLZ1SHvMm2K6VuNoOpddPc=; b=l8h/tqqH71plLPw6Yaoi0GZMS0
-	4rGKJ539E4JdEAHWSePfHNrBIDtzOKZnknSnZ1PGokl/2HYU9dwVL5wmuyXR0E2IUkKrdzwfzWfHM
-	avkt+hxGEoSJYzpO4kMawCeCLiCOUEkfVoTQDF0uyoaAfvf4nr2PS6jiY72gUbgIvEKSd5HnTHEG1
-	unrMet6Xm6389orC1lChwy6Lyz0cEsDBZStYRnRqKDCPpFP0LTmtfDPu8A2UvkFbV3KHTBMobvWoT
-	16UzXuBJ2HhFoA95W1GeDPqv6vrAIbR8eODuDTzIFRgZtHH17tcLq4inZJ+NnneMWAEfjd1jI90Lw
-	pUxKJoNQ==;
+	bh=CbUFClJ4i3J7LjCwTB/35AHxIba4ym0JuMW7MLg9RkU=; b=JpzZhHIH/YU5bc88Nz/HH/10Gw
+	q6CM7bv3H4ISUsk1u6gehGOwqG78tYDbGi5YBwCeyfv0yRSaooAe1efhV3IXWGKYOqDxTBVUmxLLu
+	neEkypGQV34mE9KnI4pgT+v0tvkeEqtDQr3N+FmAnVm/IpZAcgTM4cD4EVI7OmKcADi6HtmAsHC3w
+	hhtv3O5Ad/SP+F1zorGYHd8tIUSecLqzcAUI3MJhVfYt4N28GGrwuW0t8id4d1GFDerB2RQ42at+k
+	BY33JqWJdrqZEPZZuJTRAmcafH3144HRbSTJe36kAQn+fnAUC3QDFLYEtauFR1qiccvUyIGz2Mmw7
+	AoRTcG5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1Dgd-0000000ApTG-2lQe;
-	Tue, 01 Sep 2026 01:53:19 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1x1Did-0000000Apk7-13Md;
+	Tue, 01 Sep 2026 01:55:23 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1Dgc-0000000ApS6-07oB;
-	Tue, 01 Sep 2026 01:53:18 +0000
+	id 1x1Dib-0000000ApjJ-29rf;
+	Tue, 01 Sep 2026 01:55:21 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 22D17409AC;
-	Tue,  1 Sep 2026 01:53:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E38F1F000E9;
-	Tue,  1 Sep 2026 01:53:16 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A24CC601DE;
+	Tue,  1 Sep 2026 01:55:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FF81F000E9;
+	Tue,  1 Sep 2026 01:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux-foundation.org; s=korg; t=1788227597;
-	bh=nfPoQFWa5XJK2n+gLXq+InLZ1SHvMm2K6VuNoOpddPc=;
+	d=linux-foundation.org; s=korg; t=1788227720;
+	bh=CbUFClJ4i3J7LjCwTB/35AHxIba4ym0JuMW7MLg9RkU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=Zq8VpLupvgE2yRJw1KQGeavVibzTXHtpjCONjfoal2aDB/f32LHC+a9EHOOObR2dz
-	 XMrE7NHF4NkTlRLOvkXFK75juHDjUVcCkQ7WguvUjYiW12f7gOk81DFIAVNvWoojWS
-	 hStPm28T4PEXRZKb5fXVKK4E/erKvPmWGFqjKOw0=
-Date: Mon, 31 Aug 2026 18:53:15 -0700
+	b=QTvMOsLY/HyZChL07OeBST7evAmOyQDdqEsNG8IojIx94RZcYBwP8DgxztrD6FxPx
+	 UxNXGzD1L06crgm/t6O7u1Azv9jZngQt1/ls6DYB8X15tavuE8dNV9b/ojCvXtSt3F
+	 /qmxq+B/hEDiFvYVf1+pwfxpoT/BJ9uJYAxsblw0=
+Date: Mon, 31 Aug 2026 18:55:19 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
 To: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: linux-mm@kvack.org, samuel.holland@sifive.com, David Hildenbrand
@@ -57,11 +57,10 @@ Cc: linux-mm@kvack.org, samuel.holland@sifive.com, David Hildenbrand
  linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
  sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
  linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/8] sh/mm: Stop using [p4d|pud|pmd]_ERROR()
-Message-Id: <20260831185315.ec745606e7eeae6d1116b7d1@linux-foundation.org>
-In-Reply-To: <20260831054331.625505-7-anshuman.khandual@arm.com>
+Subject: Re: [PATCH 0/8] mm: Drop pxd_ERROR()
+Message-Id: <20260831185519.66c6e6e83ce62d0fd9aee945@linux-foundation.org>
+In-Reply-To: <20260831054331.625505-1-anshuman.khandual@arm.com>
 References: <20260831054331.625505-1-anshuman.khandual@arm.com>
-	<20260831054331.625505-7-anshuman.khandual@arm.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -80,13 +79,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 31 Aug 2026 11:13:28 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On Mon, 31 Aug 2026 11:13:22 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 
-> Stop using [p4d|pud|pmd]_ERROR() in __get_pte_phys() as the pgtable entries
-> are known to be NULL and hence could not really be accessed.
+> pxd_ERROR() macros have been provided by all platforms, which are very much
+> identical and can be dropped off completely if these pgtable printing could
+> be moved to callers in generic MM aka all pxd_clear_bad().
+> 
+> But first cleanups and re-organizations are required in some platforms that
+> are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
+> macros have been completely dropped from the entire tree.
 
-A note to the sh maintainers: Sashiko might have found a couple of bugs
-in __get_pte_phys():
+All was going nicely until...
 
-	https://sashiko.dev/#/patchset/20260831054331.625505-1-anshuman.khandual@arm.com
+> This series is based on v7.3-rc1 after the following patch and has also been
+> built tested on multiple platforms.
+
+*what* following patch???
+
+Oh well, I'll queue it all up and shall hope for the arch maintainer
+acks to roll in.  Please.
 
