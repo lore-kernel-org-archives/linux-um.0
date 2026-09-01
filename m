@@ -4,70 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85888C61DD3
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 100E7C624D3
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fAIsm/HteRf3YKYFv2nKHjUIchlu3eaENoAxwWG8aEY=; b=KEsKK9ZGmGP84vvM/mKvyRdLTq
-	0BBhJbxklkJHyh3BjFJ9VEOF+hCDxI/rkGJl5rM4yhjPEvJaHvxw0RZnO1T3ZhbtCLgRpHB5Igl/b
-	Xf+k5Sbt0H1Rtp0ZoNgcCcf/B75UsoYePUv7rkqLVwpjKI51LlcdJmkIHwb/es7g4twkzPa+4ZTbB
-	ZN9KVvUKOSdz3+Ds4L7cU0eNaOb0Z8rWjuttFbmVFzinKqZtHMbYWTgYo7Dp/ySG6sz+RF4+nF+zx
-	GsjzR7SA0QhuKFczkeX1xAcW8T4gejN6vtgUYchKrp+eFh9BUkNijFq3KjIMVntgmZ6EOEOmNKare
-	7gPII1Jw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=iUpjiTv1KRvFABoYYph8lVPGE+bZqchdutvEQG6SYQI=; b=ViqAjG1K2/fXurnPl2Kaq57UjX
+	E0lHcXAfjahQ+Xz/wq72C+Uq+2vxPNVWTPRpr74yDg7rl0u0vhUjooDZUQqK6/detFIBu5nRY6Zt6
+	CwqM/8uNjdb+GndTKjn1X6UtJlc2w60S2BD0KUC9lziYs7f/+FLY4LNy81QvzHNu3GRuZG0yoj5W1
+	2yorV5/GkQGl4k3g6vhUmigJcTcq40sO7KXo4uqqZpVe6m2pf1A/+Z2i3gjolhTYEB/pnYU6T7Xqn
+	18B9qq61rCDhgfV4Tnmk+ucOb4EneaKTJtxaUii/PRFFNU9DbugBz4hVnTpH60sNeWKpmBlBD24PL
+	7q7u60xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1PjR-0000000CNTR-2ps0;
-	Tue, 01 Sep 2026 14:45:01 +0000
+	id 1x1PwE-0000000COUb-1hIZ;
+	Tue, 01 Sep 2026 14:58:14 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1PjQ-0000000CNTA-3nbG
+	id 1x1PwD-0000000COU7-2cUy
 	for linux-um@lists.infradead.org;
-	Tue, 01 Sep 2026 14:45:00 +0000
+	Tue, 01 Sep 2026 14:58:13 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3FDE6602C2;
-	Tue,  1 Sep 2026 14:45:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D871F000E9;
-	Tue,  1 Sep 2026 14:44:54 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id BA2CD6013A;
+	Tue,  1 Sep 2026 14:58:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3573A1F000E9;
+	Tue,  1 Sep 2026 14:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788273899;
-	bh=fAIsm/HteRf3YKYFv2nKHjUIchlu3eaENoAxwWG8aEY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=JbQsYQQTryTJccngjQ6sMGW5kFfCavhUFjLzV4MjqkHi+BCzDmSYL5sVMBrrEt8h6
-	 ktgB1GV43LZv/WsX/Cvn1eGJsTE9h2i0ss//1pzBa8nQq1CuANiviKerSRkcVhQ368
-	 rVsBLyMjr6sQfWasTsIczZFZPpDR0E3U3SjQOi98KqMhYvzEWFqzVAw9aN7vDSnLRS
-	 pgLTqQXL/riVvYdkKcamGBovzkNxn9/95svzBrkDubdasz4HNTM3W9B/ZIb/xeIBIb
-	 jut2js8skF45pnqjTJ/o6Vr4ukAjg6/C6XVq9xmOMilcFlaTnMQn19gUcg6KHB5gPx
-	 PbkOK5Iq8sWoA==
-Date: Tue, 1 Sep 2026 15:44:52 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Hajime Tazaki <thehajime@gmail.com>, david@kernel.org, 
-	linux-mm@kvack.org, liam@infradead.org, rbm@suse.com, akpm@linux-foundation.org, 
-	luto@amacapital.net, brendan.jackman@linux.dev, liuhangbin@gmail.com, corbet@lwn.net, 
-	kees@kernel.org, broonie@kernel.org, mhocko@suse.com, rppt@kernel.org, 
-	shuah@kernel.org, surenb@google.com, vbabka@kernel.org, wad@chromium.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, 
-	geert@linux-m68k.org, daniel@thingy.jp
-Subject: Re: [PATCH v2 0/2] support kselftest on nommu platform
-Message-ID: <apbknMd-vv6jliZu@gremlin>
-References: <20260825015945.141739-1-thehajime@gmail.com>
- <f2ac9432-4fea-4007-aab0-ad80597b284c@kernel.org>
- <ao2Tl9CLL7WjHYun@gremlin>
- <bb9a3add-4849-4928-8b6a-0afc0c73b112@kernel.org>
- <ao2l9Ao7BQI6uRKC@gremlin>
- <m2y0dsuf1d.wl-thehajime@gmail.com>
- <ao_541nBaa3SJS9F@gremlin>
- <m2v78wueir.wl-thehajime@gmail.com>
- <apAgQJ5p8LEDj1c5@gremlin>
- <40e95edb8dafd88fd13c3003c0e76df6a2f124d9.camel@sipsolutions.net>
+	s=k20260515; t=1788274692;
+	bh=iUpjiTv1KRvFABoYYph8lVPGE+bZqchdutvEQG6SYQI=;
+	h=From:To:Cc:Subject:Date;
+	b=hSmZEpipj6ibJ/5DHn71+dcqM3a8A0IRF+6SKnv018OiWNgwKD6W6tTBe/4ljcULg
+	 dLoEAdMBZgUJPLm/f9deS/q4OirmzNLs0IlmRHjRgE7MTNhMQFbyZEz7mp1gJMqs2V
+	 IyKJVxwWwMgbnXNLLQOEb3zXGB+omA6fos0RdiczaNc1di9yOPE/iZmc1NkicK3/Rf
+	 aekc8fEDWh0e8iusb1w5e88WMt5jLecI1HUkP00GCsq/LMSYFcdcLYE2gdv8S8FCYv
+	 sToypstdm6rsI2Jt9K09+tSTD//r1pyD7jiM2KTuZWsm3ZjuFKKD6RbmS/9TFP6YLa
+	 UXU//mxVpX1hw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: x86@kernel.org
+Cc: linux-um@lists.infradead.org,
+	linux-raid@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v5 0/8] x86: Remove cpu_has_xfeatures() and add AVX-512 xor_gen()
+Date: Tue,  1 Sep 2026 07:57:32 -0700
+Message-ID: <20260901145740.42337-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40e95edb8dafd88fd13c3003c0e76df6a2f124d9.camel@sipsolutions.net>
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,31 +71,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 01, 2026 at 04:28:49PM +0200, Johannes Berg wrote:
-> On Thu, 2026-08-27 at 12:32 +0100, Lorenzo Stoakes (ARM) wrote:
-> >
-> > Ah ok cool, thanks! Is that headed to 7.3 or more like 7.4?
->
-> Seems everyone was on vacation (I just got back) so I believe it missed
-> 7.3 since -rc1 is just out.
+This series consolidates and cleans up how the kernel handles CPU
+feature flags for AVX and AVX-512 when the underlying OS or hypervisor
+(if any) doesn't enable the required xstate features in XCR0.
 
-Ah damn! But understood.
+Specifically, it makes the checks for xstate features be done in a
+single place at boot time for both UML and native x86, instead of
+everywhere kernel code wants to check for AVX or AVX-512 support.
 
->
-> I hope to have enough time in this development period to the merge
-> window to figure out all of these things and get stuff merged - UM
+Patch 8 then adds an AVX-512 optimized implementation of xor_gen() for
+RAID, which had been blocked on confusion around cpu_has_xfeatures() and
+its lack of implementation on UML.
 
-Ah that'd  be great!
+Please consider this series for the x86 tree for 7.4.
 
-> wasn't on my priority list with all the (LLM) security(-ish) stuff going
-> on in wireless.
+Changed in v5:
+  - Replaced benchmark results with the new xor_benchmark
+  - Consolidated the vzeroupper in xor-avx512.c into one location
 
-Yeah entirely understandable, I think we're all being pummelled by AI
-lately :)
+Changed in v4:
+  - Added missing vzeroupper instructions in xor-avx512.c
 
->
-> johannes
+Changed in v3:
+  - Updated the implementation of fpu__init_system_xstate() as suggested
+    by Borislav
+  - Added Acked-by tags
+  - Used "xor:" commit subject
 
---
-Cheers, Lorenzo
+Changed in v2:
+  - Made x86 clear the AVX* bits if FPU or XSAVE features are missing.
+  - Updated comment in x86 arch_xor_init().
+  - Updated commit message for the UML commit to clarify that checking
+    XCR0 is standard practice in userspace
+
+
+Eric Biggers (8):
+  x86/fpu: Check for missing AVX and AVX-512 xstate bits
+  um: Check for missing AVX and AVX-512 xstate bits
+  crypto: x86 - Stop using cpu_has_xfeatures()
+  lib/crypto: x86: Stop using cpu_has_xfeatures()
+  lib/crc: x86: Stop using cpu_has_xfeatures()
+  x86/fpu: Remove cpu_has_xfeatures()
+  xor: Remove redundant X86_FEATURE_OSXSAVE check
+  xor: Add AVX-512 optimized xor_gen()
+
+ arch/um/kernel/um_arch.c                   |  78 ++++++++++++-
+ arch/x86/crypto/aegis128-aesni-glue.c      |   3 +-
+ arch/x86/crypto/aesni-intel_glue.c         |   7 +-
+ arch/x86/crypto/aria_aesni_avx2_glue.c     |  11 +-
+ arch/x86/crypto/aria_aesni_avx_glue.c      |  11 +-
+ arch/x86/crypto/aria_gfni_avx512_glue.c    |  11 +-
+ arch/x86/crypto/camellia_aesni_avx2_glue.c |  11 +-
+ arch/x86/crypto/camellia_aesni_avx_glue.c  |  11 +-
+ arch/x86/crypto/cast5_avx_glue.c           |   7 +-
+ arch/x86/crypto/cast6_avx_glue.c           |   7 +-
+ arch/x86/crypto/serpent_avx2_glue.c        |   9 +-
+ arch/x86/crypto/serpent_avx_glue.c         |   7 +-
+ arch/x86/crypto/sm4_aesni_avx2_glue.c      |  11 +-
+ arch/x86/crypto/sm4_aesni_avx_glue.c       |  11 +-
+ arch/x86/crypto/twofish_avx_glue.c         |   6 +-
+ arch/x86/include/asm/fpu/api.h             |   9 --
+ arch/x86/kernel/fpu/xstate.c               |  69 +++++-------
+ lib/crc/x86/crc-pclmul-template.h          |   6 +-
+ lib/crypto/x86/blake2s.h                   |   4 +-
+ lib/crypto/x86/chacha.h                    |   3 +-
+ lib/crypto/x86/nh.h                        |   4 +-
+ lib/crypto/x86/poly1305.h                  |   7 +-
+ lib/crypto/x86/sha1.h                      |   4 +-
+ lib/crypto/x86/sha256.h                    |   4 +-
+ lib/crypto/x86/sha512.h                    |   3 +-
+ lib/crypto/x86/sm3.h                       |   3 +-
+ lib/raid/xor/Makefile                      |   2 +-
+ lib/raid/xor/x86/xor-avx512.c              | 122 +++++++++++++++++++++
+ lib/raid/xor/x86/xor_arch.h                |  31 ++++--
+ 29 files changed, 276 insertions(+), 196 deletions(-)
+ create mode 100644 lib/raid/xor/x86/xor-avx512.c
+
+
+base-commit: cee9395acd8043be0644b25c34bfa86623f2b935
+-- 
+2.55.0
+
 
