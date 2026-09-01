@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA8BDC61DD3
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 11:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05166C61DD3
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 11:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qrlRHDKkKksSse2z7V875Db2PCZ3B/h/JK+Hse17ruk=; b=2AxdgGFW+hIAWlcKlEdIPa5jM8
-	HYucS5Mv0COLQRU6nNJQELxU690JdzA6TrQ7TLsh4KnTr4RkI+A1Uj6LS0FaEOAXPc2avPzAoIRiL
-	/xFyuDAGhXP8ggsp/iWP4HN5BbAIMT8nFOonXN8YZdmNoZoRGY7e3K0+jfYqDrMoTaJS1AwK4m7Kx
-	H/+hcFwAiTey9uejCt88Lq/oWe1W1/oahzgSCS+vaoc+HMPxiULrveEsFtp/zy876yRBCnQXptgUd
-	yZWJe+m3kigDkTKRA++cQwZFZ8ojZzEsojtaI/aW9eKICYQS3IeTKTkNDpBZcaUDIzvH3aWutcF1X
-	8Sk6gggw==;
+	bh=hla1P//jUaEzl3P+0ure5xER+YPzVxn4O3sMhLZO6MY=; b=KKcuHyNfSbtmKQof047Rm8wjP/
+	cXyZN1eK0hwAXsA4su5/IUsSqjpwWIn+U7Kc+UWMS7XwETdbH7ElFBKOzpYoi+AsvPdSyHo/Ca4kb
+	nFp3wNoUOFvWJ5eweaNAO7wJjGBOPMFpq9vbeQWU5BBRsp3f7nrNuj6F9FJdS2VzEpwaKuongmu3h
+	WYC8kOiw7kjKBLNmV8N6N0Fzo9ruewvwNUysW9MQY+XVMnjn5DrhnCoKYMPzZsQV6e2mKjN/snT+M
+	hVhA/H0VT6YpHMIUO62BjJVVe1PbI14KNqCnVq0AvrkLneSOZKk9MCyeCGhgI59LQDEE2HaWgLuvt
+	8d6dPAsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1MIz-0000000BcpK-1vwa;
-	Tue, 01 Sep 2026 11:05:29 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1x1MJF-0000000Bcx5-2HDz;
+	Tue, 01 Sep 2026 11:05:45 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1MIx-0000000Bcon-2ooV;
-	Tue, 01 Sep 2026 11:05:27 +0000
+	id 1x1MJD-0000000Bcva-1yA8;
+	Tue, 01 Sep 2026 11:05:43 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 048CB601DB;
-	Tue,  1 Sep 2026 11:05:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7C5E1F00A3D;
-	Tue,  1 Sep 2026 11:05:11 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 6EFCC601DB;
+	Tue,  1 Sep 2026 11:05:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C2071F00A3E;
+	Tue,  1 Sep 2026 11:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788260726;
-	bh=qrlRHDKkKksSse2z7V875Db2PCZ3B/h/JK+Hse17ruk=;
+	s=k20260515; t=1788260742;
+	bh=hla1P//jUaEzl3P+0ure5xER+YPzVxn4O3sMhLZO6MY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=oC+PeNzeXGgygw1GLni0qWUre/UeVngidRRvYApKsIuI5ZQ9UE2DPzmFOWAvU+g+K
-	 Tq/3aDUz7ili/2efyU4PlHqc4GfIWiSDKgHgH3le8IEHHhoy/DUc38Lc+0WQpCeGPG
-	 rW1c4ZG9bfi4OATQ6DHNR0fyXdkxqGq3QPbClHaCIRwWu+ABXEXLLxICfHrWXARDtb
-	 +LUmHZFDUfMdtRqvbUudVUpWM9JR7VimV6S8ZL7eqX/eWlR187yhtTkD07XSGcPsWy
-	 gcqOqwvTpNr8iG4jYGW5qsgXdCFo+r0wg0Wc5KcSpJcv5vsQMVQF/SGuJxP5ELbZHT
-	 7A80AG8ayckPQ==
+	b=L3y3kV7xP4GUQ6JyAP1rkMfIJXYsMZuVy5QNWrVPBCCzYr1m/zRVW74DSR8ResTEo
+	 WECSOQnrU2KwpiuxpnTE1UA4d0FuoyXQN0d9YE8EolumEfUnyTDwNtfcIDlVt7KloM
+	 Stb30O4xGLB71yHukiz+OKGtLc6cEZomjcvLv5MGQtofBh9wawUjL0jBb3Msd7sAAZ
+	 UQV3deK3RVrSb71bdlxmKN+UU8YmueQsNT1pLtnZXPue42MCyLg+NcShK8lTEjZWG1
+	 n1ra/YYdx3fQ7xc+3cCJ2jrd3TuuBiCegbd5mwrOkD16uT7hXFpLqmM3fEm53lwmes
+	 8rubg+iwF6wZw==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Tue, 01 Sep 2026 12:01:21 +0100
-Subject: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
- RCU grace period
+Date: Tue, 01 Sep 2026 12:01:22 +0100
+Subject: [PATCH 02/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for most
+ 2-level architectures
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
+Message-Id: <20260901-rcu-pagetable-freeing-v1-2-5456a81c8212@kernel.org>
 References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
 In-Reply-To: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -111,12 +111,12 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
  Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1907; i=ljs@kernel.org;
- h=from:subject:message-id; bh=QsmXD4bhTqKAKkUCvIrmgq1QZ07I5df5Am7bAMtZYGk=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKmbXR/NqX0p/yX2JqF0V1HnP3EWDwWHnX5NpPjjHPWl
- V9mHyu7O0pZGMS4GGTFFFmefxHfHyQSNq/zgr8bzBxWJpAhDFycAjCR5pMMf4W3zTCOEpo4p0nf
- ZKn7zKK0mwzx203Lmh+2vpCbIlL5eiUjQ5vI2p2Ln6522hS/bpW4K6e0j0lI49S9FarGj/2PeQg
- u5AUA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3562; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=yQUOoL+4VfJjLW5MASkaQAQ+ZTfTJR7/6HJ0TBTi3s0=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKmbXQPXtAV0qUlJhy9XffShy3TVrz3O6nqNue9t23Bu
+ r/Of/03dJSyMIhxMciKKbI8/yK+P0gkbF7nBX83mDmsTCBDGLg4BWAiOzMZ/vBU++3nub25tjfv
+ Qf2t/WUP0zW8N+9MaBTdWsl+irnghQEjw/S+adZz8t7f50p6sVxQLcWQN5PVj/VIc+/dA5+L/rS
+ GsAIA
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 X-BeenThere: linux-um@lists.infradead.org
@@ -133,57 +133,107 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When an anonymous mapping is collapsed for THP, a PTE page table is
-'deposited' with the installed PMD entry.
+Commit e3ecf7c7d082 ("mm: pgtable: convert some architectures to use
+tlb_remove_ptdesc()") updated a number of architectures from using
+pagetable_dtor() + tlb_remove_page_ptdesc() to using tlb_remove_ptdesc() in
+__pte_free_tlb().
 
-This is done in order that a split can be performed without needing to
-allocate additional memory.
+This is meaningful as tlb_remove_ptdesc() allows for RCU page table
+freeing if CONFIG_MMU_GATHER_RCU_TABLE_FREE is specified.
 
-The freeing occurs in zap_deposited_table() and is done directly without
-any delay via pte_free().
+The csky, hexagon, nios2, openrisc, sh (except X2) and m68k-sun3
+architectures all have 2 levels of page tables, so the only page tables
+ever freed by mmu_gather are PTEs, so this update suffices to ensure that
+every page table freed by the mmu_gather mechanism is freed under RCU.
 
-This is currently not a problem as existing page table walks are protected
-by the mmap or anon rmap lock.
+Therefore, update all of these architectures to select
+CONFIG_MMU_GATHER_RCU_TABLE_FREE.
 
-However this becomes problematic in a future where RCU-only page table
-walkers exist, as there is nothing to prevent a page table walker that
-started the walk prior to collapse having its PTE table freed underneath
-it.
-
-Commit 13cf577e6b66 ("mm/pgtable: add pte_free_defer() for pgtable as
-page") already provides us the mechanism by which to solve this -
-pte_free_defer().
-
-Therefore, as a prerequisite to a future commit which will permit fully RCU
-page table walks, update zap_deposited_table() to use pte_free_defer()
-rather than pte_free().
-
-Note that the IPI sync in collapse_huge_page() is still required to ensure
-refcount correctness against a GUP-fast operation.
-
-This is because GUP-fast might increment refcount, but
-__collapse_huge_page_isolate() determines whether it is safe to proceed by
-checking folio_ref_count() against folio_expected_ref_count(), so the two
-must be mutually excluded.
+This forms part of an overall effort to switch every architecture to this
+mode.
 
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- mm/huge_memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/csky/Kconfig     | 1 +
+ arch/hexagon/Kconfig  | 1 +
+ arch/m68k/Kconfig     | 1 +
+ arch/nios2/Kconfig    | 1 +
+ arch/openrisc/Kconfig | 1 +
+ arch/sh/Kconfig       | 1 +
+ 6 files changed, 6 insertions(+)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 54494c3fa983..505f7b62ff28 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2476,7 +2476,7 @@ static inline void zap_deposited_table(struct mm_struct *mm, pmd_t *pmd)
- 	pgtable_t pgtable;
- 
- 	pgtable = pgtable_trans_huge_withdraw(mm, pmd);
--	pte_free(mm, pgtable);
-+	pte_free_defer(mm, pgtable);
- 	mm_dec_nr_ptes(mm);
- }
- 
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 4331313a42ff..80f89ef1d962 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -96,6 +96,7 @@ config CSKY
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+ 	select LOCK_MM_AND_FIND_VMA
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MAY_HAVE_SPARSE_IRQ
+ 	select MODULES_USE_ELF_RELA if MODULES
+ 	select OF
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index b48491140013..d9b3fb86556b 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -23,6 +23,7 @@ config HEXAGON
+ 	# select HAVE_CLK
+ 	select GENERIC_ATOMIC64
+ 	select HAVE_PERF_EVENTS
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	# GENERIC_ALLOCATOR is used by dma_alloc_coherent()
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_IRQ_PROBE
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 11835eb59d94..e29610fd1240 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -36,6 +36,7 @@ config M68K
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
++	select MMU_GATHER_RCU_TABLE_FREE if MMU && SUN3
+ 	select MODULES_USE_ELF_REL
+ 	select MODULES_USE_ELF_RELA
+ 	select NO_DMA if !MMU && !COLDFIRE
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index 9c0e6eaeb005..b0ccfc3b7a7e 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -19,6 +19,7 @@ config NIOS2
+ 	select HAVE_PAGE_SIZE_4KB
+ 	select IRQ_DOMAIN
+ 	select LOCK_MM_AND_FIND_VMA
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MODULES_USE_ELF_RELA
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index 5eb995c13074..d90b24dd3bce 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -35,6 +35,7 @@ config OPENRISC
+ 	select GENERIC_ATOMIC64
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
+ 	select GENERIC_SMP_IDLE_THREAD
++	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MODULES_USE_ELF_RELA
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select OR1K_PIC
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index d60f1d5a94c0..204f64912f0e 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -61,6 +61,7 @@ config SUPERH
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select IRQ_FORCED_THREADING
+ 	select LOCK_MM_AND_FIND_VMA
++	select MMU_GATHER_RCU_TABLE_FREE if MMU && !X2TLB
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_SG_DMA_LENGTH
+ 	select NO_DMA if !MMU && !DMA_COHERENT
 
 -- 
 2.55.0
