@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1A47C61DD3
-	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:04:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB216C624D4
+	for <linux-um@archiver.kernel.org>; Tue,  1 Sep 2026 14:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=utZgOAk3glT+w9jGyIL1e4+wDW3VgIywx5aDJ+IClBI=; b=20qzymUzlZ3yha2hsp0Pq4HK3K
-	WNu/vRsMcWNhD+Ok+aZRclapmpN0OERXPLAlN1PaUh+Pb19ARoLFuZiLc+ItCB5tfnGYydc3YjTXs
-	SCr71OyJnmu+NRj7rKm2WqPuSxUxVcNW+aEascRPVXoG8D9MrmOWtO6s7gMid53IScCo4rfqx9nZe
-	1z6Y7unsW5v2EE9IIS9ZmWQHeVt+dIUAiTIgtCXxBRl8+8VETCxhpESWAezlsTphjtiSZQtIL5gqN
-	hQ4N/myIChA2z0h93+OWLF0CjLy6iD4cdtT++Ldaf2lzEQf5eMQhh7y9uqKNznB3S9WHSjj+bdQZa
-	FplgBm5g==;
+	bh=zIFNccvs+atFhWftoJEJD5wmod58xIW+qFgefX0BOCg=; b=H7ytAAY9tkHBTAJHCUppFCQicN
+	OFvIWvl+rMcz7SVbFqV1gZhn1p6r0D3hoD7KFnjQR4YD1ge3HP/yliAY9VqRZ21UwAHUeAiB0sMuz
+	Wt9LMruI6GiEmeb1Znj/ESLeX+Erq8kIDpSc2DmdVRLXfZWvB/xsQAHFjrYY/epS17jBtmffrn96z
+	OmVhpWswO0UY39hp6T8v7GJ1nLgRuDhDLbPE7Bbux1gs2V+ZPxVqo1dUQ6Qg6w3lqWjnSnCX2Gl5y
+	wqU8+BYUWWGGt70iTYKVB+OF6f2G1gnjuR6zxeyaYpS5wEYCX9Ezvjmc9/WszoOemB7aIfzqECiej
+	mpjV6UvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1P5m-0000000CH3s-0Byr;
-	Tue, 01 Sep 2026 14:04:02 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1x1PEc-0000000CJKC-2wbD;
+	Tue, 01 Sep 2026 14:13:10 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1P5j-0000000CH1o-2aZ5;
-	Tue, 01 Sep 2026 14:03:59 +0000
+	id 1x1PEa-0000000CJJh-3jeb;
+	Tue, 01 Sep 2026 14:13:08 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9425B60214;
-	Tue,  1 Sep 2026 14:03:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9601A1F00A3E;
-	Tue,  1 Sep 2026 14:03:37 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 6350043228;
+	Tue,  1 Sep 2026 14:13:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24C071F00A3E;
+	Tue,  1 Sep 2026 14:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788271438;
-	bh=utZgOAk3glT+w9jGyIL1e4+wDW3VgIywx5aDJ+IClBI=;
+	s=k20260515; t=1788271988;
+	bh=zIFNccvs+atFhWftoJEJD5wmod58xIW+qFgefX0BOCg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=VkHIyhIL5RYsevDjObNKXZqn+SdY5WQb69y59u2HEPU8+koXsjF39lkchtgGfID2/
-	 RRta8sEiyqrYHeGZADgvcepo/d6BCIy1rew63LXlaVY0Xupe7DXsdoMNSJ2LwTdz2t
-	 9L5dRACEK20PlxkRCThhZUhUvCQOFVCbvgosbtCrmvTH2mK9HkGA5IIhEFa7R3t6KR
-	 sYprPzYjwJdozsniM15JaMhNn3suHrmHgExLHHHmoISXD5OQ3cY25wcuADGpitpChH
-	 /n/kgOyZ1a5axdohia++5dysGbeDD/F5NBdm+JhIfjt3j2SloNQlLySaTEevH9y1p5
-	 qVSTayD4zeHWQ==
-Date: Tue, 1 Sep 2026 15:03:34 +0100
+	b=ojh3C4HDmqZjOi1pkhDSDGdV7SfRfNfWGZdomRJtqMccy2x0v2yndUbLTlFfoma31
+	 dXPCD/3iuiFmrOyTzvDFsi3JMSQci44mXNjMW5aZrX1wksJI6YrjjSO9AmUv57cBYV
+	 9z8GlCwH5Lcq8HdHGJ0PhyaJV91X1hhmLlTYoLDJyqV5tpAA3OmuNtzuupyJ9NgXA9
+	 UJ1DFYAPUuZI2d/93NYxQqW7uJLFNFyZWGMt5ve018yg00i9qrJwXbMtHXQVNemoe6
+	 vmWZlNLESArFUgZ4rroUvf022k6zvA9BUurkwbyrW+S7uSnPMqBoCZlDQJvO6b3uMa
+	 s/wAJaE9PbDug==
+Date: Tue, 1 Sep 2026 15:12:45 +0100
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 To: Kiryl Shutsemau <kas@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
@@ -85,15 +85,16 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
 	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
 	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH 11/12] mm: make userland page table freeing RCU-safe
-Message-ID: <apbZwZHOkExAqOPA@gremlin>
+Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
+ RCU grace period
+Message-ID: <apbcoMTVlL42G5tg@gremlin>
 References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
- <20260901-rcu-pagetable-freeing-v1-11-5456a81c8212@kernel.org>
- <apbSaL0YaQqtO9XB@thinkstation>
+ <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
+ <apbOlyF77yDCV4cF@thinkstation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <apbSaL0YaQqtO9XB@thinkstation>
+In-Reply-To: <apbOlyF77yDCV4cF@thinkstation>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,25 +109,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 01, 2026 at 02:33:14PM +0100, Kiryl Shutsemau wrote:
-> On Tue, Sep 01, 2026 at 12:01:31PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > With this change in place the kernel policy is now that all page tables are
+On Tue, Sep 01, 2026 at 02:19:36PM +0100, Kiryl Shutsemau wrote:
+> On Tue, Sep 01, 2026 at 12:01:21PM +0100, Lorenzo Stoakes (ARM) wrote:
+> > When an anonymous mapping is collapsed for THP, a PTE page table is
+> > 'deposited' with the installed PMD entry.
+> >
+> > This is done in order that a split can be performed without needing to
+> > allocate additional memory.
+> >
+> > The freeing occurs in zap_deposited_table() and is done directly without
+> > any delay via pte_free().
+> >
+> > This is currently not a problem as existing page table walks are protected
+> > by the mmap or anon rmap lock.
+> >
+> > However this becomes problematic in a future where RCU-only page table
+> > walkers exist, as there is nothing to prevent a page table walker that
+> > started the walk prior to collapse having its PTE table freed underneath
+> > it.
+> >
+> > Commit 13cf577e6b66 ("mm/pgtable: add pte_free_defer() for pgtable as
+> > page") already provides us the mechanism by which to solve this -
+> > pte_free_defer().
+> >
+> > Therefore, as a prerequisite to a future commit which will permit fully RCU
+> > page table walks, update zap_deposited_table() to use pte_free_defer()
+> > rather than pte_free().
+> >
+> > Note that the IPI sync in collapse_huge_page() is still required to ensure
+> > refcount correctness against a GUP-fast operation.
+> >
+> > This is because GUP-fast might increment refcount, but
+> > __collapse_huge_page_isolate() determines whether it is safe to proceed by
+> > checking folio_ref_count() against folio_expected_ref_count(), so the two
+> > must be mutually excluded.
+> >
+> > Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> > ---
+> >  mm/huge_memory.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 54494c3fa983..505f7b62ff28 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2476,7 +2476,7 @@ static inline void zap_deposited_table(struct mm_struct *mm, pmd_t *pmd)
+> >  	pgtable_t pgtable;
+> >
+> >  	pgtable = pgtable_trans_huge_withdraw(mm, pmd);
+> > -	pte_free(mm, pgtable);
+> > +	pte_free_defer(mm, pgtable);
 >
-> s/all/userspace/ as subject implies?
+> Hm. So it is call_rcu() on each PMD. It might be costly, especially for
+> zap_huge_pmd() path: 512 call_rcu() per-GB of unmapped THPs.
+>
+> Do we want leverage mmu_gather if caller has it?
 
-Right yeah :) I hoped that the summary line would clarify that but can edit that
-also.
+I mean, I'm not sure in which respect that'd be costly, 512 is not a big number
+to a computer, and repeated call_rcu() invocations should just queue more
+operations no?
+
+It won't be costly at the time of the calls obviously as its deferred. Maybe
+increase some time spent in softirq but again is 512x that big of a deal?
+
+I'm not sure how you'd both defer the free and somehow utilise mmu_gather here
+either really, certainly not without it becoming extremely messy.
+
+But yeah I'd want to see hard data on that before I really believe that's a
+problem :)
 
 >
-> BTW, what is your take on kernel page tables? Do we want the same policy
-> there. pagetable_free_kernel() is not RCU-safe as it is.
-
-Yeah I think so too. I may follow up with a series to that effect also!
-
->
-> > freed after an RCU grace period, and thus it is now safe to unconditionally
-> > perform page table walks under RCU, safe in the knowledge that page tables
-> > will not be freed underneath the walker.
+> >  	mm_dec_nr_ptes(mm);
+> >  }
+> >
+> >
+> > --
+> > 2.55.0
+> >
 >
 > --
 >   Kiryl Shutsemau / Kirill A. Shutemov
