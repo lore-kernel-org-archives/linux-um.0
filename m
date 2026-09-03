@@ -4,113 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9317C624D3
-	for <linux-um@archiver.kernel.org>; Wed,  2 Sep 2026 17:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4324BC624A4
+	for <linux-um@archiver.kernel.org>; Thu,  3 Sep 2026 08:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TZ+MXL1cgyfSCQwzd4B83Y1gcdTqXTzpnMsgTcK9A4c=; b=oWjk28cGdWsMq1AUCUPxhJLnIW
-	709AeN15+GnD0/irLbJHS6iH8O7vbSaKe7UjVywH2+zuCqKvrn8KVbI44rN7VjYTAg+zzR5fYoHsH
-	oIVSci4ulnt7j9V8JguyDXlOz1udrrszp/MoIES0PhnHG4NfYLsZIUO1HO1Jca5kAky5xvILFrpCY
-	jA7LjIjEWYd7m4244AOI7Z14vnzsUEIxIL0DUo1eSThv9HJF5JT8m7NbiMcupIdxyXH8xA9u9wyk/
-	aHpjAt6hKPq+lF765RIc0Ef4t+pzD2uvkSEX0t6DSjikJrThWUduJEF6hNh4NVMD4eGB/Ilrq/BPT
-	1oNzUxpg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0p9MAmMqYQA+pB3vITqVC9F/6eE2jvI8gIptx42Zmls=; b=zvrTN4HfGoyfg9M5WME85eBVew
+	SM9j8jbZZ7R7Uy4ZHCXqlaAsMvE6VnwPv3eiV7fUazTOb30OJp8rr/291rxBmg9MU+B3QIX+GcNSK
+	+c0D432Nh6fKrONdCZ6o1NZmeKC3tM5H07N1C+Fnj7o9G3MdtMeyLuaqDky30ouyBZXuf1Hafs8+K
+	+cFthWtMf9EX4SBmnzl0BOT//lBKneztiAZOevMoAt0jIprMKieDw0BXjH6Kqxap5QqESxRtapJgz
+	tLSTAk/+cHWfHa4HPoT/4cUU/L4LA7VewvZxPJsPZnvshyagzJiGpaQDwpe+KVbxhUc7cck7i/eIX
+	JTePLVXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1omF-0000000FRI8-0qUJ;
-	Wed, 02 Sep 2026 17:29:35 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1x22hs-0000000GmC1-0NoJ;
+	Thu, 03 Sep 2026 08:22:00 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1omE-0000000FRHp-3L3t
-	for linux-um@bombadil.infradead.org;
-	Wed, 02 Sep 2026 17:29:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=TZ+MXL1cgyfSCQwzd4B83Y1gcdTqXTzpnMsgTcK9A4c=; b=gKtLhA402FIZUWD0kBo6eRha3I
-	sDQaeOcJ/88nelrXoyDW4SM1SnkG7emsmKZvCU5zo7jb01ZIzQ3QL/7hzFpMSPEmAS515Np26gKa7
-	fwcj53GH8M2r2vXKLiAX8e3YEbKJHMPXucB991gvyDHtLN0r3tWmyVJQ9qBXSpC1zcA6RQtSaR0L+
-	nNRi2JHoTv58CRcaxyRRbMDwF76qOq6BjUjzjgOmUIcgBmrdUGP4Mx5KABDsg9J0QEVw2YuXoSWvy
-	U86pu07upl38op50jF9dKWnCy7diPWIEC0v8le/0+OoUdUuOZIogUOqHbclKGvaVZD8unus8nkWRT
-	mxkifdDw==;
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x1omB-0000000CGqS-23U1
-	for linux-um@lists.infradead.org;
-	Wed, 02 Sep 2026 17:29:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1788370162;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TZ+MXL1cgyfSCQwzd4B83Y1gcdTqXTzpnMsgTcK9A4c=;
-	b=FCcl6/nex5yo/dVatACfuwRLPSj8DJEFmFUxFfYry95Z69OEArEHY/NiQEj3Tw66+whM1G
-	+zkC91Cw6Am0aVoluyhggu5gQ00G1xGZCpnaKItVAHKMTG9JgkW8cQMFEAR8mfqu8g/+Bw
-	vIK/9o4WcGFo3qeag/tMZc/bqRpDh64=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1788370170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TZ+MXL1cgyfSCQwzd4B83Y1gcdTqXTzpnMsgTcK9A4c=;
-	b=KhrR54YwHc/hrL7AlgrIa/O3CmTUC2Ex/XVBC5f10cnBmLN/KgL/ApFwWX2N1jG/Tujh31
-	FRMHxtmEi+KUCu+90jSXYU65JSY77yjxO6s9KXV2Jx/6LT5+VaA1wavOxXJjR6z1w2+KSh
-	fTZCSkV65FJPy0hlEmFaYabhCRe2M90=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-437-aNLRFW2aOrGgUeZBTtXadg-1; Wed,
- 02 Sep 2026 13:29:19 -0400
-X-MC-Unique: aNLRFW2aOrGgUeZBTtXadg-1
-X-Mimecast-MFC-AGG-ID: aNLRFW2aOrGgUeZBTtXadg_1788370156
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DEC551834577;
-	Wed,  2 Sep 2026 17:29:15 +0000 (UTC)
-Received: from fedora (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id D531730002F4;
-	Wed,  2 Sep 2026 17:29:10 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  2 Sep 2026 19:29:15 +0200 (CEST)
-Date: Wed, 2 Sep 2026 19:29:09 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Elliott Hughes <enh@google.com>, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, llvm@lists.linux.dev,
-	Bill Wendling <morbo@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Justin Stitt <justinstitt@google.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] x86: uapi: ptrace: guard register offset macros with
- __ASSEMBLER__ or __FRAME_OFFSETS
-Message-ID: <aphc5Xf0HU0SWcTI@redhat.com>
-References: <20260821-ptrace_uapi-v1-1-3de8638a29f2@google.com>
- <CAKwvOdkCGEYWnyJtWT=jArXkA47X==G0PU4UNV=s8htpA3Dg6g@mail.gmail.com>
+	id 1x22hr-0000000GmBb-11n7;
+	Thu, 03 Sep 2026 08:21:59 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id D0B88600C8;
+	Thu,  3 Sep 2026 08:21:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4170E1F000E9;
+	Thu,  3 Sep 2026 08:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788423717;
+	bh=0p9MAmMqYQA+pB3vITqVC9F/6eE2jvI8gIptx42Zmls=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=IKrxZNXHTN0f9gmnSG/t1VXsGHT2QgKcCOBJS0IZ7bMJBjaJf/QTC84q4CilAtIVf
+	 3L1sOIKBxl/m266LpzBQITvbyL5pabZyT1RZgvCakcI1Zf0nzxoerhWMe9Q4s72+lb
+	 3zRM+gxShR6cic2hBlse2WRIZPsvaL4xY5aslfw05KRNhHaMCO4R5+JK8YPTpbPq7Q
+	 Y7LIMc5fw8bkQ6wvpLwML5sVH6VJkSHMJPH4M3TSOQO+VDjfk7253/ikZbWgvyu6sb
+	 7nLqyK8JT3eO6niqBQqEuCwwzRlXK2lNuQZqjjPirPijR9x72CIN8YX469mspH2i2v
+	 7CZNV3dW0o2ZA==
+Date: Thu, 3 Sep 2026 09:21:46 +0100
+From: Will Deacon <will@kernel.org>
+To: Ricardo Robaina <rrobaina@redhat.com>
+Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, bpf@vger.kernel.org,
+	paul@paul-moore.com, eparis@redhat.com, sgrubb@redhat.com,
+	oleg@redhat.com, richard.henderson@linaro.org, mattst88@gmail.com,
+	linmag7@gmail.com, linux@armlinux.org.uk, catalin.marinas@arm.com,
+	guoren@kernel.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+	jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com, James.Bottomley@hansenpartnership.com,
+	deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+	glaubitz@physik.fu-berlin.de, davem@davemloft.net,
+	andreas@gaisler.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	chris@zankel.net, jcmvbkbc@gmail.com, tglx@kernel.org,
+	peterz@infradead.org, luto@kernel.org
+Subject: Re: [PATCH v2 01/13] audit: log all six syscall arguments in the
+ SYSCALL record
+Message-ID: <apkuGoWQwLJ7AcUC@willie-the-truck>
+References: <cover.1788351089.git.rrobaina@redhat.com>
+ <b30076994d49fa393251c836b5a57a725f218572.1788351089.git.rrobaina@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdkCGEYWnyJtWT=jArXkA47X==G0PU4UNV=s8htpA3Dg6g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
-X-Mimecast-MFC-PROC-ID: j8uf-ONqCci5q_ovRKFoApmF7uHOYT3PVEUZR44tYOk_1788370156
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260902_182931_780233_770EC9D5 
-X-CRM114-Status: GOOD (  17.89  )
+In-Reply-To: <b30076994d49fa393251c836b5a57a725f218572.1788351089.git.rrobaina@redhat.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,41 +85,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 09/01, Nick Desaulniers wrote:
->
-> On Fri, Aug 21, 2026 at 3:46 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > The register offset macros in <asm/ptrace-abi.h> are guarded by
-> > `defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)` for 64-bit, but
-> > were left unguarded for 32-bit. This causes havoc for userspace that
-> > happens to use identifiers colliding with these short macro names
-> > (e.g., EBX, ECX, EAX, DS, ES, FS, GS, CS, SS). Without this guard,
-> > userspace is forced to be super extra careful with include ordering to
-> > minimize the chance of collision.
-> >
-> > Wrap both the 32-bit and 64-bit register definitions under
-> > `#if defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)`, and ensure
-> > User-Mode Linux (UML) defines `__FRAME_OFFSETS` for 32-bit as well.
-> >
-> > Assisted-by: Gemini
-> > Link: https://github.com/llvm/llvm-project/issues/217413
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> + enh (who pulled this into android for testing)
->
-> Oleg, can I get an ack/nack here?
+On Wed, Sep 02, 2026 at 11:43:34AM -0300, Ricardo Robaina wrote:
+> The SYSCALL record currently logs only four of the six syscall
+> arguments (a0-a3). The remaining two are captured but silently
+> discarded before reaching the audit context. This leads to the
+> need for auxiliary records when audit-relevant data lands in the
+> 5th or 6th argument of a syscall.
+> 
+> Extend the SYSCALL record to log all six arguments, by adding
+> arguments a4 and a5 (5th and 6th syscall arguments respectively)
+> inline within the existing record. Also add the two new args to
+> the audit rules switch case, so audit rules can filter on them.
+> 
+> Rather than plumbing two more register arguments through every
+> architecture's syscall entry path, change __audit_syscall_entry()
+> to take a pointer to pt_regs and use syscall_get_arguments() to
+> retrieve all six arguments.
+> 
+>  audit-testsuite# make test
+>  audit-testsuite# ausearch -i -m SYSCALL
+>  ...
+>  type=SYSCALL ... syscall=sendto success=yes exit=1088 a0=0x4
+>   a1=0x7ffe43518b60 a2=0x440 a3=0x0 a4=7ffe43518b4c a5=c
+>  type=SYSCALL ... syscall=openat2 success=yes exit=4 a0=0x3
+>   a1=0x7fffc74692c8 a2=0x7fffc7467390 a3=0x18 a4=0 a5=7fffc74674f8
+>  type=SYSCALL ... syscall=openat success=yes exit=3 a0=AT_FDCWD
+>   a1=0x557ced4141a2 a2=O_RDWR|O_NONBLOCK a3=0x0 a4=0 a5=0
+>  ...
+> 
+> Suggested-by: Will Deacon <will@kernel.org>
+> Link: https://lore.kernel.org/audit/CAHC9VhSjEt_-Bsra4AEqWv+Daw5Ff=gqy7dX4Ah11RVhdyCBUQ@mail.gmail.com/T/#t
+> Signed-off-by: Ricardo Robaina <rrobaina@redhat.com>
+> ---
+>  include/linux/audit.h         | 13 ++++---------
+>  include/uapi/linux/audit.h    |  2 ++
+>  kernel/audit.h                |  2 +-
+>  kernel/auditfilter.c          |  2 ++
+>  kernel/auditsc.c              | 19 ++++++++-----------
+>  kernel/entry/syscall-common.c |  4 +---
+>  6 files changed, 18 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> index 45abb3722d30..9ce5962bc537 100644
+> --- a/include/linux/audit.h
+> +++ b/include/linux/audit.h
+> @@ -323,8 +323,7 @@ extern int  audit_alloc(struct task_struct *task);
+>  extern void __audit_free(struct task_struct *task);
+>  extern void __audit_uring_entry(u8 op);
+>  extern void __audit_uring_exit(int success, long code);
+> -extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
+> -				  unsigned long a2, unsigned long a3);
+> +extern void __audit_syscall_entry(int major, struct pt_regs *regs);
+>  extern void __audit_syscall_exit(int ret_success, long ret_value);
+>  extern void __audit_getname(struct filename *name);
+>  extern void __audit_inode(struct filename *name, const struct dentry *dentry,
+> @@ -373,12 +372,10 @@ static inline void audit_uring_exit(int success, long code)
+>  	if (unlikely(audit_context()))
+>  		__audit_uring_exit(success, code);
+>  }
+> -static inline void audit_syscall_entry(int major, unsigned long a0,
+> -				       unsigned long a1, unsigned long a2,
+> -				       unsigned long a3)
+> +static inline void audit_syscall_entry(int major, struct pt_regs *regs)
+>  {
+>  	if (unlikely(audit_context()))
+> -		__audit_syscall_entry(major, a0, a1, a2, a3);
+> +		__audit_syscall_entry(major, regs);
+>  }
 
-Oh... there is a little problem, I don't understand the usage of
-(magic to me) __FRAME_OFFSETS ;)
+Won't this (temporarily) break the build? Maybe you need to introduce a
+new helper e.g. audit_syscall_entry_regs(), then convert everybody over
+to that, then rename it to audit_syscall_entry() at the end to keep the
+series bisectable.
 
-> Or someone who knows better the
-> history of UAPI headers?
-
-Certainly not me....
-
-OK. I'll try to read this patch tomorrow with the clear head after sleep.
-
-Oleg.
-
+Will
 
