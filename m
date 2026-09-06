@@ -4,113 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99608C79F8C
-	for <linux-um@archiver.kernel.org>; Sun,  6 Sep 2026 06:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26B3EC79F8C
+	for <linux-um@archiver.kernel.org>; Sun,  6 Sep 2026 16:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uDjy72BsvDFpaL9e5tQovRjuStP4IqOhC4YA9r9skOM=; b=JmWZsNwlrMsviCAHpWdiCWLk4n
-	rFZoYNblvXYTKQrQc6Bsuh0hlhpd1n6ETl23b44wxs5Pxtlr1I7CkcwAglHtOZ9+WQs3AFPqJ+nHp
-	fQ9ikE2l4jrtTxUWiwwc+UicZZXUaNNbCdpDXjZqjvBWRe9QDTc/anLTVGcWgEfb57okYOQ3e4kRK
-	PRomO4lW2OuzOoXxRVRoUNl8aKRxexe7XaMwK3r+1VQdiWH5Y73JyUS3O+rDbX77vnvfZf3rz5Rvv
-	v27LqlTxx1zTKCMuIzmoJF3FpDqGzPdTlzvkhLxOtwVEA/rZ9zfz4fiprCHExEQ8xHgoLdcYibagf
-	UlD6AVhQ==;
+	bh=oSMRVQ2ffl+GqdtcpJsergu6EJ70aiuLEE/q2zryERM=; b=z8rVmg2G1Mr49fxfYTA/BiNdW7
+	nd/SxTeUg6gCpYqmCa3mG226+ONmOvN9D7isaB59oRXdiyko0B6Yx3j31+m+jnUKrbcYDXQLv2p+j
+	rRZoXA7O8eMIQKeuvzgWFECfsf4NCf3UeH7aA9afnA2DOYEcnLWtQsvEZIr8je6TeJcXTd3i9nSk6
+	uWCOj4jAPnwGwDMFlV5b8GyGiaLG83paUes/vweY4c/XLX6ds8nSWi1Ew05anablTi9cdhFg+/QBa
+	jGs9doBK0sxF74n5ha2lRdNV+2ck6lcwpFB2Jp033iGncwtU+2zg0a6AJPW0UIx4qv15iFnMvibdf
+	j0HxLUhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x36kh-00000004mmL-3aw8;
-	Sun, 06 Sep 2026 06:53:19 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1x3FnV-00000005BGy-3e1z;
+	Sun, 06 Sep 2026 16:32:49 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x36ke-00000004mlx-46Y1
+	id 1x3FnS-00000005BGP-2Mrl
 	for linux-um@lists.infradead.org;
-	Sun, 06 Sep 2026 06:53:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1788677596;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uDjy72BsvDFpaL9e5tQovRjuStP4IqOhC4YA9r9skOM=;
-	b=L1cEVRh0SVxMV34G4AgXrG99tvKFjtkXZ1G4TfE87T43PIMq8Q1f4LWCvzDQKmGxBi/vhf
-	H4m0MRa0Ownb3mJ94wd0PPwby3KH8npNbEiL5MayCEewn2cdUnGfsBpRFv9NHPL3sqPwnc
-	4TX1hnK4eo0Ub4MU2SYqLKo6i6bKavU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-tbrMztXQPSinqSuzc8QALQ-1; Sun, 06 Sep 2026 02:53:12 -0400
-X-MC-Unique: tbrMztXQPSinqSuzc8QALQ-1
-X-Mimecast-MFC-AGG-ID: tbrMztXQPSinqSuzc8QALQ_1788677591
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-4858e4b3e92so801732f8f.3
-        for <linux-um@lists.infradead.org>; Sat, 05 Sep 2026 23:53:12 -0700 (PDT)
+	Sun, 06 Sep 2026 16:32:47 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-49cf4f81d86so20557005e9.2
+        for <linux-um@lists.infradead.org>; Sun, 06 Sep 2026 09:32:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788712364; x=1789317164; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=oSMRVQ2ffl+GqdtcpJsergu6EJ70aiuLEE/q2zryERM=;
+        b=VrYU1e0aInt4XqUB47Y3TsS+ajhzg0KvhmrgrIlnCOjrlvwuCVFq856b4yGmv2tydo
+         JG2IvhOaX2Tn7mDpQfWxLjm6WYl2sbhtfKvrZM0o6v166jLCnXpJkOqfawo8fjag3IJ2
+         OD6Ddy7h8NDjFFFn1+QD4qZZ4zBkZnFXK9NBJq7A63v5zCyQREdzJzbfzr/vtQeeCwl/
+         XehEQRLZya/i3hSu/ONd4upED2hteJjWhAxPYagnrMGL1FtAcwp7dYooQYaH55ltGlnQ
+         BWcinP4KE4BWAnTORws7emqVNtSBeYxnncvUM3wELzsiyDFt383VzRU8F6Xh8TxbjcLt
+         EZSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788677591; x=1789282391;
+        d=1e100.net; s=20251104; t=1788712364; x=1789317164;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=uDjy72BsvDFpaL9e5tQovRjuStP4IqOhC4YA9r9skOM=;
-        b=QWbH2GMXd0V4R5BRNsPhHUli2FHFvsLZ0qPqYqve8F6QteiiNNxRPMmUelalVyjbTG
-         tAz7dvKqza1AB9wnFcNqBhX3TT79Qxfay7ZiPPyTOFtFnQtIZdFsnlscHeUQW6NCcRBR
-         Gs3WbvqQwTNiuyIms1qZVEiWWpP5fkQWnw7q7UrMsumuYZTo/AeEncyyC97vUb4Tu0jN
-         E2fxLoidCPjTK7kz4UUySiqkMbchDbGKtUbFpwldk0ZuRvp0TU7+licFyYUMSW8TmIPa
-         L5wSJ8j0alEFkvmZAJTfrBRO/mOr2HS/T/jbq2FEMxPEyK/bY7etA38p9sshkd2RmjEP
-         7dJA==
-X-Forwarded-Encrypted: i=1; AKwUvBx+pr2QJfy9MOjRPQu9UyOL9IzA8fbsHIlOBcVTYm8q0wuDAx7q4yl92qR9kzQdlaWCF9VV8AbByQ==@lists.infradead.org
-X-Gm-Message-State: AFuF++mCNbma+sFIvZ2z1/2wrwKa/6itPbUm/bMEH6Fm+ywr2ZfhlUJZ
-	3Iwpm3lPEwxAVqDXjyNU5dHlsofMobimXUZkTfudPlTk5OytpeOwVHYovuJFVLDRUkbw8/+fL74
-	vFFtOD8Za1/KXrvGG+Nrg9pvTDgaITnIxQiDZc8NrE/C2tSOBxQ3c8+6HU6W4i6JB/A==
-X-Gm-Gg: AYBFou3DcqdMKPR1elhB3tbOfVjUxV/2v8Khk2ZBoymobuaSALp4eF5uU0L8VtRo95c
-	BMRQoiDeHcQ+lpUb6X/dAPEIj/3eD+yVNt/+F3l1vQoappXh/PFa4hR4Z1Phr1YYDA4KIfDg8dL
-	9qgA7r9GUC6cIBdoH5j3y02MxT7KAEeZwn53vJwmTr3Baf8Asp9oxz9lXBiQsxWuPJeY2y9og57
-	rIoVe0nhA5v90sn3ChiyThbwHi4CvLlAPi+qhKuV7PKhoIktFicRYeF4JnEfuYQ91sdGMVx4WzV
-	8CyFq6dR6kwk0VR27UWvrCxBg7ZQ/srN+chNBmfSe8zJuoxPoUwzcCDsTI20/8KHW4IsZ96qQBd
-	3ajpGnsAszLjGxPpIofIpvso=
-X-Received: by 2002:a5d:64eb:0:b0:482:e4bc:51a8 with SMTP id ffacd0b85a97d-485870899cfmr18773113f8f.7.1788677590870;
-        Sat, 05 Sep 2026 23:53:10 -0700 (PDT)
-X-Received: by 2002:a5d:64eb:0:b0:482:e4bc:51a8 with SMTP id ffacd0b85a97d-485870899cfmr18773081f8f.7.1788677590394;
-        Sat, 05 Sep 2026 23:53:10 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-79-236.inter.net.il. [80.230.79.236])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485883acd33sm18455464f8f.18.2026.09.05.23.53.07
+        bh=oSMRVQ2ffl+GqdtcpJsergu6EJ70aiuLEE/q2zryERM=;
+        b=LKCeCVocEE9Mp+dQ/6DB37H8QJwFgCeTfehLjfl+dRIcQuPhFdgkmYGCq3lHkwH7Q7
+         g9KhDcfsAFqFpKNWfi/Bn75iSE+furXoL7SESg1jYN9Zn//Mcq97xeLltMsKEHM7Ohm1
+         rT2wtBrIKwQo05xsvFTNPKc5hhpd/Fir2dTbcpTAd3x5gpGpm/CtdqLeqpUD8e97Mjus
+         UeIdKDfny4afUKqMMZgqXBwOtkDvitr6Yw1UoXNNT1Zv0TrG/npejc9KRZsOhknkSaQ0
+         zpJUnjO5mK1k9GetfezFBIOppEWL+rtjQCUnwxAD5Vf6UragADlO7oxdWhkrjdhUd2sD
+         Veqw==
+X-Forwarded-Encrypted: i=1; AKwUvBzdybNih25Np3zxROss1hz9/1kPWgMk/6YZNaUj2/GmPUNStNtK72FGZCGHSHWIsFdGRRvAp5htjg==@lists.infradead.org
+X-Gm-Message-State: AFuF++lsRk2AITMqk1Uk+X9DJw5lqFV55DALBBDcOzIkP5hIPCNyXA+X
+	QoR15dUFa2teFphsXLLcDe2EhhEA3DJifXkO7EEY3ZMGxPd1Oxc7rxpU
+X-Gm-Gg: AYBFou3j7BuSCAxhl/Hu4xSgsb3SkE26My/1IxS0LMZaHJ9RydD3CnNhH5Uj91PLC3z
+	8MVoknifPHzSWAr7lE1v3Civ8JplNatxvHKnLcq5g+XzSFlkmDiRPidAmK/dowx4/cViNk8Rj+u
+	mLvswJr8Edl7Wc5rePlk724DkziJon4WYQr9MnaHiYhDbfAfOrspFwzaCd9Wf2+o/fu5PF7g/rt
+	3VZrJKsgsjh8hNad5iYwnSTZluLzDW0P0WkQwVGqs/kpmYAzNANL5m6dXspLRx0aFyGGHn71mhK
+	Ah5S4xcDYiyjjLaWijhihOglmVR7urgTlT1CM5k+ivxZDWOEDkN0awu7hJMWLytneuKYfrf8GnU
+	nVgSivIJhMDOv1RWvLCJWWTjtOo4HBU1FjwSsw/fa+FOx1Fya0KOgipMm62HSsGwoTHCchjLzZm
+	qKdNGLfZcUU8BQ1QZblp0g9i6J0CW82ZVIoF/G1Ksb3Iqfhr3qBHsqe17bh2sfk0bFio6JRCXs6
+	OHZIDRcd4ZcjlVeHSYAKpbxGfkhZKeI02R+NmTsrj7YCKTe//FTKTHqDExROpO+AmOAfzT1pt1Z
+	mw8gh0AbVaDOOB0E/hhuajbRmM9rWFcfTTh/yofUusAIEHbUvYO1AJNQ4jUIu38Y92zAmHKt9wq
+	k3MNP
+X-Received: by 2002:a05:600c:8b04:b0:49c:fc6c:be11 with SMTP id 5b1f17b1804b1-49cfc6cc0c3mr138648845e9.23.1788712363826;
+        Sun, 06 Sep 2026 09:32:43 -0700 (PDT)
+Received: from unknown748F3CBA5068 (dynamic-2a02-3100-9d84-5101-9c80-d25b-14b6-410c.310.pool.telefonica.de. [2a02:3100:9d84:5101:9c80:d25b:14b6:410c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48588394fa1sm21761428f8f.8.2026.09.06.09.32.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2026 23:53:09 -0700 (PDT)
-Date: Sun, 6 Sep 2026 02:53:05 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Karl Mehltretter <kmehltretter@gmail.com>
-Cc: Jason Wang <jasowangio@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Pawel Moll <pawel.moll@arm.com>, Cornelia Huck <cohuck@redhat.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Eric Farman <farman@linux.ibm.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Hans de Goede <hansg@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Vadim Pasternak <vadimp@nvidia.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	virtualization@lists.linux.dev, linux-input@vger.kernel.org,
-	linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-	linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+        Sun, 06 Sep 2026 09:32:43 -0700 (PDT)
+Date: Sun, 6 Sep 2026 18:32:40 +0200
+From: Karl Mehltretter <kmehltretter@gmail.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowangio@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rusty Russell <rusty@rustcorp.com.au>, 
+	Pawel Moll <pawel.moll@arm.com>, Cornelia Huck <cohuck@redhat.com>, 
+	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Hans de Goede <hansg@kernel.org>, 
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Vadim Pasternak <vadimp@nvidia.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	virtualization@lists.linux.dev, linux-input@vger.kernel.org, linux-s390@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-um@lists.infradead.org, 
+	platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 0/3] virtio: synchronize callbacks during device reset
-Message-ID: <20260906025249-mutt-send-email-mst@kernel.org>
+Message-ID: <ap2VJkoIsBbsqcNm@gmail.com>
 References: <20260905152059.89560-1-kmehltretter@gmail.com>
+ <20260906025249-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20260905152059.89560-1-kmehltretter@gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: Hc1v29zKPXT1dbBow0p8Rg-qUy_H16dEd0ydrTpJoeo_1788677591
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20260906025249-mutt-send-email-mst@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260905_235317_112013_C3E1C84C 
-X-CRM114-Status: GOOD (  27.07  )
+X-CRM114-CacheID: sfid-20260906_093246_617453_74D9F3DA 
+X-CRM114-Status: UNSURE (   7.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,80 +114,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Sep 05, 2026 at 05:20:56PM +0200, Karl Mehltretter wrote:
-> A virtqueue callback can outlive virtio_reset_device() and race with a
-> driver freeing the state it uses. The reset helper documents that no
-> callbacks remain in progress, but that depends on the transport:
-> virtio-pci waits in vp_reset(), while virtio-mmio does not.
+On Sun, Sep 06, 2026 at 02:53:05AM +0100, Michael S. Tsirkin wrote:
+> You didn't send patch 3.
 > 
-> virtio_input has a related ordering problem: it unregisters the input
-> device before resetting the virtio device, while an event callback may
-> still be using the input device.
-> 
-> Patch 1 moves the callback wait into the core, using the existing
-> virtio_synchronize_cbs() operation. Patch 2 fixes the virtio_input teardown
-> order. Patch 3 adds the missing synchronize_cbs hooks for UML, TmFIFO,
-> remoteproc and virtio-vdpa. Remoteproc uses one SRCU domain per processor.
-> 
-> The new hooks wait for callbacks already running. UML, TmFIFO and
-> remoteproc still allow new callbacks after reset; fixing that is separate
-> work. The event-virtqueue DMA mapping issue is also separate.
-> 
-> Changes in v2:
-> - Patch 1: move the wait into the core instead of fixing only MMIO, as
->   Michael suggested. Remove the duplicate PCI wait, preserve its shutdown
->   wait, and fix CCW callback locking. Drop the MMIO polling: reset polling
->   for v3 and newer is already in fa8833c085b6 ("virtio-mmio: add support
->   for transport version 3").
-> - Patch 2: keep draining completed events when ready becomes false,
->   instead of breaking out, so teardown does not truncate an input packet.
-> - Patch 3 is new, at Michael's request.
 
+I resent it to just you now. Mail must have gotton lost somewhere.
 
-You didn't send patch 3.
+If all else fails, it's on lore:
+https://lore.kernel.org/r/20260905152059.89560-4-kmehltretter@gmail.com/
 
-> I reran the 120-cycle unbind/rebind test in an arm64 KASAN guest with four
-> vCPUs and a 5 ms busy delay per event. With patch 2 alone over virtio-mmio,
-> reset returned with the callback still running in all 84 overlapping
-> cycles. With the series, it waited in all 103. Over PCI with per-queue
-> MSI-X, it waited in all 66, including runs with threadirqs. No KASAN or
-> lockdep reports. These runs predate the per-rproc change, which leaves
-> the tested MMIO and PCI paths unchanged. They confirmed the missing wait,
-> but did not reproduce a use-after-free: with evdev attached,
-> input_unregister_device() waits for an RCU grace period that the IRQ
-> callback blocks.
-> 
-> That version also passed QEMU input, rebind and shutdown checks on arm64
-> MMIO and x86-64 PCI, including arm64 RT, KASAN and KCSAN builds, and x86
-> UP/Tiny SRCU. A legacy INTx NIC was present for an additional x86
-> shutdown check. The changed objects built with W=1 without warnings on
-> arm64, x86-64, s390 and SMP UML. The per-rproc version built with W=1
-> on arm64 KASAN and x86 Tiny SRCU, and passed six remoteproc callback and
-> lifetime KUnit tests on each, using mock remoteproc devices.
-> 
-> Link: https://lore.kernel.org/r/20260818040433.66986-1-kmehltretter@gmail.com
-> 
-> Karl Mehltretter (3):
->   virtio: synchronize callbacks during device reset
->   virtio_input: stop callbacks before unregistering input device
->   virtio: implement synchronize_cbs for remaining transports
-> 
->  arch/um/drivers/virtio_uml.c             | 10 ++++++++++
->  drivers/platform/mellanox/mlxbf-tmfifo.c | 14 ++++++++++++++
->  drivers/remoteproc/remoteproc_core.c     | 10 ++++++++++
->  drivers/remoteproc/remoteproc_virtio.c   | 20 +++++++++++++++++---
->  drivers/s390/virtio/virtio_ccw.c         |  6 +-----
->  drivers/virtio/virtio.c                  |  2 ++
->  drivers/virtio/virtio_input.c            |  8 ++++++--
->  drivers/virtio/virtio_pci_legacy.c       |  2 --
->  drivers/virtio/virtio_pci_modern.c       |  3 ---
->  drivers/virtio/virtio_vdpa.c             | 21 ++++++++++++++++++++-
->  include/linux/remoteproc.h               |  3 +++
->  include/linux/virtio_config.h            |  6 +++---
->  12 files changed, 86 insertions(+), 19 deletions(-)
-> 
-> base-commit: a500db7819c50db59e55f1b4fa1c3baa5a2616f3
-> -- 
-> 2.39.5 (Apple Git-154)
-
+Thanks,
+Karl
 
