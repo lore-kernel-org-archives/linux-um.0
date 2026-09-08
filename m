@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C05FC79FA0
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 08:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D1EDC79FA0
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 08:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qlpA25HriXdx9v6T6FYmtvmjD7yzSHEf8Vv9SuYbJrQ=; b=sH5xnoru9pdVBBZP/xUAbBlkNe
-	a1a8+0am9y+Cus+PyKIpN43kdqunUH+KyoHLSSIT+TmnbJWNkJ6kOZjXrazoxjqWnhjeAV2Lkqxzm
-	YJKcVn+ril9pClvCEWJae6SyMRh8e5tF0RybsQVCnZq9+Ihi/9BRwVBYHN2i1yQGJNMzWx4Inb+Kh
-	N+xF67k+53Dz/hvPwdqwP6wvOkYbikWTfOvmI8SokJ1zxbLHuySNFGQNxrVzK1bS5WM28RtGINHhv
-	++bej7bDK7apZ524rwk7x9NrNzG/TDALSp33DC4Jw/Sg2PR90Sun/hsfmmtw6WHQP4x2J72YNipsI
-	bUsXhmpA==;
+	bh=/cIx/FN1ld5ZUnvvOO4W6SfTMNv+qsyUKpor9qdoZ3s=; b=fvmV+Tt+xhNmSjw5ngxjvJC/KC
+	PMCNJggyZGDyikQkhNEOcgGgmxkwaOS78UMRKhEvRB7A26NT+46svKPnvS9XZZ4zB20VFasdYrBmb
+	cG6djbyI8V0Xb64tRI5AW1I9q3OXLq1tZ6fImYbttHvhMO0RovsVG8c03Xy8KKUQ7jYpm31lqBrF6
+	YGD8ZVWlv0bbTYT8up2p4CJjhKuP7EmZGugXcdOgXvKBziL63s4xaJOAjfFcBirpBntOVcmovshW5
+	5tUQ97rU6LygMpNobbwoz9H+xYkecPT2jGkDtzB89jzljn4GiZhWIeh74E16Avo9oruhOb+d5xzOE
+	5LZ/G83g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3qqx-00000008Li7-1DSa;
-	Tue, 08 Sep 2026 08:06:51 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1x3r9b-00000008OQx-2RO8;
+	Tue, 08 Sep 2026 08:26:07 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3qqu-00000008LhT-3YHh
+	id 1x3r9X-00000008OQ5-2JQf
 	for linux-um@lists.infradead.org;
-	Tue, 08 Sep 2026 08:06:50 +0000
+	Tue, 08 Sep 2026 08:26:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1788854807;
+	s=mimecast20190719; t=1788855962;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qlpA25HriXdx9v6T6FYmtvmjD7yzSHEf8Vv9SuYbJrQ=;
-	b=agqUC0k3rfHzEHi/BNs8nDCpNVfMLArazlyCV5N1zSj+YV4+qXFkO3UgmsWMOrSM2VEMd0
-	zS8IHuhyYRQpWdgHuvl3UzqHb1e04JKR5E6BCOnJZLw5Q86k8zpZQZXNzgyxIHKUMR2d2h
-	xG23I1WTxi5JtxnhSVjfoQ9Czt3GyHY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=/cIx/FN1ld5ZUnvvOO4W6SfTMNv+qsyUKpor9qdoZ3s=;
+	b=QUKW+cRB1vgNMh8fgJCHLMmXMprE18hgjlH8ruQ4mKP0QEdME0Bd1bp6oFUehRhSOObasJ
+	J7EmHViJb1sqrLkkZGzcUu5I1kKHZvnXtnF8P6Ekqhe3jfIfD5aRcz6JqZzj3963hxYzOu
+	DKEer3pEpYfvnVv+cuhlM2gVxZon2X0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-Ruh1DUVxNDGW1IA7Pg4IQA-1; Tue, 08 Sep 2026 04:06:46 -0400
-X-MC-Unique: Ruh1DUVxNDGW1IA7Pg4IQA-1
-X-Mimecast-MFC-AGG-ID: Ruh1DUVxNDGW1IA7Pg4IQA_1788854805
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-49b8c651ac0so62202615e9.2
-        for <linux-um@lists.infradead.org>; Tue, 08 Sep 2026 01:06:46 -0700 (PDT)
+ us-mta-482-t82_dsEBN7SRqK1pbbRKSw-1; Tue, 08 Sep 2026 04:26:00 -0400
+X-MC-Unique: t82_dsEBN7SRqK1pbbRKSw-1
+X-Mimecast-MFC-AGG-ID: t82_dsEBN7SRqK1pbbRKSw_1788855960
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-495569acf8dso26682995e9.1
+        for <linux-um@lists.infradead.org>; Tue, 08 Sep 2026 01:26:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788854805; x=1789459605;
+        d=1e100.net; s=20251104; t=1788855960; x=1789460760;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=qlpA25HriXdx9v6T6FYmtvmjD7yzSHEf8Vv9SuYbJrQ=;
-        b=b8cU6XDAVT2B3sgE3Hrz/a+ksKbEofVlA8heEFDIWKlwByDi2IRRUnI3ceh2qcx/GB
-         V43zA4KCOft98nHgaCA4f3YGlys8vvIH1jzzYOGUg6m9MMwa6JAr8PfOEWInTOKQZUQi
-         PJ0nR9p+UfrRitBRviVDOfdM21nA/pt0v3eg19lCrbiXVmYOKlNht+8BLncXQOCmHfSb
-         Ut5l+OPF94yKSHdCfexZJlM22YoSlnNEXWLC0+qQL0O1jM50v4ev62FPZOVoKxJkbgXL
-         fuvbDF7vVsljJyYZUI+Z6tU7G4vpUVSIO09AFsiILCaxlgOt6JmgyuXUqllEDsELIFEf
-         yL4A==
-X-Forwarded-Encrypted: i=1; AKwUvByaS7jEEa178NNhmaNu8X8a3jaJvOgVoGzivupzmb0TVFz5JFuYGz+FiGBYCKtREpkHXc8cXxlAZg==@lists.infradead.org
-X-Gm-Message-State: AFuF++l+PBhHxuZibnfUT8WzdX0hESCD462nkAoC/AQl3ttwQBOkdDYM
-	vjQOgc7YZg5gKO+tit7aQ8mn2GoWlukP4etbdkB8sCBGyZl9WElZcAs/8L+sGfaDPSOye+FuykZ
-	2gwt9YpSeKksDLazYe2zdfyJUe29KsmL7B8zBhqwXypwhAdYCR1ivykKC+9/ErhCzjA==
-X-Gm-Gg: AYBFou1jbsvoPtZCrkKpFzLId28EcZlsCZ8H/cRWTqYAdVRFGa4o0Zig7H2LjPsp9qd
-	OqGV0kW5bZM+7LaY4o2qfkGViRgEjKfzWXyWEgw0UeE8SlwJnmd84TAepe8BFaojko3hw5ky1lc
-	wOmFY8RaOK+HSRns5d/l2IwkD3kYncZC1textOcksmFkT0zy2s6Sbc1HjNiS6TnNwznfQiahcRF
-	xs4iPK77rGqHL0zIBHev2KWdSocm2G9WEa8+QP4dXZVhVm1oGGpSFPlco082ICsr54rU1V78zQs
-	/iffjPz/9PbmTWXvS7miG38+S3wYnRPRAGDuihHP/zAT0TCLYZXWtgUyOpYhgScnl/bwPQnsJMb
-	S5jtmeMPg4TxdEyrSyTVOUjE=
-X-Received: by 2002:a05:600c:6209:b0:49c:fed6:cd3f with SMTP id 5b1f17b1804b1-49cfed6cd4dmr208433925e9.23.1788854804733;
-        Tue, 08 Sep 2026 01:06:44 -0700 (PDT)
-X-Received: by 2002:a05:600c:6209:b0:49c:fed6:cd3f with SMTP id 5b1f17b1804b1-49cfed6cd4dmr208433115e9.23.1788854804098;
-        Tue, 08 Sep 2026 01:06:44 -0700 (PDT)
+        bh=/cIx/FN1ld5ZUnvvOO4W6SfTMNv+qsyUKpor9qdoZ3s=;
+        b=SNAVaKaKMMNqvTt+46Sr75/hCSP1j4tYHNgN5m3NFULyGsjtA3XvQvD9WxUdSYveUS
+         BQcze71J1WiirpRYulLdCjwLG8Stg5V3B4Cqy5FpInr+Rsx5Yw8I0FODcKckpdfkq3Xp
+         EXocE9a3Y1/l7rkjGgG/NzjYxbcQohbfNFuQoo93vBvteSP85CQnmxK++s1QHfIj4AeH
+         MqY9/nzwkNun09ik1Yor4xV3cD32BUgOR+HeaTIse8X4egueS5YMVAhwooB1iEbsNDgD
+         0uQkiOWGz+2vwUNy5tNzSBNIW1BidyOUk+h3LrW2aPSoCoPH46jCCnG0UjwdgiOnNSsY
+         fqpg==
+X-Forwarded-Encrypted: i=1; AKwUvBzae+OLGCMosG1CxjAVbjAVzJwxhn7LuczBvvsnNFna2nN518YslBT9tYl7lrxksHVJrR+s8k6PvA==@lists.infradead.org
+X-Gm-Message-State: AFuF++mRC4te8EuhLD5f6hIUOJVG8IHEO3r7TJJJM+beYbJFyaZvRK2H
+	6Wn5lNFyekVeeK/b4p0s4E9Cm9JAZFPxVgGmHMkTV3ULKUMVsGiusda5jQCt99Yw42Cya+qUBUe
+	sePAnlSaOFd4J83+JSJVlBX0vkc6zWLxn0hxK4CQO+XLVSDplbZGGBfbnU6BpC9GySA==
+X-Gm-Gg: AYBFou1gOmlTlkpuX9yibdyB8mFhl9Tohj3hbhJrYEdgrX7FVNQiY04bxwtruW9HoqW
+	NmbMosOJCsj0RV2kDE9zOOxgU/iwQabc714lGdGgWo+m+LldH4w5kIBxkKSvchzsJyx59TrawwF
+	v3I3zwccb5j3bkF3YH00ijG68bmskSRnAi5SXlX5s3oJYmEELXzQM1xe0Uhs4JEOIUdvXfEqgF8
+	hco3A78SkTLqo+hw8KGH+4sE5ezE3vkhnGXpElm2IzR9pl0Om5yEQeTfegIHOgOY8ugUWwxAzgF
+	QPVop3BfK0yrftMo6pydLQhjQtsrq+dkZEtQ5RDpRNdiXZML30wMbzJjM7QgJYFpgN1HzYX1Z5q
+	QDd0ky8fF3cT5Hae51BbDi2M=
+X-Received: by 2002:a05:600c:c4aa:b0:49c:e3c3:5efd with SMTP id 5b1f17b1804b1-49cf8241a84mr469629035e9.9.1788855959346;
+        Tue, 08 Sep 2026 01:25:59 -0700 (PDT)
+X-Received: by 2002:a05:600c:c4aa:b0:49c:e3c3:5efd with SMTP id 5b1f17b1804b1-49cf8241a84mr469628205e9.9.1788855958792;
+        Tue, 08 Sep 2026 01:25:58 -0700 (PDT)
 Received: from redhat.com (IGLD-80-230-79-236.inter.net.il. [80.230.79.236])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49d08144037sm282102195e9.7.2026.09.08.01.06.40
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49d04fe7f9dsm275644125e9.0.2026.09.08.01.25.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2026 01:06:43 -0700 (PDT)
-Date: Tue, 8 Sep 2026 04:06:39 -0400
+        Tue, 08 Sep 2026 01:25:58 -0700 (PDT)
+Date: Tue, 8 Sep 2026 04:25:53 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
 To: Karl Mehltretter <kmehltretter@gmail.com>
 Cc: Jason Wang <jasowangio@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
@@ -104,18 +104,18 @@ Cc: Jason Wang <jasowangio@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>,
 	Sven Schnelle <svens@linux.ibm.com>
 Subject: Re: [PATCH v3 0/6] virtio: fix and add callback synchronization hooks
-Message-ID: <20260908040141-mutt-send-email-mst@kernel.org>
+Message-ID: <20260908042440-mutt-send-email-mst@kernel.org>
 References: <20260908053817.26065-1-kmehltretter@gmail.com>
 MIME-Version: 1.0
 In-Reply-To: <20260908053817.26065-1-kmehltretter@gmail.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 6sPo4LuTEZWbPkqX_ktZeAIiclMOHTyanLgZlRLNtP4_1788854805
+X-Mimecast-MFC-PROC-ID: PzVVkp-IIut9-4iMThREdhtYbiOz3J0lB2ucH3QguxU_1788855960
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260908_010648_961396_33B1A0CA 
-X-CRM114-Status: GOOD (  33.15  )
+X-CRM114-CacheID: sfid-20260908_012605_168478_339CAB05 
+X-CRM114-Status: GOOD (  33.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,20 +137,11 @@ On Tue, Sep 08, 2026 at 07:38:11AM +0200, Karl Mehltretter wrote:
 > core change and the virtio_input teardown reorder from v2.
 
 
-Pls note I dropped the core change for now.
-That one needs more work:
-
-- transport changes should be separate patches from core
-  changes
-
-- shutdown generally needs more work, it should disable
-  config in particular just like remove does.
- 
-- drivers that queue work must have a shutdown callback to
-  sync it - that part can be separate patchsets
-
-
-
+Thanks I applied since this looks like a net improvement.
+Pls keep iterating on the core change.
+If you want to take a stab at some of the pre-existing issues -
+will be welcome.
+Pls do note which patches were tested and which were not.
 
 > Patches 1 and 2 fix two bugs in virtio-ccw's existing
 > synchronize_cbs() hook. After a fallback from adapter to classic
