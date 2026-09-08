@@ -4,93 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A253FC79FA1
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 09:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA14C79FAD
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 11:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M4bnahwswymvE5nOIFxOjV/veHxRfM8mUS2vFlMphLI=; b=OHH0YFMHyhFogd+m1s+K6iuksv
-	WYD7h7gRb5vZwoAGaxFftfKYZhvcNAb3lNnYfuiaUc7MwfcvvQIym3jJS0eKCdW2slxMJOasfG5tE
-	tSR22pGE2Af6TTqLo1mhallLVIv8DApY7yjSPildTLUpy6qba6+VFOohGL1aICcKHy0JU/V9b0NVn
-	3/uPjUA1t9VT8Ov4JQ9bkmFTRk4FiWvrVRs6lNPn0wA8Ppud/ALvZQNSuPfrqjbJn0/26ww5j1BrU
-	GXx3WFwmUmyYP0xZfDEww9EV8yIYNqjQ/qQnK+LkbhLqZrV4OqqDP4qOYWJ9mvY2v3YMXDaLxry9S
-	tLl2em0Q==;
+	bh=wrZchMHbuIO6XXck0lzWb4MFVBIJqfPNOjZp2CkiLAo=; b=ZnBVHmoH75Ye5J8P99F/x5nsmg
+	q4Rvbg5xstJuQIZxBLf7xzoq1H2I4n0JJSd2rMVgJLZoMWB+2H4RpoJGgNXVXVVf2/iJs9kDMd4Bi
+	4v2TXiBhIVd0v/QasI5fDMZrDZntKyMq16iDTgbwKkI5u4xxv2JBOk2msPBLI3Dy5y2S/DX/px8mu
+	lqpryyasFVNBaDW3wpx1NvmaK2wJuBdUPwObxLvOK0rVrBaXa1ok5KNjIAcG+GVP63waF8ySMe0k0
+	pQ5muQhbNvpnZ5dDYU61RIj4pqfgpZmIVfjKMOQovH3oMXxZTdYjpv/TFL4tM1tqxf7P3FJdK9ZZf
+	55im/w+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3sGr-00000008dDb-0GMu;
-	Tue, 08 Sep 2026 09:37:41 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1x3u0r-00000008sxX-0LrO;
+	Tue, 08 Sep 2026 11:29:17 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3sGn-00000008dBf-1Uka;
-	Tue, 08 Sep 2026 09:37:38 +0000
-Date: Tue, 8 Sep 2026 11:37:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788860254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M4bnahwswymvE5nOIFxOjV/veHxRfM8mUS2vFlMphLI=;
-	b=F99r3XWuTQu1aQaZj3Rg35vrK+Vh4xoW6esYP08KsnkTB5yxRHFlAX+DCSQ9MmE/ytdjCY
-	bT6ZSwlbgz0Tp/9QlaRm9xj6k6x+gQowVBcql48kgWTi7EY8hoPzlCmCwOwmHC8SxOCa3J
-	0icgZeoQJU6KNJO4gOL3qhihZkDuWn/jnlOBCrvGJD7o4Fnl7C36ruhip68Y+2nMvnOAVX
-	9XoGZlIvgcOwA32mE4o6lEcMBu1d9f3urtNxvC6vBsxPGt/e/3MpqOApvFdmwEjj/Zakfp
-	dC6HHcg6MFdoR4Ez1Du4OVqzN/fIOPQmWkTrSXFlU1lEDS+2M+h55TuuwKLKTg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788860254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M4bnahwswymvE5nOIFxOjV/veHxRfM8mUS2vFlMphLI=;
-	b=Eal5NKMa9KoeM279byQBbEfyeEmUQxO7LFbQVe68UMo95PO7FvduzWF1IqJWwbafV544s9
-	HhGMsegsgfpaGqBA==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andy Lutomirski <luto@kernel.org>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Kees Cook <kees@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	id 1x3u0o-00000008swy-2XDR;
+	Tue, 08 Sep 2026 11:29:14 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 0DDBA41328;
+	Tue,  8 Sep 2026 11:29:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8561F00A3A;
+	Tue,  8 Sep 2026 11:28:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788866953;
+	bh=wrZchMHbuIO6XXck0lzWb4MFVBIJqfPNOjZp2CkiLAo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=UaGEuylvnKTadsfjaS7bvwU33xN2v3VvG9wjjwlcHZzqg4jRyqMpEEdO03+MvqeIM
+	 0cduj0er10VqGiGsJx7yjqifKpSllSZ3vK2y8omgzwmD0GHCZufWGZlTXVUWUiJ1V9
+	 ryqufjLkVU0NIOGHntM/W5uaFdDur34HOl0mDF/iX8gW88SDJFV9ZGxssqTmrANwpQ
+	 ynMdPQCgyGQbU6JnCqU5u6mlf0Svv7YVwvZzUogSUfvbxLoYO7+FDhTi6mBmpO9DWp
+	 jokGL7RYOK/KgBIS1bsW+dwWJav2y/DtDFT7YQL4WN6vyefxcqOuYZ/U9v7ZU8r1QK
+	 2OBX8O/r781rA==
+Date: Tue, 8 Sep 2026 12:28:51 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
+	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
+	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
+	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
 	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
 	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
 	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Boqun Feng <boqun@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-mm@kvack.org, linux-um@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	linux-s390@vger.kernel.org, linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, Jan Stancek <jstancek@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@redhat.com>, Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [PATCH v5 11/24] tools headers UAPI: Sync ELF headers with the
- kernel sources
-Message-ID: <20260908113701-7b7e8e99-81cd-40b3-8a33-f316defe6f45@linutronix.de>
-References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
- <20260908-vdso-absolute-reloc-v5-11-3a93791af1cf@linutronix.de>
- <06996199-5255-41d0-ba6a-ebeca57f61da@kernel.org>
+	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
+Subject: Re: [PATCH 05/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for arc,
+ microblaze, xtensa
+Message-ID: <ap_xXoS5XDqJ0mgU@gremlin>
+References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
+ <20260901-rcu-pagetable-freeing-v1-5-5456a81c8212@kernel.org>
+ <CAJuCfpESe_BXihJh-8FhjQVKzsSpnS4zdMgg3e59byJTc8QViA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <06996199-5255-41d0-ba6a-ebeca57f61da@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260908_023737_537754_8C7F9A7B 
-X-CRM114-Status: GOOD (  15.72  )
+In-Reply-To: <CAJuCfpESe_BXihJh-8FhjQVKzsSpnS4zdMgg3e59byJTc8QViA@mail.gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,47 +110,141 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 08, 2026 at 10:56:58AM +0200, Christophe Leroy (CS GROUP) wrote:
-> Le 08/09/2026 à 08:33, Thomas Weißschuh a écrit :
-> > Pick up changes from the UAPI ELF header files.
-> > This picks up general changes to elf.h, elf-em.h which was forgotten
-> > previously and the new elf-r.h.
-> > 
-> > Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> > 
+On Mon, Sep 07, 2026 at 02:07:37PM -0700, Suren Baghdasaryan wrote:
+> On Tue, Sep 1, 2026 at 4:06â€¯AM Lorenzo Stoakes (ARM) <ljs@kernel.org> wrote:
+> >
+> > Each of these architectures directly free page tables without routing these
+> > changes through tlb_remove_ptdesc().
+> >
+> > The use of tlb_remove_ptdesc() is required for
+> > CONFIG_MMU_GATHER_RCU_TABLE_FREE to correctly free page tables under RCU,
+> > so simply update these architectures to use these functions.
+> >
+> > Since none of the architectures share page tables or do anything unusual,
+> > nothing complicated is required here.
+> >
+> > Therefore this is simply a mechanical change - convert __pud_free_tlb(),
+> > __pmd_free_tlb() and __pte_free_tlb() to use tlb_remove_ptdesc() as
+> > required.
+> >
+> > At the point this is in place, all mmu_gather page table freeing is
+> > performed under RCU, and thus MMU_GATHER_RCU_TABLE_FREE is selected for
+> > each architecture.
+> >
+> > This forms part of an overall effort to switch every architecture to this
+> > mode.
+> >
+> > Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 > > ---
-> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > ---
-> >   tools/include/uapi/linux/elf-em.h |  71 ++++
-> >   tools/include/uapi/linux/elf-r.h  | 696 ++++++++++++++++++++++++++++++++++++++
-> >   tools/include/uapi/linux/elf.h    | 112 +++++-
-> >   3 files changed, 868 insertions(+), 11 deletions(-)
-> > 
-> 
-> > diff --git a/tools/include/uapi/linux/elf.h b/tools/include/uapi/linux/elf.h
-> > index 5834b83d7f9a..88bdcbb526c1 100644
-> > --- a/tools/include/uapi/linux/elf.h
-> > +++ b/tools/include/uapi/linux/elf.h
-> 
-> > @@ -312,7 +323,7 @@ typedef struct elf64_phdr {
-> >   #define SHN_ABS		0xfff1
-> >   #define SHN_COMMON	0xfff2
-> >   #define SHN_HIRESERVE	0xffff
-> > -
-> > +
-> 
-> Getting the following warning when applying this series with 'b4 shazam'.
-> 
-> /home/chleroy/linux-powerpc/.git/rebase-apply/patch:846: trailing
-> whitespace.
-> 
-> Seems to come from here.
+> >  arch/arc/Kconfig                      | 1 +
+> >  arch/arc/include/asm/pgalloc.h        | 6 +++---
+> >  arch/microblaze/Kconfig               | 1 +
+> >  arch/microblaze/include/asm/pgalloc.h | 2 +-
+> >  arch/xtensa/Kconfig                   | 1 +
+> >  arch/xtensa/include/asm/tlb.h         | 2 +-
+> >  6 files changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+> > index 2ed7186c81c5..7a7542b61823 100644
+> > --- a/arch/arc/Kconfig
+> > +++ b/arch/arc/Kconfig
+> > @@ -47,6 +47,7 @@ config ARC
+> >         select HAVE_SYSCALL_TRACEPOINTS
+> >         select IRQ_DOMAIN
+> >         select LOCK_MM_AND_FIND_VMA
+> > +       select MMU_GATHER_RCU_TABLE_FREE
+> >         select MODULES_USE_ELF_RELA
+> >         select OF
+> >         select OF_EARLY_FLATTREE
+> > diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
+> > index dfae070fe8d5..9b6c37f92e97 100644
+> > --- a/arch/arc/include/asm/pgalloc.h
+> > +++ b/arch/arc/include/asm/pgalloc.h
+> > @@ -72,7 +72,7 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
+> >         set_p4d(p4dp, __p4d((unsigned long)pudp));
+> >  }
+> >
+> > -#define __pud_free_tlb(tlb, pmd, addr)  pud_free((tlb)->mm, pmd)
+> > +#define __pud_free_tlb(tlb, pmd, addr)  tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
+> >
+> >  #endif
+> >
+> > @@ -83,10 +83,10 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
+> >         set_pud(pudp, __pud((unsigned long)pmdp));
+> >  }
+> >
+> > -#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
+> > +#define __pmd_free_tlb(tlb, pmd, addr)  tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
+> >
+> >  #endif
+> >
+> > -#define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
+> > +#define __pte_free_tlb(tlb, pte, addr)  tlb_remove_ptdesc((tlb), page_ptdesc(pte))
+> >
+> >  #endif /* _ASM_ARC_PGALLOC_H */
+> > diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+> > index 484ebb3baedf..af7e821e96c1 100644
+> > --- a/arch/microblaze/Kconfig
+> > +++ b/arch/microblaze/Kconfig
+> > @@ -41,6 +41,7 @@ config MICROBLAZE
+> >         select PCI_SYSCALL if PCI
+> >         select CPU_NO_EFFICIENT_FFS
+> >         select MMU_GATHER_NO_RANGE
+> > +       select MMU_GATHER_RCU_TABLE_FREE
+> >         select SPARSE_IRQ
+> >         select ZONE_DMA
+> >         select TRACE_IRQFLAGS_SUPPORT
+> > diff --git a/arch/microblaze/include/asm/pgalloc.h b/arch/microblaze/include/asm/pgalloc.h
+> > index 084a8a0dc239..ffee6a009219 100644
+> > --- a/arch/microblaze/include/asm/pgalloc.h
+> > +++ b/arch/microblaze/include/asm/pgalloc.h
+> > @@ -25,7 +25,7 @@ extern void __bad_pte(pmd_t *pmd);
+> >
+> >  extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
+> >
+> > -#define __pte_free_tlb(tlb, pte, addr) pte_free((tlb)->mm, (pte))
+> > +#define __pte_free_tlb(tlb, pte, addr) tlb_remove_ptdesc((tlb), page_ptdesc(pte))
+> >
+> >  #define pmd_populate(mm, pmd, pte) \
+> >                         (pmd_val(*(pmd)) = (unsigned long)page_address(pte))
+> > diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+> > index f2f9cd9cde50..33c4caee30e2 100644
+> > --- a/arch/xtensa/Kconfig
+> > +++ b/arch/xtensa/Kconfig
+> > @@ -55,6 +55,7 @@ config XTENSA
+> >         select HAVE_VIRT_CPU_ACCOUNTING_GEN
+> >         select IRQ_DOMAIN
+> >         select LOCK_MM_AND_FIND_VMA
+> > +       select MMU_GATHER_RCU_TABLE_FREE if MMU
+>
+> And MMU is required because NOMMU does not perform mmu_gather
+> operations, same as in the previous patch? If so, maybe make a note of
+> it in the changelog?
 
-That's also present in include/uapi/linux/elf.h.
-I'll add a fix for that, too.
+Right yup. Will update!
 
-> 
-> >   typedef struct elf32_shdr {
-> >     Elf32_Word	sh_name;
-> >     Elf32_Word	sh_type;
+>
+> >         select MODULES_USE_ELF_RELA
+> >         select PERF_USE_VMALLOC
+> >         select TRACE_IRQFLAGS_SUPPORT
+> > diff --git a/arch/xtensa/include/asm/tlb.h b/arch/xtensa/include/asm/tlb.h
+> > index 8c3ceb427018..6fb7b78154f6 100644
+> > --- a/arch/xtensa/include/asm/tlb.h
+> > +++ b/arch/xtensa/include/asm/tlb.h
+> > @@ -16,7 +16,7 @@
+> >
+> >  #include <asm-generic/tlb.h>
+> >
+> > -#define __pte_free_tlb(tlb, pte, address)      pte_free((tlb)->mm, pte)
+> > +#define __pte_free_tlb(tlb, pte, address)      tlb_remove_ptdesc((tlb), page_ptdesc(pte))
+> >
+> >  void check_tlb_sanity(void);
+> >
+> >
+> > --
+> > 2.55.0
+> >
+
+--
+Cheers, Lorenzo
 
