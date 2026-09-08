@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55C86C79FAA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C400C79F99
 	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 05:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,65 +12,65 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=l0UrpxibHZnDBNXE1bN5qrJqc7sTw2Bd+aGpZLtd0Ug=; b=Q6jS31aFotJTJ4P24m/K3ihBTU
-	WdrC1x6z9ZCjCwX/UrFOb4WoAMCF+GqoGndoLuH3XMTO+ITexq+hzrtuDkqCJsd5e1tB27gE2IMgm
-	4GqGRBKG226LQbfE8oq9f4VIwjh2A6ZxYTARJQKrdDSUQrei1EEUjRleTJkZ3Cn8qfnCPKz2DmHzK
-	OmUwGSxVlm4RkiiQ0YRRuPMn6bOrf0ukW3vgkdVC/EwYD6tnFg9sRAPAfQOcDbvgfq0fq2Hb20Sug
-	g0d+N5FHODQe4W3+CNo4G5YjhAxcO5j/Egp/qPoq6u4qYxYfdk6d3By2D6raWiWa4uRouDtImPJHZ
-	0mR2CxmQ==;
+	bh=iPvq113vaLkp19diB9PBTYq+aXRuG2muF34cABuckMo=; b=EjJJCWNzU9+I7jhp8cFfuo4RRk
+	zARdoeZafG8iHlvJhNyyNoXDLAcNyLSSbBPt48PuQafrQ+1tx7E6SGJvY9vk/Hq3SbxdjmhygznZd
+	gegtE0FXwiM8QaHDDzrKbdMD5ZiG5R//7YM8jFiRHf2b6fyFJvBd0ddtS8ddbASJRANpxviDUXh+a
+	1rgxrFFNslIcSbLbyZK9/ou3aTWED5RXAVk66vANOizuJl14LqUFC9qh3D6Vsly4uZAp5jNpYEcP3
+	Z7BbDC/9ofQDkGSVasMHKGtUNpJB7Oc+kMXQw7Bg0xiFZmDBNuBBtESnY/35cTfUtMLa4FevbVtnl
+	yvGbbUPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3oYj-000000085dE-46a4;
+	id 1x3oYj-000000085d7-3mjf;
 	Tue, 08 Sep 2026 05:39:53 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3oYg-000000085a5-0RqD
+	id 1x3oYe-000000085Yb-06Cr
 	for linux-um@lists.infradead.org;
 	Tue, 08 Sep 2026 05:39:52 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4956869750eso37502515e9.2
-        for <linux-um@lists.infradead.org>; Mon, 07 Sep 2026 22:39:49 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-49b8ce9b733so34093705e9.1
+        for <linux-um@lists.infradead.org>; Mon, 07 Sep 2026 22:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788845988; x=1789450788; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1788845986; x=1789450786; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=l0UrpxibHZnDBNXE1bN5qrJqc7sTw2Bd+aGpZLtd0Ug=;
-        b=nuXUJqhnIEbTUdAN6k7T+dV4UnueU0gU0v5HXNx7bt1fjeFt4Evh7HrgdFcW07OXd4
-         0J0ckwShXtP3Xu1LrwHljQfeADAH+h+UW0pn0jtpi1wEvEGyI/0KlHxITF1Ul/ZEgHlQ
-         Oj1Ib1xtZpzuNdJDAbGBm7AaTEqlndd5lP1kadV32SGTDPj41Y8wt8Q2hMOX9o8R8iB9
-         Kd7a05V+Dfu3yeAaRnpgpJ5LEXip6wNliStf/5/NLJEotH8RSPQL7S9IrSDFxVeJ5h3K
-         IIcMJwalv1OthM7KysKt0Ry4cXuYK+V5waQtDfcPV8tdo5/7qt2Y76avpItPmXllEQzM
-         P3qw==
+        bh=iPvq113vaLkp19diB9PBTYq+aXRuG2muF34cABuckMo=;
+        b=b8KPYfUa2OJ51Mesw8C8f9VlsNiu5dCB3BVG+CcFtS5GzQJwmEyAsoeRC0cCazhW19
+         LMTqzYh0C2pvqeqOQLexurG6yO8kstL6Gfzz2Udw849YRjLEFNF3GPHhP3WAHJRjAbfG
+         D+X5m6aOBfJBAo5T0L9QF9HcbXtfArohocHQKFhkDXxubMhqiprYxaC/yzZr150MPG+7
+         4tOKbF9t3WSj7jATfMmF+3GUQF20YcyteGZ0sAaxpfjzm6aBeJnN75ScFBdJzkjnMzz3
+         dAy/HxfU8GHxTuIgjOikUMfu6PTTVCDEP3/FnBelBivImfR+ox3s1FzVj44GDuDCLm1p
+         9IQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788845988; x=1789450788;
+        d=1e100.net; s=20251104; t=1788845986; x=1789450786;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=l0UrpxibHZnDBNXE1bN5qrJqc7sTw2Bd+aGpZLtd0Ug=;
-        b=ebzJoIwz4gdXr2I3sDzoXILPotcJvtxgCk0JfTVfjjlNUWvM5aDkMh3bE3udrgJyp/
-         csLm9XtOjFAgmawMGPVbjiUzUCPJfib0NbBMwc5dJ4SBi/kJxMubpVuE1V1jH2rshGUq
-         tiJw3EWJO6sRCm23P7AqOd6lrq720abK5O/o7uL57XEY+TI+JFv3pk7BVhlPZieFDMn1
-         GPJ4/7k4OP9rmmWciWlA/Vvubp1DNvnWQuAeHLulLARkU4DkRYBEHaU1NkSg/uOyPAcE
-         Kw4U5TMt3MOgQHy1WjB7juTCfxrjkOQPolDnBL2cnPZ42d1wlAJ1iBt71DHtVKduEKoK
-         JjMA==
-X-Forwarded-Encrypted: i=1; AKwUvBx3JuMP6KIIYUEQjNy14/JLIiUb6mUib4qDBOSOTEQjT9tqPyiknsClxqZ4vidjsLMfiE7kYlRFyw==@lists.infradead.org
-X-Gm-Message-State: AFuF++nHZM4Rj7ThtlIlZJ+mseKuHkv9QtI5Rr59gIb97+tPrr6W+XOy
-	pVVrlXKrqrlGtcHJw3HyHJi92Bha7LDUilVaMvS9py75IWG9/mvHKq3I
-X-Gm-Gg: AYBFou1RHsXPcB7Gmllaf+p60tlljT6HvuXuBT7uRkL3EeJ2D+is8GJJ79VnzUqBKHO
-	PatNWBhwd3aETC4GlgA4r9JyyIdHhLrVptobBnhihEHjJ0A5X+wlymddROWKEhgqD2TWqDJOpwu
-	DmhBpfrdPTpiCtqFvbmh8TvWVs0pYk84uFRGTrI63BagBOQfdd5u5sHAfYzl/Xhma65cYD8ejrm
-	HkRNFKOrsstLutrxGTQV8jpORByfuAwKP2K+PwI+Mq08tSCouef8YfQoFAyAiJ6kViekuIKuxVr
-	PdnB5wcz4YHNRaYy8v17y6eAFpGG3XbTwDobowASqGmy7vZcaOxOkiMTooKDDdIPlm95GTYPCSa
-	PZUs2IbR7buPyyxa2XXGO8xtjhmP2rkU6qb+81XsnCVPTsuQOwNrTYRWAQOU97XR77qI1fO0Akh
-	IjpfCJpF0VxIop48gDBj5CVPoHX3Bhrw7bND/r3tbjrULL7797tMFmXbb17BrUkUcP/bNoibGI/
-	eTbqAKMKA0EecxwNXPEWDlO4cUqnL/5uljPvVKSDra021FrvsjFPhp21aD2eO4Tpyyg5FUmdgho
-	vpH67eLmd/XoxP5Dq7ZMeUNVSZZOtVI=
-X-Received: by 2002:a05:600c:3587:b0:49d:17d8:abec with SMTP id 5b1f17b1804b1-49d17d8abf5mr31972855e9.21.1788845987998;
-        Mon, 07 Sep 2026 22:39:47 -0700 (PDT)
+        bh=iPvq113vaLkp19diB9PBTYq+aXRuG2muF34cABuckMo=;
+        b=SUHbPt4qRXU2KUnX4Y4NAHKaoZPInilm/4mfILjuyBiVP4VhDJjiy/Hf+7FrWhMOQg
+         p7Q96S/EHGZcj4t/ZGdeKUmNiD1WurE9OOtuNSyNeoE3qE5NR9VspktH7wknJ0ShPbap
+         ZU2eietoxz0vxn6Ik8D6/15pTuZCqBkE4/FzJA1YNhRWfm+JZt7naNxGAkYlvhtC8EYW
+         EWEzo8ILKo3nnYoMs281chIlBzTHGZSsRH24hfBnoEaqK/DCamKK+HlFZlSQM7miC0JJ
+         Kk4PAp9ZOrIEEV+1GPAIV2+lRJlYoPdv9/BSHTALouVn5SsoUvTAfbRB4mverYNEeQ+o
+         TI7Q==
+X-Forwarded-Encrypted: i=1; AKwUvBwDqE0l7ov3qTC0r9/NXK3/T7KnMOzS2MeB9ZZI3YSMTq+7rzN5tsBVRkDF0oVTOqiyrqQx9SRe/w==@lists.infradead.org
+X-Gm-Message-State: AFuF++nkk/E6ajKZ5iCVLEJKPTLrZp/6nUSSzZYK/PWfDTYyC0LFmTur
+	VpnRreuEwpK9qS2CSemhxF6n9zTpuVBnWSWxHqayfJY3lWFy2YShjzB1
+X-Gm-Gg: AYBFou06LIixB6+Zu7A/pZskVn3ZLjcaK7k3uFdm/AZzZAZ7Fv2SiImAwCRESOZtwSa
+	ICOyOm3nivhdqy+KMwwvL5etJJeA/XX9wy+0dTOmUMPdTQZj9QYCdGghyQzyozPDAPv/mvIwRpv
+	pvyHSClK0VLCJFot8Zp7JjNO95RGZ7cmTlXVC0uCfFAYKQbDW11i5aqpdIlciwhAL/rjWiXBmyt
+	6e3D4w0gdYKYLwudJYD1doSEVNyzzFNUH0J/cgGlQvf5xgb7fFMMH+J6ZtwhMWCl/cJGdld+BWD
+	guBqEKmW2DrwmInPFFhln6XjIG3LLampjlex8krWiK8GJ+7fpHszkvTuSdQdplHMglnzGN+eKg6
+	qPp1XFOYqtXJjKxBXVwABNuJQ2HwziH/cm024+OEXyMADTQcu7Kn0wWRd06qJUOdwoSG9YICkqC
+	LiQ7x1BguqSbaZl1LGhBZfKjkBbL2WYSui3RzNyqFnIMqxfjzuNLcRkrae40gw2h7ECcXepT7nT
+	JDK3uQYzhLQx5JaHxeHSGBcjugHvz8Tb6NwjX90tCmBma4mN+qJ4rf3eoVDYNHSfd/O14dVNunY
+	MrzM/VQFOSbFUSaenL3VwfCfI6LTY4Jq+rQdzpb4nNI=
+X-Received: by 2002:a05:600c:620b:b0:49c:fa20:cc07 with SMTP id 5b1f17b1804b1-49cff19cbf4mr203278645e9.30.1788845986284;
+        Mon, 07 Sep 2026 22:39:46 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-095-117-170-066.95.117.pool.telefonica.de. [95.117.170.66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cee7fec25sm523841335e9.13.2026.09.07.22.39.46
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cee7fec25sm523841335e9.13.2026.09.07.22.39.44
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 07 Sep 2026 22:39:47 -0700 (PDT)
+        Mon, 07 Sep 2026 22:39:45 -0700 (PDT)
 From: Karl Mehltretter <kmehltretter@gmail.com>
 To: "Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowangio@gmail.com>,
@@ -105,17 +105,17 @@ Cc: Karl Mehltretter <kmehltretter@gmail.com>,
 	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>,
 	Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH v3 6/6] virtio_vdpa: implement synchronize_cbs()
-Date: Tue,  8 Sep 2026 07:38:17 +0200
-Message-Id: <20260908053817.26065-7-kmehltretter@gmail.com>
+Subject: [PATCH v3 5/6] platform/mellanox: mlxbf-tmfifo: implement synchronize_cbs()
+Date: Tue,  8 Sep 2026 07:38:16 +0200
+Message-Id: <20260908053817.26065-6-kmehltretter@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20260908053817.26065-1-kmehltretter@gmail.com>
 References: <20260908053817.26065-1-kmehltretter@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_223951_010896_7456E097 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20260907_223948_086116_DDBB5B33 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,124 +130,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-virtio_vdpa relies on the core's synchronize_rcu() fallback for callback
-synchronization. That covers IRQ handlers and sections with interrupts,
-preemption or bottom halves disabled. virtio_vdpa does not enforce any
-of those contexts when a vDPA driver invokes a callback.
+TmFIFO invokes virtqueue callbacks from its FIFO work item under
+spin_lock_irqsave(). The core's synchronize_rcu() fallback already
+covers those sections.
 
-Add an SRCU domain per device and enter it around the virtqueue and
-config callbacks. Implement synchronize_cbs() with synchronize_srcu()
-so it covers the callbacks regardless of the calling context.
-
-SRCU uses per-CPU reader accounting, avoiding a single callback lock
-shared by all queues. Cover the config callback too, as virtio-pci
-does for its config vector.
+Implement synchronize_cbs() using the existing per-direction locks
+instead of waiting for an RCU grace period. fifo->spin_lock[0] covers
+the transmit callbacks, including the callback from the timeout
+handler. fifo->spin_lock[1] covers the receive callbacks. Take and
+release each lock in turn to synchronize with callbacks running
+under that lock.
 
 Assisted-by: LLM
 Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- drivers/virtio/virtio_vdpa.c | 34 +++++++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index 6bcf4567a929..f9559b6b2e0b 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -12,6 +12,7 @@
- #include <linux/device.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-+#include <linux/srcu.h>
- #include <linux/uuid.h>
- #include <linux/group_cpus.h>
- #include <linux/virtio.h>
-@@ -27,6 +28,7 @@
- struct virtio_vdpa_device {
- 	struct virtio_device vdev;
- 	struct vdpa_device *vdpa;
-+	struct srcu_struct cb_srcu;
- 	u64 features;
- };
- 
-@@ -114,8 +116,11 @@ static bool virtio_vdpa_notify_with_data(struct virtqueue *vq)
- static irqreturn_t virtio_vdpa_config_cb(void *private)
- {
- 	struct virtio_vdpa_device *vd_dev = private;
-+	int idx;
- 
-+	idx = srcu_read_lock(&vd_dev->cb_srcu);
- 	virtio_config_changed(&vd_dev->vdev);
-+	srcu_read_unlock(&vd_dev->cb_srcu, idx);
- 
- 	return IRQ_HANDLED;
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 3c6408581373..664bec20a7ae 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -1135,6 +1135,20 @@ static void mlxbf_tmfifo_virtio_reset(struct virtio_device *vdev)
+ 	tm_vdev->status = 0;
  }
-@@ -123,8 +128,22 @@ static irqreturn_t virtio_vdpa_config_cb(void *private)
- static irqreturn_t virtio_vdpa_virtqueue_cb(void *private)
- {
- 	struct virtqueue *vq = private;
-+	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vq->vdev);
-+	irqreturn_t ret;
-+	int idx;
+ 
++/* Synchronize with callbacks running in the FIFO work item. */
++static void mlxbf_tmfifo_virtio_synchronize_cbs(struct virtio_device *vdev)
++{
++	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
++	struct mlxbf_tmfifo *fifo = tm_vdev->vrings[0].fifo;
++	unsigned long flags;
++	int i;
 +
-+	idx = srcu_read_lock(&vd_dev->cb_srcu);
-+	ret = vring_interrupt(0, vq);
-+	srcu_read_unlock(&vd_dev->cb_srcu, idx);
-+
-+	return ret;
++	for (i = 0; i < ARRAY_SIZE(fifo->spin_lock); i++) {
++		spin_lock_irqsave(&fifo->spin_lock[i], flags);
++		spin_unlock_irqrestore(&fifo->spin_lock[i], flags);
++	}
 +}
 +
-+static void virtio_vdpa_synchronize_cbs(struct virtio_device *vdev)
-+{
-+	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
- 
--	return vring_interrupt(0, vq);
-+	synchronize_srcu(&vd_dev->cb_srcu);
- }
- 
- static struct virtqueue *
-@@ -440,6 +459,7 @@ static const struct virtio_config_ops virtio_vdpa_config_ops = {
- 	.reset		= virtio_vdpa_reset,
- 	.find_vqs	= virtio_vdpa_find_vqs,
- 	.del_vqs	= virtio_vdpa_del_vqs,
-+	.synchronize_cbs = virtio_vdpa_synchronize_cbs,
- 	.get_features	= virtio_vdpa_get_features,
- 	.finalize_features = virtio_vdpa_finalize_features,
- 	.bus_name	= virtio_vdpa_bus_name,
-@@ -454,6 +474,7 @@ static void virtio_vdpa_release_dev(struct device *_d)
- 	struct virtio_vdpa_device *vd_dev =
- 	       container_of(vdev, struct virtio_vdpa_device, vdev);
- 
-+	cleanup_srcu_struct(&vd_dev->cb_srcu);
- 	kfree(vd_dev);
- }
- 
-@@ -467,6 +488,11 @@ static int virtio_vdpa_probe(struct vdpa_device *vdpa)
- 	if (!vd_dev)
- 		return -ENOMEM;
- 
-+	if (init_srcu_struct(&vd_dev->cb_srcu)) {
-+		kfree(vd_dev);
-+		return -ENOMEM;
-+	}
-+
- 	vd_dev->vdev.dev.parent = vdpa->map ? &vdpa->dev :
- 				  vdpa_get_map(vdpa).dma_dev;
- 	vd_dev->vdev.dev.release = virtio_vdpa_release_dev;
-@@ -489,10 +515,12 @@ static int virtio_vdpa_probe(struct vdpa_device *vdpa)
- 	return 0;
- 
- err:
--	if (reg_dev)
-+	if (reg_dev) {
- 		put_device(&vd_dev->vdev.dev);
--	else
-+	} else {
-+		cleanup_srcu_struct(&vd_dev->cb_srcu);
- 		kfree(vd_dev);
-+	}
- 	return ret;
- }
- 
+ /* Read the value of a configuration field. */
+ static void mlxbf_tmfifo_virtio_get(struct virtio_device *vdev,
+ 				    unsigned int offset,
+@@ -1179,6 +1193,7 @@ static const struct virtio_config_ops mlxbf_tmfifo_virtio_config_ops = {
+ 	.find_vqs = mlxbf_tmfifo_virtio_find_vqs,
+ 	.del_vqs = mlxbf_tmfifo_virtio_del_vqs,
+ 	.reset = mlxbf_tmfifo_virtio_reset,
++	.synchronize_cbs = mlxbf_tmfifo_virtio_synchronize_cbs,
+ 	.set_status = mlxbf_tmfifo_virtio_set_status,
+ 	.get_status = mlxbf_tmfifo_virtio_get_status,
+ 	.get = mlxbf_tmfifo_virtio_get,
 -- 
 2.39.5 (Apple Git-154)
 
