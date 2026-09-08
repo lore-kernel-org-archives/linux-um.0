@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 572C2C79FAA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC024C79FAB
 	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,49 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ITX6vbZ0p2MNUnqySgiQU1yaeBX1Pv0fohxsnS17XIE=; b=UcFBvcFJ7945wCksl9dn+T1POV
-	d4R5SeR8LyK2GUXHxzylCSllCKxGKfJ3kYrKBPJAoNrwRZgpFfwtiubjsgv5rz22wkiYzeFgasoUy
-	CpBXmizPIBksw7vQSrgm8ddcguDHp8rBbCFAgaPoWEra9PrS7SaM18zpW+nZyGmDJfDv80PaU3mxD
-	5M3RwVw3FRRYXujp1/sRSbjn2jbX6GBj6UxbkN5WELT/bSorvZu75vE0G1SkhmMunsVRgFl4vAAcd
-	MsKkZMm7PyY9X5VLk1zwt3BPr5nzoMW+U09+Xc1Sq2KRl5/z1eKuhQftIXlS8CGI+rCTKBRKPtJgk
-	Mj9tvf+g==;
+	bh=fTryvsBgAeqTDNlupTdhz6+byj4x0uN8hxYjIi8mWPU=; b=zB6mN7hpsLXwqCkJkIx5eXTKVb
+	TBr3Tbnq1rSdx9CV2wsEuKdaen3vJmy6rAWbfK2FP63YGpO4VjcV0BAzznxwd80GHGKfa1oLEWOOl
+	nuRwDZHplUHmTG3lBanjqJW4H6majQDrGVx5s2ApqZAGmIoc5S1iP52KrhthNZR7Xwn0ILB2Agooz
+	jVTZaH+zjOttxU6upPt36z4lqRBILJGRVbSAsB0WuxBa1AWPckaaLgc8yNfI1jSP362KCnkAxSJmp
+	e7DTxgdUrnloDFu6lJ2WVVjG9tPm+9hhlbW/9GuLMyS/LG9fgYiYmpWvy8O2fvWR1gw1QFUSIRTVe
+	1oMpVPJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pP7-0000000893F-3RSk;
-	Tue, 08 Sep 2026 06:34:01 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1x3pP8-0000000893t-1VMh;
+	Tue, 08 Sep 2026 06:34:02 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pOy-000000088sq-2NEZ;
-	Tue, 08 Sep 2026 06:33:55 +0000
+	id 1x3pOz-000000088tD-1G8x;
+	Tue, 08 Sep 2026 06:33:56 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849228;
+	s=2020; t=1788849229;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ITX6vbZ0p2MNUnqySgiQU1yaeBX1Pv0fohxsnS17XIE=;
-	b=rfwyK8rjLPkePRrnJHe5/m9/qJsnrWMCt3iK+M7M5ZYc6dfObs52IIDnFx5QgND5xV+RSg
-	DULbnxSrs1cNZLOgC5w74szhXRhwXueEKLWD5PiJIbFVmAO7uDHSPwLz9pK6DrIC85jwBv
-	NptQJNDLTlAl0caYUrvufk5jk9bhHOty9MKSjt4bQXd4/hUZnyPvtRUw6CVU8HCzHPiKDf
-	Qrx91oCLhunvM867s5Vs+oHAu9RifHTN2uGkz5Y7TRc6k2c42aM+pQ0MXz05XTOHWGO/tF
-	rgfxs/zda+BfhYnlFo95QXEfk/RSRvCg32nIwzWZtUQue6L7jrsHr6BvZdL3SA==
+	bh=fTryvsBgAeqTDNlupTdhz6+byj4x0uN8hxYjIi8mWPU=;
+	b=CwOxcB8AhS+rAzoxJxOQZHdTCbx79N6KAe69evSjNQbl8+rQOeBnH057j6GmLbV1DALhq8
+	17U86cF62BuTdyueeDeto2D3eKopssoZOXhfcShRfEm5vXV6EqTT598jVyGbc2eORkyLVh
+	OrwoiGkQRnDZ5E3ZEV6tw1/gABJPNjg4OfwRNlUx3ukssHhmiUBD9qEjMNgBfiYtN8PegH
+	fJT8dIULNkNCSoAbP1VkL7AglDnc0gE8QsTSkJtq+4VoaJqGXcwtWw3SUrOnTednE0pAqq
+	eJlyWNdWyLf6mcTMJcSduvMoo3qm72MxPilwuvS8hVqXRSHO5+8hOKLulZ6+Tg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849228;
+	s=2020e; t=1788849229;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ITX6vbZ0p2MNUnqySgiQU1yaeBX1Pv0fohxsnS17XIE=;
-	b=kmw243Q2lOefM6sErINOe0v2bdegFzSBOYOJ/mtefV8467qCIp/KHbzuaZEJV6LMACNvq/
-	kbGYSfPlNIXmtvCA==
-Date: Tue, 08 Sep 2026 08:33:36 +0200
-Subject: [PATCH v5 02/24] x86/elf, um/x86/elf: Move relocation constants to
- UAPI
+	bh=fTryvsBgAeqTDNlupTdhz6+byj4x0uN8hxYjIi8mWPU=;
+	b=UvUYKzc74oAN8gP1sKHkjA19TUNUTqCMuc0TKrdtCmkCKri8UrtRvdSUSmYYYqwSID6op/
+	x/iNcRKTPUHvcBDw==
+Date: Tue, 08 Sep 2026 08:33:38 +0200
+Subject: [PATCH v5 04/24] arm64: elf: Move relocation constants to UAPI
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-2-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-4-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -96,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=5793;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=4332;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=EP6eD/uZ0V4wHN9+/JxWHWsljJ+xT4xd0R266HOP2Mk=;
- b=9fiwRBRCJd/GEgS5mAJxYeP44dMtEzEA5a59lLmblClvso6Eb+4WwYMKSod5q7tvCst53OR2v
- u8IKRzDMhHhAzblZpImUk9ElKP8BMqVg+cBR+BubteVty4SyzNMiSs+
+ bh=1i3Et1Jffcz0JOiDRayZilcvn94+w8pBUDpHzT1KG5A=;
+ b=gk9oLI1obuvHKDYtmwIh7hRv/wNktDBEtLCnmMT6kMIL5ciJHyu+C7IEaeVwMOyG2DE4YvlNZ
+ Q87Mb3y4KJ2C8RfQ2jmI4dzP+9h+ated8T54tLF6WOAYZo1VDmVkg+O
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233352_772364_A9B7C0C2 
-X-CRM114-Status: GOOD (  11.68  )
+X-CRM114-CacheID: sfid-20260907_233353_480087_EE6507B5 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,154 +126,134 @@ Move them from the kernel-private architecture-specific header to the UAPI.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/x86/include/asm/elf.h | 33 ---------------------------------
- arch/x86/um/asm/elf.h      | 33 ---------------------------------
- include/uapi/linux/elf-r.h | 34 ++++++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 66 deletions(-)
+ arch/arm64/include/asm/elf.h | 54 --------------------------------------------
+ include/uapi/linux/elf-r.h   | 52 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+), 54 deletions(-)
 
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 4133c790e71a..ad84c0f60459 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -22,19 +22,6 @@ typedef struct user_i387_struct elf_fpregset_t;
+diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
+index cfdf4c5ac08b..43f3763807a2 100644
+--- a/arch/arm64/include/asm/elf.h
++++ b/arch/arm64/include/asm/elf.h
+@@ -13,60 +13,6 @@
+ #include <asm/ptrace.h>
+ #include <asm/user.h>
  
- #ifdef __i386__
- 
--#define R_386_NONE	0
--#define R_386_32	1
--#define R_386_PC32	2
--#define R_386_GOT32	3
--#define R_386_PLT32	4
--#define R_386_COPY	5
--#define R_386_GLOB_DAT	6
--#define R_386_JMP_SLOT	7
--#define R_386_RELATIVE	8
--#define R_386_GOTOFF	9
--#define R_386_GOTPC	10
--#define R_386_NUM	11
+-/*
+- * AArch64 static relocation types.
+- */
+-
+-/* Miscellaneous. */
+-#define R_AARCH64_NONE			256
+-
+-/* Data. */
+-#define R_AARCH64_ABS64			257
+-#define R_AARCH64_ABS32			258
+-#define R_AARCH64_ABS16			259
+-#define R_AARCH64_PREL64		260
+-#define R_AARCH64_PREL32		261
+-#define R_AARCH64_PREL16		262
+-
+-/* Instructions. */
+-#define R_AARCH64_MOVW_UABS_G0		263
+-#define R_AARCH64_MOVW_UABS_G0_NC	264
+-#define R_AARCH64_MOVW_UABS_G1		265
+-#define R_AARCH64_MOVW_UABS_G1_NC	266
+-#define R_AARCH64_MOVW_UABS_G2		267
+-#define R_AARCH64_MOVW_UABS_G2_NC	268
+-#define R_AARCH64_MOVW_UABS_G3		269
+-
+-#define R_AARCH64_MOVW_SABS_G0		270
+-#define R_AARCH64_MOVW_SABS_G1		271
+-#define R_AARCH64_MOVW_SABS_G2		272
+-
+-#define R_AARCH64_LD_PREL_LO19		273
+-#define R_AARCH64_ADR_PREL_LO21		274
+-#define R_AARCH64_ADR_PREL_PG_HI21	275
+-#define R_AARCH64_ADR_PREL_PG_HI21_NC	276
+-#define R_AARCH64_ADD_ABS_LO12_NC	277
+-#define R_AARCH64_LDST8_ABS_LO12_NC	278
+-
+-#define R_AARCH64_TSTBR14		279
+-#define R_AARCH64_CONDBR19		280
+-#define R_AARCH64_JUMP26		282
+-#define R_AARCH64_CALL26		283
+-#define R_AARCH64_LDST16_ABS_LO12_NC	284
+-#define R_AARCH64_LDST32_ABS_LO12_NC	285
+-#define R_AARCH64_LDST64_ABS_LO12_NC	286
+-#define R_AARCH64_LDST128_ABS_LO12_NC	299
+-
+-#define R_AARCH64_MOVW_PREL_G0		287
+-#define R_AARCH64_MOVW_PREL_G0_NC	288
+-#define R_AARCH64_MOVW_PREL_G1		289
+-#define R_AARCH64_MOVW_PREL_G1_NC	290
+-#define R_AARCH64_MOVW_PREL_G2		291
+-#define R_AARCH64_MOVW_PREL_G2_NC	292
+-#define R_AARCH64_MOVW_PREL_G3		293
+-
+-#define R_AARCH64_RELATIVE		1027
 -
  /*
   * These are used to set parameters in the core dumps.
-  */
-@@ -44,26 +31,6 @@ typedef struct user_i387_struct elf_fpregset_t;
- 
- #else
- 
--/* x86-64 relocation types */
--#define R_X86_64_NONE		0	/* No reloc */
--#define R_X86_64_64		1	/* Direct 64 bit  */
--#define R_X86_64_PC32		2	/* PC relative 32 bit signed */
--#define R_X86_64_GOT32		3	/* 32 bit GOT entry */
--#define R_X86_64_PLT32		4	/* 32 bit PLT address */
--#define R_X86_64_COPY		5	/* Copy symbol at runtime */
--#define R_X86_64_GLOB_DAT	6	/* Create GOT entry */
--#define R_X86_64_JUMP_SLOT	7	/* Create PLT entry */
--#define R_X86_64_RELATIVE	8	/* Adjust by program base */
--#define R_X86_64_GOTPCREL	9	/* 32 bit signed pc relative
--					   offset to GOT */
--#define R_X86_64_32		10	/* Direct 32 bit zero extended */
--#define R_X86_64_32S		11	/* Direct 32 bit sign extended */
--#define R_X86_64_16		12	/* Direct 16 bit zero extended */
--#define R_X86_64_PC16		13	/* 16 bit sign extended pc relative */
--#define R_X86_64_8		14	/* Direct 8 bit sign extended  */
--#define R_X86_64_PC8		15	/* 8 bit sign extended pc relative */
--#define R_X86_64_PC64		24	/* Place relative 64-bit signed */
--
- /*
-  * These are used to set parameters in the core dumps.
-  */
-diff --git a/arch/x86/um/asm/elf.h b/arch/x86/um/asm/elf.h
-index 22d0111b543b..b768497d5ee1 100644
---- a/arch/x86/um/asm/elf.h
-+++ b/arch/x86/um/asm/elf.h
-@@ -12,19 +12,6 @@
- 
- #ifdef CONFIG_X86_32
- 
--#define R_386_NONE	0
--#define R_386_32	1
--#define R_386_PC32	2
--#define R_386_GOT32	3
--#define R_386_PLT32	4
--#define R_386_COPY	5
--#define R_386_GLOB_DAT	6
--#define R_386_JMP_SLOT	7
--#define R_386_RELATIVE	8
--#define R_386_GOTOFF	9
--#define R_386_GOTPC	10
--#define R_386_NUM	11
--
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
-  */
-@@ -72,26 +59,6 @@
- 
- #else
- 
--/* x86-64 relocation types, taken from asm-x86_64/elf.h */
--#define R_X86_64_NONE		0	/* No reloc */
--#define R_X86_64_64		1	/* Direct 64 bit  */
--#define R_X86_64_PC32		2	/* PC relative 32 bit signed */
--#define R_X86_64_GOT32		3	/* 32 bit GOT entry */
--#define R_X86_64_PLT32		4	/* 32 bit PLT address */
--#define R_X86_64_COPY		5	/* Copy symbol at runtime */
--#define R_X86_64_GLOB_DAT	6	/* Create GOT entry */
--#define R_X86_64_JUMP_SLOT	7	/* Create PLT entry */
--#define R_X86_64_RELATIVE	8	/* Adjust by program base */
--#define R_X86_64_GOTPCREL	9	/* 32 bit signed pc relative
--					   offset to GOT */
--#define R_X86_64_32		10	/* Direct 32 bit zero extended */
--#define R_X86_64_32S		11	/* Direct 32 bit sign extended */
--#define R_X86_64_16		12	/* Direct 16 bit zero extended */
--#define R_X86_64_PC16		13	/* 16 bit sign extended pc relative */
--#define R_X86_64_8		14	/* Direct 8 bit sign extended  */
--#define R_X86_64_PC8		15	/* 8 bit sign extended pc relative */
--#define R_X86_64_PC64		24	/* Place relative 64-bit signed */
--
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
   */
 diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
-index 2c382c8a4807..45a160ecf405 100644
+index 001884641e77..cf931fc05afa 100644
 --- a/include/uapi/linux/elf-r.h
 +++ b/include/uapi/linux/elf-r.h
-@@ -2,4 +2,38 @@
- #ifndef _UAPI_LINUX_ELF_R_H
- #define _UAPI_LINUX_ELF_R_H
+@@ -61,4 +61,56 @@
+ #define R_ARM_THM_MOVW_PREL_NC	49
+ #define R_ARM_THM_MOVT_PREL	50
  
-+/* i386 relocation types */
-+#define R_386_NONE	0
-+#define R_386_32	1
-+#define R_386_PC32	2
-+#define R_386_GOT32	3
-+#define R_386_PLT32	4
-+#define R_386_COPY	5
-+#define R_386_GLOB_DAT	6
-+#define R_386_JMP_SLOT	7
-+#define R_386_RELATIVE	8
-+#define R_386_GOTOFF	9
-+#define R_386_GOTPC	10
-+#define R_386_NUM	11
++/* AArch64 static relocation types */
 +
-+/* x86-64 relocation types */
-+#define R_X86_64_NONE		0	/* No reloc */
-+#define R_X86_64_64		1	/* Direct 64 bit  */
-+#define R_X86_64_PC32		2	/* PC relative 32 bit signed */
-+#define R_X86_64_GOT32		3	/* 32 bit GOT entry */
-+#define R_X86_64_PLT32		4	/* 32 bit PLT address */
-+#define R_X86_64_COPY		5	/* Copy symbol at runtime */
-+#define R_X86_64_GLOB_DAT	6	/* Create GOT entry */
-+#define R_X86_64_JUMP_SLOT	7	/* Create PLT entry */
-+#define R_X86_64_RELATIVE	8	/* Adjust by program base */
-+#define R_X86_64_GOTPCREL	9	/* 32 bit signed pc relative
-+					   offset to GOT */
-+#define R_X86_64_32		10	/* Direct 32 bit zero extended */
-+#define R_X86_64_32S		11	/* Direct 32 bit sign extended */
-+#define R_X86_64_16		12	/* Direct 16 bit zero extended */
-+#define R_X86_64_PC16		13	/* 16 bit sign extended pc relative */
-+#define R_X86_64_8		14	/* Direct 8 bit sign extended  */
-+#define R_X86_64_PC8		15	/* 8 bit sign extended pc relative */
-+#define R_X86_64_PC64		24	/* Place relative 64-bit signed */
++/* Miscellaneous. */
++#define R_AARCH64_NONE			256
++
++/* Data. */
++#define R_AARCH64_ABS64			257
++#define R_AARCH64_ABS32			258
++#define R_AARCH64_ABS16			259
++#define R_AARCH64_PREL64		260
++#define R_AARCH64_PREL32		261
++#define R_AARCH64_PREL16		262
++
++/* Instructions. */
++#define R_AARCH64_MOVW_UABS_G0		263
++#define R_AARCH64_MOVW_UABS_G0_NC	264
++#define R_AARCH64_MOVW_UABS_G1		265
++#define R_AARCH64_MOVW_UABS_G1_NC	266
++#define R_AARCH64_MOVW_UABS_G2		267
++#define R_AARCH64_MOVW_UABS_G2_NC	268
++#define R_AARCH64_MOVW_UABS_G3		269
++
++#define R_AARCH64_MOVW_SABS_G0		270
++#define R_AARCH64_MOVW_SABS_G1		271
++#define R_AARCH64_MOVW_SABS_G2		272
++
++#define R_AARCH64_LD_PREL_LO19		273
++#define R_AARCH64_ADR_PREL_LO21		274
++#define R_AARCH64_ADR_PREL_PG_HI21	275
++#define R_AARCH64_ADR_PREL_PG_HI21_NC	276
++#define R_AARCH64_ADD_ABS_LO12_NC	277
++#define R_AARCH64_LDST8_ABS_LO12_NC	278
++
++#define R_AARCH64_TSTBR14		279
++#define R_AARCH64_CONDBR19		280
++#define R_AARCH64_JUMP26		282
++#define R_AARCH64_CALL26		283
++#define R_AARCH64_LDST16_ABS_LO12_NC	284
++#define R_AARCH64_LDST32_ABS_LO12_NC	285
++#define R_AARCH64_LDST64_ABS_LO12_NC	286
++#define R_AARCH64_LDST128_ABS_LO12_NC	299
++
++#define R_AARCH64_MOVW_PREL_G0		287
++#define R_AARCH64_MOVW_PREL_G0_NC	288
++#define R_AARCH64_MOVW_PREL_G1		289
++#define R_AARCH64_MOVW_PREL_G1_NC	290
++#define R_AARCH64_MOVW_PREL_G2		291
++#define R_AARCH64_MOVW_PREL_G2_NC	292
++#define R_AARCH64_MOVW_PREL_G3		293
++
++#define R_AARCH64_RELATIVE		1027
 +
  #endif /* _UAPI_LINUX_ELF_R_H */
 
