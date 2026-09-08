@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 474F6C79FAA
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 05:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14B52C79F9E
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 05:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RUNN4pXUiIqbT553r7BwzJCI10zpfzMw6DzVR+9Z+tQ=; b=QklT05l0CiI/kBFFsbjQt3Sl5g
-	v88IMDgTkNFVCoVbVsKtWEw8IO3//6IQSoXlKPhMuGsxvZ4HZIYKi5ItBh4+cK9rRo8JJwm2BfG5c
-	Pbaqo+1tDzZbzBT5bI2HABRR20FH4T2evkvnDw22/shraq4bq1G9VW4wDIfbWwTIEmHU1O0fBLrmT
-	FK+BCL2W/gMVrsccFcL1HtCL9YSGLiHdvFxhzn2AKLNWoO0mKG4Sw2WJWz85yr242BbyX5CbO5pkP
-	9f9x/dU/EttmBZjGg8jSuzKtFaMMr+aXXlt+CCPqzUtMsL7MZJuCOVfkQB5NZgydLRj9nZ4Mc0/Pb
-	JM7/biXQ==;
+	bh=E0xn/sQ1syzuU4VFJfjc1woEjzltXnI10QEuTRC1ag8=; b=aeL9jLWNk7UNvhEzFcqkLpd8Pf
+	/iPCOHALit+lHzFoVSqbbvzDfVK8M0zyt2F8T4SKBRPyyMFtUxoUyUGY3Rbp9O3htJKlNLbpAEL0X
+	RHBV9dk9YK/riHQ3E1I8GlEN/QU9G05bLH3KDOkbznlU81cKG0j8LZ9DD6rpezOqI2dLLUkcdmyt0
+	AbopzikcqBq3w3pXBqcSwLmj+zdsS9Uxm2FypV5YgCU8fYed3xo/P/JaFyYeayTWxrqCA84c1ECOi
+	Dlp+tfAAwGpxsBucfYURKit6m4J9463beBsmsXhdU2tcjmE2sLNnpOshItq8ub1wTnh0Aksy8Zbkn
+	dnrGjZYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3oYa-000000085WF-2hAL;
-	Tue, 08 Sep 2026 05:39:44 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1x3oYc-000000085YD-3DIg;
+	Tue, 08 Sep 2026 05:39:46 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3oYY-000000085VH-32r5
+	id 1x3oYa-000000085Vl-3udA
 	for linux-um@lists.infradead.org;
-	Tue, 08 Sep 2026 05:39:43 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-49b0d8bc2aaso53071135e9.0
-        for <linux-um@lists.infradead.org>; Mon, 07 Sep 2026 22:39:42 -0700 (PDT)
+	Tue, 08 Sep 2026 05:39:46 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-49cdc81f40eso30820045e9.2
+        for <linux-um@lists.infradead.org>; Mon, 07 Sep 2026 22:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788845981; x=1789450781; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1788845983; x=1789450783; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=RUNN4pXUiIqbT553r7BwzJCI10zpfzMw6DzVR+9Z+tQ=;
-        b=afSc3Dr7fe/bPuFIP7fHc8FRUzrUlpc8SgSsBXSM1pN+bkyaXPGk3jzQ/9Zcqmt8AU
-         YwxzZxr8IArribmbHmxqI52Vf3iAY+JCcQzUyVQb/Ak7Oz0TyzICTq/ImDPsXi6zXABd
-         lIidmSPAqiNiE5ptb+g8gKtwo+177mKw8AKFVXxjN4/vM1P+P6zXVQYq5OVLiF+TjHfG
-         +kaGxMuNsvFIWfYu6GjPbxDqu6xbpQADh6RZfyDDQgDb6FJ4Kc92h28mQDPYwf+xAQ7Z
-         rF4F5blUXOZemVaKhcmp7yYxr/wR6OWguZkd+dTnOp0xcSKQeH2spjjXZUMD6tfRTtPF
-         43XA==
+        bh=E0xn/sQ1syzuU4VFJfjc1woEjzltXnI10QEuTRC1ag8=;
+        b=N1HwbMGUuKANhimmR7qmkVCMEA2j0ZZl+EF6BxRyDK8Ky3ErCXihFH4XdUxQzGxnrC
+         Erh0q+TRGOZyWA+DW2r3z5G4aC0gnNvT9KC3dJYeto/Exs71KQw2TVYQyWJe1XM2YLhw
+         FeCp0JKmLgbF9c2NzrNnwm/pf6xoRfHF2BKvzfKD+gHcXyClXkwbKm6KJuNpJGjAl/kr
+         LFpr9a7fU30PFBGdnjFHuM2ytI/ka/yHpPRXhjg8m4GmLrW+Kmwv0pjyLVHvy72BOiNz
+         yBkfQI2IP4LaK6Q1z2S/L6Mugth0QaPRovbIt0AKV8TehWQqFS2xMn78tE4N3NuZQtc2
+         wyWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788845981; x=1789450781;
+        d=1e100.net; s=20251104; t=1788845983; x=1789450783;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=RUNN4pXUiIqbT553r7BwzJCI10zpfzMw6DzVR+9Z+tQ=;
-        b=XECq6GYfGnVUd/Ub1Ov5WTCMeyJxz8VhXkap5oDpaaCKY9CbtlRB0OWxtBqkNfwBdX
-         shXjwqeUUDxJg2jp3vC7cIddRjiiynymAEI5eyDxS5WM1G5Ekjk/80sxjSPMNo04sAM6
-         ArOECE44YILVW4QqvvQGj6IextxvdpX3bYIiO/ccEAuEKeEYukOVjjVSoQCtuXw7AXLT
-         1zEyVHsLZb1houJan5nX055ALo2G6fwvGcO5vBKbG4xC1lbgyJ3du3ZI3Iq4/y3TH4Zc
-         C+zDmucX8xMXus2J8b8QxBBOvqmF1616dsXBKu6PkWzQI7DDHhczyF9UOn+fjdL0vu61
-         1wYg==
-X-Forwarded-Encrypted: i=1; AKwUvBwq13JmFkP2IAnAxwtqeeBjnf26ckAe4KGzcxC2XCw3xvDVEZyyPlPmyula15kXX8tXj0NkQ8x7VA==@lists.infradead.org
-X-Gm-Message-State: AFuF++kDSi+JAoyLgcyrmpg0Xq/oJEaUWtUQiINGrKvvgUYEqIiWDGZU
-	SbCujfvhez2mnvcpYp7WNP9SaDNVz1FzTHZargLID3lTlXIjSQ7CyajF
-X-Gm-Gg: AYBFou0Uva7dVnGPr7QWYteN2jKoRiaS4CdZu0KILDRRN/3VInon5+P6FrBKgU+bBdA
-	Fu+HTzjN1HtOIRC7I/cgX1sM25VHfEvRq/JbnpdRx/HZsHi1NrJpDge1g5at2+XEOhMF+lnFNQc
-	MaGZW77Ye3qeogoOCbI7t0v4jduBO6ylddvSW72YwSrASzowdiyf8YEjP3sTLmahLPz2My0waJv
-	Xifwgf58n+hhFI+d3qSf2IYRu/p+HHjFVxekkcvJxQxfUgvgfwHnLdjzlslTPwOrUfd1EIQBMfK
-	qa05EUVEtSKpXZZSS8+HoGan5KE59bbgThHMS+EnsEm5BBiA9MDUF08R08tLBfNmx/nXDuYsY97
-	/AhdtvS5RAJfLGLg3mhFhGrhhVZLezy7dshVLlJVBtnh2/q+2yfk7Lnobqba6viGd7cK3PZsc1y
-	2qOybhHBK0vtUJYRts34GPtRD9mYnd0e2HYtXUEfxHvrkNIY7rsb+IPc6C3dMukp9VZoHhygiVF
-	W7dUUpfmYZk4/JgrwwTYRXk+OzSFZz8XTzLQJsDBUNHNqWlpT4gdT5/wvzEYygXaxq9S136etac
-	swXAz0uXigFNNG/TnuSE9AcsE4vYC9c=
-X-Received: by 2002:a05:600c:3b21:b0:49c:ee01:8c53 with SMTP id 5b1f17b1804b1-49cf820ab3dmr263600185e9.2.1788845980825;
-        Mon, 07 Sep 2026 22:39:40 -0700 (PDT)
+        bh=E0xn/sQ1syzuU4VFJfjc1woEjzltXnI10QEuTRC1ag8=;
+        b=sJu0+ZvDV9k5DUqerMkzXtR6l5cqarDQ8TOsxxGQzLCAN48zo/8hcpqaLumE8srnpt
+         GtaJp6E8XWX0WkEJLyL9v/bX6NcYY+zhPS28R3ZG/7k9lnwDsAq3icjbtvxtPvSBKNBq
+         bC4rk/kZ3SIBig5PiV2y+KYDYYtbmn03k8pJDaFbq0Cq+n+mqwwQRc9eylRAXWcaSH//
+         IbUINNidaQxX9r26z/1DJ9HCtqzn+A271+/scXx1kcqOeUDsiHg0wc53Z50hlm7AAGov
+         fxQO0Sd5P2pojREVr1QzavTZJsNfuzia9AqTwKUtUm5fisacTIrCbSfWrW2LMK7tv+b5
+         6LOA==
+X-Forwarded-Encrypted: i=1; AKwUvBxO6JxJDV/0TgpLi0/b6OqlW4WNcV5LFNoTE9yC0J2qzRgcWLNuoqcUUVznv6uMmqbqMQD1TrFBNw==@lists.infradead.org
+X-Gm-Message-State: AFuF++ngGu4r0syTslAvC8IoUikdL/4RHbh+K9USlRgQScv9XypiiV2f
+	mXd0zUkvHIkDedL/O1cWdNO6uuqjCHwX8f6MDv8Yb3JCudC0aLmONSVb
+X-Gm-Gg: AYBFou0I0eznUkmakdpg4+/3lz18CJOYxiBOv4bmbFLqgYCduGrIUd4m5UNLUeIE0m3
+	ICJWchH31a3PmPnp6a056IngB4fDYuhqbbnGPK3Uk3s0VM4LOVJVBzAsFz1sQt4ZwYEF4iZs9xq
+	vAAQXifCRFtvjaUnH1HXH6vgHk8UGQwrHmqdJzBbP407IcAIspGOtObss4F+ab1HCb/VA9/jtIj
+	2ESc9AAPZicG/riQqCQLPToaftU8o++r99euOAK64SqdzRUdhQauzW7G2xAg7Hd5sNN6pybpQ5y
+	H2XxbrfiI2h5epRnVJRv0d31OcZd4lHBhkZBsADj88Y3GMsrCH4dckfa6U80pyWmTyYvG1hE8jI
+	Nkw6h4EnygNub3p/75O+F9gM3BV8+HjM+il1V9k3nKckeFfSmqoaUo+tvzyBqRvzzRHz4uzvMZA
+	Pvwfg1Qezgm7Ca/1KZ8TQfFOMwD3qrJ8ZSUlClnwNi46sGmowTBkkUXbfnoJNkQmIosTUd6/d3f
+	b8eJvTvFK/Ejb5CuNAKrDUTVBdKMWCZSwSFoyJPFjK+3sLlWXs0Ej3ZVOWvRr8kZTHTcYPreaUS
+	hw83NlgER3VbZ+JTsGHKtwgEqnJbB0k=
+X-Received: by 2002:a05:600c:3f12:b0:49c:c8de:96a9 with SMTP id 5b1f17b1804b1-49cf7fdd2dfmr526948265e9.2.1788845982788;
+        Mon, 07 Sep 2026 22:39:42 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-095-117-170-066.95.117.pool.telefonica.de. [95.117.170.66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cee7fec25sm523841335e9.13.2026.09.07.22.39.39
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cee7fec25sm523841335e9.13.2026.09.07.22.39.40
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 07 Sep 2026 22:39:40 -0700 (PDT)
+        Mon, 07 Sep 2026 22:39:42 -0700 (PDT)
 From: Karl Mehltretter <kmehltretter@gmail.com>
 To: "Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowangio@gmail.com>,
@@ -105,17 +105,17 @@ Cc: Karl Mehltretter <kmehltretter@gmail.com>,
 	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Christian Borntraeger <borntraeger@linux.ibm.com>,
 	Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH v3 2/6] virtio_ccw: always take irq_lock in the classic interrupt handler
-Date: Tue,  8 Sep 2026 07:38:13 +0200
-Message-Id: <20260908053817.26065-3-kmehltretter@gmail.com>
+Subject: [PATCH v3 3/6] remoteproc: implement synchronize_cbs() for virtio devices
+Date: Tue,  8 Sep 2026 07:38:14 +0200
+Message-Id: <20260908053817.26065-4-kmehltretter@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20260908053817.26065-1-kmehltretter@gmail.com>
 References: <20260908053817.26065-1-kmehltretter@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_223942_793007_AB2E55A1 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20260907_223945_014201_5561F62F 
+X-CRM114-Status: GOOD (  22.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,56 +130,198 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-virtio_ccw_int_handler() takes vcdev->irq_lock around its
-vring_interrupt() calls only when VIRTIO_HARDEN_NOTIFICATION is enabled.
+Platform drivers invoke rproc_vq_interrupt() from hard-IRQ handlers,
+threaded handlers, and work items. Because rpmsg callbacks may sleep,
+the virtio core's synchronize_rcu() fallback does not synchronize with
+callbacks across all these contexts. A device reset can therefore
+complete while a callback is still running.
 
-The virtio shutdown path calls synchronize_cbs() even when notification
-hardening is disabled. virtio_reset_device() now does so after the
-transport reset too.
+Add an SRCU domain per rproc. Protect both the queue lookup and
+vring_interrupt() with it, and synchronize the domain in the new hook.
 
-For classic interrupts, synchronize_cbs() takes vcdev->irq_lock for
-writing, but the interrupt handler does not take the matching read
-lock in that configuration. synchronize_cbs() can return while a
-callback is still running.
+__rproc_virtio_del_vqs() can race with rproc_vq_interrupt() too. Clear
+all queue pointers and synchronize the SRCU domain before freeing the
+queues, so callers that already found a queue can finish using it.
+Read rvring->vq once to avoid a second load after deletion starts.
 
-Take the read lock unconditionally so the write side can synchronize
-with the callbacks.
+The SRCU domain has the same lifetime as struct rproc. Its cleanup can
+sleep, so document that rproc_free() and rproc_put() must not drop the
+last reference from atomic context.
 
-Fixes: 8bd2fa086a04 ("virtio: break and reset virtio devices on device_shutdown()")
 Assisted-by: LLM
 Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- drivers/s390/virtio/virtio_ccw.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/remoteproc/remoteproc_core.c   | 12 ++++++++
+ drivers/remoteproc/remoteproc_virtio.c | 37 +++++++++++++++++++++-----
+ include/linux/remoteproc.h             |  3 +++
+ 3 files changed, 45 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index b90299205698..552d77998012 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -1204,13 +1204,11 @@ static void virtio_ccw_int_handler(struct ccw_device *cdev,
- 			vcdev->err = -EIO;
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index f003be006b1b..6756f2fe4ec5 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -2367,6 +2367,7 @@ static void rproc_type_release(struct device *dev)
+ 
+ 	dev_info(&rproc->dev, "releasing %s\n", rproc->name);
+ 
++	cleanup_srcu_struct(&rproc->vq_srcu);
+ 	idr_destroy(&rproc->notifyids);
+ 
+ 	if (rproc->index >= 0)
+@@ -2464,6 +2465,11 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 	if (!rproc)
+ 		return NULL;
+ 
++	if (init_srcu_struct(&rproc->vq_srcu)) {
++		kfree(rproc);
++		return NULL;
++	}
++
+ 	rproc->priv = &rproc[1];
+ 	rproc->auto_boot = true;
+ 	rproc->elf_class = ELFCLASSNONE;
+@@ -2526,6 +2532,9 @@ EXPORT_SYMBOL(rproc_alloc);
+  *
+  * If no one holds any reference to rproc anymore, then its refcount would
+  * now drop to zero, and it would be freed.
++ *
++ * Context: Any context, but the last reference must not be dropped from
++ * atomic context.
+  */
+ void rproc_free(struct rproc *rproc)
+ {
+@@ -2541,6 +2550,9 @@ EXPORT_SYMBOL(rproc_free);
+  *
+  * If no one holds any reference to rproc anymore, then its refcount would
+  * now drop to zero, and it would be freed.
++ *
++ * Context: Any context, but the last reference must not be dropped from
++ * atomic context.
+  */
+ void rproc_put(struct rproc *rproc)
+ {
+diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+index d5e9ff045a28..7fefb4bd7adc 100644
+--- a/drivers/remoteproc/remoteproc_virtio.c
++++ b/drivers/remoteproc/remoteproc_virtio.c
+@@ -23,6 +23,7 @@
+ #include <linux/err.h>
+ #include <linux/kref.h>
+ #include <linux/slab.h>
++#include <linux/srcu.h>
+ 
+ #include "remoteproc_internal.h"
+ 
+@@ -88,15 +89,23 @@ static bool rproc_virtio_notify(struct virtqueue *vq)
+  */
+ irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int notifyid)
+ {
++	irqreturn_t ret = IRQ_NONE;
+ 	struct rproc_vring *rvring;
++	struct virtqueue *vq;
++	int idx;
+ 
+ 	dev_dbg(&rproc->dev, "vq index %d is interrupted\n", notifyid);
+ 
++	idx = srcu_read_lock(&rproc->vq_srcu);
++
+ 	rvring = idr_find(&rproc->notifyids, notifyid);
+-	if (!rvring || !rvring->vq)
+-		return IRQ_NONE;
++	vq = rvring ? READ_ONCE(rvring->vq) : NULL;
++	if (vq)
++		ret = vring_interrupt(0, vq);
+ 
+-	return vring_interrupt(0, rvring->vq);
++	srcu_read_unlock(&rproc->vq_srcu, idx);
++
++	return ret;
+ }
+ EXPORT_SYMBOL(rproc_vq_interrupt);
+ 
+@@ -153,7 +162,7 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 
+ 	vq->num_max = num;
+ 
+-	rvring->vq = vq;
++	WRITE_ONCE(rvring->vq, vq);
+ 	vq->priv = rvring;
+ 
+ 	/* Update vring in resource table */
+@@ -165,14 +174,20 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 
+ static void __rproc_virtio_del_vqs(struct virtio_device *vdev)
+ {
++	struct rproc *rproc = vdev_to_rproc(vdev);
+ 	struct virtqueue *vq, *n;
+ 	struct rproc_vring *rvring;
+ 
+-	list_for_each_entry_safe(vq, n, &vdev->vqs, list) {
++	list_for_each_entry(vq, &vdev->vqs, list) {
+ 		rvring = vq->priv;
+-		rvring->vq = NULL;
+-		vring_del_virtqueue(vq);
++		WRITE_ONCE(rvring->vq, NULL);
  	}
- 	virtio_ccw_check_activity(vcdev, activity);
--#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
- 	/*
- 	 * Paired with virtio_ccw_synchronize_cbs() and interrupts are
- 	 * disabled here.
- 	 */
- 	read_lock(&vcdev->irq_lock);
--#endif
- 	for_each_set_bit(i, indicators(vcdev),
- 			 sizeof(*indicators(vcdev)) * BITS_PER_BYTE) {
- 		/* The bit clear must happen before the vring kick. */
-@@ -1219,9 +1217,7 @@ static void virtio_ccw_int_handler(struct ccw_device *cdev,
- 		vq = virtio_ccw_vq_by_ind(vcdev, i);
- 		vring_interrupt(0, vq);
- 	}
--#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
- 	read_unlock(&vcdev->irq_lock);
--#endif
- 	if (test_bit(0, indicators2(vcdev))) {
- 		virtio_config_changed(&vcdev->vdev);
- 		clear_bit(0, indicators2(vcdev));
++
++	/* Synchronize with rproc_vq_interrupt() callers that found a queue. */
++	synchronize_srcu(&rproc->vq_srcu);
++
++	list_for_each_entry_safe(vq, n, &vdev->vqs, list)
++		vring_del_virtqueue(vq);
+ }
+ 
+ static void rproc_virtio_del_vqs(struct virtio_device *vdev)
+@@ -242,6 +257,13 @@ static void rproc_virtio_reset(struct virtio_device *vdev)
+ 	dev_dbg(&vdev->dev, "reset !\n");
+ }
+ 
++static void rproc_virtio_synchronize_cbs(struct virtio_device *vdev)
++{
++	struct rproc *rproc = vdev_to_rproc(vdev);
++
++	synchronize_srcu(&rproc->vq_srcu);
++}
++
+ /* provide the vdev features as retrieved from the firmware */
+ static u64 rproc_virtio_get_features(struct virtio_device *vdev)
+ {
+@@ -330,6 +352,7 @@ static const struct virtio_config_ops rproc_virtio_config_ops = {
+ 	.find_vqs	= rproc_virtio_find_vqs,
+ 	.del_vqs	= rproc_virtio_del_vqs,
+ 	.reset		= rproc_virtio_reset,
++	.synchronize_cbs = rproc_virtio_synchronize_cbs,
+ 	.set_status	= rproc_virtio_set_status,
+ 	.get_status	= rproc_virtio_get_status,
+ 	.get		= rproc_virtio_get,
+diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+index 7c1546d48008..93a182b1868a 100644
+--- a/include/linux/remoteproc.h
++++ b/include/linux/remoteproc.h
+@@ -41,6 +41,7 @@
+ #include <linux/cdev.h>
+ #include <linux/completion.h>
+ #include <linux/idr.h>
++#include <linux/srcu.h>
+ #include <linux/of.h>
+ #include <linux/rsc_table.h>
+ 
+@@ -256,6 +257,7 @@ enum rproc_features {
+  * @mappings: list of iommu mappings we initiated, needed on shutdown
+  * @bootaddr: address of first instruction to boot rproc with (optional)
+  * @rvdevs: list of remote virtio devices
++ * @vq_srcu: SRCU domain for the virtqueue callbacks of @rvdevs
+  * @subdevs: list of subdevices, to following the running state
+  * @notifyids: idr for dynamically assigning rproc-wide unique notify ids
+  * @index: index of this rproc device
+@@ -298,6 +300,7 @@ struct rproc {
+ 	struct list_head mappings;
+ 	u64 bootaddr;
+ 	struct list_head rvdevs;
++	struct srcu_struct vq_srcu;
+ 	struct list_head subdevs;
+ 	struct idr notifyids;
+ 	int index;
 -- 
 2.39.5 (Apple Git-154)
 
