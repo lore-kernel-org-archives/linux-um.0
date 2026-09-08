@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BD5DC79FAD
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 234BFC79F99
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Cp0o8EDFYqgaI/CEiEvUg/mXT7EeRnDPR+/NOomvS88=; b=c+aTgdXCKJIY8u
-	/WisqHUcQ5JGG4Hcv6l/kxv/DRqtvDtsa0NLMTM97Jc5dZIDYvPQtFimdt0d62T7k4857QYDQeGRI
-	cTSm5DjQtMkmvFCa8REA87KAoJ2yo16Nt/mffBdeQaCcAUZMh4XWqU6Ba6Y/5nnjzAniAJjfc/gUh
-	/9yozPtoDyLbim0vedEbdf2PN2vh0aMqffFCyIEmk9+DH7QqaqywkhGoMZHId/q0WhytT4jWYUcg1
-	9w3mci3bNXCAEJBy4u0xpuoUEQtS3IYAZQdNCUoEzeKI0+faV3dkTY0ZJl9CV/+/yZ/OdzwQ8Y+wZ
-	MD09CwKUYyKWGvW31Lkw==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FawW0xiyyB3XDpeEil2328xu9JZeGaaUH29QSwtR0fg=; b=4YnwmhxMNpcs5d4tot//LF0Lyd
+	71ezh+AjreCaPqeMMbwbbcQxHFPR/hiL8L6VeMde5qIcp7kW3Q2CSHswpIYcuAok5bpxaU5CC4+Pz
+	dE8mLJ1rfmtWBHN5KWi8TS+IEwJFEXymx53uTWFiUGMo1RRByJyfmPNPNLpkVTGGC2jMYTcr5N7MP
+	kcq0kNfjuqWro7ZWt5ejvfLhKETAPlBAqv71nCkLfSmnMpj+mDFB0hi3v+Hf1r60HePBvLxDjN5cT
+	Vz7Qrj3iXGB3LbnEK1QS9Eq64FIWVFQ+WSYZ+Yh2KQuTpyqYYrwiQ6AIXiinG019wuAD+awGYPm8G
+	nw8ziYQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pPA-0000000897g-1BlX;
-	Tue, 08 Sep 2026 06:34:04 +0000
+	id 1x3pPF-000000089EP-3GI2;
+	Tue, 08 Sep 2026 06:34:09 +0000
 Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pOy-000000088si-22CY;
-	Tue, 08 Sep 2026 06:33:56 +0000
+	id 1x3pP1-000000088vP-2UpA;
+	Tue, 08 Sep 2026 06:33:57 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849227;
+	s=2020; t=1788849231;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Cp0o8EDFYqgaI/CEiEvUg/mXT7EeRnDPR+/NOomvS88=;
-	b=ugOOuW9qKhAU3jefF5rh08PT3vrE2IXdbueWnqZqCpmyV5bvOudbWlrbHjpeje1u8xgjfv
-	AKlGo1M9CxgVkcWML1tdQGO/+Yr8wRNl4W1A12PQz3BNS1oUOkekAz+Ae2u3Y3gaWX6IOs
-	JtboaftOyUindIxACXrEnFvSVVXEFw0jfPd2Zaq9Wtkkl+YHzfskypxnguHiNVMOQLXuwJ
-	ChiyKIktCY98YbQi6nKlJ+gVx5YgpcujMOZYC1T+Yw0xzGUGXsCB76CVtAr/DucEjwjQ3A
-	sF3OFbYIbiqCePh0eg5o0M79ii6HYcWDmcoD0jLFasuMbIDQ6s/LvL3pagYykA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FawW0xiyyB3XDpeEil2328xu9JZeGaaUH29QSwtR0fg=;
+	b=BBfchTQ31DifkjFqwb5y4n5BvOGW48DOyhiHYRpdPzrEQcn+IitYmXoSVnLWzvWa6lwHuy
+	sZD+8Y+YV+U5Q+RLLiaQuk6+JRBJF9vi1Y1DGh92/GH1x2M0Sy+puIE8ZRZhqgBqF9ZxcX
+	OVMEGjMH4cuC2Ih8qYPFGclgRGEjWPRnkw/+9BlYAZfTwu3dB+NLPwZ6JmOUFvLGShphqo
+	lpE6byOStxgm5iAG6jOHo0tEAOdE8cTToyKI6d+gadpfoJgZfZRrWhapeXH8p8WEX3WKnq
+	ZIRI/ePB8OFwnrq7FOJP8oo233EMrmmz/MJKwghMXEJPb8wamnhU9yuJgEsxpg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849227;
+	s=2020e; t=1788849231;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Cp0o8EDFYqgaI/CEiEvUg/mXT7EeRnDPR+/NOomvS88=;
-	b=An9/D7tx9snxErbmaoktle4MclQvGq4BeA4eqME/OXmkgI1ozhe/GSz/tKB6Fu1fAZBtoW
-	ktDVIIqBQgCerXCw==
-Subject: [PATCH v5 00/24] vdso: Reject absolute relocations during build
-Date: Tue, 08 Sep 2026 08:33:34 +0200
-Message-Id: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FawW0xiyyB3XDpeEil2328xu9JZeGaaUH29QSwtR0fg=;
+	b=epagOxWHbraL4pZF2ABSEKqkk81eezIl8Gi009ltXa6+5yB+cGQ8VNDm3CyFBBc9mW3J0y
+	3loMMVZFFoRrE7AA==
+Date: Tue, 08 Sep 2026 08:33:40 +0200
+Subject: [PATCH v5 06/24] riscv: elf: Move relocation constants to UAPI
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/23Ny2rDMBCF4VcJWldFGl3dVd+jZKHLuBEYK0iOS
- Al+9yiBklK0/A/MNzdSsSSs5ONwIwVbqimvPdTbgYSTW7+RptibAAPFJFjaYs3U+ZqXy4a04JI
- DdQAaJhG40Zz0y3PBOV2f6tex9ynVLZef55PGH+uvNw29ximjkzWOuTly5tXnktbLVvKaru8Ry
- cNs8McRbOxAdxTOIQgfpAc9csTL0ZyPHdEdaexkohHGSj9y5MuxHMaO7I7mznrNFSoM/5193+9
- FRYP1kgEAAA==
-X-Change-ID: 20250428-vdso-absolute-reloc-a226293c1761
+Message-Id: <20260908-vdso-absolute-reloc-v5-6-3a93791af1cf@linutronix.de>
+References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
+In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
  Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
  Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>, 
@@ -97,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=5051;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=4962;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=HrYSsshejm3MdwopK0QyrP0YNb7baHfULTYkmKafnyk=;
- b=6vZ688HbgWJhdTRQDorQBzK+M44QpmiNq6teG+NERQLRF70axqHuYGFGpQXkaBAwsvu/byckc
- GVjxkQ/ryyNA0SOqbZDiyxRuUih42hmJ5lsZUQGQM/E4vA20m25CVaf
+ bh=A2KwwyE44rpRvMfg8HmJMKqJMXpNGArDCbHCP2lPOtc=;
+ b=BIFQBlA6uOHvotUFp7WcFcjkRWr4zWTBvAzopoDSHqbuVQn/0iY7yQ9cklHXDfQCbhw1lLP4v
+ +pw2vSBQ8BmAxY2zgjj9x+KL+h6I3EZtcmF2oBqsXSxkzdljxYY/Ns5
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233352_826313_BFD78DCC 
-X-CRM114-Status: GOOD (  13.53  )
+X-CRM114-CacheID: sfid-20260907_233356_002310_0E0CEB83 
+X-CRM114-Status: GOOD (  10.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,114 +119,170 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The compiler can emit absolute relocations in vDSO code,
-which are invalid in vDSO code.
-Detect them at compile-time.
+These constants are useful for cross-platform userspace, for example to
+process ELF files during kernel cross-compilation.
 
-libc elf.h is missing some of the relocation constants,
-so make use of the kernels own UAPI headers instead.
-
-Patches 13 onward contain the architecture specific changes,
-interesting for the architecture maintaines.
-
-Kbuild and Rust folks: This contains custom definitions of hostprog
-bindgen and rust library commands.
-These are currently only defined inside the subsystem directory.
-Let me know if they should go into scripts/Makefile.host.
+Move them from the kernel-private architecture-specific header to the UAPI.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+Acked-by: Palmer Dabbelt <palmer@dabbelt.com>
 ---
-Changes in v5:
-- Rebase on v7.3-rc1
-- s/HOSTRUSTLIB/HOSTRUSTC L/
-- Pick up review tags.
-- Also handle SPARC.
-- Build 'vdsocheck' during the prepare phase.
-- Drop now unnecessary riscv LTO preparation patches.
-- Link to v4: https://lore.kernel.org/r/20250812-vdso-absolute-reloc-v4-0-61a8b615e5ec@linutronix.de
+ arch/riscv/include/uapi/asm/elf.h | 66 ---------------------------------------
+ include/uapi/linux/elf-r.h        | 66 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 66 deletions(-)
 
-Changes in v4:
-- Replace the inline shell logic with a dedicated build-time tool
-- Link to v3: https://lore.kernel.org/r/20250611-vdso-absolute-reloc-v3-0-47897d73784b@linutronix.de
+diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
+index 11a71b8533d5..05cf74a4a535 100644
+--- a/arch/riscv/include/uapi/asm/elf.h
++++ b/arch/riscv/include/uapi/asm/elf.h
+@@ -32,70 +32,4 @@ typedef union __riscv_fp_state elf_fpregset_t;
+ #define ELF_RISCV_R_TYPE(r_info)	ELF32_R_TYPE(r_info)
+ #endif
+ 
+-/*
+- * RISC-V relocation types
+- */
+-
+-/* Relocation types used by the dynamic linker */
+-#define R_RISCV_NONE		0
+-#define R_RISCV_32		1
+-#define R_RISCV_64		2
+-#define R_RISCV_RELATIVE	3
+-#define R_RISCV_COPY		4
+-#define R_RISCV_JUMP_SLOT	5
+-#define R_RISCV_TLS_DTPMOD32	6
+-#define R_RISCV_TLS_DTPMOD64	7
+-#define R_RISCV_TLS_DTPREL32	8
+-#define R_RISCV_TLS_DTPREL64	9
+-#define R_RISCV_TLS_TPREL32	10
+-#define R_RISCV_TLS_TPREL64	11
+-#define R_RISCV_IRELATIVE	58
+-
+-/* Relocation types not used by the dynamic linker */
+-#define R_RISCV_BRANCH		16
+-#define R_RISCV_JAL		17
+-#define R_RISCV_CALL		18
+-#define R_RISCV_CALL_PLT	19
+-#define R_RISCV_GOT_HI20	20
+-#define R_RISCV_TLS_GOT_HI20	21
+-#define R_RISCV_TLS_GD_HI20	22
+-#define R_RISCV_PCREL_HI20	23
+-#define R_RISCV_PCREL_LO12_I	24
+-#define R_RISCV_PCREL_LO12_S	25
+-#define R_RISCV_HI20		26
+-#define R_RISCV_LO12_I		27
+-#define R_RISCV_LO12_S		28
+-#define R_RISCV_TPREL_HI20	29
+-#define R_RISCV_TPREL_LO12_I	30
+-#define R_RISCV_TPREL_LO12_S	31
+-#define R_RISCV_TPREL_ADD	32
+-#define R_RISCV_ADD8		33
+-#define R_RISCV_ADD16		34
+-#define R_RISCV_ADD32		35
+-#define R_RISCV_ADD64		36
+-#define R_RISCV_SUB8		37
+-#define R_RISCV_SUB16		38
+-#define R_RISCV_SUB32		39
+-#define R_RISCV_SUB64		40
+-#define R_RISCV_GNU_VTINHERIT	41
+-#define R_RISCV_GNU_VTENTRY	42
+-#define R_RISCV_ALIGN		43
+-#define R_RISCV_RVC_BRANCH	44
+-#define R_RISCV_RVC_JUMP	45
+-#define R_RISCV_GPREL_I		47
+-#define R_RISCV_GPREL_S		48
+-#define R_RISCV_TPREL_I		49
+-#define R_RISCV_TPREL_S		50
+-#define R_RISCV_RELAX		51
+-#define R_RISCV_SUB6		52
+-#define R_RISCV_SET6		53
+-#define R_RISCV_SET8		54
+-#define R_RISCV_SET16		55
+-#define R_RISCV_SET32		56
+-#define R_RISCV_32_PCREL	57
+-#define R_RISCV_PLT32		59
+-#define R_RISCV_SET_ULEB128	60
+-#define R_RISCV_SUB_ULEB128	61
+-
+-
+ #endif /* _UAPI_ASM_RISCV_ELF_H */
+diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
+index 0d0dfaa7c724..02e420c255df 100644
+--- a/include/uapi/linux/elf-r.h
++++ b/include/uapi/linux/elf-r.h
+@@ -314,4 +314,70 @@
+ /* Keep this the last entry.  */
+ #define R_PPC64_NUM		253
+ 
++
++/*
++ * RISC-V relocation types
++ */
++
++/* Relocation types used by the dynamic linker */
++#define R_RISCV_NONE		0
++#define R_RISCV_32		1
++#define R_RISCV_64		2
++#define R_RISCV_RELATIVE	3
++#define R_RISCV_COPY		4
++#define R_RISCV_JUMP_SLOT	5
++#define R_RISCV_TLS_DTPMOD32	6
++#define R_RISCV_TLS_DTPMOD64	7
++#define R_RISCV_TLS_DTPREL32	8
++#define R_RISCV_TLS_DTPREL64	9
++#define R_RISCV_TLS_TPREL32	10
++#define R_RISCV_TLS_TPREL64	11
++#define R_RISCV_IRELATIVE	58
++
++/* Relocation types not used by the dynamic linker */
++#define R_RISCV_BRANCH		16
++#define R_RISCV_JAL		17
++#define R_RISCV_CALL		18
++#define R_RISCV_CALL_PLT	19
++#define R_RISCV_GOT_HI20	20
++#define R_RISCV_TLS_GOT_HI20	21
++#define R_RISCV_TLS_GD_HI20	22
++#define R_RISCV_PCREL_HI20	23
++#define R_RISCV_PCREL_LO12_I	24
++#define R_RISCV_PCREL_LO12_S	25
++#define R_RISCV_HI20		26
++#define R_RISCV_LO12_I		27
++#define R_RISCV_LO12_S		28
++#define R_RISCV_TPREL_HI20	29
++#define R_RISCV_TPREL_LO12_I	30
++#define R_RISCV_TPREL_LO12_S	31
++#define R_RISCV_TPREL_ADD	32
++#define R_RISCV_ADD8		33
++#define R_RISCV_ADD16		34
++#define R_RISCV_ADD32		35
++#define R_RISCV_ADD64		36
++#define R_RISCV_SUB8		37
++#define R_RISCV_SUB16		38
++#define R_RISCV_SUB32		39
++#define R_RISCV_SUB64		40
++#define R_RISCV_GNU_VTINHERIT	41
++#define R_RISCV_GNU_VTENTRY	42
++#define R_RISCV_ALIGN		43
++#define R_RISCV_RVC_BRANCH	44
++#define R_RISCV_RVC_JUMP	45
++#define R_RISCV_GPREL_I		47
++#define R_RISCV_GPREL_S		48
++#define R_RISCV_TPREL_I		49
++#define R_RISCV_TPREL_S		50
++#define R_RISCV_RELAX		51
++#define R_RISCV_SUB6		52
++#define R_RISCV_SET6		53
++#define R_RISCV_SET8		54
++#define R_RISCV_SET16		55
++#define R_RISCV_SET32		56
++#define R_RISCV_32_PCREL	57
++#define R_RISCV_PLT32		59
++#define R_RISCV_SET_ULEB128	60
++#define R_RISCV_SUB_ULEB128	61
++
+ #endif /* _UAPI_LINUX_ELF_R_H */
 
-Changes in v3:
-- Drop already applied bugfix for arm64
-- Disable LTO for the riscv vDSO, as it is incompatible
-- Link to v2: https://lore.kernel.org/r/20250430-vdso-absolute-reloc-v2-0-5efcc3bc4b26@linutronix.de
-
-Changes in v2:
-- Link to openend (invalid) GCC bug containing more explanations
-- Refine commit messages
-- Don't fail on commit absolute relocations in debug info
-- Link to v1: https://lore.kernel.org/r/20250429-vdso-absolute-reloc-v1-0-987a0afd10b5@linutronix.de
-
----
-Thomas Weißschuh (24):
-      elf, uapi: Add a header for relocation constants
-      x86/elf, um/x86/elf: Move relocation constants to UAPI
-      ARM: elf: Move relocation constants to UAPI
-      arm64: elf: Move relocation constants to UAPI
-      powerpc/elf: Move relocation constants to UAPI
-      riscv: elf: Move relocation constants to UAPI
-      LoongArch: Move relocation constants to UAPI
-      s390/elf: Move relocation constants to UAPI
-      MIPS: ELF: Move relocation constants to UAPI
-      sparc: elf: Move relocation constants to UAPI
-      tools headers UAPI: Sync ELF headers with the kernel sources
-      vdso: Add the vdsocheck tool
-      x86/vdso: Enable the vdsocheck tool
-      ARM: vdso: Enable the vdsocheck tool
-      arm64: vdso: Enable the vdsocheck tool
-      powerpc/elf: Add 32-bit REL16 relocation definitions
-      powerpc/vdso: Enable the vdsocheck tool
-      riscv: vdso: Enable the vdsocheck tool
-      LoongArch: vDSO: Enable the vdsocheck tool
-      s390/vdso: Enable the vdsocheck tool
-      MIPS: ELF: Add more PC-relative relocation definitions
-      MIPS: vdso: Enable the vdsocheck tool
-      sparc: vdso: Enable the vdsocheck tool
-      vDSO: Automatically enable VDSO_CHECK
-
- Makefile                                    |  19 +
- arch/arm/include/asm/elf.h                  |  24 -
- arch/arm/vdso/Makefile                      |   4 +-
- arch/arm64/include/asm/elf.h                |  55 ---
- arch/arm64/kernel/vdso/Makefile             |   4 +-
- arch/loongarch/include/asm/elf.h            | 130 -----
- arch/loongarch/vdso/Makefile                |   4 +-
- arch/mips/include/asm/elf.h                 |  55 ---
- arch/mips/vdso/Makefile                     |   8 +-
- arch/powerpc/include/uapi/asm/elf.h         | 201 --------
- arch/powerpc/kernel/vdso/Makefile           |   4 +-
- arch/riscv/include/uapi/asm/elf.h           |  66 ---
- arch/riscv/kernel/vdso/Makefile             |   4 +-
- arch/s390/include/asm/elf.h                 |  83 ----
- arch/s390/kernel/vdso/Makefile              |   4 +-
- arch/sparc/include/asm/elf_32.h             |  43 --
- arch/sparc/include/asm/elf_64.h             |  44 --
- arch/sparc/vdso/Makefile                    |   5 +-
- arch/x86/entry/vdso/common/Makefile.include |   2 +-
- arch/x86/include/asm/elf.h                  |  33 --
- arch/x86/um/asm/elf.h                       |  33 --
- include/uapi/linux/elf-r.h                  | 705 ++++++++++++++++++++++++++++
- include/uapi/linux/elf.h                    |   1 +
- lib/vdso/Kconfig                            |   7 +
- lib/vdso/Makefile                           |   2 +
- lib/vdso/Makefile.include                   |  14 +
- lib/vdso/check/.gitignore                   |   3 +
- lib/vdso/check/Makefile                     |  34 ++
- lib/vdso/check/elf.rs                       | 498 ++++++++++++++++++++
- lib/vdso/check/vdsocheck.rs                 | 299 ++++++++++++
- tools/include/uapi/linux/elf-em.h           |  71 +++
- tools/include/uapi/linux/elf-r.h            | 705 ++++++++++++++++++++++++++++
- tools/include/uapi/linux/elf.h              | 112 ++++-
- 33 files changed, 2479 insertions(+), 797 deletions(-)
----
-base-commit: 2f737a133fad3808f9993f704fb27fd7791a0a41
-change-id: 20250428-vdso-absolute-reloc-a226293c1761
-
-Best regards,
---  
-Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+-- 
+2.55.0
 
 
