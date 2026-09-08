@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD1BC79FAA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 956C3C79FB2
 	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,48 +12,62 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RvvMxpUTqAEjiM3SZ1i5vbN0jdjv1MyFM9wry6aTCDE=; b=aXb30Mzl5Ym4p1LHqTLse/eXCt
-	+sUKEI2gE+8F6x33kNiP4Pi5QDiyNHnPch0Fv2oLaGd879u6MWRtnKqpby+fy60LHU+K7/E0yQ8fN
-	BdBEV0zXX6yfpkGHpMghc2ag3xdRF1lw3tLo0aeKkoT4ldM0lxW2sWpOXe26JYoypIX/61b7YYbu4
-	ePebLnu/fOwtR6ohe61T/NtfwNkvtNtGpV3NrsYkzIJ0hKJPQHuKyyDclrDlimpWPSSNRqAF+6+PK
-	jnbnzj6HAlf5qqziPhyDKIko0Es04kXVEObf+Kthh/RgC22JwaU1bj5s08AyXesKErAuwIfrhQwzW
-	aJpPaoRQ==;
+	bh=IidQ31ouFEpYA+nS17u9E6l6j5+J0X/Qbfbzc/4EoAk=; b=kQfCU3XRAY73/D1erALVrY4CLr
+	yQxSUkyZTWidV2SYZ6i74wwsgBQAIkJCEJDsnNFKvftMrrIJXFt2AQoRRpzZxQK/daa/dt96zGhOk
+	KdphE+NmnUxPvrIxZlPWl5P9KvoW/z08OAPVvVnSU7wU+aEj1gRCSXPmxoqhXtW+pqeLa4vwo+2p+
+	UlVyFqi3WDbThae6Ku067J0QMfg+FHGMOE5jMWef1sXWKdLI4t5mf1bZKb2x2fjWI1/5wTxjtoT57
+	trr3rpMM9TDxg70x3uAyTbJtlM+BB+zCnhOE2V2WCW6gj7Tm0tQofovW6l2AVJ64iU4bizbxgL67o
+	lqpEuzNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pQ9-00000008Ab3-0Dv7;
+	id 1x3pQ9-00000008AhY-0nwd;
 	Tue, 08 Sep 2026 06:35:05 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pPE-000000089A9-2VD7;
+	id 1x3pPI-000000089HN-28MG;
 	Tue, 08 Sep 2026 06:34:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=IidQ31ouFEpYA+nS17u9E6l6j5+J0X/Qbfbzc/4EoAk=; b=eYn5jHayOrRGt5jHi6sL0tVK+E
+	3wHUmAzIebpoYA1aYAukiFp45vvmAAUMqFNe+5TIKV7miaw7uwa/73SvNkaS7HyCCVP+SxnDIegB2
+	xpD4gfKTwXlxROTXKF69+fZf1CkpiO4lQNmJKuYpfOCnFyof1NcDuwBfEwjtDUXtPe6yJvYLECiT3
+	8YG9g/ZVHEABiXA2Z1zDqiwqYbW5ZiJZky7Zj4meNYFergfvcf2l/u8t/hhY/NJkC1kpJ3b7tVlmp
+	XqUOjHYY+39TZkRXwV3cXDz3qmXFnMvUNbL0ueKvB8BUzGRsQbGEH9/x1Zksbl6x4Qwsc78baWnQd
+	QkARHRUw==;
+Received: from galois.linutronix.de ([193.142.43.55])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x3pPB-0000000Gyk4-3rXK;
+	Tue, 08 Sep 2026 06:34:11 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849240;
+	s=2020; t=1788849238;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RvvMxpUTqAEjiM3SZ1i5vbN0jdjv1MyFM9wry6aTCDE=;
-	b=WBE4KgbvH8kKhUW/1mt3DB5+lWOHeFh2YjFybHYrrBsmrY2ZyAqO3icprjc6on//kHKDtk
-	HB1LuQSN7pZZKwd5RBe8nuI6fSR0dbnUUR67KgQC1s+qvS+xekGfIxUFVJr6cBIIla1iRQ
-	Pqti70mJFUku/mfF1rtravNpxc8SH1+92ERlDw3x2YziDALGNpp943EMeivH19adfG+/Aj
-	VZK4wxoyLehM+EGyoPoYbPLLuQC/yubqhhJtQkd+dFyM4J5VaiAOq5VkdqZCz1aVAs3SR1
-	SNIaSXLdkkizWNRLaco0lVWGHJpUVtEp5Wf6hYJxHhSY4QvgMW+g4dPa/yIVAQ==
+	bh=IidQ31ouFEpYA+nS17u9E6l6j5+J0X/Qbfbzc/4EoAk=;
+	b=13h/LZm3oUN5NX5d1pSwDpq6WOOrKuWkeooevs0Slh2NpnZURtKGe5KDBp1tQw/iOP/Foz
+	jG+leFqUbZb1il3/yws247n0LE1Oo2UrRebiDasMImoeAvycvfaJtgt5FG43hx0rRvf/kt
+	b+qd66u6bARnZouWXpm8baIEtwrHmqnbB+RfcaWW8MXCqXeqNj1m+ijLG4q2iVvSt4mr5y
+	vJu0ZR+0GxgCwURI/L5/KXvu6rMPzu3XO6orwkZFexgMHMpLQ9jIedo5jxhPNs6DVioHIi
+	NBeKQtqchUF1TAHOOMcD+uSWgwhGZFMn6e2sbJf5DzX9oTp0lkDYo51oJaVyWA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849240;
+	s=2020e; t=1788849238;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RvvMxpUTqAEjiM3SZ1i5vbN0jdjv1MyFM9wry6aTCDE=;
-	b=sVkxWMeaYxucsCDJ/RG28/BLYHUBsU6GemnSsC+Hb2roWTxpx19k5S+RFDdxb73NoYk7U1
-	GeSdWRCauEyymSCA==
-Date: Tue, 08 Sep 2026 08:33:56 +0200
-Subject: [PATCH v5 22/24] MIPS: vdso: Enable the vdsocheck tool
+	bh=IidQ31ouFEpYA+nS17u9E6l6j5+J0X/Qbfbzc/4EoAk=;
+	b=iI6SCa0eTjj8cRYwu7N3BX4E5LcC26uVQ6b5eTpae2XyKJDB0AL3DOO+Qmt0gRz3YcZJfO
+	b4Ep6HUDa68rhZAg==
+Date: Tue, 08 Sep 2026 08:33:54 +0200
+Subject: [PATCH v5 20/24] s390/vdso: Enable the vdsocheck tool
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-22-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-20-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -95,16 +109,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=3612;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=2270;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=ubtEZQjioty7c/a+mAfAlWzRsxWg9fuzdks4Wf55EiQ=;
- b=RqRZw3iuixUJm3LXZwv2PoTvjs+ri9BP0dx1fHP9VLv0hbj4XHaJ17g2P6yABJITcSMSnaugu
- tXiQHncbBYnDqVwCO/h5YQtqULq/BU7nhp+Fszo6uKYG4HA2Ws6L76u
+ bh=MheUrTVMsMhlO1Hx/uIAQcNaOa1zLZs90zNsA4xVFXI=;
+ b=QPV6rtkThGmgCrpePDg3k3KYmTBWvY98MetgMiUyonNPORVe5K/DIqywgywggjAngHoM9YG0V
+ mAFJANMdk6aBtyL1evmiJG/8n0kShbhIewzAsKEqRmtcX5PbBAf3zZb
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233409_489156_B3E6C776 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20260908_073406_287811_565401DB 
+X-CRM114-Status: GOOD (  10.60  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,82 +141,53 @@ Wire it up for the architecture.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/mips/Kconfig           |  1 +
- arch/mips/vdso/Makefile     |  8 ++++----
- lib/vdso/check/vdsocheck.rs | 15 +++++++++++++++
- 3 files changed, 20 insertions(+), 4 deletions(-)
+ arch/s390/Kconfig              | 1 +
+ arch/s390/kernel/vdso/Makefile | 4 ++--
+ lib/vdso/check/vdsocheck.rs    | 9 +++++++++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e2eb9627bd14..9a3ce550c95d 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -107,6 +107,7 @@ config MIPS
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 4b51bc6e8948..bc12367a7b00 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -291,6 +291,7 @@ config S390
  	select TRACE_IRQFLAGS_SUPPORT
- 	select ARCH_HAS_ELFCORE_COMPAT
- 	select HAVE_ARCH_KCSAN if 64BIT
+ 	select TTY
+ 	select USER_STACKTRACE_SUPPORT
 +	select VDSO_CHECK
+ 	select VDSO_GETRANDOM
+ 	select VIRT_CPU_ACCOUNTING
+ 	select VMAP_STACK
+diff --git a/arch/s390/kernel/vdso/Makefile b/arch/s390/kernel/vdso/Makefile
+index 35c834b895ec..509ef3f1e2eb 100644
+--- a/arch/s390/kernel/vdso/Makefile
++++ b/arch/s390/kernel/vdso/Makefile
+@@ -44,10 +44,10 @@ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ $(obj)/vdso_wrapper.o : $(obj)/vdso.so
  
- config MIPS_FIXUP_BIGPHYS_ADDR
- 	bool
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 00d3ba2c482a..63060057cd21 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -66,7 +66,7 @@ quiet_cmd_vdso_mips_check = VDSOCHK $@
- #
+ quiet_cmd_vdso_and_check = VDSO    $@
+-      cmd_vdso_and_check = $(cmd_ld); $(cmd_vdso_check)
++      cmd_vdso_and_check = $(cmd_ld_vdso); $(cmd_vdso_check)
  
- quiet_cmd_vdsold_and_vdso_check = LD      $@
--      cmd_vdsold_and_vdso_check = $(cmd_ld); $(cmd_vdso_check); $(cmd_vdso_mips_check)
-+      cmd_vdsold_and_vdso_check = $(cmd_ld_vdso); $(cmd_vdso_check); $(cmd_vdso_mips_check)
+ # link rule for the .so file, .lds has to be first
+-$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) $(obj-cvdso) FORCE
++$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) $(obj-cvdso) $(vdsocheck) FORCE
+ 	$(call if_changed,vdso_and_check)
  
- quiet_cmd_vdsoas_o_S = AS      $@
-       cmd_vdsoas_o_S = $(CC) $(a_flags) -c -o $@ $<
-@@ -103,7 +103,7 @@ $(obj-vdso): KBUILD_AFLAGS := $(aflags-vdso) $(native-abi)
- 
- $(obj)/vdso.lds: KBUILD_CPPFLAGS := $(ccflags-vdso) $(native-abi)
- 
--$(obj)/vdso.so.dbg.raw: $(obj)/vdso.lds $(obj-vdso) FORCE
-+$(obj)/vdso.so.dbg.raw: $(obj)/vdso.lds $(obj-vdso) $(vdsocheck) FORCE
- 	$(call if_changed,vdsold_and_vdso_check)
- 
- $(obj)/vdso-image.c: $(obj)/vdso.so.dbg.raw $(obj)/vdso.so.raw \
-@@ -141,7 +141,7 @@ $(obj)/vdso-o32.lds: KBUILD_CPPFLAGS := $(ccflags-vdso) -mabi=32
- $(obj)/vdso-o32.lds: $(src)/vdso.lds.S FORCE
- 	$(call if_changed_dep,cpp_lds_S)
- 
--$(obj)/vdso-o32.so.dbg.raw: $(obj)/vdso-o32.lds $(obj-vdso-o32) FORCE
-+$(obj)/vdso-o32.so.dbg.raw: $(obj)/vdso-o32.lds $(obj-vdso-o32) $(vdsocheck) FORCE
- 	$(call if_changed,vdsold_and_vdso_check)
- 
- $(obj)/vdso-o32-image.c: VDSO_NAME := o32
-@@ -181,7 +181,7 @@ $(obj)/vdso-n32.lds: KBUILD_CPPFLAGS := $(ccflags-vdso) -mabi=n32
- $(obj)/vdso-n32.lds: $(src)/vdso.lds.S FORCE
- 	$(call if_changed_dep,cpp_lds_S)
- 
--$(obj)/vdso-n32.so.dbg.raw: $(obj)/vdso-n32.lds $(obj-vdso-n32) FORCE
-+$(obj)/vdso-n32.so.dbg.raw: $(obj)/vdso-n32.lds $(obj-vdso-n32) $(vdsocheck) FORCE
- 	$(call if_changed,vdsold_and_vdso_check)
- 
- $(obj)/vdso-n32-image.c: VDSO_NAME := n32
+ # strip rule for the .so file
 diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
-index b2135cf9add3..865e8cf7d4e1 100644
+index 4aeb7094e552..b2135cf9add3 100644
 --- a/lib/vdso/check/vdsocheck.rs
 +++ b/lib/vdso/check/vdsocheck.rs
-@@ -157,6 +157,21 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
+@@ -148,6 +148,15 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
              ..Default::default()
          }
          .into(),
-+        bindings::EM_MIPS => AllowedRelocations {
-+            ignored_object_file_sections: &[".rel.pdr", ".rela.pdr"],
++        bindings::EM_S390 => AllowedRelocations {
 +            in_object_file: &[
-+                bindings::R_MIPS_PC16,
-+                bindings::R_MIPS_PC21_S2,
-+                bindings::R_MIPS_PC26_S2,
-+                bindings::R_MIPS_PC18_S3,
-+                bindings::R_MIPS_PC19_S2,
-+                bindings::R_MIPS_PCHI16,
-+                bindings::R_MIPS_PCLO16,
-+                bindings::R_MIPS_PC32,
++                bindings::R_390_PC32,
++                bindings::R_390_PC32DBL,
++                bindings::R_390_PLT32DBL,
 +            ],
 +            ..Default::default()
 +        }
