@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5599C79FAB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3607C79FAC
 	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gSPxSNVdJ9KATz6nm8e6AFtICD0FAYsIE0eIna7Agxk=; b=jJptJ/H37WCDE4kXCdVDJn3VI0
-	2FYFHzV0CTsPLL8QGEIvmPiJqdCLyVhVr4x4hiBLoYm31VwGKp4wgCPr5JeeuKVh7oMj9FnAXHinN
-	lBKer9OsjUNbRGIAG6GtLwTb6gYIzT7fBNithx5yvcAz6J+tdzCrW89cCVd6JHnOnd1urzRlTNm65
-	nAS2yGhj8GSu0tiMA3ZJTMVhqkCAEP2UUsiwv+DeSF/8S8jHF2ftnsTITkZCksXEpA1PvGGbL4jxQ
-	rzhJABuDzPwiJMGeg7AR+1BgkvqqDfXcUNK/3tRjdjQGkwaTUj9IZ9Iqq4wnPNxvkF0XPxnRpDhmJ
-	mUY1r93A==;
+	bh=hIZqQqreoVp4jL5VDlYmXNMQM5O5p/caA2tuy/ziotc=; b=cfaE4uCYU3sK0Yr2rXHwqUsuWc
+	GAJF4iH9Xwx2O2/VlqhpAJ3QMd3myGVswjwdE+SRidxa801PSDXBB72q3tvy+bWh3x1oEZxdBzlJ2
+	xyARSWgYqg5iyM/B+x0D4f3yQFPxgKVuC1DAEZYeZFuGS0WIsQ7dqmxPArLsE6/PhtifW4BIRYXgG
+	PURcrgDOFXNujaxBfe5bR5gj5Qh1AIzKpy0XM8kNDIB7WOEdy64jBmoOJcEfbXCiwURYQek81zXRz
+	wCRpdDEZYwU0C6zRnv/hzsTt6DhXThPy/L4YBqfRlZbDyh8suJASVlw4uiAb66eRggnoaaoTNUlAq
+	7GfyO3Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pP3-000000088y1-3lkQ;
-	Tue, 08 Sep 2026 06:33:57 +0000
+	id 1x3pP3-000000088yD-4C7t;
+	Tue, 08 Sep 2026 06:33:58 +0000
 Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pOy-000000088sx-21Nz;
+	id 1x3pOy-000000088sl-22gq;
 	Tue, 08 Sep 2026 06:33:53 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849229;
+	s=2020; t=1788849228;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gSPxSNVdJ9KATz6nm8e6AFtICD0FAYsIE0eIna7Agxk=;
-	b=XLygM0BDhDyMcEc7+LvxjROHXez8wUnOKjCkYoGOkZ71vrK2CvV3g7A6PnFMd/7RPpu2X+
-	pNDzMz+ljiv746G59hnUDGb4KbkCEYM77DK5DR+HUpjivjR0GPAsrblt/1wggCSHMIjQB3
-	Je/I0Xr4Sz2mh/eKJHhbsXHXJIxMnR7MOahsvncLHYmqt4W8/PJHO5gm2oR0E2MsaRqRjZ
-	HahnzTplivB++1tzgnmMptXhzYC6Tz2TGAvTo3iztkbp46kPWLkgBMUvE4YFQqXKwezoDG
-	114klfBAJgZokiASj7vErQNQ/939SoNDdWvLlRASuP6OpCdcI9TCVmIarn15AQ==
+	bh=hIZqQqreoVp4jL5VDlYmXNMQM5O5p/caA2tuy/ziotc=;
+	b=ebIbHeLLhulPxU96t2LRMg4s4x5K/xNe3iO4CR8LKAIdJ9kYfTc3MXtWBz/fXjFkEU9kMr
+	ld8JvPU+EAtF9gbFrTW6gwQHl+2Bclu/F+5tk06gWU+u8YSLGy6Fs+b+dl+oT7u7R+QUlz
+	bCl15HE1EVvXEl60ida0PtVa2R2PD9q2BdCLGN1ph/WmXkFBIb+v2gs8Mz4niWS3c+WFNF
+	s5L1oWts84MWkE5GzZSbShoQTqSPfKHvYz1OJVecgZ9cSrkKKIh7FoerX+WoXxVwtFF+8f
+	hg7jFr8a/amVt5iCyOzW9R3BnRUIfT7WfuRnMScYGrUMlh6kWYjJybJPngonVA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849229;
+	s=2020e; t=1788849228;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gSPxSNVdJ9KATz6nm8e6AFtICD0FAYsIE0eIna7Agxk=;
-	b=tE8ZkJO/4GB5Zgn4Tw4miHDMKei5Wp3KHv2lcXSfX6CnJgXa1zTm4SuH76YUsIIXDDZoT6
-	Yx+G/OLJMVOe48Bw==
-Date: Tue, 08 Sep 2026 08:33:37 +0200
-Subject: [PATCH v5 03/24] ARM: elf: Move relocation constants to UAPI
+	bh=hIZqQqreoVp4jL5VDlYmXNMQM5O5p/caA2tuy/ziotc=;
+	b=5Q9BAPxIl6FXv9Um3lg8pwJD6tKmF767tMf3YrqRNLIA3fzOdbqDAtSMZ58ddEqhSk+iSa
+	SWIkWgAern8ootAQ==
+Date: Tue, 08 Sep 2026 08:33:35 +0200
+Subject: [PATCH v5 01/24] elf, uapi: Add a header for relocation constants
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-3-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-1-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -95,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=2985;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=1348;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=HxdX8M08dw8dxZbEyC58Tr3vPz+rTbatZUZFgGPo5N4=;
- b=0VdXYSl3gC5PkjWgIegQbm9VVbaiF2T/bXo5db/PU6uM9xe8FhYNs6VkO+iEYNb87F/N6QwN9
- +tR4YHOI9+EAQ/8aaaF3l3022LJ8aC3ngY4qAkmLfpFJ6Ei8JBHO0IO
+ bh=BNQHFvTY0jFJrlhn6+RVLpYSgcHasImekBzIK9bpThE=;
+ b=ncJJdfJzUputRN+485gg2paJ/pNXo1aFgMnfr2+Vvf39fIyuFgtJ0VGn6HbawU4QQNwNU2xhl
+ vPCs3Fdp7LyAWOKAaDyvzvlu+8V715tn72jQFoXKC+X5TMsa0Xr4m74
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233352_664490_201480C5 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20260907_233352_664655_709EBA23 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,101 +119,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-These constants are useful for cross-platform userspace, for example to
-process ELF files during kernel cross-compilation.
+While the numeric constants for relocations are architecture specific,
+it is still useful to get access to them from other architectures.
+Also the definitions are useful for userspace in general.
+For example tools processing elf files during a kernel cross-compilation
+can make use of them.
 
-Move them from the kernel-private architecture-specific header to the UAPI.
-
-One arm64 header is also changed as it duplicates an arm definition.
+Introduce a dedicated header for them, similar to the elf-em.h header.
+For now the header is empty but it will be filled step by step in
+upcomming commits.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/arm/include/asm/elf.h   | 24 ------------------------
- arch/arm64/include/asm/elf.h |  1 -
- include/uapi/linux/elf-r.h   | 25 +++++++++++++++++++++++++
- 3 files changed, 25 insertions(+), 25 deletions(-)
+ include/uapi/linux/elf-r.h | 5 +++++
+ include/uapi/linux/elf.h   | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/arm/include/asm/elf.h b/arch/arm/include/asm/elf.h
-index 9f21e170320f..ec2d416baa9f 100644
---- a/arch/arm/include/asm/elf.h
-+++ b/arch/arm/include/asm/elf.h
-@@ -47,30 +47,6 @@ typedef struct user_fp elf_fpregset_t;
- #define EF_ARM_HASENTRY		0x00000002	/* All */
- #define EF_ARM_RELEXEC		0x00000001	/* All */
- 
--#define R_ARM_NONE		0
--#define R_ARM_PC24		1
--#define R_ARM_ABS32		2
--#define R_ARM_REL32		3
--#define R_ARM_CALL		28
--#define R_ARM_JUMP24		29
--#define R_ARM_TARGET1		38
--#define R_ARM_V4BX		40
--#define R_ARM_PREL31		42
--#define R_ARM_MOVW_ABS_NC	43
--#define R_ARM_MOVT_ABS		44
--#define R_ARM_MOVW_PREL_NC	45
--#define R_ARM_MOVT_PREL		46
--#define R_ARM_ALU_PC_G0_NC	57
--#define R_ARM_ALU_PC_G1_NC	59
--#define R_ARM_LDR_PC_G2		63
--
--#define R_ARM_THM_CALL		10
--#define R_ARM_THM_JUMP24	30
--#define R_ARM_THM_MOVW_ABS_NC	47
--#define R_ARM_THM_MOVT_ABS	48
--#define R_ARM_THM_MOVW_PREL_NC	49
--#define R_ARM_THM_MOVT_PREL	50
--
- /*
-  * These are used to set parameters in the core dumps.
-  */
-diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
-index d2779d604c7b..cfdf4c5ac08b 100644
---- a/arch/arm64/include/asm/elf.h
-+++ b/arch/arm64/include/asm/elf.h
-@@ -18,7 +18,6 @@
-  */
- 
- /* Miscellaneous. */
--#define R_ARM_NONE			0
- #define R_AARCH64_NONE			256
- 
- /* Data. */
 diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
-index 45a160ecf405..001884641e77 100644
---- a/include/uapi/linux/elf-r.h
+new file mode 100644
+index 000000000000..2c382c8a4807
+--- /dev/null
 +++ b/include/uapi/linux/elf-r.h
-@@ -36,4 +36,29 @@
- #define R_X86_64_PC8		15	/* 8 bit sign extended pc relative */
- #define R_X86_64_PC64		24	/* Place relative 64-bit signed */
+@@ -0,0 +1,5 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_ELF_R_H
++#define _UAPI_LINUX_ELF_R_H
++
++#endif /* _UAPI_LINUX_ELF_R_H */
+diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
+index ee30dcd80901..b3e312255552 100644
+--- a/include/uapi/linux/elf.h
++++ b/include/uapi/linux/elf.h
+@@ -4,6 +4,7 @@
  
-+/* arm relocation types */
-+#define R_ARM_NONE		0
-+#define R_ARM_PC24		1
-+#define R_ARM_ABS32		2
-+#define R_ARM_REL32		3
-+#define R_ARM_CALL		28
-+#define R_ARM_JUMP24		29
-+#define R_ARM_TARGET1		38
-+#define R_ARM_V4BX		40
-+#define R_ARM_PREL31		42
-+#define R_ARM_MOVW_ABS_NC	43
-+#define R_ARM_MOVT_ABS		44
-+#define R_ARM_MOVW_PREL_NC	45
-+#define R_ARM_MOVT_PREL		46
-+#define R_ARM_ALU_PC_G0_NC	57
-+#define R_ARM_ALU_PC_G1_NC	59
-+#define R_ARM_LDR_PC_G2		63
-+
-+#define R_ARM_THM_CALL		10
-+#define R_ARM_THM_JUMP24	30
-+#define R_ARM_THM_MOVW_ABS_NC	47
-+#define R_ARM_THM_MOVT_ABS	48
-+#define R_ARM_THM_MOVW_PREL_NC	49
-+#define R_ARM_THM_MOVT_PREL	50
-+
- #endif /* _UAPI_LINUX_ELF_R_H */
+ #include <linux/types.h>
+ #include <linux/elf-em.h>
++#include <linux/elf-r.h>
+ 
+ /* 32-bit ELF base types. */
+ typedef __u32	Elf32_Addr;
 
 -- 
 2.55.0
