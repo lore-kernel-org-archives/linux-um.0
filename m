@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB2FAC79FA0
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 449FAC79F99
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Euss1hU2x2ZhK7+uMEH3xqUmzL1+lNLDeNKt8zx8Zkc=; b=zu2DWRWgNKHrHB6wSm/8ThwtJk
-	VXRuIijn/0Pv0om7LqllEdPcJhTsT7chp2KYESIFiUQmVSj/dvMZXzBuTiIO8dbttr8hf1JUY5Q8J
-	i2Vl/8MT3nypLOEqr5011+2BHF4G5qWXnB+SrDKLOESrmmUqHWc906Y8XmE+t2Tf/ejT+f00pqaHY
-	MOtDkY5kbyQkCIktUnGx9MOPPYHSIHD7ooTPdUOjm1O9zQMzcx03FHHKzJ7AZ7PBuTb/hkMlXsq3+
-	QTSnWwsQLVqRnBVdO07AbnwQZ+/pBpxRwTItRPxNYuMF/mDIpWhXVBgHhpcJOWvbBKoWFbraCW6yg
-	TjTNXEsg==;
+	bh=nJq6yR2p7bWWswQ+1JaEFwknbMonVxi+i+XtDlX1VJE=; b=IPoHyEAHAaoNLizBvUfbE40VaX
+	GTBTzn9dETJS3Zws8cJkAjyMDF1UPDNFNtxTwCzjJqAxfp6lsopMKYBxBdNCvURtC9NbIHxl58GFY
+	UQSkiheVRdr6hOacS/Nnwkm74x/Zyb6wd8YUMpcMQrKJqWeiprltu/xIj5s4hAurryC7UeXPxjwBp
+	DTbhN6t2a2XPvf0w2AODx4kcH024BAQtB4H4eVSEprG70cMmy2DiTpUdTMPnxZl8ke9ZjSK8z3Z9+
+	F7J6SVPeO2QOn4mTqyW2NqQbYAVFPjlbqS23MFubVTPxYXToII19ouTJnbbRIAcHAnqrLR53p1Ny2
+	fq5t5Eng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pPP-000000089Qk-2815;
-	Tue, 08 Sep 2026 06:34:19 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1x3pPR-000000089Uy-34L8;
+	Tue, 08 Sep 2026 06:34:21 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pP1-000000088vW-2kr4;
-	Tue, 08 Sep 2026 06:33:58 +0000
+	id 1x3pP2-000000088vq-3ekT;
+	Tue, 08 Sep 2026 06:33:59 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1788849232;
@@ -33,27 +33,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Euss1hU2x2ZhK7+uMEH3xqUmzL1+lNLDeNKt8zx8Zkc=;
-	b=MfWNTOL9A5T1vKJNwIjD59pmTGPuW36oTts5TGKycfknuZNPWHLCXMwTXagPiM5olzrNXC
-	A2KmwpugkTYWoeqHDnToD2jl3QNHOIswTcybHrvOnlc4JoDkIlR04nz6Ibidrn5s8nZAZz
-	+GciVMvzSge9Vlz1fsbKdU1Wzkef0/Ky0c3NjMs6MjUvAKfXGksre3HmkLYGKqnLW9o7Wn
-	y8T2cq5/LZljl4BGC0uXKmxYxgMrXPXUbQC7B4GuVjrnj5HS4uJCzASAlVzsyHkX0YuIgX
-	nDze63+7a6KzaBfAEIy7iVTyLPX+eaJ2jVHV39+R1eshowrRkZ8BFQiTOfpc0Q==
+	bh=nJq6yR2p7bWWswQ+1JaEFwknbMonVxi+i+XtDlX1VJE=;
+	b=ahR3dXuIvmy9rLY/NaJKRHDCHK0nSGp3+7XiZcORdfSnIPwrsGHbO7bgDbz8h9Ed9Nqwm2
+	aoWGwa9rBrndpnaB9nw64Kj1w1m+8AUs44vqnM7PPYmHMeeEEo406mkBUaoKh9Hj8RAfv7
+	jjc7ulGhFOejma1EKD+dVfp5TS189yjYMsgnV7FxGuGah4BrD5a8ivX5lxTOo9D1pUlbi7
+	A2kvwa+AUJtq/vfQPN+lxM4XcUiIBNFikfImhIdNpNaFyr/x5u2PjfCgaPu7M+xUn5eqzi
+	by8lXtwRNpOWf3XzVgrg9kptObSnF4I4PxRDxSv6HilvMNkMswBwyTjPqcyvjQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1788849232;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Euss1hU2x2ZhK7+uMEH3xqUmzL1+lNLDeNKt8zx8Zkc=;
-	b=0B3ADoRpJrC3qmibbpi8s3Rm0FLlooEMu2n34FPnb6gxO/K5fuylFaQ0QT96IU14e1TUB7
-	7fSguoDBSlga1zDQ==
-Date: Tue, 08 Sep 2026 08:33:42 +0200
-Subject: [PATCH v5 08/24] s390/elf: Move relocation constants to UAPI
+	bh=nJq6yR2p7bWWswQ+1JaEFwknbMonVxi+i+XtDlX1VJE=;
+	b=VZsZyyx6tVMPgVUY8ZTFc6uDIAMDbc5w2oz5UFAf/4aF13Vb6IF0cflWvNHI9lzRI8DjSR
+	iNQZmO5z7gh/+JCw==
+Date: Tue, 08 Sep 2026 08:33:43 +0200
+Subject: [PATCH v5 09/24] MIPS: ELF: Move relocation constants to UAPI
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-8-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-9-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -95,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=11064;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=4382;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=lWVxO2QThO9KZ071syRFd2yqH7yAImHYPgjFRfvsAZw=;
- b=2TWWP6HVLxWfv7jDIA/m6Eu8ceLWfYcGBhxvF6/tO1AGkQbV7fcELQWaBtCEJ6WUoq40vLhZF
- 7P+tlHmMhvyCp8JHYjB2hZYnihD6Uft1M/hUydD9OHIL1FS1MCFcQ9m
+ bh=A10H22cVXmPgY/NixL/2JhIgd7FK72hpu8GKd8hQAKo=;
+ b=qKSQneyNuKEBUb6rfiRCvkfACMHprRMYmjlZw9I/e5PmwvqMoWeNI3JR4y8qsFGqgWsmxafnd
+ O3IJy63bZaPB7kwaUolzd0zlzGxuCuw9umZ22crEBlrxXnL6ZfXMF3b
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233356_002948_A10F6E88 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20260907_233357_226343_1028D19C 
+X-CRM114-Status: GOOD (  12.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,194 +126,139 @@ Move them from the kernel-private architecture-specific header to the UAPI.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/s390/include/asm/elf.h | 83 ---------------------------------------------
- include/uapi/linux/elf-r.h  | 83 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 83 insertions(+), 83 deletions(-)
+ arch/mips/include/asm/elf.h | 55 --------------------------------------------
+ include/uapi/linux/elf-r.h  | 56 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+), 55 deletions(-)
 
-diff --git a/arch/s390/include/asm/elf.h b/arch/s390/include/asm/elf.h
-index bb63fa4d20bb..c3fa168f0c30 100644
---- a/arch/s390/include/asm/elf.h
-+++ b/arch/s390/include/asm/elf.h
-@@ -8,89 +8,6 @@
- #ifndef __ASMS390_ELF_H
- #define __ASMS390_ELF_H
+diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
+index aaef0eaa68d5..347e12584bee 100644
+--- a/arch/mips/include/asm/elf.h
++++ b/arch/mips/include/asm/elf.h
+@@ -70,61 +70,6 @@
+ #define DT_MIPS_HIPAGENO	0x70000014
+ #define DT_MIPS_RLD_MAP		0x70000016
  
--/* s390 relocations defined by the ABIs */
--#define R_390_NONE		0	/* No reloc.  */
--#define R_390_8			1	/* Direct 8 bit.  */
--#define R_390_12		2	/* Direct 12 bit.  */
--#define R_390_16		3	/* Direct 16 bit.  */
--#define R_390_32		4	/* Direct 32 bit.  */
--#define R_390_PC32		5	/* PC relative 32 bit.	*/
--#define R_390_GOT12		6	/* 12 bit GOT offset.  */
--#define R_390_GOT32		7	/* 32 bit GOT offset.  */
--#define R_390_PLT32		8	/* 32 bit PC relative PLT address.  */
--#define R_390_COPY		9	/* Copy symbol at runtime.  */
--#define R_390_GLOB_DAT		10	/* Create GOT entry.  */
--#define R_390_JMP_SLOT		11	/* Create PLT entry.  */
--#define R_390_RELATIVE		12	/* Adjust by program base.  */
--#define R_390_GOTOFF32		13	/* 32 bit offset to GOT.	 */
--#define R_390_GOTPC		14	/* 32 bit PC rel. offset to GOT.  */
--#define R_390_GOT16		15	/* 16 bit GOT offset.  */
--#define R_390_PC16		16	/* PC relative 16 bit.	*/
--#define R_390_PC16DBL		17	/* PC relative 16 bit shifted by 1.  */
--#define R_390_PLT16DBL		18	/* 16 bit PC rel. PLT shifted by 1.  */
--#define R_390_PC32DBL		19	/* PC relative 32 bit shifted by 1.  */
--#define R_390_PLT32DBL		20	/* 32 bit PC rel. PLT shifted by 1.  */
--#define R_390_GOTPCDBL		21	/* 32 bit PC rel. GOT shifted by 1.  */
--#define R_390_64		22	/* Direct 64 bit.  */
--#define R_390_PC64		23	/* PC relative 64 bit.	*/
--#define R_390_GOT64		24	/* 64 bit GOT offset.  */
--#define R_390_PLT64		25	/* 64 bit PC relative PLT address.  */
--#define R_390_GOTENT		26	/* 32 bit PC rel. to GOT entry >> 1. */
--#define R_390_GOTOFF16		27	/* 16 bit offset to GOT. */
--#define R_390_GOTOFF64		28	/* 64 bit offset to GOT. */
--#define R_390_GOTPLT12		29	/* 12 bit offset to jump slot.	*/
--#define R_390_GOTPLT16		30	/* 16 bit offset to jump slot.	*/
--#define R_390_GOTPLT32		31	/* 32 bit offset to jump slot.	*/
--#define R_390_GOTPLT64		32	/* 64 bit offset to jump slot.	*/
--#define R_390_GOTPLTENT		33	/* 32 bit rel. offset to jump slot.  */
--#define R_390_PLTOFF16		34	/* 16 bit offset from GOT to PLT. */
--#define R_390_PLTOFF32		35	/* 32 bit offset from GOT to PLT. */
--#define R_390_PLTOFF64		36	/* 16 bit offset from GOT to PLT. */
--#define R_390_TLS_LOAD		37	/* Tag for load insn in TLS code. */
--#define R_390_TLS_GDCALL	38	/* Tag for function call in general
--                                           dynamic TLS code.  */
--#define R_390_TLS_LDCALL	39	/* Tag for function call in local
--                                           dynamic TLS code.  */
--#define R_390_TLS_GD32		40	/* Direct 32 bit for general dynamic
--                                           thread local data.  */
--#define R_390_TLS_GD64		41	/* Direct 64 bit for general dynamic
--                                           thread local data.  */
--#define R_390_TLS_GOTIE12	42	/* 12 bit GOT offset for static TLS
--                                           block offset.  */
--#define R_390_TLS_GOTIE32	43	/* 32 bit GOT offset for static TLS
--                                           block offset.  */
--#define R_390_TLS_GOTIE64	44	/* 64 bit GOT offset for static TLS
--                                           block offset.  */
--#define R_390_TLS_LDM32		45	/* Direct 32 bit for local dynamic
--                                           thread local data in LD code.  */
--#define R_390_TLS_LDM64		46	/* Direct 64 bit for local dynamic
--                                           thread local data in LD code.  */
--#define R_390_TLS_IE32		47	/* 32 bit address of GOT entry for
--                                           negated static TLS block offset.  */
--#define R_390_TLS_IE64		48	/* 64 bit address of GOT entry for
--                                           negated static TLS block offset.  */
--#define R_390_TLS_IEENT		49	/* 32 bit rel. offset to GOT entry for
--                                           negated static TLS block offset.  */
--#define R_390_TLS_LE32		50	/* 32 bit negated offset relative to
--                                           static TLS block.  */
--#define R_390_TLS_LE64		51	/* 64 bit negated offset relative to
--                                           static TLS block.  */
--#define R_390_TLS_LDO32		52	/* 32 bit offset relative to TLS
--                                           block.  */
--#define R_390_TLS_LDO64		53	/* 64 bit offset relative to TLS
--                                           block.  */
--#define R_390_TLS_DTPMOD	54	/* ID of module containing symbol.  */
--#define R_390_TLS_DTPOFF	55	/* Offset in TLS block.  */
--#define R_390_TLS_TPOFF		56	/* Negate offset in static TLS
--                                           block.  */
--#define R_390_20		57	/* Direct 20 bit.  */
--#define R_390_GOT20		58	/* 20 bit GOT offset.  */
--#define R_390_GOTPLT20		59	/* 20 bit offset to jump slot.  */
--#define R_390_TLS_GOTIE20	60	/* 20 bit GOT offset for static TLS
--					   block offset.  */
--/* Keep this the last entry.  */
--#define R_390_NUM	61
+-#define R_MIPS_NONE		0
+-#define R_MIPS_16		1
+-#define R_MIPS_32		2
+-#define R_MIPS_REL32		3
+-#define R_MIPS_26		4
+-#define R_MIPS_HI16		5
+-#define R_MIPS_LO16		6
+-#define R_MIPS_GPREL16		7
+-#define R_MIPS_LITERAL		8
+-#define R_MIPS_GOT16		9
+-#define R_MIPS_PC16		10
+-#define R_MIPS_CALL16		11
+-#define R_MIPS_GPREL32		12
+-/* The remaining relocs are defined on Irix, although they are not
+-   in the MIPS ELF ABI.	 */
+-#define R_MIPS_UNUSED1		13
+-#define R_MIPS_UNUSED2		14
+-#define R_MIPS_UNUSED3		15
+-#define R_MIPS_SHIFT5		16
+-#define R_MIPS_SHIFT6		17
+-#define R_MIPS_64		18
+-#define R_MIPS_GOT_DISP		19
+-#define R_MIPS_GOT_PAGE		20
+-#define R_MIPS_GOT_OFST		21
+-/*
+- * The following two relocation types are specified in the MIPS ABI
+- * conformance guide version 1.2 but not yet in the psABI.
+- */
+-#define R_MIPS_GOTHI16		22
+-#define R_MIPS_GOTLO16		23
+-#define R_MIPS_SUB		24
+-#define R_MIPS_INSERT_A		25
+-#define R_MIPS_INSERT_B		26
+-#define R_MIPS_DELETE		27
+-#define R_MIPS_HIGHER		28
+-#define R_MIPS_HIGHEST		29
+-/*
+- * The following two relocation types are specified in the MIPS ABI
+- * conformance guide version 1.2 but not yet in the psABI.
+- */
+-#define R_MIPS_CALLHI16		30
+-#define R_MIPS_CALLLO16		31
+-/*
+- * Introduced for MIPSr6.
+- */
+-#define R_MIPS_PC21_S2		60
+-#define R_MIPS_PC26_S2		61
+-/*
+- * This range is reserved for vendor specific relocations.
+- */
+-#define R_MIPS_LOVENDOR		100
+-#define R_MIPS_HIVENDOR		127
 -
- /*
-  * HWCAP flags - for AT_HWCAP
-  *
+-#define R_MIPS_PC32		248
+-
+ #define SHN_MIPS_ACCOMON	0xff00		/* Allocated common symbols */
+ #define SHN_MIPS_TEXT		0xff01		/* Allocated test symbols.  */
+ #define SHN_MIPS_DATA		0xff02		/* Allocated data symbols.  */
 diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
-index 4b6d3f111d7b..3d9e3b57f1ff 100644
+index 3d9e3b57f1ff..0c6a8698f300 100644
 --- a/include/uapi/linux/elf-r.h
 +++ b/include/uapi/linux/elf-r.h
-@@ -510,4 +510,87 @@
- #define R_LARCH_TLS_DESC_PCADD_HI20		138
- #define R_LARCH_TLS_DESC_PCADD_LO12		139
+@@ -593,4 +593,60 @@
+ /* Keep this the last entry.  */
+ #define R_390_NUM	61
  
-+/* s390 relocations defined by the ABIs */
-+#define R_390_NONE		0	/* No reloc.  */
-+#define R_390_8			1	/* Direct 8 bit.  */
-+#define R_390_12		2	/* Direct 12 bit.  */
-+#define R_390_16		3	/* Direct 16 bit.  */
-+#define R_390_32		4	/* Direct 32 bit.  */
-+#define R_390_PC32		5	/* PC relative 32 bit.	*/
-+#define R_390_GOT12		6	/* 12 bit GOT offset.  */
-+#define R_390_GOT32		7	/* 32 bit GOT offset.  */
-+#define R_390_PLT32		8	/* 32 bit PC relative PLT address.  */
-+#define R_390_COPY		9	/* Copy symbol at runtime.  */
-+#define R_390_GLOB_DAT		10	/* Create GOT entry.  */
-+#define R_390_JMP_SLOT		11	/* Create PLT entry.  */
-+#define R_390_RELATIVE		12	/* Adjust by program base.  */
-+#define R_390_GOTOFF32		13	/* 32 bit offset to GOT.	 */
-+#define R_390_GOTPC		14	/* 32 bit PC rel. offset to GOT.  */
-+#define R_390_GOT16		15	/* 16 bit GOT offset.  */
-+#define R_390_PC16		16	/* PC relative 16 bit.	*/
-+#define R_390_PC16DBL		17	/* PC relative 16 bit shifted by 1.  */
-+#define R_390_PLT16DBL		18	/* 16 bit PC rel. PLT shifted by 1.  */
-+#define R_390_PC32DBL		19	/* PC relative 32 bit shifted by 1.  */
-+#define R_390_PLT32DBL		20	/* 32 bit PC rel. PLT shifted by 1.  */
-+#define R_390_GOTPCDBL		21	/* 32 bit PC rel. GOT shifted by 1.  */
-+#define R_390_64		22	/* Direct 64 bit.  */
-+#define R_390_PC64		23	/* PC relative 64 bit.	*/
-+#define R_390_GOT64		24	/* 64 bit GOT offset.  */
-+#define R_390_PLT64		25	/* 64 bit PC relative PLT address.  */
-+#define R_390_GOTENT		26	/* 32 bit PC rel. to GOT entry >> 1. */
-+#define R_390_GOTOFF16		27	/* 16 bit offset to GOT. */
-+#define R_390_GOTOFF64		28	/* 64 bit offset to GOT. */
-+#define R_390_GOTPLT12		29	/* 12 bit offset to jump slot.	*/
-+#define R_390_GOTPLT16		30	/* 16 bit offset to jump slot.	*/
-+#define R_390_GOTPLT32		31	/* 32 bit offset to jump slot.	*/
-+#define R_390_GOTPLT64		32	/* 64 bit offset to jump slot.	*/
-+#define R_390_GOTPLTENT		33	/* 32 bit rel. offset to jump slot.  */
-+#define R_390_PLTOFF16		34	/* 16 bit offset from GOT to PLT. */
-+#define R_390_PLTOFF32		35	/* 32 bit offset from GOT to PLT. */
-+#define R_390_PLTOFF64		36	/* 16 bit offset from GOT to PLT. */
-+#define R_390_TLS_LOAD		37	/* Tag for load insn in TLS code. */
-+#define R_390_TLS_GDCALL	38	/* Tag for function call in general
-+                                           dynamic TLS code.  */
-+#define R_390_TLS_LDCALL	39	/* Tag for function call in local
-+                                           dynamic TLS code.  */
-+#define R_390_TLS_GD32		40	/* Direct 32 bit for general dynamic
-+                                           thread local data.  */
-+#define R_390_TLS_GD64		41	/* Direct 64 bit for general dynamic
-+                                           thread local data.  */
-+#define R_390_TLS_GOTIE12	42	/* 12 bit GOT offset for static TLS
-+                                           block offset.  */
-+#define R_390_TLS_GOTIE32	43	/* 32 bit GOT offset for static TLS
-+                                           block offset.  */
-+#define R_390_TLS_GOTIE64	44	/* 64 bit GOT offset for static TLS
-+                                           block offset.  */
-+#define R_390_TLS_LDM32		45	/* Direct 32 bit for local dynamic
-+                                           thread local data in LD code.  */
-+#define R_390_TLS_LDM64		46	/* Direct 64 bit for local dynamic
-+                                           thread local data in LD code.  */
-+#define R_390_TLS_IE32		47	/* 32 bit address of GOT entry for
-+                                           negated static TLS block offset.  */
-+#define R_390_TLS_IE64		48	/* 64 bit address of GOT entry for
-+                                           negated static TLS block offset.  */
-+#define R_390_TLS_IEENT		49	/* 32 bit rel. offset to GOT entry for
-+                                           negated static TLS block offset.  */
-+#define R_390_TLS_LE32		50	/* 32 bit negated offset relative to
-+                                           static TLS block.  */
-+#define R_390_TLS_LE64		51	/* 64 bit negated offset relative to
-+                                           static TLS block.  */
-+#define R_390_TLS_LDO32		52	/* 32 bit offset relative to TLS
-+                                           block.  */
-+#define R_390_TLS_LDO64		53	/* 64 bit offset relative to TLS
-+                                           block.  */
-+#define R_390_TLS_DTPMOD	54	/* ID of module containing symbol.  */
-+#define R_390_TLS_DTPOFF	55	/* Offset in TLS block.  */
-+#define R_390_TLS_TPOFF		56	/* Negate offset in static TLS
-+                                           block.  */
-+#define R_390_20		57	/* Direct 20 bit.  */
-+#define R_390_GOT20		58	/* 20 bit GOT offset.  */
-+#define R_390_GOTPLT20		59	/* 20 bit offset to jump slot.  */
-+#define R_390_TLS_GOTIE20	60	/* 20 bit GOT offset for static TLS
-+					   block offset.  */
-+/* Keep this the last entry.  */
-+#define R_390_NUM	61
++/* MIPS relocations defined by the ABIs */
++#define R_MIPS_NONE		0
++#define R_MIPS_16		1
++#define R_MIPS_32		2
++#define R_MIPS_REL32		3
++#define R_MIPS_26		4
++#define R_MIPS_HI16		5
++#define R_MIPS_LO16		6
++#define R_MIPS_GPREL16		7
++#define R_MIPS_LITERAL		8
++#define R_MIPS_GOT16		9
++#define R_MIPS_PC16		10
++#define R_MIPS_CALL16		11
++#define R_MIPS_GPREL32		12
++/* The remaining relocs are defined on Irix, although they are not
++   in the MIPS ELF ABI.	 */
++#define R_MIPS_UNUSED1		13
++#define R_MIPS_UNUSED2		14
++#define R_MIPS_UNUSED3		15
++#define R_MIPS_SHIFT5		16
++#define R_MIPS_SHIFT6		17
++#define R_MIPS_64		18
++#define R_MIPS_GOT_DISP		19
++#define R_MIPS_GOT_PAGE		20
++#define R_MIPS_GOT_OFST		21
++/*
++ * The following two relocation types are specified in the MIPS ABI
++ * conformance guide version 1.2 but not yet in the psABI.
++ */
++#define R_MIPS_GOTHI16		22
++#define R_MIPS_GOTLO16		23
++#define R_MIPS_SUB		24
++#define R_MIPS_INSERT_A		25
++#define R_MIPS_INSERT_B		26
++#define R_MIPS_DELETE		27
++#define R_MIPS_HIGHER		28
++#define R_MIPS_HIGHEST		29
++/*
++ * The following two relocation types are specified in the MIPS ABI
++ * conformance guide version 1.2 but not yet in the psABI.
++ */
++#define R_MIPS_CALLHI16		30
++#define R_MIPS_CALLLO16		31
++/*
++ * Introduced for MIPSr6.
++ */
++#define R_MIPS_PC21_S2		60
++#define R_MIPS_PC26_S2		61
++/*
++ * This range is reserved for vendor specific relocations.
++ */
++#define R_MIPS_LOVENDOR		100
++#define R_MIPS_HIVENDOR		127
++
++#define R_MIPS_PC32		248
 +
  #endif /* _UAPI_LINUX_ELF_R_H */
 
