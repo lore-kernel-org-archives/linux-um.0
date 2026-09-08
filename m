@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F3B9C79F82
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 08:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C69F6C79F82
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 09:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BOR2t3VtcjszZ4q3H4RF8INxqX7I/2OnFWmBk3yYh2U=; b=fuqxG8jL32rqQjlYJ2sXHxgkxK
-	RvyoKV1j+kqNmFwPUdHFj/8uY7aU1L8K+1yesOJzJiAftIDheZZMbUDP4AhiAZa28IAvyauPbOtLA
-	V3sL7hxW3U/s8R1P8ie53YKM5bJ0NBGbRFwN0Yz8P5AuxqcAybjagjWATlAMO14QYxg+PywZnm9d5
-	XeUGulqMqV+oWNKcLROPadbKH9PIc67M9E0rIUgJht5zVaI8AQX/6lM+OQF8SPUceyF18NwdcUuyg
-	4FUosE3pm01ddTFrfS/Lx5BTsKIui6HsORQubzaIGiYhmKGhP0KccESFNiaq6OMaZhMJsATXce8Je
-	LfBjY+6g==;
+	bh=gw6uq3WoFDGFRXHX5w46jvhy16/noKc2NTzTXodoE8A=; b=ZrKewxTt+Q9+SQWyWn2/p+cFAF
+	FPQ0DcNkLIYV4H0GesO6/7fVSFZ8VULOh8eLeSWrawSyiNSRkM1CUSsednhBTUWX6A5M8otau/Sss
+	b0oGWz2AoZiXYak8jnJDtRWxDGKhcpF6PdDncZ0FDf67E4UNytBk7vE2yOBZnlOXKyPja/JzsIHTW
+	YWD2tob1yRAoQDpiiFE4CSGfq3Nf7AyNGEkMDp98y+PBR2K1q7J7a2mhr+lV7AKp5cFAeIBgl6lQX
+	XiKn9uFqGqUnGGhqZxkv2IydngrH4YtRgcqU3R4BgjYMhHc5HMAUWKPAvJHPI1jiDnAb0emGusAwR
+	bKID109g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3rdm-00000008U0j-3f32;
-	Tue, 08 Sep 2026 08:57:18 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1x3rhb-00000008UWO-0qtF;
+	Tue, 08 Sep 2026 09:01:15 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3rdk-00000008U0N-2XTy;
-	Tue, 08 Sep 2026 08:57:16 +0000
+	id 1x3rhZ-00000008UVW-2FX3;
+	Tue, 08 Sep 2026 09:01:13 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id E869D60A93;
-	Tue,  8 Sep 2026 08:57:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D6F1F00A3A;
-	Tue,  8 Sep 2026 08:57:00 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id C2F2A60A9D;
+	Tue,  8 Sep 2026 09:01:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32141F00A3A;
+	Tue,  8 Sep 2026 09:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788857835;
-	bh=BOR2t3VtcjszZ4q3H4RF8INxqX7I/2OnFWmBk3yYh2U=;
+	s=k20260515; t=1788858072;
+	bh=gw6uq3WoFDGFRXHX5w46jvhy16/noKc2NTzTXodoE8A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=RMlWBWtHsUr314SSes2RbgrXEdhowxsDExyywV6MWPiyRlQ2MiRcnzJrKxwP2Uq5y
-	 FxFi3d8oyrDb4Ns+a5YQol0nE9UlpMARb5Srs2FLa3c8UgJq9bIRFnwje3hSYKfvsy
-	 4lejU8BQqLNJPlkLkj5fUKy1asSopqBNr8Z/GdXh3YL25ZL/xotJOBdRT8X+1frbzz
-	 5wc8MC7jxG0TFbXkBqhY75SKcdrJ0GvpwyMgIKA6vQKX0ndFDZCBRqE2+uKYcWsIZK
-	 O423o/0XnOMDsJENmzRb5yAhovNWoPRl28a6i0Ifx5k/RVsnRdBM2JH4gLApjYzNXL
-	 e95ar8gZlvOGw==
-Message-ID: <06996199-5255-41d0-ba6a-ebeca57f61da@kernel.org>
-Date: Tue, 8 Sep 2026 10:56:58 +0200
+	b=f83UuFnG2Ca/NIEjfDrXHeoFRlnHHZpsg6wFetI10F3cQyUjArbK42hgG7Zxex4/s
+	 3n5zZu9KkJ8dQxHTmVqB83udBP8YhBTSDsyRdMErALYpUYjulzhr6oGyq5X7IeS2MN
+	 EWxFsYnacMcuz5tJFBTbZAf9tMz+RnlOTNhnRLhdadOeXHk0h+wn50SECkFRbxVslO
+	 f7Ig1YtXoYtaZhrD1KEcBCtAna7hL00y1ZjgmW4/d0yWZBbhpb2lMH7Bv47zh1k7nI
+	 CEirgVNGd9giuxhLxrRDAZzVqimdNslxWSYeJo/LDlSLy8epheEmJ4uqQpNMU7Oumx
+	 oYzy9KZ7DvXJQ==
+Message-ID: <060be36f-5e8d-4596-a4e6-844e5930baac@kernel.org>
+Date: Tue, 8 Sep 2026 11:00:55 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 11/24] tools headers UAPI: Sync ELF headers with the
- kernel sources
+Subject: Re: [PATCH v5 01/24] elf, uapi: Add a header for relocation constants
 To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
  Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
  <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
@@ -86,10 +85,10 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>,
  Alexandre Ghiti <alexghiti@rivosinc.com>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
- <20260908-vdso-absolute-reloc-v5-11-3a93791af1cf@linutronix.de>
+ <20260908-vdso-absolute-reloc-v5-1-3a93791af1cf@linutronix.de>
 Content-Language: fr-FR
 From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
-In-Reply-To: <20260908-vdso-absolute-reloc-v5-11-3a93791af1cf@linutronix.de>
+In-Reply-To: <20260908-vdso-absolute-reloc-v5-1-3a93791af1cf@linutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -109,41 +108,48 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
 Le 08/09/2026 à 08:33, Thomas Weißschuh a écrit :
-> Pick up changes from the UAPI ELF header files.
-> This picks up general changes to elf.h, elf-em.h which was forgotten
-> previously and the new elf-r.h.
+> While the numeric constants for relocations are architecture specific,
+> it is still useful to get access to them from other architectures.
+> Also the definitions are useful for userspace in general.
+> For example tools processing elf files during a kernel cross-compilation
+> can make use of them.
+> 
+> Introduce a dedicated header for them, similar to the elf-em.h header.
+> For now the header is empty but it will be filled step by step in
+> upcomming commits.
 > 
 > Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> 
-> ---
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->   tools/include/uapi/linux/elf-em.h |  71 ++++
->   tools/include/uapi/linux/elf-r.h  | 696 ++++++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/elf.h    | 112 +++++-
->   3 files changed, 868 insertions(+), 11 deletions(-)
-> 
 
-> diff --git a/tools/include/uapi/linux/elf.h b/tools/include/uapi/linux/elf.h
-> index 5834b83d7f9a..88bdcbb526c1 100644
-> --- a/tools/include/uapi/linux/elf.h
-> +++ b/tools/include/uapi/linux/elf.h
+Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 
-> @@ -312,7 +323,7 @@ typedef struct elf64_phdr {
->   #define SHN_ABS		0xfff1
->   #define SHN_COMMON	0xfff2
->   #define SHN_HIRESERVE	0xffff
-> -
+> ---
+>   include/uapi/linux/elf-r.h | 5 +++++
+>   include/uapi/linux/elf.h   | 1 +
+>   2 files changed, 6 insertions(+)
+> 
+> diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
+> new file mode 100644
+> index 000000000000..2c382c8a4807
+> --- /dev/null
+> +++ b/include/uapi/linux/elf-r.h
+> @@ -0,0 +1,5 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _UAPI_LINUX_ELF_R_H
+> +#define _UAPI_LINUX_ELF_R_H
 > +
+> +#endif /* _UAPI_LINUX_ELF_R_H */
+> diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
+> index ee30dcd80901..b3e312255552 100644
+> --- a/include/uapi/linux/elf.h
+> +++ b/include/uapi/linux/elf.h
+> @@ -4,6 +4,7 @@
+>   
+>   #include <linux/types.h>
+>   #include <linux/elf-em.h>
+> +#include <linux/elf-r.h>
+>   
+>   /* 32-bit ELF base types. */
+>   typedef __u32	Elf32_Addr;
+> 
 
-Getting the following warning when applying this series with 'b4 shazam'.
-
-/home/chleroy/linux-powerpc/.git/rebase-apply/patch:846: trailing 
-whitespace.
-
-Seems to come from here.
-
->   typedef struct elf32_shdr {
->     Elf32_Word	sh_name;
->     Elf32_Word	sh_type;
 
