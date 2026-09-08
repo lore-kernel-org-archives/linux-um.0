@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D66A2C79FAD
-	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34678C79F99
+	for <linux-um@archiver.kernel.org>; Tue,  8 Sep 2026 06:34:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JkLB6p5Aaygn3v1gYuxHR1a4yxVdgYLi/cxda/p+uN8=; b=0hzR9TE9uEVY0CgA+DC4z7MB9L
-	oyYMIeBIwKGuTJSighkL2qQl3eR4jJU5XQO7oOug4QjYvbYjlbSo24jpqICaOqkofHB60vcMiLmK4
-	ne+jIT0tmWdP3/xj8QnO+SG3e1bDaOjJOMYWL/TfUj5o44vNzJ5MCs82Xih51tj4EAlXT28mFRpta
-	5fQJ+/wEuYzCMRJFBDb1qKq5TmBxTH4Tx3YawvkIIigU/i9mnnvFb2gi7LT967CqVQ1N4LRp1J1Tt
-	eRGqoceCZD0Rk+xjp/nsL1tkah+lKQ6xQxGjMWbOZwMH7zhepLEM4QIy569EsK4vNO8O3UtFWy+K4
-	O4NP+fnA==;
+	bh=pjTX9rrwFsXVQ2q23yM95x2dyNZBtSAXhGeuKQ5L7eY=; b=mthEvltAEEE0pSMyprCbMsLRiZ
+	riXRjyi9Xk+ZM2YBj96V2AiZE4rrZxplIJhBxCWTwBu10xLeSW+63ZZmKqRn3YYAgju0zLZYDWFsc
+	1LUH7wskFpfrSuLxJkY9kJA6qJ73X9+hP9t0zJaGSTcai3jI6EJMfKOUXyTXMXefxAY/Fdizo3xpm
+	MySsKw5hjmbxItq3A7PYZkw3iOc/0FnpSERTdN5+CyKV8HYBB/NS+N8/e41AqQskIM2gp+qAJEKH0
+	Jmo8sIYXkm20NseWYE2NPa0EwhOc0LfUbdDmfvBNFfKOEIxU58Ad7zCYnmZKFVrUWXru9Zsfhj7Mj
+	GHVeWXyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pPj-000000089uS-1Gvy;
-	Tue, 08 Sep 2026 06:34:39 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1x3pPp-00000008A1T-0uch;
+	Tue, 08 Sep 2026 06:34:45 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x3pP5-000000088yW-3T2R;
-	Tue, 08 Sep 2026 06:34:07 +0000
+	id 1x3pP7-0000000890K-05k1;
+	Tue, 08 Sep 2026 06:34:08 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1788849235;
+	s=2020; t=1788849236;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JkLB6p5Aaygn3v1gYuxHR1a4yxVdgYLi/cxda/p+uN8=;
-	b=b2Bsc4yZZCv/2zStvOHZ+5ePWQ0eZmT7xR1lkQClQSx0s+SJJVZsDS9kHDKSOqkV04EXRc
-	1Co/AU5QZB8ybfRyD3MRZHLU3U5EN+z2Nsr3nY4EZ3mrza0TUFynEzX8i4hmckaQYL150u
-	HvAm/2cY3Kyh3dFmID9+E0Gr7vn8+l1FhXhoHwaiEmKzrb5aHONKrYbeBhQlstbUJV2WVo
-	/Cu+QeuJCDvdl0AXRGRduW9ZDawna43n+2sGf3T1TJagsr5MBwClzchUDkvRjVatnSeZtK
-	nY2/4prGOYlHHzFHeX8N7JsFwydH46UcNwCZpP1P9canDwGt2uhvHTkqMxjTzg==
+	bh=pjTX9rrwFsXVQ2q23yM95x2dyNZBtSAXhGeuKQ5L7eY=;
+	b=tegE4qZLU1owA5WPV94NgVm8p3Mq8VaPjSNgdIHREOQX0Gq4XrSZl8OsvTeQR1o2O0ToqM
+	Xm367SkFstd763Eo6owFZJOJOAWxkHQOODKGvEdBzYq2B2/3kIr4yjHD9sszGcSCx1SptV
+	g635te+HDDk1q3DLMtLxqoOnnxvdb46zf2QSvzDnB/HCb3w5B+xo1N1QrnklDtH2DBA/vH
+	h9wkKXhqYCfsLN1Qg5IIcOSb1MyIg2wE9xuBL8Ypr6IrRO7QY62HIWAyRY7FpK7V5BWIoL
+	Z2JLtU1vH2fZ9+5kHdooMTILHKviv3/rHjwYnf9P/M2Jj6gxGtPxKR7+obn0gA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1788849235;
+	s=2020e; t=1788849236;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JkLB6p5Aaygn3v1gYuxHR1a4yxVdgYLi/cxda/p+uN8=;
-	b=x7vG3QWiRwmW98omRQPlaZFU76UvHL2q5q8hKbQ0OxRFsx2Px/LNZ+L3EC2Y+ySRKGHhQy
-	eS3yU3Z0tTMvxhAg==
-Date: Tue, 08 Sep 2026 08:33:48 +0200
-Subject: [PATCH v5 14/24] ARM: vdso: Enable the vdsocheck tool
+	bh=pjTX9rrwFsXVQ2q23yM95x2dyNZBtSAXhGeuKQ5L7eY=;
+	b=4mxmFhK1TnLVvFb5Gy1yTMnk/5fB8HgnBZCO8URerY3D/Q/wTzne2uXK0IjtSF7q4DaUDA
+	DdO8rhE6PBNDdBAw==
+Date: Tue, 08 Sep 2026 08:33:49 +0200
+Subject: [PATCH v5 15/24] arm64: vdso: Enable the vdsocheck tool
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260908-vdso-absolute-reloc-v5-14-3a93791af1cf@linutronix.de>
+Message-Id: <20260908-vdso-absolute-reloc-v5-15-3a93791af1cf@linutronix.de>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 In-Reply-To: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -95,16 +95,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Alexandre Ghiti <alexghiti@rivosinc.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=2444;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1788849226; l=2617;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=5Gobf0xeM6oQnluCotYvDM+iRhHp/CqDKzVKvDYgKwE=;
- b=lQ6F773yey6sveLRjZ316ezChGjQ/W1VbZFhepBwbB+581BX6rUFfyRGnwkoZjYfE1ZBXrBr1
- 697Lhc8ZNfWDhI1gNse15EH3qBq+xOPmSQUzK0CAa+i2HEmHInauhxP
+ bh=fVRENHv4++0cFzLHw247YU3v29PEq48gHKwsMBM12mc=;
+ b=DDwbzH/SMGlKwp0xQn0FvyrfKZTXWpkAu8j9jSc4YRcRhytEC3Z/8E0SynIo/dONb3pcsCUqF
+ v5dgouxRsS1CXrQYp0Ti0evF1Q/1uFXGqIg/yNttK78bWL8R2JJA0xa
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260907_233400_083263_5FBBCE87 
-X-CRM114-Status: GOOD (  11.52  )
+X-CRM114-CacheID: sfid-20260907_233401_434506_8A87F5C9 
+X-CRM114-Status: GOOD (  11.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,60 +125,62 @@ with the vDSO which need to be worked around.
 
 Wire it up for the architecture.
 
+The compat vDSO will be handled by the existing 32-bit ARM configuration.
+
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/arm/mm/Kconfig         | 1 +
- arch/arm/vdso/Makefile      | 4 ++--
- lib/vdso/check/vdsocheck.rs | 9 +++++++++
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ arch/arm64/Kconfig              |  1 +
+ arch/arm64/kernel/vdso/Makefile |  4 ++--
+ lib/vdso/check/vdsocheck.rs     | 12 ++++++++++++
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 6574659dfb61..565988a66e98 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -950,6 +950,7 @@ config VDSO
- 	depends on AEABI && MMU && CPU_V7
- 	default y if ARM_ARCH_TIMER
- 	select GENERIC_GETTIMEOFDAY
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b5a51b0ef944..1caaf4737f02 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -258,6 +258,7 @@ config ARM64
+ 	select TRACE_IRQFLAGS_NMI_SUPPORT
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+ 	select USER_STACKTRACE_SUPPORT
 +	select VDSO_CHECK
+ 	select VDSO_GETRANDOM
+ 	select VMAP_STACK
  	help
- 	  Place in the process address space an ELF shared object
- 	  providing fast implementations of gettimeofday and
-diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
-index cf8cd39ab804..fd34d0ff018a 100644
---- a/arch/arm/vdso/Makefile
-+++ b/arch/arm/vdso/Makefile
-@@ -37,7 +37,7 @@ endif
- $(obj)/vdso.o : $(obj)/vdso.so
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 7dec05dd33b7..9fac0e54097d 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -61,7 +61,7 @@ targets += vdso.lds
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
  
- # Link rule for the .so file
--$(obj)/vdso.so.raw: $(obj)/vdso.lds $(obj-vdso) FORCE
-+$(obj)/vdso.so.raw: $(obj)/vdso.lds $(obj-vdso) $(vdsocheck) FORCE
+ # Link rule for the .so file, .lds has to be first
+-$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
++$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) $(vdsocheck) FORCE
  	$(call if_changed,vdsold_and_vdso_check)
  
- $(obj)/vdso.so.dbg: $(obj)/vdso.so.raw $(obj)/vdsomunge FORCE
-@@ -50,7 +50,7 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ # Strip rule for the .so file
+@@ -79,4 +79,4 @@ include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
  
  # Actual build commands
  quiet_cmd_vdsold_and_vdso_check = LD      $@
 -      cmd_vdsold_and_vdso_check = $(cmd_ld); $(cmd_vdso_check)
 +      cmd_vdsold_and_vdso_check = $(cmd_ld_vdso); $(cmd_vdso_check)
- 
- quiet_cmd_vdsomunge = MUNGE   $@
-       cmd_vdsomunge = $(objtree)/$(obj)/vdsomunge $< $@
 diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
-index 1174d896a68b..fb88ef0be09d 100644
+index fb88ef0be09d..e45a1fbc6829 100644
 --- a/lib/vdso/check/vdsocheck.rs
 +++ b/lib/vdso/check/vdsocheck.rs
-@@ -48,6 +48,15 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
+@@ -57,6 +57,18 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
              ..Default::default()
          }
          .into(),
-+        bindings::EM_ARM => AllowedRelocations {
++        bindings::EM_AARCH64 => AllowedRelocations {
 +            in_object_file: &[
-+                bindings::R_ARM_NONE,
-+                bindings::R_ARM_REL32,
-+                bindings::R_ARM_PREL31,
++                bindings::R_AARCH64_PREL64,
++                bindings::R_AARCH64_PREL32,
++                bindings::R_AARCH64_PREL16,
++                bindings::R_AARCH64_LD_PREL_LO19,
++                bindings::R_AARCH64_ADR_PREL_LO21,
++                bindings::R_AARCH64_CALL26,
 +            ],
 +            ..Default::default()
 +        }
