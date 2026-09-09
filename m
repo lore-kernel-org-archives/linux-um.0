@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B300C79FBD
-	for <linux-um@archiver.kernel.org>; Wed,  9 Sep 2026 16:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B586C79FBF
+	for <linux-um@archiver.kernel.org>; Wed,  9 Sep 2026 16:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+bb9T4qzNzmlycp9ThZUfYsXOaxsYgWc9M6tavwahvE=; b=MnNBffwE+14VvMQHM0nKY72foi
-	YYihIZiyAf/MmidzXHuvylKv2HYjVBaeFY/Y885NBKJkh2h6pdS1CjivQj2XOwaoDcrGB8CxlT2Zj
-	IoUbSvVFs+qNRBCpdbbMK0R9bwaQSmnDAGA9KflSvJHkP/LESsgYrxNeaXEO1jkQdCZl+aBwP8NAP
-	MYPFZQT6BqZdrBNY7k3Kp7YXovFmpzqJ3KcAV29tJV8dqgQJ1GtBBDIb0det1I/3gsvsnPKKOnsTz
-	Jk5YkrK774lhGZ1RRd7BeshwmO/sFucOrYdtX++SC3EQN2cWpwU0VGlziL0uGqnCWLRvMXRaaAQY1
-	kN/MUPVw==;
+	bh=Bapc0YSkMfnvYk3VlSbyVwcwaxlxEF/qdP5fqXt2FVU=; b=YS7a1KvM5qEQ8LvqQv/58+8eOH
+	ufQFNyQzFkcU8Zi/ToUcn53AUIV5/CS6NCP0yOxtoKgA/yXJVgIuR/XTvKSLbhhVI9kDnsIsIoZHJ
+	mLZXJgiT4RfbPi+m6JXGw2NCqbiHRuv4ZV2vn8KuP8TLFeyhG+2GkEEgj//kN+5069EqBYbbcNaNM
+	92IezyMPrfRpic20RMcaWI9Hu8BB69oxpRnoo2D0J4LtGmhgFygPYXEjEQSy7LzKx4gHFoKNJVh5/
+	X3EaEmK5SOCFqQ3fAtF7P27c14qCQ6icYIa5PkHrW72fmAhoFoNmEFDDKucPT8ee2hOc+DdNABUN9
+	YZKcbX1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4LOF-0000000CMTQ-0UEr;
-	Wed, 09 Sep 2026 16:43:15 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1x4LPg-0000000CMue-3O1C;
+	Wed, 09 Sep 2026 16:44:46 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4LOC-0000000CMSt-1TBV;
-	Wed, 09 Sep 2026 16:43:12 +0000
+	id 1x4LPf-0000000CMsP-0CbW;
+	Wed, 09 Sep 2026 16:44:43 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 822CC439C2;
-	Wed,  9 Sep 2026 16:43:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F4721F000FF;
-	Wed,  9 Sep 2026 16:42:47 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A729F60202;
+	Wed,  9 Sep 2026 16:44:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F14881F000FF;
+	Wed,  9 Sep 2026 16:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788972191;
-	bh=+bb9T4qzNzmlycp9ThZUfYsXOaxsYgWc9M6tavwahvE=;
+	s=k20260515; t=1788972281;
+	bh=Bapc0YSkMfnvYk3VlSbyVwcwaxlxEF/qdP5fqXt2FVU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=gIPVuofiiuXzwRKr3oimigWerGVK3163gi1cAcgzOdWIHvv7vHRHaOOm70oBmvuof
-	 gM+DrCV50r5q2fX37AG+T2Z9/95C3wKDpEICIKuj714cWc9kpK2a643U857hnxKrt6
-	 F+VhD/Iigk9dREUeU4ysQJtISisTduJzSnmSk21qc6hooSphBl5H9CJ0/x7dZKu/Q6
-	 u+L9ir5TwzY1RhFgoDiNZuSP0ijZXhIOTL8sytWHlzA6zcGHNHpORsIUOjNpgYzeac
-	 YkdgjhwiwM1Yl/vDXjEBIxQFkvn0uBOf3YaFLZFvbyOIKYs37Ib6WZ5TYOCA3N7iFE
-	 8WN0ksIUU49KQ==
-Date: Wed, 9 Sep 2026 17:42:45 +0100
+	b=SvkfUBrj+qqUCItjJr4thxIOtrO+WmcNQus9iN7o7fjn21Kjri7ciOsZZbXojK8eq
+	 ebmrsmEhjQ8lMe6NScH5NJJVO7FkHjSrPlMJAzs9SeDQJIL0euxfAANelWLDPoYw1X
+	 CcSIvP/FGlOivDpnH/QksUP428gC7WgcKMjXSRAyqMHuiTJd6wYCdFyF9iWecTST2l
+	 DPfn0SayJdOumRm8EjJ0YaCf7wOVn5AtF52jH/K7lyYBUkf1LvlE8O39pf5s+r01dw
+	 hpz3MZmyVQYZqDR+4GQ6n1zp4Q8/XwEUokZ3xCVu0XLtYHfY7rf+QXRgnY7M4GG9HF
+	 fN2FuuSzCKwhQ==
+Date: Wed, 9 Sep 2026 17:44:16 +0100
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 To: Kiryl Shutsemau <kas@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
@@ -85,16 +85,15 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
 	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
 	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v2 12/12] mm: change the contract for free_pgtables(),
- update docs
-Message-ID: <aqGMefM9TIqUvZrp@gremlin>
+Subject: Re: [PATCH v2 11/12] mm: make userland page table freeing RCU-safe
+Message-ID: <aqGMqVxJCWbZePmW@gremlin>
 References: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
- <20260908-rcu-pagetable-freeing-v2-12-1f60b64e878e@kernel.org>
- <aqEkfKww9XDq15ZF@thinkstation>
+ <20260908-rcu-pagetable-freeing-v2-11-1f60b64e878e@kernel.org>
+ <aqEivRP0LmJZcgEx@thinkstation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aqEkfKww9XDq15ZF@thinkstation>
+In-Reply-To: <aqEivRP0LmJZcgEx@thinkstation>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,50 +108,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 09, 2026 at 10:24:21AM +0100, Kiryl Shutsemau wrote:
-> On Tue, Sep 08, 2026 at 01:32:21PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > Now that page tables are freed after an RCU grace period, it is safe for
-> > read-only page table walkers to walk page table ranges that are being
-> > concurrently torn down, provided the mm is kept alive via mmgrab().
+On Wed, Sep 09, 2026 at 10:15:13AM +0100, Kiryl Shutsemau wrote:
+> On Tue, Sep 08, 2026 at 01:32:20PM +0100, Lorenzo Stoakes (ARM) wrote:
+> > Now every architecture has been converted to support
+> > CONFIG_MMU_GATHER_RCU_TABLE_FREE, this configuration option no longer makes
+> > any sense to keep around.
 > >
-> > It is however unsafe for writers to do so, as they must obtain an
-> > appropriate lock to do so safely.
+> > Therefore remove it, and remove all the dead code that existed for
+> > !CONFIG_MMU_GATHER_RCU_TABLE_FREE architectures previously.
 > >
-> > Update the pte_offset_map_lock()'s comment block to reflect this.
+> > Additionally, CONFIG_MMU_GATHER_TABLE_FREE is no longer necessary, as all
+> > architectures instead use CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE when a custom
+> > __tlb_remove_table() is required, so remove this too.
 > >
-> > Similarly update the process addresses documentation.
+> > A number of architectures only enabled CONFIG_MMU_GATHER_RCU_TABLE_FREE if
+> > CONFIG_MMU was set, however the mmu_gather logic only actually does
+> > something meaningful if CONFIG_MMU is set (mmu_gather.c is only compiled in
+> > this case, for instance).
 > >
-> > Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> > ---
-> >  Documentation/mm/process_addrs.rst |  6 ++++++
-> >  mm/pgtable-generic.c               | 15 +++++++++++----
-> >  2 files changed, 17 insertions(+), 4 deletions(-)
+> > As a result, there's no need to gate any of this logic on CONFIG_MMU
+> > explicitly.
 > >
-> > diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-> > index a7296f251799..1e65b139f355 100644
-> > --- a/Documentation/mm/process_addrs.rst
-> > +++ b/Documentation/mm/process_addrs.rst
-> > @@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
-> >  * When changing a page table entry the page table lock for that page table
-> >    **must** be held, except if you can safely assume nobody can access the page
-> >    tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-> > +* Page tables may be *walked* under RCU alone, as page tables are freed only
-> > +  after an RCU grace period has elapsed. However, any entry found must be
-> > +  revalidated after the page table lock is taken (such as the
-> > +  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-> > +  before it is acted upon. Changing an entry always requires the page table
-> > +  lock.
+> > CONFIG_PT_RECLAIM however does have a strict dependency on CONFIG_MMU, so
+> > make this dependency explicit.
+> >
+> > Additionally, correct comments to remove references to non-RCU page table
+> > gathering and make it clear that this is not 'semi-RCU', nor has it been
+> > since commit 1fb3d8c20bfa ("mm/mmu_gather: replace IPI with
+> > synchronize_rcu() when batch allocation fails").
+> >
+> > With this change in place the kernel policy is now that all page tables are
 >
-> This says the PTL plus a recheck is enough to act on the entry. It is
-> not: free_pte_range() clears the PMD without the PTL, so pmd_same() can
-> pass and the table is torn down right after. That is the case we settled
-> on for the pte_offset_map_lock() comment, and the two now disagree.
->
-> Something like "Changing an entry requires the page table lock and one
-> of the locks that excludes teardown (mmap or VMA lock)" would match the
-> comment.
+> You missed s/all/userspace/ from v1.
 
-Ack will change!
+Hmm I thought I got this... will fix on respin!
+
+>
+> > freed after an RCU grace period, and thus it is now safe to unconditionally
+> > perform page table walks under RCU, safe in the knowledge that page tables
+> > will not be freed underneath the walker.
+>
+>
+> > @@ -151,24 +148,15 @@
+> >   *  This might be useful if your architecture has size specific TLB
+> >   *  invalidation instructions.
+> >   *
+> > - *  MMU_GATHER_TABLE_FREE
+> > - *
+> > - *  This provides tlb_remove_table(), to be used instead of tlb_remove_page()
+> > - *  for page directores (__p*_free_tlb()).
+> > - *
+> > - *  Useful if your architecture has non-page page directories.
+> > + *  Page directories (__p*_free_tlb()) are always freed via tlb_remove_table(),
+> > + *  after an RCU grace period (see mm/mmu_gather.c).
+> >   *
+> > - *  When used, an architecture is expected to provide __tlb_remove_table() or
+> > - *  use the generic __tlb_remove_table(), which does the actual freeing of these
+> > - *  pages.
+> > + * This serialises against software page-table walkers, including architectures
+> > + * which do not use IPIs for remote TLB invalidates.
+>
+> Indentation is broken.
+
+Ugh I thought I fixed this before I respun too, doh!
+
+Will fix.
+
+>
+> --
+>   Kiryl Shutsemau / Kirill A. Shutemov
 
 --
 Cheers, Lorenzo
