@@ -4,103 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC654C79FB7
-	for <linux-um@archiver.kernel.org>; Wed,  9 Sep 2026 19:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CECC79FB6
+	for <linux-um@archiver.kernel.org>; Wed,  9 Sep 2026 19:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+dGDqKIiorLm4PMRWZf+lcjSymk+duftPVKL8h3BRa8=; b=A5d6rw+cUbHp6EKoWFxJEIR95C
-	Idh5BZuF5w247cv8dgocIvdCxm3fKL2bQDsx25fhHc/IubmrDumw3y0m9LPlNqvd0cuGi7H9QBeSR
-	EioHilvrhZTuZuoLOJcQ6Tp7SUQRrtswrvkFRBp9uTNb2qnZ9i1UCEynU+2ADVNEECtxboLRIXWEt
-	w1d3zCkMjk8f3opfS8gX8sbfuvUsAIFAYBT1kj4zUhd7+W29uEWQFvDVYP5XW+QxrDT/bRvl/e4T9
-	plgYZ/59K/dZ6Z9dliMq1BnrLbIslrISXr5QgaKC1wxU41v6DuUAX+3nbNh3TJyymWw2I2bImcWOE
-	Gl90Po0Q==;
+	bh=1ydOjuoTgA1JS+qa07cHIVSm0i9RHzfwwnuAwNBt4m4=; b=oIKH7iEjNZS4YPkdzs1W1MpJy+
+	jOBo2o3tHKrye2vSBs3h1cMQqg311pYAUO2UaKK1f9FUwlNM09wye92WUOm5uxHw1H+brx0NS89bG
+	9gw133Y3LNH3Syi7GDoTxgrL1FMxrS5gHuJ5xqjPSf5542RR1Hb0K7jrHDbQFxaJiPcSjijJcuLrS
+	5WTsBlploZT7GzT/hWwGOG15M8Il8sQ/hbRmI2L/TZp95/WrE02gCL0zxSV3Jf26IXm1dYK/rS+hV
+	SJZdwvuTSPwc137qWw8VTUL/FlccNPH+msrJ7cK/NLsWoxNA1gc0FsQUH/at8PuKJmIW/VbIcLyoe
+	Tk4CxViA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4O2q-0000000CihT-1IGi;
-	Wed, 09 Sep 2026 19:33:20 +0000
-Received: from terminus.zytor.com ([2607:7c80:54:3::136] helo=mail.zytor.com)
+	id 1x4O7t-0000000Cjo2-3GpJ;
+	Wed, 09 Sep 2026 19:38:33 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4O2m-0000000Cigf-3Eqb;
-	Wed, 09 Sep 2026 19:33:18 +0000
-Received: from ehlo.thunderbird.net ([172.59.163.39])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 689JW0Ri241996
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 9 Sep 2026 12:32:01 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 689JW0Ri241996
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026082801; t=1788982324;
-	bh=+dGDqKIiorLm4PMRWZf+lcjSymk+duftPVKL8h3BRa8=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=gofX7hrQMbsXkfAGKbIB5EEVBWalAWuw926LqzLEOVYYNLyZUfbWEzWPGDLj9bbmQ
-	 WFie+ve7lUQ9pYuRVmVYjV+EqzzAArpgHRWshxY1qKfnMcxxPUBe/xs1MmeSmnGIOJ
-	 dPgyxNew5qsHsjhQOA41SlBB/MQHD0m+r1YFZE3wLCs3umtpLH2oSsE4iYDyt3+j/i
-	 rnjM7tEna8nBlg7YqDxC5Ptjf5+Rcrbt1/0XzPeibvb/+oRmhKO1xpHus1ynWSXLJ8
-	 MI9bdFysgi5uqG5wVEpJJTL/7pSn2oMlC1a/K6We8WFSaRVoteYLUt+37PBgC/p1jC
-	 eVbxDJsilqYjA==
-Date: Wed, 09 Sep 2026 12:31:53 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-        =?ISO-8859-1?Q?Thomas_Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
-CC: Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kees Cook <kees@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?ISO-8859-1?Q?Bj=F6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <lossin@kernel.org>,
-        Andreas Hindborg <a.hindborg@kernel.org>,
-        Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-        Danilo Krummrich <dakr@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-        Christophe Leroy <chleroy@kernel.org>, Boqun Feng <boqun@kernel.org>,
-        Nicolas Schier <nsc@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-mips@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Jan Stancek <jstancek@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [PATCH v5 12/24] vdso: Add the vdsocheck tool
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20260908071911.GU4120091@noisy.programming.kicks-ass.net>
-References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de> <20260908-vdso-absolute-reloc-v5-12-3a93791af1cf@linutronix.de> <20260908071911.GU4120091@noisy.programming.kicks-ass.net>
-Message-ID: <ABBC0C50-847F-406A-B426-55D0C2BE15EA@zytor.com>
+	id 1x4O7s-0000000Cjmm-2yEV
+	for linux-um@bombadil.infradead.org;
+	Wed, 09 Sep 2026 19:38:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=1ydOjuoTgA1JS+qa07cHIVSm0i9RHzfwwnuAwNBt4m4=; b=jr8hBJShDSsbAEeUpEAUnpPoVg
+	l3mWHA0r7c94zZvvnfOWLtsl104FS4Mo8VrKBnW08jerceN7A1o9cWRk8rT6bFnFx+eMsHVxr4rW9
+	Y5EfefPysjVZ5PWRCqnFxr4SOrArjVvW2D05Fx4Y7zPkjdwOITsD7QIkLLQz3EsWkCP7Yf7ojsuMI
+	Nh45G4rWk+bagFAa0K0/HgDQlkFtwS79W5RVYN/jEWemCz04+fAo3Gg2diJgK72N/bmU+dQPxGQ3L
+	c2vuObDElPjNaCtDEaRfJv+RapIk87OaaxwVFjkmBk4PcpiCtrJFiFhGuIQHKIPPRIHYIixhkB7dY
+	5fMKRY7A==;
+Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x4O7n-00000001bmU-2fsn
+	for linux-um@lists.infradead.org;
+	Wed, 09 Sep 2026 19:38:30 +0000
+Received: by mail-pj2-x10.google.com with SMTP id 98e67ed59e1d1-39666bed442so1074838a91.3
+        for <linux-um@lists.infradead.org>; Wed, 09 Sep 2026 12:38:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788982705; cv=none;
+        d=google.com; s=arc-20260327;
+        b=eG9jX27CQzuneHGSJGEUPU1uJ4pch3bLO/U5aP9PIJpscdSfDQchamg08GSEOAWFVH
+         7PUd4OkM8lhjcu9Mx96r2zSzMLaCvBr3o89UCxVpL/SqnejhtA81vypnSFSO5y+fqNL6
+         v83l3iyrEddzHlyh0rKf8uSR3ldaQ8wcDiQKjo35lfQzVcT0oFoVTUgwAJwgs20ZfS/K
+         758AAHb5ZALm7VHjD1R+8ShAyPU7wnw3dSivDbTSBN5YOV/IJ8GMm42svwAdQcX+GK3k
+         YFQHf2xZWNZLbqVHzAuhtXNwTDbi1EEgCNolvOcHDuloTS929vHGmkE1c63keSG3c2Ha
+         2cGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=1ydOjuoTgA1JS+qa07cHIVSm0i9RHzfwwnuAwNBt4m4=;
+        fh=sWitKmrmnvJHrK++7KyG9xzbDHPvy0B58WstrxRh7pw=;
+        b=erJsXFp7k7AzkAZ6ZHmGsLkmO6lDNkn4VYvM5OWxDIVDuEC8g8QlqyhDXJqfpfpdlF
+         BOr459Q7QXGdDnjBK+ubLecBk3TgubUsU6afn8cnu63LI3IwA9RfN+/CTWbJdCAguf9x
+         srSUoFmxGloOJsmDBGEoX+OrMLPU3bGqI4YinXRLdm8y7K0+oVT0awunI+GpGQUYtsNQ
+         EAWbbtSepWWo87y31vvP9FhF4VuloFafNng5VeafTsboRtyqv9HOkql/pv829C3R5TvF
+         R+qudGJ02+qVkyrDiAFpCFXFP6JvHU3vavcnVdxkb8cl+DUuhm4UGAX6LMvAIWQOA1fX
+         eQng==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788982705; x=1789587505; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=1ydOjuoTgA1JS+qa07cHIVSm0i9RHzfwwnuAwNBt4m4=;
+        b=oQ/42/TKaEJpG8HsR9rWP6oREz+V8DxDp73UeBzl+eB18br57uJp2//LH3Z8H20fG2
+         MmgzBluFKJYtp+fxifJ86uyt9Ddhe2YzBAutI+fZpR/7oPtun15NVv7wajZQJPlBSvPQ
+         3b8jrwyiEJaWSPqhG4mQ9vE/O2mxX0JKrU+XoAwjse0wutacomQnC0i+bils4wpbv+aB
+         xUKcRohu7OMOSvKV6aEJJkVjxsxrhwKGK7J0ndkuqUw4eUZojV/e6WJGAPEjx/o4QBt0
+         4Bbmpx1xgjL1vgUqe8AIYx9A9Zz42/wTHxmpwdnxNwwOPQGm3RnTkq+H7DOsOM/xa4wf
+         j2KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788982705; x=1789587505;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=1ydOjuoTgA1JS+qa07cHIVSm0i9RHzfwwnuAwNBt4m4=;
+        b=MsbbfW/ZIZ6hFDeJaaCSsp/lWdzjwAapIOTnFTxPNOJgFsYZaGcVkIWGjsBH6I6Sth
+         WQmtc+zMp5Cez2j1S9uWN9A6rs7VvdcoRKygDPIzbxsINXR8Iw/tacefLporKBFCRvUX
+         ewWT1oXdTMJA9vDZDt63clEq1xmEAfs8rmjsm6wOjgBhqlnn9UyYbWaN0lqll9yzmhhQ
+         LFRBpdYmdAThRL3/77s0s1/2sRZBVyszpMrg5bxwAQ0T38MYKSczLm7VGmFgtGWeyu7E
+         LsBraCX0eficwl4cKiqcDPUis58dYmdIVLPU14byg8/U7p7+/AEtUHMdqPQyANUHhqF6
+         xN2A==
+X-Forwarded-Encrypted: i=1; AKwUvBx/A7VMZLgTdCxC0JBo/ZVnhVCgyVZ8CyNw2krkQGi/zivluq2KRiCSSBTN4HkzenexV4YgAAjNtg==@lists.infradead.org
+X-Gm-Message-State: AFuF++kJ/CAzHfWHp3AHrTEhRMMGiQzdGp74qqBNOY5T8UhmXDZxZfr7
+	+Xg3XVUhGA8aK90ggTq8Updmn9MFe1TRE/b51FpK5szz+Igi6vsrhOdcS5wCUoL2Bd0JsLmHZzZ
+	cfVa1D6eW7settGZ0MhWLkuXHM99qiT8=
+X-Gm-Gg: AYBFou16ULHgukVRXgzEhr8h7Gb2ZfvyebHBlQSm2R1EjffmFeMOjf4Hzlgtbj5k/nH
+	ndSxyqo3EgGo/HsTLYmczNyr+nomDLACXdq4rKPBRi4a60g3Ao2GvvQV2buGyQpooCcp4QRKt1q
+	qNCxOHyIGXv9vvInQNHFlcAYlrbuc2fAhx6V4r+poobu7Ex+NPLVg59eBgsS3m0MnfIFeeDcjRj
+	qO9LE+vbqMv0Oz5kevtfPgFUEp+k8IRVKRD+L2WBIWwxUUDvXwIzXPjaYPH6N7niOJB4fNwohRV
+	82AWVNg2Hle8woG45tx9yN7aylUmeA01dyzTegUGzn0yjSszFHaE5Uojb/Ec+gkHGzFJLQ70vdj
+	dR3dg7R5IYdGDPkpKWiSkv7QQOSYWYs4KMZakA4el82xjyGM1SDmHK+yuni9R0HIoZoAJ3VHeE7
+	8ZBlq5k1CubXczs5DIbyv3i5AN61uCrgSZvWV7RYmjr7E5WNieqLM=
+X-Received: by 2002:a17:90b:3fcc:b0:39b:3505:c72f with SMTP id
+ 98e67ed59e1d1-39d77b83048mr824934a91.6.1788982705356; Wed, 09 Sep 2026
+ 12:38:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
+ <20260908-vdso-absolute-reloc-v5-12-3a93791af1cf@linutronix.de>
+ <20260908071911.GU4120091@noisy.programming.kicks-ass.net> <ABBC0C50-847F-406A-B426-55D0C2BE15EA@zytor.com>
+In-Reply-To: <ABBC0C50-847F-406A-B426-55D0C2BE15EA@zytor.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 9 Sep 2026 21:38:11 +0200
+X-Gm-Features: AcwNN1V9A4D3jn7pum7crGv8bcA9jfLyy60O95H9hOe-jZGhQ7AzCwKSAv7z5Dg
+Message-ID: <CANiq72=T1487Y7TpAa4c2eTJFMLHoe5Qc7+tRkbkmvrDjfmuvw@mail.gmail.com>
+Subject: Re: [PATCH v5 12/24] vdso: Add the vdsocheck tool
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Andy Lutomirski <luto@kernel.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Kees Cook <kees@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
+	Danilo Krummrich <dakr@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Christophe Leroy <chleroy@kernel.org>, 
+	Boqun Feng <boqun@kernel.org>, Nicolas Schier <nsc@kernel.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-mm@kvack.org, 
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	linux-s390@vger.kernel.org, linux-mips@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	Jan Stancek <jstancek@redhat.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260909_123316_815142_83EA1383 
-X-CRM114-Status: GOOD (  16.35  )
+X-CRM114-CacheID: sfid-20260909_203827_787156_A0859482 
+X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,41 +165,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On September 8, 2026 12:19:11 AM PDT, Peter Zijlstra <peterz@infradead=2Eor=
-g> wrote:
->On Tue, Sep 08, 2026 at 08:33:46AM +0200, Thomas Wei=C3=9Fschuh wrote:
->> All vDSO code needs to be completely position independent=2E Symbol
->> references are marked as hidden so the compiler emits PC-relative
->> relocations=2E However there are cases where the compiler may still
->> emit absolute relocations, as they are valid in regular PIC DSO code=2E
->> These would be resolved by the linker and will break at runtime=2E
->> This has been observed on arm64, see commit 0c314cda9325 ("arm64: vdso:
->> Work around invalid absolute relocations from GCC")
->>=20
->> Introduce a tool to check for absolute relocations during the build,
->> as the current inline-shell logic is not expressive enough=2E
->> The check is done on the object files as the relocations will not exist
->> anymore in the final DSO=2E As there is no extension point for the
->> compilation of each object file, perform the validation in vdso_check=
-=2E
->>=20
->> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas=2Eweissschuh@linutronix=2E=
-de>
->> ---
->>  Makefile                    |  19 ++
->>  lib/vdso/Kconfig            |   5 +
->>  lib/vdso/Makefile           |   2 +
->>  lib/vdso/Makefile=2Einclude   |  14 ++
->>  lib/vdso/check/=2Egitignore   |   3 +
->>  lib/vdso/check/Makefile     |  34 +++
->>  lib/vdso/check/elf=2Ers       | 498 ++++++++++++++++++++++++++++++++++=
-++++++++++
->>  lib/vdso/check/vdsocheck=2Ers | 154 ++++++++++++++
->>  8 files changed, 729 insertions(+)
+On Wed, Sep 9, 2026 at 9:33=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
+:
 >
->Urgh, does this mean I have to have rust installed just to build a
->kernel now?
+> It was going to happen, and now we'll have to suffer the instability of r=
+ust...
 
-It was going to happen, and now we'll have to suffer the instability of ru=
-st=2E=2E=2E
+What instability?
+
+Cheers,
+Miguel
 
