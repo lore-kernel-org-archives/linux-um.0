@@ -4,74 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A8BBC88E40
-	for <linux-um@archiver.kernel.org>; Thu, 10 Sep 2026 06:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32DA5C88E41
+	for <linux-um@archiver.kernel.org>; Thu, 10 Sep 2026 06:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1toCXFJJyIGT7Bi3z+gvDkztm6+uDMf7He5yX/dqQdk=; b=xEmVPIZ/yRtJ1243c5WShiuSZN
-	V5l3KDZNjdl8llVEo2cDesYEpi6uXrfUj26NKFCyUjDo2ubzZjzUvfIifYl/Nx0xvBsZJtVpCHnXU
-	Z7MJHe1diJD9YiGPGKB284Mxg1R7cYd5STq2X9coDA0u3A9UesWuf0kIII2pJoOKrpiWOBk+3BMNt
-	/DTaDPg5aeXmXli8SVnwHDwV3jCQKiFCXPc/sJPctiTKg1jjKqKulMUeSd7fbPIjtNnreE13cK13x
-	125XY14535yrqQaBgM0G06gJlX4v0dtChQxt8VpJnDSFAFK1u5xLx2Btw06PHwh3fxGy0lFiuNlii
-	WeBU8h4g==;
+	bh=UNeh3lUekONIP+bceTcz/qzQUFIH9IGvapVm9Sqamho=; b=t3mWdQO77ba5eIp2o9pGZOTjO5
+	4Ta3/zgjr+uNza1UQ7mk34X6eSeEZQqG7CrOyhrtV9Dd26djwlgHhcVCyFzHVXqL3Q7Jud2QaPDwd
+	hFsiTFXdJxxRHCYOj9U/WMxiFb1DMIJuSmuJ2bJgNGirENa6xXuQz8qPwxzjNW4OLBCYwR6pZvEe+
+	j/F+M9ZUeR2EPyU+7VhHp9vHuUws6VUv6exT5pFeYkOI9yJxY90ZqlokqH0owFK9rbBfip2oLYY6n
+	oyBiOLQaMx2qm0GR5fqBCcuS+PFltp/D8mMk3/F3kQ0Bia+eNhkScYupv4zIXbf1uN6YWGNi2gF/T
+	hWnnaiMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4YK9-0000000DWHL-27vX;
-	Thu, 10 Sep 2026 06:31:53 +0000
-Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
+	id 1x4Yeg-0000000DZTD-0qr2;
+	Thu, 10 Sep 2026 06:53:06 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x4YK6-0000000DWGR-2tTw
+	id 1x4Yee-0000000DZSa-2XTg
+	for linux-um@bombadil.infradead.org;
+	Thu, 10 Sep 2026 06:53:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=UNeh3lUekONIP+bceTcz/qzQUFIH9IGvapVm9Sqamho=; b=XXKCSvxvQuYurywdfdebNE7bO7
+	q66TTl7I97UjXioUVQyCw6ovG65a4Sd0gi+HqgeO6jFFrwy0Tbf7Dm7otbdp5+mf/qfu3WlMuOG0E
+	DCisdQ/65oPnzC91iR88SHkv6TQoje5bHqF96uwzpzOPcQ0ovejQ6irMYFH3n5SIzNZ6qcJJCCcQn
+	DrY7c5kvPprk8ajV0vu88VRN4sS3MxcByDvceONAtZL2wQ9BZZ0gjut76c65vVi6Hl9SPKhxUrx+a
+	xSvvIusnDWeVBjZX8hdvgKMW7gSWCpbe/dM6nUMn8Ays1a+5zkeI3P/Mrk9xLuVDTOgL+LeHDWnhB
+	g5vlBnfg==;
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x4Yea-000000026Mw-37F4
 	for linux-um@lists.infradead.org;
-	Thu, 10 Sep 2026 06:31:52 +0000
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-38759bcd877so7240961a91.2
-        for <linux-um@lists.infradead.org>; Wed, 09 Sep 2026 23:31:50 -0700 (PDT)
+	Thu, 10 Sep 2026 06:53:03 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-3856d6fbcb3so5671789a91.2
+        for <linux-um@lists.infradead.org>; Wed, 09 Sep 2026 23:52:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789021910; x=1789626710; darn=lists.infradead.org;
+        d=gmail.com; s=20251104; t=1789023178; x=1789627978; darn=lists.infradead.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :content-type:mime-version:references:message-id:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=1toCXFJJyIGT7Bi3z+gvDkztm6+uDMf7He5yX/dqQdk=;
-        b=OsWgRTYJ43HQA7ibdund2efDhndrmOFVmj242c/zth+F6X1lJgtCYdQRPFBucotGUz
-         CX8KAOU5Y7SY1Z4C2ZGE0Kku6h6VPs5IV3W7mDICOhi/tp9B7idFzf2IL70BgtdVpYBW
-         mGzSZqBuPiaIXN6tv+qgcG67Xg8KdrjAclo9hEvPfkB9UujZhefTGSt++CLjN58kM2RR
-         /VXcRD5C/A94x3bXuwLEI3WGGK4ukMud9iw1bpggFCcuSy65nLqV2zq227GaRt/T3Y3l
-         riHflYHL+doLhF92eG0W++2JA3Oi9zpcG25DUSjTRYdxxo1/UkOIaqpC4dkwBcCk10Xl
-         jIlA==
+        bh=UNeh3lUekONIP+bceTcz/qzQUFIH9IGvapVm9Sqamho=;
+        b=UP3v5y+Tz496z0e9Y1ElEThgJquY6IF9dMmbF2q1zAGPyxj/ayWTQAZMAyMBnl9vlU
+         OAvDUhm56q/zF5t1xC5Q54rM6uULtBIPF+1qup9GxvitRxzxGPaoJulZm/opH5U1wFpp
+         wghfmSn+pBuM/XDUqM5NYzXgm8MKWneif+GSOServ9lX/kls2Q1hMdDUvocizEN7EDO5
+         n9Qv6zgNvapni3PY8y4waiBCLlY7TXkE41Wwvam75wSIKQbj5wzgc6r3U/+OdUfckXGK
+         7H0sPu33Nl8OIBeRUyE+v7ZqIxzJ4bOFq6deGmdnGRZjssk/CPO5DowFx8By7ciijD69
+         lQYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789021910; x=1789626710;
+        d=1e100.net; s=20251104; t=1789023178; x=1789627978;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :content-type:mime-version:references:message-id:subject:cc:to:from
          :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to:content-type;
-        bh=1toCXFJJyIGT7Bi3z+gvDkztm6+uDMf7He5yX/dqQdk=;
-        b=ELSx3DbybHm4b0JFtoF1hqvFjElHhV8CvnsbCaOlyym+jzi7LWotj097hGR2oP/ogg
-         pVjoLtagNS8fsJGSLKnth0k5GeCto2IvCquRd2laB05Ce41mYLDWQgnhnN/Hj9CtKOZe
-         0jb7vBrNXhkFa6bPWI/Qn5iwc2Lki+RlkgrjerNGLq4zls6zSKrn1bPR53hHxqkhMVyA
-         9hCeuI4ub72pyBVQloltr6PShNV3Conk5TXCUg5sdkQe2rA8QVfTajB60y45w8ztqmGD
-         0Gf9+EWaXhb1QN6V/8Iq5dx2RHzlzGrTCZ6r2ADeMPyes7ssvKRmEpMeZnlGP/fZg8hn
-         b5ng==
-X-Forwarded-Encrypted: i=1; AKwUvBzv15GrzEQ5IWE2TcuKGPqusQRi8v12tUHwXchmkzqEqFabxSwUd07WhSKmYiXqewC+pNmQefjHnA==@lists.infradead.org
-X-Gm-Message-State: AFuF++k7RUPQF7qxst3ebNUy1fXG8w/nZyRSyp0Ldu3tBAGA9L0q69Kt
-	sGmRBao+h32CDst1JDbKZGSe/mw3qLVCayLLaoYyHQmQJbohkPoHOjrg
-X-Gm-Gg: AYBFou0qTbKaX80H8FEm+vzaVJKcBqQML+Z5q3ZcR7p8dKgZUB7tIrwkhtWjYKfTNmw
-	Hsgu0JSiAfHf3GzNxlJ+UQIMy/7CDpK/tumM9njCYKsqAJCBTkTHNw1/E69ule8OQtN5mo0zUNx
-	ivXeZEh0rA6hVgUD4uzfmKl2qWL2oTosv+qAhcfDyROsSD3qOfsxn33GX7/rI5sTp4PLt2OHxkq
-	OBEwf2ulTDBTPUM/TTw/rKvaGzbxGgLuIPf/Jx6uVIoEfTa6z5BXZxzlka60yTFuF+Otcklz9sK
-	u7iYHoABKEtLh6jepkFfOaw/lyD1+tuq9ZiRZ1hq2OQkL9cxVd4Eb6xk+t/L7zmhEfcwVaiwb4S
-	b3ffiV0k/dJ5y0ZT2uTDs8hw238uX/1RuDGzLIdiyW55rV0rP5yf7Va5ACbc/K030VuMLzveO2g
-	WBImEcB1MHuk2wbKYsDawvdmUJ56b4UHFYP22IC+xnKlovA5c+TEHd9FBXWWA6zBA7IytBqcrA4
-	6UdvpLBOR+bco1FrWfRA92J2jAxz0NSplYRJehfwFY=
-X-Received: by 2002:a17:90b:258d:b0:396:4c63:7193 with SMTP id 98e67ed59e1d1-39b261323e0mr64061526a91.11.1789021909725;
-        Wed, 09 Sep 2026 23:31:49 -0700 (PDT)
+        bh=UNeh3lUekONIP+bceTcz/qzQUFIH9IGvapVm9Sqamho=;
+        b=OKa2ole+BucZBCuBRT1Z7pXcgsI5/pdBKjGGGNkhsLGs9fW741P9pW57cYbpvOYWpx
+         sCSliZaiCR7rKOI24WWephh5eC7AkTBv2eeJiY1VJSLLQWZTL58psn387/058hNOximp
+         mkn8T9ai7B6QGt5wKDC5HtKykY2eggbGELLIniOxefd50wb9HK1S+PDjgvG6ATLWcCuE
+         j3bQ4oVplBhPnmn/jmt1TjBBUJ0fWAl7/dUAoJcWFthhyz5A//jdZXI7UVj0r+JF5k20
+         0B4aJAFeD1gnQjzKx035MJh709s9g0CKMbuzOfadZygVs2vyhv3hJmRoM3Yl1YJUWA0h
+         Zqlw==
+X-Forwarded-Encrypted: i=1; AKwUvBwr2dOHxS7mMZOBNzQzc9T91/ciAwxzj3R+8MQxAkLZIcLVsb2XyhdCi/HydyL8unEWKD3aC3Em3Q==@lists.infradead.org
+X-Gm-Message-State: AFuF++l4V1gmzxCecPCSlCJ/3uTXpzZkDo7O1IkR3nXv5jiWXSSk0PE3
+	oAR9F+zv1kRD2SlzSDu41rQPTnU7LuKd84/PYS1E7eOsVdMggEzH5/Iz
+X-Gm-Gg: AYBFou2azSNAiV13nWcKLG8gEFsJmbZdq2QPR018758tEMdRAyGQq4mp0u7iaXgUnE5
+	fYoe6DE6rJSbmB+hohWyQq6mQnwqMVbihPkD6kaXRs8vmUU3dnJ01vT7c4jCOJRLzX6dila80a8
+	QWyeAu1X6GCzyVD/OgPqLvPDjvuRYm+DoJ5fS4ZXAb7lME3ceWFYRxMZN79aSlYA7KHpTWzVblS
+	FRz9hQ6LtD3E3OdqtS4nT1c1LP/FElEPT99ixFLdHTDwq3q2yrFtdHkq7sD3yjtT/MRXpm2k847
+	+3VlVQjvERzSfO9MUbxeWY8ym4JzczIjMc0UTaSl7ZHchYf2/+GnkC3nbNjy8U8QkNdCAtl+/G9
+	epgUsbCkrHHGA2DKj6VX3GFWHQujs3XPac8EDhcwx/vmgAsxGRnB/9CKrPgYIRBfXdvFAMVQ7fP
+	M6It1jCk5lY7Ke8/VpDch30mAnfUS3B5n6zI5QtCJY+xw+SDIskdMN1F9s1VGLbxDOoaO5JgbBM
+	B6JSRnVnAR+AaD24Zgbo20h9Wr3wLnL0MbMVcrZ9HI=
+X-Received: by 2002:a17:90b:3d92:b0:398:bf7e:b267 with SMTP id 98e67ed59e1d1-39b2614df9dmr61606265a91.2.1789023178292;
+        Wed, 09 Sep 2026 23:52:58 -0700 (PDT)
 Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([129.41.58.4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d7e834319sm2507639a91.10.2026.09.09.23.31.29
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39d7e77498csm2694423a91.3.2026.09.09.23.52.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2026 23:31:49 -0700 (PDT)
-Date: Thu, 10 Sep 2026 12:01:26 +0530
+        Wed, 09 Sep 2026 23:52:57 -0700 (PDT)
+Date: Thu, 10 Sep 2026 12:22:33 +0530
 From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
 To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -102,18 +117,18 @@ Cc: Paul Walmsley <paul.walmsley@sifive.com>,
 	linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org, 
 	Jan Stancek <jstancek@redhat.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, 
 	Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [PATCH v5 01/24] elf, uapi: Add a header for relocation constants
-Message-ID: <aqJOscgnnevybiKO@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+Subject: Re: [PATCH v5 12/24] vdso: Add the vdsocheck tool
+Message-ID: <aqJS61DbuUI3xoY3@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
 References: <20260908-vdso-absolute-reloc-v5-0-3a93791af1cf@linutronix.de>
- <20260908-vdso-absolute-reloc-v5-1-3a93791af1cf@linutronix.de>
+ <20260908-vdso-absolute-reloc-v5-12-3a93791af1cf@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260908-vdso-absolute-reloc-v5-1-3a93791af1cf@linutronix.de>
+In-Reply-To: <20260908-vdso-absolute-reloc-v5-12-3a93791af1cf@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260909_233150_724035_B910F903 
-X-CRM114-Status: GOOD (  22.48  )
+X-CRM114-CacheID: sfid-20260910_075301_010736_BD94514C 
+X-CRM114-Status: GOOD (  23.01  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,49 +143,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 08, 2026 at 08:33:35AM +0200, Thomas Weiﬂschuh wrote:
-> While the numeric constants for relocations are architecture specific,
-> it is still useful to get access to them from other architectures.
-> Also the definitions are useful for userspace in general.
-> For example tools processing elf files during a kernel cross-compilation
-> can make use of them.
+On Tue, Sep 08, 2026 at 08:33:46AM +0200, Thomas Weiﬂschuh wrote:
+> All vDSO code needs to be completely position independent. Symbol
+> references are marked as hidden so the compiler emits PC-relative
+> relocations. However there are cases where the compiler may still
+> emit absolute relocations, as they are valid in regular PIC DSO code.
+> These would be resolved by the linker and will break at runtime.
+> This has been observed on arm64, see commit 0c314cda9325 ("arm64: vdso:
+> Work around invalid absolute relocations from GCC")
 > 
-> Introduce a dedicated header for them, similar to the elf-em.h header.
-> For now the header is empty but it will be filled step by step in
-> upcomming commits.
+> Introduce a tool to check for absolute relocations during the build,
+> as the current inline-shell logic is not expressive enough.
+> The check is done on the object files as the relocations will not exist
+> anymore in the final DSO. As there is no extension point for the
+> compilation of each object file, perform the validation in vdso_check.
 > 
 > Signed-off-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
 > ---
->  include/uapi/linux/elf-r.h | 5 +++++
->  include/uapi/linux/elf.h   | 1 +
->  2 files changed, 6 insertions(+)
+>  Makefile                    |  19 ++
+>  lib/vdso/Kconfig            |   5 +
+>  lib/vdso/Makefile           |   2 +
+>  lib/vdso/Makefile.include   |  14 ++
+>  lib/vdso/check/.gitignore   |   3 +
+>  lib/vdso/check/Makefile     |  34 +++
+>  lib/vdso/check/elf.rs       | 498 ++++++++++++++++++++++++++++++++++++++++++++
+>  lib/vdso/check/vdsocheck.rs | 154 ++++++++++++++
+>  8 files changed, 729 insertions(+)
 > 
-> diff --git a/include/uapi/linux/elf-r.h b/include/uapi/linux/elf-r.h
-> new file mode 100644
-> index 000000000000..2c382c8a4807
-> --- /dev/null
-> +++ b/include/uapi/linux/elf-r.h
-> @@ -0,0 +1,5 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_LINUX_ELF_R_H
-> +#define _UAPI_LINUX_ELF_R_H
+> diff --git a/Makefile b/Makefile
+> index 4ad67b737af7..e6e0dd7818ef 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1559,6 +1559,25 @@ vdso_install: export INSTALL_FILES = $(vdso-install-y)
+>  vdso_install:
+>  	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.vdsoinst
+>  
+> +# ---------------------------------------------------------------------------
+> +# vDSO check
 > +
-> +#endif /* _UAPI_LINUX_ELF_R_H */
-> diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-> index ee30dcd80901..b3e312255552 100644
-> --- a/include/uapi/linux/elf.h
-> +++ b/include/uapi/linux/elf.h
-> @@ -4,6 +4,7 @@
+> +ifdef CONFIG_RUST_IS_AVAILABLE
+> +ifdef CONFIG_VDSO_CHECK
+> +
+> +# Build the checker early.
+> +prepare: vdsocheck
+> +
+> +# If the architecture builds the vDSO early, make sure to be earlier.
+> +PHONY += vdso_prepare
+> +vdso_prepare: vdsocheck
+> +
+> +PHONY += vdsocheck
+> +vdsocheck:
+> +	$(Q)$(MAKE) $(build)=lib/vdso/check $@
+> +endif
+> +endif
+> +
+>  # ---------------------------------------------------------------------------
+>  # Tools
 >  
->  #include <linux/types.h>
->  #include <linux/elf-em.h>
-> +#include <linux/elf-r.h>
->  
->  /* 32-bit ELF base types. */
->  typedef __u32	Elf32_Addr;
-> 
-> -- 
-> 2.55.0
-> 
-Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
+> diff --git a/lib/vdso/Kconfig b/lib/vdso/Kconfig
+> index 597f5f0f9681..112b42a5aeb1 100644
+> --- a/lib/vdso/Kconfig
+> +++ b/lib/vdso/Kconfig
+> @@ -23,3 +23,8 @@ config VDSO_GETRANDOM
+>  	select VDSO_DATASTORE
+>  	help
+>  	  Selected by architectures that support vDSO getrandom().
+> +
+> +config VDSO_CHECK
+> +	bool
+> +	help
+> +	  Selected for architectures that are supported by the 'vdsocheck' progam.
+	s/progam/program
+
+Regards,
+Mukesh
 
