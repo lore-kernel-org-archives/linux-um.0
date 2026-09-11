@@ -4,51 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A29C5C88E4D
-	for <linux-um@archiver.kernel.org>; Fri, 11 Sep 2026 19:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17552C88E5C
+	for <linux-um@archiver.kernel.org>; Fri, 11 Sep 2026 19:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dWYqXXcVhqhum5QoL45NNyuXa4EfpjGCy/961eqdzvI=; b=E4A6F/X/NewEwpSJRdzj0CqBiv
-	M/KoCBdxuTULsB6Baq37OlbAZCx6MAiQAbVdI6PVAJGNDnMw/33V9DXU17NYv1jU3adtKnypxuR4l
-	G5E5nYeD63EzxN7cvtnfOihAyfOzjb//TCNUjr1WyEKtH1cKOcRAu/XZUhtmVO6ik/+jYI6AWIo7e
-	7kgjkfu7/WhrKPaFdkE7WqoDU0igzS4CLHwLxpKoNfgmB4O35gwKan8BVdLwjRB860eSwZRyam+u4
-	FUH7qUukUhPfP24jmHhIfvcmaMKgd3w3xp6EgFb6JUN5ruWFfkA0UZK6VsdtOVk6fTN1Ix9nZsLCs
-	lASsFsEw==;
+	bh=3qIS4A8O4N5dYDsCKKL4hiQNRSaqHHy/s6/A7yaKLWg=; b=T1fPjM0tFrcn9fuQG4wRTQNrut
+	wJS3aPiXje9ozPCS4LIS7bmU2orq3kN5PEU55WEpTq6L/kA8xrBhvemxKmc/vhreeImD/Sn1HVQX0
+	XVw+Hi1yBSS5Xxh7XPcUmaTlHOTFakXG0+qlF41Kaa+C9W7if0hsAJQYUp0mJAoTBm0ubeD4IZgpf
+	qG9BHaPFVNgo6VJis5OwiGlTB5GZvnzu7cXAfjr0Fxrgt6AjoTyfwS/aQIqBuqntMnLl1JNxXay4Y
+	CmA9KjO7qb3nr/T1WOzuKGKl8Uc2Fd4GCb3HsimoYBtV0COb79GhQSq4Fs+s43LzPZ2vi59Q7iRN4
+	KRS8Gurw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x575R-0000000HaXU-17f4;
-	Fri, 11 Sep 2026 19:39:01 +0000
+	id 1x575n-0000000Hajb-2QAO;
+	Fri, 11 Sep 2026 19:39:23 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x575P-0000000HaW4-1lG9;
-	Fri, 11 Sep 2026 19:38:59 +0000
+	id 1x575i-0000000Hahg-2p5S;
+	Fri, 11 Sep 2026 19:39:18 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8237560008;
+	by tor.source.kernel.org (Postfix) with ESMTP id 1AE2D60008;
+	Fri, 11 Sep 2026 19:39:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADAE41F00898;
 	Fri, 11 Sep 2026 19:38:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5FC1F00893;
-	Fri, 11 Sep 2026 19:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789155538;
-	bh=dWYqXXcVhqhum5QoL45NNyuXa4EfpjGCy/961eqdzvI=;
+	s=k20260515; t=1789155557;
+	bh=3qIS4A8O4N5dYDsCKKL4hiQNRSaqHHy/s6/A7yaKLWg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=Wp7RN6M0L86FeGpHvZcllj3vCIokf70FAQlmFb0my2TRWM0GhqqE6bZudKHCpCts0
-	 5IpQHrKGnnWG+bIkcDmlhu5o/JmejMP+vlO9qxLub0WI2aj33y/PXCJPrlfzzfaxgG
-	 wfRru/PZcDX0l+7ekjnU6l1mcPGVvMJ3mpbSQEgXseD9oWYK2HpnfidgjFf2FEnhUo
-	 0d8m2F+SGkk1LtOVbi5bZS0uY/wJ9sUmdKZv/QDSEHHuEP8F2v6wnYIaJdzOnH1AwW
-	 dXmazlu/e2Xtt/OtHX6TXnZmlwb6uGk3SvGj94GArHUevOjHDzBVbZ5E1AIBL8JCkG
-	 O/bo7EuxjGmZQ==
+	b=eDcMFjyHG+gLxqSsyyvUgFjMTquM0bUYib7h1HdpzEuYyPG+fAG6Rsxx8uhHJPyxt
+	 lDjDTfjfzYbZu3ilnt6I0zLCAymeoL2Y7MchBwgvmGYk5GKfBwoHbWD3ld0JelIEBx
+	 vJRlNInx2qRVJoTvwZW6br9Y8NnHFGXxrBOlPSUwb/vfPQZGF05RIv7eTeVawSQH+f
+	 m1fjCB0255/uyysZGBXQ7UYrGAwPRYhBIJxnFTKRmJCArjFkZnx5q//766cwvqy6kL
+	 Bp+O7Kthb5cnhTzdNnG5qQTmSIsEWdq/zLuH9ghx3uLJXEqUgvuyaoQl/2ML4JdarQ
+	 2YHR3NaPvTm7g==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 11 Sep 2026 20:36:50 +0100
-Subject: [PATCH v3 03/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU
- riscv
+Date: Fri, 11 Sep 2026 20:36:51 +0100
+Subject: [PATCH v3 04/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU arm
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-rcu-pagetable-freeing-v3-3-7b8c86103821@kernel.org>
+Message-Id: <20260911-rcu-pagetable-freeing-v3-4-7b8c86103821@kernel.org>
 References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
 In-Reply-To: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -111,12 +110,12 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
  Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1601; i=ljs@kernel.org;
- h=from:subject:message-id; bh=Ejk+F/Wux5yTvQzPF878nAZnzdraz7QYUlz/y227QJE=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDQKqWW/WBRsHdFlr34u/0fhUyOJ1CeVl/kXd37xF
- rtp8OpURykLgxgXg6yYIsvzL+L7g0TC5nVe8HeDmcPKBDKEgYtTACYiKMbw33PDqT2t9smPwr2+
- fZN8x6M9uaJfqklmR1VSWuBq1ukKixj+6Zr+mF/rtsZF4KVQqofE5sKjjVceMvlwNHzdO7fXPke
- EHQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1983; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=DfBAaXdC7t7vNoXwDFH4KxY7MB20la/qqFRKCtU73zE=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDQ+9bvN+Eh/mtvi4Fv/Jd5UxLdv+9C7oOZ+15JFp
+ 3aw7Xh4r6OUhUGMi0FWTJHl+Rfx/UEiYfM6L/i7wcxhZQIZwsDFKQAT6ZFj+Gf0X0jKunPX9zVH
+ Xkftt2gvjj40fb9Z7d0Zym2z88p3/xRiZHg6tX7np69zPwUd3rdPPszCJ+W796ODAULHri6svPC
+ C7xkXAA==
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 X-BeenThere: linux-um@lists.infradead.org
@@ -133,26 +132,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Currently riscv gates MMU_GATHER_RCU_TABLE_FREE on CONFIG_SMP and
-CONFIG_MMU.
+Commit a0ad5496b2b3 ("arm: mm: enable HAVE_RCU_TABLE_FREE logic") enabled
+CONFIG_MMU_GATHER_RCU_TABLE_FREE (then named HAVE_RCU_TABLE_FREE) for SMP
+arm architectures with LPAE enabled.
 
-Commit 69be3fb111e7 ("riscv: enable MMU_GATHER_RCU_TABLE_FREE for SMP &&
-MMU") enabled CONFIG_MMU_GATHER_RCU_TABLE_FREE for CONFIG_SMP, CONFIG_MMU
-riscv builds.
+Regardless of whether CONFIG_ARM_LPAE is enabled or not, the same page
+table freeing functions __pte_free_tlb() and __pmd_free_tlb() are used.
 
-This is expressly for the safety of GUP-fast walkers (CONFIG_HAVE_GUP_FAST
-is enabled if CONFIG_MMU is enabled).
+Non-LPAE PMD page tables are folded into the PGD and freed by
+pgd_free() (PGD freeing is not part of mmu_gather page table freeing in any
+case), so this is a noop in this case.
 
-Naturally a single core system does not encounter issues with software page
-table walkers being correctly synchronised across cores, as there is only a
-single core.
+Since commit 358d1c39c82a ("arm: convert various functions to use ptdescs")
+both LPAE and non-LPAE PTE page table freeing uses tlb_remove_ptdesc().
 
-However, CONFIG_PREEMPT_RCU is still available on a riscv UP system, so for
-a future RCU-only page table walker, this guarantee is required to prevent
-concurrent page table teardown.
+Thus all page table freeing is performed under RCU with
+CONFIG_MMU_GATHER_RCU_TABLE_FREE enabled for LPAE and non-LPAE and thus it
+need not be gated on LPAE.
 
-All page table freeing is already done via tlb_remove_ptdesc() so the
-conditions of CONFIG_MMU_GATHER_RCU_TABLE_FREE are already met.
+A UP arm system can set CONFIG_PREEMPT_RCU, so a future pure RCU page
+table walker requires MMU_GATHER_RCU_TABLE_FREE to be enabled on UP as
+well, even if concurrent GUP fast is not possible there.
+
+Therefore, it is both safe and desirable to set
+CONFIG_MMU_GATHER_RCU_TABLE_FREE for all MMU arm architectures (nommu does
+not perform mmu_gather operations).
 
 This forms part of an overall effort to switch every architecture to this
 mode.
@@ -160,22 +164,22 @@ mode.
 Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- arch/riscv/Kconfig | 2 +-
+ arch/arm/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 505eed4af932..3529ed1861ce 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -208,7 +208,7 @@ config RISCV
- 	select IRQ_FORCED_THREADING
- 	select KASAN_VMALLOC if KASAN
- 	select LOCK_MM_AND_FIND_VMA
--	select MMU_GATHER_RCU_TABLE_FREE if SMP && MMU
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 408aa58a2a5b..72b9afc6ae10 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -134,7 +134,7 @@ config ARM
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+-	select MMU_GATHER_RCU_TABLE_FREE if SMP && ARM_LPAE
 +	select MMU_GATHER_RCU_TABLE_FREE if MMU
- 	select MODULES_USE_ELF_RELA if MODULES
- 	select OF
- 	select OF_EARLY_FLATTREE
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RSEQ
+ 	select HAVE_RUST if CPU_LITTLE_ENDIAN && CPU_32v7 && !KASAN
 
 -- 
 2.55.0
