@@ -4,121 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42C82C88E4D
-	for <linux-um@archiver.kernel.org>; Fri, 11 Sep 2026 19:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E29C88E56
+	for <linux-um@archiver.kernel.org>; Sat, 12 Sep 2026 22:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M7feebBV+4w0SqCnHHPUA0WnsaaqlXi4RbYO862HspA=; b=RNqPELZri5Dsm0iRSpxaV/BqFT
-	l4g3c3owKXZLM2FFpKbxKZ/eAMM2hX5NUpM+DyXG/lupQowz+7zFJxiknruxCHpraSzxlioX5Gm58
-	z0BC0iAU0zjV6G6KUOYunHttkYMX5cG4efliWddiTxLaxyc4gY0R9EM84plGy/yWZ8QttIt8Clo1q
-	BPuX4miIVfhHKNGQh8swnj6QiA6A6u7R6XWNcJOMjRUiD2C1toQGYiGoYfvgCJuXd0M8/B06BtIPi
-	udQoleIwFKnXGXZkv6G7DEx54lUDFd6IaQbNmDxFPaCAr0wC8hvY07MC8oQQq/TgZ2iz0B5CZsx6O
-	7np8vkVg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=; b=RMXRhK0CGFbFLdouUL2dpbtZiM
+	ukuOu46n3axMa0Nf/Ec480N/kiCQPMXWRTIrDIg3X518isJj04ON9hOrlW3QY8eD3bwJpV8A88Tr2
+	jU8Lg7hBGkVWNPXphB+aCRVYEbU31af4uvAL00jBhLROyGJs8JuKitKHMXEZyqR6gp82h/KwWio6B
+	KnAZAxwMIep00gbRz5Z60YXCjBLpHaeGsF2pqOwu69aWJmUBjfcvdTTk3W6IrlqO2uK/HW5OqFDSq
+	CYUVaGQu1r+85SFJp99WsA1kVVy2a7Zf9a2TvsxRq51L8tuAR6C8uFT0a9QqejfzBrhHEHCfeWuYb
+	/c4H1P2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x578H-000000000zd-3y4u;
-	Fri, 11 Sep 2026 19:41:57 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1x5WNo-00000001GK3-2EQ2;
+	Sat, 12 Sep 2026 22:39:40 +0000
+Received: from mail-qk1-x735.google.com ([2607:f8b0:4864:20::735])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x578F-000000000yP-2zOX;
-	Fri, 11 Sep 2026 19:41:55 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1245E60202;
-	Fri, 11 Sep 2026 19:41:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6EE1F00893;
-	Fri, 11 Sep 2026 19:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789155714;
-	bh=M7feebBV+4w0SqCnHHPUA0WnsaaqlXi4RbYO862HspA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=b5hZkxPeby4ytfMTJauKfEirdwvu+obLbvn3xWPzZcr0wBfX3w+c2kujWFIcDpY9n
-	 25FLBvyf42J+UZUzQbo4EoU7R+DQKAdV1weZ0+5Qm1djVUXn5MsNCrmeyoRpAkTbTJ
-	 siMNDnCxo7ntKpAO1aUHoIFfJkSGnCkmDedyGaQ3sl0jd3SZvqvmObc3YM/xNBonZf
-	 k+LnB3mpReS5jSnuryAr5mgkoBDh+B/eY8XbcD0SZAWiMwiGHobrF0ybz9sq0aO3oR
-	 P9ZtVpQUF5BFr3CO4oSylZnpjSWQo66V0pbELQZm+VUzxOw02NQkviAWzBGK9gChxZ
-	 3WaZrJuQhS4QQ==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 11 Sep 2026 20:36:59 +0100
-Subject: [PATCH v3 12/12] mm: change the contract for free_pgtables(),
- update docs
+	id 1x5WNl-00000001GJh-07WT
+	for linux-um@lists.infradead.org;
+	Sat, 12 Sep 2026 22:39:38 +0000
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-93a0bf264a4so55955685a.1
+        for <linux-um@lists.infradead.org>; Sat, 12 Sep 2026 15:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789252775; x=1789857575; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=;
+        b=f3pPMSfhJXeVqShqigNaaEUjkGEaVXU5y3oOifVj63Da4ZMoN2y9+is/esEQmgEIwM
+         NBUeylqijkiF8NwgJwQ+ypvDNRfibM0x3f96OWgE4JX1TCigFawJtb+DCxy64agr1oOU
+         /zl0xeSVGlq5In2O+tTLVw1Yu/fTXrvKz+RCIFsNWF7ySFYzp8Qd6UFURUf56cidIBOP
+         HnfSJsG0KJZrF6PWnWMK+F+AjDPqhtpdfV0tGyYhn7/lImOnJOiojtSg6jyq0PZx+iDU
+         q3X4JEnZfUg32BZEiiNn24Yga085qxqbZo9XkmHTpoA0VDsu61IVDf/AfTmQGESxo2wW
+         yyoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789252775; x=1789857575;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=;
+        b=QWN901nQ6O75kf93A+deLiTR9Cz8TeF7rUtkQRau1ImwDQJbtDWsc4ISz9LLFBp/sl
+         KIqf4jzg1IcodmvCf75M92oPYJVf4CEM8yBQrTkRzSaO00GS9+Y5YxcE/qh4QMIWPnml
+         gH7Keafcz4pNKKtRx3tTJ7W+Ssd9J/4JW9pLtBcR0fTeYI1UEQ54IrgJyOKMqWQg2oFa
+         rbM7x/BG+5S3Nc9E8Q2itmQnuPHBRsxo0owHkEfHrJkEijSGNnLoqNR7lEog+778Lsst
+         fG8ibRzBbRsfsnMyMnMA5BM6ddn7OKbEuVnGrdIlByedllq+WBlDVYSMTDmfQuF3LU2Y
+         aGiA==
+X-Gm-Message-State: AFuF++mVjAstTgGBNXlf+mhTE5DdFergQs1NVkb1hb6w7nAXNpMKJPGX
+	sCkisfVrt8FLV2egNag1kCpyUn+eM5tvkOpaTyjmDsvHQ0z3VU9Hbxja
+X-Gm-Gg: AYBFou0Ao8/UFXrYMXlgzXVZYJulsKYDoGN4GPDHk2PbKHxQ5V6ZvP5G1OZppiOm2wd
+	hB/pMUBvob9Lqg0mfXtDiVk8sDM1rnKjJx77l62lt7erB4n7pD+V/DQVUaHsErFG8nHpbGomHKp
+	d0iAMTCKi3H1LoqZPM4wohXikL1Dx6xgtdYgLFq+GDAmB9xogMHBQI9FlV4nEFDn9d9TU6EJfU4
+	NwzlR9L/4xZ/aTvT0NJk9Z1izMKR7LlyO9ZqpY/M0mTuUbth3C0L3GmrL0VYToUTsS8sxtjsJ/b
+	JrUny9KKPpcF4TuKDPfTBMfgUT9jUMjKui1bsK42LIie3zQI43TYIrDmHyKbLwima0SQibduHf9
+	BXJJPdKDAWgfRHcrylkz7FxYsIEo2ONddPrgU+xz92Jyn3euWxtL5hD75DMi/7q59tKQdoNe+B9
+	6WPANJeeo1fnaO4z962QmSVQ7OTp5jiP39AjPjXZf5617XORVLzQ+uDCxe6IJJbSyYGug1wNTso
+	xVQatsrMjnGGUCjIzcWYTtMuU0T8d/U/EppmyZC6UXg400RbxE/5Za3B5VPiPKRvep3YpGeO8c4
+	R6GDdhxOxwSqKdSYWP8=
+X-Received: by 2002:a05:620a:17a5:b0:93a:12eb:b626 with SMTP id af79cd13be357-93a12ebd99dmr245498185a.4.1789252774908;
+        Sat, 12 Sep 2026 15:39:34 -0700 (PDT)
+Received: from docker-runner-pve5.tail732951.ts.net (bras-base-toroon4524w-grc-16-76-70-76-130.dsl.bell.ca. [76.70.76.130])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-939ebda519bsm537893485a.26.2026.09.12.15.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2026 15:39:34 -0700 (PDT)
+From: Mykyta Bozhenko <caudadragonis@gmail.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] um: ubd: perform the flush the block layer asks for
+Date: Sat, 12 Sep 2026 18:39:32 -0400
+Message-ID: <20260912223932.2941631-1-caudadragonis@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-rcu-pagetable-freeing-v3-12-7b8c86103821@kernel.org>
-References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-In-Reply-To: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3290; i=ljs@kernel.org;
- h=from:subject:message-id; bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDRfPca+K1Qt69Vu3RSVu8e9Ur+x7Hbg6r6kKjhjQ
- tW2Xw17OkpZGMS4GGTFFFmefxHfHyQSNq/zgr8bzBxWJpAhDFycAjCRtYKMDKtcrE7Oe/bdKdOw
- QVRKubxP/maw6+Z2i5NRMyQLnn/8n8DIcLLhht/b1oOGNt4zuvVbs+/8t5WS4NfTdnZawiPYtGc
- JEwA=
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260912_153937_088240_ADBF42E1 
+X-CRM114-Status: GOOD (  21.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,69 +98,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Now that page tables are freed after an RCU grace period, it is safe for
-read-only page table walkers to walk page table ranges that are being
-concurrently torn down, provided the mm is kept alive via mmgrab().
+ubd sets BLK_FEAT_WRITE_CACHE, so the block layer sends it REQ_OP_FLUSH
+requests and, as Documentation/block/writeback_cache_control.rst puts it,
+the driver "needs to handle them". do_io() does implement that: for
+REQ_OP_FLUSH it calls os_sync_file() on the backing file and maps the
+result back into the request.
 
-It is however unsafe for writers to do so, as they must obtain an
-appropriate lock to do so safely.
+That branch has been unreachable since commit fc6b6a872dcd ("um: ubd:
+Submit all data segments atomically"), which replaced the single
+per-request do_io() call with a loop over the request's data
+descriptors:
 
-Update the pte_offset_map_lock()'s comment block to reflect this.
+	-			do_io((*io_req_buffer)[count]);
+	+			for (i = 0; !req->error && i < req->desc_cnt; i++)
+	+				do_io(req, &(req->io_desc[i]));
 
-Similarly update the process addresses documentation.
+A flush carries no data and ubd_submit_request() sets desc_cnt to 0 for
+it, so the loop body never runs. The request is handed back to the block
+layer with error 0, i.e. the flush is reported as completed without the
+backing file ever being synced. Guest fsync(), fdatasync() and journal
+commits return success while the data is only in the host's page cache,
+and because no ordering is enforced either, a host crash can leave the
+image in a state the guest never allowed. The error path is dead too:
+a failing host fdatasync() cannot be reported.
 
-Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+Measured on a UML guest with ext4 on ubda, doing 20 writes of 4 KiB each
+followed by fdatasync(), then one fsync() and one directory fsync():
+
+  before: the guest sees 22 successful flushes, /sys/block/ubda/stat
+          reports 16 completed flush requests, and the UML process issues
+          no fdatasync() on the image at all
+  after:  the same workload results in 43 fdatasync() calls on the image
+
+os_pwrite_file() is entered 131 times either way, and e2fsck on the
+resulting image is clean in both cases.
+
+Honouring the flush costs what the flush costs. With the image on host
+ext4, 400 iterations of write() plus fdatasync() in the guest take 467 ms
+before and 2007 ms after (medians of five runs). uretprobes on
+os_sync_file() attribute 1.597 s of that difference to time spent inside
+the host's fdatasync(), the remaining data path being unchanged
+(os_pwrite_file(): 19246 calls in both). A 64 MiB sequential write
+followed by a single fsync() goes from 278 ms to 362 ms, due to the
+periodic journal commits. With the image on tmpfs there is no measurable
+difference.
+
+Users who prefer the previous speed to durability can disable the cache
+per device:
+
+  echo "write through" > /sys/block/ubda/queue/write_cache
+
+That is also cheaper than the unfixed driver, 326 ms for the same 400
+iterations, because the block layer then completes empty flush requests
+without entering the driver at all.
+
+Fixes: fc6b6a872dcd ("um: ubd: Submit all data segments atomically")
+Cc: stable@vger.kernel.org
+Assisted-by: LLM bpftrace
+Signed-off-by: Mykyta Bozhenko <caudadragonis@gmail.com>
 ---
- Documentation/mm/process_addrs.rst |  6 ++++++
- mm/pgtable-generic.c               | 15 +++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
+Not verified, stated explicitly as the process asks: the change was built and
+exercised for ARCH=um only, on torvalds/master at cba2348ab and on v6.19; no
+other architecture goes through this path. The flush error path, map_error() on
+a failing host fdatasync(), is reachable again but I could not isolate it: the
+block layer fault injection I used fails the data write too, so the EIO the
+guest observes cannot be attributed to the flush alone.
 
-diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-index a7296f251799..b1f4f44d75eb 100644
---- a/Documentation/mm/process_addrs.rst
-+++ b/Documentation/mm/process_addrs.rst
-@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
- * When changing a page table entry the page table lock for that page table
-   **must** be held, except if you can safely assume nobody can access the page
-   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-+* Page tables may be *walked* under RCU alone, as page tables are freed only
-+  after an RCU grace period has elapsed. However, any entry found must be
-+  revalidated after the page table lock is taken (such as the
-+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-+  before it is acted upon. Changing an entry requires the page table
-+  lock and one of the locks that excludes teardown (mmap or VMA lock).
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index b91b1a98029c..a127e3e8f9b9 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-  * be read-only/read-write protected.
-  *
-- * Note that free_pgtables(), used after unmapping detached vmas, or when
-- * exiting the whole mm, does not take page table lock before freeing a page
-- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-+ * the whole mm, does not take a page table lock before freeing a page table.
-+ *
-+ * As page table freeing itself is RCU-safe, page table readers can safely run
-+ * concurrently with page table teardown.
-+ *
-+ * However, writers CANNOT as, without a lock being held, nothing prevents
-+ * concurrent teardown.
-+ *
-+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-  */
- pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 			   unsigned long addr, spinlock_t **ptlp)
+The numbers above come from a single-CPU guest with 10 ms timer granularity,
+which is why they are medians of five runs rather than percentages. Host side
+counts are from uprobes on os_sync_file() and os_pwrite_file() and from the
+sys_enter_fdatasync tracepoint filtered to the UML process; the guest side flush
+count is field 11 of /sys/block/ubda/stat.
+ arch/um/drivers/ubd_kern.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 20fc333..bb1d990 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1516,6 +1516,18 @@ void *io_thread(void *arg)
+ 			int i;
+ 
+ 			io_count++;
++
++			/*
++			 * A flush request carries no data descriptors, so the
++			 * loop below would never call do_io() for it and the
++			 * flush would be reported as completed without the
++			 * backing file ever being synced.
++			 */
++			if (req_op(req->req) == REQ_OP_FLUSH) {
++				do_io(req, NULL);
++				continue;
++			}
++
+ 			for (i = 0; !req->error && i < req->desc_cnt; i++)
+ 				do_io(req, &(req->io_desc[i]));
+ 
 -- 
-2.55.0
+2.43.0
 
 
