@@ -4,86 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E29C88E56
-	for <linux-um@archiver.kernel.org>; Sat, 12 Sep 2026 22:39:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F7EC88E53
+	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 11:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=; b=RMXRhK0CGFbFLdouUL2dpbtZiM
-	ukuOu46n3axMa0Nf/Ec480N/kiCQPMXWRTIrDIg3X518isJj04ON9hOrlW3QY8eD3bwJpV8A88Tr2
-	jU8Lg7hBGkVWNPXphB+aCRVYEbU31af4uvAL00jBhLROyGJs8JuKitKHMXEZyqR6gp82h/KwWio6B
-	KnAZAxwMIep00gbRz5Z60YXCjBLpHaeGsF2pqOwu69aWJmUBjfcvdTTk3W6IrlqO2uK/HW5OqFDSq
-	CYUVaGQu1r+85SFJp99WsA1kVVy2a7Zf9a2TvsxRq51L8tuAR6C8uFT0a9QqejfzBrhHEHCfeWuYb
-	/c4H1P2A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CAJtKPFKPGeuK6/4FcUJJhXpcyxiLyxrGeWoP03hjX8=; b=HFk1I1MK0fT4+j
+	tGOJQIle/13qRBbULQP7ylSFfYskuzjNJ1dkGbfk9n+zigJXxQBz+LZwk/1Z0PkYtcIpulFdLTn3N
+	MLFizNawLgquKIjJYWoDUnW4zN+1Utm8XWlqyfpVTE3J0Ncc0u3NwZg2aZE/Ex0GjXe1M7VNE38Kr
+	pbd5TFAuW4b4Xsv4WExuxRJJcEgLAN7vtWUFRBbdHqcipdHWTWHq325dati1xqE4hUzEnZ4wDW5gm
+	cCW9l0oJnfIIhuMuRKYoViCG/mxW7xJMZRsbGUFw2yFvHnfG1kL8NtZbpyHqIWdK5Hj3bmQoxgGuN
+	AM91AJ50e8LYoVPUvLxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x5WNo-00000001GK3-2EQ2;
-	Sat, 12 Sep 2026 22:39:40 +0000
-Received: from mail-qk1-x735.google.com ([2607:f8b0:4864:20::735])
+	id 1x6RNk-000000067BO-3PHw;
+	Tue, 15 Sep 2026 11:31:24 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x5WNl-00000001GJh-07WT
-	for linux-um@lists.infradead.org;
-	Sat, 12 Sep 2026 22:39:38 +0000
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-93a0bf264a4so55955685a.1
-        for <linux-um@lists.infradead.org>; Sat, 12 Sep 2026 15:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789252775; x=1789857575; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=;
-        b=f3pPMSfhJXeVqShqigNaaEUjkGEaVXU5y3oOifVj63Da4ZMoN2y9+is/esEQmgEIwM
-         NBUeylqijkiF8NwgJwQ+ypvDNRfibM0x3f96OWgE4JX1TCigFawJtb+DCxy64agr1oOU
-         /zl0xeSVGlq5In2O+tTLVw1Yu/fTXrvKz+RCIFsNWF7ySFYzp8Qd6UFURUf56cidIBOP
-         HnfSJsG0KJZrF6PWnWMK+F+AjDPqhtpdfV0tGyYhn7/lImOnJOiojtSg6jyq0PZx+iDU
-         q3X4JEnZfUg32BZEiiNn24Yga085qxqbZo9XkmHTpoA0VDsu61IVDf/AfTmQGESxo2wW
-         yyoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1789252775; x=1789857575;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ZOGMTD5LGSJ43nsYgDh0j1HHamIrGJcLYj3gibAvI+U=;
-        b=QWN901nQ6O75kf93A+deLiTR9Cz8TeF7rUtkQRau1ImwDQJbtDWsc4ISz9LLFBp/sl
-         KIqf4jzg1IcodmvCf75M92oPYJVf4CEM8yBQrTkRzSaO00GS9+Y5YxcE/qh4QMIWPnml
-         gH7Keafcz4pNKKtRx3tTJ7W+Ssd9J/4JW9pLtBcR0fTeYI1UEQ54IrgJyOKMqWQg2oFa
-         rbM7x/BG+5S3Nc9E8Q2itmQnuPHBRsxo0owHkEfHrJkEijSGNnLoqNR7lEog+778Lsst
-         fG8ibRzBbRsfsnMyMnMA5BM6ddn7OKbEuVnGrdIlByedllq+WBlDVYSMTDmfQuF3LU2Y
-         aGiA==
-X-Gm-Message-State: AFuF++mVjAstTgGBNXlf+mhTE5DdFergQs1NVkb1hb6w7nAXNpMKJPGX
-	sCkisfVrt8FLV2egNag1kCpyUn+eM5tvkOpaTyjmDsvHQ0z3VU9Hbxja
-X-Gm-Gg: AYBFou0Ao8/UFXrYMXlgzXVZYJulsKYDoGN4GPDHk2PbKHxQ5V6ZvP5G1OZppiOm2wd
-	hB/pMUBvob9Lqg0mfXtDiVk8sDM1rnKjJx77l62lt7erB4n7pD+V/DQVUaHsErFG8nHpbGomHKp
-	d0iAMTCKi3H1LoqZPM4wohXikL1Dx6xgtdYgLFq+GDAmB9xogMHBQI9FlV4nEFDn9d9TU6EJfU4
-	NwzlR9L/4xZ/aTvT0NJk9Z1izMKR7LlyO9ZqpY/M0mTuUbth3C0L3GmrL0VYToUTsS8sxtjsJ/b
-	JrUny9KKPpcF4TuKDPfTBMfgUT9jUMjKui1bsK42LIie3zQI43TYIrDmHyKbLwima0SQibduHf9
-	BXJJPdKDAWgfRHcrylkz7FxYsIEo2ONddPrgU+xz92Jyn3euWxtL5hD75DMi/7q59tKQdoNe+B9
-	6WPANJeeo1fnaO4z962QmSVQ7OTp5jiP39AjPjXZf5617XORVLzQ+uDCxe6IJJbSyYGug1wNTso
-	xVQatsrMjnGGUCjIzcWYTtMuU0T8d/U/EppmyZC6UXg400RbxE/5Za3B5VPiPKRvep3YpGeO8c4
-	R6GDdhxOxwSqKdSYWP8=
-X-Received: by 2002:a05:620a:17a5:b0:93a:12eb:b626 with SMTP id af79cd13be357-93a12ebd99dmr245498185a.4.1789252774908;
-        Sat, 12 Sep 2026 15:39:34 -0700 (PDT)
-Received: from docker-runner-pve5.tail732951.ts.net (bras-base-toroon4524w-grc-16-76-70-76-130.dsl.bell.ca. [76.70.76.130])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-939ebda519bsm537893485a.26.2026.09.12.15.39.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2026 15:39:34 -0700 (PDT)
-From: Mykyta Bozhenko <caudadragonis@gmail.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] um: ubd: perform the flush the block layer asks for
-Date: Sat, 12 Sep 2026 18:39:32 -0400
-Message-ID: <20260912223932.2941631-1-caudadragonis@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	id 1x6RNi-000000067AY-2DIT;
+	Tue, 15 Sep 2026 11:31:22 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1D6A840952;
+	Tue, 15 Sep 2026 11:31:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE7091F000FF;
+	Tue, 15 Sep 2026 11:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789471881;
+	bh=CAJtKPFKPGeuK6/4FcUJJhXpcyxiLyxrGeWoP03hjX8=;
+	h=From:Subject:Date:To:Cc;
+	b=E7tiikKzEgWbcjup28lG7XRiPSUJnQOmsnywq0ncyYHyQqJnTKt0FKdhc261bi9OH
+	 0SlILqTj5qE3J8OEyDI9zqLYPy8psNZLLrF7QOW4W4UQnh0hGPOhQASSGdWdu6CXlB
+	 AinpX1RK+sPUhsT5EBGslz/xjWU79vTK2oG+qEZWWfaWT7bIGAFoh926ly17QWcoIQ
+	 QJCJXpfCSDC9mQet/UenNMcEEu3ND/zogF3V4a6m5lxpAeKrS/RkcQCtt28J4Htm15
+	 ioCbMP38XAAhzbjEh1DggCyILiXq6YLqnQmybNy4sunfucifPnv8TR98hWLnUmAKl0
+	 e5z5SrdGFsCyg==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH RFC POC 00/50] file: handle files on syscall exit
+Date: Tue, 15 Sep 2026 13:30:46 +0200
+Message-Id: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260912_153937_088240_ADBF42E1 
-X-CRM114-Status: GOOD (  21.31  )
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/y2Nyw6CMBBFf4XM2ml4iBG3JG41bo0LykylalrTC
+ moI/24LLu/MveeM4Nlp9rBLRnA8aK+tCSFbJdB2jbkyagoZ8jTfpFVW4tu6OypCx2E5MPZGqy8
+ q+yAmlNuKiqxcy4JSCIinY6U/M/4Mp32dHA81XJaH7+WN21eEx6psPKN0jWm7eIoaoUj8NWLWi
+ EUjYhem6QdT5RjovQAAAA==
+X-Change-ID: 20260915-work-fd-reserve-unify-folded-b89d3154b3d0
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jann Horn <jannh@google.com>, 
+ Jan Kara <jack@suse.cz>, Ingo Molnar <mingo@redhat.com>, 
+ Peter Zijlstra <peterz@infradead.org>, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ Oleg Nesterov <oleg@redhat.com>, linux-alpha@vger.kernel.org, 
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-um@lists.infradead.org, Jens Axboe <axboe@kernel.dk>, 
+ io-uring@vger.kernel.org, netdev@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-gpio@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ bpf@vger.kernel.org, David Airlie <airlied@redhat.com>, 
+ virtualization@lists.linux.dev, kvm@vger.kernel.org, 
+ kexec@lists.infradead.org, linux-hyperv@vger.kernel.org, 
+ "Christian Brauner (Amutable)" <brauner@kernel.org>
+X-Mailer: b4 0.17-dev-db0b7
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11212; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=tghJXnBoCORuUllyVM5kOenrKYvUcLA4//tYvMQ3Gwc=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSt1KmZfVvdXbIn41vJt/oHZ9cvPhHnHXlduWLl4TSB5
+ BsG1wzUO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYSP4+R4aD04rbPT/bfPqP8
+ 9uSeOZ+ErR6x+W14vnzltXsvZhzbPcWOkeGY1wMZvuPZ2+W5eQ7v+q00SZHnk3fSzCfWYt9Z60S
+ 6GPkA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,104 +95,216 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-ubd sets BLK_FEAT_WRITE_CACHE, so the block layer sends it REQ_OP_FLUSH
-requests and, as Documentation/block/writeback_cache_control.rst puts it,
-the driver "needs to handle them". do_io() does implement that: for
-REQ_OP_FLUSH it calls os_sync_file() on the backing file and maps the
-result back into the request.
+Hey,
 
-That branch has been unreachable since commit fc6b6a872dcd ("um: ubd:
-Submit all data segments atomically"), which replaced the single
-per-request do_io() call with a loop over the request's data
-descriptors:
+The idea in this series is old-ish and really never let go of me and so
+I wanted to at least dump it onto the list once even if it's just for
+illustrative purposes.
 
-	-			do_io((*io_req_buffer)[count]);
-	+			for (i = 0; !req->error && i < req->desc_cnt; i++)
-	+				do_io(req, &(req->io_desc[i]));
+I still had parts of an implementation laying around that I started
+montsh ago alongside FD_PREPARE()/FD_ADD(). I sat down and finished it.
 
-A flush carries no data and ubd_submit_request() sets desc_cnt to 0 for
-it, so the loop body never runs. The request is handed back to the block
-layer with error 0, i.e. the flush is reported as completed without the
-backing file ever being synced. Guest fsync(), fdatasync() and journal
-commits return success while the data is only in the host's page cache,
-and because no ordering is enforced either, a host crash can leave the
-image in a state the guest never allowed. The error path is dead too:
-a failing host fdatasync() cannot be reported.
+We've spoken about this idea a few times over the years that we could
+reserve fds and files on a task and then install or a clean them up on
+syscall success or error and get rid of most of the complicated cleanup
+dance that we have in a lot of code. In particular drm. It last came up
+during the Rust file descriptor reservation discussion quite some time
+ago.
 
-Measured on a UML guest with ext4 on ubda, doing 20 writes of 4 KiB each
-followed by fdatasync(), then one fsync() and one directory fsync():
+TL;DR, this lets arch code handle fd install and cleanup. fd_prepare()
+allocates a descriptor like get_unused_fd_flags() does and records it in
+a slot on the task. fd_stage() attaches the file to that slot and
+returns the number.
 
-  before: the guest sees 22 successful flushes, /sys/block/ubda/stat
-          reports 16 completed flush requests, and the UML process issues
-          no fdatasync() on the image at all
-  after:  the same workload results in 43 fdatasync() calls on the image
+When the syscall returns success the exit path installs every staged
+file. When it returns an error it drops the descriptors and the files.
 
-os_pwrite_file() is entered 131 times either way, and e2fsck on the
-resulting image is clean in both cases.
+So a caller reserves, hands the number to userspace whenever it wants,
+creates the file, stages it and returns errors without unwinding
+anything.
 
-Honouring the flush costs what the flush costs. With the image on host
-ext4, 400 iterations of write() plus fdatasync() in the guest take 467 ms
-before and 2007 ms after (medians of five runs). uretprobes on
-os_sync_file() attribute 1.597 s of that difference to time spent inside
-the host's fdatasync(), the remaining data path being unchanged
-(os_pwrite_file(): 19246 calls in both). A 64 MiB sequential write
-followed by a single fsync() goes from 278 ms to 362 ms, due to the
-periodic journal commits. With the image on tmpfs there is no measurable
-difference.
+fd_prepare() returns the slot itself, as a const pointer. The
+preexisting fd_prepare_fd() and fd_prepare_file() give access to the fd
+and file.
 
-Users who prefer the previous speed to durability can disable the cache
-per device:
+get_unused_fd_flags() and fd_install() don't change. A descriptor is
+only reserved where a caller asks for it. And open(), dup() and all
+other syscalls that maximize speed simply use FD_ADD().
 
-  echo "write through" > /sys/block/ubda/queue/write_cache
+The task keeps two slots inline. For SCM_RIGHTS and multi-descriptor
+ioctls a spill array is added. It stick with the task.
 
-That is also cheaper than the unfixed driver, 326 ms for the same 400
-iterations, because the block layer then completes empty flush requests
-without entering the driver at all.
+Reservations belong to the thread and the syscall that made them. A
+child of fork() starts without any. A thread can't unshare its fdtagble
+with outstanding reservations. Kernel threads never return to userspace
+so nothing would commit. Anything left at exit is a bug and gets warned
+about and dropped.
 
-Fixes: fc6b6a872dcd ("um: ubd: Submit all data segments atomically")
-Cc: stable@vger.kernel.org
-Assisted-by: LLM bpftrace
-Signed-off-by: Mykyta Bozhenko <caudadragonis@gmail.com>
+Christian
+
+Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
-Not verified, stated explicitly as the process asks: the change was built and
-exercised for ARCH=um only, on torvalds/master at cba2348ab and on v6.19; no
-other architecture goes through this path. The flush error path, map_error() on
-a failing host fdatasync(), is reachable again but I could not isolate it: the
-block layer fault injection I used fails the data write too, so the EIO the
-guest observes cannot be attributed to the flush alone.
+Christian Brauner (50):
+      file: install files on syscall exit
+      entry: commit fds on syscall exit
+      alpha: commit fds on syscall exit
+      ARC: commit fds on syscall exit
+      ARM: commit fds on syscall exit
+      arm64: commit fds on syscall exit
+      csky: commit fds on syscall exit
+      hexagon: commit fds on syscall exit
+      m68k: commit fds on syscall exit
+      microblaze: commit fds on syscall exit
+      MIPS: commit fds on syscall exit
+      nios2: commit fds on syscall exit
+      openrisc: commit fds on syscall exit
+      parisc: commit fds on syscall exit
+      sh: commit fds on syscall exit
+      sparc: commit fds on syscall exit
+      um: commit fds on syscall exit
+      xtensa: commit fds on syscall exit
+      file: require the syscall exit hook from every architecture
+      file: warn when the descriptor table is unshared with slots
+      io_uring: commit fds per request
+      net: install SCM_RIGHTS descriptors when recvmsg() returns
+      file: open-code receive_fd()'s immediate install
+      file: make FD_ADD() a standalone immediate install
+      file: reimplement FD_PREPARE() on the deferred fd_prepare() path
+      dma-buf: stop unwinding sync file descriptors by hand
+      drm/amdkfd: stop collecting CRIU dma-buf descriptors for a final install
+      drm/msm: install the out-fence descriptor when the ioctl returns
+      drm/virtio: install the out-fence descriptor when the ioctl returns
+      drm/vmwgfx: install the out-fence descriptor when the ioctl returns
+      vfio: install the migration data descriptor when the ioctl returns
+      liveupdate: install the session descriptors when the ioctl returns
+      io_uring/zcrx: install the exported descriptor when the request returns
+      sctp: install the peeloff descriptor when the syscall returns
+      ALSA: compress: install the task descriptors when the ioctl returns
+      nitro_enclaves: install the enclave descriptor when the ioctl returns
+      tpm: vtpm_proxy: install the server descriptor when the ioctl returns
+      perf: stop putting the event descriptor back on failure
+      seccomp: stop putting the listener descriptor back on failure
+      KVM: stop putting descriptors back on failure
+      KVM: guest_memfd: stop putting the descriptor back on failure
+      drm: stop unwinding descriptors by hand
+      drm/amdgpu: stop unwinding the fence descriptor by hand
+      drm/etnaviv: install the out-fence descriptor when the ioctl returns
+      accel/habanalabs: stop putting the dma-buf descriptor back on failure
+      xen/gntdev-dmabuf: stop putting the descriptor back on failure
+      iio: buffer: install the buffer descriptor when the ioctl returns
+      misc: fastrpc: install the dma-buf descriptor when the ioctl returns
+      iommufd: stop putting descriptors back on failure
+      Drivers: hv: mshv: stop putting descriptors back on failure
 
-The numbers above come from a single-CPU guest with 10 ms timer granularity,
-which is why they are medians of five runs rather than percentages. Host side
-counts are from uprobes on os_sync_file() and os_pwrite_file() and from the
-sys_enter_fdatasync tracepoint filtered to the UML process; the guest side flush
-count is field 11 of /sys/block/ubda/stat.
- arch/um/drivers/ubd_kern.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 20fc333..bb1d990 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1516,6 +1516,18 @@ void *io_thread(void *arg)
- 			int i;
- 
- 			io_count++;
-+
-+			/*
-+			 * A flush request carries no data descriptors, so the
-+			 * loop below would never call do_io() for it and the
-+			 * flush would be reported as completed without the
-+			 * backing file ever being synced.
-+			 */
-+			if (req_op(req->req) == REQ_OP_FLUSH) {
-+				do_io(req, NULL);
-+				continue;
-+			}
-+
- 			for (i = 0; !req->error && i < req->desc_cnt; i++)
- 				do_io(req, &(req->io_desc[i]));
- 
--- 
-2.43.0
+ arch/alpha/include/asm/thread_info.h         |   2 +
+ arch/alpha/kernel/entry.S                    |  24 ++-
+ arch/alpha/kernel/ptrace.c                   |   3 +
+ arch/arc/include/asm/thread_info.h           |   2 +
+ arch/arc/kernel/entry.S                      |   5 +
+ arch/arc/kernel/ptrace.c                     |   4 +
+ arch/arm/include/asm/thread_info.h           |   2 +
+ arch/arm/kernel/entry-common.S               |   2 +
+ arch/arm/kernel/ptrace.c                     |   4 +
+ arch/arm64/include/asm/thread_info.h         |   4 +-
+ arch/arm64/kernel/ptrace.c                   |   4 +
+ arch/csky/include/asm/thread_info.h          |   2 +
+ arch/csky/kernel/entry.S                     |   9 +
+ arch/csky/kernel/ptrace.c                    |   4 +
+ arch/hexagon/include/asm/thread_info.h       |   2 +
+ arch/hexagon/kernel/traps.c                  |   4 +
+ arch/m68k/68000/entry.S                      |  10 ++
+ arch/m68k/coldfire/entry.S                   |  12 ++
+ arch/m68k/include/asm/thread_info.h          |   2 +
+ arch/m68k/kernel/entry.S                     |   2 +
+ arch/m68k/kernel/ptrace.c                    |   3 +
+ arch/microblaze/include/asm/thread_info.h    |   5 +-
+ arch/microblaze/kernel/ptrace.c              |   4 +
+ arch/mips/include/asm/thread_info.h          |   5 +-
+ arch/mips/kernel/ptrace.c                    |   4 +
+ arch/nios2/include/asm/thread_info.h         |   2 +
+ arch/nios2/kernel/entry.S                    |   5 +
+ arch/nios2/kernel/ptrace.c                   |   3 +
+ arch/openrisc/include/asm/thread_info.h      |   5 +-
+ arch/openrisc/kernel/entry.S                 |   5 +-
+ arch/openrisc/kernel/ptrace.c                |   4 +
+ arch/parisc/include/asm/thread_info.h        |   2 +
+ arch/parisc/kernel/entry.S                   |  12 ++
+ arch/parisc/kernel/ptrace.c                  |   4 +
+ arch/powerpc/platforms/cell/spufs/inode.c    |  12 +-
+ arch/sh/include/asm/thread_info.h            |  10 +-
+ arch/sh/kernel/entry-common.S                |   8 +-
+ arch/sh/kernel/ptrace_32.c                   |   4 +
+ arch/sparc/include/asm/thread_info_32.h      |   2 +
+ arch/sparc/include/asm/thread_info_64.h      |   9 +-
+ arch/sparc/kernel/entry.S                    |   2 +-
+ arch/sparc/kernel/ptrace_32.c                |   4 +
+ arch/sparc/kernel/ptrace_64.c                |   4 +
+ arch/sparc/kernel/syscalls.S                 |   4 +-
+ arch/um/include/asm/thread_info.h            |   2 +
+ arch/um/kernel/ptrace.c                      |   4 +
+ arch/xtensa/include/asm/thread_info.h        |   2 +
+ arch/xtensa/kernel/entry.S                   |   5 +
+ arch/xtensa/kernel/ptrace.c                  |   4 +
+ drivers/accel/habanalabs/common/memory.c     |  13 +-
+ drivers/char/tpm/tpm_vtpm_proxy.c            |  30 +---
+ drivers/dma-buf/dma-buf.c                    |  33 ++--
+ drivers/dma-buf/sw_sync.c                    |  40 ++---
+ drivers/dma-buf/sync_file.c                  |  52 ++----
+ drivers/gpio/gpiolib-cdev.c                  |  18 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c       |  16 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c     |  67 ++------
+ drivers/gpu/drm/drm_lease.c                  |  20 +--
+ drivers/gpu/drm/drm_prime.c                  |  13 +-
+ drivers/gpu/drm/drm_syncobj.c                |  44 ++---
+ drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c |  14 +-
+ drivers/gpu/drm/msm/msm_gem_submit.c         |  22 +--
+ drivers/gpu/drm/msm/msm_gem_vma.c            |  22 +--
+ drivers/gpu/drm/msm/msm_perfcntr.c           |   6 +-
+ drivers/gpu/drm/virtio/virtgpu_submit.c      |  32 ++--
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c      |  29 ++--
+ drivers/hv/mshv_root_main.c                  |  27 +--
+ drivers/hv/mshv_vtl_main.c                   |  20 +--
+ drivers/iio/industrialio-buffer.c            |  26 +--
+ drivers/iommu/iommufd/eventq.c               |  39 ++---
+ drivers/media/mc/mc-request.c                |   6 +-
+ drivers/misc/fastrpc.c                       |  19 +--
+ drivers/misc/ntsync.c                        |   6 +-
+ drivers/vfio/vfio_main.c                     |  25 +--
+ drivers/virt/nitro_enclaves/ne_misc_dev.c    |  33 ++--
+ drivers/xen/gntdev-dmabuf.c                  |  14 +-
+ fs/eventfd.c                                 |   6 +-
+ fs/eventpoll.c                               |   6 +-
+ fs/exec.c                                    |   3 +
+ fs/file.c                                    | 245 +++++++++++++++++++++++++--
+ fs/namespace.c                               |  12 +-
+ fs/nsfs.c                                    |   6 +-
+ fs/xfs/xfs_handle.c                          |   6 +-
+ include/linux/entry-common.h                 |   8 +-
+ include/linux/file.h                         | 160 +++++------------
+ include/linux/sched.h                        |  21 +++
+ include/linux/thread_info.h                  |   2 +
+ io_uring/io_uring.c                          |  27 +++
+ io_uring/mock_file.c                         |   5 +-
+ io_uring/zcrx.c                              |  25 +--
+ kernel/bpf/bpf_iter.c                        |   6 +-
+ kernel/bpf/token.c                           |   6 +-
+ kernel/events/core.c                         |  31 ++--
+ kernel/exit.c                                |   1 +
+ kernel/fork.c                                |   3 +
+ kernel/liveupdate/luo_core.c                 |  48 ++----
+ kernel/liveupdate/luo_session.c              |  24 +--
+ kernel/seccomp.c                             |  13 +-
+ mm/userfaultfd.c                             |   6 +-
+ net/core/scm.c                               |  13 +-
+ net/handshake/netlink.c                      |  20 ++-
+ net/kcm/kcmsock.c                            |   5 +-
+ net/sctp/socket.c                            |  78 ++++-----
+ sound/core/compress_offload.c                |  24 ++-
+ virt/kvm/guest_memfd.c                       |  20 +--
+ virt/kvm/kvm_main.c                          |  65 +++----
+ 106 files changed, 962 insertions(+), 861 deletions(-)
+---
+base-commit: cee9395acd8043be0644b25c34bfa86623f2b935
+change-id: 20260915-work-fd-reserve-unify-folded-b89d3154b3d0
 
 
