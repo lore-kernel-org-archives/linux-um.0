@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6941C88E53
-	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 11:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553F4C982CA
+	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 11:32:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E/WcE2lGsMFSob/cBMgO+hea6aPl2xaxNOKxSHdhki0=; b=nbFNhspfnEQC/hfwdC6US8qChm
-	LTe4VcgCuy2Cy3um/FFZ3qg72m26V8RxYLGukIIIWU+O7rVvvJjmPu+y73DJtjuv/RFRxoq/qJk5x
-	r5U93sdC0f3+TyQTITRznBuHplszuQHg04BQ2C4CPtJg0EumDdTmdlR6VfTMtIeBsKKSrVftZ8SUN
-	Kn/DSedV3zwAabD0LJpnv3wxUWF7YXX8fFj02WV6SO36ABTLVwvVq3rypXHURqHONnJ9xveEuDBHY
-	d5Bg2uoOPMw6L2m8luqYm779lrzhX+FnFAJxarnpAFT1XttlZDqkm7p/mbhzIWDcHqR7jydQsagiK
-	+6EosHag==;
+	bh=i7wVyaLFDwSh4RsQ7x/yFwVaLvEj62at9uwFUzmPLMc=; b=IPTSrQyGihuvCA3E7mDXqzepCM
+	oYJ+8NXs3ntUhyalZrDpU9SfpF30Md2amFFP9h/VCNchBzeU8Pul/+UwEMSBB3tXUbZattSbCZEvM
+	GhomFMV/3+b3X3qd7Q7zBFAh+JXMxzQOLtQZ2sKv5ytWk+Il8LgplJzMqICahWDp1bP5dV0hUP762
+	IX+s0OVlFB18q9VML9WiLUnzEN3Y9X+gH/Mjq+QaSUN/Mha29Sqsxo+GFc5edAZVSvsMnfyeDMoT3
+	DRriPGEc30xr+MpXp7QqVV1dcfMV7p+aqFhS8rNzfCOXBv23fUmV9NHSQWMi+TyC5PvFbHhxdcV0G
+	YMN0IzMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6ROq-000000068O6-3vw2;
-	Tue, 15 Sep 2026 11:32:32 +0000
+	id 1x6ROs-000000068SE-3Iov;
+	Tue, 15 Sep 2026 11:32:34 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6ROZ-0000000681k-1CTJ;
-	Tue, 15 Sep 2026 11:32:16 +0000
+	id 1x6ROo-000000068Kk-3YH7;
+	Tue, 15 Sep 2026 11:32:30 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9FF69602A8;
-	Tue, 15 Sep 2026 11:32:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD8B1F000FF;
-	Tue, 15 Sep 2026 11:32:06 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 49224600D1;
+	Tue, 15 Sep 2026 11:32:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A80221F000FF;
+	Tue, 15 Sep 2026 11:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789471934;
-	bh=E/WcE2lGsMFSob/cBMgO+hea6aPl2xaxNOKxSHdhki0=;
+	s=k20260515; t=1789471950;
+	bh=i7wVyaLFDwSh4RsQ7x/yFwVaLvEj62at9uwFUzmPLMc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=GUEfB7kz965znZtfpHqb8eIiCiLO6486hnBmkQwRyzaxNwEFt42WOgfKGny2AO9jY
-	 DpqE0IKoYZQ3CDqUbNbcjMdJnHniI4Fwuvms6GgbMB9wf1VAHv7229/U9I1vFe9NJ2
-	 qY36omvqqIoX9NFkJOdvBvJQPo9mZFT+l30lGkj4F5tMWGVWdBHQTO1lqNMxuFrqVO
-	 OfO8kqQ7j1k9tC1TlYJ8bqUqsF+G/mO7jEhf7l0Ip9oOnDoxcn+y9v2WqMllKuuodC
-	 iV25Lg90bMELqmrBnnnzxEgH4HOX9MN+zPjb9ZEZ2BQQYFgld28sSUlqTUgIhK2Mo5
-	 y/yD7KaWeZ/WQ==
+	b=m+K2QXP/zbRGzsTYOiazh6maQXF3AuGZOI8kte5zBpS/uMcEZtnwlKYDvWPSx21mx
+	 7TGqdB2C/asSsMklDxBThdjFd165iUvhBszGEb7vDKiAwqKwu88ALg4R3OQntDPmSy
+	 pL009b1opBUWgVeuBuk7lGh4yrLHaVwvTc34V6si7vaZd9pMcP+QTIh2EpkZPCrPHa
+	 roLy/D8FmA6vUFej8GssEIMuVEW8Xxbjc55QWU2ylDQo6Q1WZPwq27fmmdRMZbmLVP
+	 oJ72BLK/Gp1V/aWXjwbp1rJsiSD2B/wSlHgBuF1q53c4nr7kcTHLIyN7mofScYlI7c
+	 A/WVLIvzUUtlw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Tue, 15 Sep 2026 13:30:53 +0200
-Subject: [PATCH RFC POC 07/50] csky: commit fds on syscall exit
+Date: Tue, 15 Sep 2026 13:30:55 +0200
+Subject: [PATCH RFC POC 09/50] m68k: commit fds on syscall exit
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260915-work-fd-reserve-unify-folded-v1-7-4d5217d6b246@kernel.org>
+Message-Id: <20260915-work-fd-reserve-unify-folded-v1-9-4d5217d6b246@kernel.org>
 References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
 In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
@@ -70,12 +70,12 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jann Horn <jannh@google.com>,
  kexec@lists.infradead.org, linux-hyperv@vger.kernel.org, 
  "Christian Brauner (Amutable)" <brauner@kernel.org>
 X-Mailer: b4 0.17-dev-db0b7
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2976; i=brauner@kernel.org;
- h=from:subject:message-id; bh=a9znqAkO+hvOtZefxwIBQ5T2UBtQYyo8n09NKXNA7dw=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSt1KmReJL5+9/LafuaZn07vvD2NNsTS/r9pju0zTneI
- MsZ4PDocUcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBE4p0Z/vsI/l1WJ+2YWb1+
- rv5bmZs79nw5b7JPKv5J5eJeHt8sXQeG/zUtrlyha6a8POM74Rhn8++6CEYXZZkjm45o/epqCbm
- 3lRkA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4471; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=vs7iz3bKLJG7CXsTvZEBdGx9Li08YdT/8Wd/px3d4TY=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSt1KnprokIqSkKVD/KZ/524Xdnh56o/lnaM35m5YhWv
+ xThf2beUcrCIMbFICumyOLQbhIut5ynYrNRpgbMHFYmkCEMXJwCMJG4VkaGBu1Lkfsvr6ti2m+Q
+ 0zx3V73WWh1tb5Pp3pZGNvef1XwNY2Q4/KqPv1PzYdm70LqORZH7stbOZDNYK+obXGf+cLdIFAc
+ jAA==
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-um@lists.infradead.org
@@ -92,80 +92,118 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add TIF_FD_SLOTS and test it after the untraced system call has
-stored its return value. A task that reserved descriptors joins the
-traced path, where syscall_trace_exit() commits them before audit and
-the ptrace exit stop.
+Add TIF_FD_SLOTS and test it on the untraced return from a system
+call in all three entry paths. A task that reserved descriptors calls
+syscall_trace_leave(), which commits them before the ptrace exit stop.
+The traced paths already end up there.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/csky/include/asm/thread_info.h | 2 ++
- arch/csky/kernel/entry.S            | 9 +++++++++
- arch/csky/kernel/ptrace.c           | 4 ++++
- 3 files changed, 15 insertions(+)
+ arch/m68k/68000/entry.S             | 10 ++++++++++
+ arch/m68k/coldfire/entry.S          | 12 ++++++++++++
+ arch/m68k/include/asm/thread_info.h |  2 ++
+ arch/m68k/kernel/entry.S            |  2 ++
+ arch/m68k/kernel/ptrace.c           |  3 +++
+ 5 files changed, 29 insertions(+)
 
-diff --git a/arch/csky/include/asm/thread_info.h b/arch/csky/include/asm/thread_info.h
-index fdd4f8ad45ac..59109ce64695 100644
---- a/arch/csky/include/asm/thread_info.h
-+++ b/arch/csky/include/asm/thread_info.h
-@@ -61,6 +61,7 @@ static inline struct thread_info *current_thread_info(void)
- #define TIF_SYSCALL_TRACEPOINT	5       /* syscall tracepoint instrumentation */
- #define TIF_SYSCALL_AUDIT	6	/* syscall auditing */
- #define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
-+#define TIF_FD_SLOTS		8	/* syscall prepared descriptors */
- #define TIF_POLLING_NRFLAG	16	/* poll_idle() is TIF_NEED_RESCHED */
- #define TIF_MEMDIE		18      /* is terminating due to OOM killer */
- #define TIF_RESTORE_SIGMASK	20	/* restore signal mask in do_signal() */
-@@ -73,6 +74,7 @@ static inline struct thread_info *current_thread_info(void)
- #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
- #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
- #define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index c257cc415c47..479032af2f2f 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -89,6 +89,16 @@ ENTRY(system_call)
+ 	jbsr	%a0@
+ 	movel	%d0,%sp@(PT_OFF_D0)	/* save the return value*/
+ 
++	/* descriptors reserved by the syscall are committed in syscall_trace_leave */
++	getthreadinfo
++	btst	#(TIF_FD_SLOTS%8),%a2@(TINFO_FLAGS+(31-TIF_FD_SLOTS)/8)
++	jeq	ret_from_exception
++	subql	#4,%sp			/* dummy return address */
++	SAVE_SWITCH_STACK
++	jbsr	syscall_trace_leave
++	RESTORE_SWITCH_STACK
++	addql	#4,%sp
++
+ ret_from_exception:
+ 	btst	#5,%sp@(PT_OFF_SR)	/* check if returning to kernel*/
+ 	jeq	Luser_return		/* if so, skip resched, signals*/
+diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+index 4ea08336e2fb..43e47d4c0018 100644
+--- a/arch/m68k/coldfire/entry.S
++++ b/arch/m68k/coldfire/entry.S
+@@ -78,6 +78,18 @@ ENTRY(system_call)
+ 	movel	%d3,%a0
+ 	jbsr	%a0@
+ 	movel	%d0,%sp@(PT_OFF_D0)	/* save the return value */
++
++	/* descriptors reserved by the syscall are committed in syscall_trace_leave */
++	movel	%sp,%d2			/* get thread_info pointer */
++	andl	#-THREAD_SIZE,%d2	/* at start of kernel stack */
++	movel	%d2,%a0
++	btst	#(TIF_FD_SLOTS%8),%a0@(TINFO_FLAGS+(31-TIF_FD_SLOTS)/8)
++	jeq	ret_from_exception
++	subql	#4,%sp			/* dummy return address */
++	SAVE_SWITCH_STACK
++	jbsr	syscall_trace_leave
++	RESTORE_SWITCH_STACK
++	addql	#4,%sp
+ 	jra	ret_from_exception
+ 1:
+ 	movel	#-ENOSYS,%d2		/* strace needs -ENOSYS in PT_OFF_D0 */
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index 5cb3ace55622..861b6f523bda 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -62,6 +62,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_NOTIFY_RESUME	5	/* callback before returning to user */
+ #define TIF_SIGPENDING		6	/* signal pending */
+ #define TIF_NEED_RESCHED	7	/* rescheduling necessary */
++#define TIF_FD_SLOTS		12	/* syscall prepared descriptors */
+ #define TIF_SECCOMP		13	/* seccomp syscall filtering active */
+ #define TIF_DELAYED_TRACE	14	/* single step a syscall */
+ #define TIF_SYSCALL_TRACE	15	/* syscall trace active */
+@@ -71,6 +72,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
 +#define _TIF_FD_SLOTS		(1 << TIF_FD_SLOTS)
- #define _TIF_UPROBE		(1 << TIF_UPROBE)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
-diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
-index 3261f46f2244..6ff3074b9787 100644
---- a/arch/csky/kernel/entry.S
-+++ b/arch/csky/kernel/entry.S
-@@ -80,6 +80,15 @@ ENTRY(csky_systemcall)
- 	jsr     syscallid
- #endif
- 	stw     a0, (sp, LSAVE_A0)      /* Save return value */
-+	/* descriptors reserved by the syscall are committed in syscall_trace_exit() */
-+	mov     r9, sp
-+	bmaski  r10, THREAD_SHIFT
-+	andn    r9, r10
-+	ldw     r10, (r9, TINFO_FLAGS)
-+	lrw	r9, _TIF_FD_SLOTS
-+	and	r10, r9
-+	cmpnei	r10, 0
-+	bt      1f
- 	jmpi    ret_from_exception
+ #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+ #define _TIF_DELAYED_TRACE	(1 << TIF_DELAYED_TRACE)
+ #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 338b474910f7..9e4471f68165 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -229,6 +229,8 @@ ret_from_syscall:
+ syscall_exit_work:
+ 	btst	#5,%sp@(PT_OFF_SR)	| check if returning to kernel
+ 	bnes	1b			| if so, skip resched, signals
++	btst	#4,%a1@(TINFO_FLAGS+2)	| TIF_FD_SLOTS: commit descriptors
++	jne	do_trace_exit
+ 	lslw	#1,%d0
+ 	jcs	do_trace_exit
+ 	jmi	do_delayed_trace
+diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
+index 4575f6487a9a..07103e6ddeb0 100644
+--- a/arch/m68k/kernel/ptrace.c
++++ b/arch/m68k/kernel/ptrace.c
+@@ -11,6 +11,7 @@
+  */
  
- csky_syscall_trace:
-diff --git a/arch/csky/kernel/ptrace.c b/arch/csky/kernel/ptrace.c
-index ee2867a1576e..b19fef9d396d 100644
---- a/arch/csky/kernel/ptrace.c
-+++ b/arch/csky/kernel/ptrace.c
-@@ -4,6 +4,7 @@
- #include <linux/audit.h>
- #include <linux/elf.h>
- #include <linux/errno.h>
-+#include <linux/file.h>
  #include <linux/kernel.h>
++#include <linux/file.h>
+ #include <linux/sched.h>
+ #include <linux/sched/task_stack.h>
  #include <linux/mm.h>
- #include <linux/ptrace.h>
-@@ -335,6 +336,9 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+@@ -289,6 +290,8 @@ asmlinkage int syscall_trace_enter(void)
  
- asmlinkage void syscall_trace_exit(struct pt_regs *regs)
+ asmlinkage void syscall_trace_leave(void)
  {
 +	if (test_thread_flag(TIF_FD_SLOTS))
-+		fd_slots_commit(regs);
-+
- 	audit_syscall_exit(regs);
- 
++		fd_slots_commit(task_pt_regs(current));
  	if (test_thread_flag(TIF_SYSCALL_TRACE))
+ 		ptrace_report_syscall_exit(task_pt_regs(current), 0);
+ }
 
 -- 
 2.53.0
