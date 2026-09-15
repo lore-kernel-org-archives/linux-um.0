@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA3EC88E7F
-	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 12:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2A8AC88E75
+	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 12:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Cc:To:Subject:
 	From:MIME-Version:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ejtHf7OrVCONiSGbsU0Szkqhw/V3NKRKJBvDExa4qrI=; b=srcw1e4q4YrjcjBMyCd0oWPgGb
-	LzquuEXmQtUTtsz7WGiMcvYNnXlxb3gRkMIUHrudpFcgi6Rz04l6LY0Dv4cVb5xKCVuBD9JZPfT5V
-	feitGOYiudzK22G+pcxidWFdkEMFkYurP+C6MSHqq66NUyXt8cmP5+KvqAsUnFXHJofHY2L0vr/xI
-	RFx7hmxiqrcsBfJYjIongdijKHobZ0xKAX21cvi2jd+cP0Olwl4H92P4nVMGF2ZWjRb0+3ASDCiFS
-	nl6AmySuHjLUwfODngmov+5mzEq0Tsvg61Vc6ueBhfRJX/lpytABB5BHOehbFSWGo269F0lH3tQYJ
-	nOdXFYKw==;
+	bh=QRMZ7mmRdl98Hr0Jzx0dLUsIBC2R/cA4CuoG4//bR+w=; b=WdiESBVTZb7hwZPPLfnVlMJ2hE
+	Jt3cg3i1m6VH1QucaatS6C324gXJbluto3D4knE9HVMKRd4rjEk5XRz8Qf9Q4R36cXsQHaQ2fXoZI
+	FAAdAuh25b3E+4zyc7U0zw6S/Ymb0jg3w5efEmzNQ6uwojSxi3dpWVN+BcIBrttO1jlCVdt2NF+pp
+	XLTDXHqHjWZn+NAtR2KUMpUquf/PQ7YHirZxupjZ8pJbPP2wbET6bsug9ybLHe7+bCbNcr6xGh9Gw
+	hVSSLtlTz0o07Z34xbZxg90tmSG+j9Ofex7Ywpl0ypPlmWCLquTfor/PaLdsSvv2KHYS96sPCRzbv
+	z8/+iEnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6S3v-00000006RDT-1jNW;
-	Tue, 15 Sep 2026 12:14:59 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1x6S42-00000006RMe-1wYI;
+	Tue, 15 Sep 2026 12:15:06 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6S3t-00000006RBY-2XH9;
-	Tue, 15 Sep 2026 12:14:57 +0000
+	id 1x6S3w-00000006REl-1osD;
+	Tue, 15 Sep 2026 12:15:00 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 57C3740450;
+	by tor.source.kernel.org (Postfix) with ESMTP id D5277602C4;
+	Tue, 15 Sep 2026 12:14:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD1B1F00893;
 	Tue, 15 Sep 2026 12:14:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 398E91F000FF;
-	Tue, 15 Sep 2026 12:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789474497;
-	bh=ejtHf7OrVCONiSGbsU0Szkqhw/V3NKRKJBvDExa4qrI=;
+	s=k20260515; t=1789474499;
+	bh=QRMZ7mmRdl98Hr0Jzx0dLUsIBC2R/cA4CuoG4//bR+w=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=SQ3aDU0Q8GsPtoMGWFzUtgXPVhQk5j3tT2hP5/IYPK7pNnGp/W35LdJkurCxq/UDj
-	 jXECYSMyRfHDZKzN98Ln98DAG1rH6aAR4ISmzyGlU1rsDvw5Q93DNzrkBW2qSN7IRC
-	 YJr9cCfLCK65yz/lnkKU0h/88SazD0WGxzlXFRwUnZmmA1pIC11CPHPte6Jw/NVEZ8
-	 jp0yJWYB7+6Cgap52rqfdYHOC0u+j0XckjkUTQa+uZ9aKsrGomUpcl6BdIHpYiyzm/
-	 Rqj2wKLDgmWRUAKCkxgoX9x9LTH43+wakiVHy5v4VFxVPQvMYbRVfHWWmjs+K15B5a
-	 6EBFBzK+SsdcQ==
+	b=XPGWfVIhJ/wSL6Jd1KV8QYkaPXQevpxTo5YKyPKDIrxlw9MIHMHo5cZnoqRuYBPzW
+	 YAB/BBxKyr04OnAz1fXuFsMiapL3vJK/RuyN3woNJu65a7GotPewX23h9YHqDCxQPk
+	 2CWF6CYq7PbvZJuYpGBlpn9YbalxW+tFPh2E8PMbxAki0JSstQ2YNM5+QlpENVA4OR
+	 4S8OeAn9BG92ITePDtvvACim8Vy9KB2TGUTfda+kW7PhqaNdVyqOBZvhFMBFu6IU+R
+	 cXVP4LUVIrc7LmnOQ3vKo+sFLx/fVgoMs3/93rCsxZ1sqN6D06XnUMiUCyDHo1Jf2m
+	 gcjyzu+b66/Nw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC POC 34/50] sctp: install the peeloff descriptor when
- the syscall returns
+Subject: Re: [PATCH RFC POC 37/50] tpm: vtpm_proxy: install the server
+ descriptor when the ioctl returns
 To: "Linus Torvalds" <torvalds@linux-foundation.org>, "Christian Brauner" <brauner@kernel.org>
-Cc: "Peter Zijlstra" <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, "Eugenio
- Perez" <eperezma@redhat.com>, io-uring@vger.kernel.org, linux-mm@kvack.org, linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org, linux-parisc@vger.kernel.org, virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRhYmxlKQ==?= <brauner@kernel.org>, kexec@lists.infradead.org, linux-arm-msm@vger.kernel.org, "Ingo
- Molnar" <mingo@redhat.com>, "Jann Horn" <jannh@google.com>, dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org, "Jan
- Kara" <jack@suse.cz>, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linux-openrisc@vger.kernel.org, "Oleg
- Nesterov" <oleg@redhat.com>, "Jens Axboe" <axboe@kernel.dk>, "Michael S.
- Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, kvm@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org, "David
- Airlie" <airlied@redhat.com>, sparclinux@vger.kernel.org, linux-gpio@vger.kernel.org, linux-csky@vger.kernel.org
-In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-34-4d5217d6b246@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, "Alexander Viro" <viro@zeniv.linux.org.uk>, "Peter
+ Zijlstra" <peterz@infradead.org>, linux-arm-kernel@lists.infradead.org, virtualization@lists.linux.dev, bpf@vger.kernel.org, "Oleg
+ Nesterov" <oleg@redhat.com>, "Jens Axboe" <axboe@kernel.dk>, "Eugenio Perez" <eperezma@redhat.com>, kexec@lists.infradead.org, linux-openrisc@vger.kernel.org, linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org, linux-hyperv@vger.kernel.org, "Jan
+ Kara" <jack@suse.cz>, "David Airlie" <airlied@redhat.com>, linux-kernel@vger.kernel.org, io-uring@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-alpha@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-mips@vger.kernel.org, "Jann
+ Horn" <jannh@google.com>, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+ =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRhYmxlKQ==?= <brauner@kernel.org>, linux-gpio@vger.kernel.org, "Ingo
+ Molnar" <mingo@redhat.com>, linux-arm-msm@vger.kernel.org, linux-parisc@vger.kernel.org, "Michael
+ S. Tsirkin" <mst@redhat.com>
+In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-37-4d5217d6b246@kernel.org>
 References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
- <20260915-work-fd-reserve-unify-folded-v1-34-4d5217d6b246@kernel.org>
+ <20260915-work-fd-reserve-unify-folded-v1-37-4d5217d6b246@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 15 Sep 2026 12:14:54 +0000
-Message-Id: <20260915121455.398E91F000FF@smtp.kernel.org>
+Date: Tue, 15 Sep 2026 12:14:57 +0000
+Message-Id: <20260915121457.BBD1B1F00893@smtp.kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,6 +83,6 @@ Sashiko has reviewed this patch and found no issues. It looks great!
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260915-work-fd-re=
-serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D34
+serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D37
 
 
