@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73F14C88E7B
-	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 12:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95683C88E53
+	for <linux-um@archiver.kernel.org>; Tue, 15 Sep 2026 12:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Cc:To:Subject:
 	From:MIME-Version:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UYzMflbMuPv9H/GLK1g6J9E5AwtdI+O/+Pdc0wsdGlQ=; b=CcqerMpYV1toAPRc8oh7briYIB
-	re4usYeg7zq8CILetxpZCE0v0avQpjew+kEy4J8VBKU7+aTLQDfuVllBsmvfM9vpqS62ytfCXjCWS
-	Az7j3aorgEQCKy98Jai6yH2KF6ofC2xc5SggA3irlMs5g1abu5SVzBBsnxXDRkoJdD7Mvi7a1dMSC
-	s4zfCGjHeWAXbirwgtbsYkO/F5N08YThrrAJKvDlLLK+CrfNeG9Jbe/jUVuhbAQRLl6EG1oSvJc/0
-	7vBjdyPWSNSBB2o5jnmO0qGCaFKEiGElIcWsux0f0QXua+fOvVU8wgNn6Kh89+Qp3Hz3FqGdBrjUx
-	x5PFxx9A==;
+	bh=zv1rNZvSCHkzISCnzIgvhR1XdclekSPPoj8rLv8Qezg=; b=mlsVDivyAvSv8S4XWxmTG0FgVH
+	kQCb5fCeNLA6/JyyA+6O0454gSYQCoYHgw70X4RhNGsTKlMIGV17hbaUyUd1ZnRW0mJdj0c0xS7jj
+	wEDwDkMPuHHtBABc8zCwvlmhUsjhkdOry5tL+RZ8HY6hcP4KVjTXXAwX/n6aE0hPBMFOUGa3C0X9E
+	yJ+RM8zxtlL501/WFXgs4D/9v5wYGQS1aqeaGU8moCr4Iq21w3rKwMrhxYXwyxcbkXUlv6+wLca9+
+	rATtUUV7CEa5hwNPdbVDjZXry9fSBG/TtFLcE/RdQc4L0/z0CSG1Mqvd2Tr/Yh0GaEp4WRUvzEf0Z
+	tCJaJNAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Ryh-00000006P5V-3RnZ;
-	Tue, 15 Sep 2026 12:09:35 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x6Ryy-00000006PEH-1EFA;
+	Tue, 15 Sep 2026 12:09:52 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x6Ryg-00000006P46-15tu;
-	Tue, 15 Sep 2026 12:09:34 +0000
+	id 1x6Ryx-00000006PD4-1h4z;
+	Tue, 15 Sep 2026 12:09:51 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id E3EE84096B;
-	Tue, 15 Sep 2026 12:09:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED881F000FF;
-	Tue, 15 Sep 2026 12:09:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CF82C600D1;
+	Tue, 15 Sep 2026 12:09:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464481F000FF;
+	Tue, 15 Sep 2026 12:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789474173;
-	bh=UYzMflbMuPv9H/GLK1g6J9E5AwtdI+O/+Pdc0wsdGlQ=;
+	s=k20260515; t=1789474190;
+	bh=zv1rNZvSCHkzISCnzIgvhR1XdclekSPPoj8rLv8Qezg=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=jH8MeFUt+Ca90GijJLK5hVAYB41iBAVkHXhYxlgSQZsl+pyWmTzGkAYZ9RXqYBDbG
-	 rKZCB6pYmFyP5M1bk4Irpshq50uz2b5QkCnTtwMupHWy+yvoXlLhHmQpzBrkPJbweM
-	 DOJFaJK8kjjNY5ZP2iw190s62x+TzNavmrmqQj5YP/0STVvoLNJYJafDKfgf5ojLUP
-	 LuZmhYwmQV123gJgzbNrAwrP+hPwOyQBF3mK6DppyLtpzOvR8DpMm18peMtTYKiuPd
-	 RpvHgbF2jJw+E059MS7iRdmviODCKeE/Aiqyn0EbGm/VrErx286rEzup2WusNoTIC3
-	 +JC3oUetgOKKg==
+	b=a4ZZV63EloWFTnOUlHK58XwOK2rkeCsu03ufhBV72Tiipl5qWiGg8pKw75jRnalat
+	 Px+Ej4QbTLpchvWen5UHVg+abfR3qMIoHWKRq5zOfC+6fvUdhpGBml50Plsl14BxoA
+	 MD9L1UkPG2s8tttZuNhCrGp0Ac838MyFzPadcw7MIZBEqZ9CQQXdlYMZFCITTIwQVR
+	 e8ZVbA+QeVGcVPqWoOLbEKnwhY2HpmkZP6Db2SJHGUaetI9dgl3FBXgJQQpNHkGFqv
+	 7oyl/HjPvr3DAOtUTzbk2i14RAaCiMZAvTqJbij4737kik3jJY1RQy1e4vJFFsF6gN
+	 uDBgNLmQTLN+w==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC POC 33/50] io_uring/zcrx: install the exported
- descriptor when the request returns
-To: "Christian Brauner" <brauner@kernel.org>, "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRhYmxlKQ==?= <brauner@kernel.org>, "Ingo
- Molnar" <mingo@redhat.com>, "Peter Zijlstra" <peterz@infradead.org>, sparclinux@vger.kernel.org, linux-sh@vger.kernel.org, kvm@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, io-uring@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-parisc@vger.kernel.org, "Oleg
- Nesterov" <oleg@redhat.com>, linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev, linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, "Michael
- S. Tsirkin" <mst@redhat.com>, linux-gpio@vger.kernel.org, "Eugenio Perez" <eperezma@redhat.com>, linux-csky@vger.kernel.org, "Jann
- Horn" <jannh@google.com>, linux-um@lists.infradead.org, "Jens Axboe" <axboe@kernel.dk>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kexec@lists.infradead.org, linux-arm-msm@vger.kernel.org, "Jan
- Kara" <jack@suse.cz>, linux-mips@vger.kernel.org, "Alexander Viro" <viro@zeniv.linux.org.uk>, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, "David
- Airlie" <airlied@redhat.com>, linux-snps-arc@lists.infradead.org, linux-alpha@vger.kernel.org
-In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-33-4d5217d6b246@kernel.org>
+Subject: Re: [PATCH RFC POC 32/50] liveupdate: install the session
+ descriptors when the ioctl returns
+To: "Linus Torvalds" <torvalds@linux-foundation.org>, "Christian Brauner" <brauner@kernel.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, "Jan Kara" <jack@suse.cz>, linux-gpio@vger.kernel.org, "Oleg
+ Nesterov" <oleg@redhat.com>, io-uring@vger.kernel.org, bpf@vger.kernel.org, linux-openrisc@vger.kernel.org, kexec@lists.infradead.org, "Eugenio
+ Perez" <eperezma@redhat.com>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, "Ingo
+ Molnar" <mingo@redhat.com>, "Peter Zijlstra" <peterz@infradead.org>, "Jann
+ Horn" <jannh@google.com>, linux-hexagon@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org, linux-um@lists.infradead.org, kvm@vger.kernel.org, "Jens
+ Axboe" <axboe@kernel.dk>, virtualization@lists.linux.dev, linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org, "David
+ Airlie" <airlied@redhat.com>, =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRh?=
+ =?utf-8?b?YmxlKQ==?= <brauner@kernel.org>, linux-parisc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org, linux-csky@vger.kernel.org, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>
+In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-32-4d5217d6b246@kernel.org>
 References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
- <20260915-work-fd-reserve-unify-folded-v1-33-4d5217d6b246@kernel.org>
+ <20260915-work-fd-reserve-unify-folded-v1-32-4d5217d6b246@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 15 Sep 2026 12:09:31 +0000
-Message-Id: <20260915120932.0ED881F000FF@smtp.kernel.org>
+Date: Tue, 15 Sep 2026 12:09:48 +0000
+Message-Id: <20260915120949.464481F000FF@smtp.kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,6 +84,6 @@ Sashiko has reviewed this patch and found no issues. It looks great!
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260915-work-fd-re=
-serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D33
+serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D32
 
 
