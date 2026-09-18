@@ -4,114 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A494C982D0
-	for <linux-um@archiver.kernel.org>; Thu, 17 Sep 2026 18:21:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E969AC982D2
+	for <linux-um@archiver.kernel.org>; Fri, 18 Sep 2026 03:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zeUanOFQMGLva+Wv/HlVlWxsHp1h2Rik1mRUDrRwu58=; b=RPv+ax7K6P2hY0DnjkyCQzFuJg
-	Q7lJdDh5aKl0edX6nIYrN6HF2mhumxwA2JqFKo0fjjifKxLP/3r9BMqoCygqdM2fcsTJneLGyo0I9
-	gjP4cJQ294ZLbbvNEH1DtQUXd0z4BRGcBU2NiWkQHR3lZJ7GzCfbBi0vx4fzowY+UcdL9w+IiG0H1
-	DslHBIDtTjkh9IBkOXfpJ1VE4cWwZqu3NSTDWkvXLk/Kfv4CT5sq9t44cvMIRpYDgEsZi2vRUt7TN
-	POLAQBqFWIUknxcXJxH9trKSJKBJ/vqVME17SCREMRCALRWGMS1tElPBYD6WcgUwVlm+yGSWbzt8o
-	+aIvRTzg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=4Et5Apl87bd7FEQsrX3qveqLki9XrUVLSHeowq2WvHY=; b=fA4MNYTV2qqZV28Dy6l0aOF7t+
+	bxZtQtps42KQFctookU56K4UaATzeWAdfyYJ1WCyKxVp4fnww32CzOvS0/WpEfjHgsa+tBAw01JB3
+	OV1HQ6Bs9Z24wLCMtaT9Hcl1OO5KlGWOJ9QHBBD6bbawsnUGb4kqIC7fsUPs2Tzdefqkf0nAtNsCN
+	twiCld+989tLRp+owyZngg+sUv+aDKVzXh/G3tt+MMS7qHQZSHBsu7pHq8t88H1AdJVnc3sEiXi6N
+	HPwlp69kSsrkT+7icmvi/NnPl7Qkw3F8Fqu3yRlK8ZvDPyT3465RkKkjDhK1Q6R0zLRGUzBX8jkbP
+	1znD9gMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7GjM-0000000CDPn-1elt;
-	Thu, 17 Sep 2026 18:21:08 +0000
-Received: from mail-wm2-x10.google.com ([2a00:1450:4864:31::10])
+	id 1x7P78-0000000DNWH-2iHD;
+	Fri, 18 Sep 2026 03:18:14 +0000
+Received: from mail-pj2-x0a.google.com ([2607:f8b0:4864:39::a])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x7GjK-0000000CDOK-13zt
+	id 1x7P75-0000000DNVm-1JVV
 	for linux-um@lists.infradead.org;
-	Thu, 17 Sep 2026 18:21:07 +0000
-Received: by mail-wm2-x10.google.com with SMTP id 5b1f17b1804b1-49e620fa473so7048615e9.1
-        for <linux-um@lists.infradead.org>; Thu, 17 Sep 2026 11:21:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1789669263; cv=none;
-        d=google.com; s=arc-20260327;
-        b=eYH1U3pfu+PHvuzxTmNBUFkkc9rIJ7wXoo+4woqanCibmekQdnZwEcqChE0Ff3IIVj
-         5vNRa61WQ56aVbz+DFo98icteYmLzdMmkNHVVrM698J0IGVeSMvYyn85SO5p7M9G9gNw
-         xh7vqHwCWWFmdKMqtJjV7+wrw2pLo/+7BAvRxEn6YuaYjpiT3zWiYoFtjvqnP7sQc0gP
-         g+cK0JwiOu9OSh1evyDYa0OpnwXk3fBI/2Jbn6VpOpiky/M1MA58LQNDb7jaOScnSP0z
-         SQdky2IMwzVb9oQipge3XVexHYSj6w5MgdDcx0WbkNUkEH06pYmST3ncLARyWWgqfyHh
-         HpPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=zeUanOFQMGLva+Wv/HlVlWxsHp1h2Rik1mRUDrRwu58=;
-        fh=er4tOpLl+FfEHTafjhdJJyuhEC46atcKmeUfjcmtOvg=;
-        b=EfT+4aRjdCRfbnPEAQEwqL5PKg3CjxqQnZQYIjahFBx/0elnZ20NuNwUKulNz+FsTM
-         I4uCHvuzh+2Y03TXz3YP8YwEtDDWvviLEfli5blAcxoeNv54U+WjPtz/iOlAu/uDLlvj
-         OfHT9SMOqDcaxYQX/lnUz3/oMmJrs/b3sUkODGgX7OPLR4M5C5REs3KqoBpUzs+ttGN9
-         +OXCXqOIwc6eFyiLWqzDg7w7GuyZ2cYxGuWrKaiXkKjRkqDw/H+8H34k3xAL4ZfMUJGA
-         u17jbN1v/8/jqP4QtJN21AKh/DWYUTP9jyRcheLvdH3PQqh0NbkaCm9kNe6r0uvGnYTZ
-         D62Q==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	Fri, 18 Sep 2026 03:18:12 +0000
+Received: by mail-pj2-x0a.google.com with SMTP id d9443c01a7336-2cf5e516e67so1633835ad.1
+        for <linux-um@lists.infradead.org>; Thu, 17 Sep 2026 20:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1789669263; x=1790274063; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=zeUanOFQMGLva+Wv/HlVlWxsHp1h2Rik1mRUDrRwu58=;
-        b=bgy/2SaX4DmaRUzugDPUWRVcqO8XT4H7MfPMig2miqAcgTluZbvcZX3Z6s74Vulrc/
-         GhQKy8IxvOoAbnAuJeL7a5Du8uw4yhO7t37tT3DI8wMkRbjPn8iCEmyN3c13qhTPXEw5
-         hnAS+YM8wrPnhldVEasHKJ018b7BW5YvCfVuM7AtWZcueT4JingE9y9B9pPrW9xWyVff
-         k0zJOWToj/lVpvUQoaY4gaM/Hs/zvyZtQMrCor7ZsIVIO/iKyBt/SRStmggd/B+Nj0NG
-         vb80QJJ2VX1lrvxz2SaOt1C+efb/t6JCoaV7VtsjRWgsWel7FcgDraHcRk6AKxYnvgKD
-         WZWg==
+        d=gmail.com; s=20251104; t=1789701490; x=1790306290; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=4Et5Apl87bd7FEQsrX3qveqLki9XrUVLSHeowq2WvHY=;
+        b=AKDVB5+drXyBBK+0bqJUZGDQEfm5cX3aWP1/g9LEmRt4W8GqII1qMR0eAklv2QQg/t
+         pAeK5ByqRcVlSI5QUrRgPArl9wD8UaRCe01VoS9QzSgqSKFLwLVdmSLI9vV4lpK4qEO7
+         AQdHHVdXxxQetsMkj41YcWXLpdVTDxRmRCQpt2kTFNA2yeelFdmFyjX2c8TaW3zlCkPy
+         HitAwmRkkNbS4nTIzITfgfQvEjcx3xDxZ6lhucMaNg2dtGctC4ZxTwfTdHUo2ks8jxgd
+         dIRnRG48AwyLN4DZPD88R2y6tIdHe+RWOlIaA7d5Ap00LaX3j+0wwh4z5KD/SrjcT2to
+         ZZ6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789669263; x=1790274063;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=zeUanOFQMGLva+Wv/HlVlWxsHp1h2Rik1mRUDrRwu58=;
-        b=Ct1hxrsZg3kDSRLwYI8IXcdFBsO1H8ORULuUFqUxseEF0eDoFRnsoGs09MB6mNDNEo
-         lSqoJECWZMCgyXKFKmflMGuI62j3AgEIbv3R0BwlDtumER5wi55EdARI+SCbdriX6lPi
-         ZzBoyJsf8Fe1xLerxG9xFbNrBxMz70MezfTik6MsZhWghEfwdBydfPKTiK+/Q3yv5AnK
-         KwoJbJudW90uaypdWkPRCB9/VvSow1jNHo4PEA1u2sveCPA/Qc2RY9QU2xhL4yYRDXxF
-         DS9Ee/dYKAg1JBVzoRSDHz2in6m57W+MQe7PxRX2YmNri46VBCQM5cOLsbViLsCShNUH
-         n5mw==
-X-Forwarded-Encrypted: i=1; AKwUvBxGxhGrkxFaHZ+zBj9zxDvyS9cFWBX6DfhHcQDl+Mn18A1pR7OkSNQJcj2RmyptFBKPj6YCK7mnwQ==@lists.infradead.org
-X-Gm-Message-State: AFuF++l6PJkbETeIBR0B1LSH/fvY//2weP2glPuyV7kL4m8Chg3uttU3
-	biLwAnApLKRdPmU+ZkQZYdbX11FDcw5uHdtSWm3qQpic60FuAMPy62lqELiTsB0ZZ2N0TfAZqu/
-	2w/McOuvZO3udqH+sDuu1LQC2fuHpgwCXcD6A/GK2
-X-Gm-Gg: AYBFou2/bkn9omsemvZDl31iZ8oG+/sSX6v0qrGzF9Hjl9kJZdNbdpAJP4NbGXW76QQ
-	PrtuVyPR0IbUfS747WYJfQrwt0rO1q0pqEt63b+k4yOP94kp5qG71S9tfdTuGJ3bOJADvY7126x
-	oYsrWBLN+39ihxXsjiRxIZaRhFtyvO0hq1tGuAUiNc9CIJwyMrAjUy/dYRfPwF3aGF4FZa0bUgD
-	0cnf+7lvHu5gJU6PGOkFKGtdkF+sxHgjCIOwOfA4gb0uAQhPbQ5DpX5N2bxVjuk4LcYs/hpy5Z9
-	Dl8cUxGsw+W/uRk8k4SFs7Ksuwn9kxv1vYbhgbRimwAlBX+AjyWMtzwV15z6uspR8O4uT2XlB0d
-	uV+COIhuD5aGLTbhuYQQAF3vWO2drUSkKafGCyjGxxqj4xtbwi7dnBySgzCk9W7sN77weAg==
-X-Received: by 2002:a05:600c:4708:b0:49d:93c:d903 with SMTP id
- 5b1f17b1804b1-49eb7322de3mr97138325e9.20.1789669263065; Thu, 17 Sep 2026
- 11:21:03 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1789701490; x=1790306290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4Et5Apl87bd7FEQsrX3qveqLki9XrUVLSHeowq2WvHY=;
+        b=IHOvlhebZSqPdN8K4KywjhIfRhambsMeV23Ssr7kJ9ODelsEKnvVe0OvXPjJxHMjOs
+         4d37WIKgAYsEBG5Md4oufPULllmlwLC+t3Xz/1D2NXn/m5swku94GXpywsgUwdK3sJyQ
+         qCYnF1eaqxj8h3tv65awCJHreIl86SMSOx884nvmUaCM2Hy9Dqs9eM6pbu13uK08n2x7
+         5Y9C+ZYreSiNK3zO6ESdjLlg6c3Z3FQ3Tu16jqeSBC742Zr9o1jj8abI3DKCeAkYAcnA
+         8cuNZsGYMrTUM290epTEO7dCRxL+1Ay2EqLUpKgynapO3JX/sME7RJUSxZ9IecITfYRG
+         vuDw==
+X-Forwarded-Encrypted: i=1; AKwUvBxZdbAz5azOJyjriUfAIqCEaoCxmfy+egHNwbjHDLYM7/MHak20NGDOOtPYqOoZJofDsl7rmyaU3g==@lists.infradead.org
+X-Gm-Message-State: AFuF++mz1QsBuLNHJU+IAbpZu+rG2Sny3Eo5XZxBAHe3pGLbtuUAj4Lm
+	Cg5OZcNK3Yq5jJ3zPIe/NUg7DKeVMuvUcXT3wUecv9HQm0bxhd3lPp9c
+X-Gm-Gg: AYBFou1E3C1Z/BQbQOqJjM6LsTvGVehaA2j2VxynR3N3gzL0oCCJY6mhpyj73c+hgTZ
+	x/KQVfyXZoSrR5CRDGz0Kpzwantft2TOVww603Isj65LPVlssGiMBfVdubS+iEcez5YCKGGlHDG
+	1wZdLJ1cSsTbezb/mJRk7IH0enKuGlED3MrPToGqOtbAH0EBco3qPjYoOK3aQR7QlfDUjPyW1kT
+	Uf0X0QOW+RJFb6CLrBxNRv31KViZ3oHpFRUvr7iuBsHq9Cjok/gLtCXAR9cUIxnl3gsRe+T5JqP
+	4WINchR7ZN+mWucV6b16sXOcX8OkaS1GiG08gk9EMNAtffItcyPWlc59Es/zzbbFLt7wf2WvKuB
+	tHnyFeB7x9Mjn/SjMa+SHuc7AZGYr3/yqHni8f+1/+5vHSzvZ2rfGCgCuMa3H0lycb7Mxv8U5o7
+	9PbugqE7oWIAgiWGuijs9Ci20YbWLucl/wInySCucCn2qMOpzey3FrE9BXZF4PEicKd8d3ay0Sr
+	dMeBpzjhxB9JkZgPZSwJylRID1M+EuBBv0I2lgucFie9ZTkitdYV/pCmGBqghcpyLAqYZqxWK2J
+	0x3V/bfu90JZbC8drlnOTFD7rNV1M8F0CXeQ47Th+hMg7z6ZE4Dilq5zl65SFq5L7Q==
+X-Received: by 2002:a05:6a20:b78a:b0:3d3:ae40:51e8 with SMTP id adf61e73a8af0-3dd8c575882mr2359443637.28.1789701490373;
+        Thu, 17 Sep 2026 20:18:10 -0700 (PDT)
+Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33c286d8633sm451318eec.7.2026.09.17.20.18.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2026 20:18:10 -0700 (PDT)
+From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>,
+	linux-um@lists.infradead.org
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Subject: [PATCH] x86/um: remove unused <asm/required-features.h> header
+Date: Thu, 17 Sep 2026 20:18:01 -0700
+Message-ID: <20260918031807.449816-1-enelsonmoore@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20260821-ptrace_uapi-v1-1-3de8638a29f2@google.com>
- <CAKwvOdkCGEYWnyJtWT=jArXkA47X==G0PU4UNV=s8htpA3Dg6g@mail.gmail.com> <aphc5Xf0HU0SWcTI@redhat.com>
-In-Reply-To: <aphc5Xf0HU0SWcTI@redhat.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Thu, 17 Sep 2026 11:20:50 -0700
-X-Gm-Features: AcwNN1Wnnc2Ja2BVU5SbTKTHMtdnYNybRfE_8sC9RSapHxQS6CIO6M07Qcg-v4o
-Message-ID: <CAKwvOdkQ1OL8Uu+wBO-RtVr_sPTWJBYpM9PEDcec8CvLF64FdQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: uapi: ptrace: guard register offset macros with
- __ASSEMBLER__ or __FRAME_OFFSETS
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Elliott Hughes <enh@google.com>, linux-kernel@vger.kernel.org, 
-	linux-um@lists.infradead.org, llvm@lists.linux.dev, 
-	Bill Wendling <morbo@google.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Justin Stitt <justinstitt@google.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260917_112106_322275_813CB1C7 
-X-CRM114-Status: GOOD (  23.04  )
+X-CRM114-CacheID: sfid-20260917_201811_372916_B0883A7E 
+X-CRM114-Status: UNSURE (   8.03  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,64 +106,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 2, 2026 at 10:29=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
-te:
->
-> On 09/01, Nick Desaulniers wrote:
-> >
-> > On Fri, Aug 21, 2026 at 3:46=E2=80=AFPM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > The register offset macros in <asm/ptrace-abi.h> are guarded by
-> > > `defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)` for 64-bit, but
-> > > were left unguarded for 32-bit. This causes havoc for userspace that
-> > > happens to use identifiers colliding with these short macro names
-> > > (e.g., EBX, ECX, EAX, DS, ES, FS, GS, CS, SS). Without this guard,
-> > > userspace is forced to be super extra careful with include ordering t=
-o
-> > > minimize the chance of collision.
-> > >
-> > > Wrap both the 32-bit and 64-bit register definitions under
-> > > `#if defined(__ASSEMBLER__) || defined(__FRAME_OFFSETS)`, and ensure
-> > > User-Mode Linux (UML) defines `__FRAME_OFFSETS` for 32-bit as well.
-> > >
-> > > Assisted-by: Gemini
-> > > Link: https://github.com/llvm/llvm-project/issues/217413
-> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >
-> > + enh (who pulled this into android for testing)
-> >
-> > Oleg, can I get an ack/nack here?
->
-> Oh... there is a little problem, I don't understand the usage of
-> (magic to me) __FRAME_OFFSETS ;)
+arch/x86/um/asm/required-features.h only existed to satisfy
+dependencies on the non-UML x86 header of the same name, which was
+removed in commit 8f97566c8a81 ("x86/cpufeatures: Remove
+{disabled,required}-features.h"). Remove it.
 
-Yeah, my Assisted by tag is from asking Gemini to triple check my
-patch before posting, and it pointing out to me from a local review:
-"did you intend to break the arch/x86/um/ C uses of these macro
-defines?"  So I'm just matching an existing pattern in arch/x86/um/
-for 64b with the __FRAME_OFFSETS parts of this patch.
+Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+---
+ arch/x86/um/asm/required-features.h | 9 ---------
+ 1 file changed, 9 deletions(-)
+ delete mode 100644 arch/x86/um/asm/required-features.h
 
-The patch started off as "why are the 64b macros behind the
-__ASSEMBLER__ preprocessor guards, but not the 32b ones?"  I went back
-through the pre-git history tree, and FWICT, those macros have always
-been guarded for 64b, since the introduction of x86_64 support itself.
-Dunno if anyone remembers anymore _why_ the 32b macro defines don't
-have that guard (chesterton's fence?), but to me, IMO, it looks like a
-mistake.
+diff --git a/arch/x86/um/asm/required-features.h b/arch/x86/um/asm/required-features.h
+deleted file mode 100644
+index dfb967b2d2f3..000000000000
+--- a/arch/x86/um/asm/required-features.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#ifndef __UM_REQUIRED_FEATURES_H
+-#define __UM_REQUIRED_FEATURES_H
+-
+-/*
+- * Nothing to see, just need something for the i386 and x86_64 asm
+- * headers to include.
+- */
+-
+-#endif
+-- 
+2.43.0
 
-Hence this patch.  PTAL
-
->
-> > Or someone who knows better the
-> > history of UAPI headers?
->
-> Certainly not me....
->
-> OK. I'll try to read this patch tomorrow with the clear head after sleep.
-
-Thanks for taking a look.
---=20
-Thanks,
-~Nick Desaulniers
 
