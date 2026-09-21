@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1C9C982ED
-	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 22:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07B4DC982ED
+	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 22:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AEt+ciqD7T2EQYKNoKayyfuhYvhsmv+e842rE5yabjs=; b=JQ+vXqsMuqBRNNwpdHH+R+3ZKi
-	A2JXHIfE5XU+kCMHL6oW3F+rmz0g8MpTacRhNEHs7+NX0eFjB4seBQuL7X55QH8FDdpXq1qfX2JbV
-	Ch8qqSzEL2WzRLUOYO6ij76c6lBx8N7sHFG0CA3wxw4byGoTVFJ7/JW/F3bVlH2C7IoE/GYaEf7Vl
-	XNZzf7ZgkVGItCS9hMRmG9f76iMuZ37VRTsxS6oCo2ieXdM3b2y2wmIFI5JMjNoMdj+ItmsTT+Ncu
-	/UFtBLX9mkg3L2obHNC0Rwd1CryKvywsvYLxs2ZWuJ8uAqb0vjnttgTo5fAfp5LwPXN5nkKLwbsnC
-	eQVOGtPQ==;
+	bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=; b=ifx6E94tYtR/Z4EXbu4ZuupERh
+	uKZXgqF2d5mvpLuZy1gdMWIRmlCbGiaC5f5JqlHSwUKrxxjvTdLYUD+lraIFmq5QqU2Sn/XLQeO6W
+	mfgd3qFz7XJbP+lM1ylc0GgW7wP6Qm2BN4sOF31cdw0th5MKGPJYcY4ShHVnqYzkcfeE0NAj3Tvq+
+	YiMrYKnUM4wNfs0X1kWxDRk5H1VM80j8wyvLChD+vcbU2UHStempf9jYcgL1J1vh8S8i4j3Vme05R
+	4C0QdbciFCXG4hYA73DPrNs5ePsURVfr8uPTp9lbZGEuU5X8QjuR6qI858sqUuEgU1lTwTIN69ZmT
+	UOpSCtvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8mEs-00000003XeE-0svX;
-	Mon, 21 Sep 2026 22:11:54 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1x8mLv-00000003Xyy-3nxC;
+	Mon, 21 Sep 2026 22:19:11 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8mEp-00000003Xde-1Giv
+	id 1x8mLt-00000003XyW-0tXQ
 	for linux-um@lists.infradead.org;
-	Mon, 21 Sep 2026 22:11:53 +0000
+	Mon, 21 Sep 2026 22:19:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790028708;
+	s=mimecast20190719; t=1790029147;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AEt+ciqD7T2EQYKNoKayyfuhYvhsmv+e842rE5yabjs=;
-	b=Yhdfh/nr/iQ6yDBnbJI7fnoXv5OO7Ji2RpLamsaqlTvljhEUdqNxiD6g0Va7aMoAiLIYev
-	IBKysKPODTsTJN3xnZaheKZEfIS8BL3MHXyGcSoNM7kk+wR3QYRPSEFJj2CHn4ZPElDLFg
-	g+cCZmeB8fKiATpuXYxdXXD9PEfdhiU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=;
+	b=Yl4tfLkr+LBioaXUrCYvOKBS76o4IEqOAl/NwKqFRShwfRHo057ovDtNuK25IrPCDV7B4b
+	ZOtXcT5wW7jBOfx4Xp5SGYM6/6oiw21SAerDuE8e0d+4ocA9Vs52p1DAgo69eza995w9h+
+	fD4SP+76XFlOtjMwdUGi5KGAt+ng3V0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-294-NlVCO0QKPCu7zg4XDz_9zw-1; Mon, 21 Sep 2026 18:11:46 -0400
-X-MC-Unique: NlVCO0QKPCu7zg4XDz_9zw-1
-X-Mimecast-MFC-AGG-ID: NlVCO0QKPCu7zg4XDz_9zw_1790028706
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-49e65f2f1baso39760785e9.3
-        for <linux-um@lists.infradead.org>; Mon, 21 Sep 2026 15:11:46 -0700 (PDT)
+ us-mta-161-u0pt1NVqNcebsxgG0v441w-1; Mon, 21 Sep 2026 18:19:06 -0400
+X-MC-Unique: u0pt1NVqNcebsxgG0v441w-1
+X-Mimecast-MFC-AGG-ID: u0pt1NVqNcebsxgG0v441w_1790029145
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-49cf5bd2f12so46514025e9.1
+        for <linux-um@lists.infradead.org>; Mon, 21 Sep 2026 15:19:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790028705; x=1790633505;
+        d=1e100.net; s=20260707; t=1790029145; x=1790633945;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=AEt+ciqD7T2EQYKNoKayyfuhYvhsmv+e842rE5yabjs=;
-        b=q2ELFoU8ab9cUcwXgqf/Vr+IraNqJrtyhnUMXT/fqWgzgnCGH/nRuE3FGzoXSObK3b
-         QJUKevKVlIw5JCErgrdhhkzE0TXqipltjy0Do5yx9etwUx1dsRjV1QmKfy/5g9hxtvqc
-         4S/husK2FMDzdSF+A4Wg8QE/806zZdP+LiI2EXDroHMNiQA6HbCjZJ+2LCfGxdMpDrNS
-         pQ+BEK9rI6Z7AEsrma1+QseEMcPLf9SRW55W/J/N0H0BLkvOm4ZGu/UZfE0u3GHWLcfV
-         e0l8lBrkE2Fat6Ggl1Fp/VW5aFwG+kSh0P78LYHe3bCwlQdeXZ5BuKBdx0879bycfwFD
-         ZCEQ==
-X-Forwarded-Encrypted: i=1; AKwUvBw7oIAd2Wgq5KkyJj+6io+onUdl0eqDJUxZQSxTuCqtrQKYvVKPU2IZHAjvwaqgOpSx3aAHwnK0Iw==@lists.infradead.org
-X-Gm-Message-State: AFuF++m5kqQWnultKRAEAJK50fCYsEq7Dubf8cO6senOOZWvvIylj8Ae
-	BiSgP/1BiQr3T2h8Q6jjTz+B488lLwRm1Y6n6cIbxd1BH8sb33NpaIJRXrP2qvWMsJF6K3XiakD
-	DuVVkBoe7UMTjqwp/yjLiTWYrGFxD7wNQdIIUIgsgII2vt/aM6e9NaBy1dXvNLyBRWw==
-X-Gm-Gg: AYBFou2KRs6ucDi7npAAcdrDISAw0QITF0AqCBnPOmtrK5BZm/QKrkD2B3WnC7Exs/Q
-	9wEkTwJX2rYB4TEHpX3bg1eM25U37x/1rqZ5lK4P8ySBEHticAbQms7T7A+FVKlzsU53EjiufKu
-	PQTIOiv+JykmhBP16I5ZySLorD5axl6auTer2EyELYVM94Poi0qCYN9gvPg+5aCneHA86kdUkTK
-	QV4DXh2vc0hlcXBt9JjIs/3iFpSbe3mfq9qsG5wA5Dlhs6IcEl97ecuxCXsH6ecFfQqmaov9TQl
-	zzYkw8ryLl29TrEPuksHaxsHsBys3wzSvIjnP3l/gxcKAc2/wQ00w5O4SrdZJvXZWLGWSTqehNV
-	5H6SnwupXM11Q+ghTxPWJF5g=
-X-Received: by 2002:a05:600c:4f09:b0:493:aa0a:45ad with SMTP id 5b1f17b1804b1-49fc56692c6mr166467225e9.2.1790028705421;
-        Mon, 21 Sep 2026 15:11:45 -0700 (PDT)
-X-Received: by 2002:a05:600c:4f09:b0:493:aa0a:45ad with SMTP id 5b1f17b1804b1-49fc56692c6mr166467095e9.2.1790028704912;
-        Mon, 21 Sep 2026 15:11:44 -0700 (PDT)
+        bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=;
+        b=zC8SYOLsZ4h+fxKRVeJl6YtJOWtAUZxPPZQ6j2HCFwM/2oKc2bxtgWPCL/wri8aMkW
+         gLlciIhWQp8kJ+GGabeoP+Cy6oUPdERjuEq5GNVfW1v52yKSkY/WTXrGGlQHHgkpIUWk
+         QszUhPPrwQB5yRoyNQszLl8hORMwmNToWr+TSbZdUQ7leZRftakOOp7LXX5X1OYfo+uu
+         62sZKl+69af5QsbIE57O926GV3xn4mKopqHWdGQYsavqwyH4T8CoHqqh9HT46aKVL957
+         r+uQ+DG56ZudDDu+TSsxPLIP7Wx3/hPaC7o9ONjjY+6uE99ToNnWPegDaDKjMUDSqnu+
+         CPuQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxfUUQeMVLHgs11NiBwDY2I3VD96TUWxyA+ebi5KNDbnPR1M4JVAZXPXyEWi77aVydUhHF5VgvhGg==@lists.infradead.org
+X-Gm-Message-State: AFuF++mlH/NFxsWGTrRZAuNrBS4W7RITM9LbRPsz5HGJ/EwvEMFKxrZ+
+	1bXgxO3S72TzBRg4P++Po3/eRCiuUN2a6pkMg5l7RDqD6Ywj/hALdkpXXpc8Hzpu/Oee4SfqA6c
+	79mdojUXe10ezgDHllxAnmPwM3MhHhNfOsRQNhudRrZgZ6w4liwzTTgO6XkcMOk4hIg==
+X-Gm-Gg: AYBFou1xGiKUzydNoXetPvCsXitiCyqVCf7bR6XRkXRNhCVroaGdk4i3kFRUdd7Z7RR
+	n1s+nUiRH66KIbNjToc7PrAURPfjmip7Ap3bEO9c0JntsSGL1OPjg96YJ9Md2yRlVr5oA7ZmWra
+	E4NhVtSGRK9YQa3GU7rQmLZUhG/VzBLxSipqJgziigwUfBxvcCk1otBdn5auQZiVcX/9tkR7p8V
+	Pkq+LojQMDRU+BOTEqjo5ACeo7OtmUWLUV46qZx4yndsX7MUKQUbYV6deB8YnP1mb4DGGz2OTEG
+	0C2eu144bktlXrOesWGCRAgJf8l29pG988rDAcPAH/105jDtkEJH5bekiD/n3E3wiuHATJUugbi
+	h9IS4VXsTKs7ZZrumK0W8R8o=
+X-Received: by 2002:a05:600c:6610:b0:49f:bc28:e8bc with SMTP id 5b1f17b1804b1-49fc573576bmr159622475e9.17.1790029144726;
+        Mon, 21 Sep 2026 15:19:04 -0700 (PDT)
+X-Received: by 2002:a05:600c:6610:b0:49f:bc28:e8bc with SMTP id 5b1f17b1804b1-49fc573576bmr159622215e9.17.1790029144197;
+        Mon, 21 Sep 2026 15:19:04 -0700 (PDT)
 Received: from redhat.com (IGLD-80-230-79-236.inter.net.il. [80.230.79.236])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fda8f04f7sm2635925e9.0.2026.09.21.15.11.41
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fda0ce97dsm7873445e9.7.2026.09.21.15.19.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2026 15:11:44 -0700 (PDT)
-Date: Mon, 21 Sep 2026 18:11:39 -0400
+        Mon, 21 Sep 2026 15:19:03 -0700 (PDT)
+Date: Mon, 21 Sep 2026 18:18:59 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
 To: Paulos Yibelo <habte.yibelo@gmail.com>
 Cc: netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
@@ -91,20 +91,20 @@ Cc: netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH net v5 1/2] net: validate virtio checksum start after
  network header
-Message-ID: <20260921181115-mutt-send-email-mst@kernel.org>
+Message-ID: <20260921181341-mutt-send-email-mst@kernel.org>
 References: <20260920004733.6473-1-habte.yibelo@gmail.com>
  <20260921025341.44846-1-habte.yibelo@gmail.com>
  <20260921025341.44846-2-habte.yibelo@gmail.com>
 MIME-Version: 1.0
 In-Reply-To: <20260921025341.44846-2-habte.yibelo@gmail.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 5BHtyOD_47HOuRJkw76Q6z7WotANR7kElDDQCv-bgs4_1790028706
+X-Mimecast-MFC-PROC-ID: kZ8i1RiW1zTwYemJoUeRfouwsGacbsci-FB4mp4Cf8w_1790029145
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260921_151151_530331_5FB475BB 
-X-CRM114-Status: GOOD (  34.17  )
+X-CRM114-CacheID: sfid-20260921_151909_422013_520402EF 
+X-CRM114-Status: GOOD (  34.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,10 +145,6 @@ On Sun, Sep 20, 2026 at 10:53:40PM -0400, Paulos Yibelo wrote:
 > Link: https://lore.kernel.org/netdev/20260920004733.6473-2-habte.yibelo@gmail.com/
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Paulos Yibelo <habte.yibelo@gmail.com>
-
-
-v4 had assisted-by tag? same q for patch 2.
-
 > ---
 > Changes in v5:
 > - Replace the not-yet-established skb network-header offset with an
@@ -298,6 +294,12 @@ v4 had assisted-by tag? same q for patch 2.
 > +static inline int
 > +virtio_net_hdr_get_l3_offset(const struct sk_buff *skb,
 > +			     const struct virtio_net_hdr *hdr)
+
+
++virtio_net_hdr_eth_get_l3_offset  ?
+
+since this assumes ethernet...
+
 > +{
 > +	unsigned int parse_depth = VLAN_MAX_DEPTH;
 > +	const struct ethhdr *eth;
