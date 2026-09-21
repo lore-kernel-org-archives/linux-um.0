@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07B4DC982ED
-	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 22:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C139C982ED
+	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 22:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=; b=ifx6E94tYtR/Z4EXbu4ZuupERh
-	uKZXgqF2d5mvpLuZy1gdMWIRmlCbGiaC5f5JqlHSwUKrxxjvTdLYUD+lraIFmq5QqU2Sn/XLQeO6W
-	mfgd3qFz7XJbP+lM1ylc0GgW7wP6Qm2BN4sOF31cdw0th5MKGPJYcY4ShHVnqYzkcfeE0NAj3Tvq+
-	YiMrYKnUM4wNfs0X1kWxDRk5H1VM80j8wyvLChD+vcbU2UHStempf9jYcgL1J1vh8S8i4j3Vme05R
-	4C0QdbciFCXG4hYA73DPrNs5ePsURVfr8uPTp9lbZGEuU5X8QjuR6qI858sqUuEgU1lTwTIN69ZmT
-	UOpSCtvQ==;
+	bh=TPgxbULSS/zvX6qwagU7VAmjM6bHsH7Jq1qgcjiY+lQ=; b=HT+zdOhdEaIeIuvR+Gj4YkTIuq
+	1P/MOZina+i6LaTJ9oEik9TJLyu6+iJIupWrBYZzyZtpTJd0DbmBDyjeVVftgmd1ZHJkryCCa7QR0
+	mfNZ/UMxJGAo3hk/zfHemHGBxuMzKiOgnu4f0fIWDPoRMDyNMUN3Ym+B6t0tRIPf3/SV6B7BzKUnv
+	UjKgsrwHXGzhvgYlq55UnusW7FA+0KZFoOSjL4Sl9ril+n2XIjNPgxXpO9KztX2t2OZ1WxlxsJJPY
+	PsLER30bGlkGHy6r3voZe8W6hsKBQR69PqxiTxodotLdtuA2jBXQ+1UE3KDquKaPPyszfvo2aX2XN
+	bA8Fc+vQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8mLv-00000003Xyy-3nxC;
-	Mon, 21 Sep 2026 22:19:11 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1x8mkr-00000003big-0haw;
+	Mon, 21 Sep 2026 22:44:57 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8mLt-00000003XyW-0tXQ
+	id 1x8mkl-00000003bhs-3MHV
 	for linux-um@lists.infradead.org;
-	Mon, 21 Sep 2026 22:19:10 +0000
+	Mon, 21 Sep 2026 22:44:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790029147;
+	s=mimecast20190719; t=1790030690;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=;
-	b=Yl4tfLkr+LBioaXUrCYvOKBS76o4IEqOAl/NwKqFRShwfRHo057ovDtNuK25IrPCDV7B4b
-	ZOtXcT5wW7jBOfx4Xp5SGYM6/6oiw21SAerDuE8e0d+4ocA9Vs52p1DAgo69eza995w9h+
-	fD4SP+76XFlOtjMwdUGi5KGAt+ng3V0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=TPgxbULSS/zvX6qwagU7VAmjM6bHsH7Jq1qgcjiY+lQ=;
+	b=BnY1oOkU2U40815Ky4qbsiDJVj2nOHyTa8Pc0G10PGZqW+Dorz3B2G+jCQLKiFowcUbMSi
+	Kx8tdNPlOjNz4XdvgtOKigqpFzWqZI7O38K66djV4LN1R5rqozw90YAzqlnMgKlUTTwdOg
+	Lv0i3LazPpXec+5Pp/FD484O2g1Wm/8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-u0pt1NVqNcebsxgG0v441w-1; Mon, 21 Sep 2026 18:19:06 -0400
-X-MC-Unique: u0pt1NVqNcebsxgG0v441w-1
-X-Mimecast-MFC-AGG-ID: u0pt1NVqNcebsxgG0v441w_1790029145
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-49cf5bd2f12so46514025e9.1
-        for <linux-um@lists.infradead.org>; Mon, 21 Sep 2026 15:19:05 -0700 (PDT)
+ us-mta-426-BF623ew_NTO7g5mwvfT-AA-1; Mon, 21 Sep 2026 18:44:47 -0400
+X-MC-Unique: BF623ew_NTO7g5mwvfT-AA-1
+X-Mimecast-MFC-AGG-ID: BF623ew_NTO7g5mwvfT-AA_1790030686
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-4843e59c32dso2837554f8f.3
+        for <linux-um@lists.infradead.org>; Mon, 21 Sep 2026 15:44:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790029145; x=1790633945;
+        d=1e100.net; s=20260707; t=1790030686; x=1790635486;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=GghXQp9Ze0KvyQdgR20zMclVJoewmD0MiZE2OAf9lwY=;
-        b=zC8SYOLsZ4h+fxKRVeJl6YtJOWtAUZxPPZQ6j2HCFwM/2oKc2bxtgWPCL/wri8aMkW
-         gLlciIhWQp8kJ+GGabeoP+Cy6oUPdERjuEq5GNVfW1v52yKSkY/WTXrGGlQHHgkpIUWk
-         QszUhPPrwQB5yRoyNQszLl8hORMwmNToWr+TSbZdUQ7leZRftakOOp7LXX5X1OYfo+uu
-         62sZKl+69af5QsbIE57O926GV3xn4mKopqHWdGQYsavqwyH4T8CoHqqh9HT46aKVL957
-         r+uQ+DG56ZudDDu+TSsxPLIP7Wx3/hPaC7o9ONjjY+6uE99ToNnWPegDaDKjMUDSqnu+
-         CPuQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxfUUQeMVLHgs11NiBwDY2I3VD96TUWxyA+ebi5KNDbnPR1M4JVAZXPXyEWi77aVydUhHF5VgvhGg==@lists.infradead.org
-X-Gm-Message-State: AFuF++mlH/NFxsWGTrRZAuNrBS4W7RITM9LbRPsz5HGJ/EwvEMFKxrZ+
-	1bXgxO3S72TzBRg4P++Po3/eRCiuUN2a6pkMg5l7RDqD6Ywj/hALdkpXXpc8Hzpu/Oee4SfqA6c
-	79mdojUXe10ezgDHllxAnmPwM3MhHhNfOsRQNhudRrZgZ6w4liwzTTgO6XkcMOk4hIg==
-X-Gm-Gg: AYBFou1xGiKUzydNoXetPvCsXitiCyqVCf7bR6XRkXRNhCVroaGdk4i3kFRUdd7Z7RR
-	n1s+nUiRH66KIbNjToc7PrAURPfjmip7Ap3bEO9c0JntsSGL1OPjg96YJ9Md2yRlVr5oA7ZmWra
-	E4NhVtSGRK9YQa3GU7rQmLZUhG/VzBLxSipqJgziigwUfBxvcCk1otBdn5auQZiVcX/9tkR7p8V
-	Pkq+LojQMDRU+BOTEqjo5ACeo7OtmUWLUV46qZx4yndsX7MUKQUbYV6deB8YnP1mb4DGGz2OTEG
-	0C2eu144bktlXrOesWGCRAgJf8l29pG988rDAcPAH/105jDtkEJH5bekiD/n3E3wiuHATJUugbi
-	h9IS4VXsTKs7ZZrumK0W8R8o=
-X-Received: by 2002:a05:600c:6610:b0:49f:bc28:e8bc with SMTP id 5b1f17b1804b1-49fc573576bmr159622475e9.17.1790029144726;
-        Mon, 21 Sep 2026 15:19:04 -0700 (PDT)
-X-Received: by 2002:a05:600c:6610:b0:49f:bc28:e8bc with SMTP id 5b1f17b1804b1-49fc573576bmr159622215e9.17.1790029144197;
-        Mon, 21 Sep 2026 15:19:04 -0700 (PDT)
+        bh=TPgxbULSS/zvX6qwagU7VAmjM6bHsH7Jq1qgcjiY+lQ=;
+        b=HswT1gtabVBFWUyEmT9mr2J8Fh995lxHTAJxbD28LuMtDLwUAeHUwvzWJshE2YjQIo
+         ZsnX1xg26oLJn1d4AM3pDlmf3abqd8Arm5H2AOKHGd8L5EqV90Q6nF2/IPSqGgUjlgmn
+         Y2/wiVFerI0YvxN90pGlDaRkuiSC213ISvfsZSA++eD5fM9abs2aULoCGUrl4L4QaIKo
+         XediVr/f1xGlEJ6VrNmN7hD6i+j/OJdHN4mR6iUUsMZE09dEsW4P80cZMc2kruTd7Jyf
+         QJp/JZBaVnP4rAqRSFsOkQ0uR+IZn0VtVveECoaoZclbLKsND0i59YUCQKTij9p0+fUL
+         JjmQ==
+X-Forwarded-Encrypted: i=1; AKwUvByV040fhIJjmC0LiC16aQ2kwOO4fi+VwqEwZ1Ge6TtGJ94jU6XvwlF7UMDQcoj7Fhyxigh/nQKr0w==@lists.infradead.org
+X-Gm-Message-State: AFuF++lGA2iRoNWKoeeA42CXzRXqyhdDCozERrTnL9f4xh80KHXH97kh
+	DcZuP+WCCZW1S+n/PImZxjZrE1zGYFzCopl3/t0wYssvg/BfCGN2AcNegkepdw2F2qkXuabe4eb
+	2v3YgCaYpPW/chRN5zeZ0n52LyTeOx7wgbTpBG8F1xWC6nFfjZEqQtynw6180NbBQaA==
+X-Gm-Gg: AYBFou36TP1b2QpjrKSZ1ia2Hajp6FcjfwQsF8vthzjBXDFnBQ3+F8e9E8EaExQnOQh
+	1lhLi+Sk2nwojs2h1scSQodHsEQLhNypJWbZnn+R8ls3o2mMBbdKXjkQueWvQ3K9NbY33XVANXV
+	iNPsDS7W/bJ3I2nV+0VocE0dS+u5RUq8ONjao5QZa32yzBMw9ueIhzQD6rsjcqlWqjYSfiz3qfH
+	ahCFDvJz4ooxrTzCDUeoDoGo2AZRAm4nyf5qR+XmsjeHUkypUK8Bzfu9zqRJ5Mo94WhiN1qz9jD
+	6/GQ6oEQNo2+d+Yrk0nxuB4ktSrREQUCCNpTF+euewtpIVSszGIH+z7bhFhhvEaQGNFiqdm0bbG
+	YBJ46NDV5Q4vBwD9MfjPctWM=
+X-Received: by 2002:a05:6000:26c2:b0:487:b32:9d6f with SMTP id ffacd0b85a97d-4871e21beabmr19615280f8f.22.1790030685813;
+        Mon, 21 Sep 2026 15:44:45 -0700 (PDT)
+X-Received: by 2002:a05:6000:26c2:b0:487:b32:9d6f with SMTP id ffacd0b85a97d-4871e21beabmr19615238f8f.22.1790030685299;
+        Mon, 21 Sep 2026 15:44:45 -0700 (PDT)
 Received: from redhat.com (IGLD-80-230-79-236.inter.net.il. [80.230.79.236])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fda0ce97dsm7873445e9.7.2026.09.21.15.19.01
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48862731bf9sm26579f8f.1.2026.09.21.15.44.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2026 15:19:03 -0700 (PDT)
-Date: Mon, 21 Sep 2026 18:18:59 -0400
+        Mon, 21 Sep 2026 15:44:44 -0700 (PDT)
+Date: Mon, 21 Sep 2026 18:44:40 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
 To: Paulos Yibelo <habte.yibelo@gmail.com>
 Cc: netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
@@ -91,20 +91,20 @@ Cc: netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH net v5 1/2] net: validate virtio checksum start after
  network header
-Message-ID: <20260921181341-mutt-send-email-mst@kernel.org>
+Message-ID: <20260921183657-mutt-send-email-mst@kernel.org>
 References: <20260920004733.6473-1-habte.yibelo@gmail.com>
  <20260921025341.44846-1-habte.yibelo@gmail.com>
  <20260921025341.44846-2-habte.yibelo@gmail.com>
 MIME-Version: 1.0
 In-Reply-To: <20260921025341.44846-2-habte.yibelo@gmail.com>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: kZ8i1RiW1zTwYemJoUeRfouwsGacbsci-FB4mp4Cf8w_1790029145
+X-Mimecast-MFC-PROC-ID: DWG9PdZGiCKJ3B3mWT6tCBJL6AaV6SYb8BePAzyZWHw_1790030686
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260921_151909_422013_520402EF 
-X-CRM114-Status: GOOD (  34.03  )
+X-CRM114-CacheID: sfid-20260921_154452_024996_249E92C0 
+X-CRM114-Status: GOOD (  34.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -294,12 +294,6 @@ On Sun, Sep 20, 2026 at 10:53:40PM -0400, Paulos Yibelo wrote:
 > +static inline int
 > +virtio_net_hdr_get_l3_offset(const struct sk_buff *skb,
 > +			     const struct virtio_net_hdr *hdr)
-
-
-+virtio_net_hdr_eth_get_l3_offset  ?
-
-since this assumes ethernet...
-
 > +{
 > +	unsigned int parse_depth = VLAN_MAX_DEPTH;
 > +	const struct ethhdr *eth;
@@ -338,6 +332,11 @@ since this assumes ethernet...
 >  {
 > -	unsigned int nh_min_len = sizeof(struct iphdr);
 > +	int nh_min_len = sizeof(struct iphdr);
+
+
+So why is this IPv4 specific assumption still here? Confused.
+
+
 >  	unsigned int gso_type = 0;
 >  	unsigned int thlen = 0;
 >  	unsigned int p_off = 0;
@@ -451,6 +450,11 @@ since this assumes ethernet...
 >  				tp_len = -EINVAL;
 >  				goto tpacket_error;
 >  			}
+
+Will this do the right thing for ETH_P_IP sockets? even with vlan tags
+in the frame?
+
+
 > @@ -3103,7 +3104,8 @@ static int packet_snd(struct socket *sock, struct msghdr *msg, size_t len)
 >  	packet_parse_headers(skb, sock);
 >  
