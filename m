@@ -4,112 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73A16C982EF
-	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 02:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3BE6C982E1
+	for <linux-um@archiver.kernel.org>; Mon, 21 Sep 2026 10:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=u8Ct4yW9W4ymcEv428o4m/ZX/KrAWtAnJ7CKPNzyvYY=; b=UYzXHmTjuRdTneGTM0EVbTjujC
-	es2tTJadBCSGWsb9PjTBFY++aPE67s8LK3uVjE/bZM4Lf5qe4lq80zlgompQEAT16OanMr7AxR/9p
-	A/SVv5vwYjvRgyPPkpEdWOY7huE3Sg12JLbD09FtBww2XtwM9/ZGIy9IbK2YXS6A63slAyvY/boz3
-	7CgVAk61kcTMvmSm03d5G1o/QcNicgaKB3fsNkx2ZhRFrDSVFLl/blNtXnl5u2i/WmaSBV+0zosel
-	6+zf7APvFMg96ait978K0JLtzdDcdkqZNdZ+CrKtjzeBpwgaARLA5QCjxpTJS/vlwJHGIJSgForD6
-	xDY5Lshg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=P9d9IuyhNWmJnXlvoMGELDNfrs4n7zj8cv/0sALqrSY=; b=DghKR6LdVJiTbLOpDfhIMtEXet
+	0KXdOHTJ9Q/w1t9227bloc/eNYC1FMuOgzuDOh1YwJ9weJiRlBIm6dnXj39tPLgJyUP9ePXET50Rr
+	nxfdIbWCdOQsoIQjl59hLPcrFvJKeCsrCmf6v3/RLoPQNk6Goq+4UMMXepILa1AS3RkAcJU6LVk9U
+	13H0JWZ0yBa2lqITsg+Ywd/ep35YvxAVLcqLvDRLYm02HfKhfQ5yQzGnMjSG+t9BfS1A+2rMSTTIn
+	q/e900xqiBihmEsUMyhUQgMheTVEMRr1sufz/3XTo9FwbTBSW86wVcDdG+QxGyAtjotEM5EH+d8Ml
+	4eWjdDlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8UAG-00000000kNJ-0HGr;
-	Mon, 21 Sep 2026 02:53:56 +0000
-Received: from mail-qk2-x10.google.com ([2607:f8b0:4864:34::10])
+	id 1x8bHT-00000001hcJ-2Bhf;
+	Mon, 21 Sep 2026 10:29:51 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8UAD-00000000kMc-2d2s
+	id 1x8bHO-00000001haq-3Sau
 	for linux-um@lists.infradead.org;
-	Mon, 21 Sep 2026 02:53:54 +0000
-Received: by mail-qk2-x10.google.com with SMTP id af79cd13be357-93910cc46c8so322026485a.0
-        for <linux-um@lists.infradead.org>; Sun, 20 Sep 2026 19:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1789959233; x=1790564033; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=u8Ct4yW9W4ymcEv428o4m/ZX/KrAWtAnJ7CKPNzyvYY=;
-        b=G120+5jCSCg7pxP/j7DsDyKmfF4NiP6p0mRdpCAGDl1PMpAtnDP+pMcF2vIELXgbjb
-         +gJbwrzrLZaql56nkYbsxHt+78jiH3h63JBcRfrmJcOVUgkT6LcHAiUJ+aBUpj7pXDFb
-         pi3CHpozRmW7lUNuTyJhbpVe0kFlYudvv4k88RsBc7/hVTK5TquOlsKDDZifzlhSF34p
-         VAPe0lWZ8+aikUW3CPyW197O8P3qY3ROXOuYoyyBTrOqQ1ajYWSdu9bQskc5eq9odGhv
-         wrrbDiMy4O0HS8fy/ZcoZ3MaKWrJFLmIA4W93y5GQIwlLDqe/uQCxdSySajJf9U8Yb1L
-         PHtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789959233; x=1790564033;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=u8Ct4yW9W4ymcEv428o4m/ZX/KrAWtAnJ7CKPNzyvYY=;
-        b=PZ8C9KdKUakfhMSa0qxHDhK0L3+ovHk71zfXrTXvxwolnPKZPyAYW2+pjSjWpzKI83
-         HcQFpCsyTYTP8o6bmhaqeO8fkIaMkX3IJuaB+0LbEPiqTb7mAj8t9VzcdS0P38d/s5wr
-         X1+mWmVuylCIak4UUMc4moxWOrFkfrHhs7WA8TzakNkVmQPqUzAbae/DoTwNYd79tGQH
-         NRiXJ2sICU3OYKqacoad5t0Ci81lJuWq3tjJql0aYe32Jjc7TM5uO1axndQgiPdyrZ1v
-         0LHp14Fvg7Zr7i1Y65wMZvFRfbsn7PcG5MZQ8+ki0CmgTqa9yWOJBYxRAnYYUha2+/ry
-         KX0Q==
-X-Forwarded-Encrypted: i=1; AKwUvBxyNNZoLJzyh34LgMM2hgWbZyHweIIk5TLWs0RK4tdxwdiLv2I07detQaMgp4t2Ad5TxO4oeLh40Q==@lists.infradead.org
-X-Gm-Message-State: AFuF++mNwbPa72TTgScqGmqz4FlHM8//0kFdZKOxlHN3SCY3N8QzmwZg
-	Kr7AvWOe1YBny2zOll+xOgW//y1pU3/h3iwX4VeI0nvNp5H8nEepMYjS
-X-Gm-Gg: AYBFou1r1j+DLIzf6bAEuEdfLRP15zZA+9PczRgszbVlKjK9DYW3jK86e+XEQbnzvpX
-	DZ4ham3iD/VRpRcOjKtUW+s0ilVinrue2wJXiKScyNGMbkZGCXzj4USLQGW2J57CibOk2rGkyUc
-	tYhIIZ7rHpxV7O0pSnSoXsBck8UShz5GLbBSJGEYn+VCGRzZ0q7D9gLjpFX9EaRvJvgt9Swx5F4
-	ISfkg2i/wlmezgqyEEhJxEJSNlckdfzUKOJCcP5Rn/GqlcvetXep60Mvh6xcKiZXDi5UKB2YDZf
-	UMREymEYQ3B31yeeaYpmj2qzV3Gjx5jBihisEAuEhVl2dYbhUf7IQIZ8X61te+uubE/SHO+B2xV
-	HsuwMawH4+R5ln7JquyIqF+BzbRwNZXAvXnzgWLmlpnEIV1e7pJMe7nCELfOji3KwT4QLzeedRp
-	RpfSJM5G6ipxXaSKQHTiPql+oZOoKTbwIY/+mOg0ToaroTzfaM5Pz3C42iSUjBDSugSyemmU3HY
-	3ZTD1ZFNIOhc+TrgoeUjnK2iVzjFPJuyVdg/qtda0Mi1Dpfqd8qL2OHlclOFlEDjPBWGrPR
-X-Received: by 2002:a05:620a:1724:b0:93b:d7a0:d9f0 with SMTP id af79cd13be357-93bf57eea2emr869731285a.74.1789959232559;
-        Sun, 20 Sep 2026 19:53:52 -0700 (PDT)
-Received: from localhost.localdomain ([2601:155:4200:2c80:64b9:5e22:f77c:324e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-93bedb3de58sm528732785a.37.2026.09.20.19.53.50
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 20 Sep 2026 19:53:51 -0700 (PDT)
-From: Paulos Yibelo <habte.yibelo@gmail.com>
-To: netdev@vger.kernel.org
-Cc: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	willemdebruijn.kernel@gmail.com,
-	jasowangio@gmail.com,
-	mst@redhat.com,
-	eperezma@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	andrew+netdev@lunn.ch,
-	pablo@netfilter.org,
-	fw@strlen.de,
-	phil@nwl.cc,
-	razor@blackwall.org,
-	idosch@nvidia.com,
-	dsahern@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-um@lists.infradead.org,
-	virtualization@lists.linux.dev,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	bridge@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net v5 2/2] ip: reject partial checksums covering network headers
-Date: Sun, 20 Sep 2026 22:53:41 -0400
-Message-ID: <20260921025341.44846-3-habte.yibelo@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20260921025341.44846-1-habte.yibelo@gmail.com>
-References: <20260920004733.6473-1-habte.yibelo@gmail.com>
- <20260921025341.44846-1-habte.yibelo@gmail.com>
+	Mon, 21 Sep 2026 10:29:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=P9d9IuyhNWmJnXlvoMGELDNfrs4n7zj8cv/0sALqrSY=; t=1789986586; x=1791196186; 
+	b=Q5aMKV5zMIX0c0vJjr/DBwOLGfdzpLQxyPbO22uA3J3W9HtzKwv9vW3s+CgPyZ4UqfADl8DC8k2
+	qBBpgRz0Tyj193jvG+0jz/RqSW0jjuMM35crayijBKJlYqnkVj37yGqfkECYjWq3gNlty6qZyGnAs
+	b4hTWetR+GRH0+shW9XLAsZAOM/UHyxu25ltBFKX3wFup8zrkP37/t0J6HqhnxJq1f3WkwFmMdkjA
+	g4N0tovC+irpF5YpGQbBzXEHAk8ux10IFDg78OPERLSoW2i8BOb1SSmCuNFg6pf7XTcNxzmcI/Fwo
+	ZMv006PLGmba8Xr2JI4L6R2LuI0OyqLBtNOQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1x8bHH-00000005kJr-3Gyl;
+	Mon, 21 Sep 2026 12:29:40 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] um: mprotect() __init memory
+Date: Mon, 21 Sep 2026 12:29:37 +0200
+Message-ID: <20260921122937.3821fec01e82.Ib959ff1baad7a45e2b804209b530040e69e4b046@changeid>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260920_195353_762807_33E7DEBD 
-X-CRM114-Status: GOOD (  17.33  )
+X-CRM114-CacheID: sfid-20260921_032946_876805_F033F18A 
+X-CRM114-Status: GOOD (  12.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,190 +69,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-ip_do_fragment() and nf_br_ip_fragment() complete a CHECKSUM_PARTIAL skb
-before reading the IPv4 header length. ip6_fragment() and br_ip6_fragment()
-complete one after parsing the IPv6 header chain. A virtualization
-interface can supply a checksum start which, after link-layer removal,
-still points inside that parsed network header.
+From: Johannes Berg <johannes.berg@intel.com>
 
-skb_checksum_help() then writes the completed checksum into header bytes
-the stack has already consumed. For IPv4, changing iph->ihl after routing
-and validation can make fragmentation copy beyond the skb's logical linear
-head into transmitted options. A negative checksum-start offset is rejected
-by skb_checksum_help(), but only after a WARN_ONCE which can panic a
-panic_on_warn system.
+Unlike what the comment says, we could munmap() this (but
+not reuse it for guest allocations), but then stray libc
+allocations could technically conflict, so mprotect() it
+to catch access bugs. Align it in the linker scripts too
+so that all of it can be covered, not just some.
 
-Validate the checksum start against the parsed header length before
-completing it. For IPv4, read and validate IHL first, retain it, and
-reacquire iph after skb_checksum_help() in both implementations. For IPv6,
-use the length returned by ip6_find_1stfragopt() in both implementations.
-
-Compare the signed checksum-start offset with the bounded signed header
-length so integer promotion cannot bypass either boundary.
-
-Fixes: dbd3393c56a8 ("ipv4: add defensive check for CHECKSUM_PARTIAL skbs in ip_fragment")
-Fixes: 405c92f7a541 ("ipv6: add defensive check for CHECKSUM_PARTIAL skbs in ip_fragment")
-Fixes: 3c171f496ef5 ("netfilter: bridge: add connection tracking system")
-Fixes: 764dd163ac92 ("netfilter: nf_conntrack_bridge: add support for IPv6")
-Reported-by: Paulos Yibelo <habte.yibelo@gmail.com>
-Link: https://lore.kernel.org/netdev/20260920004733.6473-3-habte.yibelo@gmail.com/
-Cc: stable@vger.kernel.org
-Signed-off-by: Paulos Yibelo <habte.yibelo@gmail.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-Changes in v5:
-- Compare the checksum-start offset and IPv4 header length as signed
-  values.
-- Add parsed-header checks to the IPv4/IPv6 output and bridge-netfilter
-  fragmentation paths.
-- Drop the prior Acked-by and Reviewed-by tags because the code changed.
+ arch/um/kernel/dyn.lds.S |  2 ++
+ arch/um/kernel/mem.c     | 11 ++++++++---
+ arch/um/kernel/uml.lds.S |  2 ++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
-Changes in v4:
-- State that a TUN device is sufficient and no guest is required, as
-  noted by Michael S. Tsirkin.
-
-Changes in v3:
-- No code changes.
-
-Changes in v2:
-- No code changes.
-
- net/bridge/netfilter/nf_conntrack_bridge.c | 21 +++++++++++++++-----
- net/ipv4/ip_output.c                       | 23 ++++++++++++++++------
- net/ipv6/ip6_output.c                      | 12 ++++++++---
- net/ipv6/netfilter.c                       | 12 ++++++++---
- 4 files changed, 51 insertions(+), 17 deletions(-)
-
-diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-index 7ecb8a26b..d81ed8692 100644
---- a/net/bridge/netfilter/nf_conntrack_bridge.c
-+++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-@@ -38,18 +38,29 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
- 	struct iphdr *iph;
- 	int err = 0;
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index ad3cefeff2ac..5d3d5ef6ebec 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -98,8 +98,10 @@ SECTIONS
  
--	/* for offloaded checksums cleanup checksum before fragmentation */
--	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (err = skb_checksum_help(skb)))
-+	iph = ip_hdr(skb);
-+	hlen = iph->ihl * 4;
-+	if (unlikely(hlen < sizeof(*iph) || hlen > skb_headlen(skb))) {
-+		err = -EINVAL;
- 		goto blackhole;
-+	}
+   #include <asm/common.lds.S>
  
--	iph = ip_hdr(skb);
-+	/* Complete offloaded checksums only after the validated IP header. */
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		if (unlikely(skb_checksum_start_offset(skb) < (int)hlen)) {
-+			err = -EINVAL;
-+			goto blackhole;
-+		}
-+		err = skb_checksum_help(skb);
-+		if (err)
-+			goto blackhole;
-+		iph = ip_hdr(skb);
-+	}
++  . = ALIGN(PAGE_SIZE);
+   __init_begin = .;
+   init.data : { INIT_DATA }
++  . = ALIGN(PAGE_SIZE);
+   __init_end = .;
  
- 	/*
- 	 *	Setup starting values
- 	 */
+   /* Ensure the __preinit_array_start label is properly aligned.  We
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 1eef0e42ef5d..00c469fd28ee 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -83,12 +83,17 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
+ }
  
--	hlen = iph->ihl * 4;
- 	frag_max_size -= hlen;
- 	ll_rs = LL_RESERVED_SPACE(skb->dev);
- 	mtu = skb->dev->mtu;
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index a24cc8ee1..fa6a74d20 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -770,16 +770,28 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
- 	struct ip_frag_state state;
- 	int err = 0;
- 
--	/* for offloaded checksums cleanup checksum before fragmentation */
--	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (err = skb_checksum_help(skb)))
--		goto fail;
+ /*
+- * This can't do anything because nothing in the kernel image can be freed
+- * since it's not in kernel physical memory.
++ * We could munmap() this instead, but then libc allocations could
++ * land in this area and stray initdata access could erroneosly
++ * succeeded - just mprotect() it to reliably catch bad accesses.
+  */
 -
- 	/*
- 	 *	Point into the IP datagram header.
- 	 */
- 
- 	iph = ip_hdr(skb);
-+	hlen = iph->ihl * 4;
-+	if (unlikely(hlen < sizeof(*iph) || hlen > skb_headlen(skb))) {
-+		err = -EINVAL;
-+		goto fail;
-+	}
+ void free_initmem(void)
+ {
++	unsigned long start = PAGE_ALIGN((unsigned long)__init_begin);
++	unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
 +
-+	/* Complete offloaded checksums only after the validated IP header. */
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		if (unlikely(skb_checksum_start_offset(skb) < (int)hlen)) {
-+			err = -EINVAL;
-+			goto fail;
-+		}
-+		err = skb_checksum_help(skb);
-+		if (err)
-+			goto fail;
-+		iph = ip_hdr(skb);
-+	}
++	if (end > start)
++		os_protect_memory((void *)start, end - start, 0, 0, 0);
+ }
  
- 	mtu = ip_skb_dst_mtu(sk, skb);
- 	if (IPCB(skb)->frag_max_size && IPCB(skb)->frag_max_size < mtu)
-@@ -789,7 +801,6 @@ int ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
- 	 *	Setup starting values.
- 	 */
+ /* Allocate and free page tables. */
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 30aa24348d60..7085ba6fcb93 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -70,8 +70,10 @@ SECTIONS
  
--	hlen = iph->ihl * 4;
- 	if (mtu < hlen + 8) {
- 		err = -EMSGSIZE;
- 		goto fail;
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 550965058..d157b6ade 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -942,9 +942,15 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
- 	frag_id = ipv6_select_ident(net, &ipv6_hdr(skb)->daddr,
- 				    &ipv6_hdr(skb)->saddr);
+   #include <asm/common.lds.S>
  
--	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (err = skb_checksum_help(skb)))
--		goto fail;
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		if (unlikely(skb_checksum_start_offset(skb) < (int)hlen)) {
-+			err = -EINVAL;
-+			goto fail;
-+		}
-+		err = skb_checksum_help(skb);
-+		if (err)
-+			goto fail;
-+	}
++  . = ALIGN(PAGE_SIZE);
+   __init_begin = .;
+   init.data : { INIT_DATA }
++  . = ALIGN(PAGE_SIZE);
+   __init_end = .;
  
- 	prevhdr = skb_network_header(skb) + nexthdr_offset;
- 	hroom = LL_RESERVED_SPACE(rt->dst.dev);
-diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
-index a7025ec87..da7ada12f 100644
---- a/net/ipv6/netfilter.c
-+++ b/net/ipv6/netfilter.c
-@@ -144,9 +144,15 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
- 	frag_id = ipv6_select_ident(net, &ipv6_hdr(skb)->daddr,
- 				    &ipv6_hdr(skb)->saddr);
- 
--	if (skb->ip_summed == CHECKSUM_PARTIAL &&
--	    (err = skb_checksum_help(skb)))
--		goto blackhole;
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		if (unlikely(skb_checksum_start_offset(skb) < (int)hlen)) {
-+			err = -EINVAL;
-+			goto blackhole;
-+		}
-+		err = skb_checksum_help(skb);
-+		if (err)
-+			goto blackhole;
-+	}
- 
- 	prevhdr = skb_network_header(skb) + nexthdr_offset;
- 	hroom = LL_RESERVED_SPACE(skb->dev);
+   .data    :
 -- 
-2.46.0
+2.55.0
+
 
