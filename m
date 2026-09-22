@@ -4,116 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE46C982FA
-	for <linux-um@archiver.kernel.org>; Tue, 22 Sep 2026 22:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3FEBC982FA
+	for <linux-um@archiver.kernel.org>; Tue, 22 Sep 2026 23:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0qPZh/r/REXP5ZSy0nxs+oUBSRD0aY6qVWm9CYsML3E=; b=z3Sddk/aY8ypBAXFDVN+8KiX2l
-	a80mg731Jn/U7vccfm4Fo4WL/5ymHlKTFCXsk8e2e2DEFzPRJ9uCUuepwAFDB9u/b6m0CFu2aKzWt
-	vPBbhP72Gip04hCGL0Xn8MetsEepQSdFqUoz/t2uzGJJeC9SwnLGE14HuEeQiggYbiUCtUoA4MH/u
-	ztJaC9ol2nY2cxyAyl1P1O5drwUPnjQ9FBjF7WUT1c/MXXoMvav53O660bjEBCyUrK4WMsyz83n8c
-	NCSmWT7Yoxlx9vGQMZ3RURbAySTdgjGkzb657siqaL3x4gIFPUc2B8wMHpN34NDFeRPGmUKDbpZqm
-	5gfgQONA==;
+	bh=67Wnb1WqUtfvvqvCH5gthEhN54uXfj3OJmtQ8451vqc=; b=SdKTwKjuEOjzeYveLm/Gbs16sx
+	KL28waMNsnmrfnoGejxM7SZXgAz3q0m11MSCXoIdxKtb1TPfeXFxai7wYhpz39vciWBZUTAWKJJi8
+	H+GZJyBHG9r9tcTXBRfJ4kSpPE1Tng8ojlvZ7gC1p7O3q2cXoFGkBh/z9Me3hkmOzdiySbYT83KQ3
+	DBemyEy2t6aFnjIk0wsQpckBAY9K1XKyMJA8Zng6bgk/pwcv7uXD7EFtnQNPDRAMruKKqvQHbXDQN
+	+JEk9WXwZ6sLkq12qP3OR1B1rak6mEdus7C94pca9IiuV6wACABQFtXJ5FHCLPZE4hgX59fAjavh4
+	NrnhGM/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x98zs-00000006g7h-2oEE;
-	Tue, 22 Sep 2026 22:29:56 +0000
-Received: from mail-yx2-x0f.google.com ([2607:f8b0:4864:41::f])
+	id 1x99TQ-00000006iIv-2fTU;
+	Tue, 22 Sep 2026 23:00:28 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x98zp-00000006g71-2xaL
-	for linux-um@lists.infradead.org;
-	Tue, 22 Sep 2026 22:29:55 +0000
-Received: by mail-yx2-x0f.google.com with SMTP id 00721157ae682-85d45ae011cso6224887b3.2
-        for <linux-um@lists.infradead.org>; Tue, 22 Sep 2026 15:29:52 -0700 (PDT)
+	id 1x99TO-00000006iIW-0Ov8;
+	Tue, 22 Sep 2026 23:00:26 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 87FC943584;
+	Tue, 22 Sep 2026 23:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2DD81F000FF;
+	Tue, 22 Sep 2026 23:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790116191; x=1790720991; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=0qPZh/r/REXP5ZSy0nxs+oUBSRD0aY6qVWm9CYsML3E=;
-        b=cNxVCGiqX6yU5wqxgNE1qjsepXRm4JT9DgiL4LVhUE53G0sZDQfXzC0HHF1+6npMNK
-         M8BhpVwfvKNSotXBfjdWRduAobeZSryRhO/RbqW4EwsGcY79IWmci5F6Ta4yek1kfOZ5
-         8k1DNEUVxoh9fw5rhXn2hfhFGLySO/3EvK24lTAmPt7eMSK2efhdzgskuHT75x72q31N
-         6qPJw6pPWnv40elXMTQUYDbLyPi/KvllSl64/a9L2OogQaR9BsLPuYn/XbDULWhREZ5g
-         CszxadPo3uGR+hiZWiQCBi94ew52zv3FsTKRJzHBVoRY9UWAjjSqf0ol5Obn/fDROFN9
-         bALA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790116191; x=1790720991;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=0qPZh/r/REXP5ZSy0nxs+oUBSRD0aY6qVWm9CYsML3E=;
-        b=CCA++M8FJqGa0PjbBX2PTrTdognIgn5xSIlOMz4VwliHDaskokEKtB0mNSveNbJ/1P
-         YL2wAdKVW2rW47DOoEZqb0OBdqRMKaoHbpeXDr+fkgAH4BFiU+OWnHF6YvtW86lT1VCp
-         lIXjk32zVxjjJrTmzB3r+5O7nuu/c4F08+VBWCBKqQGdocaWRtQkIG8BIItip7Ujlk4P
-         vsSZC2XMvcZZjfYFlaC6nnc8LhygtQ9oUjAGylLmoynxJvtzNmd7z6zHyXOErewnmU4g
-         sZdNtzheYfPRYGIINcB8Kaco3tiRmy446vlsUyN6dmRHJtfTrLZukP3hSkHsuMN23TjJ
-         Tz+w==
-X-Forwarded-Encrypted: i=1; AKwUvBwPc7CanOq7J87t/z/eqAysZ1FrYlptsEU+aVYTjnSnXCGMNpfOCRSHyoPOIFKrQq++OLsJtMWmVA==@lists.infradead.org
-X-Gm-Message-State: AFuF++mRXeATRDECqc16D61rpPC7c9jY7Lw2r/vdN3KJT2Lk5F8mX1oI
-	A0JXZ9D2a4tFMsR445grsjcRZoWIeepQW5nrnOVE/rEi6yBt+RLm688W
-X-Gm-Gg: AYBFou2SH7rXIzcLDXt8rZGuGJeVN4gv6HJyrt1TW7TstslN4Y1NMqn0VJecny4lP6Q
-	u6ufhpDucJ7nDxiGJvRxy6bX7Irr4rgkquA54eV9Rrsb7kSmo98egnwTtZ0ZpVHF8cDVI3udtIU
-	rouqNt5YAAt9gJmhw0nFEGyprHX3JxLJyVQeigoG6Y0tvrCfOMQzZqDBH0MmzIItzf+1azyVnd9
-	F2VDtkGNJZE2EvKMCuTYos4CtBmrw5yr5y3w8df+wkCD4wT+9SvTQgeM6ftSvTYY0nfKxH8XOnP
-	3QWHIUx05ezxTkPiAyk1qpzllG3guRdQ2U16JgLvckzHKc38HKQWPSpO0Va5/3vW1EHjOI1l68E
-	+h7l20azp+2QGSiOeh6T919sdHdCaJYh1joIJ5UlpmKCGky0iyfdHjKcOv362GSusGmKTh3E64C
-	INmEncylX0NH/wzin21I+qh921Jh1uKMqnBLJxTwWJW5Xduql41M7L9Y/v/fpDDLapWu5SmzOZr
-	hkReKW3BUEtk8YviRUtPi1iCwBLFA70jvoY+T4DC1HK0MTIzLvQ
-X-Received: by 2002:a05:690c:c:b0:873:5bb2:6c32 with SMTP id 00721157ae682-8a45bb75c4bmr5165927b3.57.1790116191128;
-        Tue, 22 Sep 2026 15:29:51 -0700 (PDT)
-Received: from gmail.com (111.46.245.35.bc.googleusercontent.com. [35.245.46.111])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8a465ec41acsm3153167b3.26.2026.09.22.15.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2026 15:29:50 -0700 (PDT)
-Date: Tue, 22 Sep 2026 18:29:49 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Paulos Yibelo <habte.yibelo@gmail.com>, 
- netdev@vger.kernel.org
-Cc: richard@nod.at, 
- anton.ivanov@cambridgegreys.com, 
- johannes@sipsolutions.net, 
- willemdebruijn.kernel@gmail.com, 
- jasowangio@gmail.com, 
- mst@redhat.com, 
- eperezma@redhat.com, 
- xuanzhuo@linux.alibaba.com, 
- andrew+netdev@lunn.ch, 
- pablo@netfilter.org, 
- fw@strlen.de, 
- phil@nwl.cc, 
- razor@blackwall.org, 
- idosch@nvidia.com, 
- dsahern@kernel.org, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- horms@kernel.org, 
- linux-um@lists.infradead.org, 
- virtualization@lists.linux.dev, 
- netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, 
- bridge@lists.linux.dev, 
- linux-kernel@vger.kernel.org
-Message-ID: <willemdebruijn.kernel.259bc7096258d@gmail.com>
-In-Reply-To: <20260922030310.8684-2-habte.yibelo@gmail.com>
-References: <20260922030310.8684-1-habte.yibelo@gmail.com>
- <20260922030310.8684-2-habte.yibelo@gmail.com>
-Subject: Re: [PATCH net v6 1/2] net: validate virtio checksum start after
- network header
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260922_152953_770118_7948A57A 
-X-CRM114-Status: GOOD (  22.90  )
+	d=linux-foundation.org; s=korg; t=1790118024;
+	bh=67Wnb1WqUtfvvqvCH5gthEhN54uXfj3OJmtQ8451vqc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=f4enYMEQW7QizF7EO1g1cQ4u8gA82wou/SQ/2W3Thvjli+h6aobD5ZlJDs/jfh1FV
+	 zSB+Kfk4FuUqyw9bmcvk46t07MCBzK0NBIy1fjrGw3Rhfy7nWNjaUOxIcpoiKWtmMx
+	 CWvPp7SZoe+aH84d+5DNVA8gveOr1sRQo2MPtAwc=
+Date: Tue, 22 Sep 2026 16:00:21 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, Baolin
+ Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett"
+ <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, Ryan Roberts
+ <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song
+ <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, Usama Arif
+ <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren
+ <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster
+ <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne
+ <shorne@gmail.com>, Rich Felker <dalias@libc.org>, John Paul Adrian
+ Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>,
+ Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris
+ Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Will Deacon
+ <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick
+ Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>, Andreas Larsson
+ <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
+ Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
+ Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)"
+ <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka
+ <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan
+ <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu
+ <peterx@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Shakeel
+ Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, Randy
+ Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins
+ <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
+Message-Id: <20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
+References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,166 +116,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Paulos Yibelo wrote:
-> __virtio_net_hdr_to_skb() checks a minimum network-header length for
-> CHECKSUM_PARTIAL packets. Its checksum start is relative to skb->data,
-> but some callers have not established skb->network_header when they
-> convert the virtio header.
-> =
+On Tue, 22 Sep 2026 16:35:31 +0100 "Lorenzo Stoakes (ARM)" <ljs@kernel.org> wrote:
 
-> Pass the data-relative L3 origin explicitly. Ethernet receive paths
-> parse the frame and nested VLAN headers without changing skb state.
-> AF_PACKET uses the frame's actual L3 origin even when the socket
-> protocol is ETH_P_IP and the raw frame carries VLAN tags. Non-Ethernet
-> AF_PACKET devices retain their established skb network offset.
-> =
+> The majority of architectures in the kernel defer page table freeing until
+> an RCU grace period has elapsed, this series converts all remaining
+> architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> altogether.
+> 
+> This is important because it enables safe lockless page table walking under
+> RCU alone.
 
-> Also pass the actual L3 protocol so IPv6 packets use the 40-byte base
-> header minimum even without TCPv6 GSO. IFF_TUN obtains that protocol
-> from the packet before skb->protocol is set. Name the Ethernet parser
-> accordingly, use the same origin for tunnel validation, and propagate
-> conversion failures in UML.
-> =
+Do we have reason to believe that anyone is seeing any effects from
+their arch's failure to rcu-free the page tables?
 
-> The bound remains a minimum; fragmentation paths separately validate
-> the parsed IPv4 or IPv6 header length before completing a checksum.
-> =
+This sounds like a rather long-standing wart, yes?
 
-> Fixes: 49d14b54a527 ("net: test for not too small csum_start in virtio_=
-net_hdr_to_skb()")
-> Fixes: a2fb4bc4e2a6 ("net: implement virtio helpers to handle UDP GSO t=
-unneling.")
-> Reported-by: Paulos Yibelo <habte.yibelo@gmail.com>
-> Link: https://lore.kernel.org/netdev/20260920004733.6473-2-habte.yibelo=
-@gmail.com/
-> Cc: stable@vger.kernel.org
-> Assisted-by: LLM
-> Signed-off-by: Paulos Yibelo <habte.yibelo@gmail.com>
-> ---
->  arch/um/drivers/vector_transports.c | 13 ++++-
->  drivers/net/tun_vnet.h              | 52 ++++++++++++++++-
->  drivers/net/virtio_net.c            | 10 +++-
->  include/linux/virtio_net.h          | 87 ++++++++++++++++++++++++-----=
-
->  net/packet/af_packet.c              | 24 +++++++-
->  5 files changed, 163 insertions(+), 23 deletions(-)
-
-The fix may still miss the case IPv4 packets have options.
-
-This version is a very large patch.
-
-Untested shorter first suggestion by bot, which looks plausible as a
-starting point for discussion.
-
-    --- a/drivers/net/tun_vnet.h
-    +++ b/drivers/net/tun_vnet.h
-    @@ -152,6 +152,9 @@ static inline int tun_vnet_hdr_to_skb(unsigned in=
-t flags, struct sk_buff *skb,
-                           const struct virtio_net_hdr *hdr)
-     {
-    +    if ((flags & TUN_TYPE_MASK) =3D=3D IFF_TUN)
-    +        skb_reset_network_header(skb);
-    +
-         return virtio_net_hdr_to_skb(skb, hdr, tun_is_little_endian(flag=
-s));
-     }
-
-    --- a/include/linux/virtio_net.h
-    +++ b/include/linux/virtio_net.h
-    @@ -71,9 +71,27 @@ static inline int __virtio_net_hdr_to_skb(struct s=
-k_buff *skb,
-             if (!pskb_may_pull(skb, needed))
-                 return -EINVAL;
-     =
-
-    +        if (!skb_network_header_was_set(skb) ||
-    +            (skb->dev && skb->dev->type =3D=3D ARPHRD_ETHER)) {
-    +            int nhoff =3D ETH_HLEN;
-    +
-    +            if (unlikely(start < ETH_HLEN + nh_min_len))
-    +                return -EINVAL;
-    +            __vlan_get_protocol(skb, eth_hdr(skb)->h_proto, &nhoff);=
-
-    +            nh_min_len +=3D nhoff;
-    +        } else {
-    +            nh_min_len +=3D skb_network_offset(skb);
-    +        }
-    +        if (unlikely(start < nh_min_len))
-    +            return -EINVAL;
-    +
-    +        const struct iphdr *iph =3D (void *)(skb->data + nh_min_len =
-- sizeof(*iph));
-    +        if (iph->version =3D=3D 4)
-    +            nh_min_len +=3D max_t(u32, iph->ihl * 4, sizeof(*iph)) -=
- sizeof(*iph);
-    +        else if (iph->version =3D=3D 6)
-                 /* ..here I don't trust the initial bug output, but the =
-branch is clear.. */
-    +        if (unlikely(start < nh_min_len))
-    +            return -EINVAL;
-    +
-             if (!skb_partial_csum_set(skb, start, off))
-                 return -EINVAL;
-    -        if (skb_transport_offset(skb) < nh_min_len)
-    -            return -EINVAL;
-         }
-
-    --- a/net/ipv4/ip_output.c
-    +++ b/net/ipv4/ip_output.c
-    @@ -772,7 +772,9 @@ int ip_do_fragment(struct net *net, struct sock *=
-sk, struct sk_buff *skb,
-         if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL &&
-             (!(dev->features & NETIF_F_CSUM_MASK) ||
-    -         skb_checksum_help(skb)))
-    +         skb_checksum_start_offset(skb) < (int)(iph->ihl * 4) ||
-    +         skb_checksum_help(skb)))
-             goto fail;
-  =
-
-And the summary of the problem:
-
-  ### 1. What the Problem Is
-
-  When userspace (AF_PACKET, TUN/TAP, vhost-net) or a device (virtio_net,=
- UML) injects a CHECKSUM_PARTIAL packet using struct virtio_net_hdr,
-  virtio_net.h:47-119 validates hdr->csum_start:
-
-    // include/linux/virtio_net.h:107 (added by commit 49d14b54a527)
-    if (skb_transport_offset(skb) < nh_min_len)
-        return -EINVAL;
-
-  This validation has three bugs:
-
-  1. Missing L2 + VLAN offset: skb_transport_offset(skb) (hdr->csum_start=
-) is an offset from skb->data, which points to the L2 header (14
-  bytes for Ethernet + 4 * n bytes for 802.1Q/802.1ad VLAN tags) on Ether=
-net callers (virtio_net, IFF_TAP, PACKET_SOCK_DGRAM/SOCK_RAW).
-  Comparing csum_start < 20 allows csum_start to land inside the L2 VLAN =
-tags (14..21) or inside the L3 header (22..33).
-  2. Wrong nh_min_len for IPv6 non-GSO: nh_min_len defaults to sizeof(str=
-uct iphdr) (20) and is only raised to sizeof(struct ipv6hdr) (40)
-  when gso_type is VIRTIO_NET_HDR_GSO_TCPV6. A non-GSO or GSO_UDP_L4 IPv6=
- packet is only checked against 20 bytes.
-  3. Ignores IPv4 options (iph->ihl > 5): Even without an L2 header (IFF_=
-TUN), an IPv4 header with options can be up to 60 bytes (ihl =3D 15),
-  allowing csum_start =3D 20 to point 40 bytes inside the IPv4 options ar=
-ea.
-
-  This causes two kernel bugs downstream:
-
-  =E2=80=A2 Bug A (WARN_ONCE / panic_on_warn in skb_checksum_help): With =
-2 VLAN tags (22 bytes L2), csum_start =3D 20 passes 20 >=3D 20. Once
-  eth_type_trans() + skb_vlan_untag() pull 22 bytes, skb_checksum_start_o=
-ffset(skb) (csum_start - skb_headroom(skb)) becomes -2. In
-  dev.c:3645, offset >=3D skb_headlen(skb) promotes signed -2 to 0xffffff=
-feU, firing WARN_ONCE(1, ...) and crashing panic_on_warn=3D1 hosts.
-  =E2=80=A2 Bug B (TOCTOU L3 Header Corruption -> OOB Read in ip_do_fragm=
-ent): With csum_start =3D 20, csum_offset =3D 0 on TAP/AF_PACKET, csum_st=
-art
-  lands at byte 6 of struct iphdr (frag_off) or byte 0 (version/ihl on do=
-uble-VLAN frames). In ip_output.c:774 and nf_conntrack_bridge.c:42,
-  skb_checksum_help(skb) runs before hlen =3D iph->ihl * 4 is read. The 1=
-6-bit checksum write corrupts iph->ihl (e.g. from 5 [20B] to 15 [60B])
-  after ip_rcv_core() already validated it, causing ip_do_fragment() to r=
-ead 60 bytes out-of-bounds from skb->data.
+The patchset is thinly reviewed and mm.git is bursting at the seams
+again.  I'll play wait-and-see on this series.  Feel free to cluebat me
+if that's a bad call.
 
