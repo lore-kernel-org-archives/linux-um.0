@@ -4,141 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26231C982FF
-	for <linux-um@archiver.kernel.org>; Tue, 22 Sep 2026 08:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B18F8C98302
+	for <linux-um@archiver.kernel.org>; Tue, 22 Sep 2026 12:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=; b=1BgHDxfzFWDapDiSJCnryGHITz
-	A/cJstkV4rNArbP4oSnuCnq0eTjr2BduxVaOhT8H5B+SGaj7LHAhFrO34DMUIk1UFiG7Za9IPbGfq
-	u3QBtxtYV+fLfSacFr/MYXNiUfxo4MHhqyTJmFmYJivrbzlehhzYWvJMwpZl1nniQ+I8XM7XsGKng
-	BulC9dHdFh8ytMNtigINmmR4+WUdIGcPJX2/X7Ws9Dvd/JGF/KrqT5YRagP0OoRH4tESPefdKSwqy
-	ytQErna45ef3jREfBe/QwJE19pmMWWGe6uQx9D5Mq9mMN+QHTSyJo9AqfHex/4oj4uDV0x2bD8J/a
-	FCs5IR6Q==;
+	bh=gItcWC83jyqQewAzlLEIrIdpVAhf+FBobtBOU1cWYdE=; b=wS1wB4Np/yflPusliH5hcYpa/j
+	6UBef/bMYC14U0VURHHD7McG8tCTTq3EZbt0MkiS2H42h8rzK3j35nFBKNLFkQJKEQQ5b9A91On6d
+	bxcdEM68LEqO6Sa5cWOWIfojDmRGt2lwHmawcYWWgo8E2PxujgamLTSOI08pcAxIdce2TSdS2w7zs
+	6DoOxHXtQ5ZRjiS7ThHmajDt70zVjQNVLgNgCWIPI4I1oMyz772QtbLEgQMBS+BEz+SsVDAXEnPS6
+	2BYldy5g4JMMQl8QbEX3fZXEBQPGDcjEwe89dDmSgt0uHvjwSf/1nkhCwEiFY/e7ogrIo9uToWDg9
+	lcVqa+Yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8w9a-00000004kuV-1fwA;
-	Tue, 22 Sep 2026 08:47:06 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1x8zP5-00000005HPS-1g6l;
+	Tue, 22 Sep 2026 12:15:19 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x8w9Z-00000004ktf-1BAY
-	for linux-um@bombadil.infradead.org;
-	Tue, 22 Sep 2026 08:47:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:In-Reply-To:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=; b=LEupw2b5OQhhLSBZZ44jo7fnpH
-	6Jcuqc2YXIq5fSE+djKo1x4AaPka/CnuSRF/zusyWttbnC+/D5NUb480e3HCc0GWXaYPu+Z8Ukslb
-	iboyX/9zB3gTvGFdORNfR3mRv9Cvzrjjei7F/3Etl9hvjMyVvCkdgGZVzxD+0oho00yrz6nR6WZ3X
-	A/zUFvBJy8HJhNYPMXUlDwbAgzlnn7OS8yrmgDB168ZwuaIsl7iTpLWjNx9e7WGttNG8uNpFNF2UN
-	pVRyAYaf/banVxAijD6DxN5BXMKK0+gCR1lXG6pDFqqQ4gFpHyjxh2VBopCASTHfrQ+7TcmFn6PyP
-	7U28+JVA==;
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x8w9T-0000000DID1-2vqK
-	for linux-um@lists.infradead.org;
-	Tue, 22 Sep 2026 08:47:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790066816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=;
-	b=PPtBm7O5J9SD12HP/tRvqumwwKrb2GaMHrA1THD7uzs1uzeGdvT+YtVVEomkLiG+dmdnUl
-	jMQ6cThAO/9QcQBExBWKDP0pkDcUHbQqp0Hx6aFCf7mea7dtzs7QripU8kfQdra1V5pEjx
-	tDxHqO04AyNKNOpa7C07D8vut8NCW+o=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790066816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=;
-	b=PPtBm7O5J9SD12HP/tRvqumwwKrb2GaMHrA1THD7uzs1uzeGdvT+YtVVEomkLiG+dmdnUl
-	jMQ6cThAO/9QcQBExBWKDP0pkDcUHbQqp0Hx6aFCf7mea7dtzs7QripU8kfQdra1V5pEjx
-	tDxHqO04AyNKNOpa7C07D8vut8NCW+o=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1790066816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=;
-	b=PPtBm7O5J9SD12HP/tRvqumwwKrb2GaMHrA1THD7uzs1uzeGdvT+YtVVEomkLiG+dmdnUl
-	jMQ6cThAO/9QcQBExBWKDP0pkDcUHbQqp0Hx6aFCf7mea7dtzs7QripU8kfQdra1V5pEjx
-	tDxHqO04AyNKNOpa7C07D8vut8NCW+o=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-xG00lOfVPsePFzj7gmQdpQ-1; Tue, 22 Sep 2026 04:46:54 -0400
-X-MC-Unique: xG00lOfVPsePFzj7gmQdpQ-1
-X-Mimecast-MFC-AGG-ID: xG00lOfVPsePFzj7gmQdpQ_1790066813
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-49e6c17ec1dso50113525e9.2
-        for <linux-um@lists.infradead.org>; Tue, 22 Sep 2026 01:46:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790066813; x=1790671613;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=C95bRAv5IkFCsxK5LjzncGYLGpBLHTNK6JTZFhyWW0M=;
-        b=nhyLxgo9W7x/JJo4IJ2NQw/55+5N8xGenTibWHhg2ggEhSxsK+a9VujvvtZ3BTeeE2
-         r++5eHY2ccVVdWwA/dGNcrXa0OQLFVJAWCk3M+I8ZMP/gbUq18PETWAmVs5Pn6M0JiRT
-         k3aH/7Vk4aDqTHmDmw1/jLhqVLZH9H/+Kp3tIZEYrrCbhFtz2FQ/Nk5AEAjizc60PxFk
-         DBJD4mgV8AD3ukQ9ppa9ZEOrz9yNK1xNoJrQF6FSJzptDPa84ShwdNmdUvonwdGp6vIu
-         Kje4FXX3qSSYYxkopRmWreDYx54r2leTAi05otuYtH2LbH1Hd2JkZKxZiZR5Pk1BJj1/
-         27HQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzo601t0TPZYB4CaUm6l1Lilekw/VfSKO+AEieWWbwvp63uBuKd3sONYEmIGkBCysVgNhFbI1tgxg==@lists.infradead.org
-X-Gm-Message-State: AFuF++kDV+kSk2zL640oUe+PdP3Yigx3NJEaTrZOdY9jYfFiZPWGUhui
-	uh24Vc4OJLCKnUTYS/Lf4Nv5C/mDAqQ4ASDqVwZeOakLBaCbEsfXFiwFPriPFTDLk68ouObmbfz
-	A6McdIqKTdOyN9xj6HfmrM1Gc0+3OPwL/X2u8b1fL9+TD9ZX2GsRK/+VpA8IP2sLCEQ==
-X-Gm-Gg: AYBFou3bwhaghfzTcDN2x+DDBvzJVectOEQ1cP3qpG1f8bA/1i/DZvcHo8rlm0YLfdg
-	W6e4onSBCWd3ApZ4LcLat90xATNpqKKfMixFL/GuP2tZPy0Z/r6MwqphTKVI8prwztrRV7M1NOS
-	HReDVlCIT+oKPFoa/4B1mOY4HDKqXXvwXfDYZe1k8ALTqqRIAtCsom0MOP7fSY6bPWPTp9lDG1E
-	oQ6rFJE5HDowg/nhfVXWAXYN9/eHp6L/AIfHXQ/eHmEROqctxWr5mO/BXHR1icTnCCSUNlNFPx1
-	KgJNI/nlKkQuxHaoDQqCWVsdNY9PfY45OTSEbD1H0kPOu5CxRTcMMLijW7YGboxjfeUn7wiu18b
-	g551uQANk68LyDDwKe/KGg5Q=
-X-Received: by 2002:a05:600c:19cd:b0:499:7a15:fcec with SMTP id 5b1f17b1804b1-49fc5695861mr190094765e9.13.1790066813163;
-        Tue, 22 Sep 2026 01:46:53 -0700 (PDT)
-X-Received: by 2002:a05:600c:19cd:b0:499:7a15:fcec with SMTP id 5b1f17b1804b1-49fc5695861mr190094445e9.13.1790066812661;
-        Tue, 22 Sep 2026 01:46:52 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-79-236.inter.net.il. [80.230.79.236])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49fd8ccd185sm65246905e9.8.2026.09.22.01.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2026 01:46:52 -0700 (PDT)
-Date: Tue, 22 Sep 2026 04:46:47 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Paulos Yibelo <habte.yibelo@gmail.com>, netdev@vger.kernel.org,
-	richard@nod.at, anton.ivanov@cambridgegreys.com,
-	willemdebruijn.kernel@gmail.com, jasowangio@gmail.com,
-	eperezma@redhat.com, xuanzhuo@linux.alibaba.com,
-	andrew+netdev@lunn.ch, pablo@netfilter.org, fw@strlen.de,
-	phil@nwl.cc, razor@blackwall.org, idosch@nvidia.com,
-	dsahern@kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	linux-um@lists.infradead.org, virtualization@lists.linux.dev,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	bridge@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v6 1/2] net: validate virtio checksum start after
- network header
-Message-ID: <20260922044627-mutt-send-email-mst@kernel.org>
-References: <20260922030310.8684-1-habte.yibelo@gmail.com>
- <20260922030310.8684-2-habte.yibelo@gmail.com>
- <20260922005353-mutt-send-email-mst@kernel.org>
- <aa560d2d2cbf94e50397740159c12e24e0ecf820.camel@sipsolutions.net>
+	id 1x8zP3-00000005HOV-0sSv;
+	Tue, 22 Sep 2026 12:15:17 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 95A18419CD;
+	Tue, 22 Sep 2026 12:15:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117D71F000FF;
+	Tue, 22 Sep 2026 12:14:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790079316;
+	bh=gItcWC83jyqQewAzlLEIrIdpVAhf+FBobtBOU1cWYdE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=h3gqLkdxuBoehEGT/VKAAx5lOOZyw0R9ECju20pTUpkGq3CY4/SfkP5Oo8Atj/17P
+	 LheKowjELtZHtWEwX8eBKfgrKHJcRi0+O+d1XJm5SNFJeLnSFaLisjCbEBlxeLxjOn
+	 7b+NpgO+ZPXTsbOJUosoddrg+40PBvbsgsGmbY2VSvCJX0WLnI37yVWEjSxgbtaT89
+	 F/0sTPdrQN1xs1nAXdWed32VZcInT1tJCp8N+5WqvK/lF5EAI6+8MCsas5iRPln/rt
+	 CkKwC8hH7tDlCqpUlqLBsfISPWksuIen1RI49kVL18Y30A/o4HPBKzvey0Im1JOlMy
+	 V88LVj2NYFEMg==
+Date: Tue, 22 Sep 2026 13:14:52 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
+	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
+	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
+	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
+Subject: Re: [PATCH v3 01/12] mm/huge_memory: zap deposited page tables after
+ an RCU grace period
+Message-ID: <arJrv6FdUUgAbVp1@gremlin>
+References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
+ <20260911-rcu-pagetable-freeing-v3-1-7b8c86103821@kernel.org>
+ <467b6599-b73a-4f58-a29a-b6c6d1ffc3a5@kernel.org>
+ <aqrAflIQbwcNKlQL@gremlin>
+ <bc2805a7-361e-4082-bf71-efc125b93c84@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <aa560d2d2cbf94e50397740159c12e24e0ecf820.camel@sipsolutions.net>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: anZXH03adItIY_Jj_O33xQOtER4B2gGK-m-5Gpq6xVk_1790066813
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260922_094700_023889_0003972A 
-X-CRM114-Status: GOOD (  14.81  )
+In-Reply-To: <bc2805a7-361e-4082-bf71-efc125b93c84@kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,31 +111,142 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 22, 2026 at 07:56:23AM +0200, Johannes Berg wrote:
-> On Tue, 2026-09-22 at 01:14 -0400, Michael S. Tsirkin wrote:
-> > 
-> > >  
-> > > +/*
-> > > + * Return the L3 offset and protocol of an Ethernet frame starting at skb->data.
-> > > + * The offset is unused without NEEDS_CSUM, so avoid parsing and return zero.
-> > > + */
-> > 
-> > for networking code multiline comments:
-> > 
-> > /* always
-> >  * look like this
-> >  */
-> > 
-> > /*
-> >  * never
-> >  * like this
-> >  */
-> 
-> This, for the record, is't really true any more - we dropped the special
-> rule a few years ago.
-> 
-> johannes
+On Mon, Sep 21, 2026 at 07:13:16PM +0200, David Hildenbrand (Arm) wrote:
+> On 9/16/26 18:59, Lorenzo Stoakes (ARM) wrote:
+> > On Wed, Sep 16, 2026 at 04:42:04PM +0200, David Hildenbrand (Arm) wrote:
+> >> On 9/11/26 21:36, Lorenzo Stoakes (ARM) wrote:
+> >>> When an anonymous mapping is collapsed for THP, a PTE page table is
+> >>> 'deposited' with the installed PMD entry.
+> >>
+> >> Right. Or when we allocate an anon THP.
+> >
+> > That case doesn't interact with page walking though, as they're
+> > just-allocated right?
+>
+> I was surprised to read that page tables deposited during collapse should behave
+> differently than page tables deposited during allocation :)
 
-Oh good to know. thanks!
+You'll be super surprised by how VMAs behave when detached vs. attached then ;)
 
+>
+> That's the semantic change you are adding (and that I didn't quite understand
+> from reading your description): a deposited page table could now get reused and
+> modified for another page table due to a PMD split, while there might still be
+> an RCU page table walker walking it. And PMD comparisons (+ proper memory
+> ordering) have to make sure that we didn't just walk  something that doesn't
+> belong to us.
+>
+> [...]
+>
+> >>
+> >> Wait, but wouldn't it be really problematic to punch a page table that is still
+> >
+> > Punch? You mean deposit?
+>
+> Yes!
+
+Ack.
+
+>
+> >
+> >> being walked into the deposited list where it can just be allocated from another
+> >> PMD->PTE split?
+> >
+> > In general, RCU-only page table walkers are _only_ guaranteed that the page
+> > tables are not freed from underneath them, as per the cover letter:
+> >
+> > 	"As a result, page table walks can now be performed safely under RCU without
+> > 	 any risk of page tables being freed underneath a walker.
+> >
+> > 	However, this is the only guarantee that this work provides - page table
+> > 	walkers must still ensure that page table entries are as expected
+> > 	throughout."
+>
+> So far page table walkers never walk deposited page tables. Just like they never
+> walk freed page tables.
+>
+> For *current* lockless page table walkers (IRQs disabled),
+> tlb_remove_table_sync_one() takes care of that. So there is no such thing as
+> "walking a page table that was reused in different context (as a page table) in
+> the meantime".
+
+Yup I know. That describes what happens for RCU page table walkers _after_ the
+changes of course.
+
+>
+> >
+> > So this series doesn't actually have to answer that :)
+> >
+> > But a PTE PTL -> pmd_same() check will flag anything like that,
+> > a.k.a. pte_offset_map_lock().
+> >
+> > The RCU lock replaces stablisation on stuff other than VMA/mmap or rmap
+> > lock.
+> >
+> > If the walker needs to be sure the PTE is actually valid and belongs to the
+> > expected walk then further is required.
+> >
+> > Alternatively (like GUP-fast) if you wanted to avoid locking at all, IRQs
+> > off would be required paired with the tlb_remove_table_sync_one() in
+> > collapse_huge_page().
+>
+> Doing an RCU sync in tlb_remove_table_sync_one() would be the big hammer (I
+> thought that was discussed with Lance recently). There is also this option: just
+> allocate a new page table and deposit it, and free the existing page table
+> through RCU.
+
+Hmm yeah big old lump hammer :) I mean I don't see how that could really
+possibly fly as an option, we have tlb_remove_table_sync_rcu() for
+!CONFIG_PT_RECLAIM arches (i.e. err... the more 'specialist' ones :) but for
+those in actual use that sounds a wee bit nuclear.
+
+>
+> Long story short: allowing empty page tables to be freed by RCU is simple.
+> Allowing empty page tables to be reused while they are still getting walked is
+> obviously more complicated conceptually. Likely it can be made working, but I'd
+> hope that we can keep it simpler.
+
+I'm not sure it can really safely be guaranteed or it'd involve more lock
+dependencies or something horrible anyway.
+
+But... we don't need to care about any of that....
+
+>
+> >
+> > Another strategy could be used I guess with looped checks but it gets a bit
+> > sketchy with timing etc.
+> >
+> > But actually maybe we can avoid all that...
+> >
+> >>
+> >> Note that pgtable_trans_huge_withdraw() just dequeues *some* PTE page table in
+> >> the list attached to the PMD table.
+> >>
+> >> Something is odd here.
+> >
+> > ...Since this code path already allocates (the huge folio), so allocation
+> > here isn't an issue (as long as done outside of lcosk), why not have it
+> > also allocate a new PTE to deposit and RCU-free the existing PTE instead?
+> >
+> > That eliminates the one place in the kernel (afaik) where a
+> > page-table-walker-visible table can just get yoinked over somewhere else.
+> >
+> > Then a lockless PMD check works.
+> >
+> > E.g. something like the below?
+>
+> Hah! Great minds think alike.
+
+...Because great minds indeed <3
+
+Will respin with that then, thanks! :)
+
+>
+> --
+> Cheers,
+>
+> David
+
+--
+Cheers, Lorenzo
 
