@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14041C98309
-	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 09:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6405C9830B
+	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 09:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z+j1lHJE5F3iMb8nSY99OQtjlVOCv/aNXLt1f/fnIwI=; b=dJ3Nr/dwI0NKc/ALNwlE58JGlD
-	p2H1yLmJ7VZtV21Ayf96pFbtqh9Xy2h4JXPXE02fTdbqEgtC/g1UG4JLxPncF28JLjR8FKW9Y6Syr
-	YCHQ2w3MYy8L4zVYtDvK1IP2qXTB4OgENuaWzgXKPg93uFX4cih803RE5zEx8sroMapLAv2tCnCYI
-	00JYARFagNpe6aJeFB0O3P7OhK2rywMyEDaYefWYH6qfM2b04n4TGG/EHzIPk6SA6fXWPbRXs4rJ7
-	Mzshozl5rF0LjS40Dwd1QXhU/XBtBkWEYz1F2TkLAZ+Z/RHMzKoYZ2NATnjDyUiQP6riw9wRoHcd5
-	8n9swHqA==;
+	bh=O74zCChabJPGX/5FXG7XmXwrySBRD///uZE1gOiATno=; b=i7RRzA7nCJCTr9fK6+GzahKSpx
+	vXP+bdnBxdPuYTDODwFfR4CRoLdGTODYBWXBphAa77OxeRgVjyE2D03ot3+drz9jxFL2zlv5vorzG
+	TwQxdEYBlQA+D3BHuIjOeW7CVPN7KWyurTMKfi3NQQGquc+TLButDcGQTbYuSJc9Wqr5tWbkohqi4
+	ENTzBmlJnWrrPbUnwDxwbg3rqtstP4mJmA63A8rfnEBlN3E8Gdpsg1PxdS2SrHhXj909IF/aXposV
+	+USRfyBgOFS5QDIKy2QgmiTsA+Gw8JaTkwN+Ok9fAVcK0+yeeN6pMN+vBpFfRB11jfGhZqeGQ66lS
+	U36zAcyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9J3F-00000007gyg-1kdZ;
-	Wed, 23 Sep 2026 09:14:05 +0000
+	id 1x9J55-00000007hcM-0oZI;
+	Wed, 23 Sep 2026 09:15:59 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9J3D-00000007gxD-10wf;
-	Wed, 23 Sep 2026 09:14:03 +0000
+	id 1x9J4z-00000007haK-1NzM;
+	Wed, 23 Sep 2026 09:15:53 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 51138601F0;
-	Wed, 23 Sep 2026 09:14:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DD41F000FF;
-	Wed, 23 Sep 2026 09:13:40 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 23562601FB;
+	Wed, 23 Sep 2026 09:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3B61F00899;
+	Wed, 23 Sep 2026 09:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790154842;
-	bh=Z+j1lHJE5F3iMb8nSY99OQtjlVOCv/aNXLt1f/fnIwI=;
+	s=k20260515; t=1790154951;
+	bh=O74zCChabJPGX/5FXG7XmXwrySBRD///uZE1gOiATno=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=kWMCgiXLIQ6wuVlwnnRx3lJKHDLxKLCH12IowjOX7efeQzZGOJawCaHUfqRK5YQRX
-	 eyw5xVCFRsKuaXNkT2f1HZDd8aaiBjUul7jvkwjO6j1afG61xfht5mCCPSKKp4Dhe9
-	 rzhiHvxgoP5JCx5uMMA6TbPPpBXNI0TvsBqy8ptvMlhuhl3LjdN19l8FOcusuHqGd6
-	 W/Lu00eio/hX6O8BOK5kdqlsJZJnYqJ8DQtyzzxsImYdJDJx13pZ4NSi9WHt1anikw
-	 dlxfFEX5t8FcpmSHMomNE+o4ZWePsDJ5WRA6GO3q2+DvMeaV13VT0Jhtfi25HVJqjf
-	 K7utRZ1UWwiog==
-Message-ID: <802d3999-95fe-4a09-89b4-d01b60f8e963@kernel.org>
-Date: Wed, 23 Sep 2026 11:13:36 +0200
+	b=SMhlc0VgRdQKdx0qwl14ANA68wVrXDsrycIDNbwUOrPzQGed7psejweuHvn9y0Upj
+	 oK9pF6NnduwDsnqfpjtJ/98OkmFP3+3GiOq1Gh9n/PtyI2qphy+ikJaaV9pWvwu/jb
+	 lgkfeUAJH/6wrnbIuYjLND8YDK30CL0Xmk3ZEGU/0LCGarFAZx7fHYPYSxTuBD/9Po
+	 M10D3egALYwoCwT9UTdFNWLlH9Bts/yO0DSd9ByK7feU9BZexVgvkgnX3iMjolsZ4N
+	 yD6SaWbdPJpvZOUAW1bcswar5pOH0YXD/VsfYA6P7+enqEtASX+lnYGFo0DZ63X3o1
+	 OTxrzvc6LwB5g==
+Message-ID: <77db2f8f-dfc2-49c6-82f6-8e6c4f7c1fd0@kernel.org>
+Date: Wed, 23 Sep 2026 11:15:26 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 11/12] mm: make userland page table freeing RCU-safe
+Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
 To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
  Baolin Wang <baolin.wang@linux.alibaba.com>,
@@ -107,8 +107,8 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
  Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
  linux-doc@vger.kernel.org
 References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
- <20260922-rcu-pagetable-freeing-v4-11-fe1ad1f1e303@kernel.org>
- <72d1548a-a4ee-4832-b2ab-4bc82f1933f8@kernel.org> <arOWZCeV8FrkAvhK@gremlin>
+ <20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
+ <9dcde7e4-dadb-4644-9dff-7fd8a26e29a6@kernel.org> <arOVbT5B1FOMe1wb@gremlin>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -155,7 +155,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <arOWZCeV8FrkAvhK@gremlin>
+In-Reply-To: <arOVbT5B1FOMe1wb@gremlin>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -172,26 +172,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 9/23/26 11:06, Lorenzo Stoakes (ARM) wrote:
-> On Wed, Sep 23, 2026 at 11:04:17AM +0200, David Hildenbrand (Arm) wrote:
->> On 9/22/26 17:35, Lorenzo Stoakes (ARM) wrote:
->>
->> The patch subject confused me at first: that's not what the patch is doing, no?
->> Previous patches did that, and now you're just removing the leftovers?
->>
->> Maybe I'm missing something that this patch does along the lines of teaching the
->> code to be RCU-safe.
+On 9/23/26 11:04, Lorenzo Stoakes (ARM) wrote:
+> On Wed, Sep 23, 2026 at 10:45:33AM +0200, David Hildenbrand (Arm) wrote:
+>> On 9/23/26 01:00, Andrew Morton wrote:
+>>>
+>>>
+>>> Do we have reason to believe that anyone is seeing any effects from
+>>> their arch's failure to rcu-free the page tables?
+>>>
+>>> This sounds like a rather long-standing wart, yes?
+>>>
+>>> The patchset is thinly reviewed and mm.git is bursting at the seams
+>>> again.  I'll play wait-and-see on this series.
+>> Do we want to nudge arch maintainers to review?
 > 
-> It is the final piece that makes that the case, so I think it's OK to allow
-> oneself a nice subject line? No? :)
+> (Just to note that I replied separately, 'thinly reviewed' is incorrect, it's
+> been in -next for weeks and the whole thing was reviewed by Kiryl.)
 
-Just took me longer to figure out if I am missing something important.
+Ack.
 
-E.g.,
+> 
+> The only places where that would be useful is m68k motorola, sparc32.
+> 
+> But in any case it has been heavily tested including on every single arch
+> listed with stress testing performed (I think I cover that in the cover
+> letter).
+> 
+> The changes are not controversial so I don't think that's a blocker, but
+> it'd be nice?
 
-	"mm: remove unused RCU-unsafe user page table freeing"
+I doubt we'll ever get sparc32 reviews :)
 
-would have been clearer to me. Anyhow, just stumbled over it, I don't care too much.
+I'd definitely appreciate some review on the arch bits from arch maintainers,
+but if they don't reply within the next weeks I wouldn't wait on that.
 
 -- 
 Cheers,
