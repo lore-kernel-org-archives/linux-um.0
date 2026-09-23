@@ -4,169 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 409D7C98302
-	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 02:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B95A6C98302
+	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 05:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=89+U8KAEwLqIX9mpcp+eoIG3lsJI+yoRSssy/pmscRA=; b=r7iFYiPjC6FAtBreoQTY2K3BYi
-	aYdgTfpVbA6WJfArMSy9kwMGfSfgnwPYMsDAz6iBjv42gnay1uniKfe+YinXoO7ujSuzYhAW5/bwU
-	mg59hmAdhsSu9+YsfdP+J4z3JsuUmNxhxyEG+FWRwrVG+FXw7P5orqu2NWpKXex95tJ+kkMWcbAnf
-	T094CT8C5XE7cAjeP+3DX8E4JPz3waaQdLcqaPJ63Vvwo91nPBsnAPF2o6mrrvhNlFmYW7Nuu9Zxh
-	yHjtCJO3cLzw3ibazVzMyrYMXx00hD2GSs1QOhYz4H6M1QXfOFSN4skhBooySAXkV4D1rGTBKb3XT
-	0ks0dtvA==;
+	bh=5EzYF6pBVx8SbOMcLOHwu2cxYGJaiivFeHPjTqK+kVc=; b=tGJvAnPttWSH2xOWCT1Vo1Qkj+
+	lvIziV3vlBUgW3NnvJ+XULfoSZDTnw+VFa/46VJO/mUL20T5wbsFM+z6HpyNCKr2nsAB/Xz3tuqvL
+	QNxmY9kGO3Fiqvn+lRfNiHzjiKJw/Tkn8GgdyYCyUxhJwsHgDchtC68Rj4oeBrSSpX86L2SS9nfxy
+	PKIXDlbzHbYWHn+RTxSXjaZiO+pkrF10iZUdtMdlIkHkolW7prEXp5niG9JD8ZKz2Z1HKVjFFEqfi
+	qSmXp+WLFscYr8l2s7NmeeGoIxpV1LvQ6s4ebT9j48rviFI2nhwikpyPWH5UH93eNbyvc0qSK4g3o
+	TiZCl5Hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9CfO-00000006vxe-1O8S;
-	Wed, 23 Sep 2026 02:25:02 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1x9FAU-000000079qJ-3kjW;
+	Wed, 23 Sep 2026 05:05:18 +0000
+Received: from mail-dl2-x0f.google.com ([2607:f8b0:4864:38::f])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9CfI-00000006vtT-0WJf
-	for linux-um@bombadil.infradead.org;
-	Wed, 23 Sep 2026 02:24:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=89+U8KAEwLqIX9mpcp+eoIG3lsJI+yoRSssy/pmscRA=; b=Jz3JDldX8EPKuficTgME69E3Dy
-	zTyDhv2wZsNU0IpyD9IweSwdNyYLESxmqyPqez/zuj/7/f1SmvvcqhF3Bqt5AXffTY5mgpWWn5Zz1
-	UlvcpxPmxATnYaat2ipZSqZ3WTfrlwzvZv2gBzEeAbwtD7kL6ujYc4iIqCJ4054WjICqeLqblslJG
-	xEA8+TrBFC1bC3i1tuvMUcu6MALmmDOGrGKzgfEbBTSU/qWxKNbNnJ7VpUQnJ0KtC2jx+nvIPV0Ue
-	q5vP8ACyL4HGqKJNd+XbQMQurn3To0LkgloHmfuBarFVscpWh+pjGTCdxAUASnnBxGS5x/0O9cMh8
-	g4zgIhHw==;
-Received: from out-136.mta1.migadu.com ([2001:41d0:203:375::88] helo=mta1.migadu.com)
-	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1x9CfD-0000000EHEO-3EXp
+	id 1x9FAS-000000079pz-38qO
 	for linux-um@lists.infradead.org;
-	Wed, 23 Sep 2026 02:24:54 +0000
-X-Envelope-To: linux-um@lists.infradead.org
-DKIM-Signature: a=rsa-sha256; bh=d3FVAdMqEDWFoCMHxuxCTxk+fOdRBfvFdCrMB1cIOo0=;
- c=simple/simple; d=linux.dev;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1790130288; v=1; x=1790735088;
- b=vPZ4E84zbeYdbcYUPqARcRRcZxPfiGBlaL4PAuaHXWDiFZtVFBCwAPe9GTMwSgv35SukmmLL
- Vh1YGT9fIt58glkv61GDGfTnw/1TQqMW3uQrqGhhhx7WrEDMNAQEncFoye+lA/7ZSD9sslqDRC1
- eAD/i7YtPjU8V7XwwvGCLElw=
-X-Envelope-To: linux-um@lists.infradead.org
-Received: by smtp.migadu.com with ESMTPS id b86f8e4163d69484;
-	Wed, 23 Sep 2026 02:24:43 +0000
-X-Mizu-Trace-ID: b86f8e4163d69484
-X-Migadu-Flow: FLOW_OUT
-From: Lance Yang <lance.yang@linux.dev>
-To: ljs@kernel.org
-Cc: akpm@linux-foundation.org,
-	david@kernel.org,
-	ziy@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	liam@infradead.org,
-	nico.pache@linux.dev,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	baohua@kernel.org,
-	lance.yang@linux.dev,
-	usama.arif@linux.dev,
-	kas@kernel.org,
-	guoren@kernel.org,
-	bcain@kernel.org,
-	geert@linux-m68k.org,
-	dinguyen@kernel.org,
-	schuster.simon@siemens-energy.com,
-	jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com,
-	dalias@libc.org,
-	glaubitz@physik.fu-berlin.de,
-	pjw@kernel.org,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	alex@ghiti.fr,
-	linux@armlinux.org.uk,
-	vgupta@kernel.org,
-	monstr@monstr.eu,
-	chris@zankel.net,
-	jcmvbkbc@gmail.com,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	peterz@infradead.org,
-	davem@davemloft.net,
-	andreas@gaisler.com,
-	richard.henderson@linaro.org,
-	mattst88@gmail.com,
-	linmag7@gmail.com,
-	catalin.marinas@arm.com,
-	mark.rutland@arm.com,
-	chenhuacai@kernel.org,
-	kernel@xen0n.name,
-	tsbogend@alpha.franken.de,
-	James.Bottomley@HansenPartnership.com,
-	deller@gmx.de,
-	maddy@linux.ibm.com,
-	mpe@ellerman.id.au,
-	chleroy@kernel.org,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	richard@nod.at,
+	Wed, 23 Sep 2026 05:05:17 +0000
+Received: by mail-dl2-x0f.google.com with SMTP id a92af1059eb24-142dd025d07so404646c88.2
+        for <linux-um@lists.infradead.org>; Tue, 22 Sep 2026 22:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790139915; x=1790744715; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=5EzYF6pBVx8SbOMcLOHwu2cxYGJaiivFeHPjTqK+kVc=;
+        b=HZcSJgrnIrBIWmel6AHx2Ge8wUEawd5y/AWpIE3zmra4MSiaGS9ovPy2ArDHyyTL0E
+         1ekAk/2jFuYtzL+b+qUOnuLa+PXtvhAIusRf0jGc+H2J17hvgBH7+oXbDIHsXr2jujgh
+         2DOM8d/bWi9eM/DmyEumYBHc+nWQdMeve/ocGl6pinMOyy8IXJIo1orGniOT4rPslxQo
+         WIxiOM1T5t3ORURBLdYnOXQZXUoxNUA/IySzb/+A57hmG5+jbtdh98kO9jbt4IGYHt36
+         eUZOQgYpI53WJlClSPmdX0MGRrfOD42zsKRgShqlKTUNGd9Dyj3RwX9vtcXSGlbx1HKK
+         zm0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790139915; x=1790744715;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=5EzYF6pBVx8SbOMcLOHwu2cxYGJaiivFeHPjTqK+kVc=;
+        b=jT2SXmtG4nFDS2XkAqfl29zu3ZQfO53wW3u9CvVY2fE/aDLVcCVlJ2E0q21U+k6YOh
+         EqKs8i1djgrJHwNPonYVyYjwuwdZS99OhzcQb+9Ypi/hWefwCbMPuXB4kDpdLkGmjjH8
+         2sbBk0zTofIMyRoo/16gKfd0sJdgUgbc6tgekanmSGxz9dQlZ85G07R1gieYfB00N4AU
+         Bv8rvo5y1pf/sgAzGNijF1zoUm9CV1BcxbOmahO0o5std6/CX2EbA43goqZBEcrmHcEl
+         BxMp2n6PHAGZQTsyyNN5hPXqQ80Ogsi2ZjX9KCSF3m+FGhBs2mfuXtBnFyAwl+nF/iWB
+         BmOQ==
+X-Forwarded-Encrypted: i=1; AKwUvBydA30T7olACqNThDv91sEjYB+o0T1WdDaE1B25OiFlIX98T5vxg0TQdDda1f/MLpvNLl+Mj6UEVQ==@lists.infradead.org
+X-Gm-Message-State: AFuF++nTuKy+oL6+RMmNOcZVnxKGt1PZ9n3ptmWclExjMZyO5UwcNH+u
+	jmwT7gVBviEwi5ohFmizwIKy9TtmRYgz2muRGHB8pUH/r1n4uf9Fqqrb
+X-Gm-Gg: AYBFou0FYHnhdWK4ycb6qjRC846kvvVKjBo3Aw9cxrTITXQFKcJS5E5nHRMtZASoxoO
+	KlnhzaYTzKYrXvJ7af9c2td29x/2rc100Xcx0vpOOwFiQQ0mFWTNfzfyJriLxNy35ENNJUc5ps8
+	VWc0wESAEKaA6D1cFhAe6kp5oyvOP6KXzRwH2N0HPk1FF0LDKUQ5oDWS81rSk1QfUT3gWx8nLok
+	jZX/aCfdMV/l710TzxENHWDCype1zCTjvvfndCHA1iCLziNfLSJud5EJQFjSk01uBghUZpCbhXd
+	Jg0ooXaOKQgZOoDHK6l4vR8bgLOolJLhJr4tBj2r5sQEs1bpE6K9XFp9mPAb0kEn56FFQ/u+fZF
+	9bpOOJHpi3jwKypjy7e0fOyjIYAJc/o/BD5Ww+VOq8hUvaEc+5PypAvmWG95HQbYodg2G+SqRZa
+	Rzx6nT2mPVpjxmmFtV6s8YSnWm9XvaId0HWaks5894VcbgSQUbOQOsD0m8MSxq9/FwoUpa+y9rM
+	43vrLa7Zhq8BDespR7GiySRPKEM
+X-Received: by 2002:a05:7023:902:b0:144:edc5:32d5 with SMTP id a92af1059eb24-144f915d60cmr1863121c88.22.1790139915132;
+        Tue, 22 Sep 2026 22:05:15 -0700 (PDT)
+Received: from homik.search.charter.net ([2603:8002:ad40:56f0:5377:c447:908c:8a13])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-144f983c5a1sm4481075c88.7.2026.09.22.22.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2026 22:05:14 -0700 (PDT)
+From: Mariia Nikitash <nikitash.mariiaw@gmail.com>
+To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	tglx@kernel.org,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	arnd@arndb.de,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	jgg@ziepe.ca,
-	jhubbard@nvidia.com,
-	peterx@redhat.com,
-	ysato@users.sourceforge.jp,
-	shakeel.butt@linux.dev,
-	corbet@lwn.net,
-	rdunlap@infradead.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arch@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	hughd@google.com,
-	qi.zheng@linux.dev,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 01/12] mm/khugepaged: deposit a newly allocated page table on collapse
-Date: Wed, 23 Sep 2026 10:24:36 +0800
-Message-ID: <20260923022436.61930-1-lance.yang@linux.dev>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20260922-rcu-pagetable-freeing-v4-1-fe1ad1f1e303@kernel.org>
-References: <20260922-rcu-pagetable-freeing-v4-1-fe1ad1f1e303@kernel.org>
+	alex.hung@amd.com,
+	linux-um@lists.infradead.org
+Cc: Mariia Nikitash <nikitash.mariiaw@gmail.com>
+Subject: Re: [PATCH] um: fix CONFIG_GCOV for built-in code
+Date: Tue, 22 Sep 2026 22:05:10 -0700
+Message-ID: <20260923050510.204386-1-nikitash.mariiaw@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260727195515.2306731-1-alex.hung@amd.com>
+References: <20260727195515.2306731-1-alex.hung@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260923_032453_417061_D6090A7D 
-X-CRM114-Status: GOOD (  21.50  )
+X-CRM114-CacheID: sfid-20260922_220516_811271_A8E2D6E7 
+X-CRM114-Status: UNSURE (   6.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -181,128 +103,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Alex,
 
-On Tue, Sep 22, 2026 at 04:35:32PM +0100, Lorenzo Stoakes (ARM) wrote:
->collapse_huge_page() deposits a PTE page table on PMD collapse in order
->that it can be utilised for subsequent split operations, meaning that those
->operations do not need to perform an allocation (as they are in a context
->where it might be unwise).
->
->However the PTE page table which is deposited is the one which is currently
->mapped by the PMD entry that is in the process of being collapsed.
->
->Once deposited, the PTE page table may be used in a split of any other
->unrelated PMD entry.
->
->This is currently not an issue as this operation is performed with VMA/mmap
->write lock + anon rmap locks held, so ordinary page table walkers will
->never accidentally end up walking the wrong thing, and GUP-fast is
->protected by an IPI via tlb_remove_table_sync_one().
->
->However, the series to which this commit belongs implements RCU-safe page
->table traversal, at which point this becomes problematic.
->
->This can be resolved by using pte_offset_map_lock() which gates on a PTE
->PTL and a pmd_same() check, but lockless walks are unsafe as things stand.
->
->Resolve this by simply allocating a new, zeroed, PTE page table to deposit
->at the point of collapse.
->
->This path is already costly and an allocation has already been performed
->for the huge folio, so this allocation is statistical noise in terms of
->performance and memory usage at this point.
->
->With this PTE page table deposited, RCU-free the existing PTE page table
->so it is safe for page table walkers to traverse within a grace period.
->
->This also brings this deposit case in line with all other page table
->deposit logic which deposit a fresh page table.
->
->Additionally, this was the only place in the kernel that displaced a page
->table like this, so eliminating it also helps consistency.
->
->An edge case for deposit exists for powerpc and its hash-based MMU - it
->stores hash slot data in deposited page tables and zeroes them on withdraw,
->so a zeroed deposited page table works correctly for it.
->
->Since khugepaged runs as a kernel thread, do a little dance in
->alloc_deposit_pte() to correctly charge the allocation.
->
->This is already done for the folio allocation via alloc_charge_folio() but
->no such wrapper exists for a page table allocation.
->
->Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
->---
-> mm/khugepaged.c | 32 ++++++++++++++++++++++++++++++--
-> 1 file changed, 30 insertions(+), 2 deletions(-)
->
->diff --git a/mm/khugepaged.c b/mm/khugepaged.c
->index f49a6710933b..dab421f8233e 100644
->--- a/mm/khugepaged.c
->+++ b/mm/khugepaged.c
->@@ -1278,6 +1278,23 @@ static enum scan_result alloc_charge_folio(struct folio **foliop, struct mm_stru
-> 	return SCAN_SUCCEED;
-> }
-> 
->+static pgtable_t alloc_deposit_pte(struct mm_struct *mm)
->+{
->+	/*
->+	 * khugepaged is run from a kernel thread, so need to manually set the
->+	 * correct memcg so the allocation gets charged correctly.
->+	 */
->+	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
->+	struct mem_cgroup *old_memcg = set_active_memcg(memcg);
->+	pgtable_t pgtable;
->+
->+	pgtable = pte_alloc_one(mm);
->+
->+	set_active_memcg(old_memcg);
->+	mem_cgroup_put(memcg);
->+	return pgtable;
->+}
->+
-> /*
->  * collapse_huge_page() expects the mmap_lock to be unlocked before entering and
->  * will always return with the lock unlocked, to avoid holding the mmap_lock
->@@ -1293,7 +1310,7 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
-> 	LIST_HEAD(compound_pagelist);
-> 	pmd_t *pmd, _pmd;
-> 	pte_t *pte = NULL;
->-	pgtable_t pgtable;
->+	pgtable_t pgtable = NULL;
-> 	struct folio *folio;
-> 	spinlock_t *pmd_ptl, *pte_ptl;
-> 	enum scan_result result = SCAN_FAIL;
->@@ -1310,6 +1327,12 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
-> 		goto out_nolock;
-> 	}
-> 
->+	if (is_pmd_order(order)) {
->+		pgtable = alloc_deposit_pte(mm);
->+		if (!pgtable)
->+			goto out_nolock;
+I tested this while investigating GCC/GCOV coverage under UML using KUnit.
 
-One small thing: result is still SCAN_SUCCEED after alloc_charge_folio(),
+Tested on:
+  Architecture: x86_64 UML
+  Kernel: v7.3-rc3-61-gbc77531b2a6f
+  KUnit configs: default.config + coverage_uml.config
+  Compilers: GCC 13.3.0 and GCC 16.2.0
 
-	result = alloc_charge_folio(&folio, mm, cc, order);
-	if (result != SCAN_SUCCEED)
-		goto out_nolock;
+With GCC 13.3, the unpatched tree produced 731 .gcno files and
+0 .gcda files after the KUnit run. With the patch applied, the
+same run produced 731 .gcno files and 704 .gcda files, and LCOV
+was able to generate coverage successfully.
 
-	if (folio_memcg_alloc_deferred(folio)) {
-		result = SCAN_ALLOC_HUGE_PAGE_FAIL;
-		goto out_nolock;
-	}
+I also reproduced the same result with GCC 16.2:
 
-	if (is_pmd_order(order)) {
-		pgtable = alloc_deposit_pte(mm);
-		if (!pgtable)
-			goto out_nolock;
-	}
+  without patch: 731 .gcno / 0 .gcda
+  with patch:    731 .gcno / 704 .gcda
 
-so if alloc_deposit_pte() fails, collapse_huge_page() returns success
-without installing a PMD.
+LCOV coverage generation also completed successfully with GCC 16.2.
 
-I see sashiko pointed that out too :)
+Tested-by: Mariia Nikitash <nikitash.mariiaw@gmail.com>
 
-Cheers, Lance
+Thanks,
+Mariia
 
