@@ -4,118 +4,169 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D23C982FA
-	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 01:27:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 409D7C98302
+	for <linux-um@archiver.kernel.org>; Wed, 23 Sep 2026 02:25:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lWen8M3Dy9y4fMx+Bf5KiQ+THttX5a/EDRsfysX8uYE=; b=xOC3Z9UtpYKIfWdutwg7dwvrML
-	43QkstXsGBeQrpZivEF8mMZzLqyylPmHghpw0EAaBg5ioUGxXf8m9p0nkubwg4CM8C/YC8e0uFmbj
-	yqaEDpGwdoc3dMlTZoxVmxOhM4Cene758qioj1wz9HeA0C+xYDG+fv93ZIWOzJpcGtcsjvaibcAkl
-	u3UC/FFWe63+ETSt0VKRzZctCJ3cOiWVI8yPL/b/OYHngQBE8CgMMhwVw/32gXsuArRcXJMw4YVR6
-	c8EwSDeMe2DoT2yvDTPl6dEjkKwuftHzQ6O/IdhNV4FKTs4CW9wQJN/8g0yB8QzQdHDMq0EhRI8Em
-	FErOiqOg==;
+	bh=89+U8KAEwLqIX9mpcp+eoIG3lsJI+yoRSssy/pmscRA=; b=r7iFYiPjC6FAtBreoQTY2K3BYi
+	aYdgTfpVbA6WJfArMSy9kwMGfSfgnwPYMsDAz6iBjv42gnay1uniKfe+YinXoO7ujSuzYhAW5/bwU
+	mg59hmAdhsSu9+YsfdP+J4z3JsuUmNxhxyEG+FWRwrVG+FXw7P5orqu2NWpKXex95tJ+kkMWcbAnf
+	T094CT8C5XE7cAjeP+3DX8E4JPz3waaQdLcqaPJ63Vvwo91nPBsnAPF2o6mrrvhNlFmYW7Nuu9Zxh
+	yHjtCJO3cLzw3ibazVzMyrYMXx00hD2GSs1QOhYz4H6M1QXfOFSN4skhBooySAXkV4D1rGTBKb3XT
+	0ks0dtvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9Blk-00000006qcC-1Vrf;
-	Wed, 23 Sep 2026 01:27:32 +0000
-Received: from mail-yx2-x0f.google.com ([2607:f8b0:4864:41::f])
+	id 1x9CfO-00000006vxe-1O8S;
+	Wed, 23 Sep 2026 02:25:02 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9Blh-00000006qbo-1ors
+	id 1x9CfI-00000006vtT-0WJf
+	for linux-um@bombadil.infradead.org;
+	Wed, 23 Sep 2026 02:24:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=89+U8KAEwLqIX9mpcp+eoIG3lsJI+yoRSssy/pmscRA=; b=Jz3JDldX8EPKuficTgME69E3Dy
+	zTyDhv2wZsNU0IpyD9IweSwdNyYLESxmqyPqez/zuj/7/f1SmvvcqhF3Bqt5AXffTY5mgpWWn5Zz1
+	UlvcpxPmxATnYaat2ipZSqZ3WTfrlwzvZv2gBzEeAbwtD7kL6ujYc4iIqCJ4054WjICqeLqblslJG
+	xEA8+TrBFC1bC3i1tuvMUcu6MALmmDOGrGKzgfEbBTSU/qWxKNbNnJ7VpUQnJ0KtC2jx+nvIPV0Ue
+	q5vP8ACyL4HGqKJNd+XbQMQurn3To0LkgloHmfuBarFVscpWh+pjGTCdxAUASnnBxGS5x/0O9cMh8
+	g4zgIhHw==;
+Received: from out-136.mta1.migadu.com ([2001:41d0:203:375::88] helo=mta1.migadu.com)
+	by desiato.infradead.org with esmtps (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1x9CfD-0000000EHEO-3EXp
 	for linux-um@lists.infradead.org;
-	Wed, 23 Sep 2026 01:27:30 +0000
-Received: by mail-yx2-x0f.google.com with SMTP id 00721157ae682-85d45ae011cso7022517b3.2
-        for <linux-um@lists.infradead.org>; Tue, 22 Sep 2026 18:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790126848; x=1790731648; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=lWen8M3Dy9y4fMx+Bf5KiQ+THttX5a/EDRsfysX8uYE=;
-        b=sfGpsjTv0UFP2EBUK042RZ6yTVncJPOJ81ct3jOtiSmYPkS5JdMIH1Mib7TLNKH2kI
-         ITyjLNv4sNtxtUoKQqWPjSXbkGPfCK5TUIz7Rp2iadedI7k5LkeJWNsrcvRUjR3iE0Pj
-         Rqqksn/1h7XaWRmatgS3q1ZoW8/EgK23VkmNgo9eHd9/JrP4bSKCdbnHJaI1W1LeM5bK
-         m0n9F132OV5HJfJS4aJg2mSzR4ni0AePtprdGEGIv5yWHr2RuusJvtP7EUSvG1rqyqWI
-         +He/jr0RwSERn8kw0LsfQbmeGdxeCTljhmi15Jzlf0b/ZHhzz1n04G1X60Ss7Naf5hgG
-         TMEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790126848; x=1790731648;
-        h=content-transfer-encoding:content-type:mime-version:subject
-         :references:in-reply-to:message-id:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=lWen8M3Dy9y4fMx+Bf5KiQ+THttX5a/EDRsfysX8uYE=;
-        b=Q0iOLhPL3YdwZn+za/FcN05Z/7dtsN5Qmx26PiRqIsNzRwSIPyl7jSdZFGlkwB+eBB
-         2DTqBXl691m8SbOeHaN5lUEvk7fHeyb4sp2s3Rj8tkIHuor7J861VJzO6fWymFyPggf/
-         2o6wJcOKXF/Emqbalp3v4Id8ApARJ8Ne9lKhDCHH1dQE8ZCu3d08AoDRA+ThT+cfP0jN
-         VQbv5Kg9SVwnypdsfJrADZfQawBDgn5Os+aA6bcVFWBpNBf3DFOFJeOcUxKuL/cHS4eS
-         TRQxgYirR8832j8UgJUynrtHa/LTKi5eHDw4Jv/P3iRnDoY3YAZHu0sLqk4ecMTrh+Y+
-         3DaA==
-X-Forwarded-Encrypted: i=1; AKwUvBzpxNv3lG5hZMUhZMsm68i/FVDY872Mw1Hel10nb5hd8V0GgT5IDUzyumGWFj4Jj+acv5KZqfZGmA==@lists.infradead.org
-X-Gm-Message-State: AFuF++mQa8xzApXDHe257ZQ3MbltB0L0/GujNc6eQ+VPbiiPImQsRp6F
-	4kcdB2pkrB1Sub52HRA0bY6SjiqwUGRsYP8fVBGPpzsKr8CZCQEPMUYG
-X-Gm-Gg: AYBFou1jdu3jPsK50JLtWyZ+ekpJnV5CROnVoZywFUI/7tgEWUDuCGqYTkJgKwreJT4
-	8xb61QgwmT4660Q0GfmwLwREQXuyYWApV7vHcaBzq+iMvOpGMr9CFMRcNa5pR5F0X1FHAo6RoXs
-	hY3i4jOa//Dqd1dHRsyzIO/NwqGxGlmJ3NoU5uP7HBkS0oY0p2DzSgSeCYJW62NOXKwNkj4pZ2v
-	SPEP+B3iUlzr0uKjJqNCLvIiUZXGCSK7q4UrRXkx4s+uIwLhAr9AoT6ANA+UneBU6OCB7+ZWk9T
-	XwY/ML6/DfRHJsU9Dbzh0Xma1zGYa1gRknokY3V1kZdeVDXowa6oBnuJ9eebDyzwrh3ekFz+xqI
-	063xbNOCK/2g6wmWsmV0Pf8xcjCaA93QFj7skdQkUttIVdmeKe2ICjy8M47eGmI0LlKWQHwIvcX
-	4HC6gF7Jym0LeOYLtX14G8Qo+6Vm5AAe9eDRuMoybQHWRjaUt7R4pL1d4eHz3/2hMHWQzNrBJBI
-	0XcSyWBfp9djyZ0wqt2PlD0O/jOxrlbEzU/DYorwCUa7o/8OFIF
-X-Received: by 2002:a05:690c:a703:b0:87c:32da:de03 with SMTP id 00721157ae682-8a45bb75aeemr4672467b3.69.1790126848128;
-        Tue, 22 Sep 2026 18:27:28 -0700 (PDT)
-Received: from gmail.com (111.46.245.35.bc.googleusercontent.com. [35.245.46.111])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-8a465dc9ebcsm4427937b3.20.2026.09.22.18.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2026 18:27:27 -0700 (PDT)
-Date: Tue, 22 Sep 2026 21:27:26 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Paulos Yibelo <habte.yibelo@gmail.com>, 
- netdev@vger.kernel.org
-Cc: richard@nod.at, 
- anton.ivanov@cambridgegreys.com, 
- johannes@sipsolutions.net, 
- willemdebruijn.kernel@gmail.com, 
- jasowangio@gmail.com, 
- mst@redhat.com, 
- eperezma@redhat.com, 
- xuanzhuo@linux.alibaba.com, 
- andrew+netdev@lunn.ch, 
- pablo@netfilter.org, 
- fw@strlen.de, 
- phil@nwl.cc, 
- razor@blackwall.org, 
- idosch@nvidia.com, 
- dsahern@kernel.org, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- horms@kernel.org, 
- linux-um@lists.infradead.org, 
- virtualization@lists.linux.dev, 
- netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, 
- bridge@lists.linux.dev, 
- linux-kernel@vger.kernel.org
-Message-ID: <willemdebruijn.kernel.2cdfef118aa1d@gmail.com>
-In-Reply-To: <willemdebruijn.kernel.259bc7096258d@gmail.com>
-References: <20260922030310.8684-1-habte.yibelo@gmail.com>
- <20260922030310.8684-2-habte.yibelo@gmail.com>
- <willemdebruijn.kernel.259bc7096258d@gmail.com>
-Subject: Re: [PATCH net v6 1/2] net: validate virtio checksum start after
- network header
+	Wed, 23 Sep 2026 02:24:54 +0000
+X-Envelope-To: linux-um@lists.infradead.org
+DKIM-Signature: a=rsa-sha256; bh=d3FVAdMqEDWFoCMHxuxCTxk+fOdRBfvFdCrMB1cIOo0=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1790130288; v=1; x=1790735088;
+ b=vPZ4E84zbeYdbcYUPqARcRRcZxPfiGBlaL4PAuaHXWDiFZtVFBCwAPe9GTMwSgv35SukmmLL
+ Vh1YGT9fIt58glkv61GDGfTnw/1TQqMW3uQrqGhhhx7WrEDMNAQEncFoye+lA/7ZSD9sslqDRC1
+ eAD/i7YtPjU8V7XwwvGCLElw=
+X-Envelope-To: linux-um@lists.infradead.org
+Received: by smtp.migadu.com with ESMTPS id b86f8e4163d69484;
+	Wed, 23 Sep 2026 02:24:43 +0000
+X-Mizu-Trace-ID: b86f8e4163d69484
+X-Migadu-Flow: FLOW_OUT
+From: Lance Yang <lance.yang@linux.dev>
+To: ljs@kernel.org
+Cc: akpm@linux-foundation.org,
+	david@kernel.org,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	liam@infradead.org,
+	nico.pache@linux.dev,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	baohua@kernel.org,
+	lance.yang@linux.dev,
+	usama.arif@linux.dev,
+	kas@kernel.org,
+	guoren@kernel.org,
+	bcain@kernel.org,
+	geert@linux-m68k.org,
+	dinguyen@kernel.org,
+	schuster.simon@siemens-energy.com,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com,
+	dalias@libc.org,
+	glaubitz@physik.fu-berlin.de,
+	pjw@kernel.org,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	alex@ghiti.fr,
+	linux@armlinux.org.uk,
+	vgupta@kernel.org,
+	monstr@monstr.eu,
+	chris@zankel.net,
+	jcmvbkbc@gmail.com,
+	will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	davem@davemloft.net,
+	andreas@gaisler.com,
+	richard.henderson@linaro.org,
+	mattst88@gmail.com,
+	linmag7@gmail.com,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	deller@gmx.de,
+	maddy@linux.ibm.com,
+	mpe@ellerman.id.au,
+	chleroy@kernel.org,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com,
+	svens@linux.ibm.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	tglx@kernel.org,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	arnd@arndb.de,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	jgg@ziepe.ca,
+	jhubbard@nvidia.com,
+	peterx@redhat.com,
+	ysato@users.sourceforge.jp,
+	shakeel.butt@linux.dev,
+	corbet@lwn.net,
+	rdunlap@infradead.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	hughd@google.com,
+	qi.zheng@linux.dev,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 01/12] mm/khugepaged: deposit a newly allocated page table on collapse
+Date: Wed, 23 Sep 2026 10:24:36 +0800
+Message-ID: <20260923022436.61930-1-lance.yang@linux.dev>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-1-fe1ad1f1e303@kernel.org>
+References: <20260922-rcu-pagetable-freeing-v4-1-fe1ad1f1e303@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260922_182729_502270_F96BD7DA 
-X-CRM114-Status: GOOD (  22.16  )
+X-CRM114-CacheID: sfid-20260923_032453_417061_D6090A7D 
+X-CRM114-Status: GOOD (  21.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,134 +181,128 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Willem de Bruijn wrote:
-> Paulos Yibelo wrote:
-> > __virtio_net_hdr_to_skb() checks a minimum network-header length for
-> > CHECKSUM_PARTIAL packets. Its checksum start is relative to skb->data,
-> > but some callers have not established skb->network_header when they
-> > convert the virtio header.
-> > 
-> > Pass the data-relative L3 origin explicitly. Ethernet receive paths
-> > parse the frame and nested VLAN headers without changing skb state.
-> > AF_PACKET uses the frame's actual L3 origin even when the socket
-> > protocol is ETH_P_IP and the raw frame carries VLAN tags. Non-Ethernet
-> > AF_PACKET devices retain their established skb network offset.
-> > 
-> > Also pass the actual L3 protocol so IPv6 packets use the 40-byte base
-> > header minimum even without TCPv6 GSO. IFF_TUN obtains that protocol
-> > from the packet before skb->protocol is set. Name the Ethernet parser
-> > accordingly, use the same origin for tunnel validation, and propagate
-> > conversion failures in UML.
-> > 
-> > The bound remains a minimum; fragmentation paths separately validate
-> > the parsed IPv4 or IPv6 header length before completing a checksum.
-> > 
-> > Fixes: 49d14b54a527 ("net: test for not too small csum_start in virtio_net_hdr_to_skb()")
-> > Fixes: a2fb4bc4e2a6 ("net: implement virtio helpers to handle UDP GSO tunneling.")
-> > Reported-by: Paulos Yibelo <habte.yibelo@gmail.com>
-> > Link: https://lore.kernel.org/netdev/20260920004733.6473-2-habte.yibelo@gmail.com/
-> > Cc: stable@vger.kernel.org
-> > Assisted-by: LLM
-> > Signed-off-by: Paulos Yibelo <habte.yibelo@gmail.com>
-> > ---
-> >  arch/um/drivers/vector_transports.c | 13 ++++-
-> >  drivers/net/tun_vnet.h              | 52 ++++++++++++++++-
-> >  drivers/net/virtio_net.c            | 10 +++-
-> >  include/linux/virtio_net.h          | 87 ++++++++++++++++++++++++-----
-> >  net/packet/af_packet.c              | 24 +++++++-
-> >  5 files changed, 163 insertions(+), 23 deletions(-)
-> 
-> The fix may still miss the case IPv4 packets have options.
-> 
-> This version is a very large patch.
-> 
-> Untested shorter first suggestion by bot, which looks plausible as a
-> starting point for discussion.
 
-Cleaned up some more:
+On Tue, Sep 22, 2026 at 04:35:32PM +0100, Lorenzo Stoakes (ARM) wrote:
+>collapse_huge_page() deposits a PTE page table on PMD collapse in order
+>that it can be utilised for subsequent split operations, meaning that those
+>operations do not need to perform an allocation (as they are in a context
+>where it might be unwise).
+>
+>However the PTE page table which is deposited is the one which is currently
+>mapped by the PMD entry that is in the process of being collapsed.
+>
+>Once deposited, the PTE page table may be used in a split of any other
+>unrelated PMD entry.
+>
+>This is currently not an issue as this operation is performed with VMA/mmap
+>write lock + anon rmap locks held, so ordinary page table walkers will
+>never accidentally end up walking the wrong thing, and GUP-fast is
+>protected by an IPI via tlb_remove_table_sync_one().
+>
+>However, the series to which this commit belongs implements RCU-safe page
+>table traversal, at which point this becomes problematic.
+>
+>This can be resolved by using pte_offset_map_lock() which gates on a PTE
+>PTL and a pmd_same() check, but lockless walks are unsafe as things stand.
+>
+>Resolve this by simply allocating a new, zeroed, PTE page table to deposit
+>at the point of collapse.
+>
+>This path is already costly and an allocation has already been performed
+>for the huge folio, so this allocation is statistical noise in terms of
+>performance and memory usage at this point.
+>
+>With this PTE page table deposited, RCU-free the existing PTE page table
+>so it is safe for page table walkers to traverse within a grace period.
+>
+>This also brings this deposit case in line with all other page table
+>deposit logic which deposit a fresh page table.
+>
+>Additionally, this was the only place in the kernel that displaced a page
+>table like this, so eliminating it also helps consistency.
+>
+>An edge case for deposit exists for powerpc and its hash-based MMU - it
+>stores hash slot data in deposited page tables and zeroes them on withdraw,
+>so a zeroed deposited page table works correctly for it.
+>
+>Since khugepaged runs as a kernel thread, do a little dance in
+>alloc_deposit_pte() to correctly charge the allocation.
+>
+>This is already done for the folio allocation via alloc_charge_folio() but
+>no such wrapper exists for a page table allocation.
+>
+>Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+>---
+> mm/khugepaged.c | 32 ++++++++++++++++++++++++++++++--
+> 1 file changed, 30 insertions(+), 2 deletions(-)
+>
+>diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+>index f49a6710933b..dab421f8233e 100644
+>--- a/mm/khugepaged.c
+>+++ b/mm/khugepaged.c
+>@@ -1278,6 +1278,23 @@ static enum scan_result alloc_charge_folio(struct folio **foliop, struct mm_stru
+> 	return SCAN_SUCCEED;
+> }
+> 
+>+static pgtable_t alloc_deposit_pte(struct mm_struct *mm)
+>+{
+>+	/*
+>+	 * khugepaged is run from a kernel thread, so need to manually set the
+>+	 * correct memcg so the allocation gets charged correctly.
+>+	 */
+>+	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
+>+	struct mem_cgroup *old_memcg = set_active_memcg(memcg);
+>+	pgtable_t pgtable;
+>+
+>+	pgtable = pte_alloc_one(mm);
+>+
+>+	set_active_memcg(old_memcg);
+>+	mem_cgroup_put(memcg);
+>+	return pgtable;
+>+}
+>+
+> /*
+>  * collapse_huge_page() expects the mmap_lock to be unlocked before entering and
+>  * will always return with the lock unlocked, to avoid holding the mmap_lock
+>@@ -1293,7 +1310,7 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
+> 	LIST_HEAD(compound_pagelist);
+> 	pmd_t *pmd, _pmd;
+> 	pte_t *pte = NULL;
+>-	pgtable_t pgtable;
+>+	pgtable_t pgtable = NULL;
+> 	struct folio *folio;
+> 	spinlock_t *pmd_ptl, *pte_ptl;
+> 	enum scan_result result = SCAN_FAIL;
+>@@ -1310,6 +1327,12 @@ static enum scan_result collapse_huge_page(struct mm_struct *mm, unsigned long s
+> 		goto out_nolock;
+> 	}
+> 
+>+	if (is_pmd_order(order)) {
+>+		pgtable = alloc_deposit_pte(mm);
+>+		if (!pgtable)
+>+			goto out_nolock;
 
-    diff --git a/drivers/net/tun_vnet.h b/drivers/net/tun_vnet.h
-    index f4c652b1fa44..c24607af2aad 100644
-    --- a/drivers/net/tun_vnet.h
-    +++ b/drivers/net/tun_vnet.h
-    @@ -180,6 +180,9 @@ static inline int tun_vnet_hdr_put(int sz, struct iov_iter *iter,
-     static inline int tun_vnet_hdr_to_skb(unsigned int flags, struct sk_buff *skb,
-                           const struct virtio_net_hdr *hdr)
-     {
-    +    if ((flags & TUN_TYPE_MASK) == IFF_TUN)
-    +        skb_reset_network_header(skb);
-    +
-         return virtio_net_hdr_to_skb(skb, hdr, tun_vnet_is_little_endian(flags));
-     }
-     
-    @@ -199,6 +202,9 @@ tun_vnet_hdr_tnl_to_skb(unsigned int flags, netdev_features_t features,
-                 struct sk_buff *skb,
-                 const struct virtio_net_hdr_v1_hash_tunnel *hdr)
-     {
-    +    if ((flags & TUN_TYPE_MASK) == IFF_TUN)
-    +        skb_reset_network_header(skb);
-    +
+One small thing: result is still SCAN_SUCCEED after alloc_charge_folio(),
 
-    diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-    index c381b916c1b5..02c448de0802 100644
-    --- a/include/linux/virtio_net.h
-    +++ b/include/linux/virtio_net.h
-    @@ -48,6 +48,42 @@ static inline int virtio_net_hdr_set_proto(struct sk_buff *skb,
-         return 0;
-     }
-     
-    +static inline int virtio_net_hdr_nh_min_len(const struct sk_buff *skb,
-    +                        unsigned int nh_min_len)
-    +{
-    +    int thoff = skb_transport_offset(skb);
-    +    __be16 proto;
-    +    int nhoff;
-    +
-    +    if (skb_network_header_was_set(skb)) {
-    +        nhoff = skb_network_offset(skb);
-    +        proto = skb->protocol;
-    +    } else {
-    +        if (unlikely(thoff < ETH_HLEN))
-    +            return -EINVAL;
-    +        nhoff = ETH_HLEN;
-    +        proto = eth_hdr(skb)->h_proto;
-    +    }
-    +
-    +    if (eth_type_vlan(proto)) {
-    +        proto = __vlan_get_protocol(skb, proto, &nhoff);
-    +        if (!proto)
-    +            return -EINVAL;
-    +    }
-    +
-    +    if (proto == htons(ETH_P_IP)) {
-    +        const struct iphdr *iph = (void *)(skb->data + nhoff);
-    +
-    +        if (unlikely(thoff < nhoff + sizeof(*iph)))
-    +            return -EINVAL;
-    +        nh_min_len = max_t(u32, iph->ihl * 4, sizeof(*iph));
-    +    } else if (proto == htons(ETH_P_IPV6)) {
-    +        nh_min_len = sizeof(struct ipv6hdr);
-    +    }
-    +
-    +    return nhoff + nh_min_len;
-    +}
-    +
-     static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
-                           const struct virtio_net_hdr *hdr,
-                           bool little_endian, u8 hdr_gso_type)
-    @@ -98,13 +134,15 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
-             u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
-             u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
-             u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
-    +        int min_thoff;
-     
-             if (!pskb_may_pull(skb, needed))
-                 return -EINVAL;
-     
-             if (!skb_partial_csum_set(skb, start, off))
-                 return -EINVAL;
-    -        if (skb_transport_offset(skb) < nh_min_len)
-    +        min_thoff = virtio_net_hdr_nh_min_len(skb, nh_min_len);
-    +        if (min_thoff < 0 || skb_transport_offset(skb) < min_thoff)
-                 return -EINVAL;
+	result = alloc_charge_folio(&folio, mm, cc, order);
+	if (result != SCAN_SUCCEED)
+		goto out_nolock;
+
+	if (folio_memcg_alloc_deferred(folio)) {
+		result = SCAN_ALLOC_HUGE_PAGE_FAIL;
+		goto out_nolock;
+	}
+
+	if (is_pmd_order(order)) {
+		pgtable = alloc_deposit_pte(mm);
+		if (!pgtable)
+			goto out_nolock;
+	}
+
+so if alloc_deposit_pte() fails, collapse_huge_page() returns success
+without installing a PMD.
+
+I see sashiko pointed that out too :)
+
+Cheers, Lance
 
