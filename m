@@ -4,57 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47675C98310
-	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 06:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EC85C98314
+	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 07:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=21jpBxmvuQ92CO8E8Zg7rELSGSLKN9AW+6p0kf6nq1U=; b=1FbuDQr9hmsOClTbU5d873JFT7
-	HBSEpEB3Sy9xto3sWjOEL2CZWu84mA87S1aBs4RPW8mEbJMkJ0Z8PpiOjelUEttD+ZVWPmOzP3cSc
-	I66j0i/c/DDosA6RzThMZlTz5luyPJ9Uhj99k7EhYebFZTTFlDkDrm1UzV7Ni0Z5LmgTVgY548waQ
-	C1U6XW28Loayygp3fl75IzYgY0nlc0IX4JKod4pQ5k3wmmJfBYdkiG8POfjzofXGL+EKKEIw9qYQ6
-	VXRII4EqzOkV/EfuLYxLGbMQSt0XoYSb7auSU2N0gumU10Ktmw8n8YqdM778+O2/H6MMoqtjFRvRy
-	x3SJJ+tA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=8XF4GERg8wBeW3ubUb+zC5tRVKKAYGhsksCUCrCMyIE=; b=oyRK3VOd3/jH0W5XC3ZrRRDje1
+	R4EPbdw6bPWz8voinBzgnl0czhMwdr9Kgv9k10VPCKk3trHrDtZswLOoE6OqlN4fGbQVkQbsxu6us
+	0ukzYaxXPwKHaDfURoeCh2+5WnzTFZ4evFHISyKKNp6b/Xlu4JGcxA5w7a/HP7oC+HFl0DgKrBfZG
+	lYUAU/Xo+bGgTaeZnnvfltdbPZkJNqEjVSvJoYUBveH0KcRdbcMx50G+opIDXUeAduC2zz8D+aTs4
+	l5dyS2JERChS6/XTr6EJ1RZjr9ZZ4neQZTiQ9M8KqCa01mn0rMrctbLY8yAqZB3NkeIuOB8fTQJdc
+	fF6WO9WQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9dHW-0000000ABZ2-428y;
-	Thu, 24 Sep 2026 06:50:10 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1x9eIW-0000000AM3T-1Jgu;
+	Thu, 24 Sep 2026 07:55:16 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9dHU-0000000ABXQ-2HpS
-	for linux-um@lists.infradead.org;
-	Thu, 24 Sep 2026 06:50:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=21jpBxmvuQ92CO8E8Zg7rELSGSLKN9AW+6p0kf6nq1U=; t=1790232608; x=1791442208; 
-	b=LHn459pkASBqIa4WtKC1AKbNaCDj3nhWP1hAWE9783j+jT3kkKN+xYQH1JT8wuZcYQZhBkHlro7
-	hB13ghuOW6+6EUErU0SlZS+vpimJH9NM+6taNtL/i1T2KenoLJmuDkXZBM+8vXc5/B50dfhz3qyKM
-	zrPtRvactcd9iG/PedfHOZVwUxT0GHC2dgcPyKGU0L+8VKUNgUFw4Jqyym+w95brtzPG9wiayuje6
-	eWiGqeMavu5bxQ252h67F1/oZxrCd0w7WOaB8FZOn4IbYnjWI3RhZIoJx5fhepJueE8y8o7fRFF0c
-	t4MRBnGnTubVom0Nd9sbZN+xXhckdwrZP3Ag==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1x9dHQ-00000008t1V-2KYe;
-	Thu, 24 Sep 2026 08:50:04 +0200
-From: Johannes Berg <johannes@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] um: use %pB to print functions in stack traces
-Date: Thu, 24 Sep 2026 08:50:01 +0200
-Message-ID: <20260924085002.3ff9ca1de60a.I5ff299b6f3196ad3c51c3032a90c7158c1bbccda@changeid>
-X-Mailer: git-send-email 2.55.0
+	id 1x9eIT-0000000AM2S-32xU;
+	Thu, 24 Sep 2026 07:55:13 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 9B826417DD;
+	Thu, 24 Sep 2026 07:55:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7BC1F000FF;
+	Thu, 24 Sep 2026 07:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790236512;
+	bh=8XF4GERg8wBeW3ubUb+zC5tRVKKAYGhsksCUCrCMyIE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=lvFYpHpVMwPBfEiIuvmYeJUUzULg6cdEWSx4iWYVWk727A5rZV5bpt/5Sjkl2pSTJ
+	 +koGcSegVzDsG20kO8t41OXmh6KWyi8RNfZl2ErJwNIuTh23tjzoeT8Dv37tsGeg79
+	 61gp8tpMx2xIK3zP8kYJIEm2UGPz0MsuiqmNKxY9v5C+ubE70585sEQgHP0rrKt73G
+	 695MVjPFlFxGNvVaOlYp2A83auWFA74egHtR5nruPWwDU0nzqWrYwTTl+K4hgYPEPV
+	 DQ3pwEy3zgSLOIKKJ8W+2SiDFy6P5qvxi1PY+qb9cXOQdaC3iHQ+VtthIr/FlkyQ/I
+	 POZQV/h73LJFA==
+Date: Thu, 24 Sep 2026 08:54:49 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: Lance Yang <lance.yang@linux.dev>
+Cc: akpm@linux-foundation.org, david@kernel.org, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, liam@infradead.org, nico.pache@linux.dev, ryan.roberts@arm.com, 
+	dev.jain@arm.com, baohua@kernel.org, usama.arif@linux.dev, kas@kernel.org, 
+	guoren@kernel.org, bcain@kernel.org, geert@linux-m68k.org, dinguyen@kernel.org, 
+	schuster.simon@siemens-energy.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, 
+	shorne@gmail.com, dalias@libc.org, glaubitz@physik.fu-berlin.de, pjw@kernel.org, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, linux@armlinux.org.uk, 
+	vgupta@kernel.org, monstr@monstr.eu, chris@zankel.net, jcmvbkbc@gmail.com, 
+	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org, 
+	davem@davemloft.net, andreas@gaisler.com, richard.henderson@linaro.org, 
+	mattst88@gmail.com, linmag7@gmail.com, catalin.marinas@arm.com, mark.rutland@arm.com, 
+	chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, 
+	chleroy@kernel.org, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
+	borntraeger@linux.ibm.com, svens@linux.ibm.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@kernel.org, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	arnd@arndb.de, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, jgg@ziepe.ca, jhubbard@nvidia.com, peterx@redhat.com, 
+	ysato@users.sourceforge.jp, shakeel.butt@linux.dev, corbet@lwn.net, rdunlap@infradead.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, hughd@google.com, 
+	qi.zheng@linux.dev, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 12/12] mm: change the contract for free_pgtables(),
+ update docs
+Message-ID: <arTXJXUhjNTWz9Ga@gremlin>
+References: <20260922-rcu-pagetable-freeing-v4-12-fe1ad1f1e303@kernel.org>
+ <20260924032625.28555-1-lance.yang@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260923_235008_642718_0BCB6898 
-X-CRM114-Status: GOOD (  11.62  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260924032625.28555-1-lance.yang@linux.dev>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,46 +95,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Thu, Sep 24, 2026 at 11:26:25AM +0800, Lance Yang wrote:
+>
+> On Tue, Sep 22, 2026 at 04:35:43PM +0100, Lorenzo Stoakes (ARM) wrote:
+> >Now that page tables are freed after an RCU grace period, it is safe for
+> >read-only page table walkers to walk page table ranges that are being
+> >concurrently torn down, provided the mm is kept alive via mmgrab().
+> >
+> >It is however unsafe for writers to do so, as they must obtain an
+> >appropriate lock to do so safely.
+> >
+> >Update the pte_offset_map_lock()'s comment block to reflect this.
+> >
+> >Similarly update the process addresses documentation.
+> >
+> >Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+> >Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> >---
+> > Documentation/mm/process_addrs.rst |  6 ++++++
+> > mm/pgtable-generic.c               | 15 +++++++++++----
+> > 2 files changed, 17 insertions(+), 4 deletions(-)
+> >
+> >diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
+> >index a7296f251799..b1f4f44d75eb 100644
+> >--- a/Documentation/mm/process_addrs.rst
+> >+++ b/Documentation/mm/process_addrs.rst
+> >@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
+> > * When changing a page table entry the page table lock for that page table
+> >   **must** be held, except if you can safely assume nobody can access the page
+> >   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
+> >+* Page tables may be *walked* under RCU alone, as page tables are freed only
+> >+  after an RCU grace period has elapsed. However, any entry found must be
+> >+  revalidated after the page table lock is taken (such as the
+> >+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
+> >+  before it is acted upon. Changing an entry requires the page table
+> >+  lock and one of the locks that excludes teardown (mmap or VMA lock).
+>
+> What about rmap walkers? try_to_unmap() clears PTEs under the rmap lock
+> and PTL, without an mmap or VMA lock.
 
-In a stack trace we get the return address, so if the call is at
-the end of a function, it can get printed as the next function,
-e.g.
+That's an abomination but yep will update.
 
-  vpanic+0x1d3/0x435
-  abort+0x0/0x4e
-  do_exit+0x29c/0xcb7
-  sys_exit_group+0x0/0x16
-  pid_child_should_wake+0x0/0x83
+>
+> Cheers, Lance
+>
+> > * Reads from and writes to page table entries must be *appropriately*
+> >   atomic. See the section on atomicity below for details.
+> > * Populating previously empty entries requires that the mmap or VMA locks are
+> >diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+> >index b91b1a98029c..a127e3e8f9b9 100644
+> >--- a/mm/pgtable-generic.c
+> >+++ b/mm/pgtable-generic.c
+> >@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
+> >  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
+> >  * be read-only/read-write protected.
+> >  *
+> >- * Note that free_pgtables(), used after unmapping detached vmas, or when
+> >- * exiting the whole mm, does not take page table lock before freeing a page
+> >- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
+> >- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
+> >+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
+> >+ * the whole mm, does not take a page table lock before freeing a page table.
+> >+ *
+> >+ * As page table freeing itself is RCU-safe, page table readers can safely run
+> >+ * concurrently with page table teardown.
+> >+ *
+> >+ * However, writers CANNOT as, without a lock being held, nothing prevents
+> >+ * concurrent teardown.
+> >+ *
+> >+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
+> >+ * the walker must keep the mm alive either by pinning the mm or the VMA.
+> >  */
+> > pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
+> > 			   unsigned long addr, spinlock_t **ptlp)
+> >
+> >--
+> >2.55.0
+> >
+> >
 
-Use %pB like on x86, which resolves the name with address - 1,
-in the same example I get:
-
-  vpanic+0x1d3/0x435
-  panic+0x55/0x55
-  do_exit+0x29c/0xcb7
-  do_group_exit+0xbe/0xbe
-  sys_exit_group+0x16/0x16
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/sysrq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
-index 13ee5666668d..5a2c28e09294 100644
---- a/arch/um/kernel/sysrq.c
-+++ b/arch/um/kernel/sysrq.c
-@@ -18,7 +18,7 @@ static void _print_addr(void *data, unsigned long address, int reliable)
- {
- 	const char *loglvl = data;
- 
--	printk("%s [<%08lx>] %s%pS\n", loglvl, address, reliable ? "" : "? ",
-+	printk("%s [<%08lx>] %s%pB\n", loglvl, address, reliable ? "" : "? ",
- 		(void *)address);
- }
- 
--- 
-2.55.0
-
+--
+Cheers, Lorenzo
 
