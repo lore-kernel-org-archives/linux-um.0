@@ -4,83 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EC85C98314
-	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 07:55:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0810CC98311
+	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 08:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Message-ID:Date
+	:Cc:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8XF4GERg8wBeW3ubUb+zC5tRVKKAYGhsksCUCrCMyIE=; b=oyRK3VOd3/jH0W5XC3ZrRRDje1
-	R4EPbdw6bPWz8voinBzgnl0czhMwdr9Kgv9k10VPCKk3trHrDtZswLOoE6OqlN4fGbQVkQbsxu6us
-	0ukzYaxXPwKHaDfURoeCh2+5WnzTFZ4evFHISyKKNp6b/Xlu4JGcxA5w7a/HP7oC+HFl0DgKrBfZG
-	lYUAU/Xo+bGgTaeZnnvfltdbPZkJNqEjVSvJoYUBveH0KcRdbcMx50G+opIDXUeAduC2zz8D+aTs4
-	l5dyS2JERChS6/XTr6EJ1RZjr9ZZ4neQZTiQ9M8KqCa01mn0rMrctbLY8yAqZB3NkeIuOB8fTQJdc
-	fF6WO9WQ==;
+	bh=yrKvdoHKHUrs0CoJeIfRXejqns+60AzL+8SidZjSbMU=; b=sHJiHdUYrys/E9FOtxU+HBepJ3
+	RKdIcLMSwIwqYmM1+yCWk6ZYpNoKeLK9qSFmCUcQvwsU4brRUtjqWsWlAn/MQK8g9/vLjpGezhVxO
+	XwnSrakH304XIbGlF/iYwPq9UQEvTgppP4S94j1Fkkf+wXGM1vGyX7+CMiumOZRj36Tl1lzfhikAj
+	hocPRaryk22R5u6sVz2T5eJ6gjNE/BB+PXdIBRpfg6S0Z4W8oJTFPgIUXW7DLJnkLGTJO71Z8bMea
+	RGutc8P7xci87gVErmS0alfOueqmderV5+CoxjCy6v2tRMOFH5k4kojTHN7TweUIkSdmX3eImevbU
+	XyDddxMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9eIW-0000000AM3T-1Jgu;
-	Thu, 24 Sep 2026 07:55:16 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1x9fE4-0000000AVX6-0Ci8;
+	Thu, 24 Sep 2026 08:54:44 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9eIT-0000000AM2S-32xU;
-	Thu, 24 Sep 2026 07:55:13 +0000
+	id 1x9fE3-0000000AVWu-0wyp
+	for linux-um@lists.infradead.org;
+	Thu, 24 Sep 2026 08:54:43 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9B826417DD;
-	Thu, 24 Sep 2026 07:55:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7BC1F000FF;
-	Thu, 24 Sep 2026 07:54:51 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id B256F43B09;
+	Thu, 24 Sep 2026 08:54:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233091F000FF;
+	Thu, 24 Sep 2026 08:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790236512;
-	bh=8XF4GERg8wBeW3ubUb+zC5tRVKKAYGhsksCUCrCMyIE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=lvFYpHpVMwPBfEiIuvmYeJUUzULg6cdEWSx4iWYVWk727A5rZV5bpt/5Sjkl2pSTJ
-	 +koGcSegVzDsG20kO8t41OXmh6KWyi8RNfZl2ErJwNIuTh23tjzoeT8Dv37tsGeg79
-	 61gp8tpMx2xIK3zP8kYJIEm2UGPz0MsuiqmNKxY9v5C+ubE70585sEQgHP0rrKt73G
-	 695MVjPFlFxGNvVaOlYp2A83auWFA74egHtR5nruPWwDU0nzqWrYwTTl+K4hgYPEPV
-	 DQ3pwEy3zgSLOIKKJ8W+2SiDFy6P5qvxi1PY+qb9cXOQdaC3iHQ+VtthIr/FlkyQ/I
-	 POZQV/h73LJFA==
-Date: Thu, 24 Sep 2026 08:54:49 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Lance Yang <lance.yang@linux.dev>
-Cc: akpm@linux-foundation.org, david@kernel.org, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, liam@infradead.org, nico.pache@linux.dev, ryan.roberts@arm.com, 
-	dev.jain@arm.com, baohua@kernel.org, usama.arif@linux.dev, kas@kernel.org, 
-	guoren@kernel.org, bcain@kernel.org, geert@linux-m68k.org, dinguyen@kernel.org, 
-	schuster.simon@siemens-energy.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, 
-	shorne@gmail.com, dalias@libc.org, glaubitz@physik.fu-berlin.de, pjw@kernel.org, 
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, linux@armlinux.org.uk, 
-	vgupta@kernel.org, monstr@monstr.eu, chris@zankel.net, jcmvbkbc@gmail.com, 
-	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org, 
-	davem@davemloft.net, andreas@gaisler.com, richard.henderson@linaro.org, 
-	mattst88@gmail.com, linmag7@gmail.com, catalin.marinas@arm.com, mark.rutland@arm.com, 
-	chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de, 
-	James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, 
-	chleroy@kernel.org, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@kernel.org, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	arnd@arndb.de, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, jgg@ziepe.ca, jhubbard@nvidia.com, peterx@redhat.com, 
-	ysato@users.sourceforge.jp, shakeel.butt@linux.dev, corbet@lwn.net, rdunlap@infradead.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, hughd@google.com, 
-	qi.zheng@linux.dev, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 12/12] mm: change the contract for free_pgtables(),
- update docs
-Message-ID: <arTXJXUhjNTWz9Ga@gremlin>
-References: <20260922-rcu-pagetable-freeing-v4-12-fe1ad1f1e303@kernel.org>
- <20260924032625.28555-1-lance.yang@linux.dev>
+	s=k20260515; t=1790240082;
+	bh=yrKvdoHKHUrs0CoJeIfRXejqns+60AzL+8SidZjSbMU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=IxRwVj38L74+kDKcCYCdkYQF8nKO0ZnsIc9/rmmL6kfkopkLeddsUKVEaHtlWWFIj
+	 N6rsBFO8xnYezDnBeF1xdwyoHS7z+60zWeHGNcSCdH/pXC5YXN+8BalUu1Qnri+x+c
+	 3Bk5zVomRExPIcYxQ+7TLMOBBMOLmLzAJ66rZX8qsZ4b2Kt9ET3tKvSzY9vqW7i21a
+	 zKJcEzUQSCcAeRAo53rGp21/SmzSZNuDOIMl9hpZQhjnOP3u4Ixg/85QrqxEw3M+kJ
+	 /qCm0oDbtkpx3GL5WovjU8Okb5UDrdkcKE54LyeC3Zo1E4gfY52uLpfXFsQNt7I7d+
+	 D8Ce8oxiJt8hw==
+Subject: Re: [PATCH net v5 1/2] net: validate virtio checksum start after
+ network header
+From: netdev-bot+sashiko@kernel.org
+To: habte.yibelo@gmail.com
+Cc: netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, willemdebruijn.kernel@gmail.com,
+ jasowangio@gmail.com, mst@redhat.com, eperezma@redhat.com,
+ xuanzhuo@linux.alibaba.com, andrew+netdev@lunn.ch, pablo@netfilter.org,
+ fw@strlen.de, phil@nwl.cc, razor@blackwall.org, idosch@nvidia.com,
+ dsahern@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, horms@kernel.org, linux-um@lists.infradead.org,
+ virtualization@lists.linux.dev, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, bridge@lists.linux.dev, linux-kernel@vger.kernel.org
+Date: Thu, 24 Sep 2026 08:54:40 +0000
+Message-ID: <179024008066.2160803.8682461497509944706@kernel.org>
+In-Reply-To: <20260921025341.44846-2-habte.yibelo@gmail.com>
+References: <20260921025341.44846-2-habte.yibelo@gmail.com>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260924032625.28555-1-lance.yang@linux.dev>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,85 +77,212 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 24, 2026 at 11:26:25AM +0800, Lance Yang wrote:
->
-> On Tue, Sep 22, 2026 at 04:35:43PM +0100, Lorenzo Stoakes (ARM) wrote:
-> >Now that page tables are freed after an RCU grace period, it is safe for
-> >read-only page table walkers to walk page table ranges that are being
-> >concurrently torn down, provided the mm is kept alive via mmgrab().
-> >
-> >It is however unsafe for writers to do so, as they must obtain an
-> >appropriate lock to do so safely.
-> >
-> >Update the pte_offset_map_lock()'s comment block to reflect this.
-> >
-> >Similarly update the process addresses documentation.
-> >
-> >Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-> >Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> >---
-> > Documentation/mm/process_addrs.rst |  6 ++++++
-> > mm/pgtable-generic.c               | 15 +++++++++++----
-> > 2 files changed, 17 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-> >index a7296f251799..b1f4f44d75eb 100644
-> >--- a/Documentation/mm/process_addrs.rst
-> >+++ b/Documentation/mm/process_addrs.rst
-> >@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
-> > * When changing a page table entry the page table lock for that page table
-> >   **must** be held, except if you can safely assume nobody can access the page
-> >   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-> >+* Page tables may be *walked* under RCU alone, as page tables are freed only
-> >+  after an RCU grace period has elapsed. However, any entry found must be
-> >+  revalidated after the page table lock is taken (such as the
-> >+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-> >+  before it is acted upon. Changing an entry requires the page table
-> >+  lock and one of the locks that excludes teardown (mmap or VMA lock).
->
-> What about rmap walkers? try_to_unmap() clears PTEs under the rmap lock
-> and PTL, without an mmap or VMA lock.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
-That's an abomination but yep will update.
+Critical: 0 · High: 1 · Medium: 1 · Low: 0
 
->
-> Cheers, Lance
->
-> > * Reads from and writes to page table entries must be *appropriately*
-> >   atomic. See the section on atomicity below for details.
-> > * Populating previously empty entries requires that the mmap or VMA locks are
-> >diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-> >index b91b1a98029c..a127e3e8f9b9 100644
-> >--- a/mm/pgtable-generic.c
-> >+++ b/mm/pgtable-generic.c
-> >@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-> >  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-> >  * be read-only/read-write protected.
-> >  *
-> >- * Note that free_pgtables(), used after unmapping detached vmas, or when
-> >- * exiting the whole mm, does not take page table lock before freeing a page
-> >- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-> >- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-> >+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-> >+ * the whole mm, does not take a page table lock before freeing a page table.
-> >+ *
-> >+ * As page table freeing itself is RCU-safe, page table readers can safely run
-> >+ * concurrently with page table teardown.
-> >+ *
-> >+ * However, writers CANNOT as, without a lock being held, nothing prevents
-> >+ * concurrent teardown.
-> >+ *
-> >+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-> >+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-> >  */
-> > pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
-> > 			   unsigned long addr, spinlock_t **ptlp)
-> >
-> >--
-> >2.55.0
-> >
-> >
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [High] The two AF_PACKET call sites pass skb_network_offset(skb) as the
+  new `network_offset` argument, while every other converted caller…
+- [Medium] In arch/um/drivers/vector_transports.c:raw_verify_header(),
+  the newly added virtio_net_hdr_get_l3_offset() parse and the now-…
 
 --
-Cheers, Lorenzo
+
+net: validate virtio checksum start after network header
+
+This adds an explicit data-relative L3 offset argument to
+virtio_net_hdr_to_skb() and virtio_net_hdr_tnl_to_skb() so that a
+CHECKSUM_PARTIAL start landing inside the network header is rejected.  A new
+helper virtio_net_hdr_get_l3_offset() parses Ethernet and nested VLAN headers
+with skb_header_pointer(), and all in-tree callers are converted.
+
+Link: https://lore.kernel.org/netdev/20260920004733.6473-2-habte.yibelo@gmail.com/
+
+> diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
+> index ddd127ee9678..79bc05fc6f73 100644
+> --- a/arch/um/drivers/vector_transports.c
+> +++ b/arch/um/drivers/vector_transports.c
+> @@ -197,6 +197,7 @@ static int raw_verify_header(
+>  	uint8_t *header, struct sk_buff *skb, struct vector_private *vp)
+>  {
+>  	struct virtio_net_hdr *vheader = (struct virtio_net_hdr *) header;
+> +	int network_offset;
+>  
+>  	if ((vheader->gso_type != VIRTIO_NET_HDR_GSO_NONE) &&
+>  		(vp->req_size != 65536)) {
+> @@ -209,8 +210,13 @@ static int raw_verify_header(
+>  	if ((vheader->flags & VIRTIO_NET_HDR_F_DATA_VALID) > 0)
+>  		return 1;
+>  
+> -	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_endian());
+> -	return 0;
+> +	network_offset = virtio_net_hdr_get_l3_offset(skb, vheader);
+> +	if (network_offset < 0)
+> +		return network_offset;
+> +
+> +	return virtio_net_hdr_to_skb(skb, vheader,
+> +				     virtio_legacy_is_little_endian(),
+> +				     network_offset);
+>  }
+
+[Severity: Medium]
+Is the skb passed to raw_verify_header() already trimmed to the received
+frame length at this point?
+
+prep_skb() in arch/um/drivers/vector_kern.c sets the length from the
+receive buffer capacity, before the recvmsg/recvmmsg:
+
+	skb_put(result, vp->max_packet);
+	result->data_len = len - vp->max_packet;
+	result->len += len - vp->max_packet;
+
+and both receive loops call the verify callback before the trim:
+
+vector_legacy_rx():
+			header_check = vp->verify_header(
+				vp->header_rxbuffer, skb, vp);
+			if (header_check < 0) { ... return 0; }
+		}
+		pskb_trim(skb, pkt_len - vp->rx_header_size);
+
+vector_mmsg_rx() has the same ordering.  The only guarantee before the
+callback is pkt_len > vp->header_size, i.e. one payload byte.
+
+So can the Ethernet and VLAN bytes that virtio_net_hdr_get_l3_offset()
+reads at offsets 0..13 and beyond be bytes recvmsg never wrote, i.e. the
+uninitialised remainder of the allocation, making network_offset and the
+accept/reject decision depend on stale buffer contents whenever the
+received frame is shorter than the parsed span?
+
+Along the same lines, the length checks inside __virtio_net_hdr_to_skb()
+see skb->len as capacity (up to vp->req_size, 65536 with GSO) rather than
+the received length, for instance:
+
+			if (skb->len - p_off > gso_size * UDP_MAX_SEGMENTS)
+				return -EINVAL;
+
+Since raw_verify_header() now returns the converter's error instead of
+discarding it, does this turn the length mismatch into frames dropped with
+rx_encaps_errors, where previously the return value was ignored?  Would it
+be better to move the pskb_trim() ahead of the verify_header() call?
+
+> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+> index c381b916c1b5..a4c005796acb 100644
+> --- a/include/linux/virtio_net.h
+> +++ b/include/linux/virtio_net.h
+
+[ ... ]
+
+> @@ -98,16 +136,20 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
+>  		u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+>  		u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
+>  		u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
+> +		int transport_offset;
+>  
+>  		if (!pskb_may_pull(skb, needed))
+>  			return -EINVAL;
+>  
+>  		if (!skb_partial_csum_set(skb, start, off))
+>  			return -EINVAL;
+> -		if (skb_transport_offset(skb) < nh_min_len)
+> +
+> +		transport_offset = skb_transport_offset(skb);
+> +		if (transport_offset < nh_min_len || network_offset < 0 ||
+> +		    network_offset > transport_offset - nh_min_len)
+>  			return -EINVAL;
+
+[ ... ]
+
+> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> index 50cae32ae269..04c80e23d7e2 100644
+> --- a/net/packet/af_packet.c
+> +++ b/net/packet/af_packet.c
+> @@ -2901,7 +2901,8 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
+>  		}
+>  
+>  		if (has_vnet_hdr) {
+> -			if (virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le())) {
+> +			if (virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le(),
+> +						  skb_network_offset(skb))) {
+>  				tp_len = -EINVAL;
+>  				goto tpacket_error;
+>  			}
+> @@ -3103,7 +3104,8 @@ static int packet_snd(struct socket *sock, struct msghdr *msg, size_t len)
+>  	packet_parse_headers(skb, sock);
+>  
+>  	if (vnet_hdr_sz) {
+> -		err = virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le());
+> +		err = virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le(),
+> +					    skb_network_offset(skb));
+>  		if (err)
+>  			goto out_free;
+>  		len += vnet_hdr_sz;
+
+[Severity: High]
+Is skb_network_offset(skb) a strong enough origin here?  Every other
+converted caller derives the offset from the frame bytes via
+virtio_net_hdr_get_l3_offset(), while these two use the network header
+AF_PACKET established itself.
+
+In packet_parse_headers() the VLAN adjustment is gated on the
+socket-supplied protocol:
+
+	if (likely(skb->dev->type == ARPHRD_ETHER) &&
+	    eth_type_vlan(skb->protocol) &&
+	    vlan_get_protocol_and_depth(skb, skb->protocol, &depth) != 0)
+		skb_set_network_header(skb, depth);
+
+For SOCK_RAW with an explicit sll_protocol, skb->protocol is the value the
+sender passed, not the frame's EtherType (dev_parse_header_protocol() runs
+only when skb->protocol is 0 or ETH_P_ALL).
+
+So for a sender that binds with sll_protocol = htons(ETH_P_IP) but writes
+an 802.1Q-tagged frame, network_offset stays 14 while the real IPv4 header
+starts at 18.  With csum_start = 34 and nh_min_len = 20, the new test
+becomes:
+
+	transport_offset = 34;
+	34 < 20                      -> false
+	14 > 34 - 20                 -> 14 > 14 -> false
+
+and the header is accepted, after skb_partial_csum_set() has already set
+ip_summed = CHECKSUM_PARTIAL and transport_header = 34, which is 16 bytes
+inside the IPv4 header spanning 18..37.  Is that not exactly the case the
+commit message says is now rejected?
+
+Two related cases in the same path:
+
+packet_parse_headers() silently ignores a failed
+vlan_get_protocol_and_depth() (more nested tags than that parser accepts),
+leaving network_offset at 14 for a deeper real L3 header.
+
+In packet_snd(), the SOCK_RAW short-packet branch resets the network header
+while skb->data still points at the link header:
+
+	} else if (reserve) {
+		skb_reserve(skb, -reserve);
+		if (len < reserve + sizeof(struct ipv6hdr) &&
+		    dev->min_header_len != hard_header_len)
+			skb_reset_network_header(skb);
+	}
+
+which yields network_offset == 0, and the new bound then reduces to the
+pre-patch csum_start >= 20 check.  Would using
+virtio_net_hdr_get_l3_offset() at both AF_PACKET call sites, as the TAP and
+virtio-net paths do, keep the origin consistent?
+
+Note the follow-up commit in this area, "ip: reject partial checksums
+covering network headers", only touches ip_do_fragment(), ip6_fragment(),
+nf_br_ip_fragment() and br_ip6_fragment(), so it does not close this
+AF_PACKET path later in the series.
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260921025341.44846-1-habte.yibelo%40gmail.com
 
