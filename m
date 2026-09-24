@@ -4,61 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC43C98318
-	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 16:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22EDDC9830E
+	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 17:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9Otb6zuyEBZINlapWeW9EeZO0ay5u9oRpGgKAiyNCSw=; b=w6zqRHpk/sEJUSK7Jzvj/cLhFn
-	ANatIa3Y/jCH2cru7bVH8wk29iAKVqGSKpyofML804uzeaCEXsRZwY72KS7a6ot8MAzZQ0s6QqgpO
-	JE39diGPTFzMxiNq8dDhg+6YpDxXtcCRqZIym+TVLeVhkOOfCVt1ttkZNlmQwH40phouKIf1dnf9Z
-	em3o9gXvGjm0z530kMTPk/L0YLsIxoo4wQxkxljEAKU+GyqQDTMWZ05896RUhMTZdlNwqePhAsIy3
-	5313MMTEv67YUzXCeKKpOF2JrXTjC9nKhveD79n1OZc6tCRoe59Ols7atbIErzDOxCjmQ+aQGevjI
-	wUUMNXtQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=E8FD4iT6RJg3BgIUMg1u6lq1AX2COPGo3VlgxX8d3j4=; b=e3qSoi73P/jz3anxuWOFOMqAam
+	6hgYzxVFjcPtQeCF236bogZweyxu0ee0u3UOh0+R3AmQu08NUKRvfI7GjXIh7Pn1qOPmF2nsRo9lo
+	rQo8PsbaASxZswCBKyJr0CLBHIw4v41J8CDBGSp7O8nEKXbVKeE8AADuLRdv7DQoinozmbkVvOjPB
+	KOz8KQludhpMw5I/ioEHuOAVZq1e6yck3mStEATYjwwlaEm9CpT/RD66S8BRhEcJ9ikFbeFyM6BAq
+	Q/OgPNyBFZm0WqV14Qd7X3b60XejnPtU6GOwFOZuu6cXMck0d5Cd4WGDVgSx6PawKipxHVONr34kR
+	OYeifhyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9m2w-0000000BYjR-0DaE;
-	Thu, 24 Sep 2026 16:11:42 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1x9n5I-0000000Bhtq-1NWr;
+	Thu, 24 Sep 2026 17:18:12 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9m2t-0000000BYis-2kgY
+	id 1x9n5G-0000000BhtB-0SoB
 	for linux-um@lists.infradead.org;
-	Thu, 24 Sep 2026 16:11:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=9Otb6zuyEBZINlapWeW9EeZO0ay5u9oRpGgKAiyNCSw=;
-	t=1790266299; x=1791475899; b=YFrEdJ0UU6Nxx999OgDKMB/ywH2T1FSplnG9un23RIY4k2d
-	cpou6H2eGqbBYUAvAYdGylNagmTQGOOhRZVSN5jB/cfnCok1Kmlr4StJgk6ogcczaW8ZYwz2C1a1s
-	u159mKgBPebiIsJ1t1ja7aaxjZErADwNy2JZcPkqLGQiWTUDbW266udEJij/DyImEbSHCZ7DthQkS
-	2ZhevruJXUHDmaJKtuzlMual46bu/0ekQ3ZlsG+S4FfWmGZk3N9GaM/CZwDrwEyUdmCQvRv1aZhp4
-	ghsyXPuXpJb4C4sa10oWkm7OEpRM08oeKRCwnUA3QzqsP82AMYa7M2wkiuoivQ4Q==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1x9m2m-000000099JI-1OEh;
-	Thu, 24 Sep 2026 18:11:32 +0200
-Message-ID: <5da91b32a633e82d89a4c504c06d12e51507df3a.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: ubd: perform the flush the block layer asks for
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Mykyta Bozhenko <caudadragonis@gmail.com>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Date: Thu, 24 Sep 2026 18:11:31 +0200
-In-Reply-To: <20260912223932.2941631-1-caudadragonis@gmail.com>
-References: <20260912223932.2941631-1-caudadragonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+	Thu, 24 Sep 2026 17:18:10 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 990BF436D5;
+	Thu, 24 Sep 2026 17:18:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B84CF1F000FF;
+	Thu, 24 Sep 2026 17:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790270289;
+	bh=E8FD4iT6RJg3BgIUMg1u6lq1AX2COPGo3VlgxX8d3j4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=bFb1KWLfsVCfUNGf+4PHOZ6lOgMe6SwcajHMwk56U8Fa+GX2ljNEmHA5KRn3ss0ST
+	 NTSEaL+MjRAJzME2l+QO1Mls8EstWL6jr6DxGSdjLtTEG3rsu2Jb0GTGx2DL+KGq3H
+	 ipF40Ay6CajjrrElzhXEKf8h7IiadJUYcT5dZukeqXkCRZE3FmsdI64q+wiHTqqAO9
+	 I2eQ1MgvqpKCGNuREB55Lt9UhM8kMQSLymhgu5F505Naiec7yVrCX50Bz5ToR8A5o+
+	 THT4B0Ja6xkIIf2v+caT4h1lUIswlSDyyO9Oft/aoVXe8K+xBrgEsQXqEEkion/xnu
+	 +yj1e5V91ReJQ==
+Date: Thu, 24 Sep 2026 10:18:08 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Eric Dumazet <edumazet@google.com>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Paulos Yibelo <habte.yibelo@gmail.com>,
+ netdev@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, jasowangio@gmail.com, eperezma@redhat.com,
+ xuanzhuo@linux.alibaba.com, andrew+netdev@lunn.ch, pablo@netfilter.org,
+ fw@strlen.de, phil@nwl.cc, razor@blackwall.org, idosch@nvidia.com,
+ dsahern@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+ horms@kernel.org, linux-um@lists.infradead.org,
+ virtualization@lists.linux.dev, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, bridge@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v6 1/2] net: validate virtio checksum start after
+ network header
+Message-ID: <20260924101808.638f2d22@kernel.org>
+In-Reply-To: <20260923081209-mutt-send-email-mst@kernel.org>
+References: <20260922030310.8684-1-habte.yibelo@gmail.com>
+	<20260922030310.8684-2-habte.yibelo@gmail.com>
+	<willemdebruijn.kernel.259bc7096258d@gmail.com>
+	<willemdebruijn.kernel.2cdfef118aa1d@gmail.com>
+	<20260923061215-mutt-send-email-mst@kernel.org>
+	<CANn89iJaE5UarTdg6FMEp=rZ9mG3g=xrVRLyvMS5S02iE8CwGg@mail.gmail.com>
+	<20260923081209-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260924_091139_995338_23C0154D 
-X-CRM114-Status: GOOD (  20.81  )
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,62 +84,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2026-09-12 at 18:39 -0400, Mykyta Bozhenko wrote:
-> ubd sets BLK_FEAT_WRITE_CACHE, so the block layer sends it REQ_OP_FLUSH
-> requests and, as Documentation/block/writeback_cache_control.rst puts it,
-> the driver "needs to handle them". do_io() does implement that: for
-> REQ_OP_FLUSH it calls os_sync_file() on the backing file and maps the
-> result back into the request.
->=20
-> That branch has been unreachable since commit fc6b6a872dcd ("um: ubd:
-> Submit all data segments atomically"), which replaced the single
-> per-request do_io() call with a loop over the request's data
-> descriptors:
->=20
-> 	-			do_io((*io_req_buffer)[count]);
-> 	+			for (i =3D 0; !req->error && i < req->desc_cnt; i++)
-> 	+				do_io(req, &(req->io_desc[i]));
->=20
-> A flush carries no data and ubd_submit_request() sets desc_cnt to 0 for
-> it, so the loop body never runs. The request is handed back to the block
-> layer with error 0, i.e. the flush is reported as completed without the
-> backing file ever being synced. Guest fsync(), fdatasync() and journal
-> commits return success while the data is only in the host's page cache,
-> and because no ordering is enforced either, a host crash can leave the
-> image in a state the guest never allowed. The error path is dead too:
-> a failing host fdatasync() cannot be reported.
->=20
-> Measured on a UML guest with ext4 on ubda, doing 20 writes of 4 KiB each
-> followed by fdatasync(), then one fsync() and one directory fsync():
->=20
->   before: the guest sees 22 successful flushes, /sys/block/ubda/stat
->           reports 16 completed flush requests, and the UML process issues
->           no fdatasync() on the image at all
->   after:  the same workload results in 43 fdatasync() calls on the image
->=20
-> os_pwrite_file() is entered 131 times either way, and e2fsck on the
-> resulting image is clean in both cases.
->=20
-> Honouring the flush costs what the flush costs. With the image on host
-> ext4, 400 iterations of write() plus fdatasync() in the guest take 467 ms
-> before and 2007 ms after (medians of five runs). uretprobes on
-> os_sync_file() attribute 1.597 s of that difference to time spent inside
-> the host's fdatasync(), the remaining data path being unchanged
-> (os_pwrite_file(): 19246 calls in both). A 64 MiB sequential write
-> followed by a single fsync() goes from 278 ms to 362 ms, due to the
-> periodic journal commits. With the image on tmpfs there is no measurable
-> difference.
->=20
-> Users who prefer the previous speed to durability can disable the cache
-> per device:
->=20
->   echo "write through" > /sys/block/ubda/queue/write_cache
->=20
-> That is also cheaper than the unfixed driver, 326 ms for the same 400
-> iterations, because the block layer then completes empty flush requests
-> without entering the driver at all.
+On Wed, 23 Sep 2026 22:02:57 -0400 Michael S. Tsirkin wrote:
+> $ git grep 'skb->csum_start\ ='
+> drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:        skb->csum_start = (unsigned char *)th - skb->head;
+> drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:        skb->csum_start = (unsigned char *)uh - skb->head;
+> drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:        skb->csum_start = (unsigned char *)uh - skb->head;
+> drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:        skb->csum_start = (unsigned char *)tcp - skb->head;
+> drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:        skb->csum_start = (unsigned char *)tcp - skb->head;
 
-Yeah, you really need to not let LLMs write commit messages ...
+These are HW-GRO, ASIC coalesced TCP segments so it better know 
+the _correct_ offsets of things. And it's hardly remote-provided?
 
-johannes
+> drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c:         skb->csum_start = skb_transport_header(skb) - skb->head;
+
+selftest
 
