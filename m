@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99223C98316
-	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 06:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47675C98310
+	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 06:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Jvcw1OFQJ/inZUNd+zjDNJ/P6c1F53gL3jHeWGbl7GU=; b=bWXRYzecTOGWyJdZpa80hQwUgU
-	lGdFMIfAsC4CmTpGQkRk4JnarmSWgVecyF/nTzKRNNQBxQ4R4ugPtbqhFVG3/R4EbqmoY80YxCHoh
-	PNCxeC6cxE/JmnZZ0kMeZtqin/8sdR9kTGpHalaU0cANtebJPQwxZaxL4a0kcD9jBMKLATy004Vd8
-	A+vbz5j1WBk15aC4QTthZZU5Lk/4uBrRiDSfflbu2lFF4LamacEo4GG/EvTJmzohxaGeDNsBBjukD
-	JER4LctKwbEeOwKFc4/ciO1ld3D6ezTBQkp2wHiSNxAUnskgD0QkJd19BpoM5H5T8dU/FPEQISzWc
-	SxjWHuYQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=21jpBxmvuQ92CO8E8Zg7rELSGSLKN9AW+6p0kf6nq1U=; b=1FbuDQr9hmsOClTbU5d873JFT7
+	HBSEpEB3Sy9xto3sWjOEL2CZWu84mA87S1aBs4RPW8mEbJMkJ0Z8PpiOjelUEttD+ZVWPmOzP3cSc
+	I66j0i/c/DDosA6RzThMZlTz5luyPJ9Uhj99k7EhYebFZTTFlDkDrm1UzV7Ni0Z5LmgTVgY548waQ
+	C1U6XW28Loayygp3fl75IzYgY0nlc0IX4JKod4pQ5k3wmmJfBYdkiG8POfjzofXGL+EKKEIw9qYQ6
+	VXRII4EqzOkV/EfuLYxLGbMQSt0XoYSb7auSU2N0gumU10Ktmw8n8YqdM778+O2/H6MMoqtjFRvRy
+	x3SJJ+tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9dHQ-0000000ABWY-3jVx;
-	Thu, 24 Sep 2026 06:50:04 +0000
+	id 1x9dHW-0000000ABZ2-428y;
+	Thu, 24 Sep 2026 06:50:10 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9dHN-0000000ABUd-0RZo
+	id 1x9dHU-0000000ABXQ-2HpS
 	for linux-um@lists.infradead.org;
-	Thu, 24 Sep 2026 06:50:02 +0000
+	Thu, 24 Sep 2026 06:50:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Jvcw1OFQJ/inZUNd+zjDNJ/P6c1F53gL3jHeWGbl7GU=;
-	t=1790232601; x=1791442201; b=aon7imUiqRguHzEl/wulcpzleTaAEAtLxGmiUuQFXvL9A0c
-	pkfEi926tcdaboVtK647okPuZx8ipXWerJ6EHeEgCcSrWCtY2P0ghVy8LPfAvYmCDXKDSqkL2p4du
-	AA5ttIpR/6STE1fgI5UB17EgmE7BhoOy93K7ZN/60BwuYf1/Lg5rXC6KVDgALiN0LmMKdKFSJDiZg
-	ETsjI/FigzMpl7H6b8RrRx2LcOVSVmkrgsKoOhLaZb1bND+5MslC/83ArIr61/GQIVd8FmMFf7bg2
-	0JI95i5SANdyf2ibATZ7060misEP4PJV9PxoBDrieGOuvDbGF0M4e2kKmiNlDvJQ==;
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=21jpBxmvuQ92CO8E8Zg7rELSGSLKN9AW+6p0kf6nq1U=; t=1790232608; x=1791442208; 
+	b=LHn459pkASBqIa4WtKC1AKbNaCDj3nhWP1hAWE9783j+jT3kkKN+xYQH1JT8wuZcYQZhBkHlro7
+	hB13ghuOW6+6EUErU0SlZS+vpimJH9NM+6taNtL/i1T2KenoLJmuDkXZBM+8vXc5/B50dfhz3qyKM
+	zrPtRvactcd9iG/PedfHOZVwUxT0GHC2dgcPyKGU0L+8VKUNgUFw4Jqyym+w95brtzPG9wiayuje6
+	eWiGqeMavu5bxQ252h67F1/oZxrCd0w7WOaB8FZOn4IbYnjWI3RhZIoJx5fhepJueE8y8o7fRFF0c
+	t4MRBnGnTubVom0Nd9sbZN+xXhckdwrZP3Ag==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
 	(Exim 4.98.2)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1x9dHH-00000008t0P-3tsO;
-	Thu, 24 Sep 2026 08:49:56 +0200
+	id 1x9dHQ-00000008t1V-2KYe;
+	Thu, 24 Sep 2026 08:50:04 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 2/2] um: mprotect() __init memory
-Date: Thu, 24 Sep 2026 08:49:45 +0200
-Message-ID: <20260924084946.d118ec78e604.I993b671566a4e842dcc290b78f1c0004050362ba@changeid>
+Subject: [PATCH] um: use %pB to print functions in stack traces
+Date: Thu, 24 Sep 2026 08:50:01 +0200
+Message-ID: <20260924085002.3ff9ca1de60a.I5ff299b6f3196ad3c51c3032a90c7158c1bbccda@changeid>
 X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20260924084946.2bfe0f25e6e2.I021d3a909687794eb2c3435fdfcb7f67e3ec4ba1@changeid>
-References: <20260924084946.2bfe0f25e6e2.I021d3a909687794eb2c3435fdfcb7f67e3ec4ba1@changeid>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260923_235001_172233_22A75319 
-X-CRM114-Status: GOOD (  14.04  )
+X-CRM114-CacheID: sfid-20260923_235008_642718_0BCB6898 
+X-CRM114-Status: GOOD (  11.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,75 +71,43 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-Unlike what the comment says, we could munmap() this (but
-not reuse it for guest allocations), but then stray libc
-allocations could technically conflict, so mprotect() it
-to catch access bugs. Align it in the linker scripts too
-so that all of it can be covered, not just some.
+In a stack trace we get the return address, so if the call is at
+the end of a function, it can get printed as the next function,
+e.g.
+
+  vpanic+0x1d3/0x435
+  abort+0x0/0x4e
+  do_exit+0x29c/0xcb7
+  sys_exit_group+0x0/0x16
+  pid_child_should_wake+0x0/0x83
+
+Use %pB like on x86, which resolves the name with address - 1,
+in the same example I get:
+
+  vpanic+0x1d3/0x435
+  panic+0x55/0x55
+  do_exit+0x29c/0xcb7
+  do_group_exit+0xbe/0xbe
+  sys_exit_group+0x16/0x16
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
-v2:
- - move sections first (new first patch)
- - fix typos
----
- arch/um/kernel/dyn.lds.S |  3 +--
- arch/um/kernel/mem.c     | 11 ++++++++---
- arch/um/kernel/uml.lds.S |  1 +
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ arch/um/kernel/sysrq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 875db0130d75..042e8d7fba0a 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -24,9 +24,8 @@ SECTIONS
-   INIT_TEXT_SECTION(PAGE_SIZE)
- 
-   init.data : { INIT_DATA }
--  __init_end = .;
--
-   . = ALIGN(PAGE_SIZE);
-+  __init_end = .;
- 
-   /* Read-only sections, merged into text segment: */
-   .hash           : { *(.hash) }
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 1eef0e42ef5d..5c1898c9ed53 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -83,12 +83,17 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- }
- 
- /*
-- * This can't do anything because nothing in the kernel image can be freed
-- * since it's not in kernel physical memory.
-+ * We could munmap() this instead, but then libc allocations could
-+ * land in this area and stray initdata access could erroneously
-+ * succeed - just mprotect() it to reliably catch bad accesses.
-  */
--
- void free_initmem(void)
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 13ee5666668d..5a2c28e09294 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -18,7 +18,7 @@ static void _print_addr(void *data, unsigned long address, int reliable)
  {
-+	unsigned long start = PAGE_ALIGN((unsigned long)__init_begin);
-+	unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
-+
-+	if (end > start)
-+		os_protect_memory((void *)start, end - start, 0, 0, 0);
+ 	const char *loglvl = data;
+ 
+-	printk("%s [<%08lx>] %s%pS\n", loglvl, address, reliable ? "" : "? ",
++	printk("%s [<%08lx>] %s%pB\n", loglvl, address, reliable ? "" : "? ",
+ 		(void *)address);
  }
  
- /* Allocate and free page tables. */
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index d161518d7195..ac53e0fa9efe 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -32,6 +32,7 @@ SECTIONS
-   INIT_TEXT_SECTION(0)
- 
-   init.data : { INIT_DATA }
-+  . = ALIGN(PAGE_SIZE);
-   __init_end = .;
- 
-   .text      :
 -- 
 2.55.0
 
