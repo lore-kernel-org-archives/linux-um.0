@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FEDC98304
-	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 03:46:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 959DCC98310
+	for <linux-um@archiver.kernel.org>; Thu, 24 Sep 2026 06:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MrfsdsMIsfq+eQAMfy2CBj4pLAaY3JeJv7+Gpgfo1oM=; b=RR1t2pDHqddEdjBkrnh95Y2Gvz
-	6lJhcAipzK6eGDEL3d5xgI9LmByhhmSdN6qilhkwxsDs3Fm7VFr9krNg6Wfzb+gW4uZ9eTifQbBw5
-	8g7TbnlDpB1HnPcXFcUO479/e4X/gNRWBSCsMOXWPAfEcb7nqNR8oOvieU/UuY+ZAkUNUdiSd/fVn
-	bhmwfxwEKgUY0yL7KXLj53aWB2J+m/vBZGIq3Ya0g/8rTpnq9EJy1NxOEsOZ2GjqxUIyaTrmM1Ph8
-	p+V2zFTcbyYk+jMIl9Xd6ziPJ9bIt7NV1dmgCBabZrEiDi/qN45v8/iFeL9Hi/w+m64zdJUesAEw0
-	QCrn64+A==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=wyfpAY+TrDw7I8wdDiHFn9UTsWh8RV6OmR6zp/A88/4=; b=yyXXS1zzx6nKTCl4jpckfW7jpD
+	HpqRE8kLvZF03mNrsTYFOQSQ5MT8hHJayb02ylC0Zca6zYaHfCvvLBH7R3hqy+rXD4Hy0RSzQNZGk
+	jKp9+6cRs8BwF6g7yGXwkcsUrrawEonLgXzWhVBg7ZpmZHJF1/sGK7n4iWgCDfrwQ+U8ZfUY4X75W
+	wIQrxVOKzhKNJS/IVur2C4pTc7ORfpbGT1xoZnps+/ppOncCzdIV25ozzVGDiFgBrAM7MCjVIKXmh
+	ntx/Fx//qOe/9z8BX5p5gKHg4lO8PKGD4iNyxf5gSDvoD9gFprkoC3zFH2l1OCjMSH271GGt5kDBw
+	yHCKoF6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9aPL-00000009y88-2BQd;
-	Thu, 24 Sep 2026 03:46:03 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1x9dHQ-0000000ABWI-38T2;
+	Thu, 24 Sep 2026 06:50:04 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x9aPJ-00000009y7i-2eej
+	id 1x9dHN-0000000ABUR-0R2b
 	for linux-um@lists.infradead.org;
-	Thu, 24 Sep 2026 03:46:01 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id B782B60211;
-	Thu, 24 Sep 2026 03:46:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC751F000FF;
-	Thu, 24 Sep 2026 03:46:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790221560;
-	bh=MrfsdsMIsfq+eQAMfy2CBj4pLAaY3JeJv7+Gpgfo1oM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=SbX0UL8Q689vIff6gsAdJW1z5tGgiIo+CjCotHzQlq2sEpxLj/E9vdHbGQwX7nx2s
-	 Xbo0iCAJ3MQ4YpTI08sU0y08ZjQqE67E0ykWkS9bMKvxWh9NgbduoTAIc/OQCSO5jp
-	 yq42n1X4iKEB98O5G9hGuD4Ar5g9sNCf+fPGsVDzfAm0BaRcYIbCNNkLKbjraVHwyb
-	 0Gqcto/4E2j6Eu/h7tHofpuWwDl/LbeFq+8m9Y8MQ6iuredeOaKsfYgb9xSnWSh5M3
-	 EGC6EUEe9i3ExIEILVMX6qGnEyCzzIrnMD78tf9DOusz5s8Sl1PjigXiP1IBd8SM5U
-	 OPIlLKKuirbIA==
-From: Kees Cook <kees@kernel.org>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	Alex Hung <alex.hung@amd.com>,
-	Mariia Nikitash <nikitash.mariiaw@gmail.com>
-Cc: Kees Cook <kees@kernel.org>
-Subject: Re: [PATCH] um: fix CONFIG_GCOV for built-in code
-Date: Wed, 23 Sep 2026 20:42:24 -0700
-Message-Id: <179022133928.127266.18052172879787586674.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260727195515.2306731-1-alex.hung@amd.com>
-References: <20260727195515.2306731-1-alex.hung@amd.com>
+	Thu, 24 Sep 2026 06:50:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=wyfpAY+TrDw7I8wdDiHFn9UTsWh8RV6OmR6zp/A88/4=; t=1790232601; x=1791442201; 
+	b=ejr5b78Fn0qwOrMzidUoy4GvDaY19F/+CX7PhcRzW4MF81RYXzr6LLQi/LVfg/WY0vobgoHG43p
+	nFPsuMeBjmdZk8NEckkw0xZnPLU0GxoqJMmqReWAo3erPdjCAJtf5V0JAUkYNc6fqKQ0EaiFMyVF/
+	ercogk6tjx0JrQFkbaNGSy53BM79JvN6lXPHYby7hgMYOS9D7/bxG8h7fYIaCcvAW0YRManRVRIdh
+	KhJk9G7tq++iDGQxx4iDItjrSrJj2uCl4YC/6uk9qaMY8rdmV53r4jTqr4Kssle7ET3n9ZoLw9HR4
+	mN7pyNkqIg9rtwbKkE5vCGkg3TeVM51+fMnQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1x9dHF-00000008t0P-3OTJ;
+	Thu, 24 Sep 2026 08:49:54 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 1/2] um: move init text between __init_begin/end
+Date: Thu, 24 Sep 2026 08:49:44 +0200
+Message-ID: <20260924084946.2bfe0f25e6e2.I021d3a909687794eb2c3435fdfcb7f67e3ec4ba1@changeid>
+X-Mailer: git-send-email 2.55.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260923_235001_172645_F8FD203F 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,29 +69,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 27 Jul 2026 13:55:15 -0600, Alex Hung wrote:
-> With contemporary toolchains, CONFIG_GCOV doesn't work because
-> gcov now relies on both init and exit handlers, but those are
-> discarded from the binary. Fix the linker scripts to keep them
-> instead, so that CONFIG_GCOV can work again.
-> 
-> Note that this does not make it work in modules yet, since we
-> don't call their exit handlers.
-> 
-> [...]
+From: Johannes Berg <johannes.berg@intel.com>
 
-Applied to for-next/hardening, thanks! Only a 5 year delay. :P
-What else is needed from the original series to get the full coverage?
-https://lore.kernel.org/all/20210312095526.197739-1-johannes@sipsolutions.net/
+Today only the init data is there, which means any
+backtrace (or other pointer printing) involving an
+__init function can't print its name.
 
-[1/1] um: fix CONFIG_GCOV for built-in code
-      https://git.kernel.org/kees/c/760f96b7f54b
+Move the initdata and include the init text between
+the markers so this works.
 
-Take care,
+This also enables unmapping the initdata since it's
+no longer part of the overall data (which kmemleak
+scans, so it would crash otherwise).
 
--Kees
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/kernel/dyn.lds.S | 8 ++++----
+ arch/um/kernel/uml.lds.S | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index ad3cefeff2ac..875db0130d75 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -20,8 +20,12 @@ SECTIONS
+   __binary_start = .;
+   . = ALIGN(4096);		/* Init code and data */
+   _text = .;
++  __init_begin = .;
+   INIT_TEXT_SECTION(PAGE_SIZE)
+ 
++  init.data : { INIT_DATA }
++  __init_end = .;
++
+   . = ALIGN(PAGE_SIZE);
+ 
+   /* Read-only sections, merged into text segment: */
+@@ -98,10 +102,6 @@ SECTIONS
+ 
+   #include <asm/common.lds.S>
+ 
+-  __init_begin = .;
+-  init.data : { INIT_DATA }
+-  __init_end = .;
+-
+   /* Ensure the __preinit_array_start label is properly aligned.  We
+      could instead move the label definition inside the section, but
+      the linker would then create the section even if it turns out to
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 30aa24348d60..d161518d7195 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -28,8 +28,12 @@ SECTIONS
+   . = ALIGN(PAGE_SIZE);
+ 
+   _text = .;
++  __init_begin = .;
+   INIT_TEXT_SECTION(0)
+ 
++  init.data : { INIT_DATA }
++  __init_end = .;
++
+   .text      :
+   {
+     _stext = .;
+@@ -70,10 +74,6 @@ SECTIONS
+ 
+   #include <asm/common.lds.S>
+ 
+-  __init_begin = .;
+-  init.data : { INIT_DATA }
+-  __init_end = .;
+-
+   .data    :
+   {
+     INIT_TASK_DATA(KERNEL_STACK_SIZE)
 -- 
-Kees Cook
+2.55.0
 
 
