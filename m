@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3921EC9830E
-	for <linux-um@archiver.kernel.org>; Fri, 25 Sep 2026 20:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5F92C9830E
+	for <linux-um@archiver.kernel.org>; Fri, 25 Sep 2026 20:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0/RwvDc+Yn6qQyxIlipbe7ZS0nZ7PlvA6+VjYxgRBPE=; b=ZLQ4IhqnvPKNqy4JX+TvAQHiV6
-	FNtGmDYsNrBtIw91Zs8NINSS9DZQvXS8dTt0EApgWaPPod9PI0aq4WigZnhcbMeZiXYJXZc/xv5IY
-	sM+KHWhH4gCXxvK81wH/G/xEiFnUbNzrz++BE5spDMTtUkTyfjt+oZoCEvmJKkzcHQBidKveVx5xt
-	GmX3k8j8W0UpGF9ZtznmaEfX/OQehUQib2xJcxrkfwKi00pbHTLQ1xyqpefo9RD4Sz81E9vDH5WRk
-	xdQeadoCvPjIKlLJ3SrVdIfpFYs7U92mXhPOlU7ptC9XPdRHJCXiU9cn7ZtwBweN0e76gI3VTVbDb
-	wWrbCJUg==;
+	bh=7Kh9URTqx3+SlaadiKZbGWnbSyeyU9KtRJxdWpySnaw=; b=gcS6ueF96hHMGCPaLMvQmog9JI
+	DiNVmUmucTdUiSc0G+/TKINpypN6pqgN7qVdjGEB2FJZqDsvZAJBp9gox2dXMwlvZAOyuzmr7bXfp
+	xQpIBtlaoJqUTB9y8nBdQKrTwhtrZN1a07SoHfGE4jY6LQ0lVP4G0tZ4bNDGlHhRVf+sQUJXtslAz
+	XcZtqqSJIFZCaBgFU82Joi2hDZozOk2/juOlFRF25DTGfs2wogUuetI4tg0Tj9blK1H7CNLSp8hzC
+	t3Jq9ITQ8LM3OD/4v+o3M8GQvpfbuEAUe2wsudzLNxmb4QXISQAWTp2e04GcKcJtt+W8YrKECYL5p
+	uVrMuVFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xACHH-0000000ELow-2kJl;
-	Fri, 25 Sep 2026 20:12:15 +0000
+	id 1xACHy-0000000EMAn-077H;
+	Fri, 25 Sep 2026 20:12:58 +0000
 Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xACHF-0000000ELnP-0ErY;
-	Fri, 25 Sep 2026 20:12:13 +0000
+	id 1xACHv-0000000EM8w-1YhB;
+	Fri, 25 Sep 2026 20:12:55 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 775A960136;
-	Fri, 25 Sep 2026 20:12:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0DBF1F00893;
-	Fri, 25 Sep 2026 20:11:51 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id C4C9B6022F;
+	Fri, 25 Sep 2026 20:12:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EF91F000FF;
+	Fri, 25 Sep 2026 20:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790367132;
-	bh=0/RwvDc+Yn6qQyxIlipbe7ZS0nZ7PlvA6+VjYxgRBPE=;
+	s=k20260515; t=1790367174;
+	bh=7Kh9URTqx3+SlaadiKZbGWnbSyeyU9KtRJxdWpySnaw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=gKh/gqLZ6tuLTMtMolwZ0R1z1pkLXe1CHwiE0D9GHHPFGtRxoVceWHxaxOOHwCjMU
-	 SSgWnP6WPc7OgBWvdah+8+s+y77sVEVsh+CU9JRyYmPD6Pbx8Vf+acsnxrR7dTdMSC
-	 jSKkFayThIUdZ+rkcCk++LpkI2mYEdliqnGUkvuUt9w+l/+KUwA/SoIM1lWVcJnj3T
-	 bKBw27PYXRqzRB/NLanfe7hFILrPCnNNQIxaNY8U6Un/Y/FOBiDXf/4VTrKQndkLoZ
-	 J7yLnY4Xal0/44DqVhGwq19g6cw9R6l1o/4ZWhTGvvzpFXJGNOl8ShkEZibRSUgYR/
-	 1+cjtQGpV3/xw==
+	b=OoSc9JsuQ2uTkvwn9PGDHAg0BSfeivccowW/zAEbpAuuGjhArzn2jeY6DAbDtBqFy
+	 M+8PNmKNihk5b+id0y2HrE11QKfjN5DFALwqOipnOGhpoLcLZBA6VuTbYPsnb0eECq
+	 rC9UhFugmC7Qc4cML/I72MdFz+tQYJXyLYDhzBHw0pyWqE7k6pblg0oQlLvvo7Rcu/
+	 sZvd62HxV7TfZabMcVUHyl2Yr78eLGNkC5Phdsm/iTrwIzXKGM/aLHEsWBOQHNog/8
+	 nA0s76Wdqaj+zZNR3iBYuo7+7OBYOWvB3FN4Z6T1rh6Mn3RrtIBI1qGe8ol98LaeAH
+	 d7Q8ufRrdxV4A==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 25 Sep 2026 21:09:41 +0100
-Subject: [PATCH v5 06/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc64
+Date: Fri, 25 Sep 2026 21:09:43 +0100
+Subject: [PATCH v5 08/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260925-rcu-pagetable-freeing-v5-6-31e91065fea4@kernel.org>
+Message-Id: <20260925-rcu-pagetable-freeing-v5-8-31e91065fea4@kernel.org>
 References: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
 In-Reply-To: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -113,12 +113,12 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org, 
  "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2563; i=ljs@kernel.org;
- h=from:subject:message-id; bh=7tmFad46Ay6V6b5/mmZvG/hiVDuSFgYhQDgYlo78TeM=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLK2XWW/YFoQrqOUEZLpL3zwHfvHV+1zGe5zBj351OHcx
- crT/3Z1RykLgxgXg6yYIsvzL+L7g0TC5nVe8HeDmcPKBDKEgYtTACZi68jIcHrDLoNNgikXeHUa
- 1+2/x5K/fEvyqyxb7m6H93+NspK3yjD8U/ZucWJc7HzE0fPCP8Mer73FC6ZeTq3deSvhoqnm48e
- TuQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4222; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=LIKVLPdgTvixCm5b1s0RnhQBz2rNn/VSLQ1UWZakBPA=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLK2XWUPbXgfu0o/otjKzvnm58zd945J3V2yq07OsfO2p
+ b++ieq0jlIWBjEuBlkxRZbnX8T3B4mEzeu84O8GM4eVCWQIAxenAEwkYRPDP6VrM6MLFZSq9szl
+ 6Lrmvv/zye0dzpOa/ru2eIuavmRkEWb4X3flY5mOQS7H0633PlTGMHT+qVsiZpV27NxNyX/Ofjw
+ JfAA=
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 X-BeenThere: linux-um@lists.infradead.org
@@ -135,76 +135,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Commit 4a0100f7546f ("sparc64: use RCU page table freeing") enabled
-CONFIG_MMU_GATHER_RCU_TABLE_FREE for SMP sparc64 architectures, expressly
-for GUP-fast page table walkers.
+Currently, non-x2 sh specifies CONFIG_MMU_GATHER_RCU_TABLE_FREE allowing
+RCU page table freeing.
 
-Naturally, UP systems do not have to worry about concurrent GUP fast
-operations.
+sh-X2 is problematic because it utilises slab-allocated PMD page tables,
+and thus tlb_remove_ptdesc() cannot be used in these cases.
 
-However, CONFIG_PREEMPT_RCU is also available even on a UP system, so a
-future pure-RCU page table walker requires MMU_GATHER_RCU_TABLE_FREE to be
-enabled on UP, even if concurrent GUP fast is not possible there.
+All other sh variants are fine as commit e3ecf7c7d082 ("mm: pgtable:
+convert some architectures to use tlb_remove_ptdesc()") already converted
+page table freeing to use tlb_remove_ptdesc(), which does so after an RCU
+grace period when CONFIG_MMU_GATHER_RCU_TABLE_FREE is specified.
 
-To enable future pure-RCU page table walkers, enable
-MMU_GATHER_RCU_TABLE_FREE unconditionally.
+Resolve this issue by firstly specifying CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
+for sh-X2, so the arch can provide its own __tlb_remove_table()
+implementation (called after the RCU grace period).
 
-With this change, it is no longer necessary to have !CONFIG_SMP
-pgtable_free_tlb(), so also remove this now dead code.
+Then, convert __pmd_free_tlb() to tag the pointer to the PMD, and have
+__tlb_remove_table() check this tag to determine whether to free via the
+slab or to use pagetable_dtor_free().
+
+This follows the pattern used by sparc64 as implemented in commit
+4a0100f7546f ("sparc64: use RCU page table freeing").
+
+Previously __pmd_free_tlb() freed PMD page tables immediately, before any
+TLB flush IPI. This seems to be a pre-existing bug, which this change also
+resolves.
+
+CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is only specified for sh-X2, as setting
+it disables CONFIG_PT_RECLAIM and causes __tlb_remove_table_one() to call
+tlb_remove_table_sync_rcu() and synchronize_rcu() in turn, and this is not
+necessary for other sh variants.
 
 This forms part of an overall effort to switch every architecture to this
 mode.
 
 Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-Tested-by: Lance Yang <lance.yang@linux.dev>
 Acked-by: Lance Yang <lance.yang@linux.dev>
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- arch/sparc/Kconfig                  | 4 ++--
- arch/sparc/include/asm/pgalloc_64.h | 8 --------
- 2 files changed, 2 insertions(+), 10 deletions(-)
+ arch/sh/Kconfig               |  3 ++-
+ arch/sh/include/asm/pgalloc.h |  6 +++++-
+ arch/sh/mm/pgtable.c          | 20 ++++++++++++++++++++
+ 3 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index ab77d3f2536e..8d42ebc6d302 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -75,8 +75,8 @@ config SPARC64
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_KRETPROBES
- 	select HAVE_KPROBES
--	select MMU_GATHER_RCU_TABLE_FREE if SMP
--	select HAVE_ARCH_TLB_REMOVE_TABLE if SMP
-+	select MMU_GATHER_RCU_TABLE_FREE
-+	select HAVE_ARCH_TLB_REMOVE_TABLE
- 	select MMU_GATHER_MERGE_VMAS
- 	select MMU_GATHER_NO_FLUSH_CACHE
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
-diff --git a/arch/sparc/include/asm/pgalloc_64.h b/arch/sparc/include/asm/pgalloc_64.h
-index caa7632be4c2..b5055d259b74 100644
---- a/arch/sparc/include/asm/pgalloc_64.h
-+++ b/arch/sparc/include/asm/pgalloc_64.h
-@@ -74,8 +74,6 @@ void pte_free_defer(struct mm_struct *mm, pgtable_t pgtable);
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 204f64912f0e..75236bef6f16 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -33,6 +33,7 @@ config SUPERH
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_SECCOMP_FILTER
++	select HAVE_ARCH_TLB_REMOVE_TABLE if X2TLB
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_DEBUG_KMEMLEAK
+@@ -61,7 +62,7 @@ config SUPERH
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select IRQ_FORCED_THREADING
+ 	select LOCK_MM_AND_FIND_VMA
+-	select MMU_GATHER_RCU_TABLE_FREE if MMU && !X2TLB
++	select MMU_GATHER_RCU_TABLE_FREE if MMU
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_SG_DMA_LENGTH
+ 	select NO_DMA if !MMU && !DMA_COHERENT
+diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
+index 6fe7123d38fa..67ce7fa23fa1 100644
+--- a/arch/sh/include/asm/pgalloc.h
++++ b/arch/sh/include/asm/pgalloc.h
+@@ -17,7 +17,11 @@ extern void pgd_free(struct mm_struct *mm, pgd_t *pgd);
+ extern void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd);
+ extern pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address);
+ extern void pmd_free(struct mm_struct *mm, pmd_t *pmd);
+-#define __pmd_free_tlb(tlb, pmdp, addr)		pmd_free((tlb)->mm, (pmdp))
++extern void __tlb_remove_table(void *table);
++
++/* PMDs are slab-allocated, tag so they are freed correctly. */
++#define __pmd_free_tlb(tlb, pmdp, addr)					\
++	tlb_remove_table((tlb), (void *)((unsigned long)(pmdp) | 1))
+ #endif
  
- void pgtable_free(void *table, bool is_page);
- 
--#ifdef CONFIG_SMP
--
- struct mmu_gather;
- void tlb_remove_table(struct mmu_gather *, void *);
- 
-@@ -96,12 +94,6 @@ static inline void __tlb_remove_table(void *_table)
- 		is_page = true;
- 	pgtable_free(table, is_page);
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+diff --git a/arch/sh/mm/pgtable.c b/arch/sh/mm/pgtable.c
+index 3a4085ea0161..f6184b86b89c 100644
+--- a/arch/sh/mm/pgtable.c
++++ b/arch/sh/mm/pgtable.c
+@@ -56,4 +56,24 @@ void pmd_free(struct mm_struct *mm, pmd_t *pmd)
+ {
+ 	kmem_cache_free(pmd_cachep, pmd);
  }
--#else /* CONFIG_SMP */
--static inline void pgtable_free_tlb(struct mmu_gather *tlb, void *table, bool is_page)
--{
--	pgtable_free(table, is_page);
--}
--#endif /* !CONFIG_SMP */
- 
- static inline void __pte_free_tlb(struct mmu_gather *tlb, pte_t *pte,
- 				  unsigned long address)
++
++static void __tlb_remove_table_slab(void *table)
++{
++	kmem_cache_free(pmd_cachep, table);
++}
++
++static void __tlb_remove_table_pgtable(void *table)
++{
++	pagetable_dtor_free(table);
++}
++
++void __tlb_remove_table(void *table)
++{
++	const unsigned long addr = (unsigned long)table;
++
++	if (addr & 1)
++		__tlb_remove_table_slab((void *)(addr & ~1UL));
++	else
++		__tlb_remove_table_pgtable(table);
++}
+ #endif /* PAGETABLE_LEVELS > 2 */
 
 -- 
 2.55.0
