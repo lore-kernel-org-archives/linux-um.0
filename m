@@ -4,86 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8C9AC9832A
-	for <linux-um@archiver.kernel.org>; Sat, 26 Sep 2026 19:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52994C9833E
+	for <linux-um@archiver.kernel.org>; Sun, 27 Sep 2026 15:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Io4wnXahglDcD1fw17hJtB+q5cY1BH8blFTxuDCKiG4=; b=D/RPRz7LRdeMMLAxRoovvdnW8L
-	gO7xqKGnVgqxezFYF2NSzACg+Mft+aS1iNX8n6Z2pWRzh1kSxaMy32iaIuo/LWl9bs9goaMYAQWrs
-	Q6MNPCsdqNuDP5VHPZGSdFbTadsKr5bJtckxi87+mc0+CkI2kcx0H/sooVacbhvd1qQPrNmfCbOoq
-	mBqqwUpl5UA8TUtd0xw9829oPCUyW5B0HjbLqqjSN/KyeyqXi8sghueOGa9QNPCZ92d5jjDYTxlV/
-	izQJPzxHYUfAnwOJzLcZXZQPCCzApvUs8KIj/YYpLkEQKzfwL7t0Fs5wh5xgrJBp65lNKHDz7UviA
-	/KE3eynQ==;
+	bh=i9btTZnCFLC8MMw6KMGK91iVLYRqVa7A+XQvAJcnthc=; b=oaRsTj3IhXZlI+AC+Utf8vS3ck
+	yjcCfl4ppG63D27eFmxWtvdfgLMJ33q5HyWax5hzXvqu0d4kQjAerOIfHBklMj8kxbAoR9nxqnZEy
+	JfMfcR2Bbj6NZMyoVPISeOvbnoZXfEJ6ZrY6MQzcWY22a5C6e5gQr5nsVs/wH2K5qOKKz3U9Mpe4i
+	b5tSLzk0VyCHrY7W8fpC4gApTVDTYuI2gPA1E4gAKwBmhDciy1UiE1eRKlX1BDW6goiz9AdMizWQx
+	aZgn2RFEPa2Khmh1YMR5A0HCAJ7NrkP041c3u/tnsSu1MbXDW1gK/vidwVfl4WvacniN3XoUvgcNw
+	NTqVSiKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAYRo-0000000Flwj-0bFA;
-	Sat, 26 Sep 2026 19:52:36 +0000
-Received: from mail.alien8.de ([2a01:4f9:3051:3f93::2])
+	id 1xAqbx-0000000GVdm-1L5J;
+	Sun, 27 Sep 2026 15:16:17 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAYRk-0000000FlwD-2c20
-	for linux-um@lists.infradead.org;
-	Sat, 26 Sep 2026 19:52:34 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5631A40E01F9;
-	Sat, 26 Sep 2026 19:52:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-	reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id yVhWzCsEK9wq; Sat, 26 Sep 2026 19:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1790452325; bh=UiMSyRFKs7VC0vsliyJ+JCT7GZBHFu90GqFe0oIG6hE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VSV6b0Pfpcbadj+z1O0dIqxuh8GsGgZAsmDEln8avnprJpQy12o7Tty9JXLw/EBs3
-	 E+uWgY8bJi+pwGk9P9wAP2Timg+l9KXHF4ZVAN8vacoolIITh5pPwNzo7Uat4mM4/H
-	 Emwain9eUGcvJBpst3gdFHWric4ioFhjhrlpCeQ8Cb9WiQSAA4UOVAPUWf9xOE0+fC
-	 Mn4qNNzJnoXi0YyieOP/5LYqPfmbxGth5Lu8YR6RrsX4nBxu+qbCBqdJhsFQMB7d+A
-	 RxTKzqRdre/6a7NAx6i+/1KUAqyCYL2r3hQK1d7qV5yn669k1lphmN1PQdt/GJHjBY
-	 xfxv65ZyQEkwnivnDOHpp9djTTzHQ7x5PjQdpzbVfbVEjuIUomdinddrUQrpUXT5UA
-	 0lFQVC5iirRU/3TbzPIhv6qP3oIU+Xi+GkdbRSLj9VXCSZE8cx/S/zqkbf0rUxYFWT
-	 b5UmgVG5BMW5fyzWpVDA9D0ulTVUxQJCNeeILutVWQOsoPFPy6KhlSmmLZxVCTnAH4
-	 b4WFDeur8BoODY6CEOHvuaW9R5LMu0jW8ShEGlezD12JkmmubDUijfPsTMnWtqbcrW
-	 dQRCyLwiWHAaoHzOgtcYid2tY+w9pjcVXbMbMjauHf9rWJXN7uJ4dfLK88FqmNOlHp
-	 olNsauftvm5VpsJZRDtaWeOY=
-Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CC81F40E00E7;
-	Sat, 26 Sep 2026 19:51:48 +0000 (UTC)
-Date: Sat, 26 Sep 2026 12:51:45 -0700
-From: Borislav Petkov <bp@alien8.de>
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
-	Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] x86: uapi: ptrace: guard register offset macros with
- __ASSEMBLER__ or __FRAME_OFFSETS
-Message-ID: <20260926195145.GBargiUSEEqjWPpuaK@fat_crate.local>
-References: <20260821-ptrace_uapi-v1-1-3de8638a29f2@google.com>
- <e801211b4c71ddd919fa5d7b9c859b86addf3fb7.camel@sipsolutions.net>
- <CAKwvOdkMK9Tj=JgsPeQj6_Xtx3FgZK2SWTSJVU_BJ7G17pDC2w@mail.gmail.com>
+	id 1xACHa-0000000EM03-1K6b;
+	Fri, 25 Sep 2026 20:12:34 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id B841760238;
+	Fri, 25 Sep 2026 20:12:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74D61F00898;
+	Fri, 25 Sep 2026 20:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790367153;
+	bh=i9btTZnCFLC8MMw6KMGK91iVLYRqVa7A+XQvAJcnthc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=koGG6VkHK9sq7MUCsKX6l8GWvGH1X10xvKB/1Gb6IALPCnGNK6OLAn4edc3ppM9tw
+	 XF5DLLj+zcIZx0j+zL/F8/pMW1FR8yjWkWYsg0z+hqLvAIEBvGhuRCTS95OSheg3IC
+	 i8haH1mXFZ6EiUV4mPNPDYbngmJZJL6fneEkRFBz69DDia5YYUyV+DyyfnCtX2nw9b
+	 aFW4fMhecvKfClHGenR6/HrNpp/dpU9NU7ZXVhlKOxZhvXhq4/JGllecZvzt50vRqf
+	 5xFwTYJFDrouBhp5qHt7Zk/0avP9tlgacO//JPou+MCvPzoZmO5Vrju3Q2vp+7jOow
+	 Wv8x2IhM+uhGg==
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Date: Fri, 25 Sep 2026 21:09:42 +0100
+Subject: [PATCH v5 07/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for
+ m68k-coldfire
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkMK9Tj=JgsPeQj6_Xtx3FgZK2SWTSJVU_BJ7G17pDC2w@mail.gmail.com>
-Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260926_125232_846263_9B784D92 
-X-CRM114-Status: GOOD (  13.20  )
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260925-rcu-pagetable-freeing-v5-7-31e91065fea4@kernel.org>
+References: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
+In-Reply-To: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>, 
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+ Baolin Wang <baolin.wang@linux.alibaba.com>, 
+ "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
+ Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+ Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+ Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Dinh Nguyen <dinguyen@kernel.org>, 
+ Simon Schuster <schuster.simon@siemens-energy.com>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+ Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
+ Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>, 
+ Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, 
+ Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+ WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+ Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
+ Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org, 
+ "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, 
+ Greg Ungerer <gerg@linux-m68k.org>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2031; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=wTPS3tObjnit80i5jG0OzSjV+ZJC9LambnmGz9RIJjc=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLK2XWX/nrikwtvb6sJaZkaOMrNvQjuEvKuOTD/x7pxf+
+ OXTKV0SHaUsDGJcDLJiiizPv4jvDxIJm9d5wd8NZg4rE8gQBi5OAZiIZCcjwwZR4ZUL3m+I7wsx
+ 28EiL/8lbNpvXfG9HGGXd8pt/qk9vZDhv1N3gp7PVQn/0s4L+TtjrpclvJk57XX1tn0fvjKcb81
+ azwkA
+X-Developer-Key: i=ljs@kernel.org; a=openpgp;
+ fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+X-Mailman-Approved-At: Sun, 27 Sep 2026 08:16:16 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,35 +138,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 25, 2026 at 02:25:47PM -0700, Nick Desaulniers wrote:
-> On Thu, Sep 24, 2026 at 7:54=E2=80=AFAM Johannes Berg <johannes@sipsolu=
-tions.net> wrote:
-> >
-> > On Fri, 2026-08-21 at 15:45 -0700, Nick Desaulniers wrote:
-> > >
-> > >  arch/x86/um/asm/ptrace.h               | 4 +---
-> > >  arch/x86/um/ptrace_32.c                | 1 +
-> >
-> > This seems like a simple adjustment for what you need to do in x86, s=
-o
-> > that's OK, but I don't think we'll take this through the UML tree.
->=20
-> Appreciated! I agree, maybe with Oleg's review this can go via the x86 =
-tree?
+Similar to sun3, the coldfire variant of m68k uses 2-level page tables.
 
-Do we want it in stable too even if it is not really stable material so t=
-hat
-userspace does not have to upgrade kernels just for this?
+Update its __pte_free_tlb() function to use tlb_remove_ptdesc() in order
+that, with CONFIG_MMU_GATHER_RCU_TABLE_FREE, page tables are freed under
+RCU.
 
-Or are they simply copying upstream UAPI headers from the latest kernel s=
-o
-that stable backports don't matter?
+The page tables occupy a page each and have no odd semantics, so this
+change suffices to allow enabling of CONFIG_MMU_GATHER_RCU_TABLE_FREE for
+m68k-coldfire, so do so.
 
-Thx.
+This forms part of an overall effort to switch every architecture to this
+mode.
 
---=20
-Regards/Gruss,
-    Boris.
+Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+Acked-by: Lance Yang <lance.yang@linux.dev>
+Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+---
+ arch/m68k/Kconfig                   | 2 +-
+ arch/m68k/include/asm/mcf_pgalloc.h | 5 +----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index e29610fd1240..6b8ec67c86fd 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -36,7 +36,7 @@ config M68K
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+-	select MMU_GATHER_RCU_TABLE_FREE if MMU && SUN3
++	select MMU_GATHER_RCU_TABLE_FREE if MMU && (SUN3 || COLDFIRE)
+ 	select MODULES_USE_ELF_REL
+ 	select MODULES_USE_ELF_RELA
+ 	select NO_DMA if !MMU && !COLDFIRE
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+index fc5454d37da3..b53ff0950db2 100644
+--- a/arch/m68k/include/asm/mcf_pgalloc.h
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -39,10 +39,7 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
+ 				  unsigned long address)
+ {
+-	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+-
+-	pagetable_dtor(ptdesc);
+-	pagetable_free(ptdesc);
++	tlb_remove_ptdesc(tlb, virt_to_ptdesc(pgtable));
+ }
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+
+-- 
+2.55.0
+
 
