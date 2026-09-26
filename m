@@ -4,88 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0572AC9830E
-	for <linux-um@archiver.kernel.org>; Sat, 26 Sep 2026 02:12:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83089C98318
+	for <linux-um@archiver.kernel.org>; Sat, 26 Sep 2026 09:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=; b=xzwZBc4ME4WfjY5RnNjysyrc0d
-	znraOF1zdaPodZSU/MSJc3AC7pwoDFBT6YBBFF9IKBeA5OprSwUTkobqg7czRpFlgYMplQ8xJewob
-	YosByjwovK1mydeRHXmdy/rlaCuBB2eogaG/Tzs7+7QdddJya/46qtORffw1u6twLQ1y8UBYIBLRt
-	VY9AEFXC4Fg68hFDqguuHoclgBRyH5ZtuHyOUNXcxk07+kN1+FH/wrrq3WgFwZEVbvVWARdQhjPLJ
-	dBx5VipQnFAlpaSIqKOJdhEjcq9E4AZYETHImK/Tr2bkDEvzwyY/v0XiMyWrd/E3IInEGzk4s2OEy
-	JWywvtpQ==;
+	bh=WSCWhK1gKyhlGAlTAcNkQ2dJ3yeDn7O4Y/TX1rbqycg=; b=Yz3iP0fwqzGHhnD4mCsMRnDgCf
+	TnwT1EAMz19VSDF/gd2rlryLbc0BQhpK2OHcVdIQaUCDr5jhXJrwg4EGAyoGfkL59+eSEw8n++hgG
+	fKuAPZHHujjJ5ikd7vfVSlgx59sCD+/MFAsD7XaLitHe1xIopVbQqOCJIZczqISMg/qvYfbpic4L9
+	/3dyGvIURv14urefDN2Y9KZ9lwFuIItU1jYkhKVSNa11aByLmKCHth0GRQ3kIWpHnoaHjlFZTnUtc
+	0FsmcXCvdA+JHgGfcgSp8zVA/3VSXOFL38EDrscH7/Nc9T8oKMz4XiweINVLbCc0kDMkg+tb38jZx
+	i9DYJr9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAHuK-0000000EqZx-1PI3;
-	Sat, 26 Sep 2026 02:12:56 +0000
-Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
+	id 1xAOWt-0000000FBvB-3vil;
+	Sat, 26 Sep 2026 09:17:11 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAHuI-0000000EqZb-0l4D
+	id 1xAOWp-0000000FBtu-247H
 	for linux-um@lists.infradead.org;
-	Sat, 26 Sep 2026 02:12:55 +0000
-Received: by mail-pj2-x10.google.com with SMTP id d9443c01a7336-2d90ba1d807so11486835ad.3
-        for <linux-um@lists.infradead.org>; Fri, 25 Sep 2026 19:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790388773; x=1790993573; darn=lists.infradead.org;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=;
-        b=XXR2LKWZQvogLULMlb9w7Ef69tMAcQys9e5cpiAcD0opsJt5IhVcHSKgsluBdiT9Ey
-         TKac5UfMBvbsCp2BkZZoGjowLOMWH+91y4mPrhdqoTc1UVMBc/dXdiM0Yy9PInyYIEvt
-         7IOQe333Dawfch7rzRUkXvnmSMVzayTr3TaZ3yG82VockyvIIipezXIjGc+ly6wZpad1
-         hb2U++Cn0yfFf6O3Nzff0IEAJ3JzYkQuph5XadxQmU+gTGIrfipDbuCaS36EKYDpes6q
-         YMFAgyF/bnHCgQHGWJtDFjQ0dM7kMriE1u4qXpaj4Yi2rOwX7WutRD6r8sLLdY8BaqfD
-         1mJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790388773; x=1790993573;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=;
-        b=a44rYCYrMa+4q/wRSPyaA+Mr5TyZhw4r0qGxv5cSehNHMEtFwZcxl1xYHXoxLHlfIr
-         S5ZT11Znvfb8d6wGDgJSHEaRFW8nvuKhdzcLUzF+ww9noiBpQvOGYW5aAnrj7nmqQD5+
-         yCdObYP943tA4xtPzRDDXjYyTb1wHBLG4JjZqiMJUVwNm+0kf80+An9J6maJ9T1U0Oeb
-         2uZdPehgeTIWgR/4UvHkchzVSMfD9CeHfu2sUzpQSw8l1ah0zXwlbExpM5YsO/bA4fDz
-         elDzuMuOAje1PVYO0UxZdtTyGaWoosSMQYNUw+16703R/vnA27HMYQj8ulArPt6kenB5
-         fKNw==
-X-Gm-Message-State: AFuF++kOG7H0PuuJXyFMp0n0sIxneUNgT9oTfJl7NvSMl7rXW77mm1fA
-	Pk/wLr1H+12okr6s3OYKnqBfrc8B4AOTw+GvqATImlsgRypJNGLXSpts
-X-Gm-Gg: AYBFou2c4/icjtCCQC8KjuWxdUMK478nPheThnC9xPw6NBG/LafrDx0gHz0WbCUySsM
-	SLOYwoboZ+4ZvCH4EFznlyZJqoZgxo97lUMgLkDAI5FAXEpYcM+be46whxYA73PIKkFmNEfTKZx
-	ibVAfVZdPHKtJj5UpvogX2oPpqCm2QcIF2htllvCKJMCGzK0u22zi3xXoRMLwz61BTBYrEvGx/d
-	2nvngvrkK1PXfx8x9pBS9KDgevsyFrpdaagZkx/hMTCtvonbTQ+rF4rL1+5L87pHPg/6rV1uRWn
-	8hi8ynPth7bUT+1rJZtVQkUCLVeBxgAi3O7V2oZsYRm4w9HbVPWBZHu+Qu0hua9RaFg2093bb5d
-	XWsSwVsv2ppbje2WJcKV6trz0EeQ0h73rJs876/v1TiS2xXtfOeqcliVL3FNYxTbMFrwXBwI2NW
-	yIYmUUKf+xZF7WoHqN2/Pmzais4vOc2fV7Pz5FVTuyp83+pXJoZqWKAQ04ymF1hU06/LLVFUirj
-	KwswyTXfPEMrc7N4NUrWWF6g7nB3qwYAK9Cp+me3s/BzAdzcMTmMZ18A+iJMAwfKpRh99Akzyer
-	XBJCanPV8HrLSZbbbRbAwQQ3uPw4KvFeiY+XZVPe2mianpXIuDkibgQBlWMl0E7UvTsil8rWYsd
-	I
-X-Received: by 2002:a17:902:db07:b0:2db:73fc:b57f with SMTP id d9443c01a7336-2df7da5d75emr62886795ad.10.1790388772982;
-        Fri, 25 Sep 2026 19:12:52 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2df91444763sm17349455ad.60.2026.09.25.19.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2026 19:12:52 -0700 (PDT)
-Date: Sat, 26 Sep 2026 11:12:49 +0900
-Message-ID: <m24ifc4v6m.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	johannes.berg@intel.com
+	Sat, 26 Sep 2026 09:17:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=WSCWhK1gKyhlGAlTAcNkQ2dJ3yeDn7O4Y/TX1rbqycg=;
+	t=1790414227; x=1791623827; b=rVYKrpPcFKj28VNMQF8c34LvMDlT2rC+irEF5QgaAwBMM2g
+	Fb76MKbJJ/qY0FPzmt0+00VuUJsQ2qqu37ca4y0rOUp8gFF/+NPMgzyEgkAuKWfbSgKcKpWW0PQhY
+	ADEb06WGbCBsDhuw/NHOjKaLqXzfYgRIfxZTZ9S0jAC3T4Fr9XvoZ1A1DnJdeN5v7QbZvFqAj14Lp
+	EodDIFyQET02+9ODS0mYUc2nRZLB2KixH+0RdYS1uLOz/tZ1o+kx1JhiDX8PRc6VuUFDrRFDt6YKK
+	+aWdwoCwEy+VNJPjE2yQqT3p7oZezVeKUEGvmZukqDqCvounH1czOV+GKRWsZp1Q==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1xAOWf-0000000B5IL-2VuK;
+	Sat, 26 Sep 2026 11:16:57 +0200
+Message-ID: <4a99ab637eb8fbe6d72d788ddc0d2e141e7c9821.camel@sipsolutions.net>
 Subject: Re: [PATCH] um: mprotect() __init memory
-In-Reply-To: <20260921122937.3821fec01e82.Ib959ff1baad7a45e2b804209b530040e69e4b046@changeid>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org
+Date: Sat, 26 Sep 2026 11:16:56 +0200
+In-Reply-To: <m24ifc4v6m.wl-thehajime@gmail.com> (sfid-20260926_041255_844241_7AADBB53)
 References: <20260921122937.3821fec01e82.Ib959ff1baad7a45e2b804209b530040e69e4b046@changeid>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+	 <m24ifc4v6m.wl-thehajime@gmail.com> (sfid-20260926_041255_844241_7AADBB53)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260925_191254_251677_88B08ADC 
-X-CRM114-Status: GOOD (  26.09  )
+X-CRM114-CacheID: sfid-20260926_021707_817767_4226C8D4 
+X-CRM114-Status: GOOD (  12.90  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,122 +73,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Sat, 2026-09-26 at 11:12 +0900, Hajime Tazaki wrote:
+> Hello,
+>=20
+> I recently pulled uml/next branch and faced an issue on the exit.
+>=20
+> ```
+> Thread 1 "vmlinux" received signal SIGSEGV, Segmentation fault.
+> 0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.c:41
+> 41      }
+> (gdb) bt
+> #0  0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.=
+c:41
+> #1  0x0000000060003a69 in linux_main (argc=3Dargc@entry=3D9, argv=3Dargv@=
+entry=3D0x7fffffffe118,
+>     envp=3Denvp@entry=3D0x7fffffffe168) at ../arch/um/kernel/um_arch.c:40=
+4
+> #2  0x00000000600049dc in main (argc=3D9, argv=3D0x7fffffffe118, envp=3D0=
+x7fffffffe168)
+>     at ../arch/um/os-Linux/main.c:153
+> ```
+>=20
+> and bisected that this commit is the first rev to introduce this.
 
-Hello,
+I didn't get that, hmm.
 
-I recently pulled uml/next branch and faced an issue on the exit.
+> indeed, now .text section is in __init label but some of startup code
+> (start_uml, linux_main) remain un-returned even after init is done.
+>=20
+> a quick change below avoid this issue, but not sure if it is your
+> intention of the original patch.
 
-```
-Thread 1 "vmlinux" received signal SIGSEGV, Segmentation fault.
-0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.c:41
-41      }
-(gdb) bt
-#0  0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.c:41
-#1  0x0000000060003a69 in linux_main (argc=argc@entry=9, argv=argv@entry=0x7fffffffe118,
-    envp=envp@entry=0x7fffffffe168) at ../arch/um/kernel/um_arch.c:404
-#2  0x00000000600049dc in main (argc=9, argv=0x7fffffffe118, envp=0x7fffffffe168)
-    at ../arch/um/os-Linux/main.c:153
-```
+No, clearly not - we shouldn't execute __init code after init either :)
 
-and bisected that this commit is the first rev to introduce this.
+So I guess we found a but elsewhere, but I don't immediately see what
+needs to be not marked __init, clearly linux_main() is still used on the
+way out so that must be, but ...
 
-indeed, now .text section is in __init label but some of startup code
-(start_uml, linux_main) remain un-returned even after init is done.
+Or we could mprotect(..., 0, 0, 1) internally on the way out again,
+since really _while_ running we also shouldn't be in __init code, it's
+just a side effect of how UML shuts down?
 
-a quick change below avoid this issue, but not sure if it is your
-intention of the original patch.
+Got a config or so? I really don't see this.
 
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -93,7 +93,7 @@ void free_initmem(void)
-        unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
- 
-        if (end > start)
--               os_protect_memory((void *)start, end - start, 0, 0, 0);
-+               os_protect_memory((void *)start, end - start, 0, 0, 1);
- }
-
-
-I guess you're already aware of it (if you boot and halt a UML
-instance it should be 100% reproducible), but in case not.
-
--- Hajime
-
-On Mon, 21 Sep 2026 19:29:37 +0900,
-Johannes Berg wrote:
-> 
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> Unlike what the comment says, we could munmap() this (but
-> not reuse it for guest allocations), but then stray libc
-> allocations could technically conflict, so mprotect() it
-> to catch access bugs. Align it in the linker scripts too
-> so that all of it can be covered, not just some.
-> 
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> ---
->  arch/um/kernel/dyn.lds.S |  2 ++
->  arch/um/kernel/mem.c     | 11 ++++++++---
->  arch/um/kernel/uml.lds.S |  2 ++
->  3 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-> index ad3cefeff2ac..5d3d5ef6ebec 100644
-> --- a/arch/um/kernel/dyn.lds.S
-> +++ b/arch/um/kernel/dyn.lds.S
-> @@ -98,8 +98,10 @@ SECTIONS
->  
->    #include <asm/common.lds.S>
->  
-> +  . = ALIGN(PAGE_SIZE);
->    __init_begin = .;
->    init.data : { INIT_DATA }
-> +  . = ALIGN(PAGE_SIZE);
->    __init_end = .;
->  
->    /* Ensure the __preinit_array_start label is properly aligned.  We
-> diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-> index 1eef0e42ef5d..00c469fd28ee 100644
-> --- a/arch/um/kernel/mem.c
-> +++ b/arch/um/kernel/mem.c
-> @@ -83,12 +83,17 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
->  }
->  
->  /*
-> - * This can't do anything because nothing in the kernel image can be freed
-> - * since it's not in kernel physical memory.
-> + * We could munmap() this instead, but then libc allocations could
-> + * land in this area and stray initdata access could erroneosly
-> + * succeeded - just mprotect() it to reliably catch bad accesses.
->   */
-> -
->  void free_initmem(void)
->  {
-> +	unsigned long start = PAGE_ALIGN((unsigned long)__init_begin);
-> +	unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
-> +
-> +	if (end > start)
-> +		os_protect_memory((void *)start, end - start, 0, 0, 0);
->  }
->  
->  /* Allocate and free page tables. */
-> diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-> index 30aa24348d60..7085ba6fcb93 100644
-> --- a/arch/um/kernel/uml.lds.S
-> +++ b/arch/um/kernel/uml.lds.S
-> @@ -70,8 +70,10 @@ SECTIONS
->  
->    #include <asm/common.lds.S>
->  
-> +  . = ALIGN(PAGE_SIZE);
->    __init_begin = .;
->    init.data : { INIT_DATA }
-> +  . = ALIGN(PAGE_SIZE);
->    __init_end = .;
->  
->    .data    :
-> -- 
-> 2.55.0
-> 
-> 
+johannes
 
