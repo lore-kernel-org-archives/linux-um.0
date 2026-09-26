@@ -4,111 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D066BC98332
-	for <linux-um@archiver.kernel.org>; Sat, 26 Sep 2026 01:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0572AC9830E
+	for <linux-um@archiver.kernel.org>; Sat, 26 Sep 2026 02:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wGJLJUYX098b2C/p5zUf0et0pH8c8hAZraf8w7dpmdQ=; b=iMLAx92F1P22bsa0AUtQZVCgr8
-	vJPEci/nJY2ATY+31J3zv5IRgt2Pk039TgK1dXKb9QkVoHIZonsCsoAr6n6q0/NtXG4/Cn/VzphxL
-	lvwK0d2pgwmYRvqA+Jqskwh5ieyFj+cYBYZ0iT5+MNlb5i1gge1ZoICbIWBcSR3A7P537I5cSmFM0
-	MRpimkbEImdx7gdNTHidmlQg6Hu6VfEbxxncaPU1LocaoWyDgf507blmspztaW4yvt+z0xgCvyKUn
-	kbJOrPjAEo9uuDCs3awj5D1gUQ9mv2nQhhzg4LZXb7aR+e4xGuBiX81gbh3fAmNFxRz/TqcJMy9TZ
-	RCvH5nYw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=; b=xzwZBc4ME4WfjY5RnNjysyrc0d
+	znraOF1zdaPodZSU/MSJc3AC7pwoDFBT6YBBFF9IKBeA5OprSwUTkobqg7czRpFlgYMplQ8xJewob
+	YosByjwovK1mydeRHXmdy/rlaCuBB2eogaG/Tzs7+7QdddJya/46qtORffw1u6twLQ1y8UBYIBLRt
+	VY9AEFXC4Fg68hFDqguuHoclgBRyH5ZtuHyOUNXcxk07+kN1+FH/wrrq3WgFwZEVbvVWARdQhjPLJ
+	dBx5VipQnFAlpaSIqKOJdhEjcq9E4AZYETHImK/Tr2bkDEvzwyY/v0XiMyWrd/E3IInEGzk4s2OEy
+	JWywvtpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAGty-0000000En8F-0uNB;
-	Sat, 26 Sep 2026 01:08:30 +0000
-Received: from mail-pz2-x2b.google.com ([2607:f8b0:4864:3b::2b])
+	id 1xAHuK-0000000EqZx-1PI3;
+	Sat, 26 Sep 2026 02:12:56 +0000
+Received: from mail-pj2-x10.google.com ([2607:f8b0:4864:39::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAGtu-0000000En6L-2b8a
+	id 1xAHuI-0000000EqZb-0l4D
 	for linux-um@lists.infradead.org;
-	Sat, 26 Sep 2026 01:08:28 +0000
-Received: by mail-pz2-x2b.google.com with SMTP id 41be03b00d2f7-cc79223bcfbso673078a12.1
-        for <linux-um@lists.infradead.org>; Fri, 25 Sep 2026 18:08:26 -0700 (PDT)
+	Sat, 26 Sep 2026 02:12:55 +0000
+Received: by mail-pj2-x10.google.com with SMTP id d9443c01a7336-2d90ba1d807so11486835ad.3
+        for <linux-um@lists.infradead.org>; Fri, 25 Sep 2026 19:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790384906; x=1790989706; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=wGJLJUYX098b2C/p5zUf0et0pH8c8hAZraf8w7dpmdQ=;
-        b=bS/2zNjZVP++Hri8j5y+7hb+7e17BUaVVGI4iz3oYARhDy3WbRYvDm4i2+kC+8QW4G
-         G8EdRlWdGCkQiUmXIMJIeJ7Y3tKyez0dVyk4RhlMKACJXsP+EoEJBxmFvXlEc8gaxgbX
-         +Z1bGrmY3CNM1xYeI89h8WrI8PuzKU7pcRz5Cpf0FKuCC2AtlSVcJAM7dWDLZ2NsSo/c
-         axFHdredfIgw1wV8eq776w6QBr5PvB9HikWklYbBwiwZ2wcXTiFFBWK7guEC35CRjV9s
-         ZJXzUFpb4SjsICYIHg7+QGwDhHFii07tWq+NjRFNdnfuGiaNOscgFktbeo5ve3xChevB
-         3fHw==
+        d=gmail.com; s=20251104; t=1790388773; x=1790993573; darn=lists.infradead.org;
+        h=content-type:mime-version:user-agent:references:in-reply-to:subject
+         :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=;
+        b=XXR2LKWZQvogLULMlb9w7Ef69tMAcQys9e5cpiAcD0opsJt5IhVcHSKgsluBdiT9Ey
+         TKac5UfMBvbsCp2BkZZoGjowLOMWH+91y4mPrhdqoTc1UVMBc/dXdiM0Yy9PInyYIEvt
+         7IOQe333Dawfch7rzRUkXvnmSMVzayTr3TaZ3yG82VockyvIIipezXIjGc+ly6wZpad1
+         hb2U++Cn0yfFf6O3Nzff0IEAJ3JzYkQuph5XadxQmU+gTGIrfipDbuCaS36EKYDpes6q
+         YMFAgyF/bnHCgQHGWJtDFjQ0dM7kMriE1u4qXpaj4Yi2rOwX7WutRD6r8sLLdY8BaqfD
+         1mJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790384906; x=1790989706;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=wGJLJUYX098b2C/p5zUf0et0pH8c8hAZraf8w7dpmdQ=;
-        b=ZWJv7o9nqN3kwFiPUMMtzgboKpVpe8yIJ5oe9TcG49GNDX02dlbgpkGofJT5p26DuF
-         s7NuHc5aO7nXg4mpAvAOIWqAnEOxHkWFp3qN/a4P1bsJTaiNOUnxnpPdg130FZytLsww
-         ewP5Te2Jm9pZnoeQev4vezqKcA2cRzXAZV9CgTVWJqzJcOBGx0sJrin3sB1zqe7mWn8d
-         dt+nEh3iWe5WY3KLLhOYNoVxacFFe/EpZ1Kc2jM09ly2zUfkL/YzPnCx9znA6Cc6C2lM
-         /5W/RaPgJP6aBmPnujclQ3r8qRkYIAlliWCOU9QOX5sbYFXTrkaPi+Q6xK3Vravgtx4a
-         dHQg==
-X-Forwarded-Encrypted: i=1; AKwUvBwa0/oDQLfBqkawCOqInTa0PhTV6zoJA0KtxsruXf+PUgKPj9ASl6akZQJJMV9nRY9OQitAyl8TNQ==@lists.infradead.org
-X-Gm-Message-State: AFuF++msDfA46labzc3f2TobrsuSpc2iZW2KDG5NeZw0s15t9PTR2jNB
-	sDrjv5/u59/MphuTM20cJCbVchBGFTM3ZonnktfhHn7Ya441eh7O63fc
-X-Gm-Gg: AYBFou1RcRsC8203LY0SHo2M0o4YQ1od3qSKg0sdfLtULnWqr+P28ECmZy7zIf9qMjx
-	/WnJY/NawYSusbdDXYFgg7G1kqAU3/PZs0Vt6t3Epq68X9YQAOn08MvLSc0g+MJKvo0jdvAQF0U
-	xXqyqSpGT/+8UbYgv8S/rvna0X/yBHCXWEPAwiNZiScZL+cLadlCnes+wWm5KXiuMMqOoZ3C54c
-	+SqwusydwuQIiHExurx7hqYKZqJkDlpoQZ2E4nlgYXtyMkGpAqNZ557fz1ifHyOBf8vxELwthiv
-	yiA9WhcwvuTujfD7gYC6YE7Ubo9Hb+Q99crfmYo/Y8ZUY5rcD46sx8Q2v7+eoagJiPdKrx94ii/
-	UJcrBbO0coCGKahsTdA9lq7XglQ0oxSgRo7A/1vaG1K3IDBwVbSLne+JFDBHKYN9Z3TbwstKGix
-	NgcostVTrpY1jP6q5xLl4APe4Xv+KOMUzIlOJWFF0QzJGkRLQgp3NQFELALvIlKnRe6weLG5jcJ
-	aURDzyDYwxutZUz1umnapqerOkHn6XVZoS8t3rKubkMh4T3W2AOyRtzTXEyChedK3iKiOd9+8We
-	f5MFrGiSRw5FzIEbEORFY5o+BP0VVckAAJH5ZnlSfhmx2KJjvp6nTJsbljh8zw==
-X-Received: by 2002:a17:90a:10cf:b0:3a0:b7b4:b649 with SMTP id 98e67ed59e1d1-3a0b7b4ba36mr2433638a91.52.1790384905575;
-        Fri, 25 Sep 2026 18:08:25 -0700 (PDT)
-Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0974ec5dfsm13169486a91.3.2026.09.25.18.08.24
+        d=1e100.net; s=20260707; t=1790388773; x=1790993573;
+        h=content-type:mime-version:user-agent:references:in-reply-to:subject
+         :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=BRZcJ4zmgYP9iknu9G46YMYxRoSwMeK51+7Pcw6q5Ls=;
+        b=a44rYCYrMa+4q/wRSPyaA+Mr5TyZhw4r0qGxv5cSehNHMEtFwZcxl1xYHXoxLHlfIr
+         S5ZT11Znvfb8d6wGDgJSHEaRFW8nvuKhdzcLUzF+ww9noiBpQvOGYW5aAnrj7nmqQD5+
+         yCdObYP943tA4xtPzRDDXjYyTb1wHBLG4JjZqiMJUVwNm+0kf80+An9J6maJ9T1U0Oeb
+         2uZdPehgeTIWgR/4UvHkchzVSMfD9CeHfu2sUzpQSw8l1ah0zXwlbExpM5YsO/bA4fDz
+         elDzuMuOAje1PVYO0UxZdtTyGaWoosSMQYNUw+16703R/vnA27HMYQj8ulArPt6kenB5
+         fKNw==
+X-Gm-Message-State: AFuF++kOG7H0PuuJXyFMp0n0sIxneUNgT9oTfJl7NvSMl7rXW77mm1fA
+	Pk/wLr1H+12okr6s3OYKnqBfrc8B4AOTw+GvqATImlsgRypJNGLXSpts
+X-Gm-Gg: AYBFou2c4/icjtCCQC8KjuWxdUMK478nPheThnC9xPw6NBG/LafrDx0gHz0WbCUySsM
+	SLOYwoboZ+4ZvCH4EFznlyZJqoZgxo97lUMgLkDAI5FAXEpYcM+be46whxYA73PIKkFmNEfTKZx
+	ibVAfVZdPHKtJj5UpvogX2oPpqCm2QcIF2htllvCKJMCGzK0u22zi3xXoRMLwz61BTBYrEvGx/d
+	2nvngvrkK1PXfx8x9pBS9KDgevsyFrpdaagZkx/hMTCtvonbTQ+rF4rL1+5L87pHPg/6rV1uRWn
+	8hi8ynPth7bUT+1rJZtVQkUCLVeBxgAi3O7V2oZsYRm4w9HbVPWBZHu+Qu0hua9RaFg2093bb5d
+	XWsSwVsv2ppbje2WJcKV6trz0EeQ0h73rJs876/v1TiS2xXtfOeqcliVL3FNYxTbMFrwXBwI2NW
+	yIYmUUKf+xZF7WoHqN2/Pmzais4vOc2fV7Pz5FVTuyp83+pXJoZqWKAQ04ymF1hU06/LLVFUirj
+	KwswyTXfPEMrc7N4NUrWWF6g7nB3qwYAK9Cp+me3s/BzAdzcMTmMZ18A+iJMAwfKpRh99Akzyer
+	XBJCanPV8HrLSZbbbRbAwQQ3uPw4KvFeiY+XZVPe2mianpXIuDkibgQBlWMl0E7UvTsil8rWYsd
+	I
+X-Received: by 2002:a17:902:db07:b0:2db:73fc:b57f with SMTP id d9443c01a7336-2df7da5d75emr62886795ad.10.1790388772982;
+        Fri, 25 Sep 2026 19:12:52 -0700 (PDT)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2df91444763sm17349455ad.60.2026.09.25.19.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2026 18:08:24 -0700 (PDT)
-Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 99D8516C9C96; Sat, 26 Sep 2026 10:08:23 +0900 (JST)
+        Fri, 25 Sep 2026 19:12:52 -0700 (PDT)
+Date: Sat, 26 Sep 2026 11:12:49 +0900
+Message-ID: <m24ifc4v6m.wl-thehajime@gmail.com>
 From: Hajime Tazaki <thehajime@gmail.com>
-To: linux-mm@kvack.org,
-	liam@infradead.org,
-	rbm@suse.com,
-	akpm@linux-foundation.org,
-	luto@amacapital.net,
-	brendan.jackman@linux.dev,
-	david@kernel.org,
-	liuhangbin@gmail.com,
-	corbet@lwn.net,
-	kees@kernel.org,
-	ljs@kernel.org,
-	broonie@kernel.org,
-	mhocko@suse.com,
-	rppt@kernel.org,
-	shuah@kernel.org,
-	surenb@google.com,
-	vbabka@kernel.org,
-	wad@chromium.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-um@lists.infradead.org
-Cc: geert@linux-m68k.org,
-	daniel@thingy.jp,
-	Hajime Tazaki <thehajime@gmail.com>
-Subject: [PATCH v3 1/3] selftests: kselftest: avoid cd - in runner
-Date: Sat, 26 Sep 2026 10:08:17 +0900
-Message-ID: <20260926010819.604346-2-thehajime@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260926010819.604346-1-thehajime@gmail.com>
-References: <20260926010819.604346-1-thehajime@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	johannes.berg@intel.com
+Subject: Re: [PATCH] um: mprotect() __init memory
+In-Reply-To: <20260921122937.3821fec01e82.Ib959ff1baad7a45e2b804209b530040e69e4b046@changeid>
+References: <20260921122937.3821fec01e82.Ib959ff1baad7a45e2b804209b530040e69e4b046@changeid>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260925_180826_659605_BDFC79F7 
-X-CRM114-Status: GOOD (  10.40  )
+X-CRM114-CacheID: sfid-20260925_191254_251677_88B08ADC 
+X-CRM114-Status: GOOD (  26.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,54 +100,122 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The kselftest runner currently uses `cd -` to restore its working
-directory after running a test.
 
-This is not supported by the minimal BusyBox hush shell used by some
-NOMMU targets. Store the original directory explicitly and restore it
-with a quoted path instead.
+Hello,
 
-This also avoids printing the directory change performed by `cd -` and
-handles paths containing whitespace correctly.
+I recently pulled uml/next branch and faced an issue on the exit.
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Kees Cook <kees@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Brendan Jackman <brendan.jackman@linux.dev>
-Cc: Hangbin Liu <liuhangbin@gmail.com>
-Cc: "Ricardo B. Marliere" <rbm@suse.com>
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-mm@kvack.org
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
----
- tools/testing/selftests/kselftest/runner.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+```
+Thread 1 "vmlinux" received signal SIGSEGV, Segmentation fault.
+0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.c:41
+41      }
+(gdb) bt
+#0  0x0000000060003cf3 in start_uml () at ../arch/um/kernel/skas/process.c:41
+#1  0x0000000060003a69 in linux_main (argc=argc@entry=9, argv=argv@entry=0x7fffffffe118,
+    envp=envp@entry=0x7fffffffe168) at ../arch/um/kernel/um_arch.c:404
+#2  0x00000000600049dc in main (argc=9, argv=0x7fffffffe118, envp=0x7fffffffe168)
+    at ../arch/um/os-Linux/main.c:153
+```
 
-diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-index 311811dc55a0..8fc1018d6fec 100644
---- a/tools/testing/selftests/kselftest/runner.sh
-+++ b/tools/testing/selftests/kselftest/runner.sh
-@@ -130,6 +130,7 @@ run_one()
- 				return $KSFT_FAIL
- 			fi
- 		fi
-+		OLDDIR=$(pwd)
- 		cd `dirname $TEST` > /dev/null
- 		(((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
- 			tap_prefix >&4) 3>&1) |
-@@ -147,7 +148,7 @@ run_one()
- 		*)
- 			ktap_test_fail "$TEST_HDR_MSG # exit=$rc";;
- 		esac
--		cd - >/dev/null
-+		cd "$OLDDIR" >/dev/null
- 	fi
+and bisected that this commit is the first rev to introduce this.
+
+indeed, now .text section is in __init label but some of startup code
+(start_uml, linux_main) remain un-returned even after init is done.
+
+a quick change below avoid this issue, but not sure if it is your
+intention of the original patch.
+
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -93,7 +93,7 @@ void free_initmem(void)
+        unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
  
- 	return $rc
--- 
-2.43.0
+        if (end > start)
+-               os_protect_memory((void *)start, end - start, 0, 0, 0);
++               os_protect_memory((void *)start, end - start, 0, 0, 1);
+ }
 
+
+I guess you're already aware of it (if you boot and halt a UML
+instance it should be 100% reproducible), but in case not.
+
+-- Hajime
+
+On Mon, 21 Sep 2026 19:29:37 +0900,
+Johannes Berg wrote:
+> 
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Unlike what the comment says, we could munmap() this (but
+> not reuse it for guest allocations), but then stray libc
+> allocations could technically conflict, so mprotect() it
+> to catch access bugs. Align it in the linker scripts too
+> so that all of it can be covered, not just some.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>  arch/um/kernel/dyn.lds.S |  2 ++
+>  arch/um/kernel/mem.c     | 11 ++++++++---
+>  arch/um/kernel/uml.lds.S |  2 ++
+>  3 files changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+> index ad3cefeff2ac..5d3d5ef6ebec 100644
+> --- a/arch/um/kernel/dyn.lds.S
+> +++ b/arch/um/kernel/dyn.lds.S
+> @@ -98,8 +98,10 @@ SECTIONS
+>  
+>    #include <asm/common.lds.S>
+>  
+> +  . = ALIGN(PAGE_SIZE);
+>    __init_begin = .;
+>    init.data : { INIT_DATA }
+> +  . = ALIGN(PAGE_SIZE);
+>    __init_end = .;
+>  
+>    /* Ensure the __preinit_array_start label is properly aligned.  We
+> diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+> index 1eef0e42ef5d..00c469fd28ee 100644
+> --- a/arch/um/kernel/mem.c
+> +++ b/arch/um/kernel/mem.c
+> @@ -83,12 +83,17 @@ void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
+>  }
+>  
+>  /*
+> - * This can't do anything because nothing in the kernel image can be freed
+> - * since it's not in kernel physical memory.
+> + * We could munmap() this instead, but then libc allocations could
+> + * land in this area and stray initdata access could erroneosly
+> + * succeeded - just mprotect() it to reliably catch bad accesses.
+>   */
+> -
+>  void free_initmem(void)
+>  {
+> +	unsigned long start = PAGE_ALIGN((unsigned long)__init_begin);
+> +	unsigned long end = round_down((unsigned long)__init_end, PAGE_SIZE);
+> +
+> +	if (end > start)
+> +		os_protect_memory((void *)start, end - start, 0, 0, 0);
+>  }
+>  
+>  /* Allocate and free page tables. */
+> diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+> index 30aa24348d60..7085ba6fcb93 100644
+> --- a/arch/um/kernel/uml.lds.S
+> +++ b/arch/um/kernel/uml.lds.S
+> @@ -70,8 +70,10 @@ SECTIONS
+>  
+>    #include <asm/common.lds.S>
+>  
+> +  . = ALIGN(PAGE_SIZE);
+>    __init_begin = .;
+>    init.data : { INIT_DATA }
+> +  . = ALIGN(PAGE_SIZE);
+>    __init_end = .;
+>  
+>    .data    :
+> -- 
+> 2.55.0
+> 
+> 
 
