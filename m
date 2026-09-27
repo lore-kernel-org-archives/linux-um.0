@@ -4,129 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A95C98332
-	for <linux-um@archiver.kernel.org>; Sun, 27 Sep 2026 15:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05968C9830E
+	for <linux-um@archiver.kernel.org>; Sun, 27 Sep 2026 23:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Yf1gqZywkOXToshDhJWRxPyIwRuJ1sOWbNbWLeQRwh0=; b=ffTscwuLGQyfu6
-	Y/5tk5PdPkh4HuM0+DqcTImcJslwL8Bc7KaCJBSjheXFFaa88phUHTaXcXGe+gy6zBJ8vwefKAHNA
-	TKtKI3qz6i/0bGaJTR2EUsR4VGjvDV2hYsRwwDqlcP8/yw1t+D2hMzzcmQtYvuI1am60JJFHe1r8n
-	wTeWtf5dXqe8/aKkjfFS0daKreqvpU27R7GexE6e/n6b6wO3pztMisEOO0OnIHRf2G+fuA/7y2CIo
-	Ve7gUbXQdDuKoUB0yExfGMduSlXYd9gv/AazVhY6eUApHv3oOtf36bKSaOy70CtAYExmRbgz9Xd1X
-	I2fzPuctimWM/p1HOOLQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=o2sN14JO9HCt3Wj9/9g5JpbpB8lC5AOjB18kb3LjB2U=; b=XqLeLn44fo8IXvJb1rVZ+Dr0Ov
+	5LqZ8dDx72ftcABhMuuHGuJqtwyBixD/HxzN4GfTklWgD4lX928DriEH9vQ18F0ZuNkQ1R1lVw+LU
+	YTCEAvAH33r3mzp7byzk+nYvy7R7oqDvF2fiXLuwamYeegFxFIWHEGU7V7N2e7u2G5egHUVGMCzi1
+	vH570IG1rDzr9/MtWVZSYdFeB+Whpjhy4e0Yg6aEE60bMXskFqQ8zP3+oO0MWa9ELBci86MbXV1Io
+	5pfHUH7+xOLfVxkBBVfKxmXuZDqOKpwVo1or5ZZd/aLWhbAM3/fxynvAbAt7QTu5yDghwcbDcJs4s
+	gXmOcImQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xAqbx-0000000GVdh-15xn;
-	Sun, 27 Sep 2026 15:16:17 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xAyZ2-0000000H0Yu-0hzQ;
+	Sun, 27 Sep 2026 23:45:48 +0000
+Received: from mail-pz2-x0e.google.com ([2607:f8b0:4864:3b::e])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xACFC-0000000EKtB-3nfZ;
-	Fri, 25 Sep 2026 20:10:06 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id E944243D47;
-	Fri, 25 Sep 2026 20:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C36621F000FF;
-	Fri, 25 Sep 2026 20:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790367005;
-	bh=Yf1gqZywkOXToshDhJWRxPyIwRuJ1sOWbNbWLeQRwh0=;
-	h=From:Subject:Date:To:Cc;
-	b=bbFAznLC6/ZtUIxVhCluWB/j0yFpBiuWNLNJymRhr2bPbGWnWHQ716ymvalB5EJSi
-	 prnFLZtfOQ3rZdWXjAozyC5Lpovr1k8FfiOhJ4b+APef41PfCG3fCl8bjzPCrMEktu
-	 fx4USFfCGWBdKvMZttQUYjqnfNhXLn0LxRrjjYU/9ViwEOvqW/g0K9K9UPvZ2QMrbT
-	 Mr5715uFuRKs9Erlv4YRtXRjaWt51g96bu3pSlOaSl3lk2lVpJGlkFXaXLgnAd4RFT
-	 SzgvMuGps3b+k4dDQIIM210j/mry+b2LM2z711t9KAGCjgkaK8WG2GMkjLt9j8Vtxa
-	 h3E1vGIUbbkEA==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Subject: [PATCH v5 00/12] mm: make userland page table freeing RCU-safe
-Date: Fri, 25 Sep 2026 21:09:35 +0100
-Message-Id: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
+	id 1xAyYy-0000000H0YH-06D3
+	for linux-um@lists.infradead.org;
+	Sun, 27 Sep 2026 23:45:46 +0000
+Received: by mail-pz2-x0e.google.com with SMTP id 41be03b00d2f7-cc797656e5eso1041038a12.3
+        for <linux-um@lists.infradead.org>; Sun, 27 Sep 2026 16:45:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790552743; x=1791157543; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=o2sN14JO9HCt3Wj9/9g5JpbpB8lC5AOjB18kb3LjB2U=;
+        b=Yn1s3wvS6NIyYuYEJo0Y2oFWjm77l43mBgIRgmPyAlTZw32D46y0kJ1PmsSgtE+FGr
+         e+Rf9Gm/dc4U/SYSz3mNPQ6mfeREUCoIvBbt9fFZTHEvDSOYYKAFf2Jg9ScNaHv3cC/8
+         h41FubdaGvgC/3F+bShS8fIMCBCa20gQOZJejnMesYT+2JiRCjO+0C4/RobYb/v+dKvr
+         /vtPXfd/r6M8Yt6Yoc/eclnq/wtH71EKnkKH81uLltFcwSASMciy95MSJWhU5yhsPeBm
+         nHdgttnqEQ2tDGyGu97cSp0XmtJeln112VxdM14I4KmoprNrWsxmlYfZxOy7AYbHQf0h
+         RsHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790552743; x=1791157543;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=o2sN14JO9HCt3Wj9/9g5JpbpB8lC5AOjB18kb3LjB2U=;
+        b=pjpW6DOMD/fldtPqpr3kOVjIaAP0kHu3rHPfTcoIOEQ+mt8BL4Z3IiRpl2V8H4lWsO
+         QExeHLIzoA5pubSd+RELPzyXw9sB0IkzKvx5Hpr37vQJfTwNeE+PvGGlp2ra5SJDt6KC
+         KKxNNsla0dTlbj8Q3h1YiDh0xWN1XTOLRmqyw+dMP6dul3D2mxpq3p71eK5H85kyZORn
+         Krs7imYvGGuFRhmg4EIx5mIOHBbkH+Se3xufRCU4IOdilp2CBlWvuNvWcJyxGfRQ2rgJ
+         L8HfRYt+ZwNd8l4GCwqvFOU+avoD99d272S5dgjsn5JNI1RiSMWK2rGnp9j78SkOanoc
+         OuFw==
+X-Gm-Message-State: AFq9FYImX3lTthYlDdJGyXfhI3Lp+0UzfGfVHRFStnX+ogNIDsxn7LuD
+	aK0eMkGB3gWrpFZhP/hpIz0aFMVP0vGjeY7u7P4ATOC81m7sZmf2NnIH
+X-Gm-Gg: AYBFou3lMdRIKuy75FgqqUmDXBVpbOENtOJug5fRiTMKxIATh1D+n0i4J01SII0+C4O
+	Ew0w/VaSvkbv1xmII4jqQR3MWML4pe5JJHqIYegMoQK13KmoUavcYu+xmL7fcAjxzyexGCBf8KC
+	wgNuwy5/WH12uaou+M5YNNlIIT4idrrYShHeJO3Pe49/jkA7H9zUGdRGnfkjdmr1clj6uj/2A/n
+	Z3aCnvUhnFS6PyH2nyeBH3V1mI8+yTZRrTR9Jb6BIfN2ldWfhuzz2oUWjEG/iO7fgbpt0fTQfNh
+	GHaYsWdx0vRIgjVUBsXUuB63Cfwp9CTZmcKFeuHYIGEINNsheXYgXC4T7kmGYQ8wHdea7s/WP39
+	myj4Z8betUgtlUhDuNFplSMhhq0/OS26mfmTw+GH/a7SmbJ+J3uBSLFF9kzdTqw3uukBJkqJ+W+
+	Sk0fm5s2F+MUE2dDiY0bY2K55XkDFTqRjAk2GSmYK/jwYKufdAlVCPjY8bniw0SAKINcOufYZXJ
+	50m2RPcbdaq1hetgAMEvRPH8V8gvBePu4H4VCXbBC70k6kqGxffL1HDtcQZKUmmUNgSiNT53N7l
+	wJKUYB0cPegbruyzTQLwN3GyQmnDCFLuY9uH/Yl9BrEbGAuUPDJQwb2ncKLTKkO/VAGzONEV
+X-Received: by 2002:a17:90b:5807:b0:3a0:5413:49b4 with SMTP id 98e67ed59e1d1-3a098dbaf11mr8945027a91.39.1790552742643;
+        Sun, 27 Sep 2026 16:45:42 -0700 (PDT)
+Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a0b4983f43sm6539966a91.0.2026.09.27.16.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2026 16:45:42 -0700 (PDT)
+Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
+	id D3FFD16D3336; Mon, 28 Sep 2026 08:45:40 +0900 (JST)
+From: Hajime Tazaki <thehajime@gmail.com>
+To: linux-um@lists.infradead.org
+Cc: kunit-dev@googlegroups.com,
+	Hajime Tazaki <thehajime@gmail.com>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <david@davidgow.net>,
+	Rae Moar <raemoar63@gmail.com>
+Subject: [PATCH] um: require MMU for UML PCI support
+Date: Mon, 28 Sep 2026 08:45:37 +0900
+Message-ID: <20260927234537.1585880-1-thehajime@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3XOQW7CMBAF0Ksgr2vkGTtmyop7oC5sMw5uUYLsE
- LVCuXsd2AShLL/05/25i8I5cRH7zV1kHlNJfVdD87ER4ey6lmU61SxQoVWkQeZwk1fX8uD8hWX
- MzKlrJRlvPZNWjErU22vmmH4f7vHrmcvNf3MYZmxunFMZ+vz3GB5h7j03PtXaxghSycY01hEEQ
- sDDD+eOL9s+t2IeGXHJ0BqDlYFolbeGaUf8xugFA6vf6MrsPAWyoHR9540xCwZxjTGViQzuBBF
- YK/3CTNP0DxRL+lGiAQAA
-X-Change-ID: 20260831-rcu-pagetable-freeing-84b6be830e20
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, 
- Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, 
- Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org, 
- "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, 
- Greg Ungerer <gerg@linux-m68k.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9918; i=ljs@kernel.org;
- h=from:subject:message-id; bh=IwHL+gGhq7mbp81GXRrzD1tZw+JpDoikNpXoqfAEqUg=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLK2XWXuuNHfv3et0NIEW62XOhf3zFwUdmX+5SPFuhdfx
- 5fXeVya3FHKwiDGxSArpsjy/Iv4/iCRsHmdF/zdYOawMoEMYeDiFICJOJkxMjx3uDp5ErPgnCa/
- VcdXKLxRalwdXiX5+O28Z5d7UwqrvPgYGeYvYCgWfBOeN/1y3PMP2hNkuzvWWak/O3Tz9+ZJ/Fe
- 0ZbkB
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
-X-Mailman-Approved-At: Sun, 27 Sep 2026 08:16:16 -0700
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260927_164544_066012_954F66D1 
+X-CRM114-Status: GOOD (  13.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,220 +105,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The majority of architectures in the kernel defer page table freeing until
-an RCU grace period has elapsed, this series converts all remaining
-architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
-altogether.
+Because UML_PCI (arch/um/drivers/Kconfig) selects FORCE_PCI, this
+contradicts the current dependency of CONFIG_PCI on CONFIG_MMU.  This
+commit fixes this issue by adding right dependencies under !MMU
+environment.
 
-This is important because it enables safe lockless page table walking under
-RCU alone.
-
-Doing so allows for reduced lock contention, avoids lock ordering concerns
-and enables fast, efficient and correct page table walking as a result.
-
-Additionally it removes a bunch of code and architecture-specific behaviour
-which is always a beneficial thing to do.
-
-There has been much recent work on this:
-
-* In 2023 Hugh Dickins RCU-deferred khugepaged page table retraction in
-  commit 13cf577e6b66 ("mm/pgtable: add pte_free_defer() for pgtable as
-  page").
-
-* Qi Zheng has done most of the work that made this possible starting with
-  the critical commit 718b13861d22 ("x86: mm: free page table pages by RCU
-  instead of semi RCU").
-
-* Qi then went on to convert a large number of architectures in commit
-  e3ecf7c7d082 ("mm: pgtable: convert some architectures to use
-  tlb_remove_ptdesc()"), commit 44b079583f7d ("alpha: mm: enable
-  MMU_GATHER_RCU_TABLE_FREE") and the series to which it belongs.
-
-* Qi then introduced the important CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
-  option in commit 086498aed3f6 ("mm: convert __HAVE_ARCH_TLB_REMOVE_TABLE
-  to CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config").
-
-* Finally, and critically, Lance Yang then converted the batch allocation
-  fallback case to be RCU-safe in commit 1fb3d8c20bfa ("mm/mmu_gather:
-  replace IPI with synchronize_rcu() when batch allocation fails").
-
-The work I do here is only possible due to the work Hugh, Qi, Lance and
-others have done previously.
-
-An initial task this series addresses is to deposit a freshly allocated PTE
-page table and RCU-free the existing PTE page table. Not doing so is
-currently safe, but for page table walkers relying on RCU alone, it would
-not be.
-
-Additionally, it makes it possible to implement lockless RCU-only page
-table walkers which otherwise would have required the PTE PTL.
-
-The changes are largely mechanical - the majority of arches already have
-the machinery required to support CONFIG_MMU_GATHER_RCU_TABLE_FREE and
-simply needed configuration changes or small implementation changes to
-switch over.
-
-However some arches required extra attention - sh-X2, m68k-motorola and
-sparc32.
-
-sh-X2 allocates PMDs from the slab allocator and PTEs as normal. Therefore
-CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is set to customise page table freeing
-and the LSB is used to encode which page table level is used, with
-__tlb_remove_table() doing the right thing depending on this.
-
-This pattern is repeated for m68k-motorola and sparc32 to account for
-different page table levels. In each case, the page tables are aligned such
-that sufficient bits are available in each case for encoding this
-information.
-
-m68k-motorola required the biggest change - since RCU page table freeing
-uses call_rcu(), this means page table freeing can arise from softirq
-context.
-
-This was fixed with a BH-disabling spin lock used in both get_pointer_table()
-and free_pointer_table() (softirq being the only asynchronous context in which
-the lock is taken).
-
-As part of this change, the logic for allocation of a new pointer table was
-separated out into add_pointer_table() to make the locking more obviously
-correct.
-
-Finally, sparc32 was similar to m68k-motorola in that locking was required,
-however this was already implemented via a spinlock, and only had to be
-updated to be IRQ-safe.
-
-Additionally, the nocache pool's bit_map lock was updated to be IRQ-safe
-for softirq frees.
-
-Separately, the PTE path can't take mm->page_table_lock from softirq (no mm
-there), which is fine because the page reference count transitions are
-atomic and fully ordered.
-
-The series finally removes CONFIG_MMU_GATHER_RCU_TABLE_FREE and all related
-configurations and code that supported !CONFIG_MMU_GATHER_RCU_TABLE_FREE.
-
-As a result, page table walks can now be performed safely under RCU without
-any risk of page tables being freed underneath a walker.
-
-However, this is the only guarantee that this work provides - page table
-walkers must still ensure that page table entries are as expected
-throughout.
-
-All changes have been build tested. As most of the conversions are simply
-utilising existing mechanics that are known to work, this suffices for most
-cases.
-
-However those arches where significant changes have been made -
-m68k-motorola, sparc32 and sh-X2 - have been tested further.
-
-For each of these a boot test and stress test has been performed - fork 400
-children, each mmap()'ing 2 MiB and touching every page then partially
-munmap()'ing then exiting to trigger as much page table freeing as
-possible.
-
-All were found to be working correctly.
-
-(Note that sparc32 LEON SMP is not possible to emulate.)
-
-v5:
-* Collected tags (thanks all! :)
-* Updated 1/12 to correctly set result to SCAN_ALLOC_HUGE_PAGE_FAIL should
-  the page table allocation fail, as per Lance.
-* Updated 1/12 to rename alloc_deposit_pte() to alloc_deposit_pte_table()
-  and dropped the powerpc hash MMU paragraph from the commit message, as
-  per David.
-* Updated 9/12 to use a BH-disabling spinlock rather than an IRQ-safe one,
-  as per Matthew.
-* Updated the subject line of 11/12 to clarify that the patch removes
-  now-unneeded code, as per David.
-* Updated 12/12 documentation as per David, Lance.
-
-v4:
-* Updated the 1st patch to allocate a new page table on PTE deposit rather
-  than deposit a page table that might currently be being walked by an
-  RCU-only page table walker, as per David.
-https://lore.kernel.org/r/20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org
-
-v3:
-* Added Kiryl's tag to series (thanks! :)
-* Corrected commit message, comment indentation in 11/12 as per Kiryl.
-* Corrected 12/12 documentation as per Kiryl.
-https://lore.kernel.org/r/20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org
-
-v2:
-* Updated commit message to reflect CONFIG_MMU dependency for xtensa as per
-  Suren.
-* Updated 12/12 to correctly describe the new contract re: readers/writes
-  as per Kiryl. Also fixed up typos there as per Kiryl, Suren and slightly
-  reworded for clarity, and updated commit message to reflect.
-* Updated 11/12 to reflect the fact the change is for userland only as per
-  Kiryl, also added a note about write locks similarly to 12/12.
-* Fixed bug as reported by sashiko for the sparc32 change (10/12) - the
-  refcounts are insufficient on their own, so replace the page_table_lock
-  altogether with an IRQ-safe spinlock.
-https://lore.kernel.org/r/20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org
-
-v1:
-https://patch.msgid.link/20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org
-
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271139.DpjVdepU-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271351.tw8EOsgz-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609270410.Kc2FsJp1-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609270228.yku16Noi-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609270416.rEtAiqyF-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609270538.mV3NDkLu-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271435.lANS7mTP-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271512.pg5gWbIg-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271717.pg5HjzeZ-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271810.pxMMu5ZC-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609271940.FhRl0cBi-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609272107.sLZJEOtt-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202609272234.F8tROOdL-lkp@intel.com/
+Fixes: 626ff2b34dbb ("um: allow deselecting CONFIG_MMU")
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>
+Cc: David Gow <david@davidgow.net>
+Cc: Rae Moar <raemoar63@gmail.com>
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 ---
-Lorenzo Stoakes (ARM) (12):
-      mm/khugepaged: deposit a newly allocated page table on collapse
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for most 2-level architectures
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU riscv
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU arm
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for arc, microblaze, xtensa
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc64
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-coldfire
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-motorola
-      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc32
-      mm: userland pgtable freeing is RCU-safe now, remove leftover bits
-      mm: change the contract for free_pgtables(), update docs
+ arch/um/drivers/Kconfig | 3 +++
+ lib/kunit/Kconfig       | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
- Documentation/mm/process_addrs.rst       |  11 +++
- arch/Kconfig                             |   8 ---
- arch/alpha/Kconfig                       |   1 -
- arch/arc/include/asm/pgalloc.h           |   6 +-
- arch/arm/Kconfig                         |   1 -
- arch/arm64/Kconfig                       |   1 -
- arch/loongarch/Kconfig                   |   1 -
- arch/m68k/Kconfig                        |   1 +
- arch/m68k/include/asm/mcf_pgalloc.h      |   5 +-
- arch/m68k/include/asm/motorola_pgalloc.h |   9 +--
- arch/m68k/mm/motorola.c                  | 119 ++++++++++++++++++++-----------
- arch/microblaze/include/asm/pgalloc.h    |   2 +-
- arch/mips/Kconfig                        |   1 -
- arch/parisc/Kconfig                      |   1 -
- arch/powerpc/Kconfig                     |   1 -
- arch/riscv/Kconfig                       |   1 -
- arch/s390/Kconfig                        |   1 -
- arch/sh/Kconfig                          |   1 +
- arch/sh/include/asm/pgalloc.h            |   6 +-
- arch/sh/mm/pgtable.c                     |  20 ++++++
- arch/sparc/Kconfig                       |   4 +-
- arch/sparc/include/asm/pgalloc_32.h      |   7 +-
- arch/sparc/include/asm/pgalloc_64.h      |   8 ---
- arch/sparc/include/asm/tlb_64.h          |   2 -
- arch/sparc/lib/bitext.c                  |  14 ++--
- arch/sparc/mm/srmmu.c                    |  32 +++++++--
- arch/um/Kconfig                          |   1 -
- arch/x86/Kconfig                         |   1 -
- arch/xtensa/include/asm/tlb.h            |   2 +-
- include/asm-generic/tlb.h                |  66 +++--------------
- mm/Kconfig                               |   2 +-
- mm/gup.c                                 |   5 +-
- mm/khugepaged.c                          |  34 ++++++++-
- mm/mmu_gather.c                          |  30 ++------
- mm/pgtable-generic.c                     |  15 ++--
- 35 files changed, 228 insertions(+), 192 deletions(-)
----
-base-commit: 88297631d4d42f6004cb39c0ba3da7d2d10a616f
-change-id: 20260831-rcu-pagetable-freeing-84b6be830e20
-
-Best regards,
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 6a0354ca032f..655e5a270c97 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -159,6 +159,7 @@ config UML_RTC
+ 
+ config UML_PCI
+ 	bool
++	depends on MMU
+ 	select FORCE_PCI
+ 	select IRQ_MSI_LIB
+ 	select UML_IOMEM_EMULATION
+@@ -169,6 +170,7 @@ config UML_PCI
+ config UML_PCI_OVER_VIRTIO
+ 	bool "Enable PCI over VIRTIO device simulation"
+ 	# in theory, just VIRTIO is enough, but that causes recursion
++	depends on MMU
+ 	depends on VIRTIO_UML
+ 	select UML_PCI
+ 
+@@ -183,6 +185,7 @@ config UML_PCI_OVER_VIRTIO_DEVICE_ID
+ 
+ config UML_PCI_OVER_VFIO
+ 	bool "Enable VFIO-based PCI passthrough"
++	depends on MMU
+ 	select UML_PCI
+ 	help
+ 	  This driver provides support for VFIO-based PCI passthrough.
+diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
+index 94ff8e4089bf..cbda6189a308 100644
+--- a/lib/kunit/Kconfig
++++ b/lib/kunit/Kconfig
+@@ -133,7 +133,7 @@ config KUNIT_DEFAULT_TIMEOUT
+ 
+ config KUNIT_UML_PCI
+ 	bool "KUnit UML PCI Support"
+-	depends on UML
++	depends on UML && MMU
+ 	select UML_PCI
+ 	help
+ 	  Enables the PCI subsystem on UML for use by KUnit tests.
 -- 
-Lorenzo Stoakes (ARM) <ljs@kernel.org>
+2.43.0
 
 
