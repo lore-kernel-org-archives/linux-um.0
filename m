@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD9CCCA5FA2
-	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 12:33:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94688C9833F
+	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 12:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Iya9wujgQEdqUfmH+V2H4et1ziGVCRoqLQ6GAz7eQu0=; b=lfzP+/MhCVZ2W+WWjQrentoiE9
-	eKid2Q4kczfFHLMXDfil7S53+AMJMUFJLhFnXjUu0mTKRN/QBqnFY7iUU7WfLMlAHh+2HngcTcLK6
-	LnqHVpxXoJaCXvV3kaQutX4eZGrHHa4pK+3cRPHR5Xfo6E9Gr2pbcg82jZiYwdenTStX5N05lBNjM
-	CFpAWXPmPMta8nHEpAM1hye80T4rLjkNExszGDeUNMa+g7unRlDgl7wvhLvJWHydQWmy4iiEr8Yt4
-	2KKQuO58YCHz7KnQ42zdigVkdmdghZvnGAh7s+1TbzwAnVZNPAx5xAJKJFpjIbwpq5RCMGR23qrjO
-	sTeEsacQ==;
+	bh=02NkiLZ5Yl+geke3aOQBTOObyOxc3CSY0KX9P536iK4=; b=wDOGoE4QYgK1Q/P+b0aoeYvBqQ
+	25Sp8k7KvetAkmyRm56MIxDCf/RHXopHXSnpRqRwmI52CA0zKrhYbLwjbGV6QEMN0aewJGloh88DS
+	uRB+qTYzQbrksIqhpf/xknNxA30G026V1b4mEiNhWsoT28VZGaNiiDc6pjbQuEuPvVJUQFge6xIsi
+	1ESIAEnXP4xzc0DegbHR9yDON5mpoamCZdMvHpEkKLWuFaQMiI0Imtq2ZDRUtlOQR9XF4n1yfmddh
+	4FhRZd0k8+6oExccCYxlJKlQBjBhQhsaqstB8TAnnyMWX135LmVEwzbL36eggCYSP3BqCb7N+0iVG
+	pzYnQKlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBAXY-00000000Z59-2J1t;
-	Mon, 28 Sep 2026 12:33:04 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1xBAYq-00000000ZF3-2w6A;
+	Mon, 28 Sep 2026 12:34:24 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBAXW-00000000Z4Q-2i5f
+	id 1xBAYp-00000000ZEh-2Qvf
 	for linux-um@lists.infradead.org;
-	Mon, 28 Sep 2026 12:33:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Iya9wujgQEdqUfmH+V2H4et1ziGVCRoqLQ6GAz7eQu0=;
-	t=1790598782; x=1791808382; b=T1iImATiVj3p3yWe+eQYqKK5dWFD13zvuDi4tjpXDUXrho2
-	aTVyHAOANgfXEfLAabmo5oYjl9ssuFnjzk6uhS/iHdWtGBXq5yM8B581kymSUfmQPgMw6HRkJsI++
-	Qsu79BUQxX8vEoQUCk3dI66uW7vmOQhPC491+U9QbjuYuZSHHKohqzzwYKojOcWsloF6AfQ4DWMo7
-	pS9zj3d8Kt5BpZ07HnpxKnvxcnUilXBGGpGQiLIQ0Xw9r6gGQ/3R9e8Jkl2F0WFH+C8fdq1bo3jsI
-	vyXbEmzm6yneF0bJiX285Octq9cSbJ2qvB+EGUNn4HfYkQrhV66YMGqy1kWff6rA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1xBAXM-0000000DXzf-0Rx8;
-	Mon, 28 Sep 2026 14:32:52 +0200
-Message-ID: <8dfc0ec9ed660e373451c96b6fcc352c35a6a004.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 2/3] selftests: run tests on nommu architecture
-From: Johannes Berg <johannes@sipsolutions.net>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-mm@kvack.org,
- liam@infradead.org, 	rbm@suse.com, akpm@linux-foundation.org,
- luto@amacapital.net, 	brendan.jackman@linux.dev, david@kernel.org,
- liuhangbin@gmail.com, corbet@lwn.net, 	kees@kernel.org, broonie@kernel.org,
- mhocko@suse.com, rppt@kernel.org, 	shuah@kernel.org, surenb@google.com,
- vbabka@kernel.org, wad@chromium.org, 	linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, 	linux-um@lists.infradead.org,
- geert@linux-m68k.org, daniel@thingy.jp
-Date: Mon, 28 Sep 2026 14:32:50 +0200
-In-Reply-To: <arpIi5QBG1_MuZzJ@gremlin>
+	Mon, 28 Sep 2026 12:34:23 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 89B9E600CB;
+	Mon, 28 Sep 2026 12:34:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03A6C1F000FF;
+	Mon, 28 Sep 2026 12:34:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790598862;
+	bh=02NkiLZ5Yl+geke3aOQBTOObyOxc3CSY0KX9P536iK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=dSxO6JyX9ewpqfSZ/qGL9qzm8jbvHsqhuYPo3dHyEMWQIhnJRvY4ShNwHpBRw8pSz
+	 QjOrySNheii0BYuwVrEomHYqkBDbKkeaoIWCP8ah0gX3atVajPT2xkVEVcZY7Y0Thw
+	 ydxzxmzbW7ZW8Sb/il6objzy+0mVgWCFdyhKlPlrKRMN1roMU/dVLpOfd7dtszs4LG
+	 PDxgQ8MiHla7CtLkxhFA0LdMtP/2amF0J+4RQfh/pR6vyqfug4SAYn51aE/5hzI81h
+	 X2hlYP7jETKF2ZNFVOQzpwKatli1h6ubPjMncCvFsBI+CN9UZRN3I5B3oxCvAwRHMU
+	 hWoPWx07CR9lg==
+Date: Mon, 28 Sep 2026 13:34:15 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-mm@kvack.org, liam@infradead.org, rbm@suse.com,
+	akpm@linux-foundation.org, luto@amacapital.net,
+	brendan.jackman@linux.dev, david@kernel.org, liuhangbin@gmail.com,
+	corbet@lwn.net, kees@kernel.org, ljs@kernel.org, mhocko@suse.com,
+	rppt@kernel.org, shuah@kernel.org, surenb@google.com,
+	vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org,
+	geert@linux-m68k.org, daniel@thingy.jp
+Subject: Re: [PATCH v3 3/3] selftests/nommu: add nommu mmap and mremap
+ behavior tests
+Message-ID: <1b2fb12b-a342-4ec5-ad24-14fc761e1e61@sirena.org.uk>
 References: <20260926010819.604346-1-thehajime@gmail.com>
-	 <20260926010819.604346-3-thehajime@gmail.com>
-	 <04259a99ed91f8a527b255951a6f626310728170.camel@sipsolutions.net>
-	 <arpIi5QBG1_MuZzJ@gremlin>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
+ <20260926010819.604346-4-thehajime@gmail.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260928_053302_687306_06A215D3 
-X-CRM114-Status: GOOD (  11.27  )
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="FUgMlfZGbL2nwwkW"
+Content-Disposition: inline
+In-Reply-To: <20260926010819.604346-4-thehajime@gmail.com>
+X-Cookie: All is fear in love and war.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,28 +78,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2026-09-28 at 12:00 +0100, Lorenzo Stoakes (ARM) wrote:
-> > Not sure where this should be merged? I guess selftests would make most
-> > sense, but you can't actually test it out before the UML nommu changes,
-> > so that doesn't work too well right now?
->=20
-> I seem to recall Hajime saying he tested this on an actual nommu
-> device/virtualised equivalent so nommu UML isn't strictly necessary (thou=
-gh very
-> nice to have!)
 
-Oh, I don't recall, but I guess that's plausibe.
+--FUgMlfZGbL2nwwkW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I think I saw something fly by that implied it might be coming in 7.4 is =
-that
-> so? :)
+On Sat, Sep 26, 2026 at 10:08:19AM +0900, Hajime Tazaki wrote:
+> Introduce a kselftest utility to validate memory mapping capabilities
+> under nommu kernels, aligned with
+> Documentation/admin-guide/mm/nommu-mmap.rst.
 
-I did end up merging just about everything that was pending for
-uml/next, so if we don't forget to send a pull request in the merge
-window, or something equally catastrophic happens, yes ;-)
+> +static int run_mapping_matrix_test(struct test_case_t *tcase)
+> +{
+> +	int fd;
+> +	void *ptr;
+> +	char path_buf[PATH_MAX];
+> +	const char *path = tcase->pathname;
+> +	int rc = KSFT_PASS;
+> +	int expected_error;
+> +
+> +	ksft_print_msg("[RUN] Testing: %s\n", tcase->name);
 
-Sorry for the delay. The onslaught of LLMs means priority is elsewhere,
-sadly.
+> +		if (fd < 0) {
+> +			ksft_test_result_skip("Failed to setup temp node: %s\n",
+> +					      tcase->pathname);
 
-johannes
+Your test reports should use a consistant string when reporting the
+result for a given test, that way tooling can tie results together
+between different runs.  Report the diagnostic information with a
+separate print.
+
+> +	if (result == KSFT_PASS)
+> +		ksft_finished();
+> +
+> +	ksft_exit_fail();
+> +}
+
+Just unconditionally call ksft_finshed(), it will check the counts of
+reported tests and exit with an appropriate error code - you don't need
+to manually collate the results in your test code.
+
+--FUgMlfZGbL2nwwkW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmq6XsYACgkQJNaLcl1U
+h9DH+gf/XjlR+SgNi0hEPMZzdbbYcwqMMLD2xh8C2BKF4e664nTRvVFTUQ4QNNVC
+wWPQ+F7q4l0/ZvxPMtcHzH9cNRXNYfVC00Twjn4/rKB06CdAlnug1n1Segzf4nSe
+IW0YuguI4jeea+cNPiiG1pXEdH0xhEzS9KQZSByPqg/J10wYT5mki6T952vWEh5s
+6uf0QrxiIl8j7gE7buHHahG02LdSNZB9URNdEL7GaPsIN8R3IPLcWE+nvazafr0H
+f8k6hg7IRx+gOZ8r60kURDhpP6i8oE6zd/YIp3hqnGLvUEHG7Yl0XY7krzjWpAgI
+ylmZrCLJWgbyW+oCgK7db4EHIr7tPg==
+=LEi+
+-----END PGP SIGNATURE-----
+
+--FUgMlfZGbL2nwwkW--
 
