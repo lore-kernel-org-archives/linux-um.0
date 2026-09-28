@@ -4,66 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94688C9833F
-	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 12:34:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60CC4CA5FA1
+	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 16:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=02NkiLZ5Yl+geke3aOQBTOObyOxc3CSY0KX9P536iK4=; b=wDOGoE4QYgK1Q/P+b0aoeYvBqQ
-	25Sp8k7KvetAkmyRm56MIxDCf/RHXopHXSnpRqRwmI52CA0zKrhYbLwjbGV6QEMN0aewJGloh88DS
-	uRB+qTYzQbrksIqhpf/xknNxA30G026V1b4mEiNhWsoT28VZGaNiiDc6pjbQuEuPvVJUQFge6xIsi
-	1ESIAEnXP4xzc0DegbHR9yDON5mpoamCZdMvHpEkKLWuFaQMiI0Imtq2ZDRUtlOQR9XF4n1yfmddh
-	4FhRZd0k8+6oExccCYxlJKlQBjBhQhsaqstB8TAnnyMWX135LmVEwzbL36eggCYSP3BqCb7N+0iVG
-	pzYnQKlA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Idi5LKEyTFs2voreuzbcbppZ5nLIeoJ5tGdhI+MVBSA=; b=TWO9LtilYF6pDs2eXpj2/sJbi2
+	G1d+7T9VDrVxb5HQPy6fleYncy9hkviLSm1GXhuB77fj975wWNWpxYjfrbBziI1ihPr6w/brvxlpN
+	C9E9QFRgivUWKbcCl25VO/SQ+JfdP7ZsFqRuL9SWnQOEnIaJEyISB5zb2x9mTdwGrecV9AP4EVZGl
+	dRtaIjqzcvnZzOEhB8zgPkkugxVCo9owRiWwNcGc6AaPZwmtgXQxRgVwAZPP6hcgj9bPYVpt7rc9V
+	/Vy2swkI9um3MivQjUoKmNRcI2wyDjwHT0kO4SViklSVPvDuStfjM+YAdDWoZl5JnqiwM8OcFcWG2
+	7LEV4LVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBAYq-00000000ZF3-2w6A;
-	Mon, 28 Sep 2026 12:34:24 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xBE5J-000000010Ii-1zyt;
+	Mon, 28 Sep 2026 16:20:09 +0000
+Received: from mail-wr2-x10.google.com ([2a00:1450:4864:30::10])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBAYp-00000000ZEh-2Qvf
+	id 1xBE5G-000000010HM-0XKk
 	for linux-um@lists.infradead.org;
-	Mon, 28 Sep 2026 12:34:23 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 89B9E600CB;
-	Mon, 28 Sep 2026 12:34:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03A6C1F000FF;
-	Mon, 28 Sep 2026 12:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790598862;
-	bh=02NkiLZ5Yl+geke3aOQBTOObyOxc3CSY0KX9P536iK4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=dSxO6JyX9ewpqfSZ/qGL9qzm8jbvHsqhuYPo3dHyEMWQIhnJRvY4ShNwHpBRw8pSz
-	 QjOrySNheii0BYuwVrEomHYqkBDbKkeaoIWCP8ah0gX3atVajPT2xkVEVcZY7Y0Thw
-	 ydxzxmzbW7ZW8Sb/il6objzy+0mVgWCFdyhKlPlrKRMN1roMU/dVLpOfd7dtszs4LG
-	 PDxgQ8MiHla7CtLkxhFA0LdMtP/2amF0J+4RQfh/pR6vyqfug4SAYn51aE/5hzI81h
-	 X2hlYP7jETKF2ZNFVOQzpwKatli1h6ubPjMncCvFsBI+CN9UZRN3I5B3oxCvAwRHMU
-	 hWoPWx07CR9lg==
-Date: Mon, 28 Sep 2026 13:34:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-mm@kvack.org, liam@infradead.org, rbm@suse.com,
-	akpm@linux-foundation.org, luto@amacapital.net,
-	brendan.jackman@linux.dev, david@kernel.org, liuhangbin@gmail.com,
-	corbet@lwn.net, kees@kernel.org, ljs@kernel.org, mhocko@suse.com,
-	rppt@kernel.org, shuah@kernel.org, surenb@google.com,
-	vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org,
-	geert@linux-m68k.org, daniel@thingy.jp
-Subject: Re: [PATCH v3 3/3] selftests/nommu: add nommu mmap and mremap
- behavior tests
-Message-ID: <1b2fb12b-a342-4ec5-ad24-14fc761e1e61@sirena.org.uk>
-References: <20260926010819.604346-1-thehajime@gmail.com>
- <20260926010819.604346-4-thehajime@gmail.com>
+	Mon, 28 Sep 2026 16:20:08 +0000
+Received: by mail-wr2-x10.google.com with SMTP id ffacd0b85a97d-48439feca17so2475301f8f.1
+        for <linux-um@lists.infradead.org>; Mon, 28 Sep 2026 09:20:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790612402; cv=none;
+        d=google.com; s=arc-20260327;
+        b=PAlBWANOuiXIz3nMMZNTYh2xcHA/+n2JAhur6hfn0RR9WSxquEYXTbJ3XJT58Xlzjv
+         RpVGFl2tTEhLhtpzUnGBlDeSXUVgUbtssxa0OQMObXjrB5A9XrT3J+/PST7jBa4SmYYS
+         Ce1wdYXnmkwOX5iZhbuc6y6LIiY5rhUythTk3/pk7RJ/52BIPheRILDQpvu9eWezeIuD
+         h29TDMlwwRICpAtrOl/XZ9c3CIEdcRHPJhWOU2E8wk/cxcyP2erWX3Xsv/C+Kz3PoI4I
+         O/TjJ7uG/SbqpDGGDQnjhYFER2obsCNgtpQk4Cmf3Y5qOyRLcF5hCuqBOWqqDjctHFwL
+         nWkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Idi5LKEyTFs2voreuzbcbppZ5nLIeoJ5tGdhI+MVBSA=;
+        fh=nQbj3QzfY5dgKdAA/J7pKGrdNc5Sk38ImEeV3/CrhBE=;
+        b=p2GMh+LcohXcJcLMlBJsYaA6UJIw3AvBihVyj6A5nuusvddtUcUTgFlmth8+RJmUlF
+         Zh0Ib2RVyRyz8TBJMjrnfUxlwo2JTcQ2IFuj/ATxZ+vy0B/AjjUG52Tz2K/okF/SnBtM
+         3OpEQ4uxdRIUo9jnjYMIaPyGZlp4XzzMVgBIve+h2/qM/TrczPI1LVjSAH7R+Iw4kjgF
+         Gj++X9MHFf90zSoh0PHtHbVb3ddmhZsM/Z7cCOmpLZ2MaCxepve5hRe8PHDZxjPuU7OI
+         6amMPCUg7+mPEgJzoMuEGx2U6epUns+t7btwhHg4478boBrVue1h4L6OySjXb1e8146c
+         fW8A==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1790612402; x=1791217202; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=Idi5LKEyTFs2voreuzbcbppZ5nLIeoJ5tGdhI+MVBSA=;
+        b=LvN6bCoOg546NEh/Fl/+xNj8F2J7jafFo2Rm9E0EtPfcSsmu0pBSlL088N4zptdeRP
+         I3Jgr78nOowbfSxS5UWj8Z9sijKYXvZ/AqhxoqcpxGxE1GBBED8q26ETs0FSmMUXOrP2
+         M/YURy0L3oyaxQPc0aXF0DcbcqdkQFrwr4HwogBfPnst1Mk8pMrRp2eGrmdoANGkdMDH
+         AItUkjzD0DeEH7cDUM/7OuP0t8tonPPTKJhzLxS9PyVvCHwiGX3UFRIEm073kiBs3jwT
+         C0RZxczGwOL7Yw60pvS5C5cL5zqOeSTNkrPNtSJy3m/rUrPUfM9zG+HNvXZiNojKRMtA
+         3ALw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790612402; x=1791217202;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Idi5LKEyTFs2voreuzbcbppZ5nLIeoJ5tGdhI+MVBSA=;
+        b=Uiuc0LlTkimsXGdCIpcWw46SDt2HNs/la9BE6qH3YIrRRIQ8+EJagCT6+pYmkUWJY2
+         xSx4qEKooUpTQuNpcwe96xrnWBMBCi8L/YALVXSkCw5nXLjgW/AyWYWg4mdmcrol6L0C
+         dgxb0nPrOg1vWnz1scagWPUSUgqbU9D5ZtU05pA0KfK9FyGaABNRsEKIYGxUzE6pXtiZ
+         GcFg0cysvugsGoF0ywgNYD3qfHevjnG9T9u8e3xHCswkhLLS/VE4WO+v6KhDHJ2n4UvF
+         MQ19lP9iT2B30fMB3qPOArbFVeCtt8Zwg4tzhRnA6siSu1AEDqtegfomK7sNmpgswrnn
+         Jjkw==
+X-Forwarded-Encrypted: i=1; AKwUvBzc2wzuiqNnd0Xjpc7osOhG+tS5Nr3xX2vwt0vocV9sOgoknBWNv0JKbLr/Gl0692JvR/zWIBCnvg==@lists.infradead.org
+X-Gm-Message-State: AFq9FYJ88sIHI2KMX6Q7N9SXeqnCYl5zIEk83RtJC+a8lu0IPKTDcmXU
+	SaYSwq3VzPaZA5Qxgah1GVawYQo/9HjY405J2UnDgJApCs5k+PtjMVk5BysLRgh0QkDc47GGD3X
+	zBWSWRsaQQuEIZhSN0Zhh3K5ruNkYH6JsO6uK9q4W
+X-Gm-Gg: AYBFou2NFcQS4ncMzSfAo67G3e5ubCrOUtpnEhLFJqbM+WWgjWaknx3FKzGnGztF1St
+	3c5wgiQHsnaj71sFbQM6uihRENdsACUOj1jcd9BXQo+z5oBNePsSXm3+vczBY7YoZm/ixg8UGi/
+	FlnIXewPYD70C8wwjsSuDegB1HfFBYvcpJGzgtpyg+BUvx/12guY3Rl8iTfiOOhV/K57swSFnAx
+	sO7VySAJva+480rpFlJxZo++HlLAU6b1Y98M58CMHS0uzv5dXkqnyW+8of8C1Qc/6bKQGDYLGuY
+	tIX2dyGAU7HBJrEXuYktmLBGVHp7FjeVJhAPFf3qI9Re9n6HaA1puY8DJ9ke+KU3TCTyMax0cxE
+	OQHXN3k4QXJMj+ZeMpa/0auafexrq/CZ5XhefZ15AtPzO5a9VOmFgsQ0=
+X-Received: by 2002:a05:6000:41ee:b0:487:1ac0:32af with SMTP id
+ ffacd0b85a97d-4887197853fmr26855385f8f.51.1790612401692; Mon, 28 Sep 2026
+ 09:20:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FUgMlfZGbL2nwwkW"
-Content-Disposition: inline
-In-Reply-To: <20260926010819.604346-4-thehajime@gmail.com>
-X-Cookie: All is fear in love and war.
+References: <20260821-ptrace_uapi-v1-1-3de8638a29f2@google.com>
+ <e801211b4c71ddd919fa5d7b9c859b86addf3fb7.camel@sipsolutions.net>
+ <CAKwvOdkMK9Tj=JgsPeQj6_Xtx3FgZK2SWTSJVU_BJ7G17pDC2w@mail.gmail.com> <20260926195145.GBargiUSEEqjWPpuaK@fat_crate.local>
+In-Reply-To: <20260926195145.GBargiUSEEqjWPpuaK@fat_crate.local>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Mon, 28 Sep 2026 09:19:49 -0700
+X-Gm-Features: AclHuK80ygbd3wiyZigI_Z6HIjLwZPQopGivmPnn4hRCPTRgq5S7ll5QQxv7VJs
+Message-ID: <CAKwvOdn2U5xy5T3kc3epPX74nr6ja4NBFVGCqLD4GPwKYX6hBg@mail.gmail.com>
+Subject: Re: [PATCH] x86: uapi: ptrace: guard register offset macros with
+ __ASSEMBLER__ or __FRAME_OFFSETS
+To: Borislav Petkov <bp@alien8.de>, Elliott Hughes <enh@google.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Oleg Nesterov <oleg@redhat.com>, 
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20260928_092006_182842_126F3427 
+X-CRM114-Status: GOOD (  17.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,60 +126,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Sat, Sep 26, 2026 at 12:52=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Fri, Sep 25, 2026 at 02:25:47PM -0700, Nick Desaulniers wrote:
+> > On Thu, Sep 24, 2026 at 7:54=E2=80=AFAM Johannes Berg <johannes@sipsolu=
+tions.net> wrote:
+> > >
+> > > On Fri, 2026-08-21 at 15:45 -0700, Nick Desaulniers wrote:
+> > > >
+> > > >  arch/x86/um/asm/ptrace.h               | 4 +---
+> > > >  arch/x86/um/ptrace_32.c                | 1 +
+> > >
+> > > This seems like a simple adjustment for what you need to do in x86, s=
+o
+> > > that's OK, but I don't think we'll take this through the UML tree.
+> >
+> > Appreciated! I agree, maybe with Oleg's review this can go via the x86 =
+tree?
+>
+> Do we want it in stable too even if it is not really stable material so t=
+hat
+> userspace does not have to upgrade kernels just for this?
 
---FUgMlfZGbL2nwwkW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I don't think so.  Android, say, is not going to upgrade kernels just for t=
+his.
 
-On Sat, Sep 26, 2026 at 10:08:19AM +0900, Hajime Tazaki wrote:
-> Introduce a kselftest utility to validate memory mapping capabilities
-> under nommu kernels, aligned with
-> Documentation/admin-guide/mm/nommu-mmap.rst.
+>
+> Or are they simply copying upstream UAPI headers from the latest kernel s=
+o
+> that stable backports don't matter?
 
-> +static int run_mapping_matrix_test(struct test_case_t *tcase)
-> +{
-> +	int fd;
-> +	void *ptr;
-> +	char path_buf[PATH_MAX];
-> +	const char *path = tcase->pathname;
-> +	int rc = KSFT_PASS;
-> +	int expected_error;
-> +
-> +	ksft_print_msg("[RUN] Testing: %s\n", tcase->name);
+Right.  IIUC, bionic doesn't have N copies of UAPI headers (one for
+each branch of stable), just 1 copy which they do move to newer kernel
+versions when they need something. (enh@ can correct me precisely).
 
-> +		if (fd < 0) {
-> +			ksft_test_result_skip("Failed to setup temp node: %s\n",
-> +					      tcase->pathname);
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Your test reports should use a consistant string when reporting the
-result for a given test, that way tooling can tie results together
-between different runs.  Report the diagnostic information with a
-separate print.
 
-> +	if (result == KSFT_PASS)
-> +		ksft_finished();
-> +
-> +	ksft_exit_fail();
-> +}
 
-Just unconditionally call ksft_finshed(), it will check the counts of
-reported tests and exit with an appropriate error code - you don't need
-to manually collate the results in your test code.
-
---FUgMlfZGbL2nwwkW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmq6XsYACgkQJNaLcl1U
-h9DH+gf/XjlR+SgNi0hEPMZzdbbYcwqMMLD2xh8C2BKF4e664nTRvVFTUQ4QNNVC
-wWPQ+F7q4l0/ZvxPMtcHzH9cNRXNYfVC00Twjn4/rKB06CdAlnug1n1Segzf4nSe
-IW0YuguI4jeea+cNPiiG1pXEdH0xhEzS9KQZSByPqg/J10wYT5mki6T952vWEh5s
-6uf0QrxiIl8j7gE7buHHahG02LdSNZB9URNdEL7GaPsIN8R3IPLcWE+nvazafr0H
-f8k6hg7IRx+gOZ8r60kURDhpP6i8oE6zd/YIp3hqnGLvUEHG7Yl0XY7krzjWpAgI
-ylmZrCLJWgbyW+oCgK7db4EHIr7tPg==
-=LEi+
------END PGP SIGNATURE-----
-
---FUgMlfZGbL2nwwkW--
+--=20
+Thanks,
+~Nick Desaulniers
 
