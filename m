@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 334A3C9833F
-	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 11:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E57BDCA5FA5
+	for <linux-um@archiver.kernel.org>; Mon, 28 Sep 2026 11:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=W/VZm44XzSsz564iDu6yls171Wz+1fQyfbWB7NPC/qE=; b=SxCd3f85rMn48qEcDYBEfQNGUD
-	OmQDG//uBW0wgK6dekU8hbco/H+Pd72/O8/mvetyKd7nOHEF9CHvViBsHfWKuo3bBt0YbtH3rPkZa
-	u6aYbVXNabH60wNTs6AqSxJOIGjgXiE2M6ghM01faWf6TnMh7DA9JLZwvYi5PuX67oKtt9oNKgoiE
-	LRPgQJ9D4BhDnuY/mZocm4GXSS3j5pUon7AlBU/eEfp4r6R+6COGQ4gwwJm0KuKaxI4yz3eTbLIgk
-	+8hTZg9b8kfHqgTZ//tBxQ/Wiy3pGJhp2pgC5ThEKX6u65GKkoSifwSptEVtKkdLhZNBRhQBBXRNE
-	mmTs+YlA==;
+	bh=1W7l83jUfjOncW8PpsfsUeV8UefI+hmLcibr0Kwb2lA=; b=0ikQzhsAHbycPT4NkYbkxR93E2
+	HAhCx+219rZW2B6q2pIN+tmrW68kmf9polV/K5zIchB0qZ8AnHIJiuRaXWkvk7J3IqKJZkn41Q+y4
+	O0pYp9o4SFIdjwxtdm2+FPzEjyREwKbbjlfTeE68hbBZufRUnzKRc1s4iImUB0MYTt7KoWyLtFcxX
+	GWLenw8dEWYbfNypRNlHlUoaLaapKJ0suPByccj6UIPKUsg9VF/Y1GzM9LyrCx/MZN6zEsN/4Lh56
+	DDRyqqqjOBMKEpBlBC1KKIntxWgXWUgGfEdKG9qHzggWZrWHHaSX3QRyVT6cnJMYbDfpIz9jtdai9
+	V1ujeXIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xB95x-00000000PVw-3lC5;
-	Mon, 28 Sep 2026 11:00:29 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xB97t-00000000PgW-1TPQ;
+	Mon, 28 Sep 2026 11:02:29 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xB95x-00000000PVl-0RF0
+	id 1xB97s-00000000PgI-1iKU
 	for linux-um@lists.infradead.org;
-	Mon, 28 Sep 2026 11:00:29 +0000
+	Mon, 28 Sep 2026 11:02:28 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 39D83600D1;
-	Mon, 28 Sep 2026 11:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852161F000FF;
-	Mon, 28 Sep 2026 11:00:22 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1AFD6436B3;
+	Mon, 28 Sep 2026 11:02:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFDF1F000FF;
+	Mon, 28 Sep 2026 11:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790593227;
-	bh=W/VZm44XzSsz564iDu6yls171Wz+1fQyfbWB7NPC/qE=;
+	s=k20260515; t=1790593348;
+	bh=1W7l83jUfjOncW8PpsfsUeV8UefI+hmLcibr0Kwb2lA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=YCMQw9cX13xqhIwBzSMliTFI1BR50NKpER6op4F/axoQCrr9l0XXf6aKT61a2MYnZ
-	 5capFidkNb48gSEu2nhvuhjUmkOoDQEfunJtlKE33rLoPt/132APCimNjZZlyAnfGo
-	 BgCXLAb9ZOJGA+56e3kydME3r/Rqy83Tazx1Hgk12gMgLAooFzIbdO92+wgszDwoI7
-	 0wcOm97VS0aIQkcxex3zRx0W1YJhM3LnzW3wvpPufqpPdX1MU9kssrpgnzzKDjtoez
-	 tU76c1ClWcl1zqN9EOl4Ujjk7ElqmJTjv6Z92YxS/B01A0Me3ruXGE38icwJuqHZhX
-	 mysf0URYpxqRw==
-Date: Mon, 28 Sep 2026 12:00:19 +0100
+	b=K5xX1lShmpX9gshtl6gLw77w8dT+LjbmwtZFY8t5Dl/buHBhU/6Ohi9vnSWJUOUPd
+	 rCqX9TY3Zmx1/wY2RCywDM0Pjei19fgcvxg34JLGGf4OoRIlLYf1hT73Kc9CYEijJK
+	 Wedf80nHwYuvXCL/VQzZYhsTXtN/OMeqGSTMdKVFh4W6l7HhcNBXSatsIUky8RloVn
+	 lPFmOTL5wdGQFLdnStZ3WYujaZ5UVqzPH/dTMPSLP1R2G9bNW3wJ3KwpbVkQoFHTn4
+	 LKGsMN2V/v8UOC+lI0aouU6ethezKEqKSOEkwQkmxJx05H/r7S9WnAoQ+0LS/lZUYc
+	 8VxYaWsBFWDQQ==
+Date: Mon, 28 Sep 2026 12:02:19 +0100
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Hajime Tazaki <thehajime@gmail.com>, linux-mm@kvack.org, 
-	liam@infradead.org, rbm@suse.com, akpm@linux-foundation.org, luto@amacapital.net, 
-	brendan.jackman@linux.dev, david@kernel.org, liuhangbin@gmail.com, corbet@lwn.net, 
-	kees@kernel.org, broonie@kernel.org, mhocko@suse.com, rppt@kernel.org, 
-	shuah@kernel.org, surenb@google.com, vbabka@kernel.org, wad@chromium.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, 
-	geert@linux-m68k.org, daniel@thingy.jp
-Subject: Re: [PATCH v3 2/3] selftests: run tests on nommu architecture
-Message-ID: <arpIi5QBG1_MuZzJ@gremlin>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-mm@kvack.org, liam@infradead.org, rbm@suse.com, 
+	akpm@linux-foundation.org, luto@amacapital.net, brendan.jackman@linux.dev, david@kernel.org, 
+	liuhangbin@gmail.com, corbet@lwn.net, kees@kernel.org, broonie@kernel.org, 
+	mhocko@suse.com, rppt@kernel.org, shuah@kernel.org, surenb@google.com, 
+	vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, geert@linux-m68k.org, 
+	daniel@thingy.jp
+Subject: Re: [PATCH v3 1/3] selftests: kselftest: avoid cd - in runner
+Message-ID: <arpJBaUzzsLEZgDy@gremlin>
 References: <20260926010819.604346-1-thehajime@gmail.com>
- <20260926010819.604346-3-thehajime@gmail.com>
- <04259a99ed91f8a527b255951a6f626310728170.camel@sipsolutions.net>
+ <20260926010819.604346-2-thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <04259a99ed91f8a527b255951a6f626310728170.camel@sipsolutions.net>
+In-Reply-To: <20260926010819.604346-2-thehajime@gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,25 +74,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 28, 2026 at 09:44:49AM +0200, Johannes Berg wrote:
-> On Sat, 2026-09-26 at 10:08 +0900, Hajime Tazaki wrote:
-> > Architectures lacks MMU doesn't support fork(2) syscall and only
+On Sat, Sep 26, 2026 at 10:08:17AM +0900, Hajime Tazaki wrote:
+> The kselftest runner currently uses `cd -` to restore its working
+> directory after running a test.
 >
-> nit: Architectures lacking MMU don't support the fork(2) syscall ...
+> This is not supported by the minimal BusyBox hush shell used by some
+> NOMMU targets. Store the original directory explicitly and restore it
+> with a quoted path instead.
 >
-> Not sure where this should be merged? I guess selftests would make most
-> sense, but you can't actually test it out before the UML nommu changes,
-> so that doesn't work too well right now?
-
-I seem to recall Hajime saying he tested this on an actual nommu
-device/virtualised equivalent so nommu UML isn't strictly necessary (though very
-nice to have!)
-
-I think I saw something fly by that implied it might be coming in 7.4 is that
-so? :)
-
+> This also avoids printing the directory change performed by `cd -` and
+> handles paths containing whitespace correctly.
 >
-> johannes
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Will Drewry <wad@chromium.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Brendan Jackman <brendan.jackman@linux.dev>
+> Cc: Hangbin Liu <liuhangbin@gmail.com>
+> Cc: "Ricardo B. Marliere" <rbm@suse.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+
+Looks fine to me so:
+
+Reviewed-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+
+> ---
+>  tools/testing/selftests/kselftest/runner.sh | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+> index 311811dc55a0..8fc1018d6fec 100644
+> --- a/tools/testing/selftests/kselftest/runner.sh
+> +++ b/tools/testing/selftests/kselftest/runner.sh
+> @@ -130,6 +130,7 @@ run_one()
+>  				return $KSFT_FAIL
+>  			fi
+>  		fi
+> +		OLDDIR=$(pwd)
+>  		cd `dirname $TEST` > /dev/null
+>  		(((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
+>  			tap_prefix >&4) 3>&1) |
+> @@ -147,7 +148,7 @@ run_one()
+>  		*)
+>  			ktap_test_fail "$TEST_HDR_MSG # exit=$rc";;
+>  		esac
+> -		cd - >/dev/null
+> +		cd "$OLDDIR" >/dev/null
+>  	fi
+>
+>  	return $rc
+> --
+> 2.43.0
+>
 
 --
 Cheers, Lorenzo
