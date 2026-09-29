@@ -4,59 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0DA5CA5FA1
-	for <linux-um@archiver.kernel.org>; Tue, 29 Sep 2026 03:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4445ACA5FA1
+	for <linux-um@archiver.kernel.org>; Tue, 29 Sep 2026 05:08:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=qxLbnCMjOsISk4dkJ+9u2CP2IpXgRDtHatTLjBExLk0=; b=aKeMI4sNdkFi0Mhrw27ckmjZBc
-	QasmPIfPmXw5lHENQM+Wtv3toH4Dsg5xypXoNmqrir59+ZSpWdHDoTtu4HYkv2+E5x/7bOuTFg0dS
-	YYnURhGo+kL4tzcihPamI2sw+fll1FjKG2mtcwaxxnQf1W9R2chxZ2hLgld9Ok4Rl5/frf3wtjlLB
-	tvO/3zf+Oz89STS+9j8S5eT7PNgzkzL4mB1EaHNZ8ygShbq+taARpMLDN93F0L9aX1YwrFw4wHFws
-	ZKYSOQQczYJQQAvEW7zSfqaLdx85Uxjws0zYJnMvcK5e+O3AorbN8eUPAbPzSEM5692n0+EH8IqUD
-	KDXrMsbA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Ql48WTI1DDC42vkQ5aONYMMkjcdFwpalboLPZ35vz1E=; b=d9nlnWg2340hvkhzRZWGFIEVqi
+	GQ4jd9FcIt9x0q+x+g+ZT6It7vFMCknU3NVspICoW3sD/fScEfqwX3vySTABWK23/2T8nw3jcjv9k
+	59uy2KVKWMEPU3twtt2smRvJD6YbjAllnKUyBLlE3scIsAPe84b1GEN0KnI84rO9UEaEq53SS0Xq/
+	arh0UYm+U6ZpXFNXwhXPopQp/XF3Bw5Z2pS8qRXXfx1TQIsBBAiSw5RlL2xfUc0m9NLUxghFY+fXg
+	FVeJnrETtz8cQ35oe9ha3sBM5CfqnWPto7fsE2Kk4Eo5StII41k393Ss33tYAdia7lMaP16IoCymu
+	j+7HueyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBOrF-00000002Hm1-2uny;
-	Tue, 29 Sep 2026 03:50:21 +0000
-Received: from out199-28.us.a.mail.aliyun.com ([47.90.199.28])
+	id 1xBQ4W-00000002MAm-1dj1;
+	Tue, 29 Sep 2026 05:08:08 +0000
+Received: from zeniv.linux.org.uk ([2a03:a000:7:0:5054:ff:fe1c:15ff])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xBOrC-00000002HlI-1laV
+	id 1xBQ4T-00000002M9p-0MJQ
 	for linux-um@lists.infradead.org;
-	Tue, 29 Sep 2026 03:50:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=aliyun.com; s=s1024;
-	t=1790653813; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=qxLbnCMjOsISk4dkJ+9u2CP2IpXgRDtHatTLjBExLk0=;
-	b=ewbshE6+Zkhga3pnO1bqR8Jee+A1MAyaQIZ4mLexfiOXl7b4JnazZV0zPvrFWJOqqo+AE5AZ2ql1ksfnQns+yH8h6P01HpE2lGvhwObXEQeueM56MvkKWCVSI0jidmfjK8VYyK0G9qVOz6ksUWHExlhCewtmYuhQ5m9gEuB+W6Y=
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1186648|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00757088-0.000741671-0.991687;FP=16780791132089850986|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033032089153;MF=wdhh6@aliyun.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---0XBrsXwJ_1790653808;
-Received: from localhost.localdomain(mailfrom:wdhh6@aliyun.com fp:SMTPD_---0XBrsXwJ_1790653808 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 29 Sep 2026 11:50:10 +0800
-From: Chaohai Chen <wdhh6@aliyun.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
-	linux-um@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Chaohai Chen <wdhh6@aliyun.com>
-Subject: [PATCH] docs: Fix outdated URL in user_mode_linux_howto_v2.rst
-Date: Tue, 29 Sep 2026 11:50:06 +0800
-Message-ID: <20260929035006.2201371-1-wdhh6@aliyun.com>
-X-Mailer: git-send-email 2.43.7
+	Tue, 29 Sep 2026 05:08:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Ql48WTI1DDC42vkQ5aONYMMkjcdFwpalboLPZ35vz1E=; b=Vt8Wl6v9GXqlPdcfnYCxm8QiYp
+	IjYDbFvkRSA9EwCbUBHheJvuYZdpImQ8ElWTyxGfzBNWSOW2pO6W+4J4Y1tks26kT+/1ZOyOUbTV2
+	LxknNqO7/ieWoGqNfhU/6OiIm+u03J7GX8QRDAzb//I2WHU4oI0/7on5fhJYoFcx/TY3YdWmGFgOj
+	4/WzgK4OYYFLnJJZ1H6/D8CD8OvFCYz5m/CT5EO8CcQq6t3LkWaAWZ3HXS+H7Eiz8dY3BcMEfr7b2
+	xJxllWNFBc/BuTHZelPBr7MOyE8q5XDulXQDCXIxkADODbw48afqLDdAfkvjLTsbKv4uPDjyQv6ee
+	sAjeP0QA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.99.5 #2 (Red Hat Linux))
+	id 1xBQ43-00000002j2z-3GyS;
+	Tue, 29 Sep 2026 05:07:40 +0000
+Date: Tue, 29 Sep 2026 06:07:39 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: NeilBrown <neil@brown.name>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
+	Kees Cook <kees@kernel.org>,
+	Joel Granados <joel.granados@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Breno Leitao <leitao@debian.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Hyunchul Lee <hyc.lee@gmail.com>, Carlos Maiolino <cem@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, fuse-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+	linux-um@lists.infradead.org, codalist@coda.cs.cmu.edu,
+	coda@cs.cmu.edu, linux-mm@kvack.org, ntfs@lists.linux.dev,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 4/7] configfs: remove d_add() calls before
+ configfs_attach_group()
+Message-ID: <20260929050739.GB3909609@ZenIV>
+References: <20260929034158.1455429-1-neilb@ownmail.net>
+ <20260929034158.1455429-5-neilb@ownmail.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260929034158.1455429-5-neilb@ownmail.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20260928_205018_720064_2437FC41 
-X-CRM114-Status: UNSURE (   8.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20260928_220805_133081_750C71BC 
+X-CRM114-Status: GOOD (  10.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,30 +88,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Using an outdated website results in an error:
-  E: Failed getting release file http://deb.debian.org/debian/dists/buster/Release
+On Tue, Sep 29, 2026 at 01:36:04PM +1000, NeilBrown wrote:
+> From: NeilBrown <neil@brown.name>
+> 
+> These d_add() calls cannot be necessary.  The inode given is NULL so all
+> they do is attach the dentry to the hash table.
+> 
+> If configfs_attach_group() fails, then d_drop() is called so the dentry
+> will be detached.
+> If configfs_attach_group() succeeds, then
+>  configfs_attach_group -> configfs_attach_item ->configfs_create_dir
+> must have succeeded, so d_instantiate() will have been called and the
+> dentry hashed there.
 
-It works successfully using https://archive.debian.org/debian-archive/debian .
+Neither in mainline, nor in -next...
 
-Signed-off-by: Chaohai Chen <wdhh6@aliyun.com>
----
- Documentation/virt/uml/user_mode_linux_howto_v2.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-index 9224bea5ee9f..c4d5d08e2bab 100644
---- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-+++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
-@@ -123,7 +123,7 @@ jfs, etc will work too.
- 
- Create a minimal OS installation on the mounted filesystem::
- 
--   # debootstrap buster /mnt http://deb.debian.org/debian
-+   # debootstrap buster /mnt https://archive.debian.org/debian-archive/debian
- 
- debootstrap does not set up the root password, fstab, hostname or
- anything related to networking. It is up to the user to do that.
--- 
-2.43.7
-
+d_add() _is_ wrong there, but this is not the right solution.  What
+we really ought to do is build the subtree first, then either dissolve
+it (without any pathname resolution having ever seen it) or move it
+in place once we are sure that everything worked.
 
