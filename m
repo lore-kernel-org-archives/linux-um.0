@@ -4,67 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5681CA5FC4
-	for <linux-um@archiver.kernel.org>; Fri,  2 Oct 2026 08:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33BBCA5FE0
+	for <linux-um@archiver.kernel.org>; Fri,  2 Oct 2026 10:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BIHFM4YkUGLtT//ijgD4g07c9OxY00eHXMaA/kwG2nM=; b=rQOpABMjSwtuEO6ZHDFr6Mta+C
-	HWzBIL4gLt6rRh40lSmGoyV8tVe+yZb4YmfLrDaUylRUGHmiuX8Q1k3u5AMW6If7G6YTBvvrE+mnq
-	/va32o9EqN1/WGPfar9+/peVHcUOuNhi20pVsT7foQ85M6WyyxN+LoH1ti0WWuJyB58HwQBdBKCJv
-	dFr4HbQ8DUBOma2aeXdws/PabAk7OJJNvieU1hQLuYbo8J9l2pydN+evwb22DBxYExGzOLiH6/n5P
-	CPWW+L7JRBtXgSFQI5iMMvZU1Ew1Igm5vzAjz7/n13qRfoEu8pGagRJcUFowlgGlZWJav0NTvt2Dt
-	BZ+88w8Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=RIokIstseU3qlTqApqCIaq0uc2euVYuC0mKhMpIcK/o=; b=sELS6i1dD4NUqXDqdUc4qOPLd8
+	7p4HNa+CLPdyFV0jrHc42mMAn4PW8S0XG0ON5Pv6wExE7AeFgLtB9IN65F0gbW3o70MDBlUkf3daM
+	H366FfuqYRLWgDtPV4fxhoZa3dLYMlyJ2qvmtUcTqRsPH78hqP64jKhkkECO+1kL80Cos5eUy2pkJ
+	SXaE35rDQ4OUPffkzQgSTW2EcFajwG/Atx6YRsyJBzSkyvvLa2/aSvV518tstGV/d5SSmPas0VUp2
+	5UB/YDHOVAuHoITWICUSQt0PwwDNEwKXoJFqnscXa6aHrlb6THkClNU1WNOwCUlnYDYH2Z/NcGzNv
+	s/w0qiIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCYLa-0000000Awcc-28Hb;
-	Fri, 02 Oct 2026 08:10:26 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xCamF-0000000BMyd-154p;
+	Fri, 02 Oct 2026 10:46:07 +0000
+Received: from fout-a2-smtp.messagingengine.com ([103.168.172.145])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCYLY-0000000AwcN-3m7b
+	id 1xCamB-0000000BMxL-3gPi
 	for linux-um@lists.infradead.org;
-	Fri, 02 Oct 2026 08:10:25 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 01FF160A5E;
-	Fri,  2 Oct 2026 08:10:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD511F000FF;
-	Fri,  2 Oct 2026 08:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790928623;
-	bh=BIHFM4YkUGLtT//ijgD4g07c9OxY00eHXMaA/kwG2nM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ZkKfj52wi+HBtm4OSS7+TGHkipMV+dWZaiDRPkTP1OUg2cSZgWi236Wj6NYUE3zhP
-	 cE/wLWLsAeog8taVdUpM5sc8E4yCibHvboHgqOHxAEG+Y5Z/wzqywqWTkRHX1PX8RJ
-	 Y6MrqkaPJzwXRfn048jxdDXzNp00NQ6UuQjAuOmLFP1bfYlCjQ7TtK0Qzpq09+/X09
-	 mUlW0HPJX0OTnzNLrxPH7PlPg13Ld0kUi9GjYTFEQg80JgThJuOQqXg7k0VabrPqqj
-	 M9I4tH9JjiDYoMcnmK8F+JM777QiRIOEKoJxCdsUEHTj9cABRLPo4injcxApsYeJGY
-	 nLF4S21X/85NQ==
-Date: Fri, 2 Oct 2026 09:10:15 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Hajime Tazaki <thehajime@gmail.com>, johannes@sipsolutions.net, 
-	linux-mm@kvack.org, liam@infradead.org, rbm@suse.com, akpm@linux-foundation.org, 
-	luto@amacapital.net, brendan.jackman@linux.dev, liuhangbin@gmail.com, corbet@lwn.net, 
-	kees@kernel.org, broonie@kernel.org, mhocko@suse.com, rppt@kernel.org, 
-	shuah@kernel.org, surenb@google.com, vbabka@kernel.org, wad@chromium.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, 
-	geert@linux-m68k.org, daniel@thingy.jp
-Subject: Re: [PATCH v4 1/2] selftests: run tests on nommu architecture
-Message-ID: <ar9ldn036SgT-bq1@gremlin>
-References: <20260929235711.2287931-1-thehajime@gmail.com>
- <20260929235711.2287931-2-thehajime@gmail.com>
- <bda5eeaa-7868-4d4a-9026-9e99347afd7c@kernel.org>
- <ar4br2vW7yZGd3gt@gremlin>
- <94759bed23f00d2044005e36be6f72f297e092f0.camel@sipsolutions.net>
- <m2se2o3jyc.wl-thehajime@gmail.com>
- <a65f4431-d225-4535-b921-00319ceeb2a2@kernel.org>
+	Fri, 02 Oct 2026 10:46:05 +0000
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id AA1F5EC02E1
+	for <linux-um@lists.infradead.org>; Fri,  2 Oct 2026 06:46:02 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Fri, 02 Oct 2026 06:46:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flapping.org; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1790937962; x=1791024362; bh=RIokIstseU3qlTqApqCIa
+	q0uc2euVYuC0mKhMpIcK/o=; b=lmNFoztBKtV8IWoSPpsysRJ8+o0kGqn0b0gJM
+	KduWlznBO7uvKMjbRQ9aMDgQUoV5eolSONDJyKWa64td2VUEhwgcegnNpa8okH92
+	6hq5uUNhzTrnkl9cdqq8gh0aJUbYRliC7RyBEw5TRusL3yPnIi0xYZ/2hzCFYEg5
+	q1q1ujc8AC1hZbY+5T+Rzzx0GdtS9wyHCLC2m5DJqNL8CmLS5Vw0uCa1B/fygg3r
+	G+tkXwypgCLQutKJODpKfI58UK5rYfrb3C1M2xc4+VvDFEhinpSAQLw7OPfPrkCy
+	gHi4cau49Eri6t00EmarE2KHMtCsrH2eCYiV81mS1Rnu5FERw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1790937962; x=1791024362; bh=RIokIstseU3qlTqApqCIaq0uc2euVYuC0mK
+	hMpIcK/o=; b=VuPtjCzOi5KweNdwA+Dq98KD/C4z6put4AmIMCTE0fXCDHdoJBd
+	MXtiPHk3cyDSppNKuhHncz/3XC1QARBXbFZB6Utu5adKHwqDUgbdn2RfSPG+JQfl
+	qfIVefX1f0iSx6XXknpkupMdVj9CB+cIFAgq/mnJGu8UNfwXcQw6c6adnx8F9r38
+	P+XpFAEz35d+HsCfWFbMidNjk+xGfmj9NdAz6cEWo4cv+HOg3GD2UWeUjK/2O8wP
+	Z9G6mFhobGo1OC2o+hcttX9hLOIo51vlnL/GMhDPo6T48EORC699fKm2GzW+ukL6
+	RXOxpSfOF4l/gtfIaO9/vLaL3SOCy1+8sEA==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=sign d=flapping.org a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1790937962; d=flapping.org;
+	mf=PHRvbW9AZmxhcHBpbmcub3JnPg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm3:rsa-sha256:MkpgK/Gjfgbb2BbRI62Az28NY8gieqCF5fheaivQJWuEjeU
+	lUvWNaWRIHF3BY6qqf4n+Z4gQ6mPEOYLc/mBzyFD1Ivz5N4xRpLKW86zPFLhssXm
+	YZKZSsj+CrbA0cRkrAFnKS2U8mqm/hRuGSyc2/w2XU0XESgvcvJ5ZjeG+sOcEixz
+	u2yxbcNG+7iR+1R7fg5DvXyAGrOyO4/MLPI2DPGuFYm3ErmhO5O7ow6sxT9Cf7Ck
+	Gj2uhdHg6koZHhDtYIUyoAhG7++jeB+jJvuBxv0J8zGlQby7qD2ahOJZHadnEl5+
+	DRjUeZzwLe39Jf1BoLQfZiMAYOhH/jt5OOjo6nA==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=mi-m=1; hc=9;
+	hn=cc,content-transfer-encoding,date,feedback-id,from,
+	message-id,mime-version,subject,to;
+Message-Instance: m=1; h=sha256:rgG6nPcY77FCBs19uCS+DRtlSQ7+7N3gNljyLG7JmSU=:FmccytxxLv3MwtwRsmTyRfWkMIoiSDuUUTeDKyZmvuQ=;
+X-ME-Sender: <xms:aYu_anZdJ52kWf2JsoSjSnM8-KPrGMn_njHHCeXRQFar_iDFkfsnzQ>
+    <xme:aYu_aloHOekl54TNDOLJbyg_GqhOZjEFnJ0Xq_PNy-EoQ4um5CvpEqYugg5THtqiN
+    l2JGIR--_ws7OpL9mugf9DbFDFyqzSi5ld--yop8C3zCw5S2IijOchE>
+X-ME-Received: <xmr:aYu_aszxOXebAUuInwHlXEBdb_m0rKe722NEEl0ZSDSVC0USkopS3niLlXLpTTewg7-2kZXPNRHwajX9lSs>
+X-ME-Proxy-Cause: dmFkZTGlTvXXihZEq17d47kzGWVs9xGC8pgNgRNpwHFxAHfUqhv+xNSmNFIl7QHoiuOWPE
+    8rk5ZMvnbozFmK7YYfgegecl8TUWzFGO0jEJ2g3/mcZurEfFLI/+ZGvlH7qY/tlm+2nugj
+    zrz2QwKuvoqcgDW7tXeQtPDube6e/5aNuC2oKqai50ZluTE+F0RbqlHZdaao6HlXqaT0H8
+    H9dqPyQPCpz3A0kpWS2LRFj9ETkBS20SN/CcSpjBAVbQLTET2aCTK8OKuNnNBpFFVBWRd5
+    xJdo7SNjM27Nw2aY/WS6zRCegBXuATzAxnB5XXSbjXYhuBdtf4xfYKFJzK2BefiYwsFOGk
+    MzTr8aObjOYwsh+xaAdKeWXircbw3EkHA7CM4R6IVpy/m7RPf6PBkjSuWWpEjBVvl56Kqx
+    PVymFLLZf5gEOKI65OPJEsP4iV1I28W31GdOTIzwMksNdv8jmyJel4APgnKDMQ89Ne0iA/
+    zsV+Nk+p4vZ8LQ7dyDSOafV4xBkChM/dRjL6ziD0e2or32MzqSouFV1Z2FofmO0so8hkvj
+    krm9N0UilClcsBYn+6aAhYvEttWBgiLPwX2stnObXQkEuM1vNHOtcBj7p34nynH6eLgPmC
+    PHY+lGyVhj9TB5KV2v3MNYFpNDis6ZWs8d2jZ+I2rbHnFxRbLToZRf3GgRkg
+X-ME-Proxy: <xmx:aYu_alITyx_dGSdQxDweCaEEIPq7TSBo_qbBqz1VHkrh2pTA3GlNXg>
+    <xmx:aYu_am4utxuX61SLuoLWXIyXucNj1LoqKEup0bG3ZTK3XP_9yb--wQ>
+    <xmx:aYu_arznIG6C4h3OMYO0xexCju6VQYqGTRfMBcjICdvcrSkW2JSTxg>
+    <xmx:aYu_ag96mSZubxA7idi0H_r1skqXEWy4OXlgLpvYGJmxpuRbot74Ug>
+    <xmx:aou_au_aQzh_fvxlDEqfm1il6mR2reSbpmKP0bvzrYhkz1o4PQHOu-a9>
+Feedback-ID: i51fe4b43:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 Oct 2026 06:45:57 -0400 (EDT)
+From: FUJITA Tomonori <tomo@flapping.org>
+To: ojeda@kernel.org
+Cc: a.hindborg@kernel.org,
+	acourbot@nvidia.com,
+	aliceryhl@google.com,
+	anton.ivanov@cambridgegreys.com,
+	bjorn3_gh@protonmail.com,
+	boqun@kernel.org,
+	dakr@kernel.org,
+	daniel.almeida@collabora.com,
+	david@davidgow.net,
+	gary@garyguo.net,
+	johannes@sipsolutions.net,
+	linux-um@lists.infradead.org,
+	lossin@kernel.org,
+	richard@nod.at,
+	tamird@kernel.org,
+	tmgross@umich.edu,
+	work@onurozkan.dev,
+	rust-for-linux@vger.kernel.org,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>
+Subject: [PATCH v1] rust: bug: update the SAFETY comment for warn_slowpath_fmt() on UML
+Date: Fri,  2 Oct 2026 19:45:50 +0900
+Message-ID: <20261002104550.2877930-1-tomo@flapping.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a65f4431-d225-4535-b921-00319ceeb2a2@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261002_034604_109610_A2298C87 
+X-CRM114-Status: UNSURE (   8.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,93 +139,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 02, 2026 at 08:08:44AM +0200, David Hildenbrand (Arm) wrote:
-> On 10/2/26 04:38, Hajime Tazaki wrote:
-> >
-> > David, Lorenzo, Johannes,
-> >
-> > thanks for the comments and inputs.
-> >
-> > On Thu, 01 Oct 2026 19:01:45 +0900,
-> > Johannes Berg wrote:
-> >>>
-> >>> I thought maybe uname could help but our LLM overlords tell me no.
-> >>
-> >> Hajime originally wanted uname to indicate it, but that caused
-> >> regressions elsewhere, so we dropped that commit. I guess we could put
-> >> _something_ back?
-> >
-> > systemd uses uname information and our (old) patch changing the format
-> > triggered the regression.  thus, we dropped it.
-> >
-> >>> It pointed at something though.
-> >>>
-> >>> In fs/proc/meminfo.c:
-> >>>
-> >>> #ifndef CONFIG_MMU
-> >>> 	show_val_kb(m, "MmapCopy:       ",
-> >>> 		    (unsigned long)atomic_long_read(&mmap_pages_allocated));
-> >>> #endif
-> >>>
-> >>> So MmapCopy in /proc/meminfo tells us definitively, weirdly enough.
-> >>
-> >> Hyrum's law and all that, but I guess it's not highly likely to (want
-> >> to) change :)
-> >
-> > a runtime detection is nice.
-> >
-> > scanning /proc/meminfo might be useful. although it requires to mount
-> > procfs (we can actually skip procfs mount as it is optional) so, this
-> > is not 100% portable.
-> >
-> > checking ENOSYS like syscall(SYS_mprotect) might be useful but I
-> > wasn't sure if this is always the case of NOMMU or not.
-> >
->
-> I assume there are plenty of other mechanisms. Like testing if fork isn't allowed.
+From: FUJITA Tomonori <fujita.tomonori@gmail.com>
 
-Yup that's an obvious candidate!
+The SAFETY comment says that it is always safe to call
+`warn_slowpath_fmt()` with a valid null-terminated string. This is not
+true. The taint argument must also be a valid taint number.
+Commit 951d09ca450c ("rust: bug: pass TAINT_WARN to warn_slowpath_fmt()
+on UML") fixed a bug where it was not.
 
-You actually need to check for both -EINVAL and -ENOSYS since, of course, we are
-inconsistent with this.
+List each condition that the call meets: the file name, the taint
+number, and the null `fmt`.
 
-Some nommu arches specify __ARCH_WANT_SYS_FORK unconditionally for both
-mmu/nommu variants meaning you get -EINVAL in that case:
+Suggested-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+---
+ rust/kernel/bug.rs | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-https://elixir.bootlin.com/linux/v7.2.8/source/kernel/fork.c#L2830
+diff --git a/rust/kernel/bug.rs b/rust/kernel/bug.rs
+index 6abed2c055b1..3b40b0bd37b5 100644
+--- a/rust/kernel/bug.rs
++++ b/rust/kernel/bug.rs
+@@ -88,8 +88,10 @@ macro_rules! warn_flags {
+             _ = $flags;
+         }
+ 
+-        // SAFETY: It is always safe to call `warn_slowpath_fmt()`
+-        // with a valid null-terminated string.
++        // SAFETY:
++        // - The file name is a null-terminated string with `'static` lifetime.
++        // - `TAINT_WARN` is a valid taint number.
++        // - `fmt` can be NULL, and NULL is passed.
+         unsafe {
+             $crate::bindings::warn_slowpath_fmt(
+                 $crate::str::CStrExt::as_char_ptr($crate::c_str!(::core::file!())),
 
-Otherwise you get -ENOSYS because it's not defined.
+base-commit: 948440b3f429f84680db58b4bf529b1ed2a20e15
+-- 
+2.43.0
 
-But fork() -> -EINVAL or -ENOSYS = nommu, then just have the child quit and
-etc. should do it.
-
-But then that'd need some C... ah fun :)
-
-Crazy to me that we don't expose it in uname...
-
->
-> > My original attempt was to use include/generated/autoconf.h; with that
-> > we can omit environmental variable or command argument of NOMMU=1,
-> > but gave up with handling standalone build/test case which might miss
-> > the generated file (and complicate the patch only for the NOMMU
-> > detection).
-> >
-> > So, specifying NOMMU=1 is my previous, though dirty, conclusion.
-> Let's avoid making it harder on users by doing some runtime detection.
-
-Yeah it'd be preferable.
-
-I see a bunch of usage of procfs in selftests.
-
-So can we just please require that the selftests have the user mount /proc, then
-the /proc/meminfo grep is the easiest + quickest way.
-
->
-> --
-> Cheers,
->
-> David
-
---
-Cheers, Lorenzo
 
