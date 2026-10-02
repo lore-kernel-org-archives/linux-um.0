@@ -4,114 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F06FCA5FD4
-	for <linux-um@archiver.kernel.org>; Fri,  2 Oct 2026 10:55:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0262CCA5FD6
+	for <linux-um@archiver.kernel.org>; Fri,  2 Oct 2026 11:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1BcgLlwIDQd7WDm8rTVE7lPjWHBuss1Gdr7b0jYHET0=; b=Oj57ynpU2t5qjYVLMmG4ssolBo
-	2wztubPZ+393z/70V3oaDaAKG0oWx84gQzS52SamRSTsJwF4/r7NO48tb0gFslg1BiWXl1qIj3Deb
-	H8S3gyZPHMato5iy2cV9S/qGnI1wDdVXevoz1VZeNRSe7sipUuY4fElzCz4v9c3p5hbTXHUMK1fEG
-	3ed0LPVIbzdsD8tqNr13qZrlseUjHdQ7Y2Fs5d8UCZvKH59/oHn9MzOXKqtZFM2oVJBMo6SAQlKof
-	9BVMDrnwf9IxNO6Tgg7JEUTUMaIUcm3HwkCn1wHmxGRivcBwyHwvfK5g1b+L6QzG/GREEemuj9jZD
-	cajsv0Mg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=20l5MGKYIkk3dxTQvp40s490//vZekkNtR3rks2T+EI=; b=TRZAzz4umoxamSkphjmZwfWDbG
+	gMQQtoepGnnXWYCrvFzxFEsbiEhxixVJYFiKynEhEFDKBt9G2JRD42nihPA8I/ndBTVbtzeXdq6/i
+	hUCdIJUDFyMYmFJ9U7iJ2J8N4xrk2ZfZkcNXKB52GxG+L2m0nyM6AiK+IZCeZRmWz6hsGEKY3hkl0
+	tZ8J90LvZOPdqWJcRwVwLR9LDXotJ+hSY4bmd/vNUPhUMZZWsA1dUB4mxCNBR5rfk2VE3cz+9eNJ7
+	o4gKiXpceTdQerqIb79cKqMI1n3r3DSvFE4gwpcQpSYPtmuTsOvPP1iiuNUfpsG1UgIa3us00kliG
+	zWrvmA+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCauw-0000000BOC8-2F9V;
-	Fri, 02 Oct 2026 10:55:06 +0000
-Received: from mail-dy2-x10.google.com ([2607:f8b0:4864:36::10])
+	id 1xCbbG-0000000BUx6-0RSA;
+	Fri, 02 Oct 2026 11:38:50 +0000
+Received: from mail-vs2-f38.google.com ([74.125.227.38])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xCauu-0000000BOBn-01M3
+	id 1xCbbC-0000000BUvt-36Je
 	for linux-um@lists.infradead.org;
-	Fri, 02 Oct 2026 10:55:05 +0000
-Received: by mail-dy2-x10.google.com with SMTP id 5a478bee46e88-32be7127c64so902401eec.2
-        for <linux-um@lists.infradead.org>; Fri, 02 Oct 2026 03:55:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790938502; cv=none;
-        d=google.com; s=arc-20260327;
-        b=l9+6UNT8ikh9yKK7dCYyJneeXxmHdrb8RwhIxA9PqKZkzil0j/4NfCngejK5zUTUFr
-         seRgkue5HwVTdO439MBdtRDmycwPMM5z4aNARlGtPl/q3asjfiWC1YTIjX5w5RB7d5tu
-         tlSzqoWfrKJw1UPCY/CUJmFbfWk+oMRZny5khTsP4IT1egaDL+hdarRk6knmCyB2K/YT
-         fk2rj8/cYDpVvkfMucJlvOTVoMgzxETFKavvEmdjKf4HePuM7LVbSdOXvLTjBWh32vKB
-         gaTvKOmrGvFQh1JhW6AO4UjtmK3hlJ4RerhGKNx2g3dyK4QSP7NqV9n7mkfZrDlpYEUf
-         Ijow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=1BcgLlwIDQd7WDm8rTVE7lPjWHBuss1Gdr7b0jYHET0=;
-        fh=M/a2JyfonrSxL2m/8/p9Q4MVLZ38p98WlC4BjVXEz80=;
-        b=mrS17vjTjHdUAELEzBuCsvjQufNs7/uU65y4JzWM080W9Ca5bph0KzWCQJ2luAHYXA
-         6MtOzx6jJVQ3liA+KV+U32/Z4RsXGT94bjEAurUg+u2wpdQqb0wIkdg/Ycz9y6Onfy9U
-         M+cKWHWahcDlp8QMXiKUeFGXSRlDCyg/p5GE17zp73U+nr5p37mYNWQi9pbsIN+VhVJs
-         1gSf0fIM5qg8BH6UgC9gGLZ9A+su2IP7ygzdMZ1HrZYExNXl94VjuhZjOo/bbxFtr13z
-         +3dnbS5x9R0O0J0g7Qw+aBtSPg9EopT9j3DYUffoDeKW2Ntf2PSjByY12v5p1xYem24D
-         9jfQ==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790938502; x=1791543302; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=1BcgLlwIDQd7WDm8rTVE7lPjWHBuss1Gdr7b0jYHET0=;
-        b=nmyAecUjGO0hWtAKu+mpIv0+Sz/Kv7zy1hKCj6P8YCt57B1M7piKGQ1aHH6WlnsSNJ
-         Po+3OQZ2VvvgYN6qYcv39Rp1biW+iJY/PYhB80jAD/Gf3kM4GEZUuhel3UxIO2qWiPEs
-         XDSzHbf0cVTHSON6QU5PrR47MT+oml2yLfQeSlkhbcvLnAS9WHXYh63Wd7ndYWCFdRlM
-         SNpfUcep2NeR8VECEo3cxH2uDhFsh4SoOGQG670aWJs8/W2a0Q6A1hKsraBOr75U3QX7
-         fl4aB+1M5C7XZh9HDK34wLzkD7CDV5AOr1cUN7R7XpL6KBWZ4cSbNPY+B6qBEIzdt7Zo
-         Cd/Q==
+	Fri, 02 Oct 2026 11:38:48 +0000
+Received: by mail-vs2-f38.google.com with SMTP id 71dfb90a1353d-5da475a08ceso301510e0c.2
+        for <linux-um@lists.infradead.org>; Fri, 02 Oct 2026 04:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790938502; x=1791543302;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=1BcgLlwIDQd7WDm8rTVE7lPjWHBuss1Gdr7b0jYHET0=;
-        b=KV8PPZ5WD1AA+5BXKg8DaXsna/MN8JEhtI/tSwYTGjXPN5ydUomOdi027/EC8SdwI6
-         Z4jkUQ+ow43nY9RC64/tA2rIX+dCqlN73G5bmLhnNx0vlYOXNvwwHcl2HNP/n6iDFjOc
-         Iy5jzwPh+y7jwLjYC67dterhuwtppxnSPO0C7j2l/HrLElb/TgF12ZfDBsbVrD+CBZL4
-         Rp2c8sNkXHGkuA/zNfFYSX7bfYinfMdAsu9aRGxb5MfcGXhvMgpYJrii0AM6lR6MLkE5
-         WqQ+I8Jj+/rHleeGlUkZYom0QfUCBfLzY00ujiIfV6LHIWh1IBOQmeZtnHR0z6MKLziX
-         qV6A==
-X-Forwarded-Encrypted: i=1; AKwUvByM+eTLWXgQq37zHSjvxuYaAVQl7KBQ1CUy3zpQEV7h+M8IOKcdEVQejz5m1t0mMDTEaM/XzRtPww==@lists.infradead.org
-X-Gm-Message-State: AFq9FYIJFeSOAsOZvN0logh85zDGDziGbyh+loWbMQ/czaRiSzRYauef
-	W1c8z+gm6qpyBkuJdy5zQeMkEuMXIsHdoy4fn2LwUOwzoiSEr9Um78k0P7URJThezO8ludEqaXc
-	WKGqBJXG/4jFep5C4f58SqDt2dGkvUly+xike
-X-Gm-Gg: AYBFou2Kbg+fxznMNWK7WbbbpaHnnyNh6VRT30XGvGXTHwu/CB3o+SA/C4M1FL5a2xU
-	AULHqkEKn715ZTddVMKfe/mhAk04tVCPCyIcmruHJbF46oRpm06KNg14W3V6ZEG1pNs/1c7QS7u
-	ylsDBtYhazHh04ac+xBsGWx8eFyQScaYFJcoPeYZzE7YjL8FlEExk7RSWTW6tUhZG9W/3zXHlqi
-	q63RwFTOT9vMAVyawyPdEgNUBo/ACTppNYUrX1hmix1alP/FP1lUKaTbo4hXNG3Ddjb8XojgTel
-	8QQjkcL5/jBcLB6Xnna4+aM8KsDv/+Sg6/kXslmsL5n6gG5thFXQRymWNOeIHpxWEdMEAsZ1oa4
-	remKrmxov3IH3pSDY0nMIglANICaHK9OZAsWo6y73GtL4MHb9iTD6P/yntXwAXLVhm6C85rbA+r
-	k5zwoStA/fusqYLhFiG+n/RKKbHBaWHzATXBYhhz0YOzniOMCXzg8=
-X-Received: by 2002:a05:693c:8951:20b0:34c:15b5:b4e7 with SMTP id
- 5a478bee46e88-34f1503d60cmr4177305eec.2.1790938501968; Fri, 02 Oct 2026
- 03:55:01 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1790941125; x=1791545925;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=20l5MGKYIkk3dxTQvp40s490//vZekkNtR3rks2T+EI=;
+        b=LREp3tDmc5RaJrBmWK9UZ24/91y80wlp1EeE5mGIPe0qJY280WAWvZ7h9KNGT+MzcX
+         Pg9fWbbhWUzCMrJZ9pFgw9o87JvF1kJQLfbtcYeKR4uZ2LCshQqdjF7xoWThc9EW9lql
+         jjm7Fff0jBOC7M8B867pQmu191S5GfujXnEMG2rNv0DGrYReHEN7CJA68r2HfO44SU7c
+         sBpqzh1Dl17o1oAmFKvPJyBcL8d01U8xZSxRMQBv3sVKuNMaVQVlodV9pO6/ZI9NEKHH
+         ZgICuVz3tDZqibSM827j7OtZJBnfEEI8dbdmockWcqeTfEZvUkgPreT5SZaVnTPq5Hl2
+         kang==
+X-Forwarded-Encrypted: i=1; AKwUvBz9AsJGcClxfjCXjAsApMMVc81Piic4FaSY3O0QKH3zNagBuo/L52U5BBaS82Osm0bGrJA/BS4N1w==@lists.infradead.org
+X-Gm-Message-State: AFq9FYJ9xAq9KIaZTIcbGV5tQ+ccYVFpwkDTxb3MdFyozTQbjv6hF8Lc
+	Poc8QXGdwLsMK7fQ40deV1ARPrLHTJiH2IL4WwJZrNxBBgIhQYS+p/ca8jPc1Twd
+X-Gm-Gg: AYBFou2xBU5vXm69rzxYrRpQASmHsN/7f9b7doltkgDDQvVQOjRA8ppDxBS3R8mK5zi
+	T8aQHNTtH3LWOUyV9OAok6jzAcbbSSNcl/y596ednrwgHNnAHFeYUegGr8VDGVyVNEQKmoRCl18
+	reZ204ILYQyEBpmD1ERRzICSf8cUWwxGOOPimXt3VMN4TbtDAVDM6yRyaUr1fNZQfH23a9qkaDu
+	2P6PtilQX5mTSsY09vP7693SljmA+fP2uafjJC4pwYlATMLYIMjFTnFYZxtQlyIZ9iotDPwP2tU
+	5Aqti/Xjp5Ds7nkW8vOtLXyEzUkbOInmHpJaINQ/xggu4DrQl6Dup+EVzq3iX5iDy2IzmxKXOJr
+	0LYLI80S3v8/T4RyH0P6J6fmfOf34XIcssI0wTc8Gm0cQdO03AxUKnSvZumqT+NWyK1DDR7MI8S
+	MrwrPk9o8oUWGu9hEIkHK/tOq1q04mZhEImXmJ9CQErL7JRbSMC/QFL+X8hOte8nB6e6fBw4Z7a
+	t5GEF/nnYYytO92xsAoeXh179Jq8MsPXXz33g==
+X-Received: by 2002:a05:6122:488f:b0:5cf:1e68:6015 with SMTP id 71dfb90a1353d-5dab157adb2mr765109e0c.15.1790941124996;
+        Fri, 02 Oct 2026 04:38:44 -0700 (PDT)
+Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com. [74.125.226.204])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5da61f8fedesm3053260e0c.9.2026.10.02.04.38.44
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2026 04:38:44 -0700 (PDT)
+Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e7c796e3aso1845468241.1
+        for <linux-um@lists.infradead.org>; Fri, 02 Oct 2026 04:38:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBwuoYXiu+EXR94AY4aWQIDUch5mX1UKQccudptwMQQCgKqkewB217B6w5zChWGWMtXjWrWjVV2zlQ==@lists.infradead.org
+X-Received: by 2002:a05:6102:14aa:b0:7bd:b263:14c8 with SMTP id
+ ada2fe7eead31-7c0f60ae056mr564893137.30.1790941124266; Fri, 02 Oct 2026
+ 04:38:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20261002104550.2877930-1-tomo@flapping.org>
-In-Reply-To: <20261002104550.2877930-1-tomo@flapping.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 2 Oct 2026 12:54:47 +0200
-X-Gm-Features: AclHuK_EQJEqNSG0UyehlQ3uYP4G6dyInoK_YrzSm866R9UGablAYdj1wxvktZQ
-Message-ID: <CANiq72=i189z9iKtz0x8qR2YO_R1WEPLcRGr3q3aOTwXsEQN4A@mail.gmail.com>
-Subject: Re: [PATCH v1] rust: bug: update the SAFETY comment for
- warn_slowpath_fmt() on UML
-To: FUJITA Tomonori <tomo@flapping.org>
-Cc: ojeda@kernel.org, a.hindborg@kernel.org, acourbot@nvidia.com, 
-	aliceryhl@google.com, anton.ivanov@cambridgegreys.com, 
-	bjorn3_gh@protonmail.com, boqun@kernel.org, dakr@kernel.org, 
-	daniel.almeida@collabora.com, david@davidgow.net, gary@garyguo.net, 
-	johannes@sipsolutions.net, linux-um@lists.infradead.org, lossin@kernel.org, 
-	richard@nod.at, tamird@kernel.org, tmgross@umich.edu, work@onurozkan.dev, 
-	rust-for-linux@vger.kernel.org, FUJITA Tomonori <fujita.tomonori@gmail.com>
+References: <20260929235711.2287931-1-thehajime@gmail.com> <20260929235711.2287931-2-thehajime@gmail.com>
+ <bda5eeaa-7868-4d4a-9026-9e99347afd7c@kernel.org> <ar4br2vW7yZGd3gt@gremlin>
+ <94759bed23f00d2044005e36be6f72f297e092f0.camel@sipsolutions.net>
+ <m2se2o3jyc.wl-thehajime@gmail.com> <a65f4431-d225-4535-b921-00319ceeb2a2@kernel.org>
+ <ar9ldn036SgT-bq1@gremlin>
+In-Reply-To: <ar9ldn036SgT-bq1@gremlin>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 2 Oct 2026 13:38:31 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUKcUxHZKhTEF1gwWrU1o8O6jt6N3r90V5hynrLFdwY0A@mail.gmail.com>
+X-Gm-Features: AclHuK8oY5W9edeNeZu9OdjhmLKHIkhJXkjnhYM2yOIrkiFEQlBpS9n1EzHgsaE
+Message-ID: <CAMuHMdUKcUxHZKhTEF1gwWrU1o8O6jt6N3r90V5hynrLFdwY0A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] selftests: run tests on nommu architecture
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: "David Hildenbrand (Arm)" <david@kernel.org>, Hajime Tazaki <thehajime@gmail.com>, johannes@sipsolutions.net, 
+	linux-mm@kvack.org, liam@infradead.org, rbm@suse.com, 
+	akpm@linux-foundation.org, luto@amacapital.net, brendan.jackman@linux.dev, 
+	liuhangbin@gmail.com, corbet@lwn.net, kees@kernel.org, broonie@kernel.org, 
+	mhocko@suse.com, rppt@kernel.org, shuah@kernel.org, surenb@google.com, 
+	vbabka@kernel.org, wad@chromium.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org, 
+	daniel@thingy.jp
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261002_035504_084854_5AFAC0F2 
-X-CRM114-Status: UNSURE (   9.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20261002_043846_785751_8234870E 
+X-CRM114-Status: GOOD (  34.49  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,26 +105,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 2, 2026 at 12:46=E2=80=AFPM FUJITA Tomonori <tomo@flapping.org>=
- wrote:
->
-> The SAFETY comment says that it is always safe to call
-> `warn_slowpath_fmt()` with a valid null-terminated string. This is not
-> true. The taint argument must also be a valid taint number.
-> Commit 951d09ca450c ("rust: bug: pass TAINT_WARN to warn_slowpath_fmt()
-> on UML") fixed a bug where it was not.
->
-> List each condition that the call meets: the file name, the taint
-> number, and the null `fmt`.
->
-> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-> Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+Hi Lorenzo,
 
-Thanks Tomo!
+On Fri, 2 Oct 2026 at 10:10, Lorenzo Stoakes (ARM) <ljs@kernel.org> wrote:
+> On Fri, Oct 02, 2026 at 08:08:44AM +0200, David Hildenbrand (Arm) wrote:
+> > On 10/2/26 04:38, Hajime Tazaki wrote:
+> > > On Thu, 01 Oct 2026 19:01:45 +0900,
+> > > Johannes Berg wrote:
+> > >>>
+> > >>> I thought maybe uname could help but our LLM overlords tell me no.
+> > >>
+> > >> Hajime originally wanted uname to indicate it, but that caused
+> > >> regressions elsewhere, so we dropped that commit. I guess we could put
+> > >> _something_ back?
+> > >
+> > > systemd uses uname information and our (old) patch changing the format
+> > > triggered the regression.  thus, we dropped it.
+> > >
+> > >>> It pointed at something though.
+> > >>>
+> > >>> In fs/proc/meminfo.c:
+> > >>>
+> > >>> #ifndef CONFIG_MMU
+> > >>>   show_val_kb(m, "MmapCopy:       ",
+> > >>>               (unsigned long)atomic_long_read(&mmap_pages_allocated));
+> > >>> #endif
+> > >>>
+> > >>> So MmapCopy in /proc/meminfo tells us definitively, weirdly enough.
+> > >>
+> > >> Hyrum's law and all that, but I guess it's not highly likely to (want
+> > >> to) change :)
+> > >
+> > > a runtime detection is nice.
+> > >
+> > > scanning /proc/meminfo might be useful. although it requires to mount
+> > > procfs (we can actually skip procfs mount as it is optional) so, this
+> > > is not 100% portable.
+> > >
+> > > checking ENOSYS like syscall(SYS_mprotect) might be useful but I
+> > > wasn't sure if this is always the case of NOMMU or not.
+> > >
+> >
+> > I assume there are plenty of other mechanisms. Like testing if fork isn't allowed.
+>
+> Yup that's an obvious candidate!
+>
+> You actually need to check for both -EINVAL and -ENOSYS since, of course, we are
+> inconsistent with this.
+>
+> Some nommu arches specify __ARCH_WANT_SYS_FORK unconditionally for both
+> mmu/nommu variants meaning you get -EINVAL in that case:
+>
+> https://elixir.bootlin.com/linux/v7.2.8/source/kernel/fork.c#L2830
+>
+> Otherwise you get -ENOSYS because it's not defined.
+>
+> But fork() -> -EINVAL or -ENOSYS = nommu, then just have the child quit and
+> etc. should do it.
 
-(By the way, you have been authoring all the work in this file -- we
-could have an entry for the file in `MAINTAINERS` if you want it)
+fork() is not strictly an MMU-feature (you can implement fork on nommu
+if all memory accesses are done relative to a base address register),
+while I think mprotect() is an MMU-feature. Unless it can also be used
+to change the protection using the one or two BARs most MCU haves?
+Anything else that is a real MMU-feature? Non-identity mmap()?
 
-Cheers,
-Miguel
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
