@@ -4,120 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1990CCA5FDD
-	for <linux-um@archiver.kernel.org>; Sat,  3 Oct 2026 22:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D1F7CA5FEC
+	for <linux-um@archiver.kernel.org>; Sun,  4 Oct 2026 12:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n/oIu14jUGCFAHwNtKrIHGbo5GeSCHJZDG7wMHq45NE=; b=X4LcSvTom2KP7900qR/oO7fiwd
-	z335RMrzDTj8pPq49wh4BI3BIdVGPqaXeS+NmUzmc8h8OltZg6/dnllilTZaM2hJbfKv+I1IzWn7t
-	or9+QF+jE6onkPapF/DpFBuK/as06e3afb4Uz+HYRSfRG1hvsZrlKODAS5WjDa6ZgAdlUd9tomvkW
-	CEv9hlQ0QgnUg9pEAcEG+DcWN9LJ9tmx+ac/UZ7B0ABTSNUKpViV1xtTOBlGzZuxSI18+5FNUNPqb
-	HmfN1aBpPq0ADET2ZtDMVcNqTUUAtDmTYKWfiDsWQ3flkdYeIvoTC1p1ww779tM0i6cuhxzPwKm+L
-	QaO9je4Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=1ZoTvrC2BNK9y0X6wptniXwBXAUofHrlvUBugHQcQFc=; b=cuLU+stexme1biUmK7ScL3ILuY
+	Z0LDM93Au8/rtshw/LpOdB3yJWPmqcY2ZQQgxOmpFaPDckYHowZQ4bXdie9svQjDAAFwj6rcC9bKe
+	hZ/cWUttkrc+B8fsbLBG9TXTT8Q7a48PhtwAOKcnA2MR8xlyOdvCBvJ7xYJhMClep5ed/7H9K3Mkg
+	CMWrGp3WH7WkZXBUYiWk3ZK8U+VeDvxF9WOr9mRjvpA39cKnd0Qw61tQeG0S9p3vPr5Z7vowQ7w+0
+	zmeHoRVXRp2ADE5QP9urjs5q46ea5Bf9uAbgRjx/5hXCbAfenP87OnYT0r25uBSq8kNjJ9JhnBqsP
+	syf0sXig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xD8Om-0000000E8Ab-008B;
-	Sat, 03 Oct 2026 22:40:08 +0000
-Received: from mail-pj2-x11.google.com ([2607:f8b0:4864:39::11])
+	id 1xDL64-0000000EmYo-2cyF;
+	Sun, 04 Oct 2026 12:13:40 +0000
+Received: from fout-b3-smtp.messagingengine.com ([202.12.124.146])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xD8Oi-0000000E89T-0Tug
+	id 1xDL5h-0000000EmX6-3UPl
 	for linux-um@lists.infradead.org;
-	Sat, 03 Oct 2026 22:40:06 +0000
-Received: by mail-pj2-x11.google.com with SMTP id d9443c01a7336-2d8fb334e72so1679055ad.1
-        for <linux-um@lists.infradead.org>; Sat, 03 Oct 2026 15:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791067203; x=1791672003; darn=lists.infradead.org;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=n/oIu14jUGCFAHwNtKrIHGbo5GeSCHJZDG7wMHq45NE=;
-        b=FlZhXW+P/b8AG454bAw1FC3UyXdylMNAmdBXqNNs7Ll/Lm3pLwxtv4C6aE9SdRm6Vi
-         dZ6aK2fu1fs6j/K0VKoZqvhuA+flbK9N+k4vCId5zeFoJNdpz9Tleh+bKwjnNaJTA7IH
-         SyICMgyKxVZeNLf6oK+tUDxtQP76TKTAIqhOLG95pGtbBBWcL5sNH85g15wcZWgJY1vy
-         8IppyJQNMN1r3LQaw7QR30OSIEIMkYMQuUJxz6oitGMJsl6X68MbMZE42vQwSWZptQcM
-         hK0YjCFgbJZnJgT2sw7gAjJefyInpPcCL0TgSylCWwpdPb1EtaOcjlff8V3wP2Ccj0rX
-         hNYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791067203; x=1791672003;
-        h=content-type:mime-version:user-agent:references:in-reply-to:subject
-         :cc:to:from:message-id:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=n/oIu14jUGCFAHwNtKrIHGbo5GeSCHJZDG7wMHq45NE=;
-        b=c1AClES1OUzS1GiwqvFF5XmSVSY/WvuaE8rBZ6qwRnfWmaHL5/qDl1VkCokO9uHl54
-         hmlO6bpU6zoyYwqsMFMIL/OG476O/vaXSr/9PdcbskXx6JVGjqFRwAayurnFGzjlMHCj
-         kkK0Vjkc5EY9yIZXgLkClcOdpAPfQQNpwR2xErzpbQj1KsuALIk4y16A0NBeFmQmMPMN
-         rLbM0Ty4rQ0wwa3HSL1knlt+7vQW9qahveFAY6kmZLLe90UJ/56CQTmxcmQQTKUc4nTV
-         x6k6pP8APbz/u2FncoP35nM35bOaFKXiB5xWVkAlqjVc+3EEF/EX48cXaQ6oM5p2w3G3
-         5dbg==
-X-Forwarded-Encrypted: i=1; AKwUvBxV1MIE0p0/UtuGper7KT+NdD3NIdSc2LdKhk0y8XNl7UezJUWnOnlLOgSdGGb6n/S/rCjneDjqWw==@lists.infradead.org
-X-Gm-Message-State: AFuF++n8E7EzUipUwwlde7Ln8QiytmnRBWE8FWbUfQuGKrFE+E63GPnC
-	bd255YNu5La5eXWq0nCLA/Qd/pDSRlHh19XnvAdX9H4g8ErvHvaegj6eJFX16GyTuXE=
-X-Gm-Gg: AYBFou0SXvm8rMv+DjL9FpF6LqXThe1C/B03uw6vxXIGfrxaQOGOiVYlkXxTwA3jKo1
-	4DicuCbbDX/facK+t4/bftG8T+neVn6+lnLcCbUe7PArrKfw6j3VH01LVZN2KOfHsasHIV1x/v3
-	ZzdjJA5gtZb6vMTxgFW6ynv88kwf4Zv1klejnsxWCPn61dyNyhzHs8J6vvPTiIyGN09qyocRg4g
-	reYCNBBuRXgWWgFLL4NtJ4n2VePt2RC/YXNz0iI3/3kzHEyVMDzqcoml3SC/V1Y3KLwavTuXs9P
-	rikCCb3V9oaAs6eZE7kWeiR5koj0AOyrMjQdhI6KpzAiX52GEOyUHgw0M098YEDzGXWruy1Ykiq
-	QiqJ5brJaBXVuCiT2q/Qv4xVyuWQZH2yiaAXkrW5bfXEz/5BiF3W16Q8ZAxo7AHb52sz1FMFY9f
-	INb/AMCjRuO6LpeJwoU39ds/xrMOdNAe6SAGu8up4He7m7IUh0heoSOlBSH62ui/FCCA+TdDR1A
-	Q/sHqr7z0JCRCgozxnaUQp5v6qkXNr0wQmEubKRvadShPbJzTspcYFR12SJqd52lLHI/3Asd25N
-	jvMSw7rAyAVPHEM6OwfqPP9jBfAwWKNBSXbLD1Sx8n03HI+6qblZns5xRs8YCOXjpbQlnO1DrMR
-	QuoJg5nPsPxk=
-X-Received: by 2002:a17:902:d506:b0:2df:84e0:9034 with SMTP id d9443c01a7336-2e49a7cdc18mr57178595ad.7.1791067203022;
-        Sat, 03 Oct 2026 15:40:03 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2e49f7339desm19297455ad.81.2026.10.03.15.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2026 15:40:02 -0700 (PDT)
-Date: Sun, 04 Oct 2026 07:39:57 +0900
-Message-ID: <m2qzi62yte.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: david@kernel.org
-Cc: ljs@kernel.org,
-	geert@linux-m68k.org,
+	Sun, 04 Oct 2026 12:13:38 +0000
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfout.stl.internal (Postfix) with ESMTP id 976781D0014B
+	for <linux-um@lists.infradead.org>; Sun,  4 Oct 2026 08:13:16 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Sun, 04 Oct 2026 08:13:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flapping.org; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1791115994; x=1791202394; bh=1ZoTvrC2BNK9y0X6wptni
+	XwBXAUofHrlvUBugHQcQFc=; b=ddqMgXX8Kibiw2pP4eOHqsJTHOWHBl2KABsRN
+	XE9GqgnvNhK0c3LeLiiYsg9KRHDwCE5GBJPiuwDEPhiVL0vJ04FG34eyQ8CF7OBi
+	nw8CZin96d7BMIQOCVEijrDjhjMOK770vA1WrrxQWQcidQ9fxmXGN6AQSIkUkLIq
+	HFFf/rulJa9iFl7Tm4QvtJSn5vN89r/wACRIGNO2avTjTITMgddqutI+/2WnZIzj
+	NDXfPIC7ot4/8OeR6ZNVND3RU/ohBnOq2LY8AS7PLR/InEw/Y3afiUDla1199RfP
+	RP9e2Koxz229mTYiZgVd+jZH36DRCu9tGU0ADjofxZcnUYozg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1791115994; x=1791202394; bh=1ZoTvrC2BNK9y0X6wptniXwBXAUofHrlvUB
+	ugHQcQFc=; b=FWhHOHp+XiWtM+JjL7EWZhjGeC8E3yrkEv4IgMwzC0g2UMyDhMB
+	pJ9e2bGOlQbTX3LkedDKLzhGfXCsGnkqrZK1Un5ie7Eg9T7qeodG21CKQxPVytq2
+	gnSrZgbUkYE2D1Em9jnvjj+Sh4ret2I7VGn9W+9o/GZgpKkTo1l5+EGyl1Otjldy
+	RgQVTdopRuKwkeTE49pDnwX3F6OxoAAnCTJzeL4EBVVt+UK60jqcUIxXZp06BUZi
+	eII7yk4BqSzNHoM1/4RABD2zJVOZUUQOldEnGV05Hff7bsVsdQG0043WCJzsashd
+	VjfjxkGcWL1ze8/w7JYGVM2n3CcZs8lEjzw==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=sign d=flapping.org a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1791115994; d=flapping.org;
+	mf=PHRvbW9AZmxhcHBpbmcub3JnPg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm3:rsa-sha256:QjVUrJWruFa2PjGO/GJvFOJnwnZShPJcQUfg8tvvoOhmQR1
+	iDCOVOXRfC8jEGuJzwVHskCYQXYdslsZoIGJOh9c5Y8YZBqsdtHVn/KS/yVhx043
+	14ZsQeo4nD8KPJmgEtkvHYzwiEMUruaWnthTO2/pPwAoq9IuswsMGKsCdoo9Q6b3
+	OZS9ndK3YMJFJfh0AAVLtRgRwNrEhTXarDS2tjbAp8oZ6f2bRcti7vqlKUiEiqrk
+	vajF53OmBXOkgcJda9YISpdiYqtoBezeBU8S2eqsM7G6QfqJTMnnhhpYkUZ28rqS
+	15F0O/jwJa8AFmytORR1SdDDu0IWlmlAYTEWz1A==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=mi-m=1; hc=9;
+	hn=cc,content-transfer-encoding,date,feedback-id,from,
+	message-id,mime-version,subject,to;
+Message-Instance: m=1; h=sha256:sgwF9fJp3L4AUwDVUpiyd9Q4Zh0GR9FWPtAHGMc+C4k=:ITA3OVcNcMjOC4ejeIYmsiFl6yGeCi0trPklszX/v3k=;
+X-ME-Sender: <xms:2ELCai2cV2__1Fxr14RP_u_1U3B_VJvhbsCK6DNeC04XqR2qWMvEHg>
+    <xme:2ELCakUl0EKlaAW69hb57z6bGWZTjNnagOWRiZQhOryZgpTTEwu06BO2X2BuN0yxb
+    Qi5YrJSENMzVulLLMkktzXf2ltqlejwPxm8LTHimRz28xSvRQgZWi8>
+X-ME-Received: <xmr:2ELCatvQFsCLtcSHBxFqs5Wb6Z3gkDvLzzZoBQGNPGGA4ZdLyWXDwEZzl4LAVba7m0yjbvp0nDUJIxfALOw>
+X-ME-Proxy-Cause: dmFkZTGEuSIb/FcWHjK3MYkrM93FyPS1RQ9Xtbd0J1NdUnSn+NhtL8G6aG4ljq0tgZmAOS
+    NeiQk3VzgMLZ4cCu183M3FT7s0INEpjrCeS9qj1ViM3ovl8mdamj3YZuk+ruj4RYrmv6Tz
+    Zlzt0s+vvgidwlidQxPfRCNmghtmV4onxaikaG3wnbtS6BExD+mxrSlcxs3p6i4pvb26Ba
+    OnR7JKC4qghoHS+TauPbBqfkiFu0wEhPcT25R4wSei0e68xkS7mB0bdX9GZk1DJmbgKHr1
+    M1qMW5m6mmjLVt9d1hwfcYkL6rtJhP+TiHlht4l2Tv/NTU6CM8dITD3U/Ea4H0ZbG/pqX9
+    RD1Sn60J8E0BqIIoL9T6deRT8fNBY35qufAdNLTGdsS3DiHXnKRdNQQ/oV4UI/kfsaYx1D
+    WPwlBA7c2hSCx/rvR9zaxxFEcgJ49FtNoPVgFLzukFmOxb9uhnROnfdul1b+Y3oL2AGEg4
+    lCqbx1b/RIdmX8O6sA8+BBv5tFb1hiGnLcHsBD9u/wlxRG3jjpwzFn1IwAltZgfekvgoWV
+    VLoXZPoelQKLsfeGr4ENKN4Rt8dghROnOMS5rmSYaq5FH/6JbUt34wWxp+b/WffrIw0cun
+    4ZoNZOC3jEn7EoeLjJP0e/YHVhyJ0wacZ7+XnqoOut0/YyK3zIePLIyWP67w
+X-ME-Proxy: <xmx:2ELCarWGEToPV8Qa0oAPircw3QrVgJxuYPHF5jlJ7yp0c6fig8A1TA>
+    <xmx:2ELCapVBpdBD5-6GaJ1XADCc1h2SVhJ6Odne-Hc_t7ywZsDEsnVC7w>
+    <xmx:2ELCalcZqNbQPVINUw2i55Twpfbb7UL076r962gjI42f8wcFxqmF6A>
+    <xmx:2ELCag7bnkNG754p1UgWyiozInhyrfOflzVPwxVkHpKvArZsZLHuaA>
+    <xmx:2kLCauapzFyEbfLQFxoLiIetFSAy6ZTZEEPeEtM4PfmnkLJWgXb9_27x>
+Feedback-ID: i51fe4b43:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 4 Oct 2026 08:13:08 -0400 (EDT)
+From: FUJITA Tomonori <tomo@flapping.org>
+To: anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	linux-mm@kvack.org,
-	liam@infradead.org,
-	rbm@suse.com,
-	akpm@linux-foundation.org,
-	luto@amacapital.net,
-	brendan.jackman@linux.dev,
-	liuhangbin@gmail.com,
-	corbet@lwn.net,
-	kees@kernel.org,
-	broonie@kernel.org,
-	mhocko@suse.com,
-	rppt@kernel.org,
-	shuah@kernel.org,
-	surenb@google.com,
-	vbabka@kernel.org,
-	wad@chromium.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
+	ojeda@kernel.org,
+	richard@nod.at
+Cc: a.hindborg@kernel.org,
+	acourbot@nvidia.com,
+	aliceryhl@google.com,
+	bjorn3_gh@protonmail.com,
+	boqun@kernel.org,
+	dakr@kernel.org,
+	daniel.almeida@collabora.com,
+	david@davidgow.net,
+	gary@garyguo.net,
 	linux-um@lists.infradead.org,
-	daniel@thingy.jp
-Subject: Re: [PATCH v4 1/2] selftests: run tests on nommu architecture
-In-Reply-To: <d6ee0a8f-e7a8-4fa7-88b8-62fb44bfc863@kernel.org>
-References: <20260929235711.2287931-1-thehajime@gmail.com>
-	<20260929235711.2287931-2-thehajime@gmail.com>
-	<bda5eeaa-7868-4d4a-9026-9e99347afd7c@kernel.org>
-	<ar4br2vW7yZGd3gt@gremlin>
-	<94759bed23f00d2044005e36be6f72f297e092f0.camel@sipsolutions.net>
-	<m2se2o3jyc.wl-thehajime@gmail.com>
-	<a65f4431-d225-4535-b921-00319ceeb2a2@kernel.org>
-	<ar9ldn036SgT-bq1@gremlin>
-	<CAMuHMdUKcUxHZKhTEF1gwWrU1o8O6jt6N3r90V5hynrLFdwY0A@mail.gmail.com>
-	<ar-bIzYDdlOKUqla@gremlin>
-	<d6ee0a8f-e7a8-4fa7-88b8-62fb44bfc863@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+	lossin@kernel.org,
+	tamird@kernel.org,
+	tmgross@umich.edu,
+	work@onurozkan.dev,
+	rust-for-linux@vger.kernel.org,
+	FUJITA Tomonori <fujita.tomonori@gmail.com>
+Subject: [PATCH v1] rust: arch/um: Fix loading Rust modules
+Date: Sun,  4 Oct 2026 21:12:30 +0900
+Message-ID: <20261004121230.373216-1-tomo@flapping.org>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261003_154004_159815_88AD5095 
-X-CRM114-Status: GOOD (  19.87  )
+X-CRM114-CacheID: sfid-20261004_051322_690540_3CE54500 
+X-CRM114-Status: UNSURE (   8.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,38 +139,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+From: FUJITA Tomonori <fujita.tomonori@gmail.com>
 
-Hello,
+Rust modules fail to load on x86_64 UML:
 
-On Fri, 02 Oct 2026 21:21:53 +0900,
-David Hildenbrand (Arm) wrote:
-> 
-> On 10/2/26 13:53, Lorenzo Stoakes (ARM) wrote:
-> > On Fri, Oct 02, 2026 at 01:38:31PM +0200, Geert Uytterhoeven wrote:
-> > 
-> >> On Fri, 2 Oct 2026 at 10:10, Lorenzo Stoakes (ARM) <ljs@kernel.org> wrote:
-> > 
-> >>> But fork() -> -EINVAL or -ENOSYS = nommu, then just have the child quit and
-> >>> etc. should do it.
-> >>
-> >> fork() is not strictly an MMU-feature (you can implement fork on nommu
-> >> if all memory accesses are done relative to a base address register),
-> >> while I think mprotect() is an MMU-feature. Unless it can also be used
-> >> to change the protection using the one or two BARs most MCU haves?
-> >> Anything else that is a real MMU-feature? Non-identity mmap()?
-> > 
-> > Does any nommu arch implement fork() in linux?
-> 
-> I was about to say, that sounds a bit too theoretical for me. IIUC that is not
-> implemented, and if someone would propose it we would likely just nak it.
-> 
-> In the unlikely event that this would see the light of day, we could always
-> change our detection in the selftests.
+  # insmod rnull_mod.ko
+  subarch: rnull_mod: Unknown rela relocation: 9
+  insmod: can't insert 'rnull_mod.ko': invalid module format
 
-thanks all for the inputs and review.
+arch/um/Makefile adds -Crelocation-model=pie to KBUILD_RUSTFLAGS. This
+comes after -Crelocation-model=static in the top-level Makefile, so all
+Rust code on UML, both built-in code and modules, is built as PIE. In
+PIE mode, rustc accesses statics in other crates through the GOT and
+emits R_X86_64_GOTPCREL (9) relocations. UML uses the x86 module loader,
+and it does not handle them.
 
-I will try to implement the detection with /proc/meminfo.
+Remove the flag. Rust code, both built-in code and modules, then uses
+the static relocation model, the same as C code.
 
--- Hajime
+Modules still fail to load with a larger mem=, such as mem=512M,
+because Rust code uses the small code model while C code uses
+-mcmodel=large. This is a separate problem.
+
+Tested with clang 20 and rustc 1.90: vmlinux builds and boots, and
+rnull_mod.ko loads with mem=32M.
+
+Reported-by: Zigit Zo <zig@iorw.io>
+Link: https://lore.kernel.org/rust-for-linux/62F5EEA0B866E9E0+20240903130606.292935-1-zig@iorw.io/
+Assisted-by: LLM
+Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+---
+ arch/um/Makefile | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 937639edc295..c4a99073f014 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -62,8 +62,6 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+ 	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
+ 	-D__close_range=kernel__close_range
+ 
+-KBUILD_RUSTFLAGS += -Crelocation-model=pie
+-
+ KBUILD_AFLAGS += $(ARCH_INCLUDE)
+ 
+ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
+
+base-commit: 2dee3d3adcadcc57d62ba6608cd02f50b0c10264
+-- 
+2.43.0
 
 
