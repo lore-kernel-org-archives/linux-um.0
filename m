@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99452CA5FF0
-	for <linux-um@archiver.kernel.org>; Tue,  6 Oct 2026 08:56:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D2DCA6002
+	for <linux-um@archiver.kernel.org>; Tue,  6 Oct 2026 08:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QI6VWWfK9pDI+BJghbGgcQFx9nHMTF0rsPh7AoTup44=; b=PnuyzJ+3Q9N2MTiiuXzmNFkrpC
-	zkbp4eV6oVRG9QtASY11CaMRznEW/pY33/sRIQOEuNIKzoIJlblAdi8M0QWduxlZwu4Bmsp/r3vQ5
-	xmy2kr89GBj/Zi/JaTp7MAJDQ+n1bpLLa/dEyZHN638dzIt3DycvTQt2eJkbdUYbigiRjOH6T8oFG
-	M0RbWwZqMpvz8m+bG0+Uonkkn1+qiZsobQ8GrQgL5ERNM9KLF9xggRrK0vCzGm2PElAt3Xwy4maHs
-	JkFQk1l+MSKe+cUrKKFB8AqA67ybM5Ks078LVCaygWLvXsFXdJYITRWklNkf8yCUd7S3taQNt4Cle
-	EnSyrOgA==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PZc7x+1xFrkceqpJwcgU1RKoagSWQzy1+YI5nAgqplo=; b=sviIT+z0X/PAOCCQ6bZzGDIvvW
+	v2K9zE+EZ2gi/IVwSkDmaA9Jb/OxaYi6QXVwGIhqvsn0js6VDtN3ncCFS7syyB5IbhtoWQZ5j4vbv
+	9QhIKrKUlMMtAb1Koth6OaaItW/lP7dm0KeHZZe/0OQdzI/t634ywML6JhY7Gm+l7ZT9qmByx5dxk
+	xh3yIzavom85VH1AO0Pu9K4c8XNle+2Onob1qMMH3m7ccfKhvwtsNfp3pbmFWOph2fl/CuaI48Z8L
+	7TcGvkJ1TDtGLHY4noAVWpUtzYkVKUE4GUVzIjdYNe7GqLGTPop7yDOVoX29vW5tSeAE0Ss/MS1+N
+	wKNxWL2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE0yk-00000000KJz-1OMS;
-	Tue, 06 Oct 2026 08:56:54 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1xE0yq-00000000KM7-1nvL;
+	Tue, 06 Oct 2026 08:57:00 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE0yh-00000000KJ6-0T6X
+	id 1xE0yn-00000000KKY-0q1v
 	for linux-um@lists.infradead.org;
-	Tue, 06 Oct 2026 08:56:52 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-3a4b3ac8fb7so179145a91.0
-        for <linux-um@lists.infradead.org>; Tue, 06 Oct 2026 01:56:50 -0700 (PDT)
+	Tue, 06 Oct 2026 08:56:58 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-3a4c47bb6e3so213441a91.1
+        for <linux-um@lists.infradead.org>; Tue, 06 Oct 2026 01:56:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791277010; x=1791881810; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=QI6VWWfK9pDI+BJghbGgcQFx9nHMTF0rsPh7AoTup44=;
-        b=baKY43WTIk7fF3yFsByP5zR69MkOgpOx6MvoBBOMneUnEdQyoQaoF7/8Wp6xyatIJz
-         SAJqFVOqOuP+VsIOgs55mme4BCcDuOrC0e41PpibeBhd3C9oE8loD6ccq9KUpzNtt4Ro
-         MBSwsiaJH6uqhJXwPX5bajYhJPEuuusPCGPJFEzrJ7jJvj47upa849pH9/LE735Z7o3V
-         dWFAA/pbPq27XnPlEe2VQ64BSWM8nIc99QISRNlhFyR4/g5rp5W3XgyvTcvfZlPlRePd
-         jlC0RStFVB2SD9y8jpSiNFwF74h6mBQg/v96o4etufoWVXCqo6VUjUjfD3GR+f3IYukY
-         C2eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791277010; x=1791881810;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1791277016; x=1791881816; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=QI6VWWfK9pDI+BJghbGgcQFx9nHMTF0rsPh7AoTup44=;
-        b=m3VJI+A5/23e8XWL4tJSmDsRDxe6dVdI/JSR6+FUoLObzRtMjuJ1tqWA2AfANagCjc
-         gBrDQvlzRyhkedRTZmaihTQL/jBzo0+WcO58B/4Mx4RQ2Q/kehaV+xIWMReUCG9k8HXq
-         yuqjl+9oL2BYE/8mwzavIfseJRiXNO5N+vocJmqBghkSWIF20xpOSsa9Ltw+yHZXQvVI
-         Sr6J5xkqyCQGm1T3EXECXL7s9WhDZdtVVcmOEJmzCyqXHHbnwParOslGq78randEnqaz
-         lR/16lJBP50Vzaj2EPwDqd4OrRs4rLGi4bPuMs7tvtT/Fu5f1DkhvtOOZbC7WT0r1zfT
-         xtPA==
-X-Forwarded-Encrypted: i=1; AKwUvBxFwYVWPaU6PTml9bdVNVI1sDRVU+ds5G9VsyVE+QiLn2enHdXA8GZlRIxucLrNwIFw5fU6skwcJQ==@lists.infradead.org
-X-Gm-Message-State: AFq9FYKTLlahXJCzdqtyg+68R+zfw70133qzYxvG11JsuS04V6HULB7H
-	bO9SVM3DDhNTm2r2OxSpxGMgqGGCg7LmmO8DFNzhU6wP2E0KyC6Ctn4d
-X-Gm-Gg: AYBFou19U6mlP/naR0UCYgd1+pKc/fzpGl9FXRoYfQ3rPuTYjrZwEj2JQaglKLrqeqe
-	l3zg3BxSW4PSorMFttP68KV6zvSVouzWBscANw/S6ASITCp/d8YUKmLt9bKsl9jAZKppOKx3K6g
-	Q5yAiF5ACjctUfHbCk0Yo8w+Da0YBS5x5DSTH/swXN8myaOXjlgBf6jIPG5WFu44n1jD1qO2iNN
-	KUX6uxpAB2+xlNGpzdjjKsQlrIqWL7zBxzFZaTpejxbNvKE/fWxV7nDHAepyEjPt47UtEgLaN8Y
-	536xLWorT4F/vWqnMbF3ojmbabc94VsAE8CmBSKyVL/dxjolddB6L4LBaCDJKMoWcCa6mp6UJRx
-	ZJL+Ah10LlP40OfM512G5Sbns/+/EweCU7o1gRB0wONVf/m5xSr0B2/mLGIRiJWMRWapYwxxznq
-	WTsjR3e1j9ACkZZqfRP+FS1tYLga+YfyEw/RKzCZf72+xmBebIg+WOe8o07WCYuXJhei/ymf9yj
-	71xZoBtgaL5UPk1GPf0LQzv3+3rOuoSNY7sCvSj+aiht4O9aCID6Fj2mb3hAZ23tYQ7M1hsn9Zm
-	WVjzfrZ1kzdcgRILlibApoIFi/blBfvLOBepaDtekwQGO4sdgZZZvKk1XUtH2A==
-X-Received: by 2002:a17:90b:3c12:b0:3a4:c52e:8126 with SMTP id 98e67ed59e1d1-3a8736af0d8mr491188a91.40.1791277009678;
-        Tue, 06 Oct 2026 01:56:49 -0700 (PDT)
+        bh=PZc7x+1xFrkceqpJwcgU1RKoagSWQzy1+YI5nAgqplo=;
+        b=Xn8oirJwDSHDry0ayMedRRYvubcSvWumkVXs42qrp27v+MaShOQ4NCnAa7wQSQCI8O
+         wUn3/Am3JtuqBzl1D5uVZRf+PnPVyRxsNZ4G/a6kUkFUrX7myNn376D599vzyGewaVL/
+         Kkmtn617r7VUtz/D/IRnwhROGrP7yNTUAFbex8lf+yaZK2Gki35XF8yvYv9ykpuKLqJ1
+         gKtKVX8dAVzYUm2dhJ6hbuF5uumhvS64TR8ktHErwoQu9VbystnB0wLPshXKtC35dTX/
+         ujUCS1xtZQDbuR8zaSFoRAWkPxlGInk/wt94CFqeKPwrA283buz8HppSoZ0+1kI2Owz8
+         5Wqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791277016; x=1791881816;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=PZc7x+1xFrkceqpJwcgU1RKoagSWQzy1+YI5nAgqplo=;
+        b=EfcJ92SqrtnswScZldEN3f6mHogbQEVW8tRjst/YCZdEZSGSR9FzGZaacEgARtXWMN
+         UQ9TBCoQoelh3phJ5aIbVRPVykW7wyT9V8kwIbTGHvwhSpFDDJUhT6LwBnOyPFT+z+GE
+         6l+qK8TkEtB5DaPMHk+n6ANFW9V7PYyQDkqkIvnD1vEk81DhG3dO8/Eua+NiAqDVe7U8
+         GzGNYrH6/317+zhbgwrhC4GHhHfGZ3cjtkvCtYWrDdhVeTeIAp+5VJv+ZRs9cT9NeY+m
+         AfELPMYbZMy/F6irHJ902dSN2QlLqSemqOO4CwC75yKBxBf4znFDT929v7jkCleLby8o
+         WpeA==
+X-Forwarded-Encrypted: i=1; AKwUvBxaDkG2XsmqkybWV0Jam+8tTopo40FQ3GPqsMYHC2EGx2PRx2wL8znIqqDa6ChBFckG3e3ye3nK2Q==@lists.infradead.org
+X-Gm-Message-State: AFq9FYLz292zldHGKyrtfX40ew5BDaAh+38GTtzMpApIHl6wluapFkGH
+	6g/1+R9sZG9taEeKvbk6ahIwS6xzn9BH7CPFSTNrmqodqFLrOMIRAhbw
+X-Gm-Gg: AYBFou1dIsaSacvRNpWEyxk8JyVhsqg695LBZ6h4P45xFrowzJw1D0sxiMFll8/i9iQ
+	kiFIqZb/7G4+por7nIJtc0ikKeRqxfqTwaCG3e01rGCt0c5CKc0jVnO1k2f2njpl/OzmqZlhnC5
+	ZTGH8VUbwu9TTBIe32tzCP81ukSzEnMHDSqK64/zgmy5EOphJU1n14d5PjDTtUwFpILJ4opQYm6
+	w6RHWoBpnaGoriqO+sDDXO7piPXIjjXZyR9EIjwG4DEBOeIERw4poKLl6sRJf60VFjajx8f+EL0
+	QRWK82Wi4YbBcKQ+88CnMhfFs96Sk91uv9o39PvuFuEqceMqw2gZY3kwedtBQ74TvXMcixahkhn
+	ilbLkoVL/Hz7hXs6uVY6BtLch450ylT6cGIAML56dQ2c4XpWcQE5P4w2GYe3icYLEYPJvbDK4zu
+	HOjIHPXnPDFzT/wmXdwZiHoeDYfq9kBIqlCuc+yhUS+dOTUx3SmIrtFa4yssZjQPpL1ziTN92GU
+	pfKdQx1oEQezw8Om7tS/39uWPn/CjLqXNHJ5n+HOXzObCz69TZbkz2JmyG1gy0K1maldUCm9FaH
+	n/f/FoFoC/1ZnS5+OQiu4nwEt73JXKMbl0A2UiVL+T0TqoGCFdhC3bsKOIHQjtpjsICSJ2xR
+X-Received: by 2002:a17:90b:33d1:b0:3a7:cffb:8b96 with SMTP id 98e67ed59e1d1-3a8735173f6mr510245a91.18.1791277016147;
+        Tue, 06 Oct 2026 01:56:56 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a853d00fc5sm3931542a91.16.2026.10.06.01.56.49
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a853cde769sm3761921a91.13.2026.10.06.01.56.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2026 01:56:49 -0700 (PDT)
+        Tue, 06 Oct 2026 01:56:55 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id D975216FBFCF; Tue,  6 Oct 2026 17:56:47 +0900 (JST)
+	id 4543816FBFD1; Tue,  6 Oct 2026 17:56:54 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-mm@kvack.org,
 	liam@infradead.org,
@@ -97,15 +98,17 @@ To: linux-mm@kvack.org,
 Cc: geert@linux-m68k.org,
 	daniel@thingy.jp,
 	Hajime Tazaki <thehajime@gmail.com>
-Subject: [PATCH v5 0/2] support kselftest on nommu platform
-Date: Tue,  6 Oct 2026 17:56:40 +0900
-Message-ID: <20261006085642.3852152-1-thehajime@gmail.com>
+Subject: [PATCH v5 1/2] selftests: run tests on nommu architecture
+Date: Tue,  6 Oct 2026 17:56:41 +0900
+Message-ID: <20261006085642.3852152-2-thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261006085642.3852152-1-thehajime@gmail.com>
+References: <20261006085642.3852152-1-thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261006_015651_158695_38D04102 
-X-CRM114-Status: GOOD (  12.88  )
+X-CRM114-CacheID: sfid-20261006_015657_248397_549882DD 
+X-CRM114-Status: GOOD (  16.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,65 +123,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This patchset adds an ability to execute kselftest on nommu platforms.
+Architectures lacking MMU don't support fork(2) syscall and only
+vfork(2) is available with limitations.  Thus, we cannot run kselftest
+on nommu architecture as is.
 
-Currently there are several issues if we wish to run kselftests on nommu
-targets:
+This commit addresses this issue with the following changes:
 
-- it cannot compile/build test binaries because the current files mainly
-  assume to build with glibc,
-- some of the tests are not able to run on nommu targets as there are no
-  fork(2) syscall.
+- Detect NOMMU at runtime from the MmapCopy field in /proc/meminfo
+  and avoid timeout, which requires fork(2).
+- Document how to build and run the NOMMU tests, including the procfs
+  prerequisite for runtime detection.
 
-The first issue can be avoided if we can build static PIE binaries (if
-targets support it), but in our case (build on ubuntu/glibc and run on
-alpine/musl-libc), it fails to invoke due to lack of the GNU ifunc
-mechanism.  Thus, we need to cross-compile with musl toolchain, which
-needs to be solved the first issue.
+Build and run the tests with:
 
-The second issue is the lack of fork(2) syscall on those platforms.
-Especially the test harness helper (kselftest_harness.h) uses the
-syscall, which cannot be simply with vfork(2).  `timeout` command used
-in `runner.sh` never works for nommu platform as it uses fork(2).
+ $ make ARCH=um O=build kselftest-all TARGETS=nommu
+ $ make ARCH=um O=build kselftest-install TARGETS=nommu
+ $ ./build/kselftest/kselftest_install/run_kselftest.sh -p -c nommu
 
-nommu component in the mm subsystem has several known issues and having
-test cases should help this situation, thus this patchset is very first
-step toward enriching test environment which has not been well tested
-for a while.  The test cases is implemented based on the document
-(Documentation/admin-guide/mm/nommu-mmap.rst).
-
-Initial shape for this patches is implemented as an opt-in TARGET, not
-built/invoked automatically if users don't specify this nommu target.
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Kees Cook <kees@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Brendan Jackman <brendan.jackman@linux.dev>
+Cc: Hangbin Liu <liuhangbin@gmail.com>
+Cc: "Ricardo B. Marliere" <rbm@suse.com>
+Cc: linux-kselftest@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-mm@kvack.org
+Cc: linux-doc@vger.kernel.org
+Closes: https://sashiko.dev/#/patchset/20260813063401.1786548-1-thehajime%40gmail.com
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 
 --
 
-- v4:
-https://lore.kernel.org/all/20260929235711.2287931-1-thehajime@gmail.com/
-- v3:
-https://lore.kernel.org/linux-mm/20260926010819.604346-1-thehajime@gmail.com/
-- v2:
-https://lore.kernel.org/linux-mm/20260825015945.141739-1-thehajime@gmail.com/
-- rfc:
-https://lore.kernel.org/linux-mm/20260813063401.1786548-1-thehajime@gmail.com/
+v4 => v5
+- remove build-time selection and detect NOMMU at runtime
 
-Hajime Tazaki (2):
-  selftests: run tests on nommu architecture
-  selftests/nommu: add nommu mmap and mremap behavior tests
+v3 => v4
+- fix typos in commit message
 
- Documentation/dev-tools/kselftest.rst         |  18 +
- tools/testing/selftests/kselftest/runner.sh   |  11 +-
- tools/testing/selftests/nommu/Makefile        |   7 +
- tools/testing/selftests/nommu/nommu.h         |  33 ++
- .../testing/selftests/nommu/nommu_mmap_test.c | 264 +++++++++++++
- .../selftests/nommu/nommu_mremap_test.c       | 356 ++++++++++++++++++
- 6 files changed, 688 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/nommu/Makefile
- create mode 100644 tools/testing/selftests/nommu/nommu.h
- create mode 100644 tools/testing/selftests/nommu/nommu_mmap_test.c
- create mode 100644 tools/testing/selftests/nommu/nommu_mremap_test.c
+v2 => v3
+- remove unnecessary modification
+- new target is moved from TARGETS=mm/nommu to TARGETS=nommu
+- rename CONFIG_NOMMU to NOMMU to avoid confusion to kernel config
 
+rfc => v2
+- reformat ktap header, reported by Sashiko review
+- https://lore.kernel.org/linux-mm/20260825015945.141739-2-thehajime@gmail.com/
 
-base-commit: e8d0f6a1b2a447d02845984fa6288787543cb03c
+rfc: https://lore.kernel.org/linux-mm/20260813063401.1786548-1-thehajime@gmail.com/
+---
+ Documentation/dev-tools/kselftest.rst       | 18 ++++++++++++++++++
+ tools/testing/selftests/kselftest/runner.sh | 11 ++++++++++-
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+index 64c0ec742..fc4dc1f9d 100644
+--- a/Documentation/dev-tools/kselftest.rst
++++ b/Documentation/dev-tools/kselftest.rst
+@@ -230,6 +230,24 @@ section::
+ 
+ .. _tar's auto-compress: https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
+ 
++Build and test on nommu target
++==============================
++
++The nommu selftests detect NOMMU at runtime by checking for the ``MmapCopy``
++entry in ``/proc/meminfo``. Ensure procfs is mounted at ``/proc`` before
++building and running the tests.
++
++::
++
++  $ make ARCH=um O=build kselftest-all TARGETS=nommu  # <= build-only
++  $ make ARCH=um O=build kselftest-install TARGETS=nommu
++  $ ./build/kselftest/kselftest_install/run_kselftest.sh -p -c nommu
++
++The C tests report a skip if ``/proc/meminfo`` is unavailable. On a NOMMU
++system, the runner needs that file to avoid wrapping the tests in ``timeout``
++before they can report a skip. Mounting procfs is therefore a prerequisite
++for running this target through the kselftest runner.
++
+ Contributing new tests
+ ======================
+ 
+diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+index 311811dc5..45fb8ec38 100644
+--- a/tools/testing/selftests/kselftest/runner.sh
++++ b/tools/testing/selftests/kselftest/runner.sh
+@@ -36,10 +36,19 @@ tap_prefix()
+ 	fi
+ }
+ 
++is_nommu()
++{
++	grep -q '^MmapCopy:' /proc/meminfo 2>/dev/null
++}
++
+ tap_timeout()
+ {
++	# nommu doesn't support timeout command (missing fork(2))
++	if is_nommu; then
++		echo "timeout isn't supported for NOMMU"
++		$1
+ 	# Make sure tests will time out if utility is available.
+-	if [ -x /usr/bin/timeout ] ; then
++	elif [ -x /usr/bin/timeout ]; then
+ 		/usr/bin/timeout --foreground "$kselftest_timeout" \
+ 			/usr/bin/timeout "$kselftest_timeout" $1
+ 	else
 -- 
 2.52.0
 
