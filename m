@@ -4,107 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBFC4CA5FFC
-	for <linux-um@archiver.kernel.org>; Tue,  6 Oct 2026 16:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14967CA5FFF
+	for <linux-um@archiver.kernel.org>; Wed,  7 Oct 2026 02:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JaOT2qccNi/eJCcGFKpQPyFgrQUtWBfNjazKR4huGJc=; b=aEHLeN4OvGSkDgw4sbE7uHztx7
-	Y1L6MdfOA7y4dmGBlz3dSuTj8yM2FaaHH6NqGL4H9cGNjkc10u+fLHn5640qVLvpd0K74NaisbpQT
-	C2rzjhDJBW/bBahaRuoudtB//27p38Nx3EjFa7zyhIHNcKIlpd6GxZSICu0wvTxGwlfwdMia1vfM7
-	uSMi6rLTI4HhMzDt+JLYx7VOkLhXnp+SpIOwSXquU2rJx12keRNEa7AUTAg36DLIH+JyWbdAY5aLc
-	25X/NAAF/3zfB7IOFhKhMxxS9qipfiNABwMBD8y9Y0pXh35BXrStvvSzd1dhlvu296SlVhl/hpylb
-	ZlYcI1Dg==;
+	bh=u9Jzggo5Sk1RIZ8WfB+NnbFsVZN8V/kovGtc4d+jfE4=; b=4FNtHcbzoJChCzCJRo39e6Djls
+	keAD/B5noipVdv6xznLm8mvQePMihWPE8kJomwVWDCY8I43ZB5UAbqlxRrv88tMoyCT68zc02jky6
+	5uKx1xfx2rTQmbIHZAaacfohFJb2PBERyiuSpJa55FGdVznIqcvtKYAiFvwLT70CY7LRLOxUncKtY
+	fU/LE9reX1npuE1UX+q4psggAPp0NT3+Cpwgr/rxdmBcGbfzGZe5eiAUb6DypHrD0mW0AJW2YoFM6
+	Gf8JlFdIojzXwJiDLfW3OTA24VVFO93lI8vwoL4GMLWfkL2V1oUK9ykrQLZIDJLNj/ZUHOqMicUoJ
+	7mFqGPgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE816-000000018LO-3fGI;
-	Tue, 06 Oct 2026 16:27:48 +0000
-Received: from flow-b6-smtp.messagingengine.com ([202.12.124.141])
+	id 1xEHQp-00000001e3C-01DR;
+	Wed, 07 Oct 2026 02:30:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xE80z-000000018K6-2bq3
+	id 1xEHQn-00000001e35-3JWJ
 	for linux-um@lists.infradead.org;
-	Tue, 06 Oct 2026 16:27:47 +0000
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailflow.stl.internal (Postfix) with ESMTP id 724121300975
-	for <linux-um@lists.infradead.org>; Tue,  6 Oct 2026 12:27:40 -0400 (EDT)
-Received: from phl-imap-03 ([10.202.2.93])
-  by phl-compute-03.internal (MEProxy); Tue, 06 Oct 2026 12:27:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolber.net; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1791304054;
-	 x=1791311254; bh=JaOT2qccNi/eJCcGFKpQPyFgrQUtWBfNjazKR4huGJc=; b=
-	aDJ0OTHCchnO4w6/CsJuj3/fyrPyNJFY4ttnZJ32SPYQ1baaTFGfKMO9PA/8DtHV
-	AsNd8Xsu84MUJmBFv5/ll9m+VcCPPgxqsSJT2n+TmbcmG6fD4QNVtpqhPT7Q4TOz
-	WTiDe6Lq4M1G6UjTKlQhaXAb09dBds0JAgfMd2zBhDs0nAwWOhjrNyhvGleNZe7y
-	gv2D+1qn6q4ZhtNXKj2Gf9bd1/cucl15+nnvNYNbFIeG1Ityus3JxcU9s/6Yq09B
-	rvUaskoGk8zZ/9UluAUKyH887JgkJ3AgCu3mmn5Pz+2uAheFZUt1bGNnsWBTrI8s
-	esQMOdnFBRIRZ0x2NygQJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1791304054; x=
-	1791311254; bh=JaOT2qccNi/eJCcGFKpQPyFgrQUtWBfNjazKR4huGJc=; b=f
-	BLlzhf/ACw2DnbRA/f0NFj/mSJdBV3nRoBDnYx0ZhOUCdVHCeVj6hFriIZUcll4y
-	HYVAhQJ/gnOC0Ye0ISQTWcG5vtU1Gkw0/1cJzG3YGxWj7mVmOmZpFzfFtgmSSU4p
-	2zIlVn2Awy7dvBu4dEzk7gpDC2IH/Ui8fad90Cn/5T8/cQz0sRwoyQhl/c3WT6vM
-	QeSUVmdTUYmyh1pgv5fkCka+NPaQY8yY1pDNukujWG1DBBmMXRhQ3cmPJx7egwpQ
-	5SSKHDSGFhca+orYJ6al39eGSm4jB6wPvueYsX8/+8FVKGO1vL/ruK2ntGDv4w4k
-	SihsKkwdF/NX3cIJy9R1A==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
-	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
-	action=sign d=wolber.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1791304054; d=wolber.net;
-	mf=PGNodWNrQHdvbGJlci5uZXQ+;
-	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:dtlTvhWUljqtbMOwHgj2E29ZNo/WAlKHY6YOGQ+x/blspms
-	2g92+9JSwquAYzeEYHtbIvHwAyg0ec+ZHSzMUiDd83/0d5CKCAWTMiChGzSSnbpG
-	8ImS/P/HgxMZNvL6pKRE7SUdCKyOsOwajdHQFx4C95thWnZC8n11KgbSAP9x9yA8
-	87MYOhyf3aG50Lo17pGxbVkTGFhXmAbJPlzno2TmdnkszrZWzUw/pld/5+TgCSUW
-	UKvAUJQ8godClvXVSGb2PLOiIKuQYEOsVBqzYseLfP+eY5iDiHPblU0Y1r8ZsVaX
-	uhzjNwwHXXimvG3lfWAG6gzTLiJ8+Ttnmu+m/GA==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
-	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
-	action=mi-m=1; hc=12;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,subject,to;
-Message-Instance: m=1; h=sha256:9OT84S2nU/0nZ1U64BlOetYjb+/mK3i5jm+AZt7+BvI=:JaOT2qccNi/eJCcGFKpQPyFgrQUtWBfNjazKR4huGJc=;
-X-ME-Sender: <xms:cyHFav2-FXDCSQuCl4UvdwZDw3DXvUGCTqrIBXFwQjqh8CIUBrV_ag>
-    <xme:cyHFao5zpJVZ_b_VN1729xUOenCfieF6CzFcNFgMSngnQ20-3uZ_0r7V7QV9GBhep
-    oO-9X6fCh-9B98DlBKwcYnQwcjIoa_CrHgVs_8OaTQKpi1fe8iciKA>
-X-ME-Proxy-Cause: dmFkZTFmiYJcPEGs0A/qYvq8C4MVW3CyXeGEtkOmNDhmCvIFflxFleW7ny57bnBIuQlD59
-    cWped2LiQiXafwA6rH6Ez7xNTRfmFYqjWZDEOCaTaZ+Z4syI7a6O9pxCiwEuqUzZdAJDx0
-    9cWIwLNy/t9fQal6PAMxVsKLkQvvtnsbOBBlUQGL+vOqAn4RFaEl2GHR2b4L1cq9s/UcOt
-    fSVio0w3i/g32nR140kVw61B5rztlTHebHqHKh60OEO7PQ5ZJXf+jeu/CrVryWbHaULU5f
-    OwU38sNMeIhs7opS8zYCEwfGqY1WbgnZ0lsOM1x7qOw1aVGpBTx6LXlr7kO60t15lxjcJQ
-    Xoz6jr0j4pjIR+O+PZ9nKQoFOT41zfg/kPlJYxlgE0wkci+XoTiX+ZZ4/HdymIYC0wObkn
-    HaaEWy6CzVlyLPwlfBUMXcf7/ewqCKLgGcnZKpY7u8A8P13E+O9DUKSqLvkXaNFv3Ep0lA
-    8lCIbxA7dKgreq3nvVhgNUZmHcJ62jED4uvNreTSgAxMWJyV4LIJjvEg+Tau6puOkMEW+Q
-    yF3ikUrkFhHlmZykAc1jvQujIO8vFRGIPKWU9ZIhTUDXcVDmBiqvVDBuwrsYHt6OcsEW9k
-    jBh0wc2IwF7idYt+Gc1PXZUsdyXHFZGint2G86631DLv8ttt/eLnmgSc73pQ
-X-ME-Proxy: <xmx:cyHFalRulfrI0gOe5n2wt8jZZ03L3H4VPYS_luBEHa_EpwUN4qkbtA>
-    <xmx:dCHFaoRUoLvWxDt5tWh7AqecATopVRbeseTkPnbfbMcmvQLU5qEIMw>
-    <xmx:dCHFavHAlYNEcqam7lbTPA14JbY0ZXtQKXHVkmiSR5gfzrc-urkg9Q>
-    <xmx:dCHFakn3xNzhke-YnOSwSFwDAIfvsCGSwfRjOky3Yk59ZEtY7qv9iw>
-    <xmx:diHFapqJCieSCu-f8Lh0CzmaIrjuMtsndrKAb-WlzuewQeP1weUcPRy1>
-Feedback-ID: i5cf64821:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id D087518E0071; Tue,  6 Oct 2026 12:27:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-MIME-Version: 1.0
-X-ThreadId: A8p1gvDKPv03
-Date: Tue, 06 Oct 2026 16:27:11 +0000
-From: "Chuck Wolber" <chuck@wolber.net>
-To: "Marco Elver" <elver@google.com>
-Cc: kasan-dev@googlegroups.com, nathan@kernel.org, akpm@linux-foundation.org,
- anton.ivanov@cambridgegreys.com, oberpar@linux.ibm.com, ardb@kernel.org,
- arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
- dave.hansen@linux.intel.com, dvyukov@google.com, hpa@zytor.com,
+	Wed, 07 Oct 2026 02:30:57 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id E0D62600C8;
+	Wed,  7 Oct 2026 02:30:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04BD71F0089B;
+	Wed,  7 Oct 2026 02:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791340255;
+	bh=u9Jzggo5Sk1RIZ8WfB+NnbFsVZN8V/kovGtc4d+jfE4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=J9Fpa3LcaeRJJ0NN9pOs90uK8L5DfSIm6mAjBw3gmroRxWWWbxFb2QBY7xicSVbTY
+	 kbT+6EbbrPeXqPTzIZSl5/gq1BAb/eOayV7XE6ey3RwmBfWTB/v8VEyyTyoAPPCrA0
+	 cri8dcOXQ4A0qnYtSKy+NgeB4uPoFvN8orlfSO6E0eSFWRtrdwF2a402XVtWbKvh06
+	 lRSjh3VEzncBxVqPnfDnS6lW0nafLoHm9hnGRK/TzY+qZEDFBRoQzJvP8LcOcuGEQ4
+	 hQFNwpwttAKu5D3ATtRtUDpP6pXX3rhBtplR2oet7NU6iXQYKvGbkYwoqZeZiWZCOd
+	 Nvx4c87Puw11A==
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: chuck@wolber.net
+Cc: Marco Elver <elver@google.com>, kasan-dev@googlegroups.com,
+ nathan@kernel.org, akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com,
+ oberpar@linux.ibm.com, ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, dvyukov@google.com, hpa@zytor.com,
  jinghao7@illinois.edu, johannes@sipsolutions.net, jpoimboe@kernel.org,
  justinstitt@google.com, kees@kernel.org, kent.overstreet@linux.dev,
  linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
@@ -113,25 +56,23 @@ Cc: kasan-dev@googlegroups.com, nathan@kernel.org, akpm@linux-foundation.org,
  llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
  masahiroy@kernel.org, maskray@google.com, mathieu.desnoyers@efficios.com,
  mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
- "Nick Desaulniers" <ndesaulniers@google.com>,
+ Nick Desaulniers <ndesaulniers@google.com>,
  "Paul E. McKenney" <paulmck@kernel.org>, richard@nod.at,
- "Steven Rostedt" <rostedt@goodmis.org>, samitolvanen@google.com,
+ Steven Rostedt <rostedt@goodmis.org>, samitolvanen@google.com,
  tglx@linutronix.de, tingxur@illinois.edu, tyxu@illinois.edu,
  wentaoz5@illinois.edu, x86@kernel.org, peterz@infradead.org,
- "Sasha Levin" <sashal@kernel.org>,
- "Aleksandr Nogikh" <nogikh@google.com>,
- "Taras Madan" <tarasmadan@google.com>,
- "Alexander Potapenko" <glider@google.com>
-Message-Id: <41913a77-5c57-4967-8166-765dd5dde1bf@app.fastmail.com>
-In-Reply-To: <CANpmjNOaykC4McAj=gZghqPSQc9aGBP_CjgKmp3n2yjeJTxDSA@mail.gmail.com>
-References: <00ed0b57-ad05-4c5d-b152-7c81df94b23a@app.fastmail.com>
- <CANpmjNOaykC4McAj=gZghqPSQc9aGBP_CjgKmp3n2yjeJTxDSA@mail.gmail.com>
+ Sasha Levin <sashal@kernel.org>, Aleksandr Nogikh <nogikh@google.com>,
+ Taras Madan <tarasmadan@google.com>, Alexander Potapenko <glider@google.com>
 Subject: Re: [PROPOSAL] Replace gcov and kcov with llvm-cov
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261006_092742_053818_FEDF09F3 
-X-CRM114-Status: GOOD (  29.36  )
+Date: Wed, 07 Oct 2026 02:30:42 +0000
+In-Reply-To: <41913a77-5c57-4967-8166-765dd5dde1bf@app.fastmail.com>
+References: 00ed0b57-ad05-4c5d-b152-7c81df94b23a@app.fastmail.com
+ CANpmjNOaykC4McAj=gZghqPSQc9aGBP_CjgKmp3n2yjeJTxDSA@mail.gmail.com
+ <41913a77-5c57-4967-8166-765dd5dde1bf@app.fastmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Message-Id: <20261007023045.04BD71F0089B@smtp.kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,84 +87,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 6, 2026, at 4:10 PM, Marco Elver wrote:
-> On Tue, 6 Oct 2026 at 17:14, Chuck Wolber <chuck@wolber.net> wrote:
->>
->> Stemming from some hallway track conversations with maintainers at LPC
->> 2026, I propose replacing gcov and kcov in the kernel with llvm-cov.
+On Tue, 06 Oct 2026 16:27:11 +0000, Chuck Wolber <chuck@wolber.net> wrote:
+> On Tue, Oct 6, 2026, at 4:10 PM, Marco Elver wrote:
+> > On Tue, 6 Oct 2026 at 17:14, Chuck Wolber <chuck@wolber.net> wrote:
+
+> >> If there is a desire to take this in pieces or implement other
+> >> intermediate steps, let me know. Otherwise I can generate a
+> >> monolithic set all at once.
+> >>
+> >> [1] https://lore.kernel.org/lkml/20240905043245.1389509-1-wentaoz5@illinois.edu/
+> >
+> > llvm-cov is generally useful to have; llvm-cov is closest to gcov, so
+> > that might make sense to replace.
 >
-> I know the origin of the discussion, and wanted to chat, but I guess
-> that didn't happen and instead we get this proposal. It would have
-> been good to understand the requirements of users of gcov and kcov
-> (more below).
+> Swapping llvm-cov for gcov to start with is pretty straightforward, so I
+> can aim my initial patch set there.
 
-No problem, I still plan to seek you out to discuss this further. I just
-wanted to get the discussion going in case there was a broader set of
-opinions on this matter.
+Hmm, is it necessary to remove gcov? Would it be difficult to simply add
+support for llvm-cov and enable (make kconfig selectable) one or the other
+depending on the compiler?
 
+Thanks,
 
->> We have a set of patches [1] that implements kernel based llvm-cov.
->> They need to be updated and some additional patches are required to
->> address some stubs that are missing noinstr annotation. But otherwise
->> I should be able to send a full set of patches (including taking on
->> the maintainer role) to remove gcov and kcov and replace it with
->> llvm-cov in fairly short order.
->
-> The hallway chat was supposed to figure out if there's a way to bridge
-> some of the gaps, but jumping the gun like this without having
-> addressed the requirements of kcov users does not make any sense at
-> all.
-
-I totally agree, and I am still up for that discussion.
-
-
->> If there is a desire to take this in pieces or implement other
->> intermediate steps, let me know. Otherwise I can generate a
->> monolithic set all at once.
->>
->> [1] https://lore.kernel.org/lkml/20240905043245.1389509-1-wentaoz5@illinois.edu/
->
-> llvm-cov is generally useful to have; llvm-cov is closest to gcov, so
-> that might make sense to replace.
-
-Swapping llvm-cov for gcov to start with is pretty straightforward, so I
-can aim my initial patch set there.
-
-
-> KCOV, however, cannot be replaced by llvm-cov. KCOV isn't a coverage
-> reporting tool for users, it's a low-overhead interface for fuzzers
-> (syzkaller/syzbot and many others). llvm-cov has no equivalent of:
->
-> - per-task and remote (kthread/softirq/USB/vhost) coverage collection
-> (to avoid polluting coverage with concurrent tasks);
-> llvm-cov counters are global and polluted by everything else running;
-
-Correct, and I have pondered some ideas for doing exactly that, but they
-would be quite experimental at this time. The patches come with the
-ability to clear the counters so that specific tests can be run, but
-that is still monolithic. I would love to discuss the potential for
-other methods of masking coverage so we can get granular results.
-
-
-> - ordered PC traces (edge signal) and comparison operands (TRACE_CMP);
->
-> - performance: a per-task mmap'd buffer reset with one store, vs.
-> reading/resetting
-> megabytes of global counters after every program;
->
-> - GCC support (we may want to keep at least one GCC-supported coverage tool).
->
-> It's also UAPI (include/uapi/linux/kcov.h), with existing users.
-> syzkaller heavily relies on KCOV's features above to achieve good
-> performance and coverage; there's no reasonable way today to migrate
-> to anything else.
->
-> As-is, NAK on removing KCOV. Consider replacing gcov with it.
-
-Understood. I will focus on replacing gcov for now, and I am interested
-in exploring what else is possible.
-
-Thank you,
-
-..Ch:W..
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
