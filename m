@@ -4,113 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BF53CA9ED1
-	for <linux-um@archiver.kernel.org>; Mon, 12 Oct 2026 15:35:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD930CA9ED0
+	for <linux-um@archiver.kernel.org>; Tue, 13 Oct 2026 00:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RPjrtb7l936ef5b/bGwD+WeOePZE1NghsYuXVPIqEwQ=; b=JRY8+bjHqt0M2Zbfcu4wWJgmzO
-	K5HGp0DIBvHNmTD778Q9Gi/ol+81LfOBuke+cQnqgaEfp8fbIdvmFbSQnRyXldDVknwYyU4WaW+cj
-	0QamKW/18X9gQiBxdNP6HYr1MLIrHwlv4+1/DeZ+qJJIlNUIBZ5Uz8rstILoSYT82UOeOOal78Vnw
-	icZ5BNGFV8bd6Me80yW1Oa8bPB0frtmP2ubfbT0QZbuJ0Sjk0fTuazKJ0L3ZMeRkyJTParnVr7eHS
-	Vbp6vWJTB7u5B9xj580Ombh0c6sGtbzLHnZV6c+EXYTJv8yZDiyu8WspSbBcBDSJ0DNptUOUORtcl
-	06x5SWjQ==;
+	Content-Type:Mime-Version:References:In-Reply-To:From:Subject:Cc:To:
+	Message-Id:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=14ao8EHBap22fVJyCEOCQvYoCHgf/xUTG6x7uWb0O8U=; b=27ddd1TMxmC/ulpzqHdkK69Jb5
+	d/qHrzGrakdXj6PntHDhe2bJu1cZgSwQswlaBtUCeYSi1WzwOBEA/ElkrQ7PRBZrZHrLRsc4msOG2
+	kDCpJO6AEQWN8Qh/wePYKT7J5ge8gF/vAQC5BjTFcl9wnpC3zgxXip5ElFU4drNCN6hj5u6GZQ0LB
+	tFJU3aAqojHQgERxHpALNXQa6Dnqns+IZw6gACQ0NiGxoVUCEh8zH2wwpgI3CsNvTMkdcI4yxGoRt
+	Nd9T0QousNrcvMaF6V40lNumxxCnzKy/i+AjBgRFsnZHjr58GPJxHjVXd8pThyDNc3FoC5dUuOXGf
+	oOxZ3LNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGI3u-0000000Aoq5-2NOt;
-	Mon, 12 Oct 2026 15:35:38 +0000
-Received: from mail-dy1-x132c.google.com ([2607:f8b0:4864:20::132c])
+	id 1xGQ91-0000000Bhd7-0Fo3;
+	Tue, 13 Oct 2026 00:13:27 +0000
+Received: from fhigh-a4-smtp.messagingengine.com ([103.168.172.155])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xGI3s-0000000AopV-0TGo
+	id 1xGQ8y-0000000Bhcm-1DHW
 	for linux-um@lists.infradead.org;
-	Mon, 12 Oct 2026 15:35:37 +0000
-Received: by mail-dy1-x132c.google.com with SMTP id 5a478bee46e88-33c30fcf33fso267288eec.1
-        for <linux-um@lists.infradead.org>; Mon, 12 Oct 2026 08:35:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1791819335; cv=none;
-        d=google.com; s=arc-20260327;
-        b=H1JRPtkyre3puxJHD7QGnjaGaRez2rkPAIeS15pckJOjq9lhXr86IfTiRJ/Rqs29X9
-         wtB47E44g5sagcmLGf3O+2ibDvBUu3A4AbSW1y/hd/CoQc6OakmfOONp9iiPFxb6im9y
-         mF9u35OtlmSLGrhkPyPRr3z25slekIlzt+ohIiw2a0D8PPH1Va1lhGeL9QVul2nSUkws
-         5tL6KBnONfSaY8J0SBf3n4j9x/w45PW48ed9uqrWMnKfbcPnuZJOxVhvwEpdUP899Eet
-         vS5u1OPbJA+mf0B+QhMnL5iEEe3z+UpJQ/Me8Cy6ZQiEk7i3ab19jk1gfPqZD7YAhbjQ
-         9tWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=RPjrtb7l936ef5b/bGwD+WeOePZE1NghsYuXVPIqEwQ=;
-        fh=F9hT2gBi7msldlmlBK7nBGKFqcCwF+AG1BIIL1JecdI=;
-        b=pOELql+GTX+RWzg07XhitKR2zwScxfRDmJrmk3Wp6sezjGYfArCGvJq0xhr8Rf/gDO
-         3g+beHEUMVxbCFKQIzTWJ5JxzSXh8XysscmB06Sk44sjJIObEVqv0xs/PuBrzXYtr+ye
-         d0grI6ZN7TZ7Gl3AnpDzcq1JuHBSnEHDnz8PX7pdhbZWTqBXqcDz+5h7oD8E5CbQ8mC4
-         VSnNzBsr332Q8OGSi/c/LNsPFu0oe1c0reeEA38ednkYSuu+Va/xvfuzhgamXPB+DwO/
-         3oKtlpB9lvRK4cKeITIdaE5+RnCjEsMcQ4kxpKifVtNCrfpykwwjqOWz4ghdrZWyvlcK
-         BlDA==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791819335; x=1792424135; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=RPjrtb7l936ef5b/bGwD+WeOePZE1NghsYuXVPIqEwQ=;
-        b=cAkfOrHnIGF01ZKDEQ/9QQqiPd0O8B68yTHTD9CW1FCNSJCs/OCGzLCiKyFBrLuKtr
-         VAy9Oxt6kGMYPtwzGK+wNCKf4QkuKuw/iGiRQ96iplZ8/WTwlkPjp3KK25cQdT/dO+f/
-         fU8b5errJ8TSxLzrGwdbTtN893RQgtpV7WlFFsRXBQSsLrCKIXlJZYli6jrJEbZhZg2c
-         YyEwqMx5QPsaNLt1HSd2MeNXEt6QyYHHpWDO+AGgm6JX2Z+Aedb3g89W3b3rNBtaSLDP
-         t5W85nJy4DnL0cSCIdg+L8za9yXKGOhXUmzewkMvgtjF6p1TFzKIy0HQJU9MSGnLZUlO
-         v92w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791819335; x=1792424135;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=RPjrtb7l936ef5b/bGwD+WeOePZE1NghsYuXVPIqEwQ=;
-        b=jioFsBtzSLM7In6v90bUtrOKVLHK3A6N853jS5GvIrCYsoMJY1IlkBfCafLLezTEaO
-         33ZltZEHTo9mbTZBxSMDY1UgiCDdHeIREfdHWrf2YtUQAMPUW7TUmkneLdeAFOinApkK
-         4LTAGS2z8Ak86cPmzj7FxvUDKV8W772zohAYdQnuWAKiZq+Dstlcpy4v0roMXIDtuXZH
-         qkkB4fUCmCaFminLiaQf3Kbz5g35kBGVO7X2wsxD9GQMlJXwjnxg/3UrqKvRevvI8nGk
-         Ny4o+Pg35FI3FGkj5mNGFcyDV+Nh8ia1EIJqsowEO90JT0mQ6yxU1ZAi1SA0MoPndhoZ
-         S7ag==
-X-Forwarded-Encrypted: i=1; AKwUvBx9wcda201MonZvlvHFhjDiQK/2io0++C6SgHupS/9zQPmRhdeuNCsDZ/bdyn8289L9MCu1JSGHJA==@lists.infradead.org
-X-Gm-Message-State: AFq9FYJ+b8FFV/IYukY/XYbcOfR36N5sbQFMQQQh02uGBtHLFPdY/dgw
-	AaI+a/WA071Lg+FjmL9ypzs6vXsT0Pcg3DPsUdXK7fWjr2AchiYJqWUjtNATayOVH5WaHqPcXzn
-	oRA0K4FQ8i6hIKQ8hR0CsUGDf5PV/w4OjHknV9ZINSw==
-X-Gm-Gg: AYBFou2V8kE/OvEM+pdmStlMXREm4SleobT28IHWmhFKx/9GOiQkVEr3kYKJ+5b7nLd
-	GlpxdF9i699vvkfvysgdtRCA2hdpVp6B/l+/CBjFMHCD4+8Hb7vMYFsxD0uNsxFZ7ER70g9apeg
-	+fDhYlbdtZHSCfzRYQoozwaj4cZ8RtMLtYjX/+yyLheR+nUTDV82nLHvOZ1MokfB+VMJZ9BtQCt
-	iNO7Nq+a6h/ariSyPlxyg8vL6QCX3lwoTXuNFrMe+nCGzVCBDsLLXpfjha5VNk5kzhPwNmYopNU
-	lwyZghh8iuS9oVNMGQvEoTCCsEfOMTVXoUPl8LlOTVrumVbRxV3ACpAQgU4UbgYtEUE0ZmTkBAO
-	pqXlkfL4vjNeFm8qf1IgPRXVhVNmSI5DV12/pfnV8yH/7lyLGwtXILAuCi7Grpzh+lCe3hqteaL
-	heh7NrdKgZE6z29HmatA98RizUPEYPl4kRlq4NThfDGnwO8Vems43UoeKKRjHCLQ==
-X-Received: by 2002:a05:693c:8810:20b0:35b:cb5b:c71e with SMTP id
- 5a478bee46e88-35bcb6b1c6cmr1545025eec.1.1791819334971; Mon, 12 Oct 2026
- 08:35:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20261002104550.2877930-1-tomo@flapping.org>
-In-Reply-To: <20261002104550.2877930-1-tomo@flapping.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 12 Oct 2026 17:35:21 +0200
-X-Gm-Features: AclHuK85Pldtr0ECoOLRtFhNaahZKiLNXk4rmJudeZbxydISuiGxggKATO-0hgg
-Message-ID: <CANiq72=pvipUs95sjkyk=NTwHK3AT782VB5BACJzuruW5tSzZw@mail.gmail.com>
-Subject: Re: [PATCH v1] rust: bug: update the SAFETY comment for
- warn_slowpath_fmt() on UML
-To: FUJITA Tomonori <tomo@flapping.org>
-Cc: ojeda@kernel.org, a.hindborg@kernel.org, acourbot@nvidia.com, 
-	aliceryhl@google.com, anton.ivanov@cambridgegreys.com, 
-	bjorn3_gh@protonmail.com, boqun@kernel.org, dakr@kernel.org, 
-	daniel.almeida@collabora.com, david@davidgow.net, gary@garyguo.net, 
-	johannes@sipsolutions.net, linux-um@lists.infradead.org, lossin@kernel.org, 
-	richard@nod.at, tamird@kernel.org, tmgross@umich.edu, work@onurozkan.dev, 
-	rust-for-linux@vger.kernel.org, FUJITA Tomonori <fujita.tomonori@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	Tue, 13 Oct 2026 00:13:25 +0000
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id E6E441400143
+	for <linux-um@lists.infradead.org>; Mon, 12 Oct 2026 20:13:20 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Mon, 12 Oct 2026 20:13:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flapping.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1791850400;
+	 x=1791936800; bh=14ao8EHBap22fVJyCEOCQvYoCHgf/xUTG6x7uWb0O8U=; b=
+	L6JRppu+eQUChBAHFm5Bfwx+oGe/F/FZMLg1nNRQ2wshibHp7OTteeK24yrZcoCX
+	bkXnG8AjCfJ9mgKBx61lXspRtx/OcFW9/cpy3Z/YiW69YoCiElZjqDRsGN4TdsVC
+	ezJCgSyk2bF/laFK8I/0agcvggs+EpGMWVUkIdY1+8o+jKvuLqNzeejOfkTVOZ2D
+	eWdU4yqNB0xtgyDbAALNlDU4PKXs9nWQhD4O+M4HpXjfCgBAzICgDNAZcpiYUHwC
+	WgS2VdRfLma5xfhyvamy3Y7lM6siKV/b/uHC4si0V7p+uT1mTFJlRAnFQXV9hRWm
+	JlhRl6oP73qHjw3yRCbn3w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1791850400; x=
+	1791936800; bh=14ao8EHBap22fVJyCEOCQvYoCHgf/xUTG6x7uWb0O8U=; b=I
+	YleQwOQ6NeP4p8+mp+UuPRQieKMzpyZ536o9h/ufo6tpemNDOq3LNwYm5vh2YqIW
+	z8t5ItjLtfKmHWrQGmDgYjjIgKrx7w6HsBKuWPQF1A4WDu+ARDy4VOgTtKUbMczO
+	LAgRWpBRevlQdVCNNU46EyiSFya+FSDnXLJ7IpNz7elIqutW7YKlPDx6VMtR14al
+	0ss5KBMfgXKqAAEjyv6G6Uv8b+RvssjkMlDyE4Gacsg33wRuc++NIc6BCPl4u56/
+	guURdZLyWIXsvvIwl5mlHl/kg5C+7xhFYzqJ+jq3G+36/TFBSiiF9N//PzFeEhMI
+	gaz0y/+SzdqKm9PZMEdLQ==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
+	action=sign d=flapping.org a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1791850400; d=flapping.org;
+	mf=PHRvbW9AZmxhcHBpbmcub3JnPg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm1:rsa-sha256:bO8GhCqtzHbhxOqioD3T3v5WVEOSee4DNED3MeHTrjejuNQ
+	UrHV2hlQ5uJ5C+AHWbmwsubTcyeUuZ14MmTv6M8mamwLQC0rrJWnqGlUc/HDjWmz
+	RjJe3k+3/6Z4rHrloA3D7NwTlAuO2LctO0JwhRzN/XyaVZDj14V6XhsezLMyKOOP
+	CbUoEHyNtEzCGaHanN6OHgtw04G4xQPTpHgfwnm9xUV3aQbq7Tu2/F6zS/VN1suc
+	9/Eme9BuvOLFAQFInHF3FAmtYTkIn9CoDAufASt3XerMdx5m1F/O24pPHRQA0oyY
+	NGd5wNCvoqL79Ay334bumh3Mlb2bEsLYSQgv29g==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-10-04; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:+nhnj45/AY07AP1YRI30Xb20jN1liBAM3bPV6iJu97w=:aCew9WynhJsD+bl1J+fBJMkAbh5Fg1SXr2HMrKEqdM8=;
+X-ME-Sender: <xms:n3fNar0J6Y7t9QeI805sFr7-GFxYRZbVThGGWkWU-SzPl_1LpSsurw>
+    <xme:n3fNaofdp2vtv-bafZQrotOiWkTX28Q7acyYKQF3AUIC7wPKhCibtjkoJgCqAGyo8
+    TUORjG0ZCR_pbYsuL5Ze8SKTi71Jv8-vU8SY3JcJAaSiYru_p1K7KYDnQ>
+X-ME-Received: <xmr:n3fNan5VYG2TxrswSUkhPldoTryQvYm4JyQEedJuT2bfndC4CPhGPwWH6Pf1hAvZ-HC830nOHhtSLc44Xw2LR75a>
+X-ME-Proxy-Cause: dmFkZTEQYGfmXA9pNCTuDq0PIvAptLlZZm8vBUMzc+rrSn9LyHJCcjxAa4jptEGZwrZ2uU
+    BSjPZuU+QK+7dI6dg2De1ora8gkuGwsdEkNXJdB8clraK4Y0zoCrUu6u3pOfPWFPrTaxne
+    fYZ3NqCwDZ6t7LVRuEXk1fyURIjrozSTUytaTsSYEqzuY95v8Uzk8w/fl0ndRa0ZNSJdx5
+    /BVKEXJN777guVmny2loLxYpxi/HUq2X4F7fkRT9A2ciqMBElXhago03BKPDB9avXOLZeg
+    7dvsZviaYD7jbx/mm+3cUQHz3aXhhHZvw5i4RNVstwVlN7CIro+sOf/vQxLaFW51VhQmrg
+    PtzbO7oIO5kPQr89TYKJpUkvrwjZPco5vw3wTQjaZXpO31WvQLGUOQixbB1o61df2YohGW
+    sT6pB4C9Jx30/RtN+Iaa27Uh2tS2Iz/VsSBqn8/8U5b63Oa12FHdMPL6VlFip7r7CPZ0hE
+    XH/9XuhogK9PQdjx806sR30j65WLXIfGtSd4VOfGonpbzC3IY76O2uRBUOPmfCHMf0sXGe
+    H27oznxO6k9Sf9I39y1sfH+uaWrVjcE5+DEaRyU5kje9TVToW5b6BBODSdvm8N0AmI25pp
+    G48EKOywt9oEc7b+yEzwdXo6pqog/BSM9MoTS11lBWUGMiAT7r9l6zO2Wtlg
+X-ME-Proxy: <xmx:n3fNaj8xV_N_Twkw7BhRI9rBlrB5jV6FmOYhOXm_T96D3fHZBEv-gA>
+    <xmx:n3fNamKzPAQcRDPat7Wprq0WzKNPKxvkBFassLEON6xSngue23yEvQ>
+    <xmx:n3fNauggaXvnLvHOFUxmgGLtQXXf1YcOEpqH3NsRrRp4W07cg64Kig>
+    <xmx:n3fNan2A7QO5cektc9ckeSOF047YjPYN7wBFnNH7tTmjpuZjG20V9A>
+    <xmx:oHfNakjyaMxH67xy1uoDXhpgvTjK2vWjbneyeD2t8Uy19IfxwogBGBx2>
+Feedback-ID: i51fe4b43:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 12 Oct 2026 20:13:14 -0400 (EDT)
+Date: Tue, 13 Oct 2026 09:13:11 +0900 (JST)
+Message-Id: <20261013.091311.1532284295597570022.tomo@flapping.org>
+To: miguel.ojeda.sandonis@gmail.com, david@davidgow.net, richard@nod.at
+Cc: anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+ ojeda@kernel.org, a.hindborg@kernel.org, acourbot@nvidia.com,
+ aliceryhl@google.com, bjorn3_gh@protonmail.com, boqun@kernel.org,
+ dakr@kernel.org, daniel.almeida@collabora.com, gary@garyguo.net,
+ linux-um@lists.infradead.org, lossin@kernel.org, tamird@kernel.org,
+ tmgross@umich.edu, work@onurozkan.dev, rust-for-linux@vger.kernel.org,
+ fujita.tomonori@gmail.com
+Subject: Re: [PATCH v1] rust: arch/um: Fix loading Rust modules
+From: FUJITA Tomonori <tomo@flapping.org>
+In-Reply-To: <CANiq72kEM1Z1yb6SVSCrEBfFVim2R-fXfSSJG2xphPGABq0H5A@mail.gmail.com>
+References: <20261004121230.373216-1-tomo@flapping.org>
+	<CANiq72kEM1Z1yb6SVSCrEBfFVim2R-fXfSSJG2xphPGABq0H5A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261012_083536_156481_C455EE6F 
-X-CRM114-Status: GOOD (  10.58  )
+X-CRM114-CacheID: sfid-20261012_171324_535358_2042C089 
+X-CRM114-Status: UNSURE (   8.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,35 +132,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 2, 2026 at 12:46=E2=80=AFPM FUJITA Tomonori <tomo@flapping.org>=
- wrote:
->
-> From: FUJITA Tomonori <fujita.tomonori@gmail.com>
->
-> The SAFETY comment says that it is always safe to call
-> `warn_slowpath_fmt()` with a valid null-terminated string. This is not
-> true. The taint argument must also be a valid taint number.
-> Commit 951d09ca450c ("rust: bug: pass TAINT_WARN to warn_slowpath_fmt()
-> on UML") fixed a bug where it was not.
->
-> List each condition that the call meets: the file name, the taint
-> number, and the null `fmt`.
->
-> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-> Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+On Mon, 12 Oct 2026 16:40:50 +0200
+Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
 
-Applied to `rust-next` -- thanks!
+> On Sun, Oct 4, 2026 at 2:13 PM FUJITA Tomonori <tomo@flapping.org> wrote:
+>>
+>> arch/um/Makefile adds -Crelocation-model=pie to KBUILD_RUSTFLAGS. This
+> 
+> Hmm... That was intentionally added by David back in commit
+> 905a77077573 ("rust: arch/um: Use 'pie' relocation mode under UML"):
+> 
+>     UML expects a position independent executable for some reason, so tell
+>     rustc to generate pie objects. Otherwise we get a bunch of relocations
+>     we can't deal with in libcore.
+> 
+> So it seems David faced other relocation errors (?).
 
-I added:
+I think that at that time, vmlinux was linked as PIE with clang,
+because -no-pie was not passed to clang. A static libcore cannot be
+linked into a PIE, so the errors probably came from that.
 
-    Cc: stable@vger.kernel.org
-    Fixes: dff64b072708 ("rust: Add warn_on macro")
-
-so that this goes together with the other one that actually fixes the
-issue. It is not really a user-facing fix, but it seems to me that it
-makes sense to put them together and to avoid a de-sync in the
-comment.
-
-Cheers,
-Miguel
+Since commit 846cfbeed09b ("um: Fix adding '-no-pie' for clang"),
+vmlinux is linked with -no-pie with clang too. So pie is no longer
+needed for Rust code, and it breaks modules.
 
