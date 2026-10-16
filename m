@@ -4,80 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C7D8CCA462
-	for <linux-um@archiver.kernel.org>; Fri, 16 Oct 2026 09:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07872CC6B38
+	for <linux-um@archiver.kernel.org>; Fri, 16 Oct 2026 09:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UvLeihu7ioIdym0eRq5JcGIMM6YkZ/1Kjyy9X0VEuuI=; b=leTiccugDx0oB1NdOM9Zo9uJOK
-	JDtfi6QeFdGvzMgjrTJf72xAde5kxejvXGsqKhgm47t1ZyKmLxN7SFD5kH3iQ7NWpRZ1P+1WfJwpa
-	k5AHH7MtmqzSnlK9CBclhU+z87uLGxpWVdWxAOqn+lSpOZExMYUDGPkXLBICScWIF/zZNHUHHshR/
-	DHftBJYyWxvnnkPZwStRF8602N3CQfV346MGu/Ea3ne3oBEupmfQN2KjTZfefitDrX8SKGFme4FhK
-	vJR719fu8CkuZhpGyjg5WeuBzKMnycafvHcBLOlfesh+QcqChM8USCCqrVpwNSLQWH0KgPYepGvRj
-	tK4IwUqg==;
+	bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=; b=3eL7wlI2e2lgNCceEeFHH+PGCG
+	Pt8bIRNfAHa0rGBL6d5xOvc4KVrt8o0mDcT//DmXKu5AzjLOf47QO3bfkc+dxmSBgqxM7n6FsQwIT
+	AtERrbVw7ytu+wRod4n3AruDU9xWtyHw2cb+1Ll8j7aYHfhP0h/icqM63enciPgN9t7ZCpzIDTaY6
+	FS5fgSErUr8bfBvqvIrY53tikNC0Ay+gj0UT4dEkMWBcv+tKda0GZ2NJP4fzE7vLPhjDKOBwsg/TQ
+	51tY9wGhGisOFx41pxOFoUeFW9Pd69zvgKKcYbNqIIKIMJ3AxVINwHQ7mEeZEh1A0Xv28AEhkuH41
+	ENpyBjBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHeQk-00000002W64-2Pyq;
-	Fri, 16 Oct 2026 09:40:50 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1xHeT7-00000002WTq-3eSy;
+	Fri, 16 Oct 2026 09:43:17 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHeQh-00000002W3m-0gL5
+	id 1xHeT5-00000002WTE-1oGd
 	for linux-um@lists.infradead.org;
-	Fri, 16 Oct 2026 09:40:49 +0000
+	Fri, 16 Oct 2026 09:43:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1792143646;
+	s=mimecast20190719; t=1792143793;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UvLeihu7ioIdym0eRq5JcGIMM6YkZ/1Kjyy9X0VEuuI=;
-	b=EQFaKQjp2JExAMfWZ1XZWNa8YlxA5GgG2caacgr8rh5OjrE1ZC1/Fc2Z/wgAjz+rGE9644
-	W5PNg4FWIJDiGjdro1x72PXAisVK+kMNin2qBoMnidMuXu7NNZ2feEZfQYLlgr7WHjYQpD
-	VGSTxf/GNwHpSCXOESjm5fz0TxbxrEo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=;
+	b=ITGRvE4oUiBAQFl660cMWj4/GzXPJSPLXhho6Jd+M1sBhvZ/LGFDGYuphrQMlNDhQQKAyc
+	clKbw6gZNrhImOEPGGtnSSTk1t3se/etUEOi/eaxhArMYF+DAAsaBD9DtyAusSV0Od3S7E
+	dYav2hjkm+PvBe73ncil4h2G7MjFkjo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-16-9WxHetC2Ox-pjoRJ2XERHw-1; Fri, 16 Oct 2026 09:40:44 +0000
-X-MC-Unique: 9WxHetC2Ox-pjoRJ2XERHw-1
-X-Mimecast-MFC-AGG-ID: 9WxHetC2Ox-pjoRJ2XERHw_1792143644
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-48b02e93a1eso5178093f8f.1
-        for <linux-um@lists.infradead.org>; Fri, 16 Oct 2026 02:40:44 -0700 (PDT)
+ us-mta-459-NDKRNVo8NeGLmM1K1TCXnw-1; Fri, 16 Oct 2026 09:43:12 +0000
+X-MC-Unique: NDKRNVo8NeGLmM1K1TCXnw-1
+X-Mimecast-MFC-AGG-ID: NDKRNVo8NeGLmM1K1TCXnw_1792143791
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4a16db51147so40252615e9.3
+        for <linux-um@lists.infradead.org>; Fri, 16 Oct 2026 02:43:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792143643; x=1792748443;
+        d=1e100.net; s=20260707; t=1792143791; x=1792748591;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=UvLeihu7ioIdym0eRq5JcGIMM6YkZ/1Kjyy9X0VEuuI=;
-        b=FQ88dgItZKetvvJZa7Uahbn7Pb4r/GDhXS8mr42tJXBr/SfdWfN5wB4RKdvxecQ3lM
-         3dyzCnLmYKnBunBCba7KrrqpbWXcc/ntaHKu+ViFjSNKSsf5IqSwRBEeqleKRAOT2W/i
-         TW4QAuxLc+uH3tRwpkaDK+oG5n8U9R1tY9ZqKm4NWSpt0oLMS5b2Grl2I6JutlaqYoXu
-         nlvPKrHfdzaQmfwk7U2atPGuwz/aPOZIaqnKAMWbBg6DW6IzjpTZWAD7aADBuna97DdE
-         dfWsJMhPc2F4atRjCobfxr95T1Mt/h21zfYNxG1jufTK9LdAQHJfUqiZg7G7We0DRllb
-         zjCQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzQbxh3VfC2Ru5ovJINoKNWHaHcGK6yeQFYkRQuG+y74xNorhjRmBU2ZgfoCc25AzmlS44soX/T1A==@lists.infradead.org
-X-Gm-Message-State: AFq9FYJebNJRjRdS0IsqjchBW2VHUBqTOdPVcO4lfGXFswCmYXR9g6KC
-	IFHBOm3Zykkjx86SRlWgwLfDIslOC7PXhemTATb6AZid15ZdGzfL1JxbLHnStweFrj840jXxNS0
-	Q/NllJSSj5Ok74H+/3wQRlfXBFcTtBbJSG+wWiHZ+zk27qlHpO9id17JeOdfMgYjAmA==
-X-Gm-Gg: AYBFou0uLUL9OpLRzxjByW64ZylrVt2oLcnGdBzka1hnUvWQygn39XwlAPgmyqOqkvT
-	vNbn6mpb/FFZ+e3cWJZnXeLXUF2ReoYQtwvmMOB0nFhB3O/SlzQwW8JzAngbx7j2kmSpHvstVdK
-	kV1WAFnHyTJWkN+t1lb10YQF5dzzP2RGQaJu8EAD340zj6xdzk+Fw6Cm09OydKfkaO3rSbTL1Bk
-	m+7PWPyzVHF9PsyI1ddmZvSuUS0y/QPSoVO9MVrKKtMB+gycjkyydh7cic+aZuuKrp6X6iVlpVG
-	l0V2M1OLEuvS0PceSWnnULN2ssNOL2NY2vDTa18cQNiKsiD2zNu7Z+6QRiKzkItlgp8fqQ==
-X-Received: by 2002:a05:6000:2212:b0:488:84ba:ae2e with SMTP id ffacd0b85a97d-48dba6f54ccmr42368073f8f.0.1792143643382;
-        Fri, 16 Oct 2026 02:40:43 -0700 (PDT)
-X-Received: by 2002:a05:6000:2212:b0:488:84ba:ae2e with SMTP id ffacd0b85a97d-48dba6f54ccmr42368022f8f.0.1792143642782;
-        Fri, 16 Oct 2026 02:40:42 -0700 (PDT)
+        bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=;
+        b=ziizWcrhBe9KwqJDVHUa6SH0lUt1iRdinMv/nLZjXDxyVnV7BjuPfnejhpVhSXkGrm
+         9syifXMogWDpLZZX+dqSVBnOYU9dclaxW+1LvbYWkbgvM2i9llVJBPOeXsG75gUx15Qe
+         IIfNuYMQtN6HvhcfZG3qeZC+NUHC9/njs9e7fa2wpVIUqMIFG5VGK4Ggn2BOaKBMBG8D
+         Y7MRoDn9EYMzH82DPb6awl4VFKy/dONIzSL+Tgg9d9Q7t2DjwngOOWfsffeYlaY/8z8c
+         eqv6zqKvcfXr759jldX8DSpNnx2AvlAfZ7WqCu2LoWtRFP+MDLa5Lde4tWuBmmyrSaOr
+         ehAQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwJW17Qfl9XRV7ZuKIuDvSAo0BdplcrbfmTwvVXPwKXJnsnynku3Ex48oNgI1jdgUa17YeS1shsWQ==@lists.infradead.org
+X-Gm-Message-State: AFq9FYICQqMWsJtm/JTEEPBxpk8VpclX9nkiHeW1omAkSO82VIaogUfH
+	3M4WWBX6txHoroaTbOBl6autlS3UfcNxGYJGNQC2oVxN8NQhdfOc4qWaLYc/ddBQSf589Rc6Na5
+	GKkyd+vbSiUXOUFRHMbcD2R+HBBP94HcDNBV6sCwPaAi8DSSIVV4XR9ucPZtnW5uK/w==
+X-Gm-Gg: AYBFou2Lla0KJHK9YgHaUPPCSlJeNlWx7JN4BWhop/t5k6si1crBTQSS8lJ8Xw3myaC
+	/l/xIZ4DFSIj1vbX3WyDfH8IVnghgBQ3R1Rsq11g4Wy5j3B4T2fKzH1SlWdYVlvwUdutTlMeflq
+	CIzj60lfnrrpUtPeC8mBlP/m29xjrhDT/oeKEOdcbNHc9naW0Kwd9agUTuUxDw+gwKy+I/NENX/
+	RLIsACVXztCa5X/itGA20bTv1KI9uR+GtT2sdwMcF5MmC0Ru006eC+dgiuqqAhTwLIEL9SM/MnA
+	jv5S32hOvf53c0o1jkjMnkRu7QgYIjVF29z8DxiTUvn1F/jmr4e8s+RuQKnMGIfoHRMVSA==
+X-Received: by 2002:a05:600c:6388:b0:4a1:6f78:8419 with SMTP id 5b1f17b1804b1-4a18e3ee8f9mr441048045e9.0.1792143791194;
+        Fri, 16 Oct 2026 02:43:11 -0700 (PDT)
+X-Received: by 2002:a05:600c:6388:b0:4a1:6f78:8419 with SMTP id 5b1f17b1804b1-4a18e3ee8f9mr441047565e9.0.1792143790656;
+        Fri, 16 Oct 2026 02:43:10 -0700 (PDT)
 Received: from redhat.com ([2a0d:6fc0:3fd7:5300:3d6b:52a4:a23f:9d0b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfd471a64sm4255797f8f.6.2026.10.16.02.40.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfd4c5957sm3899658f8f.9.2026.10.16.02.43.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 02:40:42 -0700 (PDT)
-Date: Fri, 16 Oct 2026 05:40:38 -0400
+        Fri, 16 Oct 2026 02:43:09 -0700 (PDT)
+Date: Fri, 16 Oct 2026 05:43:06 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Jason Wang <jasowangio@gmail.com>,
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-kernel@vger.kernel.org,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowangio@gmail.com>,
 	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
 	Andrew Lunn <andrew+netdev@lunn.ch>,
@@ -89,24 +91,25 @@ Cc: linux-kernel@vger.kernel.org, Jason Wang <jasowangio@gmail.com>,
 	Max Krasnyansky <maxk@qualcomm.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
 Subject: Re: [PATCH net-next v2 2/7] um: vector: honor virtio net hdr
  conversion failures
-Message-ID: <20261016053930-mutt-send-email-mst@kernel.org>
+Message-ID: <20261016054142-mutt-send-email-mst@kernel.org>
 References: <cover.1792067836.git.mst@redhat.com>
  <6716834884238de0ab1ab313004044122aa2adbf.1792067836.git.mst@redhat.com>
- <willemdebruijn.kernel.10294d16149b7@gmail.com>
+ <8420ba1fe84fc7d105825026802d4ad10d44af71.camel@sipsolutions.net>
+ <20261015085119-mutt-send-email-mst@kernel.org>
+ <64ee40b97fc447bbf3abb80250ad0d9f3cf3c6fa.camel@sipsolutions.net>
 MIME-Version: 1.0
-In-Reply-To: <willemdebruijn.kernel.10294d16149b7@gmail.com>
+In-Reply-To: <64ee40b97fc447bbf3abb80250ad0d9f3cf3c6fa.camel@sipsolutions.net>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: uX5zaBCwLL7jW-6lAACEuUsjCIc6uwnaEgROuY3so3Q_1792143644
+X-Mimecast-MFC-PROC-ID: bU-ppUPsGepG2BzSxaxHQnddSVkIbWckGrPlBRejtT8_1792143791
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_024047_276185_BBD68B84 
-X-CRM114-Status: GOOD (  16.65  )
+X-CRM114-CacheID: sfid-20261016_024315_549946_0AB969D3 
+X-CRM114-Status: GOOD (  27.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,47 +124,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 15, 2026 at 01:19:22PM -0400, Willem de Bruijn wrote:
-> Michael S. Tsirkin wrote:
-> > virtio_net_hdr_to_skb() refuses packets whose checksum metadata
-> > it cannot make sense of, but the vector raw transport ignored
-> > its return value: rejected packets went on into the stack with
-> > their metadata unvalidated.
+On Thu, Oct 15, 2026 at 02:55:23PM +0200, Johannes Berg wrote:
+> On Thu, 2026-10-15 at 08:52 -0400, Michael S. Tsirkin wrote:
+> > On Thu, Oct 15, 2026 at 02:47:01PM +0200, Johannes Berg wrote:
+> > > On Thu, 2026-10-15 at 08:41 -0400, Michael S. Tsirkin wrote:
+> > > > virtio_net_hdr_to_skb() refuses packets whose checksum metadata
+> > > > it cannot make sense of, but the vector raw transport ignored
+> > > > its return value: rejected packets went on into the stack with
+> > > > their metadata unvalidated.
+> > > > 
+> > > > Propagate the failure.
+> > > > 
+> > > > Assisted-by: LLM
+> > > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > > > ---
+> > > >  arch/um/drivers/vector_transports.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
+> > > > index e1fb2a76fdff..8b7548458663 100644
+> > > > --- a/arch/um/drivers/vector_transports.c
+> > > > +++ b/arch/um/drivers/vector_transports.c
+> > > > @@ -210,7 +210,9 @@ static int raw_verify_header(
+> > > >  		return 1;
+> > > >  
+> > > >  	skb_set_network_header(skb, ETH_HLEN);
+> > > > -	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_endian());
+> > > > +	if (virtio_net_hdr_to_skb(skb, vheader,
+> > > > +			virtio_legacy_is_little_endian()) < 0)
+> > > > +		return -1;
+> > > >  	return 0;
+> > > > 
+> > > 
+> > > Seems it'd be simpler to just
+> > > 
+> > > 	return virtio_net_hdr_to_skb(...);
+> > > 
+> > > As far as I can tell, the function only returns -EINVAL or 0 (never a
+> > > positive value), and the caller only cares about negative (error) or
+> > > positive (no checksum needed), so that'd be equivalent?
+> > > 
+> > > johannes
 > > 
-> > Propagate the failure.
-> > 
-> > Assisted-by: LLM
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >  arch/um/drivers/vector_transports.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-> > index e1fb2a76fdff..8b7548458663 100644
-> > --- a/arch/um/drivers/vector_transports.c
-> > +++ b/arch/um/drivers/vector_transports.c
-> > @@ -210,7 +210,9 @@ static int raw_verify_header(
-> >  		return 1;
-> >  
-> >  	skb_set_network_header(skb, ETH_HLEN);
-> > -	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_endian());
-> > +	if (virtio_net_hdr_to_skb(skb, vheader,
-> > +			virtio_legacy_is_little_endian()) < 0)
-> > +		return -1;
+> > if raw_verify_header can safely return any errno - i did not want to
+> > audit it.
 > 
-> Should this return 1, like the above?
+> You already used an LLM and still didn't want to? ;-)
 > 
-> Not sure whether the verify_header return value is well defined beyond
-> just boolean.
+> I checked briefly (by hand) and it seems fine, it's assigned to the
+> function pointer, which only has two callers on the _kern.c side.
+> 
+> johannes
 
-                                header_check = vp->verify_header(
-                                        vp->header_rxbuffer, skb, vp);
 
-                              if (header_check < 0) {
+                               header_check = vp->verify_header(
+                                        mmsg_vector->msg_hdr.msg_iov->iov_base,
+                                        skb,
+                                        vp
+                                );
+                                if (header_check < 0) {
+                                /* Overlay header failed to verify - discard.
+                                 * We can actually keep this skb and reuse it,
+                                 * but that will make the prep logic too
+                                 * complex.
+                                 */
                                         dev_kfree_skb_irq(skb);
-                                        vp->dev->stats.rx_dropped++;
                                         vp->estats.rx_encaps_errors++;
-                                        return 0;
+                                        (*skbuff_vector) = NULL;
+                                        mmsg_vector++;
+                                        skbuff_vector++;
+                                        continue;
                                 }
                                 if (header_check > 0) {
                                         vp->estats.rx_csum_offload_good++;
@@ -169,7 +201,10 @@ On Thu, Oct 15, 2026 at 01:19:22PM -0400, Willem de Bruijn wrote:
                                 }
 
 
-apparently? maybe i misunderstand.
+
+so any negative is fine, but if we return 1 then it will force to CHECKSUM_UNNECESSARY
+which I am not sure is what was intended?
+
 
 -- 
 MST
