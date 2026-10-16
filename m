@@ -4,112 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07872CC6B38
-	for <linux-um@archiver.kernel.org>; Fri, 16 Oct 2026 09:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BEEBCCA462
+	for <linux-um@archiver.kernel.org>; Fri, 16 Oct 2026 09:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=; b=3eL7wlI2e2lgNCceEeFHH+PGCG
-	Pt8bIRNfAHa0rGBL6d5xOvc4KVrt8o0mDcT//DmXKu5AzjLOf47QO3bfkc+dxmSBgqxM7n6FsQwIT
-	AtERrbVw7ytu+wRod4n3AruDU9xWtyHw2cb+1Ll8j7aYHfhP0h/icqM63enciPgN9t7ZCpzIDTaY6
-	FS5fgSErUr8bfBvqvIrY53tikNC0Ay+gj0UT4dEkMWBcv+tKda0GZ2NJP4fzE7vLPhjDKOBwsg/TQ
-	51tY9wGhGisOFx41pxOFoUeFW9Pd69zvgKKcYbNqIIKIMJ3AxVINwHQ7mEeZEh1A0Xv28AEhkuH41
-	ENpyBjBA==;
+	bh=f/uMLjCIp2jROhfmRYKxJtNgmOf39cw4XgLVOb0p/jw=; b=FNGszH9q+n5X3meYv4TetqvoMJ
+	Al8hkve/L2ETjScsDByGIonRBCsTwlSv9SvkO7ojcLrOqRKX3EVRPCT3J2rPLLajqIdqNbifidy4G
+	s61kk8pETViwljHsLO72nT+4Fd8klX3vbiO1NbRiyVIIZD8Aik+70WqtO4HRLCMIXas+r6DlII416
+	j9s5tlBKuPYPqaXihmhmUStveM7cLR7BHR6aJpJmzCbL0c6P+sAUZ4XChtypJ2VTqGv1SUDlFdKiA
+	1jFmZdKrofSrTCI261/0lRdGIj938CtlkuIonmRipWSjJSegXCVPS3eg76ToBTlAEl7Y4GGsU/8ZD
+	FHcvOHyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHeT7-00000002WTq-3eSy;
-	Fri, 16 Oct 2026 09:43:17 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1xHeUV-00000002Wi9-1BOF;
+	Fri, 16 Oct 2026 09:44:43 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xHeT5-00000002WTE-1oGd
+	id 1xHeUS-00000002WhL-2L5y
 	for linux-um@lists.infradead.org;
-	Fri, 16 Oct 2026 09:43:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1792143793;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=;
-	b=ITGRvE4oUiBAQFl660cMWj4/GzXPJSPLXhho6Jd+M1sBhvZ/LGFDGYuphrQMlNDhQQKAyc
-	clKbw6gZNrhImOEPGGtnSSTk1t3se/etUEOi/eaxhArMYF+DAAsaBD9DtyAusSV0Od3S7E
-	dYav2hjkm+PvBe73ncil4h2G7MjFkjo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-459-NDKRNVo8NeGLmM1K1TCXnw-1; Fri, 16 Oct 2026 09:43:12 +0000
-X-MC-Unique: NDKRNVo8NeGLmM1K1TCXnw-1
-X-Mimecast-MFC-AGG-ID: NDKRNVo8NeGLmM1K1TCXnw_1792143791
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4a16db51147so40252615e9.3
-        for <linux-um@lists.infradead.org>; Fri, 16 Oct 2026 02:43:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792143791; x=1792748591;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=GSsULpZ3pzORBRFAex1hz9lIvJDrQuTo9GJjL73TxMQ=;
-        b=ziizWcrhBe9KwqJDVHUa6SH0lUt1iRdinMv/nLZjXDxyVnV7BjuPfnejhpVhSXkGrm
-         9syifXMogWDpLZZX+dqSVBnOYU9dclaxW+1LvbYWkbgvM2i9llVJBPOeXsG75gUx15Qe
-         IIfNuYMQtN6HvhcfZG3qeZC+NUHC9/njs9e7fa2wpVIUqMIFG5VGK4Ggn2BOaKBMBG8D
-         Y7MRoDn9EYMzH82DPb6awl4VFKy/dONIzSL+Tgg9d9Q7t2DjwngOOWfsffeYlaY/8z8c
-         eqv6zqKvcfXr759jldX8DSpNnx2AvlAfZ7WqCu2LoWtRFP+MDLa5Lde4tWuBmmyrSaOr
-         ehAQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwJW17Qfl9XRV7ZuKIuDvSAo0BdplcrbfmTwvVXPwKXJnsnynku3Ex48oNgI1jdgUa17YeS1shsWQ==@lists.infradead.org
-X-Gm-Message-State: AFq9FYICQqMWsJtm/JTEEPBxpk8VpclX9nkiHeW1omAkSO82VIaogUfH
-	3M4WWBX6txHoroaTbOBl6autlS3UfcNxGYJGNQC2oVxN8NQhdfOc4qWaLYc/ddBQSf589Rc6Na5
-	GKkyd+vbSiUXOUFRHMbcD2R+HBBP94HcDNBV6sCwPaAi8DSSIVV4XR9ucPZtnW5uK/w==
-X-Gm-Gg: AYBFou2Lla0KJHK9YgHaUPPCSlJeNlWx7JN4BWhop/t5k6si1crBTQSS8lJ8Xw3myaC
-	/l/xIZ4DFSIj1vbX3WyDfH8IVnghgBQ3R1Rsq11g4Wy5j3B4T2fKzH1SlWdYVlvwUdutTlMeflq
-	CIzj60lfnrrpUtPeC8mBlP/m29xjrhDT/oeKEOdcbNHc9naW0Kwd9agUTuUxDw+gwKy+I/NENX/
-	RLIsACVXztCa5X/itGA20bTv1KI9uR+GtT2sdwMcF5MmC0Ru006eC+dgiuqqAhTwLIEL9SM/MnA
-	jv5S32hOvf53c0o1jkjMnkRu7QgYIjVF29z8DxiTUvn1F/jmr4e8s+RuQKnMGIfoHRMVSA==
-X-Received: by 2002:a05:600c:6388:b0:4a1:6f78:8419 with SMTP id 5b1f17b1804b1-4a18e3ee8f9mr441048045e9.0.1792143791194;
-        Fri, 16 Oct 2026 02:43:11 -0700 (PDT)
-X-Received: by 2002:a05:600c:6388:b0:4a1:6f78:8419 with SMTP id 5b1f17b1804b1-4a18e3ee8f9mr441047565e9.0.1792143790656;
-        Fri, 16 Oct 2026 02:43:10 -0700 (PDT)
-Received: from redhat.com ([2a0d:6fc0:3fd7:5300:3d6b:52a4:a23f:9d0b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfd4c5957sm3899658f8f.9.2026.10.16.02.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 02:43:09 -0700 (PDT)
-Date: Fri, 16 Oct 2026 05:43:06 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-kernel@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowangio@gmail.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, virtualization@lists.linux.dev,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Max Krasnyansky <maxk@qualcomm.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	linux-um@lists.infradead.org
+	Fri, 16 Oct 2026 09:44:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=f/uMLjCIp2jROhfmRYKxJtNgmOf39cw4XgLVOb0p/jw=;
+	t=1792143880; x=1793353480; b=bbU9IMlfVyNylOCU2e3WapG20ov6p8iJtJicVuJ1533LQiE
+	xUH1ce3LFN9cz2OG0uXYq821OMwAvHSGkomgEnq2LeLPtWnO+9SipO3gccKJHNxJsWazq4Www7Aho
+	RXWKneGuDTMKHQWYvHAIin+6gUl6HvN5/AdDoaVe15Inw71stljqyZZ0+f73+LQpSN//oxoPwQp8b
+	jGBW7Xow9k7GmD15tpM5dp9nSUH3TuwVKGlhEcVs1WaD4rr1LLM7mhnJRXsUGsguHoIR6Ws3yrG3L
+	gDfnAOQYGi8PhqJDfx/dFf/4KCLfv2CsA4IO8HBQsb7SgSpSkUroWrSTU675DyDw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1xHeU5-00000005eqa-3gLI;
+	Fri, 16 Oct 2026 11:44:18 +0200
+Message-ID: <18ba10ec7aa6659ee4711f8dd3f3138e314e4af6.camel@sipsolutions.net>
 Subject: Re: [PATCH net-next v2 2/7] um: vector: honor virtio net hdr
  conversion failures
-Message-ID: <20261016054142-mutt-send-email-mst@kernel.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Willem de Bruijn	
+ <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowangio@gmail.com>, 
+ Eugenio =?ISO-8859-1?Q?P=E9rez?=	 <eperezma@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Andrew Lunn	 <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet	 <edumazet@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni	 <pabeni@redhat.com>,
+ netdev@vger.kernel.org, virtualization@lists.linux.dev,  Rusty Russell
+ <rusty@rustcorp.com.au>, Max Krasnyansky <maxk@qualcomm.com>, Richard
+ Weinberger <richard@nod.at>,  Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Date: Fri, 16 Oct 2026 11:44:16 +0200
+In-Reply-To: <20261016054142-mutt-send-email-mst@kernel.org>
 References: <cover.1792067836.git.mst@redhat.com>
- <6716834884238de0ab1ab313004044122aa2adbf.1792067836.git.mst@redhat.com>
- <8420ba1fe84fc7d105825026802d4ad10d44af71.camel@sipsolutions.net>
- <20261015085119-mutt-send-email-mst@kernel.org>
- <64ee40b97fc447bbf3abb80250ad0d9f3cf3c6fa.camel@sipsolutions.net>
+	 <6716834884238de0ab1ab313004044122aa2adbf.1792067836.git.mst@redhat.com>
+	 <8420ba1fe84fc7d105825026802d4ad10d44af71.camel@sipsolutions.net>
+	 <20261015085119-mutt-send-email-mst@kernel.org>
+	 <64ee40b97fc447bbf3abb80250ad0d9f3cf3c6fa.camel@sipsolutions.net>
+	 <20261016054142-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-2.fc44) 
 MIME-Version: 1.0
-In-Reply-To: <64ee40b97fc447bbf3abb80250ad0d9f3cf3c6fa.camel@sipsolutions.net>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: bU-ppUPsGepG2BzSxaxHQnddSVkIbWckGrPlBRejtT8_1792143791
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261016_024315_549946_0AB969D3 
-X-CRM114-Status: GOOD (  27.42  )
+X-CRM114-CacheID: sfid-20261016_024440_608637_80F683BF 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,89 +87,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 15, 2026 at 02:55:23PM +0200, Johannes Berg wrote:
-> On Thu, 2026-10-15 at 08:52 -0400, Michael S. Tsirkin wrote:
-> > On Thu, Oct 15, 2026 at 02:47:01PM +0200, Johannes Berg wrote:
-> > > On Thu, 2026-10-15 at 08:41 -0400, Michael S. Tsirkin wrote:
-> > > > virtio_net_hdr_to_skb() refuses packets whose checksum metadata
-> > > > it cannot make sense of, but the vector raw transport ignored
-> > > > its return value: rejected packets went on into the stack with
-> > > > their metadata unvalidated.
-> > > > 
-> > > > Propagate the failure.
-> > > > 
-> > > > Assisted-by: LLM
-> > > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > > > ---
-> > > >  arch/um/drivers/vector_transports.c | 4 +++-
-> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-> > > > index e1fb2a76fdff..8b7548458663 100644
-> > > > --- a/arch/um/drivers/vector_transports.c
-> > > > +++ b/arch/um/drivers/vector_transports.c
-> > > > @@ -210,7 +210,9 @@ static int raw_verify_header(
-> > > >  		return 1;
-> > > >  
-> > > >  	skb_set_network_header(skb, ETH_HLEN);
-> > > > -	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_endian());
-> > > > +	if (virtio_net_hdr_to_skb(skb, vheader,
-> > > > +			virtio_legacy_is_little_endian()) < 0)
-> > > > +		return -1;
-> > > >  	return 0;
-> > > > 
-> > > 
-> > > Seems it'd be simpler to just
-> > > 
-> > > 	return virtio_net_hdr_to_skb(...);
-> > > 
-> > > As far as I can tell, the function only returns -EINVAL or 0 (never a
-> > > positive value), and the caller only cares about negative (error) or
-> > > positive (no checksum needed), so that'd be equivalent?
-> > > 
-> > > johannes
-> > 
-> > if raw_verify_header can safely return any errno - i did not want to
-> > audit it.
-> 
-> You already used an LLM and still didn't want to? ;-)
-> 
-> I checked briefly (by hand) and it seems fine, it's assigned to the
-> function pointer, which only has two callers on the _kern.c side.
-> 
-> johannes
+On Fri, 2026-10-16 at 05:43 -0400, Michael S. Tsirkin wrote:
+>=20
+> > > > > -	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_end=
+ian());
+> > > > > +	if (virtio_net_hdr_to_skb(skb, vheader,
+> > > > > +			virtio_legacy_is_little_endian()) < 0)
+> > > > > +		return -1;
+> > > > >  	return 0;
+> > > > >=20
+> > > >=20
+> > > > Seems it'd be simpler to just
+> > > >=20
+> > > > 	return virtio_net_hdr_to_skb(...);
+> > > >=20
+> > > > As far as I can tell, the function only returns -EINVAL or 0 (never=
+ a
+> > > > positive value), and the caller only cares about negative (error) o=
+r
+> > > > positive (no checksum needed), so that'd be equivalent?
+> > > >=20
+> > > > johannes
+> > >=20
+> > > if raw_verify_header can safely return any errno - i did not want to
+> > > audit it.
+> >=20
+> > You already used an LLM and still didn't want to? ;-)
+> >=20
+> > I checked briefly (by hand) and it seems fine, it's assigned to the
+> > function pointer, which only has two callers on the _kern.c side.
+> >=20
+> > johannes
+>=20
+>=20
+>                                header_check =3D vp->verify_header(
+>                                         mmsg_vector->msg_hdr.msg_iov->iov=
+_base,
+>                                         skb,
+>                                         vp
+>                                 );
+>                                 if (header_check < 0) {
+>                                 /* Overlay header failed to verify - disc=
+ard.
+>                                  * We can actually keep this skb and reus=
+e it,
+>                                  * but that will make the prep logic too
+>                                  * complex.
+>                                  */
+>                                         dev_kfree_skb_irq(skb);
+>                                         vp->estats.rx_encaps_errors++;
+>                                         (*skbuff_vector) =3D NULL;
+>                                         mmsg_vector++;
+>                                         skbuff_vector++;
+>                                         continue;
+>                                 }
+>                                 if (header_check > 0) {
+>                                         vp->estats.rx_csum_offload_good++=
+;
+>                                         skb->ip_summed =3D CHECKSUM_UNNEC=
+ESSARY;
+>                                 }
+>=20
+>=20
+>=20
+> so any negative is fine, but if we return 1 then it will force to CHECKSU=
+M_UNNECESSARY
+> which I am not sure is what was intended?
+>=20
+Right, but virtio_net_hdr_to_skb() cannot return 1, only 0 on success
+and -ERROR on failure?
 
-
-                               header_check = vp->verify_header(
-                                        mmsg_vector->msg_hdr.msg_iov->iov_base,
-                                        skb,
-                                        vp
-                                );
-                                if (header_check < 0) {
-                                /* Overlay header failed to verify - discard.
-                                 * We can actually keep this skb and reuse it,
-                                 * but that will make the prep logic too
-                                 * complex.
-                                 */
-                                        dev_kfree_skb_irq(skb);
-                                        vp->estats.rx_encaps_errors++;
-                                        (*skbuff_vector) = NULL;
-                                        mmsg_vector++;
-                                        skbuff_vector++;
-                                        continue;
-                                }
-                                if (header_check > 0) {
-                                        vp->estats.rx_csum_offload_good++;
-                                        skb->ip_summed = CHECKSUM_UNNECESSARY;
-                                }
-
-
-
-so any negative is fine, but if we return 1 then it will force to CHECKSUM_UNNECESSARY
-which I am not sure is what was intended?
-
-
--- 
-MST
-
+johannes
 
