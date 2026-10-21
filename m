@@ -2,59 +2,58 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C7B606A32F
-	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 11:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E40CB60A382F
+	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 11:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=MNSLMBBn;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CYoDM5Pa
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NXXV7FH1;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VAQEqFAq
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ni/h9FbFXhjgUwMn3rSI6p6WKM6vJUoZQ7p4kXWNy5U=; b=MNSLMBBncFL9Rx
-	bU1Z6fdLUULoEaCFvUpJZ4lvcatxbTSs/FQesyFrkh+Jn95iVh2oF40oIaft8TfXAptWmapFeRZ56
-	ho0b8tuCiVPj8usRLbxWibDtKknIKdTznlUh4zqnNOILfFhzOaYIDZTebparspAoGoCSoflVtqcQ0
-	6GTo9Bkja3Th0oe6E2kpUMeCJdZ6FIMjZXuTdB1lrYRIm46uQPCSJjJxNEUEvYRZjLiuE13GmnKI+
-	9be157ZIoLnQCTzywmb66eNzR+//Pt8PYlXBXiCBXRcRIKqjuWE+fWBSo4DxTqTX4gE7XCg7nGUkF
-	sFgONlzwDgapW6XNCOaw==;
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=v5h8ao2sl0gSDsVo7bAD/bZpeGjj83T87XQIb40RcPU=; b=NXXV7FH1vvCJGoV1UFFtEyeDq3
+	RV7T1nsLNVAzTzStSMJT5St4PZ7YACfZ/BBeUnlkKAZr6OuP8DI1riZc+0ZhuFyw0PofmA3X90dEU
+	1938KuWbTYAmIZSBbm+ohmZDpBUiBLu1n6hIfmsQKJYnQXpaO9pVRGV/hrZAWcTL/gEXNE5K+en7m
+	lGDPKdUDReMwatRv31f0eIMDlPgds3PK3b8NjSul2FgLbQ2ba0oymJMCnF5p0k9wVYXL2vWR93OHl
+	n3iKwryjhS+p5Zg/GxofXvxdcI8pRPf7ZzQMrlNrcfBWrn2nKVZ0cGXlCuQF3c4dfwqwDeXbQkOeG
+	5+z0WW8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJUn1-0000000Bk07-26jp;
-	Wed, 21 Oct 2026 11:47:27 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xJUnj-0000000BkE3-2ptL;
+	Wed, 21 Oct 2026 11:48:11 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJUmz-0000000BjzF-3S90;
-	Wed, 21 Oct 2026 11:47:25 +0000
+	id 1xJUnh-0000000BkDP-3GWh
+	for linux-um@lists.infradead.org;
+	Wed, 21 Oct 2026 11:48:09 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 29C9B60A81;
-	Wed, 21 Oct 2026 11:47:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6273E1F000C9;
-	Wed, 21 Oct 2026 11:47:11 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 88EEE4021A;
+	Wed, 21 Oct 2026 11:48:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DA461F000C6;
+	Wed, 21 Oct 2026 11:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792583243;
-	bh=ni/h9FbFXhjgUwMn3rSI6p6WKM6vJUoZQ7p4kXWNy5U=;
-	h=From:Subject:Date:To:Cc;
-	b=CYoDM5Pavgm81Nyqql/3raaF54bJHC58QBIN2LWkciYwVz/5h0B59Mzqf+MizWhuG
-	 jz1jqdZBrCVcOiuBlNKByULWJ1opgAfsu6rGbrXchF6lDKL0n3E7YBPLDmlvH4SomP
-	 EwK6xf91kUvpKSYBLoN93tqkZEIIM+EQDd/MtGC+CkW8ELRb6JoLU0YWJID6o1xYYu
-	 ytarFAlqWQwFi5zehp/FR0wZedTqnzpswlsUkOJFSN4QGs/PJzNH/hWIdpDpjg095M
-	 iA9tNi2+MjR+D9YSXEgR0LJTuWJVOUDhF/C3a3+5nVsnJMgWNwZEK8lVMtS2+tpncg
-	 hi/X40TnN+WtA==
+	s=k20260515; t=1792583289;
+	bh=v5h8ao2sl0gSDsVo7bAD/bZpeGjj83T87XQIb40RcPU=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=VAQEqFAqztqAv3qcxYHFlzZ1jnwzQHztkQm2Ku6wB0q3Zn6zx9WSz/DftIPSC4uQW
+	 UQEGhZzE8CTFEjNhoxKw6waO8eavv3OLCCMKLx1GMsRQ9ICbb+Mox0wzsrZ1867sBL
+	 aruuh8VMrFgTIUoyxKK4IXRW4dLn158hDVknl84KDCH0v2DbNKnSO/snpqe1npTURl
+	 GRaxsmZQIx2WoRZi/tK+3tf9KSujh1BQnvJPcZk4NjeHAeE5TaNft5yEaxTDGnru43
+	 KMZoUuUMx6pEJeQlPxds41+IXvnl0aoR1n+LeH4ZuyqzqPYAlaVVAINqpFtQKt6k6I
+	 FLmCIoTGX4RiQ==
 From: "Harry Yoo (Meta)" <harry@kernel.org>
-Subject: [PATCH slab/for-next 00/14] mm/slab: mandate SLAB_MAY_ACCOUNT for
- __GFP_ACCOUNT allocations to avoid wasting memory for slab metadata
-Date: Wed, 21 Oct 2026 12:46:41 +0100
-Message-Id: <20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-0-096800aa3330@kernel.org>
+Date: Wed, 21 Oct 2026 12:46:53 +0100
+Subject: [PATCH slab/for-next 12/14] hostfs: specify SLAB_MAY_ACCOUNT for
+ inode cache
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIACGm2GoC/yWN2w7CIBBEf6XZZzf2go31VxofFliUhkIDqE2a/
- rtUHyczZ84GiaPlBLdqg8hvm2zwJTSnCtST/IPR6pKhrdu+qRuBM8/kXFC4xGBQB5/xQykzJkc
- yyAl5zWWUSVMm7IQZRMdm6C9XKJ9LZGPXn2+EgzibENEXBu7/Or3kxCofTtj3Lz+lqCygAAAA
-X-Change-ID: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
+Message-Id: <20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-12-096800aa3330@kernel.org>
+References: <20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-0-096800aa3330@kernel.org>
+In-Reply-To: <20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-0-096800aa3330@kernel.org>
 To: Vlastimil Babka <vbabka@kernel.org>, 
  Andrew Morton <akpm@linux-foundation.org>, 
  Suren Baghdasaryan <surenb@google.com>, 
@@ -65,51 +64,9 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>, Muchun Song <muchun.song@linux.dev>, 
  Hao Ge <hao.ge@linux.dev>, Pedro Falcato <pfalcato@suse.de>, 
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
- "Harry Yoo (Meta)" <harry@kernel.org>, 
- "Liam R. Howlett" <liam@infradead.org>, Alice Ryhl <aliceryhl@google.com>, 
- Andrew Ballance <andrewjballance@gmail.com>, maple-tree@lists.infradead.org, 
- Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemb@google.com>, 
- Mina Almasry <almasrymina@google.com>, 
- =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Jiayuan Chen <jiayuan.chen@linux.dev>, netdev@vger.kernel.org, 
- Kees Cook <kees@kernel.org>, David Hildenbrand <david@kernel.org>, 
- Lorenzo Stoakes <ljs@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
- Michal Hocko <mhocko@suse.com>, Ingo Molnar <mingo@redhat.com>, 
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
- Vincent Guittot <vincent.guittot@linaro.org>, 
- Dietmar Eggemann <dietmar.eggemann@arm.com>, 
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
- K Prateek Nayak <kprateek.nayak@amd.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Mark Rutland <mark.rutland@arm.com>, 
- Anshuman Khandual <anshuman.khandual@arm.com>, 
- linux-arm-kernel@lists.infradead.org, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- linuxppc-dev@lists.ozlabs.org, Robin Murphy <robin.murphy@arm.com>, 
- "Joerg Roedel (AMD)" <joro@8bytes.org>, 
- Niklas Schnelle <schnelle@linux.ibm.com>, 
- Matthew Rosato <mjrosato@linux.ibm.com>, 
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
- Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, iommu@lists.linux.dev, 
- linux-s390@vger.kernel.org, linux-sunxi@lists.linux.dev, 
- Amir Goldstein <amir73il@gmail.com>, 
- Casey Schaufler <casey@schaufler-ca.com>, Paul Moore <paul@paul-moore.com>, 
- James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
- linux-security-module@vger.kernel.org, Richard Weinberger <richard@nod.at>, 
+ "Harry Yoo (Meta)" <harry@kernel.org>, Richard Weinberger <richard@nod.at>, 
  Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
- cgroups@vger.kernel.org
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
 X-Mailer: b4 0.16.0
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -124,126 +81,43 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=4.0.1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The purpose of this series is to convert existing slab users that
-specify __GFP_ACCOUNT on allocations to specify SLAB_MAY_ACCOUNT on
-cache creation, to reduce memory waste for slab metadata with
-CONFIG_MEMCG=y && CONFIG_MEM_ALLOC_PROFILING=y.
+hostfs inodes are allocated with GFP_KERNEL_ACCOUNT. Specify
+SLAB_MAY_ACCOUNT when the object may be charged to a memcg.
+__GFP_ACCOUNT without SLAB_MAY_ACCOUNT will not be allowed.
 
-Currently, there are two ways to charge slab objects to memory
-cgroups: 1) specify SLAB_ACCOUNT during cache creation, or 2) specify
-__GFP_ACCOUNT on allocation. The latter method made it impossible to
-assume that certain slab caches are never charged to memory cgroups.
+Path: lookup -> hostfs_iget() -> hostfs_alloc_inode()
+  -> alloc_inode_sb(sb, hostfs_inode_cache, GFP_KERNEL_ACCOUNT)
 
-Since commit d4404b0f5b8b ("mm/slab: stop allocating objcg pointers when
-unnecessary"), slabobj_ext allocates the space for the objcg pointer
-only for caches with SLAB_MAY_ACCOUNT. However, kmem_cache_create() sets
-the flag on every cache, because any cache may be used with
-__GFP_ACCOUNT.
-
-As a result, sizeof(struct obj_cgroup *) bytes are wasted for each
-unaccounted slab object when both memalloc profiling and memcg are
-enabled. This is suboptimal when memalloc profiling is used to
-profile memory allocations on production.
-
-So, let's make memcg charging opt-in and stop wasting memory!
-
-New rule for slab users: a cache must specify SLAB_MAY_ACCOUNT
-(explicitly or implied by SLAB_ACCOUNT) for its objects to be charged
-to a memcg. Otherwise __GFP_ACCOUNT is ignored and triggers a warning on
-debug kernels (CONFIG_DEBUG_VM=y).
-
-The approach is quite straightforward, but converting all caches that
-may pass __GFP_ACCOUNT without SLAB_ACCOUNT at once is not.
-As a best-effort approach, I swept the whole tree (with help of an
-LLM) for paths that pass __GFP_ACCOUNT into slab allocations either
-directly or indirectly.
-
-While I tried to make sure the sweep is exhaustive, there can be a
-missing conversion. However that is not a correctness problem:
-the objects are just no longer charged to memcgs. Patch 13 adds
-VM_WARN_ON_ONCE in __memcg_slab_post_alloc_hook() to catch such a
-missing conversion.
-
-Patch 1 allows passing SLAB_MAY_ACCOUNT to kmem_cache_create(),
-patches 2-12 specify SLAB_MAY_ACCOUNT for the caches found by
-the sweep, and patch 14 stops setting SLAB_MAY_ACCOUNT on all caches.
-
-On an idle x86 VM with both memalloc profiling and memcg enabled,
-slabobj_ext memory (the alloc_slab_obj_exts entry in /proc/allocinfo)
-drops from 1,280KB to 910KB (-29%) after boot. The savings are expected
-to be larger on real workloads, which allocate far more unaccounted slab
-objects (8 bytes per unaccounted slab object).
-
-Each tested cache was verified with the warning in patch 13:
-I confirmed that 1) the warning is triggered without the conversion,
-and 2) specifying SLAB_MAY_ACCOUNT resolves it. However I could not test
-io-pgtable_armv7s_l2 and sun50i's pt_pool caches due to lack of the
-hardware and emulation support. So they are compile-tested only.
-
-  cache                  tested  environment
-  ---------------------  ------  -----------------------
-  radix_tree_node        yes     x86
-  maple_node             yes     x86
-  buffer_head            yes     x86
-  skbuff_head_cache      yes     x86
-  fanotify_*_event       yes     x86
-  smack_rule             yes     x86
-  io-pgtable_armv7s_l2   no      compile-tested only
-  thread_stack           yes     ppc64le (64K pages)
-  pgd_cache (arm64)      yes     arm64 (64K pages)
-  PGT_CACHE (powerpc)    yes     ppc64le
-  PCI_DMA_*_tables       yes     s390x (zPCI + vfio)
-  hostfs_inode_cache     yes     UML
-  sun50i pt_pool         no      compile-tested only
-
+Assisted-by: LLM
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
 Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
 ---
-Harry Yoo (Meta) (14):
-      mm/slab: allow passing SLAB_MAY_ACCOUNT to kmem_cache_create()
-      lib/maple_tree: specify SLAB_MAY_ACCOUNT for maple_node cache
-      lib/xarray: specify SLAB_MAY_ACCOUNT for radix_tree_node cache
-      fs/buffer: specify SLAB_MAY_ACCOUNT for buffer_head cache
-      net: skbuff: specify SLAB_MAY_ACCOUNT for skbuff_head_cache
-      kernel/fork: specify SLAB_MAY_ACCOUNT for thread_stack cache
-      arm64/mm: specify SLAB_MAY_ACCOUNT for pgd_cache
-      powerpc/mm: specify SLAB_MAY_ACCOUNT for pgtable caches
-      iommu: specify SLAB_MAY_ACCOUNT for slab-backed page table caches
-      fanotify: specify SLAB_MAY_ACCOUNT for event caches
-      smack: specify SLAB_MAY_ACCOUNT for smack_rule cache
-      hostfs: specify SLAB_MAY_ACCOUNT for inode cache
-      mm/memcontrol: do not allow charging objects without SLAB_MAY_ACCOUNT
-      mm/slab: do not set SLAB_MAY_ACCOUNT for all caches
+ fs/hostfs/hostfs_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm64/mm/pgd.c                |  2 +-
- arch/powerpc/mm/init-common.c      |  3 ++-
- drivers/iommu/io-pgtable-arm-v7s.c |  2 +-
- drivers/iommu/s390-iommu.c         |  4 ++--
- drivers/iommu/sun50i-iommu.c       |  3 ++-
- fs/buffer.c                        |  2 +-
- fs/hostfs/hostfs_kern.c            |  2 +-
- fs/notify/fanotify/fanotify_user.c | 10 ++++++----
- include/linux/slab.h               | 16 +++++++++++++---
- kernel/fork.c                      |  3 ++-
- lib/maple_tree.c                   |  2 +-
- lib/radix-tree.c                   |  2 +-
- mm/memcontrol.c                    |  6 ++++++
- mm/slab.h                          |  2 +-
- mm/slab_common.c                   |  8 +++-----
- net/core/skbuff.c                  |  2 +-
- security/smack/smack_lsm.c         |  2 +-
- 17 files changed, 45 insertions(+), 26 deletions(-)
----
-base-commit: d15d7703166daf7bd62c844a3cb1b3a6279adb4c
-change-id: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 7add056d47d8..2d55f53569ca 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -1078,7 +1078,7 @@ MODULE_ALIAS_FS("hostfs");
+ 
+ static int __init init_hostfs(void)
+ {
+-	hostfs_inode_cache = KMEM_CACHE(hostfs_inode_info, 0);
++	hostfs_inode_cache = KMEM_CACHE(hostfs_inode_info, SLAB_MAY_ACCOUNT);
+ 	if (!hostfs_inode_cache)
+ 		return -ENOMEM;
+ 	return register_filesystem(&hostfs_type);
 
-Best regards,
---  
-Cheers,
-Harry / Hyeonggon
+-- 
+2.54.0
 
 
