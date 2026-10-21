@@ -2,115 +2,64 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09703606A31D
-	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 07:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBCE606A31C
+	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 08:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YekwFdz+;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=TD0dtnCG
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=w5WwevLN;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=sipsolutions.net header.i=@sipsolutions.net header.a=rsa-sha256 header.s=mail header.b=xE7xERJt
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8bDfpp7sAel4FSdNGE9WjbJ8LMrLDJQ/k3zaoUEgNSo=; b=YekwFdz+57ybjeBAeLy0Tvu8Qi
-	O+oGHpQWa5hUxk8RNyIi1R17tT/seN7T5jJ0me8TgtmMAoJGa7mZTzIaBB3ffEwCoI6zZL4zJK+vJ
-	4Egtk2D5Hx9P0NVidw7MMTeyNza3Ik6H9jagbozocHPhsj8zEIlzLuUtxJVma0RqyQFWEQigWFX6X
-	BIRRu+XnCx3f5iuRvUMMrWaUjh0EsaalxQE5Fb7nm23gDsktbYFDfFnLr4P1TOLowEe+V9TVDmq4p
-	b2aSB1hk4MQxy7QCe9Kzkh6qNAW2Ujul6qIfGhBavkMy14E25xgbv6rk5CT63RV67b8PIqGiGDib9
-	BVkDXKzg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=TKa2RUGDTuW7MaQZY0caVZamvGGq5PFEOZyolx/azi4=; b=w5WwevLN4XTdgwgbg13CcdBy2I
+	j7BdvSCMGn9LV6boPyHzuGKIIt1h9vewmAf5OdCNiRRr7L7z8BZx35oHgYMTn/rWmL4kTyEDfKXTS
+	t5JmN3COvMktMaGbo9hd8KxY+DjgtY28xu+BrQ72Tvcg5I19e3gWRY+Az/OyOzKMv+ZCw21i8FDhp
+	LUhDr/+BTk2aBOYNIuyZLwPDpkyZ11j5je4+E9T/EJm4VybFlA/ap9mpnxNLos50Km6Q/UBgT/2Hu
+	e+NG15wn8WB0ew0gotIYNugWxOG9ttk2Rw5ZUnNkPtbJzZs1GuemB8lyb2YFGcZUd8ozHjf1IC/eT
+	yOt2Kdkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJR5I-0000000BGzX-3Fpl;
-	Wed, 21 Oct 2026 07:50:04 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1xJRTJ-0000000BJiY-120e;
+	Wed, 21 Oct 2026 08:14:53 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJR5G-0000000BGyp-1oCu
+	id 1xJRTG-0000000BJhr-0wOf
 	for linux-um@lists.infradead.org;
-	Wed, 21 Oct 2026 07:50:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1792569001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8bDfpp7sAel4FSdNGE9WjbJ8LMrLDJQ/k3zaoUEgNSo=;
-	b=TD0dtnCGzQ9C/5YVhNaaC7efxbD9XUGZuke7T0rOXaJGb33xtUSEvjZRruVvTv3kQwpFQf
-	FXaB51lNTj6rGkxCLmB5uqRC9YnjRHSoL8IV3rPQ/so+sXYrOoR4tSlKEHKkGos/sBdoVx
-	2sMEcGthkxiaPUhMiUzN9LhOHGzllys=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-368-fAF03aKmNXu61f1CyE108w-1; Wed, 21 Oct 2026 07:49:59 +0000
-X-MC-Unique: fAF03aKmNXu61f1CyE108w-1
-X-Mimecast-MFC-AGG-ID: fAF03aKmNXu61f1CyE108w_1792568998
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4a01ba12198so10632465e9.1
-        for <linux-um@lists.infradead.org>; Wed, 21 Oct 2026 00:49:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792568998; x=1793173798;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=8bDfpp7sAel4FSdNGE9WjbJ8LMrLDJQ/k3zaoUEgNSo=;
-        b=yvloscHow3Vn6OKg8tdWH53U/Fq34cL2XfFFFJBlXA1Bpr2B0uarBTHGsGCONOruCa
-         6YpGxkvXFBJ5ThNchzXua/S/Hpk2hHN7z0n0wqNvwy4xfbQ++TFC9qjE/43qZrX4J8ww
-         RS9Q4FvH4o+SbBjyxYRYW2CH78/xWavKe0/go/JuBNvkAR6pjqQ+HAd83geJFhtP99iY
-         HkkD2BFCemDPRslPBClSB4CuVceMohRbc5SA+Cf62AyhlElGBaQOyphY/VzkI4jf9YLy
-         KYGdI7Usxyy/ko/u33Rgzx86+iv2uxHp8YMr3HYgcbn+pSxrKAgvd/C+8aAoa12LKmva
-         clUw==
-X-Forwarded-Encrypted: i=1; AKwUvBwZ8ad3El+4rNU2wd33UeQ0EFVx+izzGSq+atlydemlSWuo5LxzqlIDmFUqfsrXljfB92FNj3ULhg==@lists.infradead.org
-X-Gm-Message-State: AFq9FYJ+BrrT/PaTpVqQcCch6V9Uda8fQAJrpQLxpRdU5TFjB7PjgQpu
-	tIbSmmtYr8NE/xCon5KMdDvTHIBk56WnU0i9S25w0UNI/X6DdkasWs1Ysb9NHofNnOtPiRHXyeb
-	JiLoH+aXpNYovPkK7OkFgF3FsvRxrRazvWdjZkVYSNcw18S0AYm3dMyDTr5cCBDnCsA==
-X-Gm-Gg: AYBFou2p3qyB1MNd73oE1UVq2ONrYtFNw1NnSeHGLusk/hBRqOFRDIXgfASXrNYkLHL
-	CyH2o5ZIC4wCGU1l/XbWIeeAg4+O8mgS1RPmoxZ8CewxGkHd9+WDKHC0Oql2KhMxJ4aYf4JWowc
-	DvjX4pUoNM5idDv3KQdo9XW51DBIK1pHpMb0C9guUl5iNMYsbmjcEppZuuC5ZcyqULnEUf76sAP
-	6IWuEFMNdeTQ5nd9XKpfd2ET2RDdLSZLA83/7sKM89vQY+xv6p2bx3+nxFX0qCUNfI5SDawdY0e
-	CjyGZiAovnlQZnUgTLNgnYrcozB8T8CuaM+EBKf6H/xoMgqt/T10rFih9JkGjIMnFbUwsg==
-X-Received: by 2002:a05:600c:3f0d:b0:4a0:34a:588c with SMTP id 5b1f17b1804b1-4a1fdd29c19mr24760725e9.14.1792568998299;
-        Wed, 21 Oct 2026 00:49:58 -0700 (PDT)
-X-Received: by 2002:a05:600c:3f0d:b0:4a0:34a:588c with SMTP id 5b1f17b1804b1-4a1fdd29c19mr24759945e9.14.1792568997732;
-        Wed, 21 Oct 2026 00:49:57 -0700 (PDT)
-Received: from redhat.com ([2a0d:6fc0:3fd7:5300:3d6b:52a4:a23f:9d0b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1fc1060f3sm34363505e9.1.2026.10.21.00.49.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2026 00:49:49 -0700 (PDT)
-Date: Wed, 21 Oct 2026 03:49:45 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Chris Arges <carges@cloudflare.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Phil Sutter <phil@nwl.cc>, Jason Wang <jasowangio@gmail.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, virtualization@lists.linux.dev,
-	Max Krasnyansky <maxk@qualcomm.com>,
-	Rusty Russell <rusty@rustcorp.com.au>,
+	Wed, 21 Oct 2026 08:14:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=TKa2RUGDTuW7MaQZY0caVZamvGGq5PFEOZyolx/azi4=; t=1792570490; x=1793780090; 
+	b=xE7xERJtbWN42xd9Z4MnBzgRgpWovQ51Ag0AX/FiNG1w7cb+MkF9mx4O5PMVlTymXZhehKUWks+
+	8eJnoiNVLzx/tBtZdN1u/EC6M2ksuNq23rWXYAty5C+ATUOPG0en6cpGOMvKLAbzDNB5HtjOfM4xV
+	jI8+X+GWGEh3gdV7AQdWDjiYYhxIvswM5t7nwsybB5MgZyBxvlr/267lTDedT9nIXzGk/tAS2b6Q9
+	g3qYNiLv91UBFyj9DlpnK7qskjk5j05gvA++BWz/xt8izLbhxE1YvdSFAm52Dshi+dFgh/rV3YXM8
+	mGvXpJa6h6wJ8X6eJBxra2mw8BWbxb9v0JHg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1xJRTB-00000001uEY-1hd4;
+	Wed, 21 Oct 2026 10:14:46 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
 	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH net v4 2/7] um: vector: trim skbs before verifying the header
-Message-ID: <26741a9a64c28e8de6d13e04972d296d89e1c95d.1792565282.git.mst@redhat.com>
-References: <be251d104f881a309cfef150455efa128ebb101d.1792565282.git.mst@redhat.com>
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [GIT PULL] uml-for-7.4
+Date: Wed, 21 Oct 2026 10:13:21 +0200
+Message-ID: <20261021081440.697408-3-johannes@sipsolutions.net>
+X-Mailer: git-send-email 2.56.0
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <be251d104f881a309cfef150455efa128ebb101d.1792565282.git.mst@redhat.com>
-X-Mailer: git-send-email 2.51.2.2891.g4157995a80.dirty
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: fUI2-D0ZOeBrHSnm3c3SYks9Z1SHa8OINTV3Ocvy0GE_1792568998
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261021_005002_553303_6FB5E4EC 
-X-CRM114-Status: GOOD (  13.71  )
+X-CRM114-CacheID: sfid-20261021_011450_702368_49E1B56C 
+X-CRM114-Status: GOOD (  18.03  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,68 +71,193 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-22.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The vector receive path over-allocates the skb and only trims it
-to the received length after the transport header is verified.
+Hi Linus,
 
-A follow up patch will complete the packet checksum in software within
-virtio_net_hdr_to_skb so we need the packet trimmed (otherwise the
-checksum would be computed incorrectly over the unreceived tail of the
-buffer).
+The last couple of cycles were a lull for UML, in part
+because not _that_ much happened, and in part because
+we were all busy with "more important" things (*ahem*).
+We're back ;-) Still no huge changes, but we're adding
+the long-awaited NOMMU support this round.
 
-Trim first, so the import sees the packet as it was received.
+Please pull and let us know if there's any problem.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/um/drivers/vector_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks,
+johannes
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8a70b3a62553..1afbef78df72 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -865,6 +865,7 @@ static int vector_legacy_rx(struct vector_private *vp)
- 
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-+			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					vp->header_rxbuffer, skb, vp);
-@@ -879,7 +880,6 @@ static int vector_legacy_rx(struct vector_private *vp)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
-@@ -981,6 +981,8 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
- 		if (mmsg_vector->msg_len > vp->header_size) {
-+			pskb_trim(skb,
-+				mmsg_vector->msg_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					mmsg_vector->msg_hdr.msg_iov->iov_base,
-@@ -1005,8 +1007,6 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb,
--				mmsg_vector->msg_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			/*
- 			 * We do not need to lock on updating stats here
--- 
-MST
 
+
+The following changes since commit 93f51579e7df248780214094418f205253383cc5:
+
+  Linux 7.3-rc4 (2026-09-20 13:48:15 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.4
+
+for you to fetch changes up to 4ad423aa2108485f8bc5dde51fdf9c1ed979ee4b:
+
+  um: place large BSS inputs in an output section (2026-10-12 17:03:17 +0200)
+
+----------------------------------------------------------------
+ARCH=um updates:
+
+ - NOMMU support, mostly for mm/ testing
+
+   The only bigger change, we added support for building with
+   !CONFIG_MMU, mostly for testing, e.g. via kunit. Some new
+   selftests targetted to NOMMU are moving elsewhere, but are
+   runnable on ARCH=um without MMU.
+
+ - Tighter page permissions
+
+   Tighten page permissions to catch more bugs (ARCH=um is,
+   after all, often used for testing), and also mark __init
+   memory inaccessible for the same reason.
+
+ - Various maintenance/cleanups
+
+   Fix build on really old hosts, fix leaks, make the code a
+   bit more robust, header cleanups, typo fixes, the usual.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      um: vector: Use %pM format specifier for MAC addresses
+
+Benjamin Berg (1):
+      um: virtio-pci: free the IRQ message buffers
+
+Ethan Nelson-Moore (1):
+      x86/um: remove unused <asm/required-features.h> header
+
+Florian Fainelli (1):
+      um: Add definition of __NR_close_range for older host OSs
+
+Hajime Tazaki (7):
+      x86/um: nommu: elf loader for fdpic
+      um: decouple MMU specific code from the common part
+      um: nommu: memory handling
+      x86/um/vdso: nommu: vdso memory update
+      um: allow deselecting CONFIG_MMU
+      um: require MMU for UML PCI support
+      um: place large BSS inputs in an output section
+
+Hemanth Selam (1):
+      um: fix typo "hander" in comment
+
+Henry Barreto (1):
+      um: vector: avoid NULL queue dereference in legacy RX mode
+
+Johan Hovold (1):
+      um: virtio_uml: switch to dynamic root device
+
+Johannes Berg (14):
+      um: fix futex implementation
+      um: further decouple MMU related code
+      um: nommu: add SMP futex operations
+      um: nommu: add userspace runner processes
+      Documentation: um: document nommu UML
+      um: add perf-event support
+      um: link .lbss/.ldata/.lrodata correctly
+      um: make stub compilation more robust
+      um: improve checking for --no-warn-rwx-segments
+      um: move init text between __init_begin/end
+      um: mprotect() __init memory
+      um: use %pB to print functions in stack traces
+      um: time-travel: fix sched_yield() behaviour
+      um: fix shutdown __inittext access
+
+Maninder Singh (1):
+      um: take reference of stack before using it in get_wchan
+
+Michael Bommarito (2):
+      um: virtio_uml: fix heap overflow in vhost_user_get_config()
+      um: ubd: validate COW header fields before use
+
+Pengpeng Hou (3):
+      um: account for the separator in add_arg() bounds checking
+      um: mconsole: use bounded version string formatting
+      um: vector: reject too many interface arguments
+
+Sasha Levin (1):
+      um: Consolidate MAGIC_SYSRQ into generic Kconfig definition
+
+Shengzhuo Wei (1):
+      um: mconsole: Fix out-of-bounds read in mconsole_log()
+
+Tiwei Bie (2):
+      um: vector: Remove unnecessary NULL check in destroy_queue()
+      um: Tighten exec permissions on page mappings
+
+ Documentation/virt/index.rst            |   1 +
+ Documentation/virt/uml/nommu-uml.rst    |  54 ++++++++
+ arch/um/Kconfig                         |  40 +++---
+ arch/um/Makefile                        |   7 +-
+ arch/um/drivers/Kconfig                 |   3 +
+ arch/um/drivers/cow_user.c              |  34 ++++-
+ arch/um/drivers/mconsole_kern.c         |  14 +-
+ arch/um/drivers/vector_kern.c           |  37 +++--
+ arch/um/drivers/vector_user.c           |   3 +
+ arch/um/drivers/virtio_pcidev.c         |  19 ++-
+ arch/um/drivers/virtio_uml.c            |  26 ++--
+ arch/um/include/asm/common.lds.S        |   2 +
+ arch/um/include/asm/futex.h             |  53 +++++++
+ arch/um/include/asm/mmu.h               |   8 ++
+ arch/um/include/asm/mmu_context.h       |   2 +
+ arch/um/include/asm/perf_event.h        |   7 +
+ arch/um/include/asm/pgtable.h           |  25 ++--
+ arch/um/include/asm/ptrace-generic.h    |   6 +
+ arch/um/include/asm/tlbflush.h          |  20 +++
+ arch/um/include/asm/uaccess.h           |   6 +-
+ arch/um/include/shared/as-layout.h      |   3 +-
+ arch/um/include/shared/kern_util.h      |   3 +-
+ arch/um/include/shared/longjmp.h        |   3 +-
+ arch/um/include/shared/os.h             |   6 +-
+ arch/um/include/shared/skas/stub-data.h |   9 ++
+ arch/um/kernel/Makefile                 |   6 +-
+ arch/um/kernel/dyn.lds.S                |   9 +-
+ arch/um/kernel/mem-pgtable.c            |  55 ++++++++
+ arch/um/kernel/mem.c                    |  47 ++-----
+ arch/um/kernel/physmem.c                |   7 +
+ arch/um/kernel/process.c                |  23 +++-
+ arch/um/kernel/skas/Makefile            |  16 ++-
+ arch/um/kernel/skas/mmu.c               |  25 ++++
+ arch/um/kernel/skas/nommu.c             |  91 ++++++++++++
+ arch/um/kernel/skas/process.c           |  32 +----
+ arch/um/kernel/skas/syscall.c           |   5 +-
+ arch/um/kernel/skas/uaccess.c           | 134 +++++++-----------
+ arch/um/kernel/smp.c                    |   3 +-
+ arch/um/kernel/sysrq.c                  |   2 +-
+ arch/um/kernel/time.c                   |   3 +-
+ arch/um/kernel/tlb.c                    |   7 -
+ arch/um/kernel/trap-mmu.c               | 237 ++++++++++++++++++++++++++++++++
+ arch/um/kernel/trap-nommu.c             |  13 ++
+ arch/um/kernel/trap.c                   | 219 -----------------------------
+ arch/um/kernel/um_arch.c                |  11 +-
+ arch/um/kernel/uml.lds.S                |  11 +-
+ arch/um/os-Linux/main.c                 |  17 ++-
+ arch/um/os-Linux/signal.c               |   2 +-
+ arch/um/os-Linux/skas/process.c         |  11 +-
+ arch/x86/um/Makefile                    |   3 +
+ arch/x86/um/asm/elf.h                   |   8 +-
+ arch/x86/um/asm/required-features.h     |   9 --
+ arch/x86/um/vdso/vma.c                  |  13 +-
+ fs/Kconfig.binfmt                       |   2 +-
+ lib/Kconfig.debug                       |  10 +-
+ lib/kunit/Kconfig                       |   2 +-
+ 56 files changed, 907 insertions(+), 517 deletions(-)
+ create mode 100644 Documentation/virt/uml/nommu-uml.rst
+ create mode 100644 arch/um/include/asm/perf_event.h
+ create mode 100644 arch/um/kernel/mem-pgtable.c
+ create mode 100644 arch/um/kernel/skas/nommu.c
+ create mode 100644 arch/um/kernel/trap-mmu.c
+ create mode 100644 arch/um/kernel/trap-nommu.c
+ delete mode 100644 arch/x86/um/asm/required-features.h
 
