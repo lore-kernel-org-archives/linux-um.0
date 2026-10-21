@@ -2,65 +2,115 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBCE606A31C
-	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 08:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C7B606A32F
+	for <linux-um@archiver.kernel.org>; Wed, 21 Oct 2026 11:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=w5WwevLN;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=sipsolutions.net header.i=@sipsolutions.net header.a=rsa-sha256 header.s=mail header.b=xE7xERJt
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=MNSLMBBn;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CYoDM5Pa
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=TKa2RUGDTuW7MaQZY0caVZamvGGq5PFEOZyolx/azi4=; b=w5WwevLN4XTdgwgbg13CcdBy2I
-	j7BdvSCMGn9LV6boPyHzuGKIIt1h9vewmAf5OdCNiRRr7L7z8BZx35oHgYMTn/rWmL4kTyEDfKXTS
-	t5JmN3COvMktMaGbo9hd8KxY+DjgtY28xu+BrQ72Tvcg5I19e3gWRY+Az/OyOzKMv+ZCw21i8FDhp
-	LUhDr/+BTk2aBOYNIuyZLwPDpkyZ11j5je4+E9T/EJm4VybFlA/ap9mpnxNLos50Km6Q/UBgT/2Hu
-	e+NG15wn8WB0ew0gotIYNugWxOG9ttk2Rw5ZUnNkPtbJzZs1GuemB8lyb2YFGcZUd8ozHjf1IC/eT
-	yOt2Kdkg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ni/h9FbFXhjgUwMn3rSI6p6WKM6vJUoZQ7p4kXWNy5U=; b=MNSLMBBncFL9Rx
+	bU1Z6fdLUULoEaCFvUpJZ4lvcatxbTSs/FQesyFrkh+Jn95iVh2oF40oIaft8TfXAptWmapFeRZ56
+	ho0b8tuCiVPj8usRLbxWibDtKknIKdTznlUh4zqnNOILfFhzOaYIDZTebparspAoGoCSoflVtqcQ0
+	6GTo9Bkja3Th0oe6E2kpUMeCJdZ6FIMjZXuTdB1lrYRIm46uQPCSJjJxNEUEvYRZjLiuE13GmnKI+
+	9be157ZIoLnQCTzywmb66eNzR+//Pt8PYlXBXiCBXRcRIKqjuWE+fWBSo4DxTqTX4gE7XCg7nGUkF
+	sFgONlzwDgapW6XNCOaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJRTJ-0000000BJiY-120e;
-	Wed, 21 Oct 2026 08:14:53 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1xJUn1-0000000Bk07-26jp;
+	Wed, 21 Oct 2026 11:47:27 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1xJRTG-0000000BJhr-0wOf
-	for linux-um@lists.infradead.org;
-	Wed, 21 Oct 2026 08:14:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=TKa2RUGDTuW7MaQZY0caVZamvGGq5PFEOZyolx/azi4=; t=1792570490; x=1793780090; 
-	b=xE7xERJtbWN42xd9Z4MnBzgRgpWovQ51Ag0AX/FiNG1w7cb+MkF9mx4O5PMVlTymXZhehKUWks+
-	8eJnoiNVLzx/tBtZdN1u/EC6M2ksuNq23rWXYAty5C+ATUOPG0en6cpGOMvKLAbzDNB5HtjOfM4xV
-	jI8+X+GWGEh3gdV7AQdWDjiYYhxIvswM5t7nwsybB5MgZyBxvlr/267lTDedT9nIXzGk/tAS2b6Q9
-	g3qYNiLv91UBFyj9DlpnK7qskjk5j05gvA++BWz/xt8izLbhxE1YvdSFAm52Dshi+dFgh/rV3YXM8
-	mGvXpJa6h6wJ8X6eJBxra2mw8BWbxb9v0JHg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1xJRTB-00000001uEY-1hd4;
-	Wed, 21 Oct 2026 10:14:46 +0200
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [GIT PULL] uml-for-7.4
-Date: Wed, 21 Oct 2026 10:13:21 +0200
-Message-ID: <20261021081440.697408-3-johannes@sipsolutions.net>
-X-Mailer: git-send-email 2.56.0
+	id 1xJUmz-0000000BjzF-3S90;
+	Wed, 21 Oct 2026 11:47:25 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 29C9B60A81;
+	Wed, 21 Oct 2026 11:47:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6273E1F000C9;
+	Wed, 21 Oct 2026 11:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792583243;
+	bh=ni/h9FbFXhjgUwMn3rSI6p6WKM6vJUoZQ7p4kXWNy5U=;
+	h=From:Subject:Date:To:Cc;
+	b=CYoDM5Pavgm81Nyqql/3raaF54bJHC58QBIN2LWkciYwVz/5h0B59Mzqf+MizWhuG
+	 jz1jqdZBrCVcOiuBlNKByULWJ1opgAfsu6rGbrXchF6lDKL0n3E7YBPLDmlvH4SomP
+	 EwK6xf91kUvpKSYBLoN93tqkZEIIM+EQDd/MtGC+CkW8ELRb6JoLU0YWJID6o1xYYu
+	 ytarFAlqWQwFi5zehp/FR0wZedTqnzpswlsUkOJFSN4QGs/PJzNH/hWIdpDpjg095M
+	 iA9tNi2+MjR+D9YSXEgR0LJTuWJVOUDhF/C3a3+5nVsnJMgWNwZEK8lVMtS2+tpncg
+	 hi/X40TnN+WtA==
+From: "Harry Yoo (Meta)" <harry@kernel.org>
+Subject: [PATCH slab/for-next 00/14] mm/slab: mandate SLAB_MAY_ACCOUNT for
+ __GFP_ACCOUNT allocations to avoid wasting memory for slab metadata
+Date: Wed, 21 Oct 2026 12:46:41 +0100
+Message-Id: <20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-0-096800aa3330@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261021_011450_702368_49E1B56C 
-X-CRM114-Status: GOOD (  18.03  )
-X-Spam-Score: -2.1 (--)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACGm2GoC/yWN2w7CIBBEf6XZZzf2go31VxofFliUhkIDqE2a/
+ rtUHyczZ84GiaPlBLdqg8hvm2zwJTSnCtST/IPR6pKhrdu+qRuBM8/kXFC4xGBQB5/xQykzJkc
+ yyAl5zWWUSVMm7IQZRMdm6C9XKJ9LZGPXn2+EgzibENEXBu7/Or3kxCofTtj3Lz+lqCygAAAA
+X-Change-ID: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
+To: Vlastimil Babka <vbabka@kernel.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Suren Baghdasaryan <surenb@google.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, 
+ Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
+ David Rientjes <rientjes@google.com>, Muchun Song <muchun.song@linux.dev>, 
+ Hao Ge <hao.ge@linux.dev>, Pedro Falcato <pfalcato@suse.de>, 
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+ "Harry Yoo (Meta)" <harry@kernel.org>, 
+ "Liam R. Howlett" <liam@infradead.org>, Alice Ryhl <aliceryhl@google.com>, 
+ Andrew Ballance <andrewjballance@gmail.com>, maple-tree@lists.infradead.org, 
+ Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, Jason Xing <kerneljasonxing@gmail.com>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Mina Almasry <almasrymina@google.com>, 
+ =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Jiayuan Chen <jiayuan.chen@linux.dev>, netdev@vger.kernel.org, 
+ Kees Cook <kees@kernel.org>, David Hildenbrand <david@kernel.org>, 
+ Lorenzo Stoakes <ljs@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+ Michal Hocko <mhocko@suse.com>, Ingo Molnar <mingo@redhat.com>, 
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ K Prateek Nayak <kprateek.nayak@amd.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Mark Rutland <mark.rutland@arm.com>, 
+ Anshuman Khandual <anshuman.khandual@arm.com>, 
+ linux-arm-kernel@lists.infradead.org, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ linuxppc-dev@lists.ozlabs.org, Robin Murphy <robin.murphy@arm.com>, 
+ "Joerg Roedel (AMD)" <joro@8bytes.org>, 
+ Niklas Schnelle <schnelle@linux.ibm.com>, 
+ Matthew Rosato <mjrosato@linux.ibm.com>, 
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, iommu@lists.linux.dev, 
+ linux-s390@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+ Amir Goldstein <amir73il@gmail.com>, 
+ Casey Schaufler <casey@schaufler-ca.com>, Paul Moore <paul@paul-moore.com>, 
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+ linux-security-module@vger.kernel.org, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
+ cgroups@vger.kernel.org
+X-Mailer: b4 0.16.0
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,193 +121,129 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-22.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Linus,
+The purpose of this series is to convert existing slab users that
+specify __GFP_ACCOUNT on allocations to specify SLAB_MAY_ACCOUNT on
+cache creation, to reduce memory waste for slab metadata with
+CONFIG_MEMCG=y && CONFIG_MEM_ALLOC_PROFILING=y.
 
-The last couple of cycles were a lull for UML, in part
-because not _that_ much happened, and in part because
-we were all busy with "more important" things (*ahem*).
-We're back ;-) Still no huge changes, but we're adding
-the long-awaited NOMMU support this round.
+Currently, there are two ways to charge slab objects to memory
+cgroups: 1) specify SLAB_ACCOUNT during cache creation, or 2) specify
+__GFP_ACCOUNT on allocation. The latter method made it impossible to
+assume that certain slab caches are never charged to memory cgroups.
 
-Please pull and let us know if there's any problem.
+Since commit d4404b0f5b8b ("mm/slab: stop allocating objcg pointers when
+unnecessary"), slabobj_ext allocates the space for the objcg pointer
+only for caches with SLAB_MAY_ACCOUNT. However, kmem_cache_create() sets
+the flag on every cache, because any cache may be used with
+__GFP_ACCOUNT.
 
-Thanks,
-johannes
+As a result, sizeof(struct obj_cgroup *) bytes are wasted for each
+unaccounted slab object when both memalloc profiling and memcg are
+enabled. This is suboptimal when memalloc profiling is used to
+profile memory allocations on production.
 
+So, let's make memcg charging opt-in and stop wasting memory!
 
+New rule for slab users: a cache must specify SLAB_MAY_ACCOUNT
+(explicitly or implied by SLAB_ACCOUNT) for its objects to be charged
+to a memcg. Otherwise __GFP_ACCOUNT is ignored and triggers a warning on
+debug kernels (CONFIG_DEBUG_VM=y).
 
-The following changes since commit 93f51579e7df248780214094418f205253383cc5:
+The approach is quite straightforward, but converting all caches that
+may pass __GFP_ACCOUNT without SLAB_ACCOUNT at once is not.
+As a best-effort approach, I swept the whole tree (with help of an
+LLM) for paths that pass __GFP_ACCOUNT into slab allocations either
+directly or indirectly.
 
-  Linux 7.3-rc4 (2026-09-20 13:48:15 -0700)
+While I tried to make sure the sweep is exhaustive, there can be a
+missing conversion. However that is not a correctness problem:
+the objects are just no longer charged to memcgs. Patch 13 adds
+VM_WARN_ON_ONCE in __memcg_slab_post_alloc_hook() to catch such a
+missing conversion.
 
-are available in the Git repository at:
+Patch 1 allows passing SLAB_MAY_ACCOUNT to kmem_cache_create(),
+patches 2-12 specify SLAB_MAY_ACCOUNT for the caches found by
+the sweep, and patch 14 stops setting SLAB_MAY_ACCOUNT on all caches.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-7.4
+On an idle x86 VM with both memalloc profiling and memcg enabled,
+slabobj_ext memory (the alloc_slab_obj_exts entry in /proc/allocinfo)
+drops from 1,280KB to 910KB (-29%) after boot. The savings are expected
+to be larger on real workloads, which allocate far more unaccounted slab
+objects (8 bytes per unaccounted slab object).
 
-for you to fetch changes up to 4ad423aa2108485f8bc5dde51fdf9c1ed979ee4b:
+Each tested cache was verified with the warning in patch 13:
+I confirmed that 1) the warning is triggered without the conversion,
+and 2) specifying SLAB_MAY_ACCOUNT resolves it. However I could not test
+io-pgtable_armv7s_l2 and sun50i's pt_pool caches due to lack of the
+hardware and emulation support. So they are compile-tested only.
 
-  um: place large BSS inputs in an output section (2026-10-12 17:03:17 +0200)
+  cache                  tested  environment
+  ---------------------  ------  -----------------------
+  radix_tree_node        yes     x86
+  maple_node             yes     x86
+  buffer_head            yes     x86
+  skbuff_head_cache      yes     x86
+  fanotify_*_event       yes     x86
+  smack_rule             yes     x86
+  io-pgtable_armv7s_l2   no      compile-tested only
+  thread_stack           yes     ppc64le (64K pages)
+  pgd_cache (arm64)      yes     arm64 (64K pages)
+  PGT_CACHE (powerpc)    yes     ppc64le
+  PCI_DMA_*_tables       yes     s390x (zPCI + vfio)
+  hostfs_inode_cache     yes     UML
+  sun50i pt_pool         no      compile-tested only
 
-----------------------------------------------------------------
-ARCH=um updates:
+Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+---
+Harry Yoo (Meta) (14):
+      mm/slab: allow passing SLAB_MAY_ACCOUNT to kmem_cache_create()
+      lib/maple_tree: specify SLAB_MAY_ACCOUNT for maple_node cache
+      lib/xarray: specify SLAB_MAY_ACCOUNT for radix_tree_node cache
+      fs/buffer: specify SLAB_MAY_ACCOUNT for buffer_head cache
+      net: skbuff: specify SLAB_MAY_ACCOUNT for skbuff_head_cache
+      kernel/fork: specify SLAB_MAY_ACCOUNT for thread_stack cache
+      arm64/mm: specify SLAB_MAY_ACCOUNT for pgd_cache
+      powerpc/mm: specify SLAB_MAY_ACCOUNT for pgtable caches
+      iommu: specify SLAB_MAY_ACCOUNT for slab-backed page table caches
+      fanotify: specify SLAB_MAY_ACCOUNT for event caches
+      smack: specify SLAB_MAY_ACCOUNT for smack_rule cache
+      hostfs: specify SLAB_MAY_ACCOUNT for inode cache
+      mm/memcontrol: do not allow charging objects without SLAB_MAY_ACCOUNT
+      mm/slab: do not set SLAB_MAY_ACCOUNT for all caches
 
- - NOMMU support, mostly for mm/ testing
+ arch/arm64/mm/pgd.c                |  2 +-
+ arch/powerpc/mm/init-common.c      |  3 ++-
+ drivers/iommu/io-pgtable-arm-v7s.c |  2 +-
+ drivers/iommu/s390-iommu.c         |  4 ++--
+ drivers/iommu/sun50i-iommu.c       |  3 ++-
+ fs/buffer.c                        |  2 +-
+ fs/hostfs/hostfs_kern.c            |  2 +-
+ fs/notify/fanotify/fanotify_user.c | 10 ++++++----
+ include/linux/slab.h               | 16 +++++++++++++---
+ kernel/fork.c                      |  3 ++-
+ lib/maple_tree.c                   |  2 +-
+ lib/radix-tree.c                   |  2 +-
+ mm/memcontrol.c                    |  6 ++++++
+ mm/slab.h                          |  2 +-
+ mm/slab_common.c                   |  8 +++-----
+ net/core/skbuff.c                  |  2 +-
+ security/smack/smack_lsm.c         |  2 +-
+ 17 files changed, 45 insertions(+), 26 deletions(-)
+---
+base-commit: d15d7703166daf7bd62c844a3cb1b3a6279adb4c
+change-id: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
 
-   The only bigger change, we added support for building with
-   !CONFIG_MMU, mostly for testing, e.g. via kunit. Some new
-   selftests targetted to NOMMU are moving elsewhere, but are
-   runnable on ARCH=um without MMU.
+Best regards,
+--  
+Cheers,
+Harry / Hyeonggon
 
- - Tighter page permissions
-
-   Tighten page permissions to catch more bugs (ARCH=um is,
-   after all, often used for testing), and also mark __init
-   memory inaccessible for the same reason.
-
- - Various maintenance/cleanups
-
-   Fix build on really old hosts, fix leaks, make the code a
-   bit more robust, header cleanups, typo fixes, the usual.
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      um: vector: Use %pM format specifier for MAC addresses
-
-Benjamin Berg (1):
-      um: virtio-pci: free the IRQ message buffers
-
-Ethan Nelson-Moore (1):
-      x86/um: remove unused <asm/required-features.h> header
-
-Florian Fainelli (1):
-      um: Add definition of __NR_close_range for older host OSs
-
-Hajime Tazaki (7):
-      x86/um: nommu: elf loader for fdpic
-      um: decouple MMU specific code from the common part
-      um: nommu: memory handling
-      x86/um/vdso: nommu: vdso memory update
-      um: allow deselecting CONFIG_MMU
-      um: require MMU for UML PCI support
-      um: place large BSS inputs in an output section
-
-Hemanth Selam (1):
-      um: fix typo "hander" in comment
-
-Henry Barreto (1):
-      um: vector: avoid NULL queue dereference in legacy RX mode
-
-Johan Hovold (1):
-      um: virtio_uml: switch to dynamic root device
-
-Johannes Berg (14):
-      um: fix futex implementation
-      um: further decouple MMU related code
-      um: nommu: add SMP futex operations
-      um: nommu: add userspace runner processes
-      Documentation: um: document nommu UML
-      um: add perf-event support
-      um: link .lbss/.ldata/.lrodata correctly
-      um: make stub compilation more robust
-      um: improve checking for --no-warn-rwx-segments
-      um: move init text between __init_begin/end
-      um: mprotect() __init memory
-      um: use %pB to print functions in stack traces
-      um: time-travel: fix sched_yield() behaviour
-      um: fix shutdown __inittext access
-
-Maninder Singh (1):
-      um: take reference of stack before using it in get_wchan
-
-Michael Bommarito (2):
-      um: virtio_uml: fix heap overflow in vhost_user_get_config()
-      um: ubd: validate COW header fields before use
-
-Pengpeng Hou (3):
-      um: account for the separator in add_arg() bounds checking
-      um: mconsole: use bounded version string formatting
-      um: vector: reject too many interface arguments
-
-Sasha Levin (1):
-      um: Consolidate MAGIC_SYSRQ into generic Kconfig definition
-
-Shengzhuo Wei (1):
-      um: mconsole: Fix out-of-bounds read in mconsole_log()
-
-Tiwei Bie (2):
-      um: vector: Remove unnecessary NULL check in destroy_queue()
-      um: Tighten exec permissions on page mappings
-
- Documentation/virt/index.rst            |   1 +
- Documentation/virt/uml/nommu-uml.rst    |  54 ++++++++
- arch/um/Kconfig                         |  40 +++---
- arch/um/Makefile                        |   7 +-
- arch/um/drivers/Kconfig                 |   3 +
- arch/um/drivers/cow_user.c              |  34 ++++-
- arch/um/drivers/mconsole_kern.c         |  14 +-
- arch/um/drivers/vector_kern.c           |  37 +++--
- arch/um/drivers/vector_user.c           |   3 +
- arch/um/drivers/virtio_pcidev.c         |  19 ++-
- arch/um/drivers/virtio_uml.c            |  26 ++--
- arch/um/include/asm/common.lds.S        |   2 +
- arch/um/include/asm/futex.h             |  53 +++++++
- arch/um/include/asm/mmu.h               |   8 ++
- arch/um/include/asm/mmu_context.h       |   2 +
- arch/um/include/asm/perf_event.h        |   7 +
- arch/um/include/asm/pgtable.h           |  25 ++--
- arch/um/include/asm/ptrace-generic.h    |   6 +
- arch/um/include/asm/tlbflush.h          |  20 +++
- arch/um/include/asm/uaccess.h           |   6 +-
- arch/um/include/shared/as-layout.h      |   3 +-
- arch/um/include/shared/kern_util.h      |   3 +-
- arch/um/include/shared/longjmp.h        |   3 +-
- arch/um/include/shared/os.h             |   6 +-
- arch/um/include/shared/skas/stub-data.h |   9 ++
- arch/um/kernel/Makefile                 |   6 +-
- arch/um/kernel/dyn.lds.S                |   9 +-
- arch/um/kernel/mem-pgtable.c            |  55 ++++++++
- arch/um/kernel/mem.c                    |  47 ++-----
- arch/um/kernel/physmem.c                |   7 +
- arch/um/kernel/process.c                |  23 +++-
- arch/um/kernel/skas/Makefile            |  16 ++-
- arch/um/kernel/skas/mmu.c               |  25 ++++
- arch/um/kernel/skas/nommu.c             |  91 ++++++++++++
- arch/um/kernel/skas/process.c           |  32 +----
- arch/um/kernel/skas/syscall.c           |   5 +-
- arch/um/kernel/skas/uaccess.c           | 134 +++++++-----------
- arch/um/kernel/smp.c                    |   3 +-
- arch/um/kernel/sysrq.c                  |   2 +-
- arch/um/kernel/time.c                   |   3 +-
- arch/um/kernel/tlb.c                    |   7 -
- arch/um/kernel/trap-mmu.c               | 237 ++++++++++++++++++++++++++++++++
- arch/um/kernel/trap-nommu.c             |  13 ++
- arch/um/kernel/trap.c                   | 219 -----------------------------
- arch/um/kernel/um_arch.c                |  11 +-
- arch/um/kernel/uml.lds.S                |  11 +-
- arch/um/os-Linux/main.c                 |  17 ++-
- arch/um/os-Linux/signal.c               |   2 +-
- arch/um/os-Linux/skas/process.c         |  11 +-
- arch/x86/um/Makefile                    |   3 +
- arch/x86/um/asm/elf.h                   |   8 +-
- arch/x86/um/asm/required-features.h     |   9 --
- arch/x86/um/vdso/vma.c                  |  13 +-
- fs/Kconfig.binfmt                       |   2 +-
- lib/Kconfig.debug                       |  10 +-
- lib/kunit/Kconfig                       |   2 +-
- 56 files changed, 907 insertions(+), 517 deletions(-)
- create mode 100644 Documentation/virt/uml/nommu-uml.rst
- create mode 100644 arch/um/include/asm/perf_event.h
- create mode 100644 arch/um/kernel/mem-pgtable.c
- create mode 100644 arch/um/kernel/skas/nommu.c
- create mode 100644 arch/um/kernel/trap-mmu.c
- create mode 100644 arch/um/kernel/trap-nommu.c
- delete mode 100644 arch/x86/um/asm/required-features.h
 
