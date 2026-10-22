@@ -2,109 +2,118 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAEF606A330
-	for <linux-um@archiver.kernel.org>; Thu, 22 Oct 2026 14:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8204E606A319
+	for <linux-um@archiver.kernel.org>; Thu, 22 Oct 2026 14:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gvyWeHK/;
-	dkim=pass (2048-bit key, unprotected) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=tGPqmIoU;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=lrzd8ZGd
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mpX5elA2;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=TJoLc1PJ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=; b=gvyWeHK/rpD1BL+o0KFAHkpooe
-	giTETFPSUolyMRJyaWC7FsQCsQCmwHcPNdfr+B9kw0w+FzTHPXKJ/o6epyevLnM/qyEe6n5G1z66E
-	2W2VVLHGIbSkN58oykssFuY+5xRgwpFqgNeA+icovT7hTmbzFI0EJOydxn1nOgkrj4ySW+0oB3me4
-	QnAZTxhFLopgaNs5gqmwNtN9Gvr76eNn7NDGYn9EpWUyKbxCYYaZZ00eAATEXLAkogUT43SfObzZL
-	rK78lmAtm75nSrogSVP2p5cywVzi2QHsYAU3oKgUDzyBbS6w1lXaTQh8mMolriDivO4azz0w2kH1v
-	kazmERfg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
+	List-Owner; bh=wIEEgL0wnyCgnfYBD3fqLb39KxnaLSOeClNdZ/a2t8c=; b=mpX5elA289TV8X
+	6tmi4O/u1lpaikd532IYjaKruU+CKarlPwAshqR7QYIvYtirTITPx9ZxifPAdyxg+ERqg3NOhzoRP
+	cBQGm44EAWcaE0p16q+wLgFjNgCj+z5Za8TknaP9FI2YwgccbWu4pMy8h14xwdj1P3y3gC/xnNyG9
+	d1O/1TGQbEVFx6WsJsGmZ9GdnYG1InoxnNQl2krCf+gqlxmblQrU+nJmr42uWnX1dJmGad0U9Fi4P
+	vV1+lxBU6hPGo6Ud0xnM/r88Nfh3pRdheMKdFC30SHMtMcocidLMjNBK8mtgQGOPPGkYGVLLL8swJ
+	DmObY3bVZir9pizRBzuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJtih-0000000EILI-0K1W;
-	Thu, 22 Oct 2026 14:24:39 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1xJtvX-0000000EJiH-3CxG;
+	Thu, 22 Oct 2026 14:37:55 +0000
+Received: from mail-vk1-xa30.google.com ([2607:f8b0:4864:20::a30])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xJtid-0000000EIKF-3lx3;
-	Thu, 22 Oct 2026 14:24:37 +0000
-Date: Thu, 22 Oct 2026 16:24:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1792679067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=;
-	b=tGPqmIoU7flznKuVvSgOzo2yd+DVKg7D73Wllg9sFRm9CC/iaoJaE55c3a0xpncefiwTWe
-	D0DcbKw7j7YI7N9iAD68KUbumDWDB4zuYjNIkgHfr2v+H6DCtaJTi+ZtcPVrTjX8s8nNNi
-	XYrPBSHr+CwiWmUAbayRxd1rMqP3P1fTDl5O65hszJdwi1iKQ6myUH0U2igUoTF8eZn+8r
-	G1OdblBxDgssdpqEoIOChx+/YLJ7ntbq+IsNh3ReV+JtcimJTFUP2numV2/sYLdIC+zwnD
-	aAZ46jrqFXnXLMoMGXtXmyYgRF8JauAVkMkAXxtjJDC2ZDnhWCO79rWsa0e06A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1792679067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ijcqFl4YNaIiVHZ0kMDDzDit0eQZX1zIOl9C/1G18QI=;
-	b=lrzd8ZGdzEWmJjZ9aZOFY32BVENA3ocTIaS/QQU0/Sv8YYe+ynbKZ/LG3OiCiXRqC6uBBI
-	wYJIr0JLNWZ7aTBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-	Jinjie Ruan <ruanjinjie@huawei.com>,
-	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Richard Weinberger <richard@nod.at>,
-	Chris Zankel <chris@zankel.net>,
-	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
- indirection
-Message-ID: <20261022142425.3Wx-RrU5@linutronix.de>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
+	id 1xJtvV-0000000EJhJ-1cD3
+	for linux-um@lists.infradead.org;
+	Thu, 22 Oct 2026 14:37:54 +0000
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-5eaeb7fdda2so1688471e0c.3
+        for <linux-um@lists.infradead.org>; Thu, 22 Oct 2026 07:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792679871; x=1793284671; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:subject
+         :references:in-reply-to:message-id:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=wIEEgL0wnyCgnfYBD3fqLb39KxnaLSOeClNdZ/a2t8c=;
+        b=TJoLc1PJ4j3etaXKknbc/d02NrV1qd8wk08KrLGgTwrt8Mib6wuqHvaYf1mCxSeGfZ
+         BwJiVdXNbXfAJvR3sEJcnLUDGQ4iOhexRKnH495GdIsDX1iySxNNtagg8Az2DW+FSJrO
+         Z5BMn77b4LHqfgkE4Swa3JNVHzlXJoY9MDy0Sm9Dm5wtw2x7bkDu4re/36h9JATyLyno
+         FGVROr7YEMCYNQIzD3p1yrfadXiku0XguQ68DrRXHTwAA9T/k7EMiv6HcQQFKzk/QJrK
+         U2YrrHONdPL4DPF1qwMjgXQ8i8g8bxkZFYOE3JjRwdpc0TXQJIzo9Sd5YB8aMcZWmRes
+         TB4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792679871; x=1793284671;
+        h=content-transfer-encoding:content-type:mime-version:subject
+         :references:in-reply-to:message-id:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=wIEEgL0wnyCgnfYBD3fqLb39KxnaLSOeClNdZ/a2t8c=;
+        b=Pgj6bKBWVe4C878dMXlfPJS6RTghqaVaGgbpo+2bDQWqdfl+DM37gV4BceMNP17abr
+         tmiBYRFObKg718MskvvLHLFsPif8ZwFTjkAbdSluL0dVLyHaRyQT86ba0bwPuZGmCgvn
+         c9WlwumOMlBVXT08ktJqdQL1pW98ktc0BpbFnFhfAbuM67eBL0xlhuLWKfDXOAeMVsAJ
+         buYJOHoVaNVt1RRoGKvjsW0G5BMP0PyhyFDwLMxdB3uiT/rQzjy5FNZTd6dsd9tYDSNu
+         US2YU413bEJT0o0rHuqB2vNHzXMMtLIaet/j2EMUjqqFVC0gEAODRicYQpMPyKUmOPSm
+         SK6g==
+X-Forwarded-Encrypted: i=1; AKwUvByU5CGr/+Tv+Buqj1PaDRuxhmpu3QD0++hFCvjZQy54dQx2RwgLORq9ZXkk/j8pyYQLmlsH8FdQfw==@lists.infradead.org
+X-Gm-Message-State: AFq9FYJJFLp/NGCEBzRabHkhclEFCVpHBrxCcXi4VREAyhzvUeKmDPFv
+	M6hQDmvI0bjXVb+SJKXfexOeuukzcq7WKpupRDHDQAvjWdxopoNEKG4C
+X-Gm-Gg: AYBFou0Nx9SMvWXuPcsCoqhsd764UiXTrnCiET/FQe9PZOOdHJU+4ndEXsQF400SYYh
+	bQFZ3gL6gGC9kC+QZBolJ/cyWyUOxQOfz6H8vdy4WgJo6SYPWF97wRjY7oavRGgymxOGoi+Zm7l
+	tGxfy4Zz8Ne2HxXxvk/dmq6bOZQo7RRQ4gBCHni4ylC67/gm0axnpVZ3Jy95gRLKwI+WE0LaPVa
+	pIAyLqA2Zaivr9MNNlJPIi8nAOPsIYM0DnrBjzm3wprrO6nvwqTD1/Uq1Cv9furOzMblqwo56HY
+	Cf8MilIm0cRGKEv46Ttx6hdfTZh82PwmJrI1J+Ropv/yBizpE/8wt7crjh1yN1KPM374UGhkPtX
+	WnbAlHaYCVHoF2E/bexNh7dsL6tfaQmWzaEkb/j21GrVzuKj0Yh5Hej+Nbd0+mZTiFx4WEpjrZz
+	/PmF832cYiuTOVV4OCFP1yYhY/Cq6WfKHQv1e0/LkcINh+YVwRkY+HIvAJGttSQTpH3tA+7IvdW
+	ZkByS5POdcXtBg3kY+6J8DdS5HO/rJvwSzLoDM3g+/ufU4K6D49x7FgPUL44YPbnOSDZFLImu3t
+	sUslyvSAU7YmZih19QmFgPX0/CgnMZMi3CRFWXIxEFjWBpwn9AXRMlycHoicIn0IWjr5LvxHZTz
+	2r9JifK3W4XkWxt0f1HY=
+X-Received: by 2002:a05:6122:2984:b0:5d0:1207:b693 with SMTP id 71dfb90a1353d-5eaebc25d1bmr2672346e0c.1.1792679871554;
+        Thu, 22 Oct 2026 07:37:51 -0700 (PDT)
+Received: from gmail.com (111.46.245.35.bc.googleusercontent.com. [35.245.46.111])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5eae97be251sm6978325e0c.8.2026.10.22.07.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2026 07:37:51 -0700 (PDT)
+Date: Thu, 22 Oct 2026 10:37:50 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>, 
+ linux-kernel@vger.kernel.org
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Chris Arges <carges@cloudflare.com>, 
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+ Phil Sutter <phil@nwl.cc>, 
+ Jason Wang <jasowangio@gmail.com>, 
+ =?UTF-8?B?RXVnZW5pbyBQw6lyZXo=?= <eperezma@redhat.com>, 
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@kernel.org>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ virtualization@lists.linux.dev, 
+ Max Krasnyansky <maxk@qualcomm.com>, 
+ Rusty Russell <rusty@rustcorp.com.au>, 
+ Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Simon Horman <horms@kernel.org>, 
+ linux-um@lists.infradead.org
+Message-ID: <willemdebruijn.kernel.27710620cf132@gmail.com>
+In-Reply-To: <94796ee3c32e50665ecf70e2b390db1bc2773be9.1792668082.git.mst@redhat.com>
+References: <cover.v5.git.mst@redhat.com>
+ <94796ee3c32e50665ecf70e2b390db1bc2773be9.1792668082.git.mst@redhat.com>
+Subject: Re: [PATCH net v5 1/7] net: account for ingress-resolved virtio net
+ hdr state
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20260707190254.493733289@kernel.org>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261022_072436_128224_A45173A9 
-X-CRM114-Status: GOOD (  14.96  )
-X-Spam-Score: -4.4 (----)
+X-CRM114-CacheID: sfid-20261022_073753_435046_54B8CEF5 
+X-CRM114-Status: GOOD (  11.87  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,130 +124,33 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 2026-07-07 21:07:01 [+0200], Thomas Gleixner wrote:
-> Invoking sys_ni_syscall() from a code path, which already knows that the
-> syscall number is invalid just to assign -ENOSYS to regs->ax is a pointle=
-ss
-> exercise. It's even redundant as the low level entry code already has set
-> regs->ax to -ENOSYS on entry.
->=20
-> Remove the extra conditionals and the function calls.
+Michael S. Tsirkin wrote:
+> The following patch will add ingress resolution of uncommon virtio net
+> hdr checksum metadata (software checksum completion at ingress) which
+> adds performance overhead to the packet processing.
+> 
+> We should make it visible, so a hypothetical workload relying on
+> uncommon metadata can be distinguished from none at all. This way issues
+> in the parsing will be reported and not quietly pay the host-CPU
+> checksum overhead instead of offload.
+> 
+> Flip every call to virtio_net_hdr_to_skb to test for negative errno
+> only.  The um vector raw transport even ignored the return value
+> altogether: rejected packets went on into the stack with their
+> metadata unvalidated, so check it there as well.
+> 
+> Have tun count these events per device as rx_csum_sw, exposed via
+> ethtool -S.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-Since this patch, tools/testing/selftests/x86/syscall_numbering_64
-throws in this:
-|[RUN]   Running tests under ptrace: modifying the default return
-|[RUN]       Checking system calls with msb =3D 0 (0x0)
-|[RUN]           Checking some common syscalls as 64 bit
-|[OK]                x64 syscall 0:0 returned 0 as expected
-|[OK]                x64 syscall 0:1 returned 0 as expected
-|[RUN]           Checking some 64-bit only syscalls as 64 bit
-|[OK]                x64 syscall 0:19 returned 0 as expected
-|[OK]                x64 syscall 0:20 returned 0 as expected
-|[RUN]           Checking out of range system calls
-|[FAIL]                  x32 syscall 0:-64 returned -9999, but it should ha=
-ve returned -ENOSYS
-=E2=80=A6
-|[FAIL]                  x32 syscall 0:-2 returned -9999, but it should hav=
-e returned -ENOSYS
-|[FAIL]              x32 syscalls 0:-64..-2 had 63 failure
-|[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expect=
-ed
-|[FAIL]                  x64 syscall 0:1073741760 returned -9999, but it sh=
-ould have returned -ENOSYS
-=E2=80=A6
-|[FAIL]                  x64 syscall 0:1073741823 returned -9999, but it sh=
-ould have returned -ENOSYS
-|[FAIL]              x64 syscalls 0:1073741760..1073741823 had 64 failure
-|[FAIL]                  x64 syscall 0:-64 returned -9999, but it should ha=
-ve returned -ENOSYS
-=E2=80=A6
-|[FAIL]                  x64 syscall 0:547 returned -9999, but it should ha=
-ve returned -ENOSYS
-|[FAIL]              x64 syscalls 0:512..547 had 36 failure
-|[RUN]           Checking some common syscalls as x32
-|[OK]                x32 syscall 0:0 returned 0 as expected
-=E2=80=A6
-|[RUN]           Checking out of range system calls
-|[FAIL]                  x32 syscall 1:-64 returned -9999, but it should ha=
-ve returned -ENOSYS
-|[FAIL]              x32 syscalls 1:-64..-2 had 63 failure
-|[OK]                x32 syscall 1:-1 returned MODIFIED_BY_PTRACE as expect=
-ed
-|[FAIL]                  x64 syscall 1:1073741760 returned -9999, but it sh=
-ould have returned -ENOSYS
-=E2=80=A6
-
-and so on=E2=80=A6 The test has
-
-| #define MODIFIED_BY_PTRACE      -9999
-
-and the ptracer modifies the return code. However not always. Not sure
-if this was indeed a pointless exercise or not.
-
-The test could be updated via the hunk below in case the new behaviour
-is what is expected. hpa made the extension to the test in commit
-795e2a023b808 ("selftests/x86/syscall: Add tests under ptrace to
-syscall_numbering_64").
-
-diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testin=
-g/selftests/x86/syscall_numbering.c
-index ca0eca7b9dced..1435394fba022 100644
---- a/tools/testing/selftests/x86/syscall_numbering.c
-+++ b/tools/testing/selftests/x86/syscall_numbering.c
-@@ -250,6 +250,7 @@ static bool test_x32(void)
- static void test_syscalls_common(int msb)
- {
- 	enum ptrace_pass pass =3D sh->ptrace_pass;
-+	int expected_ret =3D -ENOSYS;
-=20
- 	run("Checking some common syscalls as 64 bit\n");
- 	check_zero(msb, SYS_READ);
-@@ -260,18 +261,22 @@ static void test_syscalls_common(int msb)
- 	check_zero(msb, X64_WRITEV);
-=20
- 	run("Checking out of range system calls\n");
--	check_for(msb, -64, -2, -ENOSYS);
- 	if (pass >=3D PTP_FUZZRET)
--		check_for(msb, -1, -1, MODIFIED_BY_PTRACE);
--	else
--		check_for(msb, -1, -1, -ENOSYS);
--	check_for(msb, X32_BIT-64, X32_BIT-1, -ENOSYS);
--	check_for(msb, -64-X32_BIT, -1-X32_BIT, -ENOSYS);
--	check_for(msb, INT_MAX-64, INT_MAX-1, -ENOSYS);
-+		expected_ret =3D MODIFIED_BY_PTRACE;
-+	check_for(msb, -64, -2, expected_ret);
-+	check_for(msb, -1, -1, expected_ret);
-+	check_for(msb, X32_BIT-64, X32_BIT-1, expected_ret);
-+	check_for(msb, -64-X32_BIT, -1-X32_BIT, expected_ret);
-+	check_for(msb, INT_MAX-64, INT_MAX-1, expected_ret);
- }
-=20
- static void test_syscalls_with_x32(int msb)
- {
-+	enum ptrace_pass pass =3D sh->ptrace_pass;
-+	int expected_ret =3D -ENOSYS;
-+
-+	if (pass >=3D PTP_FUZZRET)
-+		expected_ret =3D MODIFIED_BY_PTRACE;
- 	/*
- 	 * Syscalls 512-547 are "x32" syscalls.  They are
- 	 * intended to be called with the x32 (0x40000000) bit
-@@ -279,7 +284,7 @@ static void test_syscalls_with_x32(int msb)
- 	 * nonsense and should not work.
- 	 */
- 	run("Checking x32 syscalls as 64 bit\n");
--	check_for(msb, 512, 547, -ENOSYS);
-+	check_for(msb, 512, 547, expected_ret);
-=20
- 	run("Checking some common syscalls as x32\n");
- 	check_zero(msb, SYS_READ   | X32_BIT);
-
-Sebastian
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
