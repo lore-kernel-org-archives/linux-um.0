@@ -2,118 +2,113 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130DD60A260E
-	for <linux-um@archiver.kernel.org>; Fri, 23 Oct 2026 15:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D991606A31B
+	for <linux-um@archiver.kernel.org>; Fri, 23 Oct 2026 15:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Xu8Efin7;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=id6hoyZw
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=rTTGlMz6;
+	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=desiato.20200630 header.b=LgdCaYZ4;
+	dkim=pass (2048-bit key, unprotected) header.d=zytor.com header.i=@zytor.com header.a=rsa-sha256 header.s=2026092801 header.b=bg3EdVPh
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=tgpP8ntgb1IS0cEJ3QYg5i8QakFDo2yC2w4u+PGohBk=; b=Xu8Efin7a+Yy0q3V2FwJ8U2FJW
-	ZwwcOEc40PeSZPfyIIDqJXl7KQcTdRgRDv+P+2FOs+8Jeek/67R3HEn+F7cITwjzL8rU2hx2LRGTF
-	nGMJV3GPYRfxuCsIIjlFYfDF0RhjvvmvpALDTwa6e6sTi9Fx1ES83YLHYCO2pyUdGk52KRo4PMtdj
-	R5E+QjSXaDJ82n/f0w3HKmtwKMqrJv870bcnerromxDTXh0JowWoeqHXCUzH4iLLaLSBY84GPk//S
-	MHmY7kJfAl38I1wPf9JCJYf8qfYjMfs8gmTSJwsvjlygPy2AGqaQIVuH9Ki3SQYEOFqzQtC0cufAj
-	pdCnj2LQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
+	List-Owner; bh=HSZuOyG4pKU7vS7IAE1/JM7GV7AMLK9kKAml8a9XFjg=; b=rTTGlMz65OYE96
+	/X4yr/dokLPjJIHzh/XdN9lgIEXhU1zu/uVLa2aQuzjl4ViFoznu9bLoi1EVofQwYF1n5FU7Lne0q
+	FpsnIdiqwASM6gzyZ++dko7F58VjKgWb87oZjcu4wXB2cT04K5WVmyeVtRbPzYcKF6LYuKBTI7xCE
+	9JyB5w0BsyvlKjQxhrXwUKlzQWZL5mCwvkiKPrD6+sPCSHgpfknP3QXLAOEYlmQFR2rNkDbVSO55R
+	+BIVoRNC+4RSTSweVMpWoaTzucTnToh9kyuzdnOhkurDvTfuy3TyD9ZdCFMdZd1W3FYwdjqYNvDk/
+	nJ51ZAZ8govBuotBSqcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKGtp-0000000GaLU-39wj;
-	Fri, 23 Oct 2026 15:09:41 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1xKHK0-0000000GbzY-1kYH;
+	Fri, 23 Oct 2026 15:36:44 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xKGtn-0000000GaL8-2hCv
-	for linux-um@lists.infradead.org;
-	Fri, 23 Oct 2026 15:09:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1792768178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tgpP8ntgb1IS0cEJ3QYg5i8QakFDo2yC2w4u+PGohBk=;
-	b=id6hoyZwPdsxhswfcVbl9FCX13LR1/PxjfX91nOyyHIMVfeX9GACCMyVbyiiqauTCBl2TF
-	9yfRZxtFWFc5DZpdjK9Nzjy5XY5rN0baQmqXtxna9/Smfi8Y7lW/fO6J4ZUUT8/z6ZObyi
-	feEyvlarftY+/3vczPbaqOt5d+76Juk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-224-AuMbt3v6OGahl3IYn9zdow-1; Fri, 23 Oct 2026 11:09:36 -0400
-X-MC-Unique: AuMbt3v6OGahl3IYn9zdow-1
-X-Mimecast-MFC-AGG-ID: AuMbt3v6OGahl3IYn9zdow_1792768175
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-48dff112136so718229f8f.1
-        for <linux-um@lists.infradead.org>; Fri, 23 Oct 2026 08:09:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792768175; x=1793372975;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=tgpP8ntgb1IS0cEJ3QYg5i8QakFDo2yC2w4u+PGohBk=;
-        b=WKQ1Pmn4Ew/PblexYQiP/nxF8Bc6ak0PS0Ge8hfvd/42jdBjAYx0DBUHNl6F9fHStz
-         SmX3otYT3b2ZYKCyQzuEYr1p4kz83EAPVJmWhUfc26QnbmKtVyyxbMStNLTdSdr2MEQZ
-         0Ir5f6M0qNe6JSoiHEc4NqVhVEdTuRW8Ws1IVQa4DdUTAFpe5tX8stzkqcOO1KgGDxgP
-         7HG444z+Rw9sjW69/yPCupv1o9jddnZJ3HB9vod1m6qdoxPv0ZRQqrX7Q+j/YrTKWwmw
-         fDe1vXfzwv/17TpIOaSkQknHCKnbHd+DNc4Q9585kL3/CUF+dI6UcMetV8CP1PPvNdor
-         21Lg==
-X-Forwarded-Encrypted: i=1; AKwUvBzbHCEAB9HJrHn2mbNR0NP1/5cWQBYuoUZ67hx0oZHnBcvQnWQ8kVO6FFT9O8NnFDNFMoJHQvr43Q==@lists.infradead.org
-X-Gm-Message-State: AFq9FYIKCLUHiVhiKmGCZhP6ZCseQBkFcveJMpDFaw1nKQnGhMeaXtxO
-	ZsiVf1bhJQNGyjr6SNydt4yZlXiGENCHrogBdDM6WYz/DefX5ymY9Lc97PpcSJrJm5hMydz45xB
-	cbTnyj+93uCgpEKfVjfZU3t7iz4We8WCOayVhnyOU3TNDi9G4+WSYcmcH5iMIjceKIA==
-X-Gm-Gg: AYBFou0TIv1em0mIgqWm6lKKyppFl4CFZozNlvWxmkehWzQs7QXSPyfF2OsPhM51V7w
-	Kk39NSNcjMEXwVWB/iEVX9iVWgCyNuwt7+5z0JjRc3c7gWrP4ToxS6GCGu3AcdwoIXUygiTqbRo
-	LZk3qd/EgxZoVwpM4VnaupPXnpn3hu2+tGtRqUFe8ZIxHJD23bQWy3Axq17JPAjBeB4NsOxhPlj
-	XNJRSNFnu3SNvYHnhKvWHHftBMAo3jTIK16UFAfiXsNh98okgDjmmfGAg0wQhMAQi+KkRdKx9lQ
-	ZYQ1l4jGjTt3YbWWbqT0+VeDbzf1/aIS/iFAZmWIPOFEkPMXvaLS7f7YGCWUL6H0X5wLsYE=
-X-Received: by 2002:a05:6000:4024:b0:488:79d6:a4a6 with SMTP id ffacd0b85a97d-48e38594e74mr3887736f8f.8.1792768175089;
-        Fri, 23 Oct 2026 08:09:35 -0700 (PDT)
-X-Received: by 2002:a05:6000:4024:b0:488:79d6:a4a6 with SMTP id ffacd0b85a97d-48e38594e74mr3887682f8f.8.1792768174508;
-        Fri, 23 Oct 2026 08:09:34 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73f6:2400:30a8:9e33:7d82:c035])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3d400365sm339853f8f.25.2026.10.23.08.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2026 08:09:26 -0700 (PDT)
-Date: Fri, 23 Oct 2026 11:09:22 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Chris Arges <carges@cloudflare.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Phil Sutter <phil@nwl.cc>, Jason Wang <jasowangio@gmail.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, virtualization@lists.linux.dev,
-	Max Krasnyansky <maxk@qualcomm.com>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Willem de Bruijn <willemb@google.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH net v6 2/5] um: vector: trim skbs before verifying the header
-Message-ID: <dbbe73d2ce720e333aa8fa7c58b7bd01994a4216.1792768096.git.mst@redhat.com>
-References: <cover.1792768096.git.mst@redhat.com>
+	id 1xKHJy-0000000GbzB-0mww;
+	Fri, 23 Oct 2026 15:36:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=HSZuOyG4pKU7vS7IAE1/JM7GV7AMLK9kKAml8a9XFjg=; b=LgdCaYZ4XeA497jUGfg+O9xl10
+	eMQVSbplazV/Gaze7FF0nljn/betoYKFqhwTOrN+ba1Mne1j02brNm+GesUNZbW9yKzL70MKnEPYJ
+	dV1sqvLUeDOYnLnBShXZsjBh3W56bhV7oxD6jxUnv42vHLDrkzxhx+1alGonp31g0qGxWZQhk2hpI
+	+fPTDS9ysQSfhq1BfQvOH/nJNdkhXFkL4zfEiMAvBH4MC71JzPhGZ88TThZ/GPgP9OroyuFDqJGq4
+	568VBBETHlQbRr2JNlDH3PvkN/oFOar/dJ+CJch50nVFgyg8TNvH8WEYO38/RQdcfupSi6LPLaHwV
+	7L6cZJjA==;
+Received: from terminus.zytor.com ([2607:7c80:54:3::136] helo=mail.zytor.com)
+	by desiato.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xKHJv-00000009xyK-0imG;
+	Fri, 23 Oct 2026 15:36:41 +0000
+Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 69NFZXZ03099269
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 23 Oct 2026 08:35:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 69NFZXZ03099269
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026092801; t=1792769740;
+	bh=HSZuOyG4pKU7vS7IAE1/JM7GV7AMLK9kKAml8a9XFjg=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=bg3EdVPhWbIzGb2nl9Fuu7ddKA32ap1IfMZqOW5ffhrypmSKfeUyH9oyqT8VD3Ffz
+	 xZsox0txpA5nJa7ukTQnYEsijMIDw9G5ZjUIZiWIb+27Pyu0RsP3R+zGiaKYe7BVy+
+	 iRxHHbQf4iwE7FhJHOTs1QJ5w9pUe7E5sHjmWhEmmReaob00Q9qPt+SYyK9PjSybeL
+	 +p7u2wZEoGsZue51CvFVoyMDBkPLzVTCMehBpRAesG0upThtigcmczDR9dlEcb9c41
+	 ORCX4s+3pvA5/OOHfkjvkVcTf9EC4bUg2TYV5h1Rs0daKiD/q8yN03OHv7o44uTkJq
+	 IP7H4102peo1g==
+Date: Fri, 23 Oct 2026 08:35:29 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Thomas Gleixner <tglx@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+CC: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+        Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
+        Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>,
+        linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        =?ISO-8859-1?Q?Michal_Such=E1nek?= <msuchanek@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5Bpatch_16/18=5D_x86/entry=3A_Get_rid?=
+ =?US-ASCII?Q?_of_the_sys=5Fni=5Fsyscall=28=29_indirection?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <871p9g1s3w.ffs@fw13>
+References: <20260707181957.433213175@kernel.org> <20260707190254.493733289@kernel.org> <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13> <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com> <871p9g1s3w.ffs@fw13>
+Message-ID: <F44B99C1-297F-406C-AEAC-3CC8F4F36AED@zytor.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1792768096.git.mst@redhat.com>
-X-Mailer: git-send-email 2.51.2.2891.g4157995a80.dirty
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: BvFC6SANHbInkM4lfIeglvDfsPCuE7Xhu1ffTvnLa94_1792768175
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261023_080939_763419_3E5A7B40 
-X-CRM114-Status: GOOD (  13.03  )
-X-Spam-Score: -2.8 (--)
+X-CRM114-CacheID: sfid-20261023_163639_548463_D9287EC0 
+X-CRM114-Status: GOOD (  13.05  )
+X-Spam-Score: -0.2 (/)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,69 +119,57 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The vector receive path over-allocates the skb and only trims it
-to the received length after the transport header is verified.
+On October 23, 2026 6:09:07 AM PDT, Thomas Gleixner <tglx@kernel=2Eorg> wro=
+te:
+>On Thu, Oct 22 2026 at 17:22, H=2E Peter Anvin wrote:
+>> On October 22, 2026 2:34:08 PM PDT, Thomas Gleixner <tglx@kernel=2Eorg>=
+ wrote:
+>>>-static __always_inline void do_syscall_x32(struct pt_regs *regs, unsig=
+ned long nr)
+>>>+static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsig=
+ned long nr)
+>>> {
+>>>+	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
+>>>+		return false;
+>>>+
+>>>+	/* Preserve the historic insanity of treating -1 special on x32 */
+>>>+	if (nr =3D=3D ULONG_MAX)
+>>>+		return true;
+>>
+>> It was never limited to x32=2E=2E=2E
+>
+>Tired brain misread the test output:
+>
+>[RUN]   Running tests under ptrace: modifying the default return
+>[RUN]       Checking system calls with msb =3D 0 (0x0)
+>[OK]                x32 syscalls 0:-64=2E=2E-2 returned -ENOSYS as expect=
+ed
+>[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expec=
+ted
+>[OK]                x64 syscalls 0:-64=2E=2E-1 returned -ENOSYS as expect=
+ed
+>
+>But that's because the "-1" on x32 is actually 0xFFFFFFFF while on x64
+>it's 0x7FFFFFFF=2E
+>
+>The whole mess comes from using -1 as indicator for syscall abort which
+>is undistinguishable from a syscall(nr=3D-1)=2E
+>
+>Bah=2E Let me restore this nonsense=2E
+>
+>Thanks,
+>
+>        tglx
+>
+>
+>
 
-A follow up patch will complete the packet checksum in software within
-virtio_net_hdr_to_skb so we need the packet trimmed (otherwise the
-checksum would be computed incorrectly over the unreceived tail of the
-buffer).
-
-Trim first, so the import sees the packet as it was received.
-
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/um/drivers/vector_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8a70b3a62553..1afbef78df72 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -865,6 +865,7 @@ static int vector_legacy_rx(struct vector_private *vp)
- 
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-+			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					vp->header_rxbuffer, skb, vp);
-@@ -879,7 +880,6 @@ static int vector_legacy_rx(struct vector_private *vp)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
-@@ -981,6 +981,8 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
- 		if (mmsg_vector->msg_len > vp->header_size) {
-+			pskb_trim(skb,
-+				mmsg_vector->msg_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					mmsg_vector->msg_hdr.msg_iov->iov_base,
-@@ -1005,8 +1007,6 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb,
--				mmsg_vector->msg_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			/*
- 			 * We do not need to lock on updating stats here
--- 
-MST
-
+Yeah, that was always a WTF=2E
 
