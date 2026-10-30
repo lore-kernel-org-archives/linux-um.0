@@ -2,119 +2,91 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4086460A2618
-	for <linux-um@archiver.kernel.org>; Thu, 29 Oct 2026 18:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27D9606A325
+	for <linux-um@archiver.kernel.org>; Fri, 30 Oct 2026 19:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=a5Cg79EV;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=YlJAnAkx
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2Dk3b871;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cJGl/G/2
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=YKSPCbeY/OQI++t0FoyUVDRUKnMhMVlO33rtvFKUKas=; b=a5Cg79EV33bIxtiQ3sy6IeVKph
-	+g378bhwSm1w6pp5IXi/PoKwhGKhv0ZsqFXcIWIsGg1B5jCzPCM7xS/NgsDXAN3/8DsC21/Yk5usC
-	MXElL1Y19QnWwTI375v+GpOn5QDQU64Pd7I874CJ8AJusC//WX+0BLT4xrtJQ+6f2/1lEy+uA8Lqq
-	pwbSCdYYqXF7A6cBKP3fVBYxuNk6dIIRfSmVZrb80Lsp0W03/KormnIPq7H3zIkKrD+2FMb2MtrB/
-	etXxDTgo/j27YH8HbAM8DcmpL88jLoRER1/ho+c7BshIYr8VnTXVc3va/v5ne7HEWqa6LrFlnPMbI
-	vMlZ00fQ==;
+	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=; b=2Dk3b8711xPIFynCLBTBVfTDYL
+	5pzwNwfujhYOYuRjsah5Hr1ug/iPYrl5LKav/1S3QcetwSa/WgNU9vshPT43wbT/hcDa+HMZQmc72
+	NrlUZS8eoGY046ciLcEDWiNBKzMut8SvTMFhdCbl/l7YCh7svs/fMG0giEqenqFh4FbILGCcyZvUQ
+	6oyN2xuNFvSkX2y8jqLrhGjCQ03HwyXIR5ngrIIvOROaYPTLXpThHozKx0cYBu4o0GaPw96/pFUsQ
+	QMXk0qpddTeNkWhMEmZFlL0ydc8QL0kefGzDv4xRPUSJWyxyiUtRq7cPXn5yoeqPWfT1ebF68SpGM
+	9eTAYQwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMVFv-0000000ABKM-2tvu;
-	Thu, 29 Oct 2026 18:53:43 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1xMs0w-0000000CT3D-2ZCV;
+	Fri, 30 Oct 2026 19:11:46 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMVFt-0000000ABJi-22R8
-	for linux-um@lists.infradead.org;
-	Thu, 29 Oct 2026 18:53:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1793300020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKSPCbeY/OQI++t0FoyUVDRUKnMhMVlO33rtvFKUKas=;
-	b=YlJAnAkxwJ+kqnHGTw7OOfRmBCTLFLkHQwPwdUPLA13mvof1syA7Mox5Jr7a7RyOZRUn9o
-	T4PEVcAuLnGWwfN6QKTg5fhJF491rZMaI6wQYTtj6BCq3xWPpkKYY66QyetjnJ5kpNoVEj
-	EFzBO4EOnfI7m/4C+jsunLRzfphcRv8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-144-idOybqWCOTeF3Y0_W8gVdw-1; Thu, 29 Oct 2026 14:53:33 -0400
-X-MC-Unique: idOybqWCOTeF3Y0_W8gVdw-1
-X-Mimecast-MFC-AGG-ID: idOybqWCOTeF3Y0_W8gVdw_1793300012
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4a0284121c6so21018055e9.3
-        for <linux-um@lists.infradead.org>; Thu, 29 Oct 2026 11:53:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793300012; x=1793904812;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=YKSPCbeY/OQI++t0FoyUVDRUKnMhMVlO33rtvFKUKas=;
-        b=oQqdoWfwYA2iR8Y7NXXmRXKGc2AbFSGOjWZfEzT9n/l4bzL/Pvjpq/Qp0cPwt2mJIM
-         Hyw16H/kzBOMJfIOY4AoB06ecO/xHT6PvleAc/W3nR5rpgiqqEDeOWPobeUUWmiOrdCr
-         gjkwAEqUVq+HdsRZCGX5T7TO2+9C1HEfqvHACYiy7tRG+9CHwEuYnRacLX8f3z3lmV3R
-         Y1l8ETCxXhFfggUVwl+W9ZXPUPOJl5PCNmrVHV223xniutYv9ifYIshBKHIslhHlxV9q
-         aw+4o/HMmkVHoi8IrmAfqxbv4k2Tjm634VeBLdi3fxiDwWgKsl3dZmmZnb4Dp0luy3Ch
-         HQvw==
-X-Forwarded-Encrypted: i=1; AKwUvBzSOGRaPMmRcTtrwsDvgA7nT1UirTltgD3Bu9xc2z0y10VrEVxnTtTuvywxQsuNKbgXsRvh8updCA==@lists.infradead.org
-X-Gm-Message-State: AFq9FYJb2LZobYmut/uHeuudWGEymTZ0MVHE4DXd4sbSGOrGgDLF1fte
-	c1CKUek64iort6PI5rwLfSdfmuVyW28jJYHSK4WF/dBdbjjpq6IADADX0n4i5X+A85bKbVvw+e9
-	FAXf6/As7MFzHyQy/Z4xv+QinE7AZCCcPDfxqPOEz16UdStPtkJ0r6KEVudcF3q3MZw==
-X-Gm-Gg: AYBFou10dUrCgzFIK0WEVu8UXBJmfDZriLrBcRBoYj2ncjnFeARd36BlUS8gNM1Soiz
-	EbQZQxs4fPVukZDgPB7vvkj27AwqTklGiinoBSFziKSfYH30OS72LD7BqMpXQ1DW6bTtrbZ4nBo
-	iEhnmfrYm0jVy/jFpa9Uzde6kRZzNQuaGbtuv8FeEwpcMf/crq8WSErFX/qggiNnc4ap8EXQglS
-	ctzCNybr/GC2NbFqboKAMxPkdXi0IFF7zX0lQwJwyHJjeCDwBy4+ATaLKocHj2TW602c/+YDHGP
-	bgIt1T8uBxDM/VOeWdrItpKfOblMXXWtpb+BxpkQmiZu9oepwJtGXUjTk3YRIyIzRlXAx41oNAy
-	79NZoyOjEpg9O+THfREfRZFv+vAGDZq47CAFUyw2WBmGN
-X-Received: by 2002:a05:600c:1909:b0:4a2:1e1:d55 with SMTP id 5b1f17b1804b1-4a9675dc5cfmr142984555e9.28.1793300011491;
-        Thu, 29 Oct 2026 11:53:31 -0700 (PDT)
-X-Received: by 2002:a05:600c:1909:b0:4a2:1e1:d55 with SMTP id 5b1f17b1804b1-4a9675dc5cfmr142984155e9.28.1793300011057;
-        Thu, 29 Oct 2026 11:53:31 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73c1:fd00:6c8e:5a61:f533:519d])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4abf5b289f7sm4241265e9.5.2026.10.29.11.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2026 11:53:22 -0700 (PDT)
-Date: Thu, 29 Oct 2026 14:53:19 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Chris Arges <carges@cloudflare.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Phil Sutter <phil@nwl.cc>, Jason Wang <jasowangio@gmail.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, virtualization@lists.linux.dev,
-	Max Krasnyansky <maxk@qualcomm.com>,
-	Rusty Russell <rusty@rustcorp.com.au>,
-	Willem de Bruijn <willemb@google.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH RFC v7 2/5] um: vector: trim skbs before verifying the header
-Message-ID: <d5a36cae5997d36ae6b4bb192a251194e61a8a2f.1793276116.git.mst@redhat.com>
-References: <cover.1793276116.git.mst@redhat.com>
+	id 1xMs0t-0000000CT2i-3Arf;
+	Fri, 30 Oct 2026 19:11:44 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 9390060202;
+	Fri, 30 Oct 2026 19:11:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856D71F000C1;
+	Fri, 30 Oct 2026 19:11:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793387501;
+	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=cJGl/G/2fQF1yJWHTie2xk6HB608xeSGry+Y/uMzkiv7mSAAvI/rgcFa2ycf1BTVh
+	 d35A0kNRaV1SESzGWirJvsignzKFJjZo7LJ49bkaLS5abOu8oYwNJDowAY4LXAaFk3
+	 1qvBtDFkFqlDjn51/ADmcGHjG88Z10ZTRm9cloeKGen2Fvgbp7EvWKP7Fs/k+w7w7I
+	 N+Bpq3UQzRBk81FGdRpPvr/G8hUKlkAznQ9epCS9WohqPLXX6ImGQB2IoLMbeTEcsI
+	 X7PFkJetPPJchwZrSKjuCFkEbuOgCvp7lXiZPRZWxHOpx5mbgnJHdFUTifU5ObrOgF
+	 1vyrUAqP9m8pA==
+From: Thomas Gleixner <tglx@kernel.org>
+To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
+ Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
+ <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
+ Henderson <richard.henderson@linaro.org>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
+ Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
+ <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
+ <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
+ <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
+ <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH] x86/entry: Fix ptrace regression
+In-Reply-To: <87se1wyvs8.ffs@fw13>
+References: <20260707181957.433213175@kernel.org>
+ <20260707190254.493733289@kernel.org>
+ <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
+ <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
+ <871p9g1s3w.ffs@fw13> <87y0boze95.ffs@fw13>
+ <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com> <87se1wyvs8.ffs@fw13>
+Date: Fri, 30 Oct 2026 20:11:37 +0100
+Message-ID: <87mrrvxaty.ffs@fw13>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1793276116.git.mst@redhat.com>
-X-Mailer: git-send-email 2.51.2.2891.g4157995a80.dirty
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: uaKTO2fo214bt_G83mhmHzHxGiBMEMI_oM6EfXTXU8s_1793300012
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261029_115341_600581_94AFFE25 
-X-CRM114-Status: GOOD (  13.42  )
-X-Spam-Score: -2.8 (--)
+Content-Type: text/plain
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,69 +97,90 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The vector receive path over-allocates the skb and only trims it
-to the received length after the transport header is verified.
+The recent rework of the syscall entry code missed the historical detail of
+the abuse of syscall number -1L to abort a syscall and keep modifications
+by tracers to the return value, while a rewrite of the syscall number to an
+invalid value undoes eventual tracer modification to the return value and
+overwrites it with -ENOSYS.
 
-A follow up patch will complete the packet checksum in software within
-virtio_net_hdr_to_skb so we need the packet trimmed (otherwise the
-checksum would be computed incorrectly over the unreceived tail of the
-buffer).
+Restore the original behaviour.
 
-Trim first, so the import sees the packet as it was received.
-
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: 1b1f3b3e1b39 ("x86/entry: Get rid of the sys_ni_syscall() indirection")
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+Cc: stable@vger.kernel.org
+Closes: https://lore.kernel.org/all/20261022142425.3Wx-RrU5@linutronix.de
 ---
- arch/um/drivers/vector_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/entry/syscall_32.c |    2 ++
+ arch/x86/entry/syscall_64.c |   26 ++++++++++++++++++++++----
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e902e78c5ff6..828bd61995b8 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -873,6 +873,7 @@ static int vector_legacy_rx(struct vector_private *vp)
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -77,6 +77,8 @@ static __always_inline void do_syscall_3
+ 	if (likely(nr < IA32_NR_syscalls)) {
+ 		nr = array_index_nospec(nr, IA32_NR_syscalls);
+ 		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
++	} else {
++		regs->ax = -ENOSYS;
+ 	}
+ }
  
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-+			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					vp->header_rxbuffer, skb, vp);
-@@ -887,7 +888,6 @@ static int vector_legacy_rx(struct vector_private *vp)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
-@@ -989,6 +989,8 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
- 		if (mmsg_vector->msg_len > vp->header_size) {
-+			pskb_trim(skb,
-+				mmsg_vector->msg_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					mmsg_vector->msg_hdr.msg_iov->iov_base,
-@@ -1013,8 +1015,6 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb,
--				mmsg_vector->msg_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			/*
- 			 * We do not need to lock on updating stats here
--- 
-MST
-
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -64,15 +64,20 @@ static __always_inline bool do_syscall_x
+ 	return false;
+ }
+ 
+-static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
++static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned long nr)
+ {
++	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
++		return false;
++
+ 	/* Adjust the starting offset of the table */
+ 	nr -= __X32_SYSCALL_BIT;
+ 
+-	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
++	if (likely(nr < X32_NR_syscalls)) {
+ 		nr = array_index_nospec(nr, X32_NR_syscalls);
+ 		regs->ax = x32_sys_call(regs, (unsigned int)nr);
++		return true;
+ 	}
++	return false;
+ }
+ 
+ /* Returns true to return using SYSRET, or false to use IRET */
+@@ -81,8 +86,21 @@ static __always_inline void do_syscall_x
+ 	if (likely(syscall_enter_from_user_mode_randomize_stack(regs, &nr))) {
+ 		instrumentation_begin();
+ 
+-		if (!do_syscall_x64(regs, nr))
+-			do_syscall_x32(regs, nr);
++		if (unlikely(!do_syscall_x64(regs, nr))) {
++			/*
++			 * The special treatment of syscall number -1 is a
++			 * historical bogosity as the original code used -1 to
++			 * indicate syscall abort, which is not distinguishable
++			 * from a syscall which is invoked with syscall number
++			 * -1. The historic behavior is to keep the return value
++			 * in regs->ax unmodified in that case, which means it's
++			 * either the preset value -ENOSYS or a value which was
++			 * written by a tracer. If the syscall number is invalid
++			 * but not -1 then overwrite any tracer modification.
++			 */
++			if (!do_syscall_x32(regs, nr) && nr != -1L)
++				regs->ax = -ENOSYS;
++		}
+ 
+ 		instrumentation_end();
+ 	}
 
