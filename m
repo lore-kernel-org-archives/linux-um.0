@@ -2,92 +2,74 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8F9606A329
-	for <linux-um@archiver.kernel.org>; Sun,  1 Nov 2026 17:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55190607412A
+	for <linux-um@archiver.kernel.org>; Sun,  1 Nov 2026 22:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0MJA4MSF;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FkpyzqH8
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Or+aSERm;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RI6vqfud
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=; b=0MJA4MSFaOnR15Qrdyj9qJWFZi
-	/sqza3HJSpwRAZgmKGES4DnneIyIy5H7AAKVZP//hEC+s2jgLYN+f7+TsgVzmZS1kHVJMnTFuiRf2
-	693vjnP/5HDXAx1U/X+Qgrx6kA4q1mSskLaMuuHi5uzTR8J5x3C1SIh5QdcGkBfMK0PIQLKyA+VDP
-	RQlkK9hRRgxqNkXt7ea6/9dUV1yx0PCE/TGiZuSAepVh7Z6WcsMAb12XK3vaD06AmpJaKR/xyTiaH
-	wMhI9NDDrox18czMk9ChnwYMWJz2jA6gqIlS2XSPoKgrrExs6jYAxr0S3y/r3Fw8VLSxKZwS2eOQG
-	YFQhL/oA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
+	List-Owner; bh=7jMaG7E0faIciRuA0j8698KDnNXPdfgqG5SZCjrpwFM=; b=Or+aSERmH4SWHp
+	w8zsMzMdbGQ52GKnJ3qEFNDy6vcj+xhVbPS7P7+enECzDsw/W3D+B5Y1DnyoTnwjgvcjtfRvo3a6L
+	XTr6VnzwF9LXZYpPa7nPYbnJcoOYQwMzPGuRSJPGEs/SO5k42rmOChd5YISADafoe2ZIW4cKeP6NL
+	dlwZolaij5pZwhIY0QBINz9sBkdUl8R91RLyhHOT0Fkmpr+E2y8I3VgNUHHOTvOaArFTVXqJl7/Xx
+	5tKUAuql+MBn07qts/ghHC6TvCv80n7UOmm2/5b/Vc91ItvNdC3nlzOr8zuDs7Fv/4EBSsa/Q5Vmz
+	zWb9/2gPaWz6i0d4hqfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNZou-0000000Ejmq-1xqF;
-	Sun, 01 Nov 2026 17:58:16 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xNdrL-0000000F24A-1wpD;
+	Sun, 01 Nov 2026 22:17:03 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNZoq-0000000EjmT-3jmg;
-	Sun, 01 Nov 2026 17:58:12 +0000
+	id 1xNdqq-0000000F0YQ-3GQb;
+	Sun, 01 Nov 2026 22:16:33 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 0EC39402BE;
-	Sun,  1 Nov 2026 17:58:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 388A21F00A17;
-	Sun,  1 Nov 2026 17:58:11 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 7FC2441815;
+	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D4D81F000C1;
+	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793555891;
-	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=FkpyzqH892Y24Bf4MzJaxg0GENU+W3h1HrKoje37+gLiStKVwoHULfobDtcxPd97k
-	 O7yDPvc5mWSjJBu8vqqdIiJljIIY/6Z6d8PFXXCg74LTEn4DannL5V6rcy3NiVl7Cu
-	 DnutKq7d2bLfY2EkKJcg1fiS7Qvebb0UQQu9SHDSugPX5Tba1NEXcVGdUEzB6sw+y5
-	 V2z/p2t+EDUDEUhm+YjJeNELsgmzPgXTja1HpGoACFV2HxgapWeRjmaKUW4P/rTSol
-	 vGE0a3SiPbMJFefI/JNfVFZ/R4iCFJ+Rd4uFfOaqAIzWd7mtslcqNYqP4841tBmpOx
-	 x3REifKbTPuGQ==
-From: Thomas Gleixner <tglx@kernel.org>
-To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
- <msuchanek@suse.de>, Jonathan
- Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH V2] x86/entry: Fix ptrace regression
-In-Reply-To: <87mrrvxaty.ffs@fw13>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
- <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
- <871p9g1s3w.ffs@fw13> <87y0boze95.ffs@fw13>
- <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com> <87se1wyvs8.ffs@fw13>
- <87mrrvxaty.ffs@fw13>
-Date: Sun, 01 Nov 2026 18:58:08 +0100
-Message-ID: <87ecd4xwlr.ffs@fw13>
+	s=k20260515; t=1793571392;
+	bh=7jMaG7E0faIciRuA0j8698KDnNXPdfgqG5SZCjrpwFM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=RI6vqfudUDAPQJyogDLl2CpARmQSYi02Z/r+Di8qbeK3KcSdM0cWSldHGeHFd7Wmg
+	 oZkcWTzbyfmhEOg5tcfCHfhpf6iaGm+isSH86qaujprBW88A0OM503IaD8+WPv9717
+	 bpcrsoSfdrv6EFgcaHxAfgeqBVd+9Lh2jlei+lTKhKmrMmF1DDRxKwuNJ2YAzniH64
+	 bTK3lBMxJ6uc9UCiWTe96qjtjhpAxsSnnRxROmumhMt3+M7z/8Bl4vxi21IO/fXVoH
+	 wUHNq2epY1lAcTmYzulW8paMq9f4RX7rYBp2SAoAq4o7yj3fGB1UzuSY/Wrq1aK7S0
+	 zpB9EvUeVfZow==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 5347838003B8;
+	Sun,  1 Nov 2026 22:16:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/8] mm: Drop pxd_ERROR()
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: <179357139104.2624073.10186400247460209292.git-patchwork-notify@kernel.org>
+Date: Sun, 01 Nov 2026 22:16:31 +0000
+References: <20260831054331.625505-1-anshuman.khandual@arm.com>
+In-Reply-To: <20260831054331.625505-1-anshuman.khandual@arm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+ samuel.holland@sifive.com, david@kernel.org, rppt@kernel.org,
+ akpm@linux-foundation.org, ljs@kernel.org, ysato@users.sourceforge.jp,
+ dalias@libc.org, glaubitz@physik.fu-berlin.de,
+ James.Bottomley@HansenPartnership.com, deller@gmx.de, chenhuacai@kernel.org,
+ kernel@xen0n.name, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,94 +80,52 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The recent rework of the syscall entry code missed the historical detail of
-the abuse of syscall number -1L to abort a syscall and keep modifications
-by tracers to the return value, while a rewrite of the syscall number to an
-invalid value undoes eventual tracer modification to the return value and
-overwrite it with -ENOSYS.
+Hello:
 
-Restore the original behaviour.
+This series was applied to riscv/linux.git (fixes)
+by Andrew Morton <akpm@linux-foundation.org>:
 
-Fixes: 1b1f3b3e1b39 ("x86/entry: Get rid of the sys_ni_syscall() indirection")
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: stable@vger.kernel.org
-Closes: https://lore.kernel.org/all/20261022142425.3Wx-RrU5@linutronix.de
----
-V2: Add the missing -1 check in the 32bit path - sashiko
----
- arch/x86/entry/syscall_32.c |    4 ++++
- arch/x86/entry/syscall_64.c |   26 ++++++++++++++++++++++----
- 2 files changed, 26 insertions(+), 4 deletions(-)
+On Mon, 31 Aug 2026 11:13:22 +0530 you wrote:
+> pxd_ERROR() macros have been provided by all platforms, which are very much
+> identical and can be dropped off completely if these pgtable printing could
+> be moved to callers in generic MM aka all pxd_clear_bad().
+> 
+> But first cleanups and re-organizations are required in some platforms that
+> are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
+> macros have been completely dropped from the entire tree.
+> 
+> [...]
 
---- a/arch/x86/entry/syscall_32.c
-+++ b/arch/x86/entry/syscall_32.c
-@@ -77,6 +77,10 @@ static __always_inline void do_syscall_3
- 	if (likely(nr < IA32_NR_syscalls)) {
- 		nr = array_index_nospec(nr, IA32_NR_syscalls);
- 		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
-+	} else {
-+		/* See comment in do_syscall_64() */
-+		if (nr != -1UL) {
-+			regs->ax = -ENOSYS;
- 	}
- }
- 
---- a/arch/x86/entry/syscall_64.c
-+++ b/arch/x86/entry/syscall_64.c
-@@ -64,15 +64,20 @@ static __always_inline bool do_syscall_x
- 	return false;
- }
- 
--static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned long nr)
-+static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned long nr)
- {
-+	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
-+		return false;
-+
- 	/* Adjust the starting offset of the table */
- 	nr -= __X32_SYSCALL_BIT;
- 
--	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
-+	if (likely(nr < X32_NR_syscalls)) {
- 		nr = array_index_nospec(nr, X32_NR_syscalls);
- 		regs->ax = x32_sys_call(regs, (unsigned int)nr);
-+		return true;
- 	}
-+	return false;
- }
- 
- /* Returns true to return using SYSRET, or false to use IRET */
-@@ -81,8 +86,21 @@ static __always_inline void do_syscall_x
- 	if (likely(syscall_enter_from_user_mode_randomize_stack(regs, &nr))) {
- 		instrumentation_begin();
- 
--		if (!do_syscall_x64(regs, nr))
--			do_syscall_x32(regs, nr);
-+		if (unlikely(!do_syscall_x64(regs, nr))) {
-+			/*
-+			 * The special treatment of syscall number -1 is a
-+			 * historical bogosity as the original code used -1 to
-+			 * indicate syscall abort, which is not distinguishable
-+			 * from a syscall which is invoked with syscall number
-+			 * -1. The historic behavior is to keep the return value
-+			 * in regs->ax unmodified in that case, which means it's
-+			 * either the preset value -ENOSYS or a value which was
-+			 * written by a tracer. If the syscall number is invalid
-+			 * but not -1 then overwrite any tracer modification.
-+			 */
-+			if (!do_syscall_x32(regs, nr) && nr != -1L)
-+				regs->ax = -ENOSYS;
-+		}
- 
- 		instrumentation_end();
- 	}
+Here is the summary with links:
+  - [1/8] mm: Make ptval_to_str() generally available
+    (no matching commit)
+  - [2/8] mm: Stop using pxd_ERROR()
+    https://git.kernel.org/riscv/c/0666fc9d4432
+  - [3/8] loongarch/mm: Stop using pte_ERROR()
+    https://git.kernel.org/riscv/c/ea8763ac3af7
+  - [4/8] parisc/mm: Directly use generic [pmd|pgd]_clear_bad()
+    https://git.kernel.org/riscv/c/94d6c5466d1a
+  - [5/8] sh/mm: Stop using pte_ERROR()
+    https://git.kernel.org/riscv/c/6858e42cc2bc
+  - [6/8] sh/mm: Stop using [p4d|pud|pmd]_ERROR()
+    https://git.kernel.org/riscv/c/3b225ce37f62
+  - [7/8] sh/mm: Stop using pgd_ERROR()
+    https://git.kernel.org/riscv/c/66a0441a1791
+  - [8/8] mm: Drop pxd_ERROR()
+    https://git.kernel.org/riscv/c/c970236c300f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
