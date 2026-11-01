@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27D9606A325
-	for <linux-um@archiver.kernel.org>; Fri, 30 Oct 2026 19:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8F9606A329
+	for <linux-um@archiver.kernel.org>; Sun,  1 Nov 2026 17:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2Dk3b871;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cJGl/G/2
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0MJA4MSF;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FkpyzqH8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
@@ -14,35 +14,35 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=; b=2Dk3b8711xPIFynCLBTBVfTDYL
-	5pzwNwfujhYOYuRjsah5Hr1ug/iPYrl5LKav/1S3QcetwSa/WgNU9vshPT43wbT/hcDa+HMZQmc72
-	NrlUZS8eoGY046ciLcEDWiNBKzMut8SvTMFhdCbl/l7YCh7svs/fMG0giEqenqFh4FbILGCcyZvUQ
-	6oyN2xuNFvSkX2y8jqLrhGjCQ03HwyXIR5ngrIIvOROaYPTLXpThHozKx0cYBu4o0GaPw96/pFUsQ
-	QMXk0qpddTeNkWhMEmZFlL0ydc8QL0kefGzDv4xRPUSJWyxyiUtRq7cPXn5yoeqPWfT1ebF68SpGM
-	9eTAYQwQ==;
+	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=; b=0MJA4MSFaOnR15Qrdyj9qJWFZi
+	/sqza3HJSpwRAZgmKGES4DnneIyIy5H7AAKVZP//hEC+s2jgLYN+f7+TsgVzmZS1kHVJMnTFuiRf2
+	693vjnP/5HDXAx1U/X+Qgrx6kA4q1mSskLaMuuHi5uzTR8J5x3C1SIh5QdcGkBfMK0PIQLKyA+VDP
+	RQlkK9hRRgxqNkXt7ea6/9dUV1yx0PCE/TGiZuSAepVh7Z6WcsMAb12XK3vaD06AmpJaKR/xyTiaH
+	wMhI9NDDrox18czMk9ChnwYMWJz2jA6gqIlS2XSPoKgrrExs6jYAxr0S3y/r3Fw8VLSxKZwS2eOQG
+	YFQhL/oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMs0w-0000000CT3D-2ZCV;
-	Fri, 30 Oct 2026 19:11:46 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xNZou-0000000Ejmq-1xqF;
+	Sun, 01 Nov 2026 17:58:16 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xMs0t-0000000CT2i-3Arf;
-	Fri, 30 Oct 2026 19:11:44 +0000
+	id 1xNZoq-0000000EjmT-3jmg;
+	Sun, 01 Nov 2026 17:58:12 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9390060202;
-	Fri, 30 Oct 2026 19:11:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856D71F000C1;
-	Fri, 30 Oct 2026 19:11:40 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0EC39402BE;
+	Sun,  1 Nov 2026 17:58:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 388A21F00A17;
+	Sun,  1 Nov 2026 17:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793387501;
-	bh=T4hFvVxLfjnAJg8k+NzczjZdpae4mRcTksCIzgxfA9U=;
+	s=k20260515; t=1793555891;
+	bh=+7HwRXGWtYS3xmU+Z46/w0lVl31Dl0sZcMyXjmUDfIs=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=cJGl/G/2fQF1yJWHTie2xk6HB608xeSGry+Y/uMzkiv7mSAAvI/rgcFa2ycf1BTVh
-	 d35A0kNRaV1SESzGWirJvsignzKFJjZo7LJ49bkaLS5abOu8oYwNJDowAY4LXAaFk3
-	 1qvBtDFkFqlDjn51/ADmcGHjG88Z10ZTRm9cloeKGen2Fvgbp7EvWKP7Fs/k+w7w7I
-	 N+Bpq3UQzRBk81FGdRpPvr/G8hUKlkAznQ9epCS9WohqPLXX6ImGQB2IoLMbeTEcsI
-	 X7PFkJetPPJchwZrSKjuCFkEbuOgCvp7lXiZPRZWxHOpx5mbgnJHdFUTifU5ObrOgF
-	 1vyrUAqP9m8pA==
+	b=FkpyzqH892Y24Bf4MzJaxg0GENU+W3h1HrKoje37+gLiStKVwoHULfobDtcxPd97k
+	 O7yDPvc5mWSjJBu8vqqdIiJljIIY/6Z6d8PFXXCg74LTEn4DannL5V6rcy3NiVl7Cu
+	 DnutKq7d2bLfY2EkKJcg1fiS7Qvebb0UQQu9SHDSugPX5Tba1NEXcVGdUEzB6sw+y5
+	 V2z/p2t+EDUDEUhm+YjJeNELsgmzPgXTja1HpGoACFV2HxgapWeRjmaKUW4P/rTSol
+	 vGE0a3SiPbMJFefI/JNfVFZ/R4iCFJ+Rd4uFfOaqAIzWd7mtslcqNYqP4841tBmpOx
+	 x3REifKbTPuGQ==
 From: Thomas Gleixner <tglx@kernel.org>
 To: "H. Peter Anvin" <hpa@zytor.com>, Sebastian Andrzej Siewior
  <bigeasy@linutronix.de>
@@ -74,16 +74,17 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
  linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
  <msuchanek@suse.de>, Jonathan
  Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH] x86/entry: Fix ptrace regression
-In-Reply-To: <87se1wyvs8.ffs@fw13>
+Subject: [PATCH V2] x86/entry: Fix ptrace regression
+In-Reply-To: <87mrrvxaty.ffs@fw13>
 References: <20260707181957.433213175@kernel.org>
  <20260707190254.493733289@kernel.org>
  <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
  <87cxt11ktr.ffs@fw13> <1149A39E-BEBA-46EA-94F4-4DFFC4733EF5@zytor.com>
  <871p9g1s3w.ffs@fw13> <87y0boze95.ffs@fw13>
  <C6D7BF04-4CF7-48D1-93B5-E80D52C2617D@zytor.com> <87se1wyvs8.ffs@fw13>
-Date: Fri, 30 Oct 2026 20:11:37 +0100
-Message-ID: <87mrrvxaty.ffs@fw13>
+ <87mrrvxaty.ffs@fw13>
+Date: Sun, 01 Nov 2026 18:58:08 +0100
+Message-ID: <87ecd4xwlr.ffs@fw13>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -109,7 +110,7 @@ The recent rework of the syscall entry code missed the historical detail of
 the abuse of syscall number -1L to abort a syscall and keep modifications
 by tracers to the return value, while a rewrite of the syscall number to an
 invalid value undoes eventual tracer modification to the return value and
-overwrites it with -ENOSYS.
+overwrite it with -ENOSYS.
 
 Restore the original behaviour.
 
@@ -119,18 +120,22 @@ Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 Cc: stable@vger.kernel.org
 Closes: https://lore.kernel.org/all/20261022142425.3Wx-RrU5@linutronix.de
 ---
- arch/x86/entry/syscall_32.c |    2 ++
+V2: Add the missing -1 check in the 32bit path - sashiko
+---
+ arch/x86/entry/syscall_32.c |    4 ++++
  arch/x86/entry/syscall_64.c |   26 ++++++++++++++++++++++----
- 2 files changed, 24 insertions(+), 4 deletions(-)
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
 --- a/arch/x86/entry/syscall_32.c
 +++ b/arch/x86/entry/syscall_32.c
-@@ -77,6 +77,8 @@ static __always_inline void do_syscall_3
+@@ -77,6 +77,10 @@ static __always_inline void do_syscall_3
  	if (likely(nr < IA32_NR_syscalls)) {
  		nr = array_index_nospec(nr, IA32_NR_syscalls);
  		regs->ax = ia32_sys_call(regs, (unsigned int)nr);
 +	} else {
-+		regs->ax = -ENOSYS;
++		/* See comment in do_syscall_64() */
++		if (nr != -1UL) {
++			regs->ax = -ENOSYS;
  	}
  }
  
