@@ -2,55 +2,55 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDC66070DB6
-	for <linux-um@archiver.kernel.org>; Mon,  2 Nov 2026 15:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6362C6070DAE
+	for <linux-um@archiver.kernel.org>; Mon,  2 Nov 2026 15:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vxWiAhAV;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lzeuR62X
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=2EfyNzEY;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BaGFkmgd
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=u/RXCBD8nlX7BDzbpngWHwWfgPDQj7BVrPXrBF7wCv8=; b=vxWiAhAVrV4ojS
-	JZ1zBMKjWvO4Fr0+3AS6tFHSOd7muIWVFzdsGLAWpL2YlkZs5f1WXwzZJPycpbOQapKy6GdRvOh+U
-	fQVjofwCfodeqBBvRgnKHnWnEGtOuz2Wh5ScxQPvgtt5rKp/IVbdJ4rb5ve7w1i91JcSX5D+BabRF
-	4eA/Gku5nfcMwiedGu/zsyxGxtV4O4NHpNmn5NLofXgiIUREBO3Q9hiCVEMk6tjNwPuQ8vVGCcpeo
-	fltKQ8/32yqP0/Qn1rtADwnIZx6nSWxqVJS6w0cIrwmsE+HQglUytF1bHA8TBVY0gI3iI2CQ10pYo
-	nz7cGkb4v+dzntA49t+g==;
+	List-Owner; bh=+Br5BKTNsV9SKJ+VKUXfa+LuXFyw/MNJN1rBJWSG1Dk=; b=2EfyNzEYpFqJPM
+	PsDBUHgMoAnpDINoQ1ZEQOML6Xz3FrU0KVoKcrGA7cV+9/9cUUUTCWFbZdzEeMVxbgNlapuhad7Jg
+	lyLu4ZBpG7xT/EC/SCW/n+0CoUzJ0tPk/JIJ38gP2Puk4XmoHjURDWaMvzQnxZOenN0fnAudOPpFL
+	Wm56Vyd2j1SX5by6muZA0cDzuahoO9Vqxl+zjlTLvjX3T/i357JU/wrVs8bxcahuuYkTGmzb4qvMk
+	PWKxNPKF9qF6PGJO9/f+dJpSnWq0JZVMSOrl0CnIA7P40SAyj6u9gAB8NehnYNQdsp6iY9hZ2HBla
+	GLiPyhMmVDcJ6G9Hj3PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNtqq-0000000H3jy-1owo;
-	Mon, 02 Nov 2026 15:21:36 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xNtrB-0000000H3ty-309P;
+	Mon, 02 Nov 2026 15:21:57 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xNtqn-0000000H3hx-2O94;
-	Mon, 02 Nov 2026 15:21:33 +0000
+	id 1xNtr7-0000000H3rO-02gw;
+	Mon, 02 Nov 2026 15:21:53 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0575160620;
-	Mon,  2 Nov 2026 15:21:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9FC41F00A16;
-	Mon,  2 Nov 2026 15:21:15 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id BE21343AA4;
+	Mon,  2 Nov 2026 15:21:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51A5D1F00A16;
+	Mon,  2 Nov 2026 15:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793632892;
-	bh=u/RXCBD8nlX7BDzbpngWHwWfgPDQj7BVrPXrBF7wCv8=;
+	s=k20260515; t=1793632912;
+	bh=+Br5BKTNsV9SKJ+VKUXfa+LuXFyw/MNJN1rBJWSG1Dk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=lzeuR62XFqOGUep6G0u/OgAm/OWRPnnvn8erL4ZU4coYsOJSODUSp+a+2jQzM89Na
-	 wls04y7KzCTFwf5dsKwoGQq4HsQJB+8Q/tyIUmNqi21phOIu62KpYImTlB0ls6aGae
-	 miRfVbxr3JZPL8lWk8CynKdRTAwmaRBTeg+t7O77J1JsURjyW/dH2I6mYOgaUrqxwj
-	 7KTrFfx3AkzJndWmhJ/H+my8YK+kelSQ4n+wOAuAD5nl7vHyDdtVgll57DDfY53FmE
-	 lZ2Bqq8ccnEcF5eVt6EqwlmszCQGg+ZSpjDAYPYr+Ujd6ANt6wT/4OLvqxEhsJ83lT
-	 c5mbm06d3Q7qw==
+	b=BaGFkmgddplAg+7kWtOO3Xs2bTNw6C/l7s/H+s/ARAFWAG8PiIzq4DHKs1pIJtkZF
+	 MLQLlN2WfsWYgrHwMGc+LaYjthSVIYcPsAQ4ZVs0x8SWftIxeVXIb74Yi6DeQgLPv3
+	 MnvwnjVA4w76GNzJNNroqO1Ub2Of7dy2AD2kO3QhN5NULX8sENf6yS60Ffvc4YDPhz
+	 AVUwEuacSjAOwoVTTIoFEsTOOa+8af3coYqbYIzhqzqGrILTs/bIDcsXX7gywt7ryQ
+	 fcrmpnyg6ue+WCi9ocPVHrRqPbxVSWScBXs/eHykFP/KwB1QkPorU1BSb4GtLYc/Ew
+	 +SFzyKl+Rjtbg==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:07:16 +0100
-Subject: [PATCH RFC 06/27] nfsd: let procfs own the seq_file of
- /proc/fs/nfs/exports
+Date: Mon, 02 Nov 2026 16:07:17 +0100
+Subject: [PATCH RFC 07/27] ntfs3: let procfs copy in writes to the label
+ file
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-fs-v1-6-d09a996317b3@kernel.org>
+Message-Id: <20261102-work-procfs-fs-v1-7-d09a996317b3@kernel.org>
 References: <20261102-work-procfs-fs-v1-0-d09a996317b3@kernel.org>
 In-Reply-To: <20261102-work-procfs-fs-v1-0-d09a996317b3@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -86,12 +86,12 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1348; i=brauner@kernel.org;
- h=from:subject:message-id; bh=Og6i2j2RItYkKcPNuUOPBq0fveLG9Ax2TG7f5E6VSxk=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG7kVLY5MLm6OZ2xjUVJp9EoIqQs8Har0dvS4Du/G
- zkXh5h3lLIwiHExyIopsji0m4TLLeep2GyUqQEzh5UJZAgDF6cATCTOhZFh8mS2HN0Vqp439x5e
- 2xeUd91V5e/Pzuqia7+Lj7wzdlPPYWTYZ8Q7MynkzsRjgb7VR/ifa84RfBwlO7dAjOFb++Stxc7
- 8AA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2130; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=1xpKZw46Wve9Gi/wwfJco67jsfuLoZVG6n9ZzMkX5cA=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG70gMfQcsmsxZVZlz3llvU6P9Q+FGFvnWXM+sG1i
+ OvlzHMNHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABPZtYzhr8TWhVUbp6lu+ajh
+ slFF/whfzqNX3hf5107YP/PoQl9+338M/32S/bhdbNlEs9ZN/nX/VOfslLOLVi/+18m6pJt1w+5
+ V8TwA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-um@lists.infradead.org
@@ -112,48 +112,77 @@ X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Declare the seq_operations and let procfs open and free the seq_file.
-->proc_open() and ->proc_release() only set up ->private and take and
-drop the reference to the network namespace now. Reading the file then
-no longer holds up its removal.
+Implement ->proc_write_buf() so procfs copies in what is written before
+it pins the entry, and set the label from that copy. Writes larger than
+PAGE_SIZE - 1 bytes fail with -EINVAL from procfs now. A write that
+large only ever worked when most of it was trailing newlines or came
+after a NUL, ntfs_set_label() refused a label that long with
+-ENAMETOOLONG or -EFBIG.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/nfsd/nfsctl.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ fs/ntfs3/super.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index f8ce3c0fb077..5b2782f9dbbd 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -1407,16 +1407,23 @@ MODULE_ALIAS_FS("nfsd");
- 
- #ifdef CONFIG_PROC_FS
- 
-+/* procfs opens the seq_file */
- static int exports_proc_open(struct inode *inode, struct file *file)
- {
--	return exports_net_open(current->nsproxy->net_ns, file);
-+	exports_net_init(current->nsproxy->net_ns, file->private_data);
-+	return 0;
-+}
-+
-+static int exports_proc_release(struct inode *inode, struct file *file)
-+{
-+	exports_net_put(file->private_data);
-+	return 0;
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 3d669e957ea4..fca73d2766c0 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -536,37 +536,28 @@ static int ntfs3_label_show(struct seq_file *m, void *o)
  }
  
- static const struct proc_ops exports_proc_ops = {
-+	.proc_seq_ops	= &nfs_exports_op,
- 	.proc_open	= exports_proc_open,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
--	.proc_release	= exports_release,
-+	.proc_release	= exports_proc_release,
+ /* write /proc/fs/ntfs3/<dev>/label */
+-static ssize_t ntfs3_label_write(struct file *file, const char __user *buffer,
+-				 size_t count, loff_t *ppos)
++static ssize_t ntfs3_label_write(struct file *file, char *buf, size_t count,
++				 loff_t *ppos)
+ {
+ 	int err;
+ 	struct super_block *sb = pde_data(file_inode(file));
+-	ssize_t ret = count;
+-	u8 *label;
++	size_t len = count;
+ 
+ 	if (sb_rdonly(sb))
+ 		return -EROFS;
+ 
+-	label = memdup_user(buffer, count);
+-	if (IS_ERR(label))
+-		return PTR_ERR(label);
++	while (len > 0 && buf[len - 1] == '\n')
++		len -= 1;
+ 
+-	while (ret > 0 && label[ret - 1] == '\n')
+-		ret -= 1;
+-
+-	err = ntfs_set_label(sb->s_fs_info, label, ret);
++	err = ntfs_set_label(sb->s_fs_info, (u8 *)buf, len);
+ 
+ 	if (err < 0) {
+ 		ntfs_err(sb, "failed (%d) to write label", err);
+-		ret = err;
+-		goto out;
++		return err;
+ 	}
+ 
+ 	*ppos += count;
+-	ret = count;
+-out:
+-	kfree(label);
+-	return ret;
++	return count;
+ }
+ 
+ static const struct proc_ops ntfs3_volinfo_fops = {
+@@ -575,7 +566,7 @@ static const struct proc_ops ntfs3_volinfo_fops = {
+ 
+ static const struct proc_ops ntfs3_label_fops = {
+ 	.proc_show = ntfs3_label_show,
+-	.proc_write = ntfs3_label_write,
++	.proc_write_buf = ntfs3_label_write,
  };
  
- static int create_proc_exports_entry(void)
+ static void ntfs_create_procdir(struct super_block *sb)
 
 -- 
 2.53.0
