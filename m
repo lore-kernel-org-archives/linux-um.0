@@ -2,132 +2,125 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBB606D802
-	for <linux-um@archiver.kernel.org>; Tue,  3 Nov 2026 06:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C57E606A330
+	for <linux-um@archiver.kernel.org>; Tue,  3 Nov 2026 09:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=phsOjimT;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HVwwGpgK
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=QeC4kkUa;
+	dkim=pass (2048-bit key, unprotected) header.d=flapping.org header.i=@flapping.org header.a=rsa-sha256 header.s=fm1 header.b=hwVCcPnS;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=EK6bWTm9
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=pI+R0vssS3+rBEwGlEmrhAJtAWwC+K6R2fL7Q2wxluc=; b=phsOjimTSf98XK
-	GmODHF7D5AjskiKDZfDtGTA8W3sXkNwl/G5mV0QyWow6W16bVdFSZ4wkPENCTMZ9LypooLY8lp4mM
-	mlA0nVirprOzUGHd6ELYSxp9XRNOl949BhPVp5vaueG3c6DNjqv/c1bex3Tcf0FOaEQqm8n2Lq1WT
-	6HL9moOTe3cV2J9TrXHMKz3YpFXTwsUP/olfsKX2lRjZbD+eJw7fm21+JvNe6McM17lxM6M2x1RhI
-	I9LOE1Sfwq/TiKThYKU6pd/z2vg+14FnoNwabNIUpKD5RC13F+yZw4UFgwkI4gmHMzWolZXXHS7zs
-	gGnVg7AAjMs5w0uf37XQ==;
+	Content-Type:Mime-Version:References:In-Reply-To:From:Subject:Cc:To:
+	Message-Id:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=2LZuOQUYdObxls8EeehpLT/hCQTEx9K6h39je+6lXGU=; b=QeC4kkUa/peCuQsTozoKJyu/n2
+	OIARvd9bepYfpF7K7VllGcQmCNmYmCuNfDK4WU/cjLOYuVy9AyDJlViIbR1bC1zCBNchZfkE/BN3o
+	JYCenIR1k8V1DkgS3btWKpwl84gL89enbE4ktfAEMfWQ0EBqWDdf2wnRnBTQLZepm/+DzTkkKd+vi
+	FYXO7LB+4t8ut6nCOEnJ/mmzdfTCsqsdsujjLRQkF4ixSh3OeepkeLDCarNoyE3QFlO9cMpKKRK4w
+	JiDXN8tAyImShgUCzGwqvHXh1fyrNs0I0eppwGR2RRMQtPYKiEzW2WjcNap/ghJHcfl5QjvXboGgv
+	RZbGniUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xO8Pn-00000001HXv-2q8i;
-	Tue, 03 Nov 2026 06:54:39 +0000
-Received: from sea.source.kernel.org ([172.234.252.31])
+	id 1xOAPl-00000001gAs-1Xmg;
+	Tue, 03 Nov 2026 09:02:45 +0000
+Received: from fhigh-b6-smtp.messagingengine.com ([202.12.124.157])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xO8Pk-00000001HXQ-3Cuv;
-	Tue, 03 Nov 2026 06:54:36 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A5ABB43E92;
-	Tue,  3 Nov 2026 06:54:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D471F000C1;
-	Tue,  3 Nov 2026 06:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793688875;
-	bh=pI+R0vssS3+rBEwGlEmrhAJtAWwC+K6R2fL7Q2wxluc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=HVwwGpgKph2PTCR3kNBpzgeJl9Fiv96ILTSVlqr7otzEN5KOe+3Oq36TZyy3FWiTn
-	 B5JC9rU3ADl82tq64bDRGFlV2NLyjhAO9fPnLejhbwzeG1Z9dc6ee0GVq9fDWJMr9G
-	 uEn9b1MhNhFVniqfmxfA0bqOs/QBhcC6kPjZ8hJFtdA34IHlyTNGGcCj68Y62ICtjk
-	 Ouq+kpEpWGx9PHR9MkFKZswgqiZXimSJHDR7+eldSuTYGotHgFLXgZCx0dKYEpIAcw
-	 6pYXyTE/pVVs21IvMkWqyQ4k+6ZNZ7Rqbrs3FA5NB7/Klj97W0Huza14rR1CDkHC3E
-	 tLDaFtIRr3wRA==
-Message-ID: <a0736b1b-707e-4f24-8249-c7363c673a43@kernel.org>
-Date: Tue, 3 Nov 2026 07:54:21 +0100
+	id 1xOAPT-00000001g3W-1EIF
+	for linux-um@lists.infradead.org;
+	Tue, 03 Nov 2026 09:02:34 +0000
+Received: from phl-compute-08.internal (phl-compute-08.internal [10.202.2.48])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 870C87A0141
+	for <linux-um@lists.infradead.org>; Tue,  3 Nov 2026 04:02:18 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Tue, 03 Nov 2026 04:02:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flapping.org; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1793696536;
+	 x=1793782936; bh=2LZuOQUYdObxls8EeehpLT/hCQTEx9K6h39je+6lXGU=; b=
+	hwVCcPnSvyIWZ091Msw8sqNbpv98p0TKHE1pXf9qQsTCSnEvrZCxmIsMLBClyc4G
+	kAoDxaWIANUr1ufGNOrCA6JwboWibZXNz4aMFw0OzGekHV40jhDhQWwrhTQooXWZ
+	lZdwTpLp9DfSwVdQrJAK06x5i24TdPqKkc5gPJ45uJLvpEvw4ZW7mBsTevRB/0nQ
+	FPHJ9VlYsjn41jHpm8KaeNGZvs8GbXZM0w1YdJhZawap26B0UxmZNgEot4BOnVJO
+	OLTBAdb8NXQx7KStKfW2UaVfz5zahx1MiPsdvKoJaebFBRxd9zqyTeay1YVFKeJX
+	WBFy9B0lZqnkbaRdzj7yzg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1793696536; x=
+	1793782936; bh=2LZuOQUYdObxls8EeehpLT/hCQTEx9K6h39je+6lXGU=; b=E
+	K6bWTm9i1foFtjee37KPnSTvGWh3NTXEJDl3vUEbVveKA0JYipVqAJJtC4OHQC+V
+	fT6TEJfrX5v1iQV4Xp7eYh8IzaXFrKmlCspTeJR4OpAcpCyw0zDak4NUVPPqoAfe
+	yxK09O22r3k6DL8KWWaevXDNkkl+XgK1WuELbT+rYhGN7WPzwCLTjmgVR0H/dZgM
+	FFBGSlbBdLkUA13+QGSmNhvT8shYGgImxDayqvfFjVvHF51FQCi6HDgV+qyb9j5D
+	Qe6RWzVyRKKJ7SiQ4nf0lQhDQqc4ty1JVYXGAhwSB/uqGcm9B3Ihu0eP0ZQyIr3v
+	R4Pq2Dxvtbr6P+IeP9E8g==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-08;
+	repo=github.com/dkim2wg/interop; date=2026-10-28; sw=lmtpprox;
+	action=sign d=flapping.org a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1793696536; d=flapping.org;
+	mf=PHRvbW9AZmxhcHBpbmcub3JnPg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm1:rsa-sha256:Zrj/EEQ9W/6GE6jIZVwNGjybvDAW96gHYk+q9u/9l4Zm6+D
+	/lQSyk88QoDCYhubBboiaR8yl0IczxChJQl1/jHBL7+4GNehOD4QcnBxa5loe3KK
+	I4xh0nKLsGcxEZzRgwno/hOkACBW7q7QNUxoDBuUhX13mm6Fjh1pCx5v/uMnXW1S
+	/sg7+oyKECX0JerX+zMoN2nb7Qsj6BKQ9esI7D3yd5VOKeb1TNjeolLEDZmigh7v
+	cOawx6atUntSRcIdDlgraE7WvrrklGlMNvK4PcaOR6xDM4XIwD/zVpunVncHJqjR
+	uyI8vWJhxAviEHxkPFltB45NLu5plP4dYpjXeBA==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-08;
+	repo=github.com/dkim2wg/interop; date=2026-10-28; sw=lmtpprox;
+	action=mi-m=1; hc=12;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,subject,to;
+Message-Instance: m=1; h=sha256:yZvCQa0KAjOIjwGMl6rddYwf5pp+gnL2LgjEGHJUMec=:CnxP2DM2nggyX8bEVFzvj2plNPRomHh//c1cRvzNKpY=;
+X-ME-Sender: <xms:F6Ppap05Ypg3icDbz-VSJooAC9uPKJNUgwiElpzwDXBooobjzLCX1Q>
+    <xme:F6PpavXNB4m4sGjAMsOGgKg6qRy680OtrN6CetJgZKLtRhpxrIVUDdrBOqdWzBjMh
+    PAAuBiPglotllTujk6_eg4XuTImWp1pqRPINbY4dROOiMpgvbBA>
+X-ME-Received: <xmr:F6PpasvDl8nus5QsMWBcDEAvQijOCYkfze2PYPKluAqj02ij0w9BBXlCUK0YFMNvtoeD5OOU2ArSYJrHirs9yUah>
+X-ME-Proxy-Cause: dmFkZTFPnfC/keGYTJXFxZvRKUZIISxDJdF35El/p6gWAw1ziSk3Kdcb1+5ZQD8vgQxrdh
+    qH6wJmhMKdMUlBC/zRiFF3OijmUo1hJbtUD1PkMfwg+mJzGtlkXvHTnsI6onwJoWS2Z9WY
+    G2cCc4LXk1wsCAgd8Z9+73QG8llM8dl7WYzeQBIfryDtLbnwKNigB+yVFrcNUIbm7bP/oP
+    VLqROzCOfI/JuaoWcA9YmePCyuUn9k9s/Eu3mdcN7v14Qls+g1hn4gsLtwH18xTKAzqynC
+    pd6T9/VwxS++0Z4OXhoIsu/LD/IIK4b9bkYDkzIU3ZEcGb5x7634DR6cLBkAeWD3TdXyfI
+    B19lgckQXdT1MOslRfV5ZU5mG1llfkJatzBHd6JJABwNBWlcjZBC7KX+vGumbl+bZG4kFM
+    JjYPYzCnP7S5zjtJ/DilxQGHmgVUP9KvVRig2N0SjulMEJQFKT6V4+YmkxJEqQurN6HUY4
+    Ep0eUd9qcd7XADD/3W8lEY8wWgISUZIcjwTm8YYE5j4n5WBlOh75xP5d6Qeq1rnJSdoP9M
+    EdzMLm9oQYTTCaHQMFB6SnaHYPFxR8+ufqHxj5aCC55ybErYeyKZSDQva6qS6IkIttT/Bj
+    lNucSXIeNopXVKBRanw6sAR+4gEuK4WGsqBYUC6LR6+Np9PY4FE4w9n0S6eg
+X-ME-Proxy: <xmx:F6PpauWWfDXnoJFF7GHQsnXro8PPR6MXRWW_Y1Fl84OCPTCj5kzjxw>
+    <xmx:F6PpagVGBprx3OvIMh317dT_IBpzakuK7xmFs969elhHb1ikQKuoJg>
+    <xmx:F6PpagedM_bRKgRyrZp9nRYlX5odVtIvZqTEAsWFGyhegB-gH5Ms2w>
+    <xmx:F6Ppav4MlhAaUPobuxQUMZdxbDUR7rcsydZ9H6jk8nTSttuSKONWuQ>
+    <xmx:GKPpalbLd5fbX0tETpeG627f2vexjWl65qELF-EUzD8xAKmStD1AYx5a>
+Feedback-ID: i51fe4b43:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Nov 2026 04:02:10 -0500 (EST)
+Date: Tue, 03 Nov 2026 18:02:07 +0900 (JST)
+Message-Id: <20261103.180207.1243555897796693771.tomo@flapping.org>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net
+Cc: ojeda@kernel.org, a.hindborg@kernel.org, acourbot@nvidia.com,
+ aliceryhl@google.com, bjorn3_gh@protonmail.com, boqun@kernel.org,
+ dakr@kernel.org, daniel.almeida@collabora.com, david@davidgow.net,
+ gary@garyguo.net, linux-um@lists.infradead.org, lossin@kernel.org,
+ tamird@kernel.org, tmgross@umich.edu, work@onurozkan.dev,
+ rust-for-linux@vger.kernel.org, fujita.tomonori@gmail.com
+Subject: Re: [PATCH v1] rust: arch/um: Fix loading Rust modules
+From: FUJITA Tomonori <tomo@flapping.org>
+In-Reply-To: <20261004121230.373216-1-tomo@flapping.org>
+References: <20261004121230.373216-1-tomo@flapping.org>
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 19/23] tty: sysrq: let procfs copy in writes to
- /proc/sysrq-trigger
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>,
- Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>,
- Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados
- <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>,
- Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
- linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
- ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
- coreteam@netfilter.org, kexec@lists.infradead.org,
- linux-pci@vger.kernel.org, linux-sound@vger.kernel.org,
- netfilter-devel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- ibm-acpi-devel@lists.sourceforge.net, jfs-discussion@lists.sourceforge.net,
- linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-sh@vger.kernel.org,
- linux-usb@vger.kernel.org, samba-technical@lists.samba.org,
- sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-doc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-atm-general@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>,
- linux-input@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
-References: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
- <20261102-work-procfs-drivers-v1-19-a994bd4d3b1a@kernel.org>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20261102-work-procfs-drivers-v1-19-a994bd4d3b1a@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261103_010228_076606_211A52DB 
+X-CRM114-Status: GOOD (  17.74  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,66 +131,67 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 02. 11. 26, 16:07, Christian Brauner wrote:
-> Implement ->proc_write_buf() so procfs copies in what is written before
-> it pins the entry, and handle the keys from that copy. Writes larger
-> than PAGE_SIZE - 1 bytes fail with -EINVAL now. They used to trigger the
-> first key, or all of them in bulk mode. procfs allocates the copy, which
-> is as small as the write, opening the file allocated as much already.
+Hi, UML maintainers,
+
+On Sun,  4 Oct 2026 21:12:30 +0900
+FUJITA Tomonori <tomo@flapping.org> wrote:
+
+> From: FUJITA Tomonori <fujita.tomonori@gmail.com>
 > 
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
-
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-
+> Rust modules fail to load on x86_64 UML:
+> 
+>   # insmod rnull_mod.ko
+>   subarch: rnull_mod: Unknown rela relocation: 9
+>   insmod: can't insert 'rnull_mod.ko': invalid module format
+> 
+> arch/um/Makefile adds -Crelocation-model=pie to KBUILD_RUSTFLAGS. This
+> comes after -Crelocation-model=static in the top-level Makefile, so all
+> Rust code on UML, both built-in code and modules, is built as PIE. In
+> PIE mode, rustc accesses statics in other crates through the GOT and
+> emits R_X86_64_GOTPCREL (9) relocations. UML uses the x86 module loader,
+> and it does not handle them.
+> 
+> Remove the flag. Rust code, both built-in code and modules, then uses
+> the static relocation model, the same as C code.
+> 
+> Modules still fail to load with a larger mem=, such as mem=512M,
+> because Rust code uses the small code model while C code uses
+> -mcmodel=large. This is a separate problem.
+> 
+> Tested with clang 20 and rustc 1.90: vmlinux builds and boots, and
+> rnull_mod.ko loads with mem=32M.
+> 
+> Reported-by: Zigit Zo <zig@iorw.io>
+> Link: https://lore.kernel.org/rust-for-linux/62F5EEA0B866E9E0+20240903130606.292935-1-zig@iorw.io/
+> Assisted-by: LLM
+> Signed-off-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
 > ---
->   drivers/tty/sysrq.c | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
+>  arch/um/Makefile | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-> index f4571d05b496..99363e1b59ed 100644
-> --- a/drivers/tty/sysrq.c
-> +++ b/drivers/tty/sysrq.c
-> @@ -1200,17 +1200,14 @@ EXPORT_SYMBOL(unregister_sysrq_key);
->    * However, if the first character is an underscore,
->    * all characters are processed.
->    */
-> -static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
-> +static ssize_t write_sysrq_trigger(struct file *file, char *buf,
->   				   size_t count, loff_t *ppos)
->   {
->   	bool bulk = false;
->   	size_t i;
->   
->   	for (i = 0; i < count; i++) {
-> -		char c;
+> diff --git a/arch/um/Makefile b/arch/um/Makefile
+> index 937639edc295..c4a99073f014 100644
+> --- a/arch/um/Makefile
+> +++ b/arch/um/Makefile
+> @@ -62,8 +62,6 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+>  	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
+>  	-D__close_range=kernel__close_range
+>  
+> -KBUILD_RUSTFLAGS += -Crelocation-model=pie
 > -
-> -		if (get_user(c, buf + i))
-> -			return -EFAULT;
-> +		char c = buf[i];
->   
->   		if (c == '_')
->   			bulk = true;
-> @@ -1225,7 +1222,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
->   }
->   
->   static const struct proc_ops sysrq_trigger_proc_ops = {
-> -	.proc_write	= write_sysrq_trigger,
-> +	.proc_write_buf	= write_sysrq_trigger,
->   	.proc_lseek	= noop_llseek,
->   };
->   
+>  KBUILD_AFLAGS += $(ARCH_INCLUDE)
+>  
+>  USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
 > 
+> base-commit: 2dee3d3adcadcc57d62ba6608cd02f50b0c10264
 
-
--- 
-js
-suse labs
+Gentle ping. The patch still applies cleanly on top of v7.4-rc1. If
+it looks fine, could you take it through the UML tree?
 
