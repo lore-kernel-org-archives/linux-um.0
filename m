@@ -2,46 +2,46 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D73609177C
-	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 19:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D753760954EB
+	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 19:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=MJjdyKYV;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ViWv5liE
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=xRGqfLu/;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WrIOm0L/
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=gDybWaXH0yVqSHGh6cSao1kY+huQ+XTPXQ1Vld4D+UM=; b=MJjdyKYVcKTGJk
-	MwFYOVOO4/yWSJN2bFOHnuqMXc5PU+qkuy6fhUYdAzMzSFuX64BcyB4rjfsvcgrz+G+5nBWPF1gJe
-	PKWerRr2gNw/Nvy5HFpbvMIhu0BPw/moUVIciT02Pi0DfVggOIl0gjqVdRqr/SWn8eX6XhscUbCij
-	BjVJI1vE5k5471ND3jviQ0mG7JBMLYmwfGbWrs2bA8+kxu7K8NGlpih/hpiGY3GPJ+I+l79PfWZYX
-	woKqllT+RPLQ4+qz8o2j0kWjfIwzINJtFzG4ix5XGch1/sY51JZzc8djSjlWD40EHuOUmjwClIP1d
-	fwEDtUpG3Sxlpl186glg==;
+	List-Owner; bh=mLB2lug1OKcpaTlobTkzaZ+4AMl2gIULemZI4iRmrDM=; b=xRGqfLu/jjupZ3
+	reOGg3wUOGfHMj/gf1t44uNqT8jbV7QfXVWSwr9iyTG7LsdPQDspBgsya8PAkzR1ZTF7f22DQJ6gD
+	WAC2Bf5T5jJwWNWVpPtWt/cA1G/6b8xOIk+httch9OlmqHLTWbP48fy149BKs3OTp1vb8ZOsW9MKa
+	R/ezA3S5e3mB7kP1qzonK6SmopFSK9gojSfmeVEKAXOhFDC451UfZUefY1/SVd4aJNvJzHaPr0EEw
+	4deLkBu8ONlfKstRSt+RpJ0LVvlYCxCIz8OSQzgeZvOiQ+CtCNVwzqoiwhJUTTJFfDec/H9KdRmvN
+	5ZhrLAmptaMt/MoL8k3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOh04-00000006loU-0FET;
-	Wed, 04 Nov 2026 19:50:24 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xOh0L-00000006lwc-2aPm;
+	Wed, 04 Nov 2026 19:50:41 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOh01-00000006lmd-30pP;
-	Wed, 04 Nov 2026 19:50:21 +0000
+	id 1xOh0G-00000006lvF-1Dqc;
+	Wed, 04 Nov 2026 19:50:36 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2B36B60F38;
-	Wed,  4 Nov 2026 19:50:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF5EE1F000C1;
-	Wed,  4 Nov 2026 19:50:08 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id EC01340A9A;
+	Wed,  4 Nov 2026 19:50:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A587C1F000C1;
+	Wed,  4 Nov 2026 19:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821820;
-	bh=gDybWaXH0yVqSHGh6cSao1kY+huQ+XTPXQ1Vld4D+UM=;
+	s=k20260515; t=1793821835;
+	bh=mLB2lug1OKcpaTlobTkzaZ+4AMl2gIULemZI4iRmrDM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ViWv5liEfHdMHPO8R1wapbcJqOA3zpGPpbB02hMT5/E0508nWx30DxqIPL6KtEmgU
-	 u+pmFn3FsOd19p4MgLsNq//oFD4EhVxfbRb3hFQDajUha4PG308MHKfbBxuQRI2T+1
-	 gpfAFci1AHyTvujOOroEbIobGBHWkRbja9thyu+sIlV6GnLkbKj+7KO+0ZAH32xVH8
-	 iBv7uhmdL2bAAOXVUHaVgSNDhqWBsAdgXyxjuxMQt4FvbC+ZMkyYx1jsvDEISH0f4o
-	 af3/XVxyIwOpd+kA2KJQBzwNtAgTJZ+nIEKqRvJiOre/ZrMnKSk9pNUZKOAQUsYWh4
-	 hiwj+uPWiEFJg==
+	b=WrIOm0L/grPWsfSZ6ocvkczbqe5CDNutaK+lDTDGBJkYNfb+vQmtT5HzyIbXGVqHH
+	 hWnfF+S7ghDcf3jndcQSye5gCwb9X8DYtZdri/cLH978S1GzMeTX/+4g/zFpOiqiNK
+	 nGuFtvQNq7yvniXZ/lBAZLMxXQj5TNH6p305lsSnFn9BJUumbxC//DQvRndQEXtUIa
+	 VsDikB9RkzCyzs7pmF52v+oL+Q+io92cATYHoyvEmPEV6i1rQ6jpin6iZ1aKk7/AxO
+	 XxSIj8Dyg+41tnOPmTEYgnhNZHK5o6ae9seSm1c3a/IOfHTAzonXKhXGQctCWgRh8w
+	 JPeajEykQHbCQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -102,16 +102,16 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 02/30] jfs: let procfs copy in writes to the loglevel file
-Date: Wed,  4 Nov 2026 20:50:06 +0100
-Message-ID: <20261104-work-procfs-fs-v2-2-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 03/30] lockd: let procfs copy in writes to nlm_end_grace
+Date: Wed,  4 Nov 2026 20:50:21 +0100
+Message-ID: <20261104-work-procfs-fs-v2-3-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=izEZyN2ciF2azWBwOiarD7rxdH5SrLb74RUgxhmuQ3M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tGJzso6nn/w61mbive7Xqy3zX3zdMnSHJ2eBVw3m Q2DcmIjOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZyciEjw/nFJ7zrmRr3TTvN 7yT61kBSiuve9sV8G24zvhXijXX584zhr/RSZtXdspF7F/LOFVzmc/vt+qo5X9YsanqxkXF3yLP QUzwA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1796; i=brauner@kernel.org; h=from:subject:message-id; bh=QwlEC6TnrlqFxD7H1NEPhBXC4WfFu5kv5jak1b43Ypw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tG7Wbqw7qWfktj9CUmzLuQuTBZfWKLcsbIl+K3pw z0MHG/ZO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbiI8DwP2PPpKWpiYbxYn23 5wT0zN8bdozx+0+hGoFdAkmmD+0WvmZkOLRmopvW3kn6Pu/cks9Okva45eWqIVawWoo1YVdnzJR JbAA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -133,45 +133,59 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
 Implement ->proc_write_buf() so procfs copies in what is written before
-it pins the entry, and take the level from that copy. Writes larger than
-PAGE_SIZE - 1 bytes fail with -EINVAL now and so do empty writes, which
-looked at a byte that wasn't written before.
+it pins the entry. simple_transaction_get() was only used to get a copy
+of what was written, so look at procfs' copy instead and drop the
+transaction. A second write to the same file doesn't fail with -EBUSY
+anymore. Writes larger than PAGE_SIZE - 1 bytes fail with -EINVAL from
+procfs instead of -EFBIG from simple_transaction_get(), which refused a
+few bytes less.
 
+Acked-by: Chuck Lever <cel@kernel.org>
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/jfs/jfs_debug.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ fs/lockd/procfs.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/fs/jfs/jfs_debug.c b/fs/jfs/jfs_debug.c
-index 5eb35b0d420f..e1c0211a6a32 100644
---- a/fs/jfs/jfs_debug.c
-+++ b/fs/jfs/jfs_debug.c
-@@ -23,13 +23,10 @@ static int jfs_loglevel_proc_show(struct seq_file *m, void *v)
- 	return 0;
+diff --git a/fs/lockd/procfs.c b/fs/lockd/procfs.c
+index 74f7ab77535a..852cca8c3588 100644
+--- a/fs/lockd/procfs.c
++++ b/fs/lockd/procfs.c
+@@ -18,21 +18,15 @@
+  * We only allow strings that start with 'Y', 'y', or '1'.
+  */
+ static ssize_t
+-nlm_end_grace_write(struct file *file, const char __user *buf, size_t size,
+-		    loff_t *pos)
++nlm_end_grace_write(struct file *file, char *buf, size_t size, loff_t *pos)
+ {
+-	char *data;
+ 	struct lockd_net *ln = net_generic(current->nsproxy->net_ns,
+ 					   lockd_net_id);
+ 
+ 	if (size < 1)
+ 		return -EINVAL;
+ 
+-	data = simple_transaction_get(file, buf, size);
+-	if (IS_ERR(data))
+-		return PTR_ERR(data);
+-
+-	switch(data[0]) {
++	switch(buf[0]) {
+ 	case 'Y':
+ 	case 'y':
+ 	case '1':
+@@ -61,10 +55,9 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
  }
  
--static ssize_t jfs_loglevel_proc_write(struct file *file,
--		const char __user *buffer, size_t count, loff_t *ppos)
-+static ssize_t jfs_loglevel_proc_write(struct file *file, char *buffer,
-+		size_t count, loff_t *ppos)
- {
--	char c;
--
--	if (get_user(c, buffer))
--		return -EFAULT;
-+	char c = buffer[0];
- 
- 	/* yes, I know this is an ASCIIism.  --hch */
- 	if (c < '0' || c > '9')
-@@ -40,7 +37,7 @@ static ssize_t jfs_loglevel_proc_write(struct file *file,
- 
- static const struct proc_ops jfs_loglevel_proc_ops = {
- 	.proc_show	= jfs_loglevel_proc_show,
--	.proc_write	= jfs_loglevel_proc_write,
-+	.proc_write_buf	= jfs_loglevel_proc_write,
+ static const struct proc_ops lockd_end_grace_proc_ops = {
+-	.proc_write	= nlm_end_grace_write,
++	.proc_write_buf	= nlm_end_grace_write,
+ 	.proc_read	= nlm_end_grace_read,
+ 	.proc_lseek	= default_llseek,
+-	.proc_release	= simple_transaction_release,
  };
- #endif
  
+ int __init
 
 -- 
 2.53.0
