@@ -2,54 +2,54 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2F9606ECFA
-	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 17:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898F960700F1
+	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 17:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VUz7wM5U;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CCicy7rM
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uHJRzMjd;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iXWQB5YV
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=; b=VUz7wM5UKFuySz
-	lL6GXE0aYHPFRLmTSxJXo/FanL5tezDa/ZEmxOl9yovidhDiZpoNBmDAyvjPFQ2weOinvtbLtSvof
-	oEKfJcQmnP9Ds7y02f8RgJxPT/TooYQpvjZfneNoiQfa+2pMDtT0mKscz4wh2B/Xa6G7kUl4bxXmE
-	XxYb+j8fPFOJoRDZv/ek7xc3+Y23WIrPzcm+XI3y26q5TOCO/i17GB9qRJOemKCi6wjjS9HlNva+V
-	DtqwshOxFHqvPz3Gr313XSZt3utcL2LdPIYryi45N83edK62ktUnM0lSWYA+I37VjTCqZmvbdqHWw
-	qtm/CNyEabY5gffuhYvQ==;
+	List-Owner; bh=88D9snc5Fvfzc1+bIGylCXCzBagXIGxBtzK0BL7vNTc=; b=uHJRzMjdyApZTp
+	0xudfmL3UDMrDANdq4TETwdaFT2FUovqZjZIvtsUrb/GP1DJYswxQlOoIIly5VWKz/rKVwtA//FSl
+	iRvOmx0m8xfvBmrWHTRAqUhgMJwYDCW4AePzLlZVcE+n7on0SXpFJMYYqXSAM4/OQzMaHfddfeEvh
+	h9za9tQ0A/rR68+QFKSULBQYh+EYd/Ct3ZoSj9tB8WJ3R5RJIfufUS0YDJTQvrDoBqpZermWV+J6B
+	ZUjmyhGznNW/pLcVDowxZgxMcCbUUJhORf08stlZ0ZODn5XwNvafa9cecsD9ZADSHnM7QS1L8JmD8
+	Czi9WBMC4twoSwJLRPIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOepC-00000006Dw9-3kBF;
-	Wed, 04 Nov 2026 17:31:02 +0000
+	id 1xOepM-00000006E43-1CEK;
+	Wed, 04 Nov 2026 17:31:12 +0000
 Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOep6-00000006Duc-2QJJ;
-	Wed, 04 Nov 2026 17:31:01 +0000
+	id 1xOepJ-00000006E1H-3BgO;
+	Wed, 04 Nov 2026 17:31:09 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 54FFC4344D;
+	by sea.source.kernel.org (Postfix) with ESMTP id 80AB641748;
+	Wed,  4 Nov 2026 17:31:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B1D1F00A1A;
 	Wed,  4 Nov 2026 17:30:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9536D1F000C1;
-	Wed,  4 Nov 2026 17:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793813456;
-	bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=;
+	s=k20260515; t=1793813469;
+	bh=88D9snc5Fvfzc1+bIGylCXCzBagXIGxBtzK0BL7vNTc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=CCicy7rMCCS60ygYj4tSP1y7JHeKnyohxK7RJ1MNcpLuKgx7RMIE9WBSxZSdLDPR5
-	 klWdssG6lHnFI4UhtcT2/bxBTP5iwXEnSAAoqSD6pDT2Pane2TS1v3grlrW47TjH1j
-	 9xxJKmZvczv/N+A7HlZXgnRiFRlRTmumn3d1q8qc4XOVhwR6AjNsL5hraO3EYgRzFf
-	 j2hv3F++yHVgsp3epyVbuoy6NgYxM3knX51OJ5qkY/LQry+yFicpcW82pUIGh7VqAJ
-	 QwR2l4cPAGUmHdYKORImPlXf6iJl3BbEIOeaBIzBx0aUmCCMa+g/IRmrE4JNBKD2k8
-	 TlAkQuo0eyxfA==
+	b=iXWQB5YV7Kg3RUIa93AFETN1SWavnlv7A2+KZO2N+8yOFr8Nxzd0awnAdzvrIJxvb
+	 iwsd7/OXYpIIPoZK/zUDKbVBITgvtCbvRQFx8uTJc/yHlxoEsUDPjmLWXFVoYRwB+8
+	 bO30Hh/TGyjWLlo74Zlkba+soU5l3Xz8vC5ijD1rLCYQM6eOaon/FPI6bnSWWK8jej
+	 tu9UAUvRhODWIvMSMgtdBEbC7EPtC8P3EjAe6KdJiEatnSukLFtVejwpJye5oyaiRy
+	 wq31IKuon20SWlj10PyNweaP+Lu1uhJgSBnAqLcp9bykPHQNRISX1eYd4dr2KLd0HB
+	 SFAF9fcqUvWgQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 04 Nov 2026 18:27:27 +0100
-Subject: [PATCH v2 10/51] zorro: size the proc files like what they serve
+Date: Wed, 04 Nov 2026 18:27:28 +0100
+Subject: [PATCH v2 11/51] sparc: led: consume the whole write
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261104-work-procfs-bugfixes-v2-10-bbf7d5546809@kernel.org>
+Message-Id: <20261104-work-procfs-bugfixes-v2-11-bbf7d5546809@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -85,12 +85,12 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=796; i=brauner@kernel.org;
- h=from:subject:message-id; bh=l/jVDuzMOjj8ie0SJoZ9zbu/qnGtbORxwaULd7yJNic=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zmadUZ5+11/xl3DfvxqhE4ceqNydu+rxl9BGo/OLK
- ie/iz11t6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiot6MDIu1ajiC3xxb9fnR
- +WcXFsd8u73oyPr694eefAy0U8iPmSHM8L+uTlSf4U3pBv/GqQV1N16tt3wgHZrdlySg93/xMSf
- ZKjYA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1161; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=5p0zMz40BbKdivFQo1NNbyIz4tkvEi3yC5tXL4aXaeU=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zmaz+l255/dcMbeVTrFanCknSsvkc1YVB3m43Lw5N
+ drx0iaxjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIkI32BkeHvU6KWe6gWDSokM
+ AXPh+UdezXsoZMqyb+L5Puufyec6zBkZ1nYtn1J1+eNm5X8arkoP+O5vXXg4NDqzfr7dM//7HjX
+ /+QA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-um@lists.infradead.org
@@ -111,29 +111,38 @@ X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-The files under /proc/bus/zorro hand out a struct ConfigDev and seek
-within that, but their size says sizeof(struct zorro_dev). Say
-sizeof(struct ConfigDev).
+led_proc_write() looks at the first eight bytes of a write and returns
+that many, so a writer that loops until everything is written, stdio
+does, sends the rest as a second command. That one is unknown and
+switches the LED off. Return the whole count, the rest is ignored.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: ee1858d3122d ("[SPARC]: Add sun4m LED driver.")
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/zorro/proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/kernel/led.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
-index f916bf60b312..4c6f8f1c4d71 100644
---- a/drivers/zorro/proc.c
-+++ b/drivers/zorro/proc.c
-@@ -108,7 +108,7 @@ static int __init zorro_proc_attach_device(unsigned int slot)
- 				 &zorro_autocon[slot]);
- 	if (!entry)
- 		return -ENOMEM;
--	proc_set_size(entry, sizeof(struct zorro_dev));
-+	proc_set_size(entry, sizeof(struct ConfigDev));
- 	return 0;
+diff --git a/arch/sparc/kernel/led.c b/arch/sparc/kernel/led.c
+index 9b53ac1fe533..a1478de9fe5d 100644
+--- a/arch/sparc/kernel/led.c
++++ b/arch/sparc/kernel/led.c
+@@ -68,6 +68,7 @@ static int led_proc_open(struct inode *inode, struct file *file)
+ static ssize_t led_proc_write(struct file *file, const char __user *buffer,
+ 			      size_t count, loff_t *ppos)
+ {
++	size_t len = count;
+ 	char *buf = NULL;
+ 
+ 	if (count > LED_MAX_LENGTH)
+@@ -102,7 +103,7 @@ static ssize_t led_proc_write(struct file *file, const char __user *buffer,
+ 
+ 	kfree(buf);
+ 
+-	return count;
++	return len;
  }
  
+ static const struct proc_ops led_proc_ops = {
 
 -- 
 2.53.0
