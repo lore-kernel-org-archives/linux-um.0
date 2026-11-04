@@ -2,46 +2,46 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538AF606B2FE
-	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 19:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1D8606BA01
+	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 19:22:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=i615Tp1S;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NDNbfQiY
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mWmyi/xB;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NswRMcqB
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=bRUY7zR2xEebSKJvbp7QJxGSJz7lwz+abCfF6bzfIu4=; b=i615Tp1SaM9Ipc
-	ON1i2bZGb1ypTmjnEc4krgQFabZzmpRkPR5pyQVop0N1NoDqJJIW2c73Nx8eTUUZqvkBjgdfCKnAc
-	27fukp6EjTUPaKMLWYYqzpOXjwo2wyUjujRZ+vTTE3DjMjiR1n3g+sn37nA+H9PBaMZRqC/VZAHBB
-	sZAR6R5pEh4HAFSlIaDCUpC/BOh/9uXSzmxuT5/OgUIECMmxiHARp49yK2NsusSvkrdFfTd9upm94
-	GcsGyrtjCemVaUbDL9aEV0dLs3hZCYaGuueoEd3fVfDTRPPYhRJJ7IIJeFUD+E52HusZkuZ6I0vov
-	tBO1ylE7qWAJnOdtScEQ==;
+	List-Owner; bh=E1vD3O9CKVYh6HjmlrAgiThE5xPMlSXjct4LkBIJ4ZU=; b=mWmyi/xBs0KTwS
+	koCFOjFcqfkzw/JmBzcyDwUUz9lED7EGU3vRJ2P9HJ6gI8TPX7A6iVgnNy4BRYgx1l2V9PYHET9tP
+	TTKX0gwKR6TP+XCLAQfESJM3X0NU4JYYtGKOHYjuFWz0m0DfDE14Qdvma0d5sDghjy0QX3UOBHngw
+	R0m9oLmAmKxwDRHK7jzzbDZ+pSQTzBiVAcKgKvx/uQuCEzLVnNRnpO3dR9kRG1WVTyDH0LSZHNy4w
+	vS3nip5cyyC8oXWa5RgPVwY1/tgeFs/HAq/d9+dvMH/KcvTNvwrTApidxaKIp2b3MWmNkOXvWMR1v
+	BcDwNcrn8QTwbO+7pcag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOgYT-00000006Zgh-0Fkt;
-	Wed, 04 Nov 2026 19:21:53 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xOgYi-00000006Zmf-17uX;
+	Wed, 04 Nov 2026 19:22:08 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOgYR-00000006Zfu-0Led;
-	Wed, 04 Nov 2026 19:21:51 +0000
+	id 1xOgYg-00000006Zlw-3NTZ;
+	Wed, 04 Nov 2026 19:22:07 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 81533609F0;
-	Wed,  4 Nov 2026 19:21:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E171E1F0093A;
-	Wed,  4 Nov 2026 19:21:37 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 2CF7260BFB;
+	Wed,  4 Nov 2026 19:22:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D87571F000C1;
+	Wed,  4 Nov 2026 19:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793820110;
-	bh=bRUY7zR2xEebSKJvbp7QJxGSJz7lwz+abCfF6bzfIu4=;
+	s=k20260515; t=1793820124;
+	bh=E1vD3O9CKVYh6HjmlrAgiThE5xPMlSXjct4LkBIJ4ZU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=NDNbfQiYTs8QxoUaV5XJChR2qHa8xOxHYJocDlHmgzzJSqms9PhEZLUwt+ANrSmDj
-	 kEnl6QN4BfZZeT44wGIKe0Ixtr1WXbuqCS+Gm8dZ1ubzgeNz5DCniH6FQ1eMnuGVya
-	 K3FKmWhtDu4MeA/UnhfA3jbh1Uk2LEoIKcy3gsX0Lc9JtNW5MghWVftz4tHUP/Sp6I
-	 pgjw5FHUrME1RTE8Z0LLnlJw9xm3sbv7a2SltWV0Lzh5QBwPcbr1XUZ/ihWdqFLxYk
-	 cmed9ZYlW4eyWeUqshn66+fHBXUJ79jWAfcuK17k8f/Cw6JoctibeULlljIfW2t0nb
-	 YnhLFoFESlk2Q==
+	b=NswRMcqBfCW7Yx+oHzm7X7x3Vx4jEKmXruK32+U47DYkhN6rM/lfoH6AjN/SxL36f
+	 PgY3FjroHKYvb5ZucZtjjxfeMesHu2aiCu42BfFriOzz2a4zJcMYsY+q/uNY/jVlJJ
+	 mQbA97oSkcIOHIdNHKCmo9rGnj+/+FM6G0eHvq02j3TpFo9jYjkaTorhB3ZPVCn8O/
+	 KrKgum+HPtAyA1T4+n9pWNsjQ+Y0I7sn0Fwghzv5FJeoW2kBqDX6BHChClQ+D48khG
+	 NOJNO5qh2fzt0fT/JulzaUiqzxtJvpPURLPvwRRXNWlyCu69pQW8Kq49mWs0Mw5ust
+	 pZrAkn/r9fpNg==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -102,16 +102,16 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 23/51] scsi: BusLogic: don't return 0 from writes to the proc file
-Date: Wed,  4 Nov 2026 20:21:35 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-23-021c84d852e0@kernel.org>
+Subject: [PATCH RESEND v2 24/51] scsi: ips: don't return 0 from writes to the proc file
+Date: Wed,  4 Nov 2026 20:21:50 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-24-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=938; i=brauner@kernel.org; h=from:subject:message-id; bh=7Bhyn2ehZ0sKrsH+Wp9jL6/kN1Jv4nVldfkK6knOcds=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bnx+qEer98CSA4p/dlzo/8F3vWvRwRxVzfXMGkIdb bJrIsumdZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExkJSMjw5TaW9evl63Y5C0n mRnrGr7/ql2e7uxE7dKugO0X7TR/vWL47+CvtmlOQmAN85PS20YHZ06yX2SRZalWbxay2Sgy4bQ nKwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=745; i=brauner@kernel.org; h=from:subject:message-id; bh=M56s+R4IzmhMvI79F+bEsnRzyAX8hD//ktSOts+7Usw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bnzxmUHw2l7pkLsqhYUfQu3abymsV/u8xrZmTWDq2 g3r1DVfdZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEyko5aR4VlF9Y6Ezj35Scu2 1YjO/m7UtL24teDezKI9Ly4oZn88c5fhv8cv7zNNOrwr0iK6hZPXPQ1f+pT5o1tFzHcBAQ/F8yd /cAIA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -132,29 +132,30 @@ X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-A write to /proc/scsi/BusLogic/<n> resets the statistics and returns 0.
-Writers that use stdio, echo for example, take that as no progress and
-retry forever. Return the number of bytes that were written.
+ips_write_info() ignores what is written to /proc/scsi/ips/<n> and
+returns 0. Writers that use stdio, echo for example, take that as no
+progress and retry forever. Return the number of bytes that were
+written.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/scsi/BusLogic.c | 2 +-
+ drivers/scsi/ips.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
-index 27b446c0c5d0..7ad814f549ae 100644
---- a/drivers/scsi/BusLogic.c
-+++ b/drivers/scsi/BusLogic.c
-@@ -3328,7 +3328,7 @@ static int blogic_write_info(struct Scsi_Host *shost, char *procbuf,
- 	adapter->ext_resets = 0;
- 	adapter->adapter_intern_errors = 0;
- 	memset(tgt_stats, 0, BLOGIC_MAXDEV * sizeof(struct blogic_tgt_stats));
+diff --git a/drivers/scsi/ips.c b/drivers/scsi/ips.c
+index c7d6c5aae340..85c4fb164743 100644
+--- a/drivers/scsi/ips.c
++++ b/drivers/scsi/ips.c
+@@ -1428,7 +1428,7 @@ ips_write_info(struct Scsi_Host *host, char *buffer, int length)
+ 	if (!ha)
+ 		return (-EINVAL);
+ 
 -	return 0;
-+	return bytes_avail;
++	return length;
  }
  
- static int blogic_show_info(struct seq_file *m, struct Scsi_Host *shost)
+ static int
 
 -- 
 2.53.0
