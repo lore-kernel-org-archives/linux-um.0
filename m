@@ -2,55 +2,55 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB54606B00D
-	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 17:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D649606CA5F
+	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 17:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=3jgiK+o1;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=g5u712B9
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=gXpsVmaN;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bKrAUcOe
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=Bp2DPgSMAVNPpocNHMMHSMxcgQhQwNKqaFQNAmEUdgU=; b=3jgiK+o1PdrE/q
-	7cphbEjJoOalMIKC4G7g5sFAbiWQwBZV4i8gchXhucAb0hQcBOpSdxEZvVZHzU+3FNshlTnWrzxrE
-	HjlbQsj+fOyDOTfAFpOr3D8cmodgqGybGbxBUYzAi6hzeJ6KEFTTCBcST9lv7v9+fvhe6On8BrL3b
-	tn4b9U8qNuNTIlsrvMVwBvDzQ19/oXvtWfgZ8cXxJyHtUn7T2WpfmEadvPEpMWQO0eK8VPF/l2lfa
-	k/AoYBZ84rGY7cFoUCrSnPrbI6bFTeDuqpDQFMImmOqK1MP/YMixRfGy7vSclGD2NFrtmktsbxBpY
-	Dafx9iuv0G3EPZcv7VTA==;
+	List-Owner; bh=gnzz2fT926tAung/y7Xzshf60AQanFXIqjFC5KSqJW4=; b=gXpsVmaN159AJg
+	1Ecldr9/ZKUraFP7CB+UWla4YPnvEoGIOxpY2VsLXTSGVZ/NhQo6JKkbPChsQe54eoofonMB/8Fdw
+	4c0/51mrYYi0olzDkNWczKsdNdAxBJNjdnDUwGoK3+CicVZszl+2wzHnt4+fpMJs/GESUCMtLxUG2
+	f0psLBpqlxiSGiC3X4Tz3+7k4TpmEqWtXbmO+bv9sxYMB7blEDUSCeMEg27led2h1wt4ipjR8bVco
+	Ygi7FgSnEkRS6HjeUP/YzYNzz2BlWVo9huXFFDAZYrGit5mnTT/+pYn/8nrRLzcDP4+JhLsx+Bwi/
+	OLt4VbqPc1FZo1N2FaDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOeoU-00000006Dcm-3rwF;
-	Wed, 04 Nov 2026 17:30:18 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xOeoi-00000006Dj2-2Cot;
+	Wed, 04 Nov 2026 17:30:32 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOeoT-00000006DbY-0pPi;
-	Wed, 04 Nov 2026 17:30:17 +0000
+	id 1xOeog-00000006DiQ-2U7z;
+	Wed, 04 Nov 2026 17:30:30 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9DB7E601F0;
+	by tor.source.kernel.org (Postfix) with ESMTP id 00A7260A9D;
+	Wed,  4 Nov 2026 17:30:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D051B1F00A20;
 	Wed,  4 Nov 2026 17:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70FBE1F000C1;
-	Wed,  4 Nov 2026 17:30:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793813416;
-	bh=Bp2DPgSMAVNPpocNHMMHSMxcgQhQwNKqaFQNAmEUdgU=;
+	s=k20260515; t=1793813429;
+	bh=gnzz2fT926tAung/y7Xzshf60AQanFXIqjFC5KSqJW4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=g5u712B9uyY/EHBMvMcIJjwX1Q9oNafVwZZdSTe+wWNmne5PBjIRnbjMdNBKEaIP4
-	 4sN1akBTM0upEXPMnrPesATu9t0mv+J9tGR4BfcCUQnJpzUcbcj+IvUqAQlpKvEFAP
-	 maIQiS285xRthBs8kUjqLULi7ZlP9EZaMs6jvYgyfDdyykDtrKuOIUKXiUE5xq8j0K
-	 rnPkE+GVlVCE8ozm0404SgO7RYqyMkzZKzwWo1p+WxGQXY8MTkERhkp4+WNxvZiOYe
-	 CguRECqkxpVtUS2A9kODUDoxnBc90vENA1/MJjeZ4tQ9xNPhj1ug3QG1Rnyknyga3s
-	 5rdxM+QnpKA9g==
+	b=bKrAUcOeVzlg83/euOIHnVFterm+vHdMFNuNi2Dt0LF9VzWRfSHdWlR7H5c2KTzRF
+	 naRK5w+k54/QDDCRMfWgLxdTPqv4FCwBsr1kXOzQqhEOlC8vy1IWJ41ODhEZLno2LS
+	 jjGH8/XSd1jADyBL1p3Hc3Qgb7ui9/GDGzwbwzjY67qrbN3GQL5NP2Jybx4qUpUZX3
+	 CQMNjfOnMG5qtjvL2qoA6KmgJggxXjaC2t2PuKCscK2/RkukWsmgaXtZ0l6oKz5iz+
+	 P64zZ0Jt2cdani8OUoo4/+XjtpVm+osPlwpgz43htAz/C7aUhFTjPEXATp/jT4GDYM
+	 7OqOzge6sGwYQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Wed, 04 Nov 2026 18:27:24 +0100
-Subject: [PATCH v2 07/51] lockd: don't hand out the terminator of
- nlm_end_grace
+Date: Wed, 04 Nov 2026 18:27:25 +0100
+Subject: [PATCH v2 08/51] powerpc/pseries/lparcfg: don't drop the last byte
+ of a write
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261104-work-procfs-bugfixes-v2-7-bbf7d5546809@kernel.org>
+Message-Id: <20261104-work-procfs-bugfixes-v2-8-bbf7d5546809@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -84,14 +84,14 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
  linux-debuggers@vger.kernel.org, 
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
- Chuck Lever <cel@kernel.org>
+ Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=879; i=brauner@kernel.org;
- h=from:subject:message-id; bh=tKzHzMLxBoW/zY681xcBM67Jqe2y1s4JEAk9OycZ8F8=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zma88mPSwzMZES8ZvfsaK7K5NIr2+azZ3b+Xc1Xpm
- 7Wz/9nbdJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExkbT3DP623G/ymh8nr95bL
- Sj1ZqVz5I/v5xTDO2LLF07okt9w1Ws/wP0bKWD8yk0Xj8wP2OJmbXq1N7z9lRV6ZFj3BvzE/x+E
- BNwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1293; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=N2rHHHUzfsZsGLUBvdMxa3o2qGAAPzh8wsvUFn8S2uA=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zmYqts+f6c771jBc691PB/aNiq5rYmuWq7o9SdKKM
+ Ga7qdvUUcrCIMbFICumyOLQbhIut5ynYrNRpgbMHFYmkCEMXJwCMJFb8gz/a+f8MlT+0SWxMsTk
+ QerGWIU8g/w227Ptd+ManyhO269pzsgwb7VmgtgD7UuXjjF+CvlTU3NkGv8+HhW+PC2DOSyTg2v
+ 5AQ==
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-BeenThere: linux-um@lists.infradead.org
@@ -112,29 +112,39 @@ X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-nlm_end_grace_read() answers with "Y\n" or "N\n" from a three byte
-buffer and hands out all three bytes, the terminating NUL included.
-Leave the NUL out.
+lparcfg_write() terminates its copy of the write by overwriting the
+last byte, so a write without a trailing newline loses its last
+character: "partition_entitled_capacity=5" is parsed as an empty value
+and fails with -EINVAL. Terminate behind the copy instead, and refuse a
+write that fills the whole buffer, which can't be terminated.
 
-Fixes: d68e3c4aa416 ("lockd: add a /proc/fs/lockd/nlm_end_grace file")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/lockd/procfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/lparcfg.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/lockd/procfs.c b/fs/lockd/procfs.c
-index a01f08c8c2f3..74f7ab77535a 100644
---- a/fs/lockd/procfs.c
-+++ b/fs/lockd/procfs.c
-@@ -57,7 +57,7 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
- 	resp[1] = '\n';
- 	resp[2] = '\0';
+diff --git a/arch/powerpc/platforms/pseries/lparcfg.c b/arch/powerpc/platforms/pseries/lparcfg.c
+index 3280b7968cab..9882f98c0efb 100644
+--- a/arch/powerpc/platforms/pseries/lparcfg.c
++++ b/arch/powerpc/platforms/pseries/lparcfg.c
+@@ -699,13 +699,12 @@ static ssize_t lparcfg_write(struct file *file, const char __user * buf,
+ 	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+ 		return -EINVAL;
  
--	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp));
-+	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp) - 1);
- }
+-	if (count == 0 || count > sizeof(kbuf))
++	if (count == 0 || count >= sizeof(kbuf))
+ 		return -EINVAL;
  
- static const struct proc_ops lockd_end_grace_proc_ops = {
+ 	if (copy_from_user(kbuf, buf, count))
+ 		return -EFAULT;
+-
+-	kbuf[count - 1] = '\0';
++	kbuf[count] = '\0';
+ 	tmp = strchr(kbuf, '=');
+ 	if (!tmp)
+ 		return -EINVAL;
 
 -- 
 2.53.0
