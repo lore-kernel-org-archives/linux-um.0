@@ -2,11 +2,11 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F41606A335
-	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 09:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD139606D82C
+	for <linux-um@archiver.kernel.org>; Wed,  4 Nov 2026 09:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=c4BvYL6t;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QF98rpjB
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=v/aQl/YW;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AkGIp68v
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
@@ -14,43 +14,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=tun3DxnivT6n8ykyvHDle1jgjloMyn9wMMyaVwUBJtE=; b=c4BvYL6t7GInLO9KVUmhyrUu6C
-	SYKVptRJgxWVnU5h5nX/k4ReiYJ3OzEiQ4S9YOQMUK8AJMMrs0dzNBdIdLUuB7iVH0vCTprCpReGH
-	Q/KVchioF8gSjuNvGFudqd93+iJZwGHkMVAr/YatBWz3W8Xif7bOCcU4HKf3Ax38wzIzgHWhbEf7V
-	Cx7w3u15n4L5uleFboxJz6KTziOCEcskEwmkqYtr9xTgaflcmDYEGrQuc9rQ3YubCklE4STMFUE7C
-	doiQuEpr60STBkafAroWrmJsiAE5My6YA8hmaF3qSK3jTjE2Gb0w9VX8s/ciVsliSui+qDc+THpLE
-	qTrnzpHA==;
+	bh=vFLCfIpQzvj87maXuJncKjZMHxfbMjkVEErOwSrEMzQ=; b=v/aQl/YWhCd3XpONUEKT8G7H6t
+	vdCx+DEZtV2FKffwGoOITrSROnN08+MbWctWhxPB8xoml8f0CwXbe6+7LR8FjU+82BaNEGxjp+fLV
+	ylMRHB45IlwXFl3Z1r15ypPjyhe8dLRiellZ0TS8YxadzwpnzRD3R1EU4FbH9aGkO5zc/fdfivIEz
+	bQBL3q3l1JphvAitO90hf7rOINOQ8c4M6/ZX/0m/HHebCYKDoggTgbdh9f94hgTgvYv7xiABEEfjM
+	OwDj6KHENElON+krrn73TdR8GEcLYF6cEXCA+ajNuzkTdt8WN+zGgpxumYGBSDAH2v2zgX2mxR1M8
+	yn1idpRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOX5o-00000004qam-1M4j;
-	Wed, 04 Nov 2026 09:15:40 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xOX7p-00000004qnQ-3fr9;
+	Wed, 04 Nov 2026 09:17:45 +0000
+Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOX5k-00000004qaI-1fzc;
-	Wed, 04 Nov 2026 09:15:36 +0000
+	id 1xOX7n-00000004qmk-3CVf;
+	Wed, 04 Nov 2026 09:17:43 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A35A0602BE;
-	Wed,  4 Nov 2026 09:15:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786C51F000C1;
-	Wed,  4 Nov 2026 09:15:21 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 33B61600CB;
+	Wed,  4 Nov 2026 09:17:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9461A1F000C1;
+	Wed,  4 Nov 2026 09:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793783735;
-	bh=tun3DxnivT6n8ykyvHDle1jgjloMyn9wMMyaVwUBJtE=;
+	s=k20260515; t=1793783862;
+	bh=vFLCfIpQzvj87maXuJncKjZMHxfbMjkVEErOwSrEMzQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=QF98rpjBzH7nX1jmz4Zo8ykeu0WPbxz0HGt6XxCXrOQ4V4PB3P/wbn5sluIzZ3bgP
-	 woOpkCVq06Ek6V7bKkHEP2phdvrGGARxXAl1OBE0IhgkRUa/IQ935AFbXxh1YUY5bJ
-	 utfjbIjp7LtybAhtZNGHqFcIoDw2mhpfxaUaUe5IHuBCvHt5tgYAPu/YfrtEAf4jWd
-	 v5zbJS1rE1Hby/io2vM2SNwmccLVR3w7pjdFYCtf7rR4Wu4skeBeZ5GH0Q1ajKmHHR
-	 yetiYqpJqieJOdcKUSYdWCjNW5p22mqd+bHsoVYbOTO4y8Ft2ybe6f5kRc5h/hiSzc
-	 /PiiXfUYZ7Gcw==
-Date: Wed, 4 Nov 2026 10:15:18 +0100
+	b=AkGIp68vobiZwB2XixXdCJHgtF8bS2InhigVuwsdqp6n5/W+M82eXJQmgMDIXncGQ
+	 ZsgLev6upKoTph4wRGMw/6Rt8tdd4yiEe0QTNTPemQ626tgZDkM1GcZGQlIINcGmX1
+	 rweyg/M+elK322suBIlSSUF7Ca/phJp24NGzpraEYkCKjrptZL+chTq0rR5ps9q2f2
+	 buSjg3t9Zzbjt9a55NJ2t3tMIsF7dtK6fdeAh04poa02hll2Rco50kbc8I+oEfsxAS
+	 NzUPxVvIxDSaOzz7ERaAm3QpoNHvfOUNEKEQothQH0rTaYd4IAl0SGRh52pJdJDENe
+	 eaiECSjcPGAaQ==
+Date: Wed, 4 Nov 2026 10:17:28 +0100
 From: Christian Brauner <brauner@kernel.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Eric Dumazet <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, Jann Horn <jannh@google.com>, 
+	Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
 	Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados <joel.granados@kernel.org>, 
 	Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>, 
 	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
@@ -68,17 +68,17 @@ Cc: linux-fsdevel@vger.kernel.org,
 	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
 	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, 
 	Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH RFC 03/38] netfilter: xt_recent: don't remove the proc
- entries under a spinlock
-Message-ID: <20261104-entgangen-nettigkeiten-intuitiv-f39521735261@brauner>
+Subject: Re: [PATCH RFC 01/38] PCI/proc: don't truncate the position of
+ config space accesses
+Message-ID: <20261104-beugt-kapern-geehrt-19e2e2dd58f6@brauner>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-3-59422ed3e465@kernel.org>
- <auig_zhd3L0HEis3@strlen.de>
+ <20261102-work-procfs-bugfixes-v1-1-59422ed3e465@kernel.org>
+ <CAHk-=wiSA7-mqmAjTQDaU7UjUyWt0TxYwXHafL8ZAPudy+B_uQ@mail.gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <auig_zhd3L0HEis3@strlen.de>
+In-Reply-To: <CAHk-=wiSA7-mqmAjTQDaU7UjUyWt0TxYwXHafL8ZAPudy+B_uQ@mail.gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,9 +96,25 @@ X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Mon, Nov 02, 2026 at 03:41:03PM +0100, Florian Westphal wrote:
-> Yes, but note that this change is already part of a pending nf -> net
-> merge request.
+On Mon, Nov 02, 2026 at 09:58:51AM -0800, Linus Torvalds wrote:
+> I think this would actually be better with rw_verify_area() just
+> checking a per-file maxbytes.
+>
+> We already have that logic for lseek and friends - using that fairly
+> hacky combination of s_maxbytes and !unsigned_offsets().
+>
+> We should combine s_maxbytes and unsigned_offsets() at file open time
+> into f_maxbytes and check that not just at lseek but in
+> rw_verify_area.
+>
+> And then things like proc_bus_pci could set it's size limit in one single place.
 
-Dropped.
+Yeah, I like that.
+
+Hm, maybe we should keep this and the isapnp thing small and do that
+change on top.
+
+This also might mean a change in behavior. Because a read past the end
+returns 0 for proc_bus_pci and for a regular file past s_maxbytes. So
+that would potentially need some more changes.
 
