@@ -2,117 +2,79 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E069606C8B8
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 19:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED097606A326
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 20:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EZ/o3Rlz;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=G1LPv/D/
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=o0cLppt6;
+	dkim=pass (2048-bit key, unprotected) header.d=zytor.com header.i=@zytor.com header.a=rsa-sha256 header.s=2026102901 header.b=CZ4dsDIj
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=; b=EZ/o3RlzZJe6DwKXhr3EHAhhct
-	VTUzVrUFHAidcPAYQjVLruLoCzE7FWftYzxxvzMm3YfKQGFPU88eiKD5qJPUOx4TTbXiJJvjq9Cnm
-	nFStNV7MBlSO8iVP6ibJRavYXzOmiZfLXsrDCdaW3Bf7ZV/yRxVxasZrU1LtZznR2uf7MuGPVwiHB
-	Ul93RAlAyM7e8Z2eEkmG+HGRvfCdBzlZLw7fSdhz5cu+jJ5alizcuy8Bgk2DfQ23FARbFkCPxc+tt
-	wVyB+kTQ10LKCU8KS0VsxgM0Mh3xpDE2ZBvO8mxi92AmWELlxs4mEWlTYZ/mf6dqd4EogNB4UiCk4
-	sniAcgFw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
+	List-Owner; bh=AMHZHhzuTrdOCzsJR0G5h0s+H2Tf/Af2ZIw878OYuL8=; b=o0cLppt6yGdPyv
+	vBxT9BU8cSv/4xmC/9eldLatreKySPCJd6pDs3Uz+G0Dv0T+D4shXEKxMsC0VU39KD+gMvKGydnrD
+	K2I9bSo39+ZOZ6t7+puJbjG3yMd+shQq9Jmja6ED9e1gJxmoFEbXU1x0uO24gUjMcMa7FweAt2SSD
+	2puBGKlI26zhw5BDC0/q2rnTW6M6JFNVlY4KVn2K8Iyed9xPV8BfRrcHgJaLxqoQUcpB5eO4pTfVm
+	g1YnoFlxR4AH3BAMLc2pBsFmJBbVO0enq1zhUTZFTEiE1lkjI5yPbnNUvhLSB1Qu9+wt3CdUmPBmT
+	mxhejHP60EA3lK4hO/yA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP3Ne-0000000AOoC-3z81;
-	Thu, 05 Nov 2026 19:44:14 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1xP3uN-0000000AXlp-3ble;
+	Thu, 05 Nov 2026 20:18:03 +0000
+Received: from terminus.zytor.com ([2607:7c80:54:3::136] helo=mail.zytor.com)
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP3NX-0000000AOld-0fsZ
+	id 1xP3uK-0000000AXkt-2BtK
 	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 19:44:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1793907835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=;
-	b=G1LPv/D/v4f+DYPaBTJBhf9+VMRBn2NBUi8VxcZYrSuaO6R6s948HgFVdb1ZeAt9y2jDRB
-	vTjhw7B8i6qTrrElHem6SJxaAdCcTE5T4VndMF/TbTn3mb2M0+FNGvyQmDmgplapvIoAbk
-	wPj5md9m2fW6XvO+Ostk56BqPCj9380=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-452-kRN0E571Pw6TLbPMHFlFSQ-1; Thu, 05 Nov 2026 14:43:52 -0500
-X-MC-Unique: kRN0E571Pw6TLbPMHFlFSQ-1
-X-Mimecast-MFC-AGG-ID: kRN0E571Pw6TLbPMHFlFSQ_1793907831
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4a210f93860so19072195e9.0
-        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 11:43:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793907831; x=1794512631;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=;
-        b=Dl1VeU39Z1nk+2T5lqfuWh8dwdoYFgCqU4IeqQlQyRKTnc8cuXW06ptfmluAr+64u4
-         NCBSSngVeQFeJiQOo1whY4UH+fOQhBnswpaEVN6pLMVb22RvaXd0lK6lEtHNiw8wPA1A
-         d0hAZ386B/AnLxEZ5n06E/DBd5XDpagVv5fi0x8MY+j7UXFNXbRcBPO3W5MDaE649i3r
-         WZAZSriigywrrntFMVbIofy8S2zY6B+deU9ueKXQOEsB1AqWOcpOI7xMAm9I3u6LQWDZ
-         jWUNQapJgkaQEyaZd/bjZQDKE2SysXUNF6xlFdmv53BtFf9aX2bgSi0FOrSHLIvAQp4N
-         cQvw==
-X-Forwarded-Encrypted: i=1; AKwUvByM5eEO7NNblEqHUbRZtw5Gqd67wcmazsTfrxDwnIbpsHEueiGtkoxy1pVNYax7EYCls0gvbrNB8w==@lists.infradead.org
-X-Gm-Message-State: APuU4Z+BZAZLjRy1aOUUGZyFYayopK4/+C3VIaYJkrvWzIOe33ba5x/C
-	mHpDBwlyphoLd4J5g4u3v5eqcrRaa4yUqMxROnGJIbTeLNjufsg3rb6vMi9jfAF7s3LFcSEsVfR
-	a1Ijq24Rx+ZPzcvZGAXEyM5oz4PugkNRHHFSpQPE5rDw5feeoKMNC8c7ZEqu/0ODn1Q==
-X-Gm-Gg: AYBFou1iFWt1/d4FiYDs/Up5D7gV+Y03bbT3Ri29j1InL3tgftYjo8ZyyoUneUOFxaG
-	Ter9SnoTxSXuwuKFNpeGCP5hosYoyPd6i2KVRvkKYOByDjckaL7CkwZtzy/Sk4c7NJliItXBYkg
-	c4wFo+QlLNKN1aGhJ3Sd2qxlFRuH9sXCPFKaXWe7MIsyR7YbWtMMliNwRlJMYNOz8JoZ2nDhgeG
-	o4s90DvXaaXRNq3cgw14ltCvs8claFKpEyA2fV5IgCuZKru5pZFZT/3MXHrNVVobiD70d/CTsuA
-	zw6oAT4Is3MSrmeEOnCtNKzQ1oSIhtWAeJZ+GMTP5bSyqkzZOi6YWYSp0WF0ohhZunmYBVWZ1qX
-	wWhU8pp9VxIe7xPEJrNDWMU1OmdTwFn3x+9kdQDsW6A==
-X-Received: by 2002:a05:600c:19cf:b0:4a1:fbf8:55c9 with SMTP id 5b1f17b1804b1-4b6dff85599mr2217325e9.33.1793907830801;
-        Thu, 05 Nov 2026 11:43:50 -0800 (PST)
-X-Received: by 2002:a05:600c:19cf:b0:4a1:fbf8:55c9 with SMTP id 5b1f17b1804b1-4b6dff85599mr2216835e9.33.1793907830232;
-        Thu, 05 Nov 2026 11:43:50 -0800 (PST)
-Received: from redhat.com ([2a0d:6fc0:1401:db00:7367:7b9e:e66f:2b7d])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b4527fed5bsm206845465e9.3.2026.11.05.11.43.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2026 11:43:49 -0800 (PST)
-Date: Thu, 5 Nov 2026 14:43:46 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Stjepan Poljak <stjepan.poljak@gmail.com>
-Cc: Jason Wang <jasowangio@gmail.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Cornelia Huck <cohuck@redhat.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Eric Farman <farman@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexander Graf <graf@amazon.com>, virtualization@lists.linux.dev,
-	linux-um@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio_ring: return an error pointer from
- vring_create_virtqueue()
-Message-ID: <20261105144316-mutt-send-email-mst@kernel.org>
-References: <20261105193426.2999631-1-stjepan.poljak@gmail.com>
+	Thu, 05 Nov 2026 20:18:01 +0000
+Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 6A5KHO2x3333264
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 5 Nov 2026 12:17:24 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 6A5KHO2x3333264
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026102901; t=1793909846;
+	bh=AMHZHhzuTrdOCzsJR0G5h0s+H2Tf/Af2ZIw878OYuL8=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=CZ4dsDIjSvNcfIZhbQny/XQsE6A5ymlAfOsmou/O/6R47WaoiGHL8XGN+RE+gqCGV
+	 8vvvVrRb4kGRStpvS8dbW3XxwqkCQGAur3anO4RIcpeQkSoeFXIei3onSuxU4ckITS
+	 MnFOjLMxxzYbzmGo+wL0cTz6n2FHCFOzxXF+FyePm77nSz7Uk8HHPSBWDBvshKSDl2
+	 LQjol5z1F6Qtztjxt/bERmCkdMDTEKRVg9DoPYlfU8mRxqDgfTdjffTe6FuSZ9tI7A
+	 /Md3HgaiKjQCiSz7EXtpxmZU7t4JrHSKR8HafSW3juZbRSJ/OfP4/BrdzLzjOiPCBI
+	 kBYc0vhRDvqMg==
+Date: Thu, 05 Nov 2026 12:17:19 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Arnd Bergmann <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>
+CC: Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH 7/7] x86: simplify 32-bit instruction set selection
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20261105163440.2381661-8-arnd@kernel.org>
+References: <20261105163440.2381661-1-arnd@kernel.org> <20261105163440.2381661-8-arnd@kernel.org>
+Message-ID: <4207CA81-6023-4DFC-8FBF-2C5C8C036CCC@zytor.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20261105193426.2999631-1-stjepan.poljak@gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: ypIovI8iER125iIchWsrERQa9SoRoBK0v87_EDAS7BE_1793907831
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261105_114407_282865_EA65629C 
-X-CRM114-Status: GOOD (  31.52  )
-X-Spam-Score: -2.8 (--)
+X-CRM114-CacheID: sfid-20261105_121800_571120_6F1ACAF5 
+X-CRM114-Status: GOOD (  21.23  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,217 +93,183 @@ X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Thu, Nov 05, 2026 at 08:34:25PM +0100, Stjepan Poljak wrote:
-> vring_create_virtqueue() and vring_create_virtqueue_map() return NULL
-> on any failure, so the error returned from vring_alloc_queue_split()
-> is lost and turned into -ENOMEM. This is especially misleading if
-> vring_alloc_queue_split() rejects a queue size with -EINVAL (i.e. if
-> queue size is not a power of two):
-> 
->   virtio_blk virtio0: Bad virtqueue length 100
->   virtio_blk virtio0: probe with driver virtio_blk failed with error -12
-> 
-> So the error points whoever debugs it at an allocation failure that
-> never happened.
-> 
-> Return an ERR_PTR() instead: the error from vring_alloc_queue_split()
-> or vring_alloc_queue_packed(), or -ENOMEM when allocating the
-> virtqueue itself fails. Make the callers, virtio_pci (modern and
-> legacy), virtio_mmio, virtio_vdpa, virtio_ccw and virtio_uml, check
-> with IS_ERR() and pass the error on. The error path in virtio_ccw
-> deletes a non-NULL vq, so clear vq there before taking it.
-> 
-> Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+On November 5, 2026 8:34:38 AM PST, Arnd Bergmann <arnd@kernel=2Eorg> wrote=
+:
+>From: Arnd Bergmann <arnd@arndb=2Ede>
+>
+>The -march=3D compiler flags select both instruction set and tuning for
+>a particular CPU, which works well when building a kernel that can only
+>run on this one type, but has some counterintuitive effects because it
+>is not always clear which models are compatible=2E
+>
+>E=2Eg=2E building for Geode LX results in a kernel that can work on all o=
+n
+>all 686-class CPUs but crashes on CPUs without the CMOV instructions=2E
+>Building a kernel for 686 could work on Geode LX and Crusoe but fails
+>because of the CPU generation check that detects these as 585-class=2E
+>Similarly, building for Intel Atom produces a 32-bit kernel that uses
+>the MOVBE instructions and does not work on any other 32-bit CPU or
+>even 64-bit CPUs before Haswell/Excavator=2E
+>
+>Change the CPU selection to build everything with either -march=3Di586
+>or -march=3Di686 and make the specific options only change the -mtune=3D
+>parameter where this was previously handled by -march=3D=2E Note that
+>the only -mtune=3D options that gcc or clang understand for x86-32
+>are i486, pentium, pentiumpro, pentium4, atom, geode, k6 and athlon,
+>the other ten are just aliases for one of them=2E
+>
+>Selecting any 586-class configuration option now produces a kernel that
+>works on every supported CPU, while selecting a 686-class configuration
+>works on all 686-class CPUs but no 586-class ones=2E
+>
+>Consequently, the vermagic=2Eh logic can be simplified to just these
+>two cases=2E
+>
+>Signed-off-by: Arnd Bergmann <arnd@arndb=2Ede>
+>---
+> arch/x86/Kconfig=2Ecpu            | 13 +++++-------
+> arch/x86/Makefile_32=2Ecpu        | 16 +++++++--------
+> arch/x86/include/asm/vermagic=2Eh | 36 ++-------------------------------
+> 3 files changed, 15 insertions(+), 50 deletions(-)
+>
+>diff --git a/arch/x86/Kconfig=2Ecpu b/arch/x86/Kconfig=2Ecpu
+>index 21026e0cb569=2E=2E121881c4d076 100644
+>--- a/arch/x86/Kconfig=2Ecpu
+>+++ b/arch/x86/Kconfig=2Ecpu
+>@@ -6,9 +6,9 @@ choice
+> 	default M686
+> 	help
+> 	  This is the processor type of your CPU=2E This information is
+>-	  used for optimizing purposes=2E In order to compile a kernel
+>-	  that can run on all supported x86 CPU types (albeit not
+>-	  optimally fast), you can specify "586" here=2E
+>+	  used to pick between i586-class and i686-class processors,
+>+	  as well as to optimize for a particular microarchitecture
+>+	  within the two classes=2E
+>=20
+> 	  Note that the 386 and 486 is no longer supported, this includes
+> 	  AMD/Cyrix/Intel 386DX/DXL/SL/SLC/SX, Cyrix/TI 486DLC/DLC2,
+>@@ -164,16 +164,13 @@ config MCYRIXIII
+> 	  treat this chip as a generic 586=2E Whilst the CPU is 686 class,
+> 	  it lacks the cmov extension which gcc assumes is present when
+> 	  generating 686 code=2E
+>-	  Note that Nehemiah (Model 9) and above will not boot with this
+>-	  kernel due to them lacking the 3DNow! instructions used in earlier
+>-	  incarnations of the CPU=2E
+>=20
+> config MVIAC3_2
+> 	bool "VIA C3-2 (Nehemiah)"
+> 	depends on X86_32
+> 	help
+>-	  Select this for a VIA C3 "Nehemiah"=2E Selecting this enables usage
+>-	  of SSE and tells gcc to treat the CPU as a 686=2E
+>+	  Select this for a VIA C3 "Nehemiah"=2E Selecting tells gcc to treat
+>+	  the CPU as a 686=2E
+> 	  Note, this kernel will not boot on older (pre model 9) C3s=2E
+>=20
+> config MVIAC7
+>diff --git a/arch/x86/Makefile_32=2Ecpu b/arch/x86/Makefile_32=2Ecpu
+>index c5aa169b596d=2E=2E1735a5f95d33 100644
+>--- a/arch/x86/Makefile_32=2Ecpu
+>+++ b/arch/x86/Makefile_32=2Ecpu
+>@@ -11,26 +11,26 @@ align		:=3D -falign-functions=3D0 -falign-jumps=3D0 -=
+falign-loops=3D0
+> endif
+>=20
+> cflags-$(CONFIG_M586TSC)	+=3D -march=3Di586
+>-cflags-$(CONFIG_M586MMX)	+=3D -march=3Dpentium-mmx
+>+cflags-$(CONFIG_M586MMX)	+=3D -march=3Di586
+> cflags-$(CONFIG_M686)		+=3D -march=3Di686
+> cflags-$(CONFIG_MPENTIUMII)	+=3D -march=3Di686 $(call tune,pentium2)
+> cflags-$(CONFIG_MPENTIUMIII)	+=3D -march=3Di686 $(call tune,pentium3)
+> cflags-$(CONFIG_MPENTIUMM)	+=3D -march=3Di686 $(call tune,pentium3)
+> cflags-$(CONFIG_MPENTIUM4)	+=3D -march=3Di686 $(call tune,pentium4)
+>-cflags-$(CONFIG_MK6)		+=3D -march=3Dk6
+>+cflags-$(CONFIG_MK6)		+=3D -march=3Di586 $(call tune,k6)
+> # Please note, that patches that add -march=3Dathlon-xp and friends are =
+pointless=2E
+> # They make zero difference whatsosever to performance at this time=2E
+>-cflags-$(CONFIG_MK7)		+=3D -march=3Dathlon
+>+cflags-$(CONFIG_MK7)		+=3D -march=3Di686 $(call tune,athlon)
+> cflags-$(CONFIG_MCRUSOE)	+=3D -march=3Di686 $(align)
+> cflags-$(CONFIG_MEFFICEON)	+=3D -march=3Di686 $(call tune,pentium3) $(al=
+ign)
+>-cflags-$(CONFIG_MCYRIXIII)	+=3D $(call cc-option,-march=3Dc3,-march=3Di4=
+86) $(align)
+>-cflags-$(CONFIG_MVIAC3_2)	+=3D $(call cc-option,-march=3Dc3-2,-march=3Di=
+686)
+>+cflags-$(CONFIG_MCYRIXIII)	+=3D -march=3Di586 $(call tune,i486) $(align)
+>+cflags-$(CONFIG_MVIAC3_2)	+=3D -march=3Di686
+> cflags-$(CONFIG_MVIAC7)		+=3D -march=3Di686
+>-cflags-$(CONFIG_MATOM)		+=3D -march=3Datom
+>+cflags-$(CONFIG_MATOM)		+=3D -march=3Di686 $(call tune,atom)
+>=20
+> # Geode GX1 support
+>-cflags-$(CONFIG_MGEODEGX1)	+=3D -march=3Dpentium-mmx
+>-cflags-$(CONFIG_MGEODE_LX)	+=3D $(call cc-option,-march=3Dgeode,-march=
+=3Dpentium-mmx)
+>+cflags-$(CONFIG_MGEODEGX1)	+=3D -march=3Di586 $(call tune,geode)
+>+cflags-$(CONFIG_MGEODE_LX)	+=3D -march=3Di586 $(call tune,geode)
+> # add at the end to overwrite eventual tuning options from earlier
+> # cpu entries
+> cflags-$(CONFIG_X86_GENERIC) 	+=3D $(call tune,generic,$(call tune,i686)=
+)
+>diff --git a/arch/x86/include/asm/vermagic=2Eh b/arch/x86/include/asm/ver=
+magic=2Eh
+>index e26061df0c9b=2E=2E5323ed585bc9 100644
+>--- a/arch/x86/include/asm/vermagic=2Eh
+>+++ b/arch/x86/include/asm/vermagic=2Eh
+>@@ -5,42 +5,10 @@
+>=20
+> #ifdef CONFIG_X86_64
+> /* X86_64 does not define MODULE_PROC_FAMILY */
+>-#elif defined CONFIG_M586TSC
+>-#define MODULE_PROC_FAMILY "586TSC "
+>-#elif defined CONFIG_M586MMX
+>-#define MODULE_PROC_FAMILY "586MMX "
+>-#elif defined CONFIG_MATOM
+>-#define MODULE_PROC_FAMILY "ATOM "
+>-#elif defined CONFIG_M686
+>+#elif CONFIG_X86_MINIMUM_CPU_FAMILY =3D=3D 6
+> #define MODULE_PROC_FAMILY "686 "
+>-#elif defined CONFIG_MPENTIUMII
+>-#define MODULE_PROC_FAMILY "PENTIUMII "
+>-#elif defined CONFIG_MPENTIUMIII
+>-#define MODULE_PROC_FAMILY "PENTIUMIII "
+>-#elif defined CONFIG_MPENTIUMM
+>-#define MODULE_PROC_FAMILY "PENTIUMM "
+>-#elif defined CONFIG_MPENTIUM4
+>-#define MODULE_PROC_FAMILY "PENTIUM4 "
+>-#elif defined CONFIG_MK6
+>-#define MODULE_PROC_FAMILY "K6 "
+>-#elif defined CONFIG_MK7
+>-#define MODULE_PROC_FAMILY "K7 "
+>-#elif defined CONFIG_MCRUSOE
+>-#define MODULE_PROC_FAMILY "CRUSOE "
+>-#elif defined CONFIG_MEFFICEON
+>-#define MODULE_PROC_FAMILY "EFFICEON "
+>-#elif defined CONFIG_MCYRIXIII
+>-#define MODULE_PROC_FAMILY "CYRIXIII "
+>-#elif defined CONFIG_MVIAC3_2
+>-#define MODULE_PROC_FAMILY "VIAC3-2 "
+>-#elif defined CONFIG_MVIAC7
+>-#define MODULE_PROC_FAMILY "VIAC7 "
+>-#elif defined CONFIG_MGEODEGX1
+>-#define MODULE_PROC_FAMILY "GEODEGX1 "
+>-#elif defined CONFIG_MGEODE_LX
+>-#define MODULE_PROC_FAMILY "GEODE "
+> #else
+>-#error unknown processor family
+>+#define MODULE_PROC_FAMILY "586 "
+> #endif
+>=20
+> #ifdef CONFIG_X86_32
 
-not how you ae supposed to attribute LLM use.
+Crusoe (TM3xxx/TM5xxx) do have a handful of compiler/user space visible it=
+ems that are missing from i686, as I recall notably the long nop instructio=
+ns and *possibly* fcomi (I *think* we caught that one, but I'm not 100% sur=
+e=2E)
 
-> Signed-off-by: Stjepan Poljak <stjepan.poljak@gmail.com>
-
-
-> ---
-> Tested on x86_64 with a virtio-mmio virtio-blk device offering a
-> 100-entry queue: the probe now fails with -22 instead of -12, and a
-> 128-entry queue probes as before. The other transports are only
-> compile-tested (x86_64, ARCH=um, s390 with clang, W=1).
-> 
-> No Fixes: tag, since the error has been -ENOMEM since 2010 and nothing
-> regressed.
-> 
-> This conflicts trivially with patch 07/12 of Alexander Graf's "virtio:
-> support devices that own their virtqueue memory" v2:
-> https://lore.kernel.org/virtualization/20260818211425.91009-1-graf@amazon.com/
-> ---
->  arch/um/drivers/virtio_uml.c       |  4 ++--
->  drivers/s390/virtio/virtio_ccw.c   |  5 +++--
->  drivers/virtio/virtio_mmio.c       |  4 ++--
->  drivers/virtio/virtio_pci_legacy.c |  4 ++--
->  drivers/virtio/virtio_pci_modern.c |  4 ++--
->  drivers/virtio/virtio_ring.c       | 12 +++++++-----
->  drivers/virtio/virtio_vdpa.c       |  4 ++--
->  include/linux/virtio_ring.h        |  6 +++++-
->  8 files changed, 25 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> index 881c34098a74..8b645523277f 100644
-> --- a/arch/um/drivers/virtio_uml.c
-> +++ b/arch/um/drivers/virtio_uml.c
-> @@ -984,8 +984,8 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
->  
->  	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
->  				    ctx, vu_notify, callback, info->name);
-> -	if (!vq) {
-> -		rc = -ENOMEM;
-> +	if (IS_ERR(vq)) {
-> +		rc = PTR_ERR(vq);
->  		goto error_create;
->  	}
->  	vq->priv = info;
-> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> index 552d77998012..c5a30f0a2bc2 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -590,10 +590,11 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
->  				    vdev, true, may_reduce, ctx,
->  				    notify, callback, name);
->  
-> -	if (!vq) {
-> +	if (IS_ERR(vq)) {
->  		/* For now, we fail if we can't get the requested size. */
->  		dev_warn(&vcdev->cdev->dev, "no vq\n");
-> -		err = -ENOMEM;
-> +		err = PTR_ERR(vq);
-> +		vq = NULL;
->  		goto out_err;
->  	}
->  
-> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> index e2ec0ec01d67..c403a025006e 100644
-> --- a/drivers/virtio/virtio_mmio.c
-> +++ b/drivers/virtio/virtio_mmio.c
-> @@ -396,8 +396,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
->  	/* Create the vring */
->  	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
->  				 true, true, ctx, notify, callback, name);
-> -	if (!vq) {
-> -		err = -ENOMEM;
-> +	if (IS_ERR(vq)) {
-> +		err = PTR_ERR(vq);
->  		goto error_new_virtqueue;
->  	}
->  
-> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-> index 8115aa39e01e..9d94fffff344 100644
-> --- a/drivers/virtio/virtio_pci_legacy.c
-> +++ b/drivers/virtio/virtio_pci_legacy.c
-> @@ -130,8 +130,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
->  				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
->  				    true, false, ctx,
->  				    vp_notify, callback, name);
-> -	if (!vq)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(vq))
-> +		return vq;
->  
->  	vq->num_max = num;
->  
-> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> index 922e2df027de..28ccb2130e27 100644
-> --- a/drivers/virtio/virtio_pci_modern.c
-> +++ b/drivers/virtio/virtio_pci_modern.c
-> @@ -720,8 +720,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
->  				    SMP_CACHE_BYTES, &vp_dev->vdev,
->  				    true, true, ctx,
->  				    notify, callback, name);
-> -	if (!vq)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (IS_ERR(vq))
-> +		return vq;
->  
->  	vq->num_max = num;
->  
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index f683a2d6a200..6dd4a7651bde 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -1421,13 +1421,13 @@ static struct virtqueue *vring_create_virtqueue_split(
->  	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
->  				      may_reduce_num, map);
->  	if (err)
-> -		return NULL;
-> +		return ERR_PTR(err);
->  
->  	vq = __vring_new_virtqueue_split(index, &vring_split, vdev, weak_barriers,
->  				   context, notify, callback, name, map);
->  	if (!vq) {
->  		vring_free_split(&vring_split, vdev, map);
-> -		return NULL;
-> +		return ERR_PTR(-ENOMEM);
->  	}
->  
->  	to_vvq(vq)->we_own_ring = true;
-> @@ -2671,15 +2671,17 @@ static struct virtqueue *vring_create_virtqueue_packed(
->  {
->  	struct vring_virtqueue_packed vring_packed = {};
->  	struct virtqueue *vq;
-> +	int err;
->  
-> -	if (vring_alloc_queue_packed(&vring_packed, vdev, num, map))
-> -		return NULL;
-> +	err = vring_alloc_queue_packed(&vring_packed, vdev, num, map);
-> +	if (err)
-> +		return ERR_PTR(err);
->  
->  	vq = __vring_new_virtqueue_packed(index, &vring_packed, vdev, weak_barriers,
->  					context, notify, callback, name, map);
->  	if (!vq) {
->  		vring_free_packed(&vring_packed, vdev, map);
-> -		return NULL;
-> +		return ERR_PTR(-ENOMEM);
->  	}
->  
->  	to_vvq(vq)->we_own_ring = true;
-> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> index f9559b6b2e0b..c1b6134b2267 100644
-> --- a/drivers/virtio/virtio_vdpa.c
-> +++ b/drivers/virtio/virtio_vdpa.c
-> @@ -208,8 +208,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
->  	vq = vring_create_virtqueue_map(index, max_num, align, vdev,
->  					true, may_reduce_num, ctx,
->  					notify, callback, name, map);
-> -	if (!vq) {
-> -		err = -ENOMEM;
-> +	if (IS_ERR(vq)) {
-> +		err = PTR_ERR(vq);
->  		goto error_new_virtqueue;
->  	}
->  
-> diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
-> index c97a12c1cda3..c808ca7e8d58 100644
-> --- a/include/linux/virtio_ring.h
-> +++ b/include/linux/virtio_ring.h
-> @@ -66,6 +66,9 @@ struct device;
->   * may_reduce_num is set, then this may allocate a smaller ring than
->   * expected.  The caller should query virtqueue_get_vring_size to learn
->   * the actual size of the ring.
-> + *
-> + * Returns the virtqueue or an ERR_PTR() on failure: -EINVAL if num is
-> + * not a valid ring size, -ENOMEM if the ring could not be allocated.
->   */
->  struct virtqueue *vring_create_virtqueue(unsigned int index,
->  					 unsigned int num,
-> @@ -80,7 +83,8 @@ struct virtqueue *vring_create_virtqueue(unsigned int index,
->  
->  /*
->   * Creates a virtqueue and allocates the descriptor ring with per
-> - * virtqueue mapping operations.
-> + * virtqueue mapping operations.  Returns the virtqueue or an ERR_PTR()
-> + * on failure, like vring_create_virtqueue().
->   */
->  struct virtqueue *vring_create_virtqueue_map(unsigned int index,
->  					     unsigned int num,
-> 
-> base-commit: 1a577f9402c1780cc1e663f48d5dd54c02051b09
-> -- 
-> 2.53.0
+As a result, it reports correctly as family 5=2E
 
 
