@@ -2,66 +2,98 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5524E606A31B
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 11:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023C4606EE99
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 11:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=rPK6ezAd
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=qrKg4DwU;
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=kH6kTpAi
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=ocShDwJv7t3aH5l1tCpXXdZxnTMgWjYCvpze57Wu7Uo=; b=rPK6ezAd7cdQAY
-	Nc0sObiZp9gfxa+Wmg24/jhw0znea2qGkUiWbJcMmeCwAUBiRMWmhjf0gJ32O+JynY7HBVE+qhbnk
-	L0oBUfLa3/d8cdj3TlBqzbHx3NZaSGFf3FdGgNRhetIyLFHjrMne41G1sOaxvN7kS+T0JSOH2mRmT
-	HzMQdzq7wVy8MHzyddCq3PXZDK543LwJKq2OtjJVGwoQe2843y7591wk4SliAYYghQb8VOakNWi/c
-	g89j58/Xic1AQ8DN8/5/PyJibHLJKpMDbXxcDVUZR8YcF1poEtBYRFoBHxiKrZk3qka1K05x7QM9Q
-	ff9qE2b7DfRmrd1u2tjg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=30J4sbOlYJiNq7Z4tRszcjWu8hBcWrg7tEn3jlctPwo=; b=qrKg4DwUK1MWsQj5p1+9TiUuGz
+	8fes2E6J0IeoDigmpzWVCmWQI86tJwGGUU36F4OkJvq2gV2LzwnCc3oJ9MkHoW3QnwaZXThIuEkI9
+	/YQ2i1MdrfbR9/HotIX7tdl0DWJ92rs5+TGGl/xKusWcAxNEgNAMwhvliwokLP+UOq66dMQrXeAWM
+	m0Gbp2fAsXBUiKaLOpbjWEoApjGnm2dSqLgIlQT/qCngtYx39MVADt53lFFgtPwwRWxpvSa9UxsUU
+	MYsDGP5f/SeyvWPE6EDPPqJXdSrfdeOqKVg75SB9QgkiVofhPps/QsZW4EBjKFVGU9IzjpFTUyuP9
+	QXJOx/rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOvRI-00000008bkx-0R1N;
-	Thu, 05 Nov 2026 11:15:28 +0000
-Received: from ns3.kot-begemot.co.uk ([31.70.137.218])
+	id 1xOvlu-00000008flx-0Zs2;
+	Thu, 05 Nov 2026 11:36:46 +0000
+Received: from mgamail.intel.com ([192.198.163.8])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOvRE-00000008bk3-2WaB
-	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 11:15:27 +0000
-Received: from [192.168.19.6] (helo=jain.kot-begemot.co.uk)
-	by ns3.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xOuvl-0000000173y-1bb2;
-	Thu, 05 Nov 2026 10:42:53 +0000
-Received: from terribleterror1.kot-begemot.co.uk ([192.168.12.4])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xOupF-000000000uy-3H6H;
-	Thu, 05 Nov 2026 10:42:52 +0000
-Message-ID: <e18ba080-20e9-43f2-9e0e-982031e54571@cambridgegreys.com>
-Date: Thu, 5 Nov 2026 10:42:49 +0000
+	id 1xOvll-00000008fgl-2Cu2;
+	Thu, 05 Nov 2026 11:36:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793878598; x=1825414598;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=J9dOmPMshDIpYmZ/TrqPMjz7mHsp3Z6+Ou1qHQ88q2c=;
+  b=kH6kTpAiQCWPXNnHfol4Ir8+s9VJjZqKUrEiOYYXZ519D9v6B5xP2gry
+   GnxiwbeLFhRczydH6mZJ0OLOiGGGZE6rGnuWsdi7YptLDmfnzWYK9ipH0
+   dFC+58sXrURL/5et1b81u3MYRwTIazl4W9H6PFyG6JrBjGDynR8P86946
+   XGW7UEKjEwT0v0iPok/BKikScign00RZapSIvNNIiIqAoLcjFjvBcwcNF
+   mL/HcsTXXDUec0Erc9ynncQVAqW6Z3TJ/1Z9sXlIVcBTPVZLkkuPAbbCG
+   vltsW6FpoPg9oXfRHm1xluCStSwpy0jt6Dfl66lBwsO3byRFQOjk4dw6n
+   g==;
+X-CSE-ConnectionGUID: MnK2oyOyR5GL2nPOvprT4Q==
+X-CSE-MsgGUID: e4YSEWZKTTiEEKZbLmoQAg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11956"; a="2547432"
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="2547432"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2026 03:36:37 -0800
+X-CSE-ConnectionGUID: NU49M+y7SoqJQQ7rq8Z1Cw==
+X-CSE-MsgGUID: /gbM1bnkQwynnPU6B2caeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="7163862"
+Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 05 Nov 2026 03:36:29 -0800
+Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xOvlZ-00000000m7v-0S9w;
+	Thu, 05 Nov 2026 11:36:25 +0000
+Date: Thu, 5 Nov 2026 19:35:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Jann Horn <jannh@google.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Chris Mason <chris.mason@fusionio.com>,
+	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>,
+	Christoph Hellwig <hch@lst.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Joel Granados <joel.granados@kernel.org>,
+	Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+	ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
+	coreteam@netfilter.org, kexec@lists.infradead.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 01/51] alloc_tag: don't remove /proc/allocinfo
+ under the codetag module lock
+Message-ID: <202611051923.pLSSWWkA-lkp@intel.com>
+References: <20261104-work-procfs-bugfixes-v2-1-021c84d852e0@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: vector: Possible underflow and races fixes
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
-Cc: richard@nod.at, mst@redhat.com
-References: <20261021130648.3373281-1-anton.ivanov@cambridgegreys.com>
- <635ef2ffdf7c77a35a3c32e5c569b8e46efb9ac0.camel@sipsolutions.net>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <635ef2ffdf7c77a35a3c32e5c569b8e46efb9ac0.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-1-021c84d852e0@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261105_031525_196173_DB8F000D 
-X-CRM114-Status: GOOD (  11.77  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261105_033637_578379_9E7B2DDB 
+X-CRM114-Status: GOOD (  12.75  )
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,52 +104,58 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 03/11/2026 09:41, Johannes Berg wrote:
-> On Wed, 2026-10-21 at 14:05 +0100, anton.ivanov@cambridgegreys.com
-> wrote:
->> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>
->> Michael S. Tsirkin while working on net virtio checksum hardening
->> discovered a number of issues in the uml vector driver. This patch
->> addresses these issues.
->>
->> 1. Use of header_size, not rx_header_size in some of the runt/underflow
->> checks. IPV6 raw socket API for protocols like GRE or L2TPV2 is asymmetric -
->> the header format and size in recv and send differ. All rx checks must use
->> the rx specific size.
->>
->> 2. Vector reuses rx and tx queue locks for stats. These queues are not
->> always allocated as some transports do not use them and they can be
->> disabled on the kernel command line. Resetting or accessing ethtool stats
->> in this case could lead to a null pointer dereference.
->>
->> 3. virtio_net_header processing was not up to date with all the GSO
->> additions and changes and was skipping necessary processing.
->>
->> 4. Missing barrier in vector_send().
->>
->> 5. Incorrect timer destruction in net_close()
-> 
-> This doesn't apply, could you resend it?
+Hi Christian,
 
-Sure, I will try to get around to it before the end of this week.
+kernel test robot noticed the following build warnings:
 
-> 
-> Thanks,
-> johannes
-> 
-> 
+[auto build test WARNING on 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Brauner/alloc_tag-don-t-remove-proc-allocinfo-under-the-codetag-module-lock/20261104-200606
+base:   6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+patch link:    https://lore.kernel.org/r/20261104-work-procfs-bugfixes-v2-1-021c84d852e0%40kernel.org
+patch subject: [PATCH RESEND v2 01/51] alloc_tag: don't remove /proc/allocinfo under the codetag module lock
+config: sh-randconfig-1001-20261105 (https://download.01.org/0day-ci/archive/20261105/202611051923.pLSSWWkA-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 16.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261105/202611051923.pLSSWWkA-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202611051923.pLSSWWkA-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/alloc_tag.c:620:13: warning: 'shutdown_mem_profiling_async' defined but not used [-Wunused-function]
+     620 | static void shutdown_mem_profiling_async(void)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+vim +/shutdown_mem_profiling_async +620 mm/alloc_tag.c
 
+   613	
+   614	/*
+   615	 * A module's tags are reserved with the codetag module lock held for
+   616	 * writing, and a reader of /proc/allocinfo takes that lock with the entry
+   617	 * pinned. Removing the entry there would wait for that reader for good, so
+   618	 * let a work item do it.
+   619	 */
+ > 620	static void shutdown_mem_profiling_async(void)
+   621	{
+   622		if (!mem_profiling_support)
+   623			return;
+   624		shutdown_mem_profiling(false);
+   625		schedule_work(&remove_allocinfo_work);
+   626	}
+   627	
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
