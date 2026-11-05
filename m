@@ -2,134 +2,117 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47569606A32C
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 17:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E069606C8B8
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 19:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YjD+HHQ0;
-	dkim=pass (2048-bit key, unprotected) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=Y8sEM9N7
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=EZ/o3Rlz;
+	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=G1LPv/D/
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=1miHHjHzX+PzIvHEGZ5sEbAebfzqkab44G9tf/WJJPk=; b=YjD+HHQ02rfpBh
-	r89p+CzDiFT5VM6F/3sIElFwKb3xGLFqvD6n5ucYqqMIMFbjH8+odlK/teD0saNfI41Yd04VUhZ9r
-	vwzMQjwzNVx5GwTouGZCsyKcTrTFBp9/ohXcPqDFHV7SEcg+Gp4a5U3Ztp21o3xT8vSgPpIxgx4YC
-	2eMve1O4SliqGFt1DWoIW9PHJedI6w8IccqGKlRP3wzVKr7vtrcY6TnSKRIJtl4lMKwUoCCZhf6DB
-	I0i0rtv6MRga2WYT3HnrbCTpr+KUpfy5MIE2m/EcxBmsovti5Xtu3ufHp8gF59AGqJ2ZhLpoHQoaE
-	u5RCVrEeid76/NZ1r/SQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=; b=EZ/o3RlzZJe6DwKXhr3EHAhhct
+	VTUzVrUFHAidcPAYQjVLruLoCzE7FWftYzxxvzMm3YfKQGFPU88eiKD5qJPUOx4TTbXiJJvjq9Cnm
+	nFStNV7MBlSO8iVP6ibJRavYXzOmiZfLXsrDCdaW3Bf7ZV/yRxVxasZrU1LtZznR2uf7MuGPVwiHB
+	Ul93RAlAyM7e8Z2eEkmG+HGRvfCdBzlZLw7fSdhz5cu+jJ5alizcuy8Bgk2DfQ23FARbFkCPxc+tt
+	wVyB+kTQ10LKCU8KS0VsxgM0Mh3xpDE2ZBvO8mxi92AmWELlxs4mEWlTYZ/mf6dqd4EogNB4UiCk4
+	sniAcgFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP1hr-0000000A2JI-0Edp;
-	Thu, 05 Nov 2026 17:56:59 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1xP3Ne-0000000AOoC-3z81;
+	Thu, 05 Nov 2026 19:44:14 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP1hh-0000000A2Ck-0isZ
+	id 1xP3NX-0000000AOld-0fsZ
 	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 17:56:57 +0000
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6A5Hi5gq2578573;
-	Thu, 5 Nov 2026 17:56:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=1miHHj
-	HzX+PzIvHEGZ5sEbAebfzqkab44G9tf/WJJPk=; b=Y8sEM9N7vKdTj6HjUdcTCE
-	lDre9uofWsAQ7o7uy5AJHZSLEV1PIL00IQugh9KRKMlY62hbMijXhrXSjyO+ed+c
-	J/2Rie84cN6rU96v90RO1WZw5PsqWTupgTAezHl7czmZ7p4qlIEn/dLIUIzZhEM+
-	KsFSNHeh5lGVSkhAzE192O+EKw9/Kjohw1sKpMRHU1UziEkIUwSyewANcWmc295D
-	/3LtCCmCiu6Q43qLmSna0RhHXzv9Ctj56euvM1JN1GRd70nbtTzOlwHu9hqX6fUN
-	xZqI55WsjzQkZPe/i85EQayFpfOQ3fRUkbcdlFfwItk0DKJpce97wCaJq7duqHeQ
-	==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hn80t48tf-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Thu, 05 Nov 2026 17:56:28 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6A5Hnv1m1992972;
-	Thu, 5 Nov 2026 17:56:27 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4hrk9mkjtx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Nov 2026 17:56:27 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6A5HuRYe55116032
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 5 Nov 2026 17:56:27 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1B19158056;
-	Thu,  5 Nov 2026 17:56:27 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 351EC58052;
-	Thu,  5 Nov 2026 17:56:23 +0000 (GMT)
-Received: from [9.68.10.150] (unknown [9.68.10.150])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  5 Nov 2026 17:56:23 +0000 (GMT)
-Message-ID: <dd2b2658-cb4a-4ba9-b69c-470d433a0ef5@linux.ibm.com>
-Date: Thu, 5 Nov 2026 18:56:10 +0100
+	Thu, 05 Nov 2026 19:44:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1793907835;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=;
+	b=G1LPv/D/v4f+DYPaBTJBhf9+VMRBn2NBUi8VxcZYrSuaO6R6s948HgFVdb1ZeAt9y2jDRB
+	vTjhw7B8i6qTrrElHem6SJxaAdCcTE5T4VndMF/TbTn3mb2M0+FNGvyQmDmgplapvIoAbk
+	wPj5md9m2fW6XvO+Ostk56BqPCj9380=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-452-kRN0E571Pw6TLbPMHFlFSQ-1; Thu, 05 Nov 2026 14:43:52 -0500
+X-MC-Unique: kRN0E571Pw6TLbPMHFlFSQ-1
+X-Mimecast-MFC-AGG-ID: kRN0E571Pw6TLbPMHFlFSQ_1793907831
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4a210f93860so19072195e9.0
+        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 11:43:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793907831; x=1794512631;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=aFGBHAMRbC8gjr7H7RJhMUHxgVniv6NNOgtYNglESN4=;
+        b=Dl1VeU39Z1nk+2T5lqfuWh8dwdoYFgCqU4IeqQlQyRKTnc8cuXW06ptfmluAr+64u4
+         NCBSSngVeQFeJiQOo1whY4UH+fOQhBnswpaEVN6pLMVb22RvaXd0lK6lEtHNiw8wPA1A
+         d0hAZ386B/AnLxEZ5n06E/DBd5XDpagVv5fi0x8MY+j7UXFNXbRcBPO3W5MDaE649i3r
+         WZAZSriigywrrntFMVbIofy8S2zY6B+deU9ueKXQOEsB1AqWOcpOI7xMAm9I3u6LQWDZ
+         jWUNQapJgkaQEyaZd/bjZQDKE2SysXUNF6xlFdmv53BtFf9aX2bgSi0FOrSHLIvAQp4N
+         cQvw==
+X-Forwarded-Encrypted: i=1; AKwUvByM5eEO7NNblEqHUbRZtw5Gqd67wcmazsTfrxDwnIbpsHEueiGtkoxy1pVNYax7EYCls0gvbrNB8w==@lists.infradead.org
+X-Gm-Message-State: APuU4Z+BZAZLjRy1aOUUGZyFYayopK4/+C3VIaYJkrvWzIOe33ba5x/C
+	mHpDBwlyphoLd4J5g4u3v5eqcrRaa4yUqMxROnGJIbTeLNjufsg3rb6vMi9jfAF7s3LFcSEsVfR
+	a1Ijq24Rx+ZPzcvZGAXEyM5oz4PugkNRHHFSpQPE5rDw5feeoKMNC8c7ZEqu/0ODn1Q==
+X-Gm-Gg: AYBFou1iFWt1/d4FiYDs/Up5D7gV+Y03bbT3Ri29j1InL3tgftYjo8ZyyoUneUOFxaG
+	Ter9SnoTxSXuwuKFNpeGCP5hosYoyPd6i2KVRvkKYOByDjckaL7CkwZtzy/Sk4c7NJliItXBYkg
+	c4wFo+QlLNKN1aGhJ3Sd2qxlFRuH9sXCPFKaXWe7MIsyR7YbWtMMliNwRlJMYNOz8JoZ2nDhgeG
+	o4s90DvXaaXRNq3cgw14ltCvs8claFKpEyA2fV5IgCuZKru5pZFZT/3MXHrNVVobiD70d/CTsuA
+	zw6oAT4Is3MSrmeEOnCtNKzQ1oSIhtWAeJZ+GMTP5bSyqkzZOi6YWYSp0WF0ohhZunmYBVWZ1qX
+	wWhU8pp9VxIe7xPEJrNDWMU1OmdTwFn3x+9kdQDsW6A==
+X-Received: by 2002:a05:600c:19cf:b0:4a1:fbf8:55c9 with SMTP id 5b1f17b1804b1-4b6dff85599mr2217325e9.33.1793907830801;
+        Thu, 05 Nov 2026 11:43:50 -0800 (PST)
+X-Received: by 2002:a05:600c:19cf:b0:4a1:fbf8:55c9 with SMTP id 5b1f17b1804b1-4b6dff85599mr2216835e9.33.1793907830232;
+        Thu, 05 Nov 2026 11:43:50 -0800 (PST)
+Received: from redhat.com ([2a0d:6fc0:1401:db00:7367:7b9e:e66f:2b7d])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b4527fed5bsm206845465e9.3.2026.11.05.11.43.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2026 11:43:49 -0800 (PST)
+Date: Thu, 5 Nov 2026 14:43:46 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Stjepan Poljak <stjepan.poljak@gmail.com>
+Cc: Jason Wang <jasowangio@gmail.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexander Graf <graf@amazon.com>, virtualization@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_ring: return an error pointer from
+ vring_create_virtqueue()
+Message-ID: <20261105144316-mutt-send-email-mst@kernel.org>
+References: <20261105193426.2999631-1-stjepan.poljak@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 19/20] gcov: add MC/DC condition coverage support
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Bill Wendling <morbo@google.com>, Borislav Petkov <bp@alien8.de>,
-        Chuck Wolber <chuck@wolber.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Justin Stitt <justinstitt@google.com>, kasan-dev@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-um@lists.infradead.org,
-        llvm@lists.linux.dev, Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nathan Chancellor
- <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nsc@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@kernel.org>,
-        x86@kernel.org
-References: <20261103015238.3780910-1-sashal@kernel.org>
- <20261103015238.3780910-20-sashal@kernel.org>
-From: Peter Oberparleiter <oberpar@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <20261103015238.3780910-20-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: cwJQeRxNyTX6GxuOPvxXzzLS9v8CaHuu
-X-Proofpoint-ORIG-GUID: GbsN-ftVfGBhsujieJJUbKTF56leZQN_
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTA1MDA3MCBTYWx0ZWRfX1gk+JYltK+M8
- DygLW0mOD+DQkRT3cIKfLw6/lmf+c0JpeETlNklR/Yk+/kcILG5PekV1j9GPGRDxjIQsLmTTAZQ
- 6613WDfbIwSuV6Eim+g+LaCsURCYBJ2OFhcqRtEqU5Dqn6x6MmZpAB0Lyr8esHZN+XMTxEtZgw9
- exf1KMFPDDcmcgQ1xCdwtaEA80GXLLktS/sMMckHqhlBfxTUE0a5GZYpyov7AsmXAXGoN13qxPD
- 7dIl3heqFc2bByOrsP+JU0Hr8p/99ddhdVFFGWls7H+vkWlCoxn4fX619ZnSoufkajtikhHBllR
- 69XpH/7s4tvQsNN27DkG0U3ttWkxL/scslzXxAea2KrkiE3x5IJzU6+Ubl9ssLYCYVjePTCVgLz
- tIiIuLiBlt0wkLI0WOe6oogHb29/uEWyQgQZTEfZFTvMEVeZsKf3G17pq49cxYDSdQeW3+1ZLjp
- S8JDGPgQR+r17YF2TZA==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMTA1MDA3MCBTYWx0ZWRfX1ozUU4RVvpGI
- 6Lth9lZO3YH9esa47BEBKiHNcBs/H+CcZ91iuk0wP/tbXrw1UaZnFs3Wz0tvuxx0mMXhY2fE8Hl
- 1ltlXCDND+afsZYAasLP12+56MDzI4E=
-X-Authority-Analysis: v=2.4 cv=FIqOVOos c=1 sm=1 tr=0 ts=6aecc34c cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
- a=VnNF1IyMAAAA:8 a=95rrPwSdFze6aSbNxQIA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
- definitions=2026-11-05_05,2026-11-04_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610300000 definitions=main-2611050070
+In-Reply-To: <20261105193426.2999631-1-stjepan.poljak@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: ypIovI8iER125iIchWsrERQa9SoRoBK0v87_EDAS7BE_1793907831
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261105_095649_237586_75C9D6ED 
-X-CRM114-Status: GOOD (  15.24  )
-X-Spam-Score: -2.6 (--)
+X-CRM114-CacheID: sfid-20261105_114407_282865_EA65629C 
+X-CRM114-Status: GOOD (  31.52  )
+X-Spam-Score: -2.8 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,50 +123,225 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 03.11.2026 02:52, Sasha Levin wrote:
-> Support CONFIG_COVERAGE_MCDC with gcov, using GCC's MC/DC condition
-> coverage instrumentation (-fcondition-coverage), which is available
-> since GCC 14. The data is shown by "gcov --conditions".
+On Thu, Nov 05, 2026 at 08:34:25PM +0100, Stjepan Poljak wrote:
+> vring_create_virtqueue() and vring_create_virtqueue_map() return NULL
+> on any failure, so the error returned from vring_alloc_queue_split()
+> is lost and turned into -ENOMEM. This is especially misleading if
+> vring_alloc_queue_split() rejects a queue size with -EINVAL (i.e. if
+> queue size is not a power of two):
 > 
-> Add -fcondition-coverage to the gcov compiler flags when enabled, and
-> disable the warnings about decisions it leaves out, as is done for
-> Clang. Both are gated on the config option to avoid Clang warnings
-> about unknown options.
+>   virtio_blk virtio0: Bad virtqueue length 100
+>   virtio_blk virtio0: probe with driver virtio_blk failed with error -12
 > 
-> Also add -fcondition-coverage to CFLAGS_REMOVE in the x86 UML vDSO
-> Makefile to prevent instrumentation of userspace vDSO code.
+> So the error points whoever debugs it at an allocation failure that
+> never happened.
 > 
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Return an ERR_PTR() instead: the error from vring_alloc_queue_split()
+> or vring_alloc_queue_packed(), or -ENOMEM when allocating the
+> virtqueue itself fails. Make the callers, virtio_pci (modern and
+> legacy), virtio_mmio, virtio_vdpa, virtio_ccw and virtio_uml, check
+> with IS_ERR() and pass the error on. The error path in virtio_ccw
+> deletes a non-NULL vq, so clear vq there before taking it.
+> 
+> Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
-Looks good, minor comment below.
+not how you ae supposed to attribute LLM use.
 
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+> Signed-off-by: Stjepan Poljak <stjepan.poljak@gmail.com>
 
-[...]
 
-> @@ -108,8 +108,8 @@ config COVERAGE_PROFILE_ALL
+> ---
+> Tested on x86_64 with a virtio-mmio virtio-blk device offering a
+> 100-entry queue: the probe now fails with -22 instead of -12, and a
+> 128-entry queue probes as before. The other transports are only
+> compile-tested (x86_64, ARCH=um, s390 with clang, W=1).
+> 
+> No Fixes: tag, since the error has been -ENOMEM since 2010 and nothing
+> regressed.
+> 
+> This conflicts trivially with patch 07/12 of Alexander Graf's "virtio:
+> support devices that own their virtqueue memory" v2:
+> https://lore.kernel.org/virtualization/20260818211425.91009-1-graf@amazon.com/
+> ---
+>  arch/um/drivers/virtio_uml.c       |  4 ++--
+>  drivers/s390/virtio/virtio_ccw.c   |  5 +++--
+>  drivers/virtio/virtio_mmio.c       |  4 ++--
+>  drivers/virtio/virtio_pci_legacy.c |  4 ++--
+>  drivers/virtio/virtio_pci_modern.c |  4 ++--
+>  drivers/virtio/virtio_ring.c       | 12 +++++++-----
+>  drivers/virtio/virtio_vdpa.c       |  4 ++--
+>  include/linux/virtio_ring.h        |  6 +++++-
+>  8 files changed, 25 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> index 881c34098a74..8b645523277f 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -984,8 +984,8 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
 >  
->  config COVERAGE_MCDC
->  	bool "Measure modified condition/decision coverage (MC/DC)"
-> -	depends on LLVM_COV_KERNEL
-> -	depends on CLANG_VERSION >= 220000 || !WERROR
-> +	depends on LLVM_COV_KERNEL || (GCOV_KERNEL && CC_HAS_CONDITION_COVERAGE)
-> +	depends on !LLVM_COV_KERNEL || CLANG_VERSION >= 220000 || !WERROR
+>  	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
+>  				    ctx, vu_notify, callback, info->name);
+> -	if (!vq) {
+> -		rc = -ENOMEM;
+> +	if (IS_ERR(vq)) {
+> +		rc = PTR_ERR(vq);
+>  		goto error_create;
+>  	}
+>  	vq->priv = info;
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index 552d77998012..c5a30f0a2bc2 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -590,10 +590,11 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+>  				    vdev, true, may_reduce, ctx,
+>  				    notify, callback, name);
+>  
+> -	if (!vq) {
+> +	if (IS_ERR(vq)) {
+>  		/* For now, we fail if we can't get the requested size. */
+>  		dev_warn(&vcdev->cdev->dev, "no vq\n");
+> -		err = -ENOMEM;
+> +		err = PTR_ERR(vq);
+> +		vq = NULL;
+>  		goto out_err;
+>  	}
+>  
+> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> index e2ec0ec01d67..c403a025006e 100644
+> --- a/drivers/virtio/virtio_mmio.c
+> +++ b/drivers/virtio/virtio_mmio.c
+> @@ -396,8 +396,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+>  	/* Create the vring */
+>  	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
+>  				 true, true, ctx, notify, callback, name);
+> -	if (!vq) {
+> -		err = -ENOMEM;
+> +	if (IS_ERR(vq)) {
+> +		err = PTR_ERR(vq);
+>  		goto error_new_virtqueue;
+>  	}
+>  
+> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> index 8115aa39e01e..9d94fffff344 100644
+> --- a/drivers/virtio/virtio_pci_legacy.c
+> +++ b/drivers/virtio/virtio_pci_legacy.c
+> @@ -130,8 +130,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+>  				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
+>  				    true, false, ctx,
+>  				    vp_notify, callback, name);
+> -	if (!vq)
+> -		return ERR_PTR(-ENOMEM);
+> +	if (IS_ERR(vq))
+> +		return vq;
+>  
+>  	vq->num_max = num;
+>  
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index 922e2df027de..28ccb2130e27 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -720,8 +720,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+>  				    SMP_CACHE_BYTES, &vp_dev->vdev,
+>  				    true, true, ctx,
+>  				    notify, callback, name);
+> -	if (!vq)
+> -		return ERR_PTR(-ENOMEM);
+> +	if (IS_ERR(vq))
+> +		return vq;
+>  
+>  	vq->num_max = num;
+>  
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index f683a2d6a200..6dd4a7651bde 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -1421,13 +1421,13 @@ static struct virtqueue *vring_create_virtqueue_split(
+>  	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
+>  				      may_reduce_num, map);
+>  	if (err)
+> -		return NULL;
+> +		return ERR_PTR(err);
+>  
+>  	vq = __vring_new_virtqueue_split(index, &vring_split, vdev, weak_barriers,
+>  				   context, notify, callback, name, map);
+>  	if (!vq) {
+>  		vring_free_split(&vring_split, vdev, map);
+> -		return NULL;
+> +		return ERR_PTR(-ENOMEM);
+>  	}
+>  
+>  	to_vvq(vq)->we_own_ring = true;
+> @@ -2671,15 +2671,17 @@ static struct virtqueue *vring_create_virtqueue_packed(
+>  {
+>  	struct vring_virtqueue_packed vring_packed = {};
+>  	struct virtqueue *vq;
+> +	int err;
+>  
+> -	if (vring_alloc_queue_packed(&vring_packed, vdev, num, map))
+> -		return NULL;
+> +	err = vring_alloc_queue_packed(&vring_packed, vdev, num, map);
+> +	if (err)
+> +		return ERR_PTR(err);
+>  
+>  	vq = __vring_new_virtqueue_packed(index, &vring_packed, vdev, weak_barriers,
+>  					context, notify, callback, name, map);
+>  	if (!vq) {
+>  		vring_free_packed(&vring_packed, vdev, map);
+> -		return NULL;
+> +		return ERR_PTR(-ENOMEM);
+>  	}
+>  
+>  	to_vvq(vq)->we_own_ring = true;
+> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> index f9559b6b2e0b..c1b6134b2267 100644
+> --- a/drivers/virtio/virtio_vdpa.c
+> +++ b/drivers/virtio/virtio_vdpa.c
+> @@ -208,8 +208,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+>  	vq = vring_create_virtqueue_map(index, max_num, align, vdev,
+>  					true, may_reduce_num, ctx,
+>  					notify, callback, name, map);
+> -	if (!vq) {
+> -		err = -ENOMEM;
+> +	if (IS_ERR(vq)) {
+> +		err = PTR_ERR(vq);
+>  		goto error_new_virtqueue;
+>  	}
+>  
+> diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
+> index c97a12c1cda3..c808ca7e8d58 100644
+> --- a/include/linux/virtio_ring.h
+> +++ b/include/linux/virtio_ring.h
+> @@ -66,6 +66,9 @@ struct device;
+>   * may_reduce_num is set, then this may allocate a smaller ring than
+>   * expected.  The caller should query virtqueue_get_vring_size to learn
+>   * the actual size of the ring.
+> + *
+> + * Returns the virtqueue or an ERR_PTR() on failure: -EINVAL if num is
+> + * not a valid ring size, -ENOMEM if the ring could not be allocated.
+>   */
+>  struct virtqueue *vring_create_virtqueue(unsigned int index,
+>  					 unsigned int num,
+> @@ -80,7 +83,8 @@ struct virtqueue *vring_create_virtqueue(unsigned int index,
+>  
+>  /*
+>   * Creates a virtqueue and allocates the descriptor ring with per
+> - * virtqueue mapping operations.
+> + * virtqueue mapping operations.  Returns the virtqueue or an ERR_PTR()
+> + * on failure, like vring_create_virtqueue().
+>   */
+>  struct virtqueue *vring_create_virtqueue_map(unsigned int index,
+>  					     unsigned int num,
+> 
+> base-commit: 1a577f9402c1780cc1e663f48d5dd54c02051b09
+> -- 
+> 2.53.0
 
-Would it make sense to transform this for readability, i.e.
-
-depends on !(LLVM_COV_KERNEL && CLANG_VERSION < 220000 && WERROR)
-
-
--- 
-Peter Oberparleiter
-Linux on IBM Z Development - IBM Germany R&D
 
