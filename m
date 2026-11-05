@@ -2,76 +2,114 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084F3606A326
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 07:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544D2606D802
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 09:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GTLWfrT9;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=sipsolutions.net header.i=@sipsolutions.net header.a=rsa-sha256 header.s=mail header.b=c1IKNff7
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fwdcU4YE
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=tzpAoC2omTJl2fzGtB/LbdqFRSKRKecrRzXJsFBarKQ=; b=GTLWfrT9yi9QPZxo+h1JPZTFLQ
-	x3JGCMxxw8d0lcyxXuR0i3Usb5t/v+3TKFQfhaTwDeij0xtVDJKoJgjx/QoiE7YCYl8e2mfizSj0+
-	roexiL+vzuITuGfWO0LRiheKw4uFEqWV3n4P5RszyBCO5mCNNm1Vrgsv+TcJsGJiIpPI8Y5nLH4sB
-	b0Iyj4EGCMMd08k74ZYcEldCELkj9OjyrZp6DV+w1RTksB/FyF+t7mpubcRLe+BoCSV6l3+cgT8Jy
-	cPehwS8hbLLEM8vBRa11hADzunOsgQo/Zbg74rGfL3ED0fNW7I6KBAGPKJ78PRaOXAMgmvpvgcS+k
-	Aev/CTXw==;
+	bh=SqrTjgENN7Dfs+HehxbKPgACeb32UvvfMAFijNHd6N4=; b=fwdcU4YEH3RdnuOm1u3SNsNjQy
+	vEE7oRVoqKY30bBLVO47P+DR9URLBeHGFsKIMWobEgJp48fhwHezDyoOqp5GKKDPzPwriR8xB+1Cc
+	tedlMKIf6dlWu1LCoGz4maDHs+ovERyZ+X/RUL5eF2xrYfDY/xBYsPnwa/nNvhadPeuGhicUR5iMH
+	tDyKCDc+A72/vnTkL4brlJtfvxYWp5KLc3sdsBVxGx2RXQC8OGaWW8h94ek1Mf7akOpzEQ8iVYC/h
+	1RmlDOxRL9uSLCLyN+N/dzBIWH6S+bnnyfZ+VItILXui6eYIF0B/Q2ghegkNG2L442uRMhg6Bb6CY
+	mjLJM1zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOrwD-000000081uF-0Nv4;
-	Thu, 05 Nov 2026 07:31:10 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1xOu9U-00000008Msb-2XcO;
+	Thu, 05 Nov 2026 09:53:00 +0000
+Received: from mail-qv1-f53.google.com ([209.85.219.53])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOrw5-000000081tv-0ypi
+	id 1xOu9R-00000008MrJ-0EoI
 	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 07:31:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=tzpAoC2omTJl2fzGtB/LbdqFRSKRKecrRzXJsFBarKQ=;
-	t=1793863861; x=1795073461; b=c1IKNff7Tb3vWvCNaiLBxBFXTy3DJApvlgU/nFngvhRbKQt
-	I5/gx9HciydNANu1KWzEHlUJLeDCSuQRerFz2tlVAOiZ85AQcgtVg/zKfPh00knc7+XTGq8wbMtmR
-	Cva/3KJjBknaQ7MBAUjfxf1f1RcHmGvfRALkt6UjJ7dfjvA1OFpWG7wbW+ZYsdVCvQmh7ioDq7WYZ
-	WIvhSqH6/Zx+JIXSZO5nOD/FOla64Mxd1w72xGhB8MTDxlDT+opyFYP0tGzANqSYDCcrEx0bFhjs8
-	JxslCfAotanweGV/HGu1PlDuQ2l3sEH2X+/WyJ0wSQh2di7JdI+5QF3JoXF/25Ew==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__ECDSA_SECP256R1_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1xOrvv-00000007QDT-1O6r;
-	Thu, 05 Nov 2026 08:30:52 +0100
-Message-ID: <d2496da0ffca1e425c194cb746088fa174fd3cf7.camel@sipsolutions.net>
-Subject: Re: [PATCH v1] rust: arch/um: Fix loading Rust modules
-From: Johannes Berg <johannes@sipsolutions.net>
-To: FUJITA Tomonori <tomo@flapping.org>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, ojeda@kernel.org, 
-	a.hindborg@kernel.org, acourbot@nvidia.com, aliceryhl@google.com, 
-	bjorn3_gh@protonmail.com, boqun@kernel.org, dakr@kernel.org, 
-	daniel.almeida@collabora.com, david@davidgow.net, gary@garyguo.net, 
-	linux-um@lists.infradead.org, lossin@kernel.org, tamird@kernel.org, 
-	tmgross@umich.edu, work@onurozkan.dev, rust-for-linux@vger.kernel.org, 
-	fujita.tomonori@gmail.com
-Date: Thu, 05 Nov 2026 08:30:50 +0100
-In-Reply-To: <20261105.100942.1905172064477226868.tomo@flapping.org>
-References: <20261004121230.373216-1-tomo@flapping.org>
-		<20261103.180207.1243555897796693771.tomo@flapping.org>
-		<0730c9d467af3897a547860d036a5591cb40905b.camel@sipsolutions.net>
-	 <20261105.100942.1905172064477226868.tomo@flapping.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.2 (3.60.2-3.fc44) 
+	Thu, 05 Nov 2026 09:52:58 +0000
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-91c6ce60697so22126666d6.3
+        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 01:52:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793872376; x=1794477176;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=SqrTjgENN7Dfs+HehxbKPgACeb32UvvfMAFijNHd6N4=;
+        b=s8DdCjpBj6WpJ27Q+/yDZnlZbQR5sGt03aBOmKJwBH1/BUSNVF5RTAPGgvKLZc5K2/
+         n9EaiCrZtkgpBe1PqrfY0PqICM1MzJJyDHwdUnZ4Cz4Puenzd4FjI+UfOqv/VNGpnhJa
+         l0rO27ZNXjpcEQWOj1U2UWvTAhvkZq9tIpPnJiFk4sZhcVLPZEN8CC4tHRFz6mEx/rHa
+         CZ0u8kDq7vMrhrD6904bgJQqs1ugWMdyFHg4wEahbGrjGnVOCFporQQW+XJgUosSodVR
+         a+rAfQNEG0YuIkWA+gQK7ynYkV0E54ODfVtgOh/LXUloZ3iad+asKxtNHftOSWV8g0U6
+         HOGA==
+X-Forwarded-Encrypted: i=1; AKwUvBwzqeyc0QU2ar2x8jSdIP/TnENsXzS71flyaWdJSzfA5fmT3/lK3C+eSFivCJUav0vKiDqdIyUMvQ==@lists.infradead.org
+X-Gm-Message-State: APuU4Z+uJKPHC2xsK/dzCX6sLaaVcKy/3eEb5/j/wM6UmZEMHlaFzKbd
+	xmqcKeUfiFq4kIqG1R780dQVfKD9T4rtBJzUH0f+WqlvdEO1wGHMkAkkKJU2F55jxfA=
+X-Gm-Gg: AYBFou2nGg2ejNz40HKi02gxfBJZ/K7JPowkrk6EZRAkbnJUBE6lpH5wa7HrfBRH5se
+	KCQdptRsZD60YwMJ7osJuY/ZNGjUGJ4rHzljUWz/qpFaxZwCO4iTACknmuM0CG2TAmWiv/rKeit
+	RaJPzE5jJu2b8+eGvCPGZilgeNHUY29apAQrifPVvmKkmspfZA1pvYUDkbC+uPHmPeXiAxd4gxT
+	kwJA2Hi4jrSV4tP4DT1Zanmbaut8cehsTB7k/svMHbD+WilOdvbCp8xAaCQUrI/RWMS6CL+6odL
+	O3rx4L6SoJdzv1/l2mfq1QaTMWTy2lKCefrNwIlTYvobBN/cB0TsQukh/G8lCUKslTCjZTtZYd1
+	pzFRGYENSIqinf8pIgDyLBVrrjp22iN/xpFGquEBnAnS75wXsmjT4LoROmHWjI8SsRDY0TNmx7S
+	gIoAKKnsTw3M434fRkYuGsg9zBvT8sPNLGEq1FCe6xF5BttxQe5B0RtAEknWmEHdnKoX2aVDlv5
+	Fmun00cb9zm7985pa69AP2NH9qXpXnwNYLRILCx2PIhFkQyxF2FZu1pvO88XPz2XFtVUR4eOWy+
+	uf7P+9uu5H/xkPFJ1cXdiuim975O0mE2bRT+Suy2TY75Hs9RtlKkpNCte0tjUZZH2IGlBkghdAZ
+	o/fgTQ9t/Uf5pOIs=
+X-Received: by 2002:a05:6214:4804:b0:91c:925c:e859 with SMTP id 6a1803df08f44-91ca4b3321fmr312596276d6.34.1793872375357;
+        Thu, 05 Nov 2026 01:52:55 -0800 (PST)
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91e939fc1d9sm21870636d6.18.2026.11.05.01.52.54
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2026 01:52:54 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-53c4b82919fso21018821cf.0
+        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 01:52:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBytI7MRufnPMh5xwBwZSq9iAVhbte46ffKQWWaYNiIECZ34Mxnm+qA8Yk/6B10U9hXwMdrm1jcfKw==@lists.infradead.org
+X-Received: by 2002:a05:6102:3ec5:b0:7cc:2bb7:131d with SMTP id
+ ada2fe7eead31-7d072baa484mr7324212137.9.1793871885062; Thu, 05 Nov 2026
+ 01:44:45 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org> <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 5 Nov 2026 10:44:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUy1RYKG0g8OWss3AD-jyYx3DXL0K7ABYkFUdxTxZ9VdQ@mail.gmail.com>
+X-Gm-Features: AclHuK9D-nB8icBns0zdoQH8fV1cfUPJ6LOey8o_VlUZpDIGqKC4cFf8-j5-HdE
+Message-ID: <CAMuHMdUy1RYKG0g8OWss3AD-jyYx3DXL0K7ABYkFUdxTxZ9VdQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 10/51] zorro: size the proc files like what they serve
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, 
+	Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, 
+	Joel Granados <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, ntfs3@lists.linux.dev, 
+	platform-driver-x86@vger.kernel.org, coreteam@netfilter.org, 
+	kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
+	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net, 
+	jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
+	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
+	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, 
+	samba-technical@lists.samba.org, sparclinux@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
+	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
+	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261104_233101_809150_2CACEB5E 
-X-CRM114-Status: UNSURE (   9.95  )
-X-CRM114-Notice: Please train this message.
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261105_015257_221408_01BA3440 
+X-CRM114-Status: GOOD (  16.36  )
+X-Spam-Score: -1.6 (-)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,28 +120,32 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Thu, 2026-11-05 at 10:09 +0900, FUJITA Tomonori wrote:
->=20
-> As the commit message says, Rust modules still fail to load with a
-> larger mem=3D, because Rust code uses the small code model. Zigit Zo
-> posted a fix for this in 2024 [1]. It is the same change as the one I
-> would send:
->=20
-> 	KBUILD_RUSTFLAGS +=3D -Ccode-model=3Dlarge
->=20
-> It was not merged. Was it because the patch has no Signed-off-by?
+On Wed, 4 Nov 2026 at 20:18, Christian Brauner <brauner@kernel.org> wrote:
+> The files under /proc/bus/zorro hand out a struct ConfigDev and seek
+> within that, but their size says sizeof(struct zorro_dev). Say
+> sizeof(struct ConfigDev).
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-I have no idea, but I process enough patches (mostly in wireless though)
-that I almost certainly wouldn't remember one that just gets dropped on
-the floor because it doesn't have a Signed-off-by (or similar mechanical
-issues).
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-johannes
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
