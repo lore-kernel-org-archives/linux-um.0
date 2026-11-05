@@ -2,10 +2,10 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA22C606A31B
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 10:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EA3606A326
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 10:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=NHctyTMY
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=PI+bvnou
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
@@ -13,70 +13,71 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=LrgDMUrSYXpYgkAhfsYKg0ebb/uLgOfOMhqzX4yL0j4=; b=NHctyTMY1Kq2DTZ/f0jYl8Van4
-	jDGgHVQDrmkHPWyLWmTM4J3oxmr8XrMpphTbV1MdpwrtlyAzFqMyohakVCNZcjw7nXkNcvIIFeSV5
-	Lrm5Ium7jcDlIVG9DtBdjwwuLP20Kchj394VpXU7s5gHnBhaaXsnMUq0KXpN5QXgDUQfKYRis9RfJ
-	aoIW6qCGMNbC7JSzQY5O9Ma3Dbt95NKtQgNN+Hpz2bVm/3gcc7cG1P0E/t0Ypn3X7iqOvcyMT6hH6
-	0N4EjQDqoQjGr+qx7YzK2rbOmhZ0GsuKx69/nQG1SFuVthiREg1vV/KpnVZKGa7L0+EmoKEA+fZ0w
-	X86M+e8g==;
+	bh=n+1lmuZTLENNkpqKh8T8PUriZ63OKZ7RGcjsYNzzAGM=; b=PI+bvnoukimTEyP3rQwzMyMUBd
+	MKfeCUBzmO51TVaoim6KjmJWkCV8V9gKP+FTQ/0nWi8Z0pRxnLhg7gRzwaqESsnyL5xgAWLbV1P66
+	7RG17uHBxjEjtpJ1voPi3p4e/z/QCB60/uCGrkJeXJm2M6tBWeY6k2n75mH/aIWbdIqOgMSR2i99P
+	+hdDvKRIvEojeNBY9jNwJ5g/GAQSicd+F2Fj9JstH7Rt40JwwW5VOjl5z0OwIZI4PcdG+/h9H2WY5
+	alkExOj0jc3z16a1K+BcH+86F8RSl7RwnyM3DBrQ7e3KskdVlMRFxwuPStVf6bIiUXirayy/7IMQo
+	6Tuo6hEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOuHf-00000008Nrt-3hv4;
-	Thu, 05 Nov 2026 10:01:27 +0000
-Received: from mail-qt1-f182.google.com ([209.85.160.182])
+	id 1xOuIi-00000008O2R-1ZwZ;
+	Thu, 05 Nov 2026 10:02:32 +0000
+Received: from mail-qk1-f179.google.com ([209.85.222.179])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xOuHd-00000008NqY-3x9z
+	id 1xOuIg-00000008O17-27xo
 	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 10:01:27 +0000
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-5364042eecfso22723081cf.2
-        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 02:01:25 -0800 (PST)
+	Thu, 05 Nov 2026 10:02:31 +0000
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-93cc1ab5f6cso198515785a.0
+        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 02:02:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793872884; x=1794477684;
+        d=1e100.net; s=20260707; t=1793872949; x=1794477749;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=LrgDMUrSYXpYgkAhfsYKg0ebb/uLgOfOMhqzX4yL0j4=;
-        b=sz1aP7vhG4Cm1WrKm/Csv0pPTojWiqjAPH7My+GaluyCOxdR9SchSO7weDAgiwGw0S
-         KBgzKf1ThR+sp3qlDgSOtE04gIZ2Av0duUwXIKVlFtSRR8lF+VDkL0tO4Ib4PDhsoNrz
-         xQiO5dsTd9XgHhRRF1kNL1aP/YgXZR9c4wqOaObnTt9HxDMNyg+QBWanVeU/32URVUXk
-         25mb2NjFPCVyxEM2cfOjeRA8y61Ay+rnbp+YuS0M9Tow2K7dCPvhNCZvyVKGLO9USLKN
-         +KvcPYxEqixi3cmlQhQ77PoJQI9bOrskqtI+IDS/4eXG+WAcN45ugl5kuB4BsxQcdeoP
-         8Wuw==
-X-Forwarded-Encrypted: i=1; AKwUvBy5IEm0CKUGyt5iUU/H8RZrKFYGeKNjd94eJMaPLVQPVafWSrv66HZJk2myNR9ByQ3PHyVFLXdvXQ==@lists.infradead.org
-X-Gm-Message-State: APuU4Z/YHiUVhkZyU969i8umcngExdACfWCOLQbhEDVzUvqzUNOX1iAu
-	fdJx+sFyhggB0fIVDS4XxuR+BFStiSIa7Htdk2R36HvAxztLINqfqdv9AxH6bip4/p4=
-X-Gm-Gg: AYBFou2u0OlOR7m35IoCMoi81M98/S1cZC3ESRSXMx27js+iZ/19/u2g31xSJB92nx2
-	T/muRhZmO8TTsxWmLRbm7CfvzQrdfzKfIZnzjK8r7pjWBAiXo1+9FzxYPinxRQk8rt91DtfFhCd
-	n+lQLUZY8pmZfF6Cq2WTlWxSrGb3IxiJNEC4DtWeuTZq8HoIygSVuzVHYB6o9k+02xXcwNFnOuO
-	hr7GNQKhlTCRwnMvq9oYVz/gbTlw6issrKUNkbYXCph4BG83328wqJ7T/aNFSAJ9h5IIC73Q1DE
-	r1AJR56dmivWKr2P/nl2mEzKeKQqcAr6PoQizDw8/r4pHQPjJVQzy78Dvam0uPtDv5wVpC/rDGx
-	CWKQKm1kszN56n/bdUvj48xoUMi9j9cvqfgPid8abr5W/zuwsqHwnaPYE8Ds5FsCtYURbrHyE9M
-	dpckY1DgIdpYE+GJi/rh0CXn0mcl/JB4q/23hFG7/eRI65nOgE0pR3sltczXwxfDEROH/uCe/hz
-	cbBAFh8/IIAZI97OhhKYccnFqrsD7PQRlmE9297a49GiziBFvmHRXsW9XTCOkb+JMDc6xWqmDLe
-	csAWpDW5Afq13ttFXS9lHMr42s1S3HxcR4ud1cLoP4J3oBRCSHu36lsski/oYemnkA/VSQ==
-X-Received: by 2002:a05:622a:393:b0:535:bb7a:884b with SMTP id d75a77b69052e-542b62a4c8bmr315069611cf.27.1793872884292;
-        Thu, 05 Nov 2026 02:01:24 -0800 (PST)
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-54b0d07599dsm47233491cf.2.2026.11.05.02.01.23
+        bh=n+1lmuZTLENNkpqKh8T8PUriZ63OKZ7RGcjsYNzzAGM=;
+        b=GdBdj+1Td4Kok25LEmke/DC+HU+hiKlZmiWGfbWPc9omovPLz5pIVN1DGbtkpbXerE
+         7ubeSZir6R68KYUFh5/H4E+u9qJ3Hs3suUC7aQDlf9fAAi3q/v+Z6c5PbG+aSMhGV4TE
+         IqIMeEisD4HW1nji24ny7jtylF0F+xrgdZRAjDvz6Whzt5woc60LtD7h5CxyYgVDXrHo
+         h6qDoVxWPKiIyzobyDmPCG4P7NdjbBmiW0F4We0ApQniCl63lGujdGqL4+yzO409GX/l
+         2vHkWSckOduVFymZjTmBF5LPAROSG9WRzGI6DQ6GVygbw2YzxasTM0Fh0rkUuPgycr3t
+         SrMw==
+X-Forwarded-Encrypted: i=1; AKwUvBwTKPAcLKMmJkb0FfqI6o3xTUVKUAVd5a/LVnRMhsp9pSxQlN0CFwg62964rF9B+hL9q9XDLDppRQ==@lists.infradead.org
+X-Gm-Message-State: APuU4Z/3p1hOXnOoKoQubPQaTU7csrZKUnVH2tyE1/uMFrk4l3HCV0Xd
+	ih0w1Et9b0mmFQWHOPxRHH4P74qvKexOnenjoLxWYxFARdpA7Z6LjFIs7zItvkqfBUI=
+X-Gm-Gg: AYBFou1QFqASLUn0U6Ji/D5cUsdUUwL5i3E94pDbo+bMcort6A4UTG61hzXh8AFuKo9
+	KsbgACE2hPyFyHBH+6er9FE8qZIpLBzn5Q7gRnSnfrctLqrMXlZzhJnYk9sVzlog0e/gSiwf6UE
+	5VWJgNhtZ9CvibXWcAhgkAwa1tuBA2ljauNOfusZOS9QFDL1ZkhSeGoCz9BIxBzmwjaUOpzKpSW
+	EPT9psLc0tJk8JFaIxJCZySkJvYC0Npr+YTFsqxUIMjoENeeEp/4gtNKgxLe45FAy2NtYrOMila
+	zdpv1EE6pS+qbs3BMgUGhVOlXkjE/Bfq7TAPfiQzACiV6scCQGxHUGtjmskZ1o2OaPTYjT8hB/S
+	7XU4T+gDL1YgMPWuMiI+/wyz+fWEMA1x+qi4D3lCOxmlilvYLGjP4evFnKGrWmS/LdjceEQzq4u
+	40/w4O9pcfEIKEFuh1AzEOdYxWQRB1QzbAiBJh6PJ+AYq6BKs9+ZXqUoQ4NBIw5DcE1dWLVpG68
+	DiZhlZSju4Tghy+53Wq57j1zluopt4eJyA3exH5t+KWYpagmy8k8EFnHk3kp+r44ez4O5lVyeRM
+	WEtrOa4cv3iIvS4TSltYbvThcFogo9IjAP0NXEz2R1wt7jToy1WZ/XZqtKmYnxPgbA==
+X-Received: by 2002:a05:620a:649a:b0:93c:3d7e:6e90 with SMTP id af79cd13be357-94421677211mr3026342185a.32.1793872949290;
+        Thu, 05 Nov 2026 02:02:29 -0800 (PST)
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com. [209.85.219.42])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-945d48556c7sm427684885a.30.2026.11.05.02.02.27
         for <linux-um@lists.infradead.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2026 02:01:23 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-5365d26ccbdso19497791cf.0
-        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 02:01:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBy2WJMg8fnugwcm5QwKdHvV5WxxcAqKB0AZemSYVvB7SXv6b8sB7RHiNoC7BHCa2R/O3vKfIF/peQ==@lists.infradead.org
-X-Received: by 2002:a05:6102:5108:b0:7cc:56a:58e5 with SMTP id
- ada2fe7eead31-7d072d84a58mr8269567137.37.1793872526219; Thu, 05 Nov 2026
- 01:55:26 -0800 (PST)
+        Thu, 05 Nov 2026 02:02:28 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-91c6ce60697so22226906d6.3
+        for <linux-um@lists.infradead.org>; Thu, 05 Nov 2026 02:02:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBz1aG1J3uFOgYtYRbMYC3M1HhVJAYTOIrFhYT+uB7Mhb3bp62ReuyArT1GThxsM1yoRCVNnhtnL/Q==@lists.infradead.org
+X-Received: by 2002:a05:6102:6449:b0:7cb:bc5e:7dad with SMTP id
+ ada2fe7eead31-7d072baa450mr7614890137.10.1793872492413; Thu, 05 Nov 2026
+ 01:54:52 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org> <20261104-work-procfs-drivers-v2-2-245e54e87116@kernel.org>
-In-Reply-To: <20261104-work-procfs-drivers-v2-2-245e54e87116@kernel.org>
+References: <20261104-work-procfs-arch-v2-0-2aeb952c9597@kernel.org> <20261104-work-procfs-arch-v2-4-2aeb952c9597@kernel.org>
+In-Reply-To: <20261104-work-procfs-arch-v2-4-2aeb952c9597@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 5 Nov 2026 10:55:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVHxQvKnJyKHrOZhaOg9Rn2hMeRU1JnMFFEEi31FPZaGg@mail.gmail.com>
-X-Gm-Features: AclHuK_UsJ1nGicdWEWcMLQAICTi1A7pGF3yhNkxXkXRPqohle17eXAHHNBsR6k
-Message-ID: <CAMuHMdVHxQvKnJyKHrOZhaOg9Rn2hMeRU1JnMFFEEi31FPZaGg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 02/26] zorro: let procfs copy out reads
+Date: Thu, 5 Nov 2026 10:54:40 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUNBs_NyhFpXonirMXkYptUWsAizMvVpGHUDLzto1LGJg@mail.gmail.com>
+X-Gm-Features: AclHuK_RsrcE7hVRjmpZezBV5tMd490Mza2XAQiqUTgUNqAiHAzRP5z7NIbtMh8
+Message-ID: <CAMuHMdUNBs_NyhFpXonirMXkYptUWsAizMvVpGHUDLzto1LGJg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 04/23] m68k/bootinfo: let procfs copy out reads
+ of /proc/bootinfo
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, 
@@ -106,8 +107,8 @@ Cc: linux-fsdevel@vger.kernel.org,
 	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261105_020126_071615_07BFCB5F 
-X-CRM114-Status: GOOD (  16.77  )
+X-CRM114-CacheID: sfid-20261105_020230_549913_448C82B1 
+X-CRM114-Status: GOOD (  16.51  )
 X-Spam-Score: -1.6 (-)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -126,9 +127,9 @@ X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed, 4 Nov 2026 at 20:43, Christian Brauner <brauner@kernel.org> wrote:
-> Implement ->proc_read_buf() so procfs copies what is read from
-> /proc/bus/zorro/<slot> to userspace after it unpinned the entry.
+On Wed, 4 Nov 2026 at 20:36, Christian Brauner <brauner@kernel.org> wrote:
+> Implement ->proc_read_buf() so procfs copies what is read to userspace
+> after it unpinned the entry.
 >
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
