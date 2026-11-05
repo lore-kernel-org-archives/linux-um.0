@@ -2,79 +2,134 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8264606A91E
-	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 16:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47569606A32C
+	for <linux-um@archiver.kernel.org>; Thu,  5 Nov 2026 17:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GzKgLXKN;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ls8Raz9q
+	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YjD+HHQ0;
+	dkim=pass (2048-bit key, unprotected) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=Y8sEM9N7
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=e2ztWCUIFbvaoqpwhwvFVgI1sGkz5O9pvvPNBwZKqYs=; b=GzKgLXKN+WRE8Y
-	sYnUS6BhR6bBP63cb6KsWbrnUxpRj8chndfiHNCmWp0dx71gTkPPn1pVIffuXQVL4eMyshIlQh/RU
-	PYamI2Ak7pDw27s726qGS+eJyoZPitzJ9siCR32lI4a/kQfE+0C2ppG6mdGSTLA/XPEklU0xSOUZR
-	tNHLzRzfFopqRuXfCxAvAptrhSzpcAjAsjSZCtJzQJXJFjcCqzxZ5sTzJi8+aemlaZBnZpouhrZwd
-	BhefoAlZ9Q+g2iU1lq5f+gx4HjJmJ4Zi6ogXWKlfPY+nJLfIp4MNURrjJNCrQ4MHjrCLILrheYole
-	UApPtMRuSCWztsWpcMPw==;
+	List-Owner; bh=1miHHjHzX+PzIvHEGZ5sEbAebfzqkab44G9tf/WJJPk=; b=YjD+HHQ02rfpBh
+	r89p+CzDiFT5VM6F/3sIElFwKb3xGLFqvD6n5ucYqqMIMFbjH8+odlK/teD0saNfI41Yd04VUhZ9r
+	vwzMQjwzNVx5GwTouGZCsyKcTrTFBp9/ohXcPqDFHV7SEcg+Gp4a5U3Ztp21o3xT8vSgPpIxgx4YC
+	2eMve1O4SliqGFt1DWoIW9PHJedI6w8IccqGKlRP3wzVKr7vtrcY6TnSKRIJtl4lMKwUoCCZhf6DB
+	I0i0rtv6MRga2WYT3HnrbCTpr+KUpfy5MIE2m/EcxBmsovti5Xtu3ufHp8gF59AGqJ2ZhLpoHQoaE
+	u5RCVrEeid76/NZ1r/SQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0R5-00000009ejI-2mWj;
-	Thu, 05 Nov 2026 16:35:35 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xP1hr-0000000A2JI-0Edp;
+	Thu, 05 Nov 2026 17:56:59 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xP0Qv-00000009ed5-0rDP
+	id 1xP1hh-0000000A2Ck-0isZ
 	for linux-um@lists.infradead.org;
-	Thu, 05 Nov 2026 16:35:26 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9785E60A6A;
-	Thu,  5 Nov 2026 16:35:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149041F00A02;
-	Thu,  5 Nov 2026 16:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793896524;
-	bh=e2ztWCUIFbvaoqpwhwvFVgI1sGkz5O9pvvPNBwZKqYs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ls8Raz9qVlcGHcu9+FVj6z1c1vBoBKB/jakU6Lu8YrKYnGZqY5t2rEY8JxipHMdtk
-	 7qHUYq+71xsAFUuZUyYDI6OboesMNH7/jytVMpplfH6E4WR1ddKkvc6c6LKkBkxNDH
-	 q8ZWxRcwCnC6tMCj124corHQ2ckC9K6IlXu4O/0XeEmfHahyxaAa6LgGUdVRpLNY/F
-	 ExH6o7HCuony4tMLzH2AQHly10SYx8pP4fjrCGr17KjLuprUmI7wY60K2qhq+Jnhrh
-	 KySenRkj5mukWo3FO8VBiSMx9Y/xJHgv7M5ue4JstHGt7goQyxuFae9GwI1nh0fkOb
-	 35B6tlVhiEnow==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Ingo Molnar <mingo@redhat.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Gary Guo <gary@garyguo.net>,
-	Yury Norov <yury.norov@gmail.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: [PATCH 7/7] x86: simplify 32-bit instruction set selection
-Date: Thu,  5 Nov 2026 17:34:38 +0100
-Message-ID: <20261105163440.2381661-8-arnd@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261105163440.2381661-1-arnd@kernel.org>
-References: <20261105163440.2381661-1-arnd@kernel.org>
+	Thu, 05 Nov 2026 17:56:57 +0000
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6A5Hi5gq2578573;
+	Thu, 5 Nov 2026 17:56:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=1miHHj
+	HzX+PzIvHEGZ5sEbAebfzqkab44G9tf/WJJPk=; b=Y8sEM9N7vKdTj6HjUdcTCE
+	lDre9uofWsAQ7o7uy5AJHZSLEV1PIL00IQugh9KRKMlY62hbMijXhrXSjyO+ed+c
+	J/2Rie84cN6rU96v90RO1WZw5PsqWTupgTAezHl7czmZ7p4qlIEn/dLIUIzZhEM+
+	KsFSNHeh5lGVSkhAzE192O+EKw9/Kjohw1sKpMRHU1UziEkIUwSyewANcWmc295D
+	/3LtCCmCiu6Q43qLmSna0RhHXzv9Ctj56euvM1JN1GRd70nbtTzOlwHu9hqX6fUN
+	xZqI55WsjzQkZPe/i85EQayFpfOQ3fRUkbcdlFfwItk0DKJpce97wCaJq7duqHeQ
+	==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4hn80t48tf-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Thu, 05 Nov 2026 17:56:28 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6A5Hnv1m1992972;
+	Thu, 5 Nov 2026 17:56:27 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4hrk9mkjtx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 05 Nov 2026 17:56:27 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6A5HuRYe55116032
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 5 Nov 2026 17:56:27 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1B19158056;
+	Thu,  5 Nov 2026 17:56:27 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 351EC58052;
+	Thu,  5 Nov 2026 17:56:23 +0000 (GMT)
+Received: from [9.68.10.150] (unknown [9.68.10.150])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  5 Nov 2026 17:56:23 +0000 (GMT)
+Message-ID: <dd2b2658-cb4a-4ba9-b69c-470d433a0ef5@linux.ibm.com>
+Date: Thu, 5 Nov 2026 18:56:10 +0100
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 19/20] gcov: add MC/DC condition coverage support
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Bill Wendling <morbo@google.com>, Borislav Petkov <bp@alien8.de>,
+        Chuck Wolber <chuck@wolber.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Justin Stitt <justinstitt@google.com>, kasan-dev@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-um@lists.infradead.org,
+        llvm@lists.linux.dev, Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nathan Chancellor
+ <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nsc@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@kernel.org>,
+        x86@kernel.org
+References: <20261103015238.3780910-1-sashal@kernel.org>
+ <20261103015238.3780910-20-sashal@kernel.org>
+From: Peter Oberparleiter <oberpar@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <20261103015238.3780910-20-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-GUID: cwJQeRxNyTX6GxuOPvxXzzLS9v8CaHuu
+X-Proofpoint-ORIG-GUID: GbsN-ftVfGBhsujieJJUbKTF56leZQN_
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTA1MDA3MCBTYWx0ZWRfX1gk+JYltK+M8
+ DygLW0mOD+DQkRT3cIKfLw6/lmf+c0JpeETlNklR/Yk+/kcILG5PekV1j9GPGRDxjIQsLmTTAZQ
+ 6613WDfbIwSuV6Eim+g+LaCsURCYBJ2OFhcqRtEqU5Dqn6x6MmZpAB0Lyr8esHZN+XMTxEtZgw9
+ exf1KMFPDDcmcgQ1xCdwtaEA80GXLLktS/sMMckHqhlBfxTUE0a5GZYpyov7AsmXAXGoN13qxPD
+ 7dIl3heqFc2bByOrsP+JU0Hr8p/99ddhdVFFGWls7H+vkWlCoxn4fX619ZnSoufkajtikhHBllR
+ 69XpH/7s4tvQsNN27DkG0U3ttWkxL/scslzXxAea2KrkiE3x5IJzU6+Ubl9ssLYCYVjePTCVgLz
+ tIiIuLiBlt0wkLI0WOe6oogHb29/uEWyQgQZTEfZFTvMEVeZsKf3G17pq49cxYDSdQeW3+1ZLjp
+ S8JDGPgQR+r17YF2TZA==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTA1MDA3MCBTYWx0ZWRfX1ozUU4RVvpGI
+ 6Lth9lZO3YH9esa47BEBKiHNcBs/H+CcZ91iuk0wP/tbXrw1UaZnFs3Wz0tvuxx0mMXhY2fE8Hl
+ 1ltlXCDND+afsZYAasLP12+56MDzI4E=
+X-Authority-Analysis: v=2.4 cv=FIqOVOos c=1 sm=1 tr=0 ts=6aecc34c cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=95rrPwSdFze6aSbNxQIA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-11-05_05,2026-11-04_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610300000 definitions=main-2611050070
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261105_095649_237586_75C9D6ED 
+X-CRM114-Status: GOOD (  15.24  )
+X-Spam-Score: -2.6 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,175 +140,50 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 03.11.2026 02:52, Sasha Levin wrote:
+> Support CONFIG_COVERAGE_MCDC with gcov, using GCC's MC/DC condition
+> coverage instrumentation (-fcondition-coverage), which is available
+> since GCC 14. The data is shown by "gcov --conditions".
+> 
+> Add -fcondition-coverage to the gcov compiler flags when enabled, and
+> disable the warnings about decisions it leaves out, as is done for
+> Clang. Both are gated on the config option to avoid Clang warnings
+> about unknown options.
+> 
+> Also add -fcondition-coverage to CFLAGS_REMOVE in the x86 UML vDSO
+> Makefile to prevent instrumentation of userspace vDSO code.
+> 
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-The -march= compiler flags select both instruction set and tuning for
-a particular CPU, which works well when building a kernel that can only
-run on this one type, but has some counterintuitive effects because it
-is not always clear which models are compatible.
+Looks good, minor comment below.
 
-E.g. building for Geode LX results in a kernel that can work on all on
-all 686-class CPUs but crashes on CPUs without the CMOV instructions.
-Building a kernel for 686 could work on Geode LX and Crusoe but fails
-because of the CPU generation check that detects these as 585-class.
-Similarly, building for Intel Atom produces a 32-bit kernel that uses
-the MOVBE instructions and does not work on any other 32-bit CPU or
-even 64-bit CPUs before Haswell/Excavator.
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
 
-Change the CPU selection to build everything with either -march=i586
-or -march=i686 and make the specific options only change the -mtune=
-parameter where this was previously handled by -march=. Note that
-the only -mtune= options that gcc or clang understand for x86-32
-are i486, pentium, pentiumpro, pentium4, atom, geode, k6 and athlon,
-the other ten are just aliases for one of them.
+[...]
 
-Selecting any 586-class configuration option now produces a kernel that
-works on every supported CPU, while selecting a 686-class configuration
-works on all 686-class CPUs but no 586-class ones.
+> @@ -108,8 +108,8 @@ config COVERAGE_PROFILE_ALL
+>  
+>  config COVERAGE_MCDC
+>  	bool "Measure modified condition/decision coverage (MC/DC)"
+> -	depends on LLVM_COV_KERNEL
+> -	depends on CLANG_VERSION >= 220000 || !WERROR
+> +	depends on LLVM_COV_KERNEL || (GCOV_KERNEL && CC_HAS_CONDITION_COVERAGE)
+> +	depends on !LLVM_COV_KERNEL || CLANG_VERSION >= 220000 || !WERROR
 
-Consequently, the vermagic.h logic can be simplified to just these
-two cases.
+Would it make sense to transform this for readability, i.e.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/x86/Kconfig.cpu            | 13 +++++-------
- arch/x86/Makefile_32.cpu        | 16 +++++++--------
- arch/x86/include/asm/vermagic.h | 36 ++-------------------------------
- 3 files changed, 15 insertions(+), 50 deletions(-)
+depends on !(LLVM_COV_KERNEL && CLANG_VERSION < 220000 && WERROR)
 
-diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
-index 21026e0cb569..121881c4d076 100644
---- a/arch/x86/Kconfig.cpu
-+++ b/arch/x86/Kconfig.cpu
-@@ -6,9 +6,9 @@ choice
- 	default M686
- 	help
- 	  This is the processor type of your CPU. This information is
--	  used for optimizing purposes. In order to compile a kernel
--	  that can run on all supported x86 CPU types (albeit not
--	  optimally fast), you can specify "586" here.
-+	  used to pick between i586-class and i686-class processors,
-+	  as well as to optimize for a particular microarchitecture
-+	  within the two classes.
- 
- 	  Note that the 386 and 486 is no longer supported, this includes
- 	  AMD/Cyrix/Intel 386DX/DXL/SL/SLC/SX, Cyrix/TI 486DLC/DLC2,
-@@ -164,16 +164,13 @@ config MCYRIXIII
- 	  treat this chip as a generic 586. Whilst the CPU is 686 class,
- 	  it lacks the cmov extension which gcc assumes is present when
- 	  generating 686 code.
--	  Note that Nehemiah (Model 9) and above will not boot with this
--	  kernel due to them lacking the 3DNow! instructions used in earlier
--	  incarnations of the CPU.
- 
- config MVIAC3_2
- 	bool "VIA C3-2 (Nehemiah)"
- 	depends on X86_32
- 	help
--	  Select this for a VIA C3 "Nehemiah". Selecting this enables usage
--	  of SSE and tells gcc to treat the CPU as a 686.
-+	  Select this for a VIA C3 "Nehemiah". Selecting tells gcc to treat
-+	  the CPU as a 686.
- 	  Note, this kernel will not boot on older (pre model 9) C3s.
- 
- config MVIAC7
-diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
-index c5aa169b596d..1735a5f95d33 100644
---- a/arch/x86/Makefile_32.cpu
-+++ b/arch/x86/Makefile_32.cpu
-@@ -11,26 +11,26 @@ align		:= -falign-functions=0 -falign-jumps=0 -falign-loops=0
- endif
- 
- cflags-$(CONFIG_M586TSC)	+= -march=i586
--cflags-$(CONFIG_M586MMX)	+= -march=pentium-mmx
-+cflags-$(CONFIG_M586MMX)	+= -march=i586
- cflags-$(CONFIG_M686)		+= -march=i686
- cflags-$(CONFIG_MPENTIUMII)	+= -march=i686 $(call tune,pentium2)
- cflags-$(CONFIG_MPENTIUMIII)	+= -march=i686 $(call tune,pentium3)
- cflags-$(CONFIG_MPENTIUMM)	+= -march=i686 $(call tune,pentium3)
- cflags-$(CONFIG_MPENTIUM4)	+= -march=i686 $(call tune,pentium4)
--cflags-$(CONFIG_MK6)		+= -march=k6
-+cflags-$(CONFIG_MK6)		+= -march=i586 $(call tune,k6)
- # Please note, that patches that add -march=athlon-xp and friends are pointless.
- # They make zero difference whatsosever to performance at this time.
--cflags-$(CONFIG_MK7)		+= -march=athlon
-+cflags-$(CONFIG_MK7)		+= -march=i686 $(call tune,athlon)
- cflags-$(CONFIG_MCRUSOE)	+= -march=i686 $(align)
- cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) $(align)
--cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) $(align)
--cflags-$(CONFIG_MVIAC3_2)	+= $(call cc-option,-march=c3-2,-march=i686)
-+cflags-$(CONFIG_MCYRIXIII)	+= -march=i586 $(call tune,i486) $(align)
-+cflags-$(CONFIG_MVIAC3_2)	+= -march=i686
- cflags-$(CONFIG_MVIAC7)		+= -march=i686
--cflags-$(CONFIG_MATOM)		+= -march=atom
-+cflags-$(CONFIG_MATOM)		+= -march=i686 $(call tune,atom)
- 
- # Geode GX1 support
--cflags-$(CONFIG_MGEODEGX1)	+= -march=pentium-mmx
--cflags-$(CONFIG_MGEODE_LX)	+= $(call cc-option,-march=geode,-march=pentium-mmx)
-+cflags-$(CONFIG_MGEODEGX1)	+= -march=i586 $(call tune,geode)
-+cflags-$(CONFIG_MGEODE_LX)	+= -march=i586 $(call tune,geode)
- # add at the end to overwrite eventual tuning options from earlier
- # cpu entries
- cflags-$(CONFIG_X86_GENERIC) 	+= $(call tune,generic,$(call tune,i686))
-diff --git a/arch/x86/include/asm/vermagic.h b/arch/x86/include/asm/vermagic.h
-index e26061df0c9b..5323ed585bc9 100644
---- a/arch/x86/include/asm/vermagic.h
-+++ b/arch/x86/include/asm/vermagic.h
-@@ -5,42 +5,10 @@
- 
- #ifdef CONFIG_X86_64
- /* X86_64 does not define MODULE_PROC_FAMILY */
--#elif defined CONFIG_M586TSC
--#define MODULE_PROC_FAMILY "586TSC "
--#elif defined CONFIG_M586MMX
--#define MODULE_PROC_FAMILY "586MMX "
--#elif defined CONFIG_MATOM
--#define MODULE_PROC_FAMILY "ATOM "
--#elif defined CONFIG_M686
-+#elif CONFIG_X86_MINIMUM_CPU_FAMILY == 6
- #define MODULE_PROC_FAMILY "686 "
--#elif defined CONFIG_MPENTIUMII
--#define MODULE_PROC_FAMILY "PENTIUMII "
--#elif defined CONFIG_MPENTIUMIII
--#define MODULE_PROC_FAMILY "PENTIUMIII "
--#elif defined CONFIG_MPENTIUMM
--#define MODULE_PROC_FAMILY "PENTIUMM "
--#elif defined CONFIG_MPENTIUM4
--#define MODULE_PROC_FAMILY "PENTIUM4 "
--#elif defined CONFIG_MK6
--#define MODULE_PROC_FAMILY "K6 "
--#elif defined CONFIG_MK7
--#define MODULE_PROC_FAMILY "K7 "
--#elif defined CONFIG_MCRUSOE
--#define MODULE_PROC_FAMILY "CRUSOE "
--#elif defined CONFIG_MEFFICEON
--#define MODULE_PROC_FAMILY "EFFICEON "
--#elif defined CONFIG_MCYRIXIII
--#define MODULE_PROC_FAMILY "CYRIXIII "
--#elif defined CONFIG_MVIAC3_2
--#define MODULE_PROC_FAMILY "VIAC3-2 "
--#elif defined CONFIG_MVIAC7
--#define MODULE_PROC_FAMILY "VIAC7 "
--#elif defined CONFIG_MGEODEGX1
--#define MODULE_PROC_FAMILY "GEODEGX1 "
--#elif defined CONFIG_MGEODE_LX
--#define MODULE_PROC_FAMILY "GEODE "
- #else
--#error unknown processor family
-+#define MODULE_PROC_FAMILY "586 "
- #endif
- 
- #ifdef CONFIG_X86_32
+
 -- 
-2.53.0
-
+Peter Oberparleiter
+Linux on IBM Z Development - IBM Germany R&D
 
