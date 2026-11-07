@@ -2,63 +2,192 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BF4606A326
-	for <linux-um@archiver.kernel.org>; Fri,  6 Nov 2026 18:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95111606A32C
+	for <linux-um@archiver.kernel.org>; Sat,  7 Nov 2026 09:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fq21Xaet
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=ZysTetGe;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=AwkH5jyM;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=JTEoL3TZ;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=rsa-sha256 header.s=susede2_rsa header.b=nvoaJ0mE;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=DZerp02L
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=mKL1MGb7HEavu99oAkkhNbhkK3hGCGcHWTdHqZ1B1gw=; b=fq21XaetS9DWeYeCN55YokX/1D
-	oYtllQNaavSCN9fouM/HNij3B/1HLfCBUZJNl6Px6i+1Fyp2BTqx6Ucsp3P+OAUyNRERTByMrMG6+
-	2PPKi45XmP+sbUkL2BS+ciaxLxDlNU4GsUqzeoX9X8tpJaT4nbFdwSE6/YDhRISksYcW5iw/6vP+3
-	YskKl7K/MYbEU+CPMIDJ6Hc/5OsnfNdKTAX4WYk+sUUdXsySWnJE4p6sC1Hq61C2Pdlbrz6hRvYBR
-	GMZIaSh1w0U+wgTv0/J/RmH/TNrOZwi/7flW3cPzHT3XndCEWkrgPNNe5Smb1RC+X1mBTg/3qRZsz
-	t7GZYc2A==;
+	bh=2pUKIrJSjwOPfwhHfcJFzwrup6gCdhbZ3XgMEjE3Sk8=; b=ZysTetGesnEAsUXQJdrKh2nG1J
+	ZfhKhpbw3iD2Ddz3nQga7HJ+nfOVI72oSIefZxIc33AiirexafGyO61iTgCyo3ql1YdKXNkJfwUgp
+	rQHfTf+mLDNbIokuFX0EaGE08z39OXFU28iAe6Xa4WtLP/xdjeZl7d8086R5pzpPgN/GdA5a3PRUf
+	vRGQEL0UqrcXVRrhaNa7siO2/nmejnASFMViBG0TOLYs6kVbZC8d5u3z6bHOMXzgGWjmelFC74HRh
+	BSkaWN9q0DjT3PFFxuQROKpDsNa5mVNPQFFntmR3PjEKLaoDw/kpKgysG9bTH3PxHiW86hbvIu6vy
+	gY8q1VQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPOYh-0000000DOCy-3111;
-	Fri, 06 Nov 2026 18:21:03 +0000
-Received: from ns3.kot-begemot.co.uk ([31.70.137.218])
+	id 1xPcHg-0000000EOxX-2caO;
+	Sat, 07 Nov 2026 09:00:24 +0000
+Received: from smtp-out2.suse.de ([195.135.223.131])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPOYf-0000000DOCL-1KL8
-	for linux-um@lists.infradead.org;
-	Fri, 06 Nov 2026 18:21:02 +0000
-Received: from [192.168.19.6] (helo=jain.kot-begemot.co.uk)
-	by ns3.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xPOYZ-00000001Bh6-2c4p;
-	Fri, 06 Nov 2026 18:20:55 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xPORN-00000001Fyk-3y03;
-	Fri, 06 Nov 2026 18:20:52 +0000
-From: anton.ivanov@cambridgegreys.com
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at,
-	johannes@sipsolutions.net,
-	mst@redhat.com,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH v2] um: vector: Possible underflow and races fixes
-Date: Fri,  6 Nov 2026 18:19:14 +0000
-Message-ID: <20261106182048.4019719-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.47.3
+	id 1xPcHc-0000000EOwj-1YEE;
+	Sat, 07 Nov 2026 09:00:21 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 630761F74D;
+	Sat,  7 Nov 2026 09:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1794042016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2pUKIrJSjwOPfwhHfcJFzwrup6gCdhbZ3XgMEjE3Sk8=;
+	b=AwkH5jyM7t60XRGf7G1aRSt+1A3cbarzW4z/QkvISjLGNPrA/fY2MleEP5q/AQIm+UOa85
+	wJkleCWTNZsU7rGkzPqgTOEFser1A2ESxcK9o91TyOKwj1NxwYRnab9MqOSmomM2duqzSM
+	4ziRifDlEsg/eNGZ4IfRyZBtKF7+5L4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1794042016;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2pUKIrJSjwOPfwhHfcJFzwrup6gCdhbZ3XgMEjE3Sk8=;
+	b=JTEoL3TZlb1DCclunsyxaCbXUYbLeMKEOnsS7PWO9bNheMA+zCRiSp1byJB7A+sAicRsv4
+	5OXD2QVrenEMHmAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nvoaJ0mE;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=DZerp02L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1794042015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2pUKIrJSjwOPfwhHfcJFzwrup6gCdhbZ3XgMEjE3Sk8=;
+	b=nvoaJ0mEP/zd/0bKFGcoiLmtApr9OQGHZOiEECFWhUq1H30dGD7ZkdmACOX8M4XQGS4NuW
+	oB4Mc0g4OfzK2wWf0UF/9cqPMqA/oflypYavZBONS2BSNW+J/B7gdSUDzy/0qA9b4r1pv4
+	UXAedxogQW7c2CJkDX8oa4Afmn/sre4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1794042015;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2pUKIrJSjwOPfwhHfcJFzwrup6gCdhbZ3XgMEjE3Sk8=;
+	b=DZerp02LRPNT9d5/AecFdQdh+IJlOFhOxwpkpzQNy3DQvQ4hOwgMkZ3mhYuZ46BFCA5rf0
+	CaTL33x7XZsPDhBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0528132C9;
+	Sat,  7 Nov 2026 09:00:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 19k0LZ3o7mq9VwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 07 Nov 2026 09:00:13 +0000
+Date: Sat, 07 Nov 2026 10:00:13 +0100
+Message-ID: <87jympyq1u.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Jann Horn <jannh@google.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Chris Mason <mason@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	NeilBrown <neil@brown.name>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Christoph Hellwig <hch@lst.de>,
+	Greg Kroah-Hartman <gregkh@suse.de>,
+	Joel Granados <joel.granados@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Jan Kara <jack@suse.com>,
+	linux-kernel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	netdev@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	platform-driver-x86@vger.kernel.org,
+	coreteam@netfilter.org,
+	kexec@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	ibm-acpi-devel@lists.sourceforge.net,
+	jfs-discussion@lists.sourceforge.net,
+	linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-cifs@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-sh@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	sparclinux@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-doc@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-atm-general@lists.sourceforge.net,
+	Takashi Iwai <tiwai@suse.de>,
+	linux-input@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-debuggers@vger.kernel.org,
+	Chuck Lever <cel@kernel.org>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 03/51] ALSA: cs46xx: hand the region to the region proc files
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-3-021c84d852e0@kernel.org>
+References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
+	<20261104-work-procfs-bugfixes-v2-3-021c84d852e0@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
 X-Archived-By: <archiver.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-11.01 / 50.00];
+	SUSE_INTERNAL_BYPASS(-9.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:email,suse.de:dkim];
+	R_RATELIMIT(0.00)[to_ip_from(RLij3mi59gqb8x3hiq1dpi8wgt)];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[60];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -11.01
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 630761F74D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261106_102101_380992_37BDE77B 
-X-CRM114-Status: GOOD (  18.10  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261107_010020_710709_218EDD44 
+X-CRM114-Status: GOOD (  11.28  )
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,212 +198,31 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-16.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Wed, 04 Nov 2026 20:16:45 +0100,
+Christian Brauner wrote:
+> 
+> snd_cs46xx_proc_init() stores the chip in the private data of the five
+> region entries, but snd_cs46xx_io_read() reads that back as the region,
+> so a read of /proc/asound/cardN/CS46xx_BA0 and friends copies from
+> whatever sits at the region's offset in struct snd_cs46xx instead of
+> the mapped registers. Store the region.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-Michael S. Tsirkin while working on net virtio checksum hardening
-discovered a number of issues in the uml vector driver. This patch
-addresses these issues.
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-1. Use of header_size, not rx_header_size in some of the runt/underflow
-checks. IPV6 raw socket API for protocols like GRE or L2TPV2 is asymmetric -
-the header format and size in recv and send differ. All rx checks must use
-the rx specific size.
 
-2. virtio_net_header processing was not up to date with all the GSO
-additions and changes and was skipping necessary processing.
+thanks,
 
-3. Missing barrier in vector_send().
-
-4. Incorrect timer destruction in net_close()
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/vector_kern.c       | 47 ++++++++++++++++++-----------
- arch/um/drivers/vector_kern.h       |  2 --
- arch/um/drivers/vector_transports.c |  3 --
- 3 files changed, 29 insertions(+), 23 deletions(-)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e902e78c5ff6..8008278ccee7 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -108,7 +108,7 @@ static void vector_reset_stats(struct vector_private *vp)
- 	/* We reuse the existing queue locks for stats */
- 
- 	/* RX stats are modified with RX head_lock held
--	 * in vector_poll.
-+	 * in vector_poll when using vector RX.
- 	 */
- 
- 	if (vp->rx_queue)
-@@ -119,18 +119,15 @@ static void vector_reset_stats(struct vector_private *vp)
- 	vp->estats.rx_encaps_errors = 0;
- 	vp->estats.sg_ok = 0;
- 	vp->estats.sg_linearized = 0;
--
- 	if (vp->rx_queue)
- 		spin_unlock(&vp->rx_queue->head_lock);
- 
--
- 	/* TX stats are modified with TX head_lock held
--	 * in vector_send.
-+	 * in vector_send when doing vector TX.
- 	 */
- 
- 	if (vp->tx_queue)
- 		spin_lock(&vp->tx_queue->head_lock);
--
- 	vp->estats.tx_timeout_count = 0;
- 	vp->estats.tx_restart_queue = 0;
- 	vp->estats.tx_kicks = 0;
-@@ -138,7 +135,6 @@ static void vector_reset_stats(struct vector_private *vp)
- 	vp->estats.tx_flow_control_xoff = 0;
- 	vp->estats.tx_queue_max = 0;
- 	vp->estats.tx_queue_running_average = 0;
--
- 	if (vp->tx_queue)
- 		spin_unlock(&vp->tx_queue->head_lock);
- 
-@@ -236,6 +232,11 @@ static int get_transport_options(struct arglist *def)
- 		}
- 	}
- 
-+	if (get_depth(def) <= 0) {
-+		vec_rx = 0;
-+		vec_tx = 0;
-+	}
-+
- 	if (get_bpf_flash(def))
- 		result = VECTOR_BPF_FLASH;
- 
-@@ -416,6 +417,7 @@ static int vector_send(struct vector_queue *qi)
- 		/* update queue_depth to current value */
- 		while (atomic_read(&qi->queue_depth) > 0) {
- 			/* Calculate the start of the vector */
-+			smp_rmb();
- 			send_len = atomic_read(&qi->queue_depth);
- 			send_from = qi->mmsg_vector;
- 			send_from += qi->head;
-@@ -872,18 +874,17 @@ static int vector_legacy_rx(struct vector_private *vp)
- 	}
- 
- 	if (skb != NULL) {
--		if (pkt_len > vp->header_size) {
--			if (vp->header_size > 0) {
-+		if (pkt_len > vp->rx_header_size) {
-+			if (vp->rx_header_size > 0) {
- 				header_check = vp->verify_header(
- 					vp->header_rxbuffer, skb, vp);
- 				if (header_check < 0) {
- 					dev_kfree_skb_irq(skb);
- 					vp->dev->stats.rx_dropped++;
--					vp->estats.rx_encaps_errors++;
-+					dev_kfree_skb_irq(skb);
- 					return 0;
- 				}
- 				if (header_check > 0) {
--					vp->estats.rx_csum_offload_good++;
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
-@@ -988,7 +989,7 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
--		if (mmsg_vector->msg_len > vp->header_size) {
-+		if (mmsg_vector->msg_len > vp->rx_header_size) {
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					mmsg_vector->msg_hdr.msg_iov->iov_base,
-@@ -1119,7 +1120,8 @@ static int vector_net_close(struct net_device *dev)
- 	struct vector_private *vp = netdev_priv(dev);
- 
- 	netif_stop_queue(dev);
--	timer_delete(&vp->tl);
-+	if (vp->options & VECTOR_TX)
-+		timer_shutdown_sync(&vp->tl);
- 
- 	vp->opened = false;
- 
-@@ -1250,9 +1252,13 @@ static int vector_net_open(struct net_device *dev)
- 		if (vp->header_txbuffer == NULL)
- 			goto out_close;
- 	}
-+	if ((vp->options & (VECTOR_TX | VECTOR_RX)) &&
-+			(get_depth(vp->parsed) > (NAPI_POLL_WEIGHT << 2)))
-+		netif_napi_add_weight(vp->dev, &vp->napi, vector_poll,
-+				      get_depth(vp->parsed));
-+	else
-+		netif_napi_add_weight(vp->dev, &vp->napi, vector_poll, NAPI_POLL_WEIGHT);
- 
--	netif_napi_add_weight(vp->dev, &vp->napi, vector_poll,
--			      get_depth(vp->parsed));
- 	napi_enable(&vp->napi);
- 
- 	/* READ IRQ */
-@@ -1310,6 +1316,7 @@ static int vector_net_open(struct net_device *dev)
- 
- 	if ((vp->options & VECTOR_TX) != 0)
- 		add_timer(&vp->tl);
-+
- 	return 0;
- out_close:
- 	vector_net_close(dev);
-@@ -1477,11 +1484,15 @@ static void vector_get_ethtool_stats(struct net_device *dev,
- 	 * to date.
- 	 */
- 
--	spin_lock(&vp->tx_queue->head_lock);
--	spin_lock(&vp->rx_queue->head_lock);
-+	if (vp->tx_queue)
-+		spin_lock(&vp->tx_queue->head_lock);
-+	if (vp->rx_queue)
-+		spin_lock(&vp->rx_queue->head_lock);
- 	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
--	spin_unlock(&vp->rx_queue->head_lock);
--	spin_unlock(&vp->tx_queue->head_lock);
-+	if (vp->rx_queue)
-+		spin_unlock(&vp->rx_queue->head_lock);
-+	if (vp->tx_queue)
-+		spin_unlock(&vp->tx_queue->head_lock);
- }
- 
- static int vector_get_coalesce(struct net_device *netdev,
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index 417834793658..5f0ceb80779d 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -116,8 +116,6 @@ struct vector_private {
- 	int (*verify_header)(uint8_t *header,
- 		struct sk_buff *skb, struct vector_private *vp);
- 
--	spinlock_t stats_lock;
--
- 	bool rexmit_scheduled;
- 	bool opened;
- 	bool in_write_poll;
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index e1fb2a76fdff..786f6badc52d 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -206,9 +206,6 @@ static int raw_verify_header(
- 				GSO_ERROR
- 		);
- 	}
--	if ((vheader->flags & VIRTIO_NET_HDR_F_DATA_VALID) > 0)
--		return 1;
--
- 	skb_set_network_header(skb, ETH_HLEN);
- 	virtio_net_hdr_to_skb(skb, vheader, virtio_legacy_is_little_endian());
- 	return 0;
--- 
-2.47.3
-
+Takashi
 
