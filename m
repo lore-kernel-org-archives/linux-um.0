@@ -2,118 +2,88 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAC0606A336
-	for <linux-um@archiver.kernel.org>; Sat,  7 Nov 2026 16:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1FE606A321
+	for <linux-um@archiver.kernel.org>; Sun,  8 Nov 2026 15:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=uxbJUzee;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d8yIPgkH
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=0cqFf9EO;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZJmK8oUf
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=; b=uxbJUzeeSwsLvj
-	QNwlNAW4at7cqY61Z5J+l8QgKwVKP2Oz7NrSCWw1TgFnOgjJo6dJD86BuJ/6T0yzPrQxf3uIrgYNk
-	IHB1Req7uDpPzIBm3as1VLA6t6gJiVtGCUKskWDPqw7LjsZNQ1oW1MvyO4is4hbSUUoo40ZXgRRms
-	IeR3P04PyE/4MaHv8OLBJKI6jC1eCsbgBeKCR9zVcvaP+/CAxnhinQFzB9kcQKrqK0emMRyT591gR
-	89pPheIHqW1ewyi4XHH45xjHlBwe0E5s3vRPiMoN52Q8Lhb71X0UoLg7SzpMuROM+A1we/3dagcdz
-	mY8p9ixdCs4u+3kvHMCg==;
+	List-Owner; bh=5GBHjUTFcUUKHRDe6Uz5ToMncS7KWKXWOvxbmPEhwVE=; b=0cqFf9EOhPg9Up
+	huj1S4y72d3hH4gfqUWK+W+8lCFAmhUYvPyNHQ9oh14jWtcmFywWkZJ0hfpX2rdOq1MhD9PQT667E
+	QWz7byILdjkX9dnof6JXuOItOydOF+qtHcNbBA0LLCbppzml+dNPyOD2beReUj5WrfScgfs7lYx5y
+	N/m2bOv0v4leSe38qP3/OFSJSHaIjdTMwl4u0CKCE0i0mST5KhnaE08FPXqy3E7DJ1bQXQXyyn5aL
+	kcMP8VUeXdPnIWzMQW03T7dCCEkcRZKpmXcR0uGQc1NSWfZxJ4g/dM1yoGFaunerp5brviuTGvFx0
+	GBj79x8N877v+74L0/pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPjYd-0000000F2Bt-2kWz;
-	Sat, 07 Nov 2026 16:46:23 +0000
+	id 1xQ5E1-0000000GMiM-0E0t;
+	Sun, 08 Nov 2026 15:54:33 +0000
 Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xPjYc-0000000F2BE-1Mpd
+	id 1xQ5Dz-0000000GMiG-0pDS
 	for linux-um@lists.infradead.org;
-	Sat, 07 Nov 2026 16:46:22 +0000
+	Sun, 08 Nov 2026 15:54:31 +0000
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 78A9C60D42;
-	Sat,  7 Nov 2026 16:46:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4077E1F008A4;
-	Sat,  7 Nov 2026 16:46:20 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 6A27160008;
+	Sun,  8 Nov 2026 15:54:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041841F0089F;
+	Sun,  8 Nov 2026 15:54:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794069981;
-	bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=d8yIPgkH6TUg6Xjvbp1GuMQux6u0MKmdQeb4+5MYqtqzGdrQplV1hB5nlNkFOfe/o
-	 mdxyrTpo1AD8LJsdAfk7umrK2hjD5YezaKqdvRiYIxS+Tg2D99O2Pgab5PkMJ4yb/C
-	 GlBx58XhbCsnzSHi10Moxtb96yir5u5wjc/UwdATnAKDoR1yJEtZSdsMDDJDQ8JwUA
-	 iyV8cBKr3nKRA33dw/sG4GB5ZwB3xl9BSDy4MTE5rJJxANBHJ3jeYeuHYDVxrfonN1
-	 4kkeVnQ5duc0cwReYUWCg8CsEFjHDE4/lXrtneIvM6UcQvi4e3En8m5uB+d9ztvg2X
-	 Oj0H+4HupSpIw==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 8E1DEF40067;
-	Sat,  7 Nov 2026 11:46:19 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Sat, 07 Nov 2026 11:46:19 -0500
-X-ME-Sender: <xms:21Xvams7wVEmHspjWmbwhLpib2xNIptoVYE-80X8WqZqZcb1XPT-CA>
-    <xme:21XvamRC29Zg9ykNiW0vwrANU0AC0j8D3WACLizfxgWZ2OLmopVNcj-qyZCZTBqLn
-    FnUPDv24PUXWdCZGoMgnY4GISxXuJoqj_FJTWVyN8AgQyPiOZVj9Iah>
-X-ME-Proxy-Cause: dmFkZTEtlYS0+TY9rHJo1vCDNDBgG/0TlQu1ZgAaexztyT5e7mSb39t8Qfa0vTeatlfpwP
-    5ATotugI+S69Aq5UXpsB8wdUtjDvDqFpA717Gwij4u69sZUh6KSv9WWk6Jq//TgMNLfNVi
-    Uz7LSIH08qzFkhYYh9/35LIN1zJWwwarlCDU1iQg4wt21opJj09VkTQ37+xtOv284TX8B8
-    yl81LC5xmVZyo6A9GjLU5A0F5I2dYlaICl6rU5kYsMelZGpwWY/AOYhI+JMNgaonKgFQaK
-    ku+gQcY5aJl2LKRp0R1zioHZwwCKpV/Rgf4D5rEiKrG8xxXM/BULju0eld0dqqIZyyKUfJ
-    GW19ru42mbqsCpPSyXWqDBJxl5bN5OUlD62byk006CGbw520QKU/yBNHckj8/a7Aw/pswE
-    cEiGWvUnIlIDfqqhyBtbUxKdieVFtOg/Nh7ULYvIP/0NmKpXY6WcXU9anidEQ88SbIQjDc
-    p8Yn7T3r8Bo4iwmbKTgS1vVIcIOOKv75MyWqZv/+HCroxzEXbbFU7dyYNipmhzrf5va650
-    CqAuf2hfcDqsbABPPTHxkCEDCl/Z7jZw9/P1SXCFxyI0OJaeowmrBr44zHzsSCW7ueEBOE
-    v4mcadw/NREalORTbhxI6N8vjS1sruRGJ2ATEo0TnxHIE3AAjUR+ONXu5PSg
-X-ME-Proxy: <xmx:21XvanTCUxiRZL_4tn_RpzN8CzyhB8rLiSKq-UOIyotAbmuEjI7sGA>
-    <xmx:21XvaurCk3dCumlVKotKWDf68V8MDwwzlx-dEeK7pWGM9HqcR4oZkQ>
-    <xmx:21XvavRZiOL5frHmdBkAVeJ6cjpU89f7VYn1Ikw-RN984COqc-2ICA>
-    <xmx:21XvaoJKJLPj7VOMrYps6zuTHuKL8ZgDDK4Gr4RreYxXio5VOww0yA>
-    <xmx:21Xvag3Tq78e8w_19g2SFkvau64M8X7d5PUoh2FKftcFG01vhemSEsb1>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 5E62D782738; Sat,  7 Nov 2026 11:46:19 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=k20260515; t=1794153270;
+	bh=5GBHjUTFcUUKHRDe6Uz5ToMncS7KWKXWOvxbmPEhwVE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ZJmK8oUfB5GK4SbMw3dQ4gH4wjlNa4ufA6yaxygD3Pbs5aQPHdlk4heug6b52tepR
+	 HDxpJJlU8tRKZUgzaTxtMt5yfwa6BJUtuObFCmPlQp5ro1G/aANuVZyCqpQyvuACBd
+	 xQCn+U+Ijo6zuGkJ2P84IAnkz63BANh0VFfve8TpGzqv/J3WeIZpC75uiyvmv2YXa8
+	 TsQJxAJxz8iLLP+w6S1PYYF6XGDXOJq7Yspz2c9uANiujJOPDZ53koYaa7XAmvDESh
+	 qfV16MLzWmPUrgefTB0jcFCI8f2brVRUadBdyxsFQ5aUyC1DtJHF8qO9VpNcFrUyj0
+	 FSoBfoNzq3IQw==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: achill@achill.org,
+	akpm@linux-foundation.org,
+	broonie@kernel.org,
+	conor@kernel.org,
+	f.fainelli@gmail.com,
+	hargar@microsoft.com,
+	jonathanh@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	lkft-triage@lists.linaro.org,
+	patches@kernelci.org,
+	patches@lists.linux.dev,
+	pavel@nabladev.com,
+	rwarsow@gmx.de,
+	shuah@kernel.org,
+	sr@sladewatkins.com,
+	stable@vger.kernel.org,
+	sudipm.mukherjee@gmail.com,
+	torvalds@linux-foundation.org,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Carlos Maiolino <cem@kernel.org>,
+	linux-xfs@vger.kernel.org,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH 6.18 000/869] 6.18.63-rc1 review
+Date: Sun,  8 Nov 2026 16:54:16 +0100
+Message-ID: <20261108155416.119775-1-ojeda@kernel.org>
+In-Reply-To: <20261107134852.069646174@linuxfoundation.org>
+References: <20261107134852.069646174@linuxfoundation.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AjxZksNfZZQV
-Date: Sat, 07 Nov 2026 11:45:59 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
- "Jann Horn" <jannh@google.com>, "Josef Bacik" <josef@toxicpanda.com>,
- "Chris Mason" <mason@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
- NeilBrown <neil@brown.name>, "Eric Dumazet" <edumazet@kernel.org>,
- "Thomas Gleixner" <tglx@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Jonathan Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>,
- "Greg Kroah-Hartman" <gregkh@suse.de>,
- "Joel Granados" <joel.granados@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>,
- linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-s390@vger.kernel.org,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
- "Linuxppc Dev" <linuxppc-dev@lists.ozlabs.org>, netdev@vger.kernel.org,
- ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
- coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
- jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org,
- linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
- samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
- "Takashi Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org
-Message-Id: <a1e2d05f-08c6-41ac-a8f9-6985ee00dc97@app.fastmail.com>
-In-Reply-To: <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
-References: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
- <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
-Subject: Re: [PATCH RESEND v2 10/13] SUNRPC: let procfs own the wait queue of the
- procfs channel files
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,30 +97,51 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=4.0.1
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-
-
-On Wed, Nov 4, 2026, at 4:13 PM, Christian Brauner wrote:
-> cache_poll() sleeps the poller on queue_wait, which went back to being
-> a static queue so that a poll() on a procfs channel file can't be left
-> on the queue of a cache_detail that its network namespace freed. procfs
-> owns the queue poll() uses now and it outlives the file, so the procfs
-> channel files leave the poll_wait() to procfs and an upcall wakes their
-> pollers through proc_poll_notify(). The channel entry is remembered in
-> the cache_detail for that and forgotten before the entries are removed.
-> The rpc_pipefs files keep sleeping on queue_wait, procfs has nothing to
-> do with them.
+On Sat, 07 Nov 2026 08:44:42 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 >
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
-> ---
+> This is the start of the stable review cycle for the 6.18.63 release.
+> There are 869 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 09 Nov 2026 13:46:08 +0000.
+> Anything received after that time might be too late.
 
-Acked-by: Chuck Lever <cel@kernel.org>
+Boot-tested under QEMU for Rust x86_64, arm64 and riscv64; built-tested
+for loongarch64 and arm32:
 
+Tested-by: Miguel Ojeda <ojeda@kernel.org>
 
--- 
-Chuck Lever (Come to NFS bake-a-thon! https://nfsv4bat.org)
+In loongarch64, I am seeing again the XFS issue:
+
+  https://lore.kernel.org/stable/20261106071743.90363-1-ojeda@kernel.org/
+
+Cc: Carlos Maiolino <cem@kernel.org>
+Cc: linux-xfs@vger.kernel.org
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: loongarch@lists.linux.dev
+
+For completeness, for UML I have been seeing (I will skip reporting these):
+
+  arch/um/drivers/ubd_kern.c:780:13: warning: stack frame size (1480) exceeds limit (1024) in 'ubd_device_release' [-Wframe-larger-than]
+
+  lib/kunit/test.c:684:5: warning: stack frame size (1208) exceeds limit (1024) in 'kunit_run_tests' [-Wframe-larger-than]
+
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+
+Thanks!
+
+Cheers,
+Miguel
 
