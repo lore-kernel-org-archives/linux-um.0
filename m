@@ -2,83 +2,77 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448B9606A333
-	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 11:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148E2606A31C
+	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 12:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Y5hAszsr;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iU5O51DC
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=eNlSHGi4;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256 header.s=casper.20170209 header.b=O4tfkQ6A
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=GTe3rVqqBFubJwfvXPNDDRZX+sidHXepwnZzWomDy5A=; b=Y5hAszsr9RQQAppaIfe8HrVJpN
-	1H1NRC2Llp5cvrrmXsc8CvAkjFKQF2+FTC6AcuqFrVIuTTPA/73haU6Qqty9o5PeJHY2bmO2Bdszu
-	i+SeBeDScI2bOa9tJSPv5jy0XAkQSyvseOX0XUhuUfGn1oSresXb+rN2eebgzlZiDdrBnnZfTosze
-	m5x5HlWJM7WvvCL1RwI0+UBLwl9QzQzNpCOvLtCwuYYnUoCQEJip21ENGWOtqiJKm6mOpaHcp8r48
-	zypTfJCEDB+VIcIgJ+jyE4qlDnhc/EN2xkUzSagbTPG27KKgRc0bF1Q7QYXy9eEmLDjJX+31dWHTc
-	X7/uUtVA==;
+	bh=a8E3/iR/a7duyeOibRsBSGVysFs99fc4KMcpjzN9cYk=; b=eNlSHGi4S3Z6B6oaQzIUs17UnD
+	kJ1+2dbsJ+WxshqB9E6XN/qszCNf0nWHwY0nZOYXiJXvDN8q3pLQBUOBPMLU+6uyybMQSYfBTmlEj
+	yliBFMISrM38AmmyOLkj0RhgxDc4fbnbGNFKA6QsAXG6SXURDfpy1U8UkVKE1kzFnvmTrLu63e7HR
+	wK9orNjUQBIIEcKc+vrgLIDQPCqYALJcl+iDPdsvcqw14p2Tz5Xft7OlImal/fHETVEovej+X2KNe
+	/6L7bd7OT0sxXKOl6t9GHvnrfOxextcoda5TqqJpPaijIMTFO+Vql0ixmIQClGYX/1C3+G984i4+O
+	3Y3QU6fA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQNXJ-00000000WHk-0HCv;
-	Mon, 09 Nov 2026 11:27:41 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1xQOUu-00000000gNJ-0nCg;
+	Mon, 09 Nov 2026 12:29:16 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQNXF-00000000WHA-2z8h;
-	Mon, 09 Nov 2026 11:27:37 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CF2E9630DB;
-	Mon,  9 Nov 2026 11:27:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EA41F0089F;
-	Mon,  9 Nov 2026 11:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794223656;
-	bh=GTe3rVqqBFubJwfvXPNDDRZX+sidHXepwnZzWomDy5A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=iU5O51DC6zVVQKzDHuys9tIxjfbSOhYw8z0UcE86pb//wkXavh32S2N8S2PUurU2A
-	 o1E3RopKG7W94xtmWo25LA834OkIsoplK5Zc5sWRxNqoMBKXFQxzncUeAVAHVqzYUN
-	 x0xzl99BebTVjgItzYyFM18S+rvSgi3xMyTZJ/jJZ69X0Gf56Vq2vszIAP9EEsAUq5
-	 YP1A5SHoyPmQVAQUq/DaV61yYmuj4yVaaeC+HIcZMJhadQiWUxN4AW86j7fp4xdZK/
-	 SKtdAofdOgM6AVAC0cEZ3+8Z/6By8LpM/kvwzBv9E4RtCHAt3TdDxZIlKuxADBPb0I
-	 863RWmyUQ6DWA==
-Date: Mon, 9 Nov 2026 12:27:22 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Eric Dumazet <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
-	Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados <joel.granados@kernel.org>, 
-	Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-um@lists.infradead.org, 
-	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, 
-	ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org, coreteam@netfilter.org, 
-	kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	ibm-acpi-devel@lists.sourceforge.net, jfs-discussion@lists.sourceforge.net, 
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
-	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, 
-	sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
-	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, 
-	Chuck Lever <cel@kernel.org>
-Subject: Re: [PATCH RESEND v2 07/23] proc: let procfs own the seq_file of
- seq_file entries
-Message-ID: <20261109-atemberaubend-begabung-bedienen-85aade0f99b4@brauner>
-References: <20261104-work-procfs-core-v2-0-76ace653a773@kernel.org>
- <20261104-work-procfs-core-v2-7-76ace653a773@kernel.org>
- <8A21EE2A-F392-40B7-9152-CBC440FDDA70@kernel.org>
+	id 1xQOUs-00000000gN2-1zt8
+	for linux-um@bombadil.infradead.org;
+	Mon, 09 Nov 2026 12:29:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=a8E3/iR/a7duyeOibRsBSGVysFs99fc4KMcpjzN9cYk=; b=O4tfkQ6AbDAzvKyE5zaAjBHE6n
+	jTJOZEc5PTA7g0izZDHyZ4TgazCd42btIlSVcCRjSsw7v6qOS1c7jxbmpZX/TF3GzJZwz+jwAt61q
+	qzlkeO7IHtMybsm6Ut5RgUPR2z8n/wQjTG4+evvl5CyIBaCY+AXr6xFnqNMVKrCZJcK9v0RN9eCoB
+	a8z9jhqb/w7OLBuXXscrYQ9yeqExpaqmeYQy8c96E3JsSh1oWRJSaVbOjocXJqJczDxZ/Q/p6NmUf
+	4a5moEyEQOqv23e3ldCeGGQ/Mb8EaiCVwU91/c389n37CE4/JkG5AZr7sz5pKbulPmmK6pS49D5mu
+	X6JrMfaw==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xQOUn-0000000EJ1J-3fw0;
+	Mon, 09 Nov 2026 12:29:10 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 68D7A300910; Mon, 09 Nov 2026 13:29:08 +0100 (CET)
+Date: Mon, 9 Nov 2026 13:29:08 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: =?iso-8859-1?Q?Lu=EDs?= Mendes <luis.p.mendes@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, x86@kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-um@lists.infradead.org
+Subject: Re: Some observations regarding the ongoing x86-32 CPU configuration
+ cleanups
+Message-ID: <20261109122908.GU2668804@noisy.programming.kicks-ass.net>
+References: <CAEzXK1pdhEyOgQ4owkeRmyEP6Pyfhk=OsMHdzU4xwNMCmCsd6g@mail.gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8A21EE2A-F392-40B7-9152-CBC440FDDA70@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEzXK1pdhEyOgQ4owkeRmyEP6Pyfhk=OsMHdzU4xwNMCmCsd6g@mail.gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,41 +83,56 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Sat, Nov 07, 2026 at 08:10:28AM -0800, Kees Cook wrote:
-> Please use the new style typed allocation calls for objects:
+On Mon, Nov 09, 2026 at 10:34:54AM +0000, Luís Mendes wrote:
+> Hi everyone,
 > 
-> ops = kmalloc_obj(*ops);
+> First of all i would like to say that i both admire and appreciate all
+> your hard work with this lovely OS. I do understand that maintaining
+> some systems can cause additional burden on maintenance, but there are
+> some aspects that i would like you to reconsider.
 > 
-> (This happened to jump out at me, but please check the other patches for this pattern.)
+> I am writing because I  believe that some aspects have not been taking
+> into consideration regarding the removal of the 80486 32-bit support
+> from the kernel, namely:
+> - There is this active Linux distribution:https://tinycorelinnux.net/
+> and the Damn Smal Linux DSL (https://damnsmalllinux.org).
+> - There are also these CPUs: https://www.vortex86.com/products/Vortex86EX
+> - There may be only a few vintage 486 systems still working, but there
+> are also other new x86 CPUs systems, especially in FPGAs like the
+> https://github.com/MiSTer-devel/ao486_MiSTer which is a 486SX core
+> that operates at 90MHz and can use up to 256MB RAM memory. There are
+> plans to update this CPU IP core to become a full 486DX core, by
+> adding a FPU unit to it and would turn this into a usable Desktop
+> system with tineycorelinux. There is a considerable retro-computing
+> community that utilizes the AO486 core on the MiSTer FPGA platform.
+> There is even a Voodoo 3dfx accelerator card:
+> https://github.com/victor-fisyuk/voodoo-fpga-public.
+> 
+> Overall i just want to inform you that some new x86 32-bit systems are
+> still being sold brand new and can be utilized with Linux. I would
+> like that you consider this with regard to how much 80486 support
+> should be removed from Linux.
+> 
+> Personally i do have plans to extend the AO486 core to have the FPU
+> and would like to be able to run a modern Linux on it. It would have
+> entertainment and educational applications. With tinycoreinux it can
+> have a usable desktop.
 
-Done, there are 5 of them in total:
+I don't realistically see 486 support coming back -- the thing doesn't
+even have TSC. Getting rid of all the horrible (and completely untested)
+code for no-tsc alone was worth deleting 486 support for.
 
-proc: resume readdir after the last name it returned
--		cursor = kmalloc(sizeof(*cursor), GFP_KERNEL_ACCOUNT);
-+		cursor = kmalloc_obj(*cursor, GFP_KERNEL_ACCOUNT);
+The other option is you actually implementing RDTSC, CPUID (and possibly
+CMPXCHG8B) on your FPGA.  I'm sure that's actually a *LOT* simpler than
+doing i487 support.
 
-proc: sysctl: resume readdir after the last name it returned
--		cursor = kmalloc(sizeof(*cursor), GFP_KERNEL_ACCOUNT);
-+		cursor = kmalloc_obj(*cursor, GFP_KERNEL_ACCOUNT);
-
-proc: keep the open files of an entry in an open node
--		dp->open = kzalloc(sizeof(*dp->open), GFP_KERNEL);
-+		dp->open = kzalloc_obj(*dp->open);
-
-proc: own the wait queue of an entry with a ->proc_poll()
--	on = kzalloc(sizeof(*on), GFP_KERNEL);
-+	on = kzalloc_obj(*on);
-
-proc: let procfs own the seq_file of seq_file entries
--	ops = kmalloc(sizeof(*ops), GFP_KERNEL);
-+	ops = kmalloc_obj(*ops);
-
--- 
+Just add whatever instructions are required to get the bare minimal
+32bit build working.
 
