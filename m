@@ -2,79 +2,127 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEE2606A330
-	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 18:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2691F60A2601
+	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 21:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=j2FOARll;
-	dkim=pass (2048-bit key, unprotected) header.d=zytor.com header.i=@zytor.com header.a=rsa-sha256 header.s=2026102901 header.b=Ga4QCJmN
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=P7QrpX1p;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=o07L0xCJ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
 	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=2oUG5RL4oF9Bagom1950zIho2zdDaGXSCPdxbH30cMs=; b=j2FOARll8KhimG
-	qt1DwyxVEupleEaD5bCEHCqjscIdsHVP+itqYBDYtZOThlDN1rfYPwWn7SuL4Z919e3AOHzqsK2eB
-	pECt5MM8OTEVfOGtzwKX/J1v2vYkgLko1QhS50ypton/rwLKeuTZnuqkBvdnA/pwK/cA9CGEulsHW
-	xXEb7qNETtJOr34jsfGgG568xmoHDkAraOgEtPTuN8nkQkr7wt5Foxbv7TBS+QCuNS9q7cKgOYr48
-	85BtHG5cv13ri4fNi16N16TT/zxhWqVYsFld+NDO8J5n/7sUNuzjKZfEwDglhd/4WboG16U7stq7O
-	gv0oCMhwbMfx9BgkhKug==;
+	List-Owner; bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=; b=P7QrpX1pnqEA1v
+	qa6yonq1Vh/6MoydxYygqMLC/KQRr0uF6BUtnKh4XCwSZFtZxXB/I7P3Vb6s1o+UV7LkyRofc4wue
+	ef/0RvquGuwZ18PpyDiZ9NlWPeKVxpGU8Nyvo7xU64oHUQo0NvZudcfZ/G9GipAVv0i3hW9U6tyfu
+	lxOksSt+z54UBuW8JpyqHuEzg3gztV03HTgMxJAbDQIbLzsNqNMsNYJvkWKtKg7M13fmRhIlfA58r
+	75ZDXmUb3J0YKooOnX9MioFZfYDJR9rYtdaEdVObq45QP531teSKS9cT76CrmfMv5MGB6FVnGFDOY
+	x9dCdCTHPtilDTpfiTrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQUAd-00000001TR2-3mXI;
-	Mon, 09 Nov 2026 18:32:43 +0000
-Received: from terminus.zytor.com ([2607:7c80:54:3::136] helo=mail.zytor.com)
+	id 1xQXBn-00000001oA1-1Uzl;
+	Mon, 09 Nov 2026 21:46:07 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQUAa-00000001TQU-2w7R
+	id 1xQXBk-00000001o8y-1rlD
 	for linux-um@lists.infradead.org;
-	Mon, 09 Nov 2026 18:32:42 +0000
-Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 6A9IW9cc1598047
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 9 Nov 2026 10:32:10 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 6A9IW9cc1598047
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026102901; t=1794249132;
-	bh=2oUG5RL4oF9Bagom1950zIho2zdDaGXSCPdxbH30cMs=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Ga4QCJmNe8Bep6WEaJPZUYp85meRO157IBBvHPDLv55L3PLMGiBIyHW4w+pGgFjs1
-	 2Gf7H44LmrswwhYxVyMwLgxchbBhQ+UXDPi5Yh4mpiy7NsO62QPWJGIoRac/HfpC+p
-	 VE1kqXgsezZlWqho62sLvw9hQ1KZYxw7wQUtIfR1gLGvOLdXEjN3BH+b/N3buqPjck
-	 JxyZqRbuAxD4uLzj8kHywBfQolcfYS080GS1ssHhJ00nCQGWI1ruY56DMDITuvFe13
-	 HtAklBbXjRpyVliI5ss8a5EYT7XH1QfCMX1loJMEZzUd9sVKQwd4Qsg/XOxHFm3me8
-	 TYS4q4In0jscw==
-Date: Mon, 09 Nov 2026 10:32:04 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-CC: Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Anthony L Nguyen <anthony.l.nguyen@intel.com>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH 7/7] x86: simplify 32-bit instruction set selection
-User-Agent: K-9 Mail for Android
-In-Reply-To: <eaeec453-892d-4ddb-9d42-0510db8b9c88@app.fastmail.com>
-References: <20261105163440.2381661-1-arnd@kernel.org> <20261105163440.2381661-8-arnd@kernel.org> <4207CA81-6023-4DFC-8FBF-2C5C8C036CCC@zytor.com> <eaeec453-892d-4ddb-9d42-0510db8b9c88@app.fastmail.com>
-Message-ID: <D58976E3-E2A3-4577-BC64-5845CF4F82C6@zytor.com>
+	Mon, 09 Nov 2026 21:46:06 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-490c1d337d8so966208f8f.2
+        for <linux-um@lists.infradead.org>; Mon, 09 Nov 2026 13:46:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794260761; x=1794865561; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=;
+        b=o07L0xCJXTJS6Bd5vOuuGkxzEl0qWE+4Nio/j68J63Gi9fJrnyaEVtr1mcqrAnXslG
+         PFjfBaSlKZUyetHJ5AH70UFjlD4445+ZtJnxH8JRfspj0Bi1CGR0AcG1t7ADq5NShvXt
+         96GVua+kRzYWkz+duTF53/o1nQKxgO+q10BEXy9f8i7NEclk4cUSW4IDGCndCdQIZAaS
+         FlPVbPuGp5AMnCDehFdbRBjR5OJVkM/nBpB5MfYHNcHSp7FdHFYCaVKyX/zDHUJ0jfj+
+         JY/WkWLli554o4uODYR3Oxh+fRRJYDOfBJarmoeTg2h2BjQuD49XzzMLmHc4Uac0LHz5
+         E5dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794260761; x=1794865561;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=;
+        b=yaQ0uDJhDl94Fms0IMXFRGKoyHcJYNkDMgy6LG0RrhLxOV4YnShxKKUyw5cQjpkbtq
+         5pXnIMdFjI66jeIPC4liIxIY6ZzxnToxIL1xAmmWYbjO6Hd+l4qnS0DtF7PS1cODnqAr
+         B8KfnoyBhEwVc4bqnF6O6BhZ8F2EMF6p0nZL9y6DnmkSKgFQuUN+VU9dJg/157UZfRmg
+         LdYF0zg8qkg9iEWFkWXp+mFiPqBcsJKIgsGtBQWrwlQhSHfaDw/90FXTu3QrUyG4X/HF
+         ZyiZD37/W96u6YssDw/fx6FYdlqwD/bMGRuSSiJdaDZs2GXjG6usznFtQSNRT1eqaFeO
+         LOTw==
+X-Forwarded-Encrypted: i=1; AL+hErHcziCjtYCX8V7psh+Hb2LFe5obb0e4MRR8fkcC+XL2ZmPG6Zo1w9ezUeUlBcOhV3YHwVqMnh1Htw==@lists.infradead.org
+X-Gm-Message-State: APuU4Z8XEe0CnYo8JouSWkKhtfSi7ryAFBKTIPbp2SOqrIImR3pKutwQ
+	i1u09nVXZUEc7ScsHfKYJZyobASNHganuexaR7cYOn+lubY2hE3HFgDm
+X-Gm-Gg: AYBFou2chP9fLBM2lDEPkfluP/McdZEM/wCLvdd6W6hBgsgS+JzLt3JQhtDTfSyjHbR
+	U2PZqO3oKk8uqYIkxO/Er6Un2PbR4D4jMhiO60nq8XMMVVCQrazTmuNYcLSkP7Bu54JfqJw/2Cy
+	VP/bXBrim90+hJ7PN/xHI8jxLq9eHAoOXJSLwL2uuxaHeFwon1Ab8tf29LuuWVOfffLS6GCXAJu
+	2HqnkLHWsElWNKMuOJnUqyLqb6zkAC7fRgDPniIeXD1hl9ck1ukk4c50RXPMk/kptFkbNtYCsbh
+	+FHfMm9qmnXUKHQHsQpouj2ZkyE/gzMfNMDJX/aZViGiiHW3B2dtCInt/SFZeayRHrPfcmbRPrK
+	lrIXH765GqbwOQsU4Y+y5yoALmik6xGeEFtFLWSznEPnywhxxyJcjqcvToRiX1eKIr0bcdh2xaK
+	/6p1Oq93VHSYVSxGEUwWX1bl1RDR7jU+S8q/I+Ls1Zt/3ZsuBzjEJVsZKICwknSCQ2mj1IYIu+U
+	/3WcZYJZZTn7u+zFIVQMJ9tIf4eCteZYD95LG4EYvBRqtG9O07is4xjODn3DC0spLdGf6xUSobj
+	M3WpJOizN5DtNZMtZoM18dcHiM14I4SaV7eYdKSAAhcH1Jl1PfxTz04gc5dOWYMZaw==
+X-Received: by 2002:a05:6000:288d:b0:48e:25e1:5eb8 with SMTP id ffacd0b85a97d-4982b28aa42mr1487213f8f.3.1794260760763;
+        Mon, 09 Nov 2026 13:46:00 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4983585c4fdsm1213644f8f.10.2026.11.09.13.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2026 13:46:00 -0800 (PST)
+Date: Mon, 9 Nov 2026 21:45:58 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Christian Brauner <brauner@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, linux-fsdevel@vger.kernel.org, Linus Torvalds
+ <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, Josef Bacik
+ <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, Jeff Layton
+ <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet
+ <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph
+ Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados
+ <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara
+ <jack@suse.cz>, Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ netdev@vger.kernel.org, ntfs3@lists.linux.dev,
+ platform-driver-x86@vger.kernel.org, coreteam@netfilter.org,
+ kexec@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-mm@kvack.org, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
+ samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
+ Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, Chuck Lever
+ <cel@kernel.org>
+Subject: Re: [PATCH RESEND v2 14/23] proc: let procfs copy in writes before
+ pinning the entry
+Message-ID: <20261109214558.0d9d5228@pumpkin>
+In-Reply-To: <alpine.DEB.2.21.2611090504170.17804@angie.orcam.me.uk>
+References: <20261104-work-procfs-core-v2-14-76ace653a773@kernel.org>
+	<CAMuHMdVfakapgBK6TBhO1iWX8qzvLDk8jzRS=t2MVa5G=MCUeg@mail.gmail.com>
+	<20261107-akteur-gemieden-eckdaten-21304d085e35@brauner>
+	<20261108185953.28054fb3@pumpkin>
+	<alpine.DEB.2.21.2611090504170.17804@angie.orcam.me.uk>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_103240_755412_9E49E505 
-X-CRM114-Status: GOOD (  17.37  )
+X-CRM114-CacheID: sfid-20261109_134604_510558_13D49311 
+X-CRM114-Status: GOOD (  17.47  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,74 +134,40 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On November 5, 2026 2:01:40 PM PST, Arnd Bergmann <arnd@arndb=2Ede> wrote:
->On Thu, Nov 5, 2026, at 21:17, H=2E Peter Anvin wrote:
->> On November 5, 2026 8:34:38 AM PST, Arnd Bergmann <arnd@kernel=2Eorg> w=
-rote:
->>>From: Arnd Bergmann <arnd@arndb=2Ede>
->>>
->>>The -march=3D compiler flags select both instruction set and tuning for
->>>a particular CPU, which works well when building a kernel that can only
->>>run on this one type, but has some counterintuitive effects because it
->>>is not always clear which models are compatible=2E
->>>
->>>E=2Eg=2E building for Geode LX results in a kernel that can work on all=
- on
->>>all 686-class CPUs but crashes on CPUs without the CMOV instructions=2E
->>>Building a kernel for 686 could work on Geode LX and Crusoe but fails
->>>because of the CPU generation check that detects these as 585-class=2E
->=2E=2E=2E
->>
->> Crusoe (TM3xxx/TM5xxx) do have a handful of compiler/user space visible=
-=20
->> items that are missing from i686, as I recall notably the long nop=20
->> instructions and *possibly* fcomi (I *think* we caught that one, but=20
->> I'm not 100% sure=2E)
->>
->> As a result, it reports correctly as family 5=2E
->
->I don't know about fcomi, but the P6 long NOP hasn't been used
->in 32-bit kernels since your 2008 commit 14469a8dd236 ("x86:
->disable static NOPLs on 32 bits")=2E From that point, I believe
->we effectively treated Geode LX and Crusoe as 686-compatible=2E
->
->binutils apparently uses the same definition and emits long
->nops for -march=3Dpentiumpro but not for -march=3Di686 in modern
->versions=2E
->
->You are of course correct that this remains inconsistent:
->a kernel with CONFIG_MCRUSOE is still built with -march=3Di686
->and CONFIG_X86_MINIMUM_CPU_FAMILY=3D5, so it will fail to run
->on 586-class CPUs without CMOV=2E
->
->I'll fold in this patch to make a MCRUSOE kernel actually compatible
->with all i586-class CPUs, unless you have a better idea:
->
->diff --git a/arch/x86/Makefile_32=2Ecpu b/arch/x86/Makefile_32=2Ecpu
->index 1735a5f95d33=2E=2E9a3a1b1c2452 100644
->--- a/arch/x86/Makefile_32=2Ecpu
->+++ b/arch/x86/Makefile_32=2Ecpu
->@@ -21,7 +21,7 @@ cflags-$(CONFIG_MK6)		+=3D -march=3Di586 $(call tune,k6=
-)
-> # Please note, that patches that add -march=3Dathlon-xp and friends are =
-pointless=2E
-> # They make zero difference whatsosever to performance at this time=2E
-> cflags-$(CONFIG_MK7)		+=3D -march=3Di686 $(call tune,athlon)
->-cflags-$(CONFIG_MCRUSOE)	+=3D -march=3Di686 $(align)
->+cflags-$(CONFIG_MCRUSOE)	+=3D -march=3Di586 $(call tune,i686) $(align)
-> cflags-$(CONFIG_MEFFICEON)	+=3D -march=3Di686 $(call tune,pentium3) $(al=
-ign)
-> cflags-$(CONFIG_MCYRIXIII)	+=3D -march=3Di586 $(call tune,i486) $(align)
-> cflags-$(CONFIG_MVIAC3_2)	+=3D -march=3Di686
->
->     Arnd
+On Mon, 9 Nov 2026 05:05:57 +0000 (GMT)
+"Maciej W. Rozycki" <macro@orcam.me.uk> wrote:
 
-Yeah, the problem isn't the kernel, but user space=2E
+> On Sun, 8 Nov 2026, David Laight wrote:
+> 
+> > > > While at it, I think it would be good to use this conversion as an
+> > > > opportunity to replace "char *" by "void *", which will probably let
+> > > > you drop several casts from users.    
+> > > 
+> > > So I tried that too. The thing is it drops exactly one u8 * cast in
+> > > ntfs3's label write.   
+> > 
+> > Since char is now unsigned that one isn't even needed...  
+> 
+>  Please excuse me missing the context, but what circumstances does your 
+> claim refer to?
+
+Just that the cast would have to be:
+	u8 *foo = (u8 *)bar;
+where 'bar' is 'char *', and I don't think you need a cast there when
+char is unsigned.
+
+David
+ 
+> 
+>   Maciej
+> 
+
 
