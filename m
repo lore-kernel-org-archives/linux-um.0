@@ -2,127 +2,119 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2691F60A2601
-	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 21:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C93606A31C
+	for <linux-um@archiver.kernel.org>; Mon,  9 Nov 2026 23:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=P7QrpX1p;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=o07L0xCJ
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RdukOzYL;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=zZe+9h8w
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=; b=P7QrpX1pnqEA1v
-	qa6yonq1Vh/6MoydxYygqMLC/KQRr0uF6BUtnKh4XCwSZFtZxXB/I7P3Vb6s1o+UV7LkyRofc4wue
-	ef/0RvquGuwZ18PpyDiZ9NlWPeKVxpGU8Nyvo7xU64oHUQo0NvZudcfZ/G9GipAVv0i3hW9U6tyfu
-	lxOksSt+z54UBuW8JpyqHuEzg3gztV03HTgMxJAbDQIbLzsNqNMsNYJvkWKtKg7M13fmRhIlfA58r
-	75ZDXmUb3J0YKooOnX9MioFZfYDJR9rYtdaEdVObq45QP531teSKS9cT76CrmfMv5MGB6FVnGFDOY
-	x9dCdCTHPtilDTpfiTrg==;
+	List-Owner; bh=cm01sMqqIj/OrXGDnKJivC+LXfRPbTA7ayzBKhFeqVQ=; b=RdukOzYLGik0Kp
+	gYfKnwrre+kwyFhHaRdL8NCEf0WhypRxGFjK7PgsQNmCV2bNvvQ7jH4mVksfaj4lpjJr2Umr5nXnx
+	pk1nIrGG0obAf+nXL8sHM4AgF803/XNNSTlmbNNcceDFo1OCpnvNDe/GNvxfmsAPSD7qWma80NKPb
+	PKAaiBks2uup0b5W7XrvrhR4NQHUkHfl5jUmDtMPFpEVpdi0Y6wLc1cZjYZQkBnhwcw/3c9pBfr8Q
+	04Uq/A5u2cbhRaiF35G3QjtX7umb/ddAm4tmDR9D4AprDjARU4QiJUEbMlskzGl5aznUXvYIhKi5E
+	/NFnlAX/meaCHwKYIBlQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQXBn-00000001oA1-1Uzl;
-	Mon, 09 Nov 2026 21:46:07 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1xQZ7w-00000001xzd-1RdD;
+	Mon, 09 Nov 2026 23:50:16 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQXBk-00000001o8y-1rlD
+	id 1xQZ7l-00000001xya-11cj
 	for linux-um@lists.infradead.org;
-	Mon, 09 Nov 2026 21:46:06 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-490c1d337d8so966208f8f.2
-        for <linux-um@lists.infradead.org>; Mon, 09 Nov 2026 13:46:02 -0800 (PST)
+	Mon, 09 Nov 2026 23:50:15 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-2ed0e2015aaso6028785ad.3
+        for <linux-um@lists.infradead.org>; Mon, 09 Nov 2026 15:50:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794268204; cv=none;
+        d=google.com; s=arc-20260327;
+        b=m1xbCg80S2zrCDOSbLQyBCw+LoP1NcltvOU97HkdMZJc2EntGFR5H0zdVTWbYPqHbu
+         3j6QjSqGiMPR/teAraM3TlR7uwIo8FjqL3SITkETBlJyXjAnex24Ya3A1FvdrKLo3PBc
+         zllFUZ4jkw3v9d8b67DIN/eu0lP+rWbFxhwGXwkB65FAKndbxf1Ez2gI4Gx37NteRPO7
+         HL3AHw4j3m/QyAr9YTcl8vaCXD8pEgnDs20oFEPdI8lZhjopaUDgkZtfChyitLIHL76U
+         t0/ZabvOkT1jQNpSNzuXIbCO04hP8ppg/qNdwg3QemcOh1JRcbsUf08Aze7stNCKoCsY
+         urnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=cm01sMqqIj/OrXGDnKJivC+LXfRPbTA7ayzBKhFeqVQ=;
+        fh=qN/a2doyOwb5KCDTkjwjyB6D04eYNrG1jOeucqffQNE=;
+        b=Qj2DobLAe1/bMHzFPj2+qfhpb13AWJ5E+gkq7HRFs1a2mL0l32R18d02KTVJVlJe/4
+         n+0hUDnOHgfg6yYOv6BYlz24bn7IG8SijaIvzWpRkJgU5BSX5dpedknap1bAwSiRIG9j
+         uUonTx0cKWNo4tuxXP69n4p6r/XDl+Shh0WYQ4NpoxUvtvB34biqLsG+lFm5lErg2RW+
+         jC67RIYEWIsBhCWE92jREA1RGswPNfRDjRNIlh1ns6fL0nZF7vYnkna0xbDp+gNdhwJL
+         klwjB0CBNaLxcT0toxD0nQoi3yizvdTzrykD6918QadACAabd//KQVgeDM0Hz6ODKubS
+         EX1Q==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794260761; x=1794865561; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+        d=gmail.com; s=20260707; t=1794268204; x=1794873004; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=;
-        b=o07L0xCJXTJS6Bd5vOuuGkxzEl0qWE+4Nio/j68J63Gi9fJrnyaEVtr1mcqrAnXslG
-         PFjfBaSlKZUyetHJ5AH70UFjlD4445+ZtJnxH8JRfspj0Bi1CGR0AcG1t7ADq5NShvXt
-         96GVua+kRzYWkz+duTF53/o1nQKxgO+q10BEXy9f8i7NEclk4cUSW4IDGCndCdQIZAaS
-         FlPVbPuGp5AMnCDehFdbRBjR5OJVkM/nBpB5MfYHNcHSp7FdHFYCaVKyX/zDHUJ0jfj+
-         JY/WkWLli554o4uODYR3Oxh+fRRJYDOfBJarmoeTg2h2BjQuD49XzzMLmHc4Uac0LHz5
-         E5dA==
+        bh=cm01sMqqIj/OrXGDnKJivC+LXfRPbTA7ayzBKhFeqVQ=;
+        b=zZe+9h8wgkSPZZ6azFCDGX3RQCUAoQFUhbrQ9KLde0U711nZNX4jMU/6C/9PqYW3Fz
+         5qbM2K/+LxPMsbrUREVkzFMl2ArU1JKQm24jA6E0jnLb3XaiI0RpUKyYwGn4yKwouTQl
+         Qo/P0KxnC/VnVbnrOAC/HxJwib07YgEeIyzMjMkIIJIg6SYcytXS6gYeRcvY4Wa69BSg
+         uDbCD6bIUyr2LLl0LIjK9XQrbDzHAQxLETfhwkzgg52mOKyE+7wYEGcGVW/knsHI1YV2
+         RQ3SSOKkXtTlY2jxR3fxmOynPEOZ+TzDT/yY1YvahZnZ1jElnGMIyfInlGobIJkiiLwd
+         LpdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794260761; x=1794865561;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+        d=1e100.net; s=20260707; t=1794268204; x=1794873004;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=874yjmK9ypxK94+nKOJ/uR1d6HpqK0owgIThZQA8ZUA=;
-        b=yaQ0uDJhDl94Fms0IMXFRGKoyHcJYNkDMgy6LG0RrhLxOV4YnShxKKUyw5cQjpkbtq
-         5pXnIMdFjI66jeIPC4liIxIY6ZzxnToxIL1xAmmWYbjO6Hd+l4qnS0DtF7PS1cODnqAr
-         B8KfnoyBhEwVc4bqnF6O6BhZ8F2EMF6p0nZL9y6DnmkSKgFQuUN+VU9dJg/157UZfRmg
-         LdYF0zg8qkg9iEWFkWXp+mFiPqBcsJKIgsGtBQWrwlQhSHfaDw/90FXTu3QrUyG4X/HF
-         ZyiZD37/W96u6YssDw/fx6FYdlqwD/bMGRuSSiJdaDZs2GXjG6usznFtQSNRT1eqaFeO
-         LOTw==
-X-Forwarded-Encrypted: i=1; AL+hErHcziCjtYCX8V7psh+Hb2LFe5obb0e4MRR8fkcC+XL2ZmPG6Zo1w9ezUeUlBcOhV3YHwVqMnh1Htw==@lists.infradead.org
-X-Gm-Message-State: APuU4Z8XEe0CnYo8JouSWkKhtfSi7ryAFBKTIPbp2SOqrIImR3pKutwQ
-	i1u09nVXZUEc7ScsHfKYJZyobASNHganuexaR7cYOn+lubY2hE3HFgDm
-X-Gm-Gg: AYBFou2chP9fLBM2lDEPkfluP/McdZEM/wCLvdd6W6hBgsgS+JzLt3JQhtDTfSyjHbR
-	U2PZqO3oKk8uqYIkxO/Er6Un2PbR4D4jMhiO60nq8XMMVVCQrazTmuNYcLSkP7Bu54JfqJw/2Cy
-	VP/bXBrim90+hJ7PN/xHI8jxLq9eHAoOXJSLwL2uuxaHeFwon1Ab8tf29LuuWVOfffLS6GCXAJu
-	2HqnkLHWsElWNKMuOJnUqyLqb6zkAC7fRgDPniIeXD1hl9ck1ukk4c50RXPMk/kptFkbNtYCsbh
-	+FHfMm9qmnXUKHQHsQpouj2ZkyE/gzMfNMDJX/aZViGiiHW3B2dtCInt/SFZeayRHrPfcmbRPrK
-	lrIXH765GqbwOQsU4Y+y5yoALmik6xGeEFtFLWSznEPnywhxxyJcjqcvToRiX1eKIr0bcdh2xaK
-	/6p1Oq93VHSYVSxGEUwWX1bl1RDR7jU+S8q/I+Ls1Zt/3ZsuBzjEJVsZKICwknSCQ2mj1IYIu+U
-	/3WcZYJZZTn7u+zFIVQMJ9tIf4eCteZYD95LG4EYvBRqtG9O07is4xjODn3DC0spLdGf6xUSobj
-	M3WpJOizN5DtNZMtZoM18dcHiM14I4SaV7eYdKSAAhcH1Jl1PfxTz04gc5dOWYMZaw==
-X-Received: by 2002:a05:6000:288d:b0:48e:25e1:5eb8 with SMTP id ffacd0b85a97d-4982b28aa42mr1487213f8f.3.1794260760763;
-        Mon, 09 Nov 2026 13:46:00 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4983585c4fdsm1213644f8f.10.2026.11.09.13.45.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 13:46:00 -0800 (PST)
-Date: Mon, 9 Nov 2026 21:45:58 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Christian Brauner <brauner@kernel.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, linux-fsdevel@vger.kernel.org, Linus Torvalds
- <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, Josef Bacik
- <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, Jeff Layton
- <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet
- <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph
- Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados
- <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara
- <jack@suse.cz>, Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-um@lists.infradead.org,
- linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- netdev@vger.kernel.org, ntfs3@lists.linux.dev,
- platform-driver-x86@vger.kernel.org, coreteam@netfilter.org,
- kexec@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
- jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org,
- linux-mm@kvack.org, linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
- samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
- Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, Chuck Lever
- <cel@kernel.org>
-Subject: Re: [PATCH RESEND v2 14/23] proc: let procfs copy in writes before
- pinning the entry
-Message-ID: <20261109214558.0d9d5228@pumpkin>
-In-Reply-To: <alpine.DEB.2.21.2611090504170.17804@angie.orcam.me.uk>
-References: <20261104-work-procfs-core-v2-14-76ace653a773@kernel.org>
-	<CAMuHMdVfakapgBK6TBhO1iWX8qzvLDk8jzRS=t2MVa5G=MCUeg@mail.gmail.com>
-	<20261107-akteur-gemieden-eckdaten-21304d085e35@brauner>
-	<20261108185953.28054fb3@pumpkin>
-	<alpine.DEB.2.21.2611090504170.17804@angie.orcam.me.uk>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        bh=cm01sMqqIj/OrXGDnKJivC+LXfRPbTA7ayzBKhFeqVQ=;
+        b=F1m6zu2ijKfgzrScyWe8wdJ1DRf/dfohKuK1WG+XJ1rAeQ8nEncRx9t8IOcDpMwP1r
+         uwhSMo1ErauCp/uwpQYeO/aktZmWM1oJ0plPTesUKfCJfkp7t1sP/cgOUw8OCGyo11eC
+         EadMiXgbBmpiCKjPYdHM1dP2vuSvWYSTq1zHSm547TLBk65BKaTEneWw5oZEKHpXA0uA
+         PGKhFCB4qSjcMQvB9/RaALLS46o6nvk21UjaYPJWxlZMMPUCsEf5C1+GN0pw2yULZpjl
+         f8lC+WmvmVqZL+w5jcG+NRGqXNOkBNMbyKPXtrvVq3FjlrbRBVIvmJjV5Sc/MwuTZOPL
+         Gamw==
+X-Forwarded-Encrypted: i=1; AL+hErGr2dVmhTOhFSubUY7N0OInNXIF/uO1x8qqwGoV6TMcID4+7TB+CU6LWQwN8vXHzHAyYnyMw6VT3A==@lists.infradead.org
+X-Gm-Message-State: APuU4Z8iDzkxVvBGc4JauGY6g50us3l9czmbnM1txZRXF7CGGgcLAWy7
+	yEOlZIZOBN/RSxiTEcsGoUYPz3T1C8mlPfeWLLXu+87GyyaV4uc9QMzrQq5d+zNlNWZ11WZ9ysk
+	iTo5G72FYZu8vKF9PYKBQzjhezMbJos8=
+X-Gm-Gg: AYBFou0wWQ0qz249EyZ3x61WwW45OmXZzkAvyFcF0vVaDfC8tQxZoH/UAio039eZ4qi
+	lRlDN8qL7iD8iwKc3huy6QnHThdte3sqfnEcaGSNeUOiJPEbPqdbmfLgUAAZNfyta/JwuO585KB
+	92Xlb1Pm3f6s4y9z6VUb2zpHumR/Y7+sF5blsH5xOJQevGRpzGJD4roBz5jCQsvF9+QLJmAjySK
+	sPmazqqN78vQtJ4/tevt4aINdiZEu4/GpxJ+DbEI2hipSyg2F6/hol29qJ19CLAG007bWMJEwU8
+	qiS1uEXuYnNR01e/F+uSmz6GnAr8WmnmGSCU8SeFpS8SawPz6tixjG9OAsYX2cGVjShvQck7E6j
+	FzZWXKYJg5GCk23pp0HJti3vpVAye1UAJTC0IbXUorQ0zRL+QYQszutrJE/RhxJhIHIfe
+X-Received: by 2002:a17:903:320b:b0:2e9:401f:f0f8 with SMTP id
+ d9443c01a7336-2edb9253939mr6212195ad.53.1794268204263; Mon, 09 Nov 2026
+ 15:50:04 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAEzXK1pdhEyOgQ4owkeRmyEP6Pyfhk=OsMHdzU4xwNMCmCsd6g@mail.gmail.com>
+ <20261109122908.GU2668804@noisy.programming.kicks-ass.net>
+ <773C551D-6AFB-4180-BE2D-629B6C5D020B@zytor.com> <CAEzXK1p3SZdGHDxj9bnRU4NzK6Z8b2qFwg2z_Hz9yY2ntB10sQ@mail.gmail.com>
+In-Reply-To: <CAEzXK1p3SZdGHDxj9bnRU4NzK6Z8b2qFwg2z_Hz9yY2ntB10sQ@mail.gmail.com>
+From: =?UTF-8?B?THXDrXMgTWVuZGVz?= <luis.p.mendes@gmail.com>
+Date: Mon, 9 Nov 2026 23:49:53 +0000
+X-Gm-Features: AclHuK_pcx1MdpHVb2en-3CYgD-Cgz3_Dr3poSXVr6gLqXCbiqAFBW0V94L_bDY
+Message-ID: <CAEzXK1rOrTEKDWojwFOf1ZBxhdVriZzotou=p+7Etskcp9zqmg@mail.gmail.com>
+Subject: Re: Some observations regarding the ongoing x86-32 CPU configuration cleanups
+To: "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will@kernel.org>, 
+	Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, Yury Norov <yury.norov@gmail.com>, 
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+	Alexander Usyskin <alexander.usyskin@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, x86@kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261109_134604_510558_13D49311 
-X-CRM114-Status: GOOD (  17.47  )
+X-CRM114-CacheID: sfid-20261109_155005_312373_9A86FADF 
+X-CRM114-Status: GOOD (  29.96  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -134,40 +126,71 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Mon, 9 Nov 2026 05:05:57 +0000 (GMT)
-"Maciej W. Rozycki" <macro@orcam.me.uk> wrote:
+Yes, thanks for your suggestions, yes ading CPUID, TSC and CX8 should
+not be much of a burden.
 
-> On Sun, 8 Nov 2026, David Laight wrote:
-> 
-> > > > While at it, I think it would be good to use this conversion as an
-> > > > opportunity to replace "char *" by "void *", which will probably let
-> > > > you drop several casts from users.    
-> > > 
-> > > So I tried that too. The thing is it drops exactly one u8 * cast in
-> > > ntfs3's label write.   
-> > 
-> > Since char is now unsigned that one isn't even needed...  
-> 
->  Please excuse me missing the context, but what circumstances does your 
-> claim refer to?
-
-Just that the cast would have to be:
-	u8 *foo = (u8 *)bar;
-where 'bar' is 'char *', and I don't think you need a cast there when
-char is unsigned.
-
-David
- 
-> 
->   Maciej
-> 
-
+On Mon, Nov 9, 2026 at 4:04=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
+:
+>
+> On November 9, 2026 4:29:08 AM PST, Peter Zijlstra <peterz@infradead.org>=
+ wrote:
+> >On Mon, Nov 09, 2026 at 10:34:54AM +0000, Lu=C3=ADs Mendes wrote:
+> >> Hi everyone,
+> >>
+> >> First of all i would like to say that i both admire and appreciate all
+> >> your hard work with this lovely OS. I do understand that maintaining
+> >> some systems can cause additional burden on maintenance, but there are
+> >> some aspects that i would like you to reconsider.
+> >>
+> >> I am writing because I  believe that some aspects have not been taking
+> >> into consideration regarding the removal of the 80486 32-bit support
+> >> from the kernel, namely:
+> >> - There is this active Linux distribution:https://tinycorelinnux.net/
+> >> and the Damn Smal Linux DSL (https://damnsmalllinux.org).
+> >> - There are also these CPUs: https://www.vortex86.com/products/Vortex8=
+6EX
+> >> - There may be only a few vintage 486 systems still working, but there
+> >> are also other new x86 CPUs systems, especially in FPGAs like the
+> >> https://github.com/MiSTer-devel/ao486_MiSTer which is a 486SX core
+> >> that operates at 90MHz and can use up to 256MB RAM memory. There are
+> >> plans to update this CPU IP core to become a full 486DX core, by
+> >> adding a FPU unit to it and would turn this into a usable Desktop
+> >> system with tineycorelinux. There is a considerable retro-computing
+> >> community that utilizes the AO486 core on the MiSTer FPGA platform.
+> >> There is even a Voodoo 3dfx accelerator card:
+> >> https://github.com/victor-fisyuk/voodoo-fpga-public.
+> >>
+> >> Overall i just want to inform you that some new x86 32-bit systems are
+> >> still being sold brand new and can be utilized with Linux. I would
+> >> like that you consider this with regard to how much 80486 support
+> >> should be removed from Linux.
+> >>
+> >> Personally i do have plans to extend the AO486 core to have the FPU
+> >> and would like to be able to run a modern Linux on it. It would have
+> >> entertainment and educational applications. With tinycoreinux it can
+> >> have a usable desktop.
+> >
+> >I don't realistically see 486 support coming back -- the thing doesn't
+> >even have TSC. Getting rid of all the horrible (and completely untested)
+> >code for no-tsc alone was worth deleting 486 support for.
+> >
+> >The other option is you actually implementing RDTSC, CPUID (and possibly
+> >CMPXCHG8B) on your FPGA.  I'm sure that's actually a *LOT* simpler than
+> >doing i487 support.
+> >
+> >Just add whatever instructions are required to get the bare minimal
+> >32bit build working.
+>
+> It would be more likely to get x87 emulation back!
+>
+> Later i486's actually did have CPUID, and implementing TSC and CX8 (in a =
+unicore system) is rather trivial.
 
