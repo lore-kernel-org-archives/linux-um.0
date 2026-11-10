@@ -2,14 +2,14 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4534A60A263D
-	for <linux-um@archiver.kernel.org>; Tue, 10 Nov 2026 14:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960A60A6F64
+	for <linux-um@archiver.kernel.org>; Tue, 10 Nov 2026 14:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=r0eFhh3u;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=dfqcbUnK;
-	dkim=pass header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=I8IcNdZF;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=OFZt5G3N;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=lARv1EHw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1nPHpy3P;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=bjk4WUGs;
+	dkim=pass header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=DcZW88hG;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=bjk4WUGs;
+	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=DcZW88hG
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
@@ -17,74 +17,74 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=BAgS5IG5Q6cmw/IjXmlog3zuTwHd5kSy1jWUQMAUfKY=; b=r0eFhh3ug2RXvzrvcQ4Mp27Yjv
-	hyYqknDg/KDYemQpB86KggJT30XvXw02h5M38lwF+jtL8pKDDikr1EPzjW6XAC9b7cpOEguKgpjFs
-	OjTxh7CnvQO9u/113vKex7SgzfcLqxHZvpg6xzL9WiZatJ7JUMSZuQUld6H2XZc6tn5c6lb793uXl
-	1Ni3lgfxK4yPHdA43lFj2kBbKakcpzxRycXdPU/xaJgH/ZkSa2O17Bzw9X2ocayyPwTruQmWgZ+tw
-	nF+TGeQJhJDB5b4VLVx/67iyt86Rwj0uWxSzUlvufhdECnBpb4Y2ecGo3BtM30Ew9nZFyIbUPRyPn
-	hq0/ir7A==;
+	bh=vFU8SLB5yQFXTKmgyVP3p6vbPpLP3uckbwzKSwj5Zbg=; b=1nPHpy3P57nTTymjHL2XqHUyDr
+	7TvclcY104PJYbIK/u4KH9Z6EYCPax1wb09JlO5/HzA2P9DkDqBZDxvGaNEGyaQ/qQp0y7fKTFR6f
+	n0B4RWac1ivM9WmAgCKFRp3pj/2WOLQdQyDAViYRN7ArKMOQbKBIX/WbD6bHujrXr5iHBzNXJyRVR
+	gUDff0QZoqsnwlu/VpCeo58moSBEa3l+MM3KUCvUsR5p5SJO6m1Ge2KYhabKTV+gxY73TsbbmivRS
+	nUWyPt/fE0vzG0NofxUq9YRlDwgGZG9FbWPxVH3FTCQhNYpyaxxLu3DEFAXj39XwcCobU5y/YERso
+	zkq3cX4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQmj2-00000004B8G-1ljh;
-	Tue, 10 Nov 2026 14:21:28 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1xQmmc-00000004BvP-0NKh;
+	Tue, 10 Nov 2026 14:25:10 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xQmiy-00000004B7A-3ENz;
-	Tue, 10 Nov 2026 14:21:26 +0000
+	id 1xQmmY-00000004BuD-3hws;
+	Tue, 10 Nov 2026 14:25:08 +0000
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AFC4F21EA7;
-	Tue, 10 Nov 2026 14:21:21 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A263621E96;
+	Tue, 10 Nov 2026 14:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1794320482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1794320704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BAgS5IG5Q6cmw/IjXmlog3zuTwHd5kSy1jWUQMAUfKY=;
-	b=dfqcbUnKWeMMrbbtQxI4HQM7qrIh4AZ0rdet9B/6ElOBIqFSiDGiuE+1U00ut3ACwyb91k
-	r11g0ukmfmgZpAkPLIoBt7FBxKQ00ygdxuqdgmhj2u4V8/naZ4cHPSCZhNnU3P0rUj/quR
-	5maXirFkXXk4Lg3EkYDJXPDsbTG0ICY=
+	bh=vFU8SLB5yQFXTKmgyVP3p6vbPpLP3uckbwzKSwj5Zbg=;
+	b=bjk4WUGsRYs0sP8E0ONkDW8hyxwCcqK6F/Z+No2aVyfis1MlyWmiOhtWAdfYs7F/8CipUe
+	M6ChAxycGmD+5TO2yaDPV3YEJYRhQ7n9jG4KZpA9RGENMEDcySYwTh7Zpl9Q1XnchbyaQz
+	9csObL3BU5hnSJHNTzbwr+PQnEnCSJ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1794320482;
+	s=susede2_ed25519; t=1794320704;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BAgS5IG5Q6cmw/IjXmlog3zuTwHd5kSy1jWUQMAUfKY=;
-	b=I8IcNdZFZSFtUgRgMf53UkGbuTtSJb1zzUPCSb1BODWP/tylJEZx0BmLFYU3bDgA6b05ut
-	5Oej5bk5j+xTBnDA==
+	bh=vFU8SLB5yQFXTKmgyVP3p6vbPpLP3uckbwzKSwj5Zbg=;
+	b=DcZW88hGUmkolX453pml7rhjUnXP/geJBXTnLO3CcrhsdfC+rAH/ij69WBdSoxJA/XOD03
+	2vl1fFNAf7DiXYCQ==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OFZt5G3N;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lARv1EHw
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bjk4WUGs;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DcZW88hG
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1794320481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1794320704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BAgS5IG5Q6cmw/IjXmlog3zuTwHd5kSy1jWUQMAUfKY=;
-	b=OFZt5G3NjcxxJh9jY6RWrC7bvaHuyGavEEbdiAXuJUz/f1dYZmor5n2FYPrRYiQoiCED+w
-	1FijM1hEbGwM1P7v2pYubJuTrAUHD24tVDcOF18S7gaHWryxvKiASS6IebdlsiiUolZCHc
-	0QuxJjJxTEoiCmYYKfGjg6OEvasGjOc=
+	bh=vFU8SLB5yQFXTKmgyVP3p6vbPpLP3uckbwzKSwj5Zbg=;
+	b=bjk4WUGsRYs0sP8E0ONkDW8hyxwCcqK6F/Z+No2aVyfis1MlyWmiOhtWAdfYs7F/8CipUe
+	M6ChAxycGmD+5TO2yaDPV3YEJYRhQ7n9jG4KZpA9RGENMEDcySYwTh7Zpl9Q1XnchbyaQz
+	9csObL3BU5hnSJHNTzbwr+PQnEnCSJ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1794320481;
+	s=susede2_ed25519; t=1794320704;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BAgS5IG5Q6cmw/IjXmlog3zuTwHd5kSy1jWUQMAUfKY=;
-	b=lARv1EHwNdS7tCNwBSn9srQwOl9Kg5/ztnfBrMPMFrjJm7RNq+r333D6UmkiyHiKi5q76w
-	+hVROod2CCZjqIBw==
+	bh=vFU8SLB5yQFXTKmgyVP3p6vbPpLP3uckbwzKSwj5Zbg=;
+	b=DcZW88hGUmkolX453pml7rhjUnXP/geJBXTnLO3CcrhsdfC+rAH/ij69WBdSoxJA/XOD03
+	2vl1fFNAf7DiXYCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7082C134F4;
-	Tue, 10 Nov 2026 14:21:21 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 737AB13479;
+	Tue, 10 Nov 2026 14:25:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7c+hEGEo82ozHAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 10 Nov 2026 14:21:21 +0000
+	id yxLEE0Ap82qXIAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 10 Nov 2026 14:25:04 +0000
 Received: by quack.suse.cz (Postfix, from userid 1000)
-	id D4BBB22538; Tue, 10 Nov 2026 15:21:16 +0100 (CET)
-Date: Tue, 10 Nov 2026 15:21:16 +0100
+	id A39EC2253A; Tue, 10 Nov 2026 15:24:59 +0100 (CET)
+Date: Tue, 10 Nov 2026 15:24:59 +0100
 From: Jan Kara <jack@suse.cz>
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, 
@@ -108,17 +108,17 @@ Cc: linux-fsdevel@vger.kernel.org,
 	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
 	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
 	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, 
-	Chuck Lever <cel@kernel.org>
-Subject: Re: [PATCH v2 07/51] lockd: don't hand out the terminator of
- nlm_end_grace
-Message-ID: <4isxnxlzjedh4t3hq73g5wjuwdtiudxx6llf6do2noyrno5lsb@6xwb4gw7wi7b>
+	Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 14/51] proc: sysctl: don't stop readdir at an entry
+ that is being unregistered
+Message-ID: <efix7fc3j7xbogyb3zaotsi3bwl4s4p6nvwrnlpbue5khrlf43@orqtyoglh5b7>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
- <20261104-work-procfs-bugfixes-v2-7-bbf7d5546809@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-14-bbf7d5546809@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-7-bbf7d5546809@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-14-bbf7d5546809@kernel.org>
 X-Spamd-Result: default: False [-11.51 / 50.00];
 	SUSE_INTERNAL_BYPASS(-9.00)[];
 	BAYES_HAM(-3.00)[100.00%];
@@ -141,20 +141,20 @@ X-Spamd-Result: default: False [-11.51 / 50.00];
 	TO_MATCH_ENVRCPT_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[59];
+	RCPT_COUNT_GT_50(0.00)[60];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim,suse.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
 X-Spam-Score: -11.51
 X-Spam-Level: 
-X-Rspamd-Queue-Id: AFC4F21EA7
+X-Rspamd-Queue-Id: A263621E96
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261110_062124_955618_B7995933 
-X-CRM114-Status: GOOD (  19.13  )
-X-Spam-Score: -2.1 (--)
+X-CRM114-CacheID: sfid-20261110_062507_229031_F7BC922E 
+X-CRM114-Status: GOOD (  24.85  )
+X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -173,37 +173,53 @@ X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Wed 04-11-26 18:27:24, Christian Brauner wrote:
-> nlm_end_grace_read() answers with "Y\n" or "N\n" from a three byte
-> buffer and hands out all three bytes, the terminating NUL included.
-> Leave the NUL out.
+On Wed 04-11-26 18:47:00, Christian Brauner wrote:
+> proc_sys_fill_cache() creates the inode of an entry that has no dentry
+> yet. Since ace0c791e6c3 ("proc/sysctl: Don't grab i_lock under
+> sysctl_lock.") proc_sys_make_inode() refuses to do that once the table
+> is being unregistered and fails with -ENOENT. readdir takes every table
+> it lists into use and unregister_sysctl_table() marks the table as
+> being unregistered before it waits for readdir to let go of it. So an
+> entry that is unregistered right then makes proc_sys_fill_cache() fail,
+> proc_sys_readdir() stops there and returns 0. If that getdents64() call
+> hadn't emitted anything before that entry userspace sees the end of the
+> directory and never gets the entries behind it. A listing of
+> /proc/sys/net/ipv6/conf can end early that way while a device goes
+> away.
 > 
-> Fixes: d68e3c4aa416 ("lockd: add a /proc/fs/lockd/nlm_end_grace file")
+> So skip an entry whose table is being unregistered, like readdir
+> already skips a link it can't follow. Lookup treats such an entry as
+> gone too since ea5751ccd665 ("proc/sysctl: don't return ENOMEM on
+> lookup when a table is unregistering").
+> 
+> Fixes: ace0c791e6c3 ("proc/sysctl: Don't grab i_lock under sysctl_lock.")
+> Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-Makes sense. Feel free to add:
+Looks sane. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/lockd/procfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/proc/proc_sysctl.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/fs/lockd/procfs.c b/fs/lockd/procfs.c
-> index a01f08c8c2f3..74f7ab77535a 100644
-> --- a/fs/lockd/procfs.c
-> +++ b/fs/lockd/procfs.c
-> @@ -57,7 +57,7 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
->  	resp[1] = '\n';
->  	resp[2] = '\0';
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index 6c0859c66563..b4a309d49698 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -704,6 +704,9 @@ static bool proc_sys_fill_cache(struct file *file,
+>  			if (unlikely(res)) {
+>  				dput(child);
 >  
-> -	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp));
-> +	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp) - 1);
->  }
+> +				/* skip an entry whose table is being unregistered */
+> +				if (res == ERR_PTR(-ENOENT))
+> +					return true;
+>  				if (IS_ERR(res))
+>  					return false;
 >  
->  static const struct proc_ops lockd_end_grace_proc_ops = {
 > 
 > -- 
 > 2.53.0
