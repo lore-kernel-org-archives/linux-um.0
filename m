@@ -2,77 +2,77 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5BC60A2611
-	for <linux-um@archiver.kernel.org>; Fri, 13 Nov 2026 01:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5300606A886
+	for <linux-um@archiver.kernel.org>; Sat, 14 Nov 2026 16:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=nUawD959;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ufA04P4O
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jqhfIm/p;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=nhG/03Y/
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=c/cWqKIWduZoLOjk/RHPTZ+tnDRCPdJt/8RzdamyTqU=; b=nUawD959XcWA7V
-	L1b6UTrTbjo3V/2Ld5JlpCgCJ0K8u7f6SAKuHm5kbwVP/cq9j//W6OkYf4M9QXPnLzBoExlX/qQTx
-	mLjyYdhJRkU1XYUEWoNoQsPBBTi5pn6V6sVXfn5Q6ABd5vtb2RHI5z+xpmcK6aM9d6OwMjQuf/D9Q
-	JT30wk5Q415CJa4ofPvuCq9GyZ8AbraaDH3YSlq3FwP++sEJhydlS0QY289DfKD39U/qm/wfFheZS
-	36/ACrf4oUc+9rcFq67Ps+uf5pzemwqq5RAQ3DBF+VnXe0IsUpPngyqY4dwKgUwodaTIb+eJsn8tV
-	/DRmnR0xtAUi8KdGn7nw==;
+	List-Owner; bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=; b=jqhfIm/pqfZL7O
+	9am0eIrlFSy3Osz0aMFCk2mF1B60H84cToHzk8gC6RKl9cmMs9dF5pvwT4XM2+XR/Z71lZJBSFZ3u
+	k7/cpvvXvLKYqoJV7hDzC8gDmU6pGiYyoB/dED18oT76LPu9XVyqk2fafUenyhrF14SBsLr7ygRGD
+	WKxMdAQG3E3sTFklAgU/SSUuaRyaNkpT7ltqUGGzzNmdbRTApCKqLSeS7reXszOFT4Vc81oTthlIU
+	9UEbCRAURoeP6pdatnce1bO/6SOV3euVrVy77ukUiWB+ZKpHtf03vGARtne+Qx30WhmJsVSgWuZ47
+	uRXFcwP+ZT+4wP8XRImg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRflE-0000000BPPp-1u92;
-	Fri, 13 Nov 2026 01:07:24 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1xSH3l-0000000GUs9-00Tu;
+	Sat, 14 Nov 2026 16:57:01 +0000
+Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xRflB-0000000BPP0-1DBY
+	id 1xSH3i-0000000GUqf-3nfQ
 	for linux-um@lists.infradead.org;
-	Fri, 13 Nov 2026 01:07:22 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-3acc7a0b558so4371251fa.3
-        for <linux-um@lists.infradead.org>; Thu, 12 Nov 2026 17:07:20 -0800 (PST)
+	Sat, 14 Nov 2026 16:57:00 +0000
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-3acc7a0b558so21654721fa.3
+        for <linux-um@lists.infradead.org>; Sat, 14 Nov 2026 08:56:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794532039; x=1795136839; darn=lists.infradead.org;
+        d=gmail.com; s=20260707; t=1794675416; x=1795280216; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=c/cWqKIWduZoLOjk/RHPTZ+tnDRCPdJt/8RzdamyTqU=;
-        b=ufA04P4Op3GUNfbvI0MirlhXAzR9qsyKnrGiPa1XZEJGcVkDFxr0i9oejKMf+RzHWV
-         QPpFULbD9EddrLTa//hjVa/pPvjILlPqpXbHBiySwaaW8aXQC1xikZc/3FKT0N0B0pnf
-         EoA69l78kE3kCxoZXg69T9QrwTIjyu0LD7ZVv14WtBfgTFeD6G1WDQf2MQIddSiEn9bi
-         AFrKYLCrqP2ML5e0nOOg4TPHEV77pQKSYIRfiY7HJefUazZHhimpbGCn8OTfFUSMW6yG
-         Msf5mWHuY0VmaDNSBUXxcmzIJNnOhcBo5uB9fuPgO8jukm5IotYOzMKWDhEmRTJhkg43
-         0/EA==
+        bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=;
+        b=nhG/03Y/yMPiiKD1PB/H07iK/MSrBbYh80Ly9b/M6cFwxkTfm+ai/aJEbeVqrWjrMg
+         NEb9DmGRqcha1HsPA7VmXEoQsgi44b2mVcEZ0G4X91i1eM2xBsBTB2/772DhpdAMxb05
+         YEPRlkQrh4UrmuS/Gd9uvqL9kF3vppZohDegNMnTXnsGOxC8Hly3qgudi3H9T5migUbK
+         8mwLhdLyYcNkRSDqUfz+bjG0Rmju3ilrzt2tiPtVbAnRC+Q0fsd9oAnqPkModAJlOFY+
+         P4Jvra24o9n34iHsE00NJSGFxSjhSSjvLkicsWEzC+sg13iOUlxxwbQ9UNFWYe9UU1mx
+         Cj8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794532039; x=1795136839;
+        d=1e100.net; s=20260707; t=1794675416; x=1795280216;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=c/cWqKIWduZoLOjk/RHPTZ+tnDRCPdJt/8RzdamyTqU=;
-        b=1lU9Vwpq+IdrlUdgSuRf1KvBJte9m+K3uP88LOTLxvCthclovWwG1OxYv5EljQ2TL5
-         bO1MdPXFQBg5J67OhwpHIEHqHt+Qh/MVo+dWmaKbzvqaWHnbdbCc8cxMySgUtkl5nhr3
-         261hchbgDvMThFCNApUO1slzFzYnj4+qOboX+Inet2bZbsZYa/hw5py8weYaq/ZJEqJ1
-         VZ/68ij3cK8U5dKwi7d3IGVBk2hYX6bC5TPHEhLj0nGQ6wye7vcpBCBpev8G6Vs2Spcw
-         ahg+MHaT8NFS/cZ9JamwGKogOMO2uQuhGGSpcELNOG7jU8OPiAtD9f5ZNN9kjjUuktB/
-         livg==
-X-Forwarded-Encrypted: i=1; AL+hErEJVMNcnODjLJ+NUa5H1QtMBnRc0TUTZiA4nP/vgpEwP4Y54f8R5/Pg5f4oa7qnYgOmGmJ0u8XLCA==@lists.infradead.org
-X-Gm-Message-State: APuU4Z/T4PNYlwasA/81fhUNUtgesCsH10zcILoaQqiISGkDB9WDyluQ
-	l61XJFC5KhxPN4DkfhgHuhZ+GWsQpAYo25OifRDEAfd3T0k0Hyrl8dTl
-X-Gm-Gg: AYBFou1p0YV3jljWSZZ96XyKyLZCja/0mneVnn07FHrERcJkAD3qMb6AGNxEb3i9Zql
-	m+zSTZYoRabqQDRwTH55xbAJTrAwb5hH7FRa54Ftk7DzAqg/5hUpAJ1aWDGpYiT41JQ9DzuHv8z
-	fI2NoE+ShNOgThAExNFaHzKNYj1ItKLVTmO7ABnCzgKFvJCnm7RQjEE6oUYlX9VuA2c06Jux8y9
-	QkJqcgrzOvbOQTRVm6IVTr3CGxoAg5fVlCU9vDIivdcMP5bsCVeKzyqVT/tfs4xQqpeepglel12
-	tlslIbpqsP4lm4n48O5RZ86M9o6PKX5yEoWgsd2ISB3gaTK07JF7Pfef3pkusV0J3o6AwVzx255
-	ytK5u0StIvnBQcby3ZS47CN/Ea+92IKy84XIfglHJtExkZxAdTga6qRZcNv4KEt5q8wB4CPbxb0
-	oRPzhjSH25Q8cSUQV0qvhBsq/39V0MAmgQaYaPqQI3VgXZuYHJBLteLeH4naXrpbTOgQ73N1Ubn
-	pBndhEAym4sVt40I2a3xMdatAX/HFE5C/M4Q++rVKCmOWCH/PUtTJVtpPSLUw3mzodG8UY8t0Ly
-	5MYAyRKwlNbiltmlLzshSzgHAHUHwFFWugul6poWeR+L4Lxhd/pIBUu5j3dmrsn3QpabCC7+9We
-	f7ne8NcnvxQ==
-X-Received: by 2002:a05:651c:a348:b0:3ac:dda0:efdc with SMTP id 38308e7fff4ca-3ae2b5074cbmr3651751fa.16.1794532039095;
-        Thu, 12 Nov 2026 17:07:19 -0800 (PST)
+        bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=;
+        b=dUhidbWbBH1zDzlJtXD9qgWp1iPaNQnQ7q1Z84QruZHIBEBPjmxr+Wu5M6BSOcQBdx
+         c/+nt4cXCTjxuu9SsJHaLLsnx4FmT7eny5mAIlgv4kQ5n7qG+IbJGgsTnuJaTePcTwJU
+         xEcRYoutCj5uT4PBfnKv3zMtUxUyeuSDPNTWW5wXt7nvucPtI4lhMw8c6vOZ6qmQdshh
+         U9Bt38wP80i48OOcquOKqRou82Ve8zIG7KqSNqIjSuPVgzHFsnA+MELi1m+4ojJwBDMh
+         PzHi2kJfsBDC271P6MuftlnCWRxTVBCihzTjPPql7w4tnBoOOBz/X5zHjvE8k3GPDO37
+         0E/g==
+X-Forwarded-Encrypted: i=1; AL+hErHczQAGMS8OJEtun/Pb8KdBDlNpbsk4fDY74Phu4uT6Gl4U+n58uaER7f9Yp5mNCii64uNwdxOWaQ==@lists.infradead.org
+X-Gm-Message-State: APuU4Z/JpF77gDc5vk48Kln6ioJ1EE93Hy/YNLkD2RhGk7HEtZH1uaRo
+	xX6NbYOimJs9bIwbE6/6wTzW3rG3NQBtfQPD+oaT/Vhc41It404ogPrH
+X-Gm-Gg: AYBFou3kI0Y7Yy6PDwhwUGdaNXLzhxiBJ5m+ahfbFHFPfUPmcDzOAGAcz1uvZOBUsCP
+	oYjSs/5Oy1xqHu3bKO2mowiJgNhfGweRJHtY11dANcVJ/0OBg40oQwmPDWGdFr0u2lh9PzX3Bnd
+	ZoIB8goZzC1+Jz8OQF++oJzStEFyobfTICqwmm2QnIhnkGRzjzr1dvHKwow/fKWN80cuPKWepaT
+	Is7/4EcCRyXxsPTaLFKKmJIFJvW0ogvv6uOL+RZ/NL6IsJRubIxMJ8MUzHAkHxpAoZcs9GWXjvq
+	IByDET2/AKzA0Ragyf+cfh9Ech9N5HwgFGyY4oABGelak1FsyWaDOtVR5FxkrJ2w/CQLqN2OVTx
+	9fUGqtlLSoFRcnWA4uONDN/JeUPNFQxP+EyXL4fw2XuJyjaV8oLa/ljvUCRQ5k6zHBc6BJOIKSr
+	+tt/BCYPTS21JydezEnicVToo8vbOtwuwGUkPrneVLIg5/I29X0wKIimCvOosXfLUcoNA0DVITy
+	OmaUF9VR+z6AOW9E6UiI1S3msBtAMrLvYGuA466pErkWaP/1/zeJKmXF+AFmd4v/6Hx4J4EyAM3
+	3E6oJ7MxWLE2QS6pqFQ5ONzJPKFijJg16Dz2Nk5Tq2B39SCG5PJlIyxkFwLYcC+D82Fv+XLiKDf
+	ZKzdNwjCdhQ==
+X-Received: by 2002:a05:651c:b22:b0:3a6:95a:52a6 with SMTP id 38308e7fff4ca-3ae2b51fa1bmr19487401fa.20.1794675416400;
+        Sat, 14 Nov 2026 08:56:56 -0800 (PST)
 Received: from SafoStation ([31.40.65.49])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3ae2b7d183bsm3133941fa.31.2026.11.12.17.07.14
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5c1712dad26sm1792051e87.8.2026.11.14.08.56.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 17:07:16 -0800 (PST)
+        Sat, 14 Nov 2026 08:56:56 -0800 (PST)
 From: Safocl Stollmannovic <safocl88@gmail.com>
 To: Ard Biesheuvel <ardb@kernel.org>,
 	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
@@ -91,18 +91,18 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-efi@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH v2 07/10] x86: fix duplicate extern declarations
-Date: Fri, 13 Nov 2026 05:06:12 +0400
-Message-ID: <20261113010631.139191-8-safocl88@gmail.com>
+Subject: [PATCH v3 07/14] x86: fix duplicate extern declarations
+Date: Sat, 14 Nov 2026 20:55:47 +0400
+Message-ID: <20261114165612.368785-8-safocl88@gmail.com>
 X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261113010631.139191-1-safocl88@gmail.com>
-References: <20261113010631.139191-1-safocl88@gmail.com>
+In-Reply-To: <20261114165612.368785-1-safocl88@gmail.com>
+References: <20261114165612.368785-1-safocl88@gmail.com>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261112_170721_371814_968083AE 
-X-CRM114-Status: GOOD (  13.32  )
+X-CRM114-CacheID: sfid-20261114_085658_990601_1C06375C 
+X-CRM114-Status: GOOD (  13.02  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -132,7 +132,6 @@ where kernel modules can be compiled by a C++ compiler without any issues.
 The `extern` specifier must be removed.
 
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=222257
-
 Signed-off-by: Safocl Stollmannovic <safocl88@gmail.com>
 ---
  arch/x86/include/asm/efi.h       | 2 +-
