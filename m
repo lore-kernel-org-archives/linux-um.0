@@ -2,108 +2,88 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5300606A886
-	for <linux-um@archiver.kernel.org>; Sat, 14 Nov 2026 16:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1AA606A32E
+	for <linux-um@archiver.kernel.org>; Sat, 14 Nov 2026 18:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jqhfIm/p;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=nhG/03Y/
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=kOSqhS40;
+	dkim=pass (1024-bit key) header.d=cs.unibo.it header.i=@cs.unibo.it header.a=rsa-sha256 header.s=virtlab header.b=sr0v5n3s
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=; b=jqhfIm/pqfZL7O
-	9am0eIrlFSy3Osz0aMFCk2mF1B60H84cToHzk8gC6RKl9cmMs9dF5pvwT4XM2+XR/Z71lZJBSFZ3u
-	k7/cpvvXvLKYqoJV7hDzC8gDmU6pGiYyoB/dED18oT76LPu9XVyqk2fafUenyhrF14SBsLr7ygRGD
-	WKxMdAQG3E3sTFklAgU/SSUuaRyaNkpT7ltqUGGzzNmdbRTApCKqLSeS7reXszOFT4Vc81oTthlIU
-	9UEbCRAURoeP6pdatnce1bO/6SOV3euVrVy77ukUiWB+ZKpHtf03vGARtne+Qx30WhmJsVSgWuZ47
-	uRXFcwP+ZT+4wP8XRImg==;
+	List-Owner; bh=eXrt6zjXDYGtbkAl2DYVnczzLf0GaCjURpDTDmTj8GU=; b=kOSqhS40dbXAD/
+	KtsOvRVzNPVZeT58PPoIFwPCYiyxyClkPvpX20zU/ZbaGV34Dc7j2/wjJyjv2AmXRC5kTgQSGapPQ
+	5BsKgYPwXbm8cV7tbOJ3V3josuHw/QfA/u9hXOgkLxtGsVP1XTAdJFvd2UQCnQ+vi5Z8aKtHPbE5V
+	J7KPs5z3Q8sQeQxcEozHT4RhJrpi5mgrxLrOJM9ULbhMtRqm/GOMVNcbcgMz0PCBAh2fkYP6GyXDk
+	KaohOrTbWDdnDMGW+W3CwlORM7R06qXo72Z72WN84DeMgNd8Zmt/6A5YiPFJafwVtBX04es9tHufJ
+	XmezTdFuvsoRbX04DOYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSH3l-0000000GUs9-00Tu;
-	Sat, 14 Nov 2026 16:57:01 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
-	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xSH3i-0000000GUqf-3nfQ
+	id 1xSImw-0000000Gd4W-2mHH;
+	Sat, 14 Nov 2026 18:47:46 +0000
+Received: from mail.virtlab.unibo.it ([2001:760:2e00:f0a1::32])
+	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xSImt-0000000Gd3J-04po
 	for linux-um@lists.infradead.org;
-	Sat, 14 Nov 2026 16:57:00 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-3acc7a0b558so21654721fa.3
-        for <linux-um@lists.infradead.org>; Sat, 14 Nov 2026 08:56:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794675416; x=1795280216; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=;
-        b=nhG/03Y/yMPiiKD1PB/H07iK/MSrBbYh80Ly9b/M6cFwxkTfm+ai/aJEbeVqrWjrMg
-         NEb9DmGRqcha1HsPA7VmXEoQsgi44b2mVcEZ0G4X91i1eM2xBsBTB2/772DhpdAMxb05
-         YEPRlkQrh4UrmuS/Gd9uvqL9kF3vppZohDegNMnTXnsGOxC8Hly3qgudi3H9T5migUbK
-         8mwLhdLyYcNkRSDqUfz+bjG0Rmju3ilrzt2tiPtVbAnRC+Q0fsd9oAnqPkModAJlOFY+
-         P4Jvra24o9n34iHsE00NJSGFxSjhSSjvLkicsWEzC+sg13iOUlxxwbQ9UNFWYe9UU1mx
-         Cj8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794675416; x=1795280216;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=uQximJwLYj6Lfa3XenE63rosMCyJlomCN9RTOM5F9N0=;
-        b=dUhidbWbBH1zDzlJtXD9qgWp1iPaNQnQ7q1Z84QruZHIBEBPjmxr+Wu5M6BSOcQBdx
-         c/+nt4cXCTjxuu9SsJHaLLsnx4FmT7eny5mAIlgv4kQ5n7qG+IbJGgsTnuJaTePcTwJU
-         xEcRYoutCj5uT4PBfnKv3zMtUxUyeuSDPNTWW5wXt7nvucPtI4lhMw8c6vOZ6qmQdshh
-         U9Bt38wP80i48OOcquOKqRou82Ve8zIG7KqSNqIjSuPVgzHFsnA+MELi1m+4ojJwBDMh
-         PzHi2kJfsBDC271P6MuftlnCWRxTVBCihzTjPPql7w4tnBoOOBz/X5zHjvE8k3GPDO37
-         0E/g==
-X-Forwarded-Encrypted: i=1; AL+hErHczQAGMS8OJEtun/Pb8KdBDlNpbsk4fDY74Phu4uT6Gl4U+n58uaER7f9Yp5mNCii64uNwdxOWaQ==@lists.infradead.org
-X-Gm-Message-State: APuU4Z/JpF77gDc5vk48Kln6ioJ1EE93Hy/YNLkD2RhGk7HEtZH1uaRo
-	xX6NbYOimJs9bIwbE6/6wTzW3rG3NQBtfQPD+oaT/Vhc41It404ogPrH
-X-Gm-Gg: AYBFou3kI0Y7Yy6PDwhwUGdaNXLzhxiBJ5m+ahfbFHFPfUPmcDzOAGAcz1uvZOBUsCP
-	oYjSs/5Oy1xqHu3bKO2mowiJgNhfGweRJHtY11dANcVJ/0OBg40oQwmPDWGdFr0u2lh9PzX3Bnd
-	ZoIB8goZzC1+Jz8OQF++oJzStEFyobfTICqwmm2QnIhnkGRzjzr1dvHKwow/fKWN80cuPKWepaT
-	Is7/4EcCRyXxsPTaLFKKmJIFJvW0ogvv6uOL+RZ/NL6IsJRubIxMJ8MUzHAkHxpAoZcs9GWXjvq
-	IByDET2/AKzA0Ragyf+cfh9Ech9N5HwgFGyY4oABGelak1FsyWaDOtVR5FxkrJ2w/CQLqN2OVTx
-	9fUGqtlLSoFRcnWA4uONDN/JeUPNFQxP+EyXL4fw2XuJyjaV8oLa/ljvUCRQ5k6zHBc6BJOIKSr
-	+tt/BCYPTS21JydezEnicVToo8vbOtwuwGUkPrneVLIg5/I29X0wKIimCvOosXfLUcoNA0DVITy
-	OmaUF9VR+z6AOW9E6UiI1S3msBtAMrLvYGuA466pErkWaP/1/zeJKmXF+AFmd4v/6Hx4J4EyAM3
-	3E6oJ7MxWLE2QS6pqFQ5ONzJPKFijJg16Dz2Nk5Tq2B39SCG5PJlIyxkFwLYcC+D82Fv+XLiKDf
-	ZKzdNwjCdhQ==
-X-Received: by 2002:a05:651c:b22:b0:3a6:95a:52a6 with SMTP id 38308e7fff4ca-3ae2b51fa1bmr19487401fa.20.1794675416400;
-        Sat, 14 Nov 2026 08:56:56 -0800 (PST)
-Received: from SafoStation ([31.40.65.49])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5c1712dad26sm1792051e87.8.2026.11.14.08.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2026 08:56:56 -0800 (PST)
-From: Safocl Stollmannovic <safocl88@gmail.com>
-To: Ard Biesheuvel <ardb@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@kernel.org>,
+	Sat, 14 Nov 2026 18:47:44 +0000
+Received: from eipi10.cs.unibo.it (host0.studiodavoli.it [109.234.61.1])
+	by mail.virtlab.unibo.it (Postfix) with ESMTPA id F0BC91C025B;
+	Sat, 14 Nov 2026 19:47:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cs.unibo.it;
+	s=virtlab; t=1794682051;
+	bh=rb+3MKxX5aVEtvNPL35DviAvmrKKFIkGgi9tYTrkJVk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=sr0v5n3sFV1hSxJsnNyaJjh9ORnCa2EuxQxIo6EYpQNdWQ9Qdp8NehDSsaYHUChFI
+	 avvhnS/DXptVVDuBIjIj62/RTds4VX8/oZy/mFF8YzIUKeKafi2KnqVbePJqo7OvdS
+	 3w6F4suIu5/B1ADHz2yBJmYpIv7VdqBsBMlcJmDE=
+From: Renzo Davoli <renzo@cs.unibo.it>
+To: linux-kernel@vger.kernel.org
+Cc: Renzo Davoli <renzo@cs.unibo.it>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexey Gladkov <legion@kernel.org>,
+	Eugene Syromyatnikov <evgsyr@gmail.com>,
+	Davide Berardi <berardi.dav@gmail.com>,
+	"Dmitry V . Levin" <ldv@strace.io>,
+	=?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	strace-devel@lists.strace.io,
+	linux-api@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Brian Cain <bcain@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Simon Schuster <schuster.simon@siemens-energy.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-kernel@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-pm@vger.kernel.org,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	linux-alpha@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH v3 07/14] x86: fix duplicate extern declarations
-Date: Sat, 14 Nov 2026 20:55:47 +0400
-Message-ID: <20261114165612.368785-8-safocl88@gmail.com>
-X-Mailer: git-send-email 2.56.1
-In-Reply-To: <20261114165612.368785-1-safocl88@gmail.com>
-References: <20261114165612.368785-1-safocl88@gmail.com>
+Subject: [PATCH v4 1/3] asm/ptrace.h: add instruction_pointer_set
+Date: Sat, 14 Nov 2026 19:47:16 +0100
+Message-ID: <20261114184720.373178-2-renzo@cs.unibo.it>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261114184720.373178-1-renzo@cs.unibo.it>
+References: <20261114184720.373178-1-renzo@cs.unibo.it>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261114_085658_990601_1C06375C 
-X-CRM114-Status: GOOD (  13.02  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261114_104743_232963_1599A3F0 
+X-CRM114-Status: UNSURE (   9.03  )
+X-CRM114-Notice: Please train this message.
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,149 +94,147 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Compiling a kernel module with a C++ compiler results in a "duplicate
-extern specifier" error.
-This occurs because the code contains `extern asmlinkage`, and `asmlinkage`
-expands to `extern C` when processed by a C++ compiler.
-Since the code already contains sections that respond to a C++ compiler,
-I believe it is a perfectly valid approach to gradually move toward a state
-where kernel modules can be compiled by a C++ compiler without any issues.
-The `extern` specifier must be removed.
+Add an instruction_pointer_set function for architectures that do
+not currently provide one.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=222257
-Signed-off-by: Safocl Stollmannovic <safocl88@gmail.com>
+Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
 ---
- arch/x86/include/asm/efi.h       | 2 +-
- arch/x86/include/asm/gsseg.h     | 2 +-
- arch/x86/include/asm/preempt.h   | 8 ++++----
- arch/x86/include/asm/processor.h | 2 +-
- arch/x86/include/asm/suspend.h   | 2 +-
- arch/x86/um/sys_call_table_32.c  | 4 ++--
- arch/x86/um/sys_call_table_64.c  | 4 ++--
- 7 files changed, 12 insertions(+), 12 deletions(-)
+ arch/alpha/include/asm/ptrace.h      | 6 ++++++
+ arch/hexagon/include/asm/ptrace.h    | 6 ++++++
+ arch/m68k/include/asm/ptrace.h       | 6 ++++++
+ arch/microblaze/include/asm/ptrace.h | 6 ++++++
+ arch/nios2/include/asm/ptrace.h      | 6 ++++++
+ arch/um/include/asm/ptrace-generic.h | 6 ++++++
+ arch/xtensa/include/asm/ptrace.h     | 6 ++++++
+ 7 files changed, 42 insertions(+)
 
-diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-index be58b7f5c..f5cb179b8 100644
---- a/arch/x86/include/asm/efi.h
-+++ b/arch/x86/include/asm/efi.h
-@@ -94,7 +94,7 @@ static inline void efi_fpu_end(void)
- #else /* !CONFIG_X86_32 */
- #define EFI_X86_KERNEL_ALLOC_LIMIT		EFI_ALLOC_LIMIT
- 
--extern asmlinkage u64 __efi_call(void *fp, ...);
-+asmlinkage u64 __efi_call(void *fp, ...);
- 
- extern bool efi_disable_ibt_for_runtime;
- 
-diff --git a/arch/x86/include/asm/gsseg.h b/arch/x86/include/asm/gsseg.h
-index ab6a595ce..81ef16081 100644
---- a/arch/x86/include/asm/gsseg.h
-+++ b/arch/x86/include/asm/gsseg.h
-@@ -12,7 +12,7 @@
- 
- #ifdef CONFIG_X86_64
- 
--extern asmlinkage void asm_load_gs_index(u16 selector);
-+asmlinkage void asm_load_gs_index(u16 selector);
- 
- /* Replace with "lkgs %di" once binutils support LKGS instruction */
- #define LKGS_DI _ASM_BYTES(0xf2,0x0f,0x00,0xf7)
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index d16d9c2f7..135695ae3 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -134,11 +134,11 @@ static __always_inline bool should_resched(int preempt_offset)
- 
- #ifdef CONFIG_PREEMPTION
- 
--extern asmlinkage void preempt_schedule(void);
--extern asmlinkage void preempt_schedule_thunk(void);
-+asmlinkage void preempt_schedule(void);
-+asmlinkage void preempt_schedule_thunk(void);
- 
--extern asmlinkage void preempt_schedule_notrace(void);
--extern asmlinkage void preempt_schedule_notrace_thunk(void);
-+asmlinkage void preempt_schedule_notrace(void);
-+asmlinkage void preempt_schedule_notrace_thunk(void);
- 
- #define __preempt_schedule() \
- 	asm volatile ("call preempt_schedule_thunk" : ASM_CALL_CONSTRAINT);
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 77488ff5e..68d7292af 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -455,7 +455,7 @@ static inline unsigned long cpu_kernelmode_gs_base(int cpu)
- #endif
+diff --git a/arch/alpha/include/asm/ptrace.h b/arch/alpha/include/asm/ptrace.h
+index 45d1229344b6..1a6f073e892e 100644
+--- a/arch/alpha/include/asm/ptrace.h
++++ b/arch/alpha/include/asm/ptrace.h
+@@ -33,6 +33,12 @@ static __always_inline bool regs_irqs_disabled(struct pt_regs *regs)
+ 	return arch_irqs_disabled_flags(regs->ps);
  }
  
--extern asmlinkage void entry_SYSCALL32_ignore(void);
-+asmlinkage void entry_SYSCALL32_ignore(void);
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ /* Syscall emulation defines */
+ #define PTRACE_SYSEMU			0x1d
+ #define PTRACE_SYSEMU_SINGLESTEP	0x1e
+diff --git a/arch/hexagon/include/asm/ptrace.h b/arch/hexagon/include/asm/ptrace.h
+index ed35da1ee685..0a121f6e3bfc 100644
+--- a/arch/hexagon/include/asm/ptrace.h
++++ b/arch/hexagon/include/asm/ptrace.h
+@@ -18,6 +18,12 @@ extern const char *regs_query_register_name(unsigned int offset);
+ 	((struct pt_regs *) \
+ 	 ((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
  
- /* Save actual FS/GS selectors and bases to current->thread */
- void current_save_fsgs(void);
-diff --git a/arch/x86/include/asm/suspend.h b/arch/x86/include/asm/suspend.h
-index a892494ca..e29c071b9 100644
---- a/arch/x86/include/asm/suspend.h
-+++ b/arch/x86/include/asm/suspend.h
-@@ -11,4 +11,4 @@ extern unsigned long temp_pgt __visible;
- extern unsigned long relocated_restore_code __visible;
- extern int relocate_restore_code(void);
- /* Defined in hibernate_asm_32/64.S */
--extern asmlinkage __visible int restore_image(void);
-+asmlinkage __visible int restore_image(void);
-diff --git a/arch/x86/um/sys_call_table_32.c b/arch/x86/um/sys_call_table_32.c
-index 51655133e..f79c0138e 100644
---- a/arch/x86/um/sys_call_table_32.c
-+++ b/arch/x86/um/sys_call_table_32.c
-@@ -9,7 +9,7 @@
- #include <linux/cache.h>
- #include <asm/syscall.h>
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ #if CONFIG_HEXAGON_ARCH_VERSION >= 4
+ #define arch_has_single_step()	(1)
+ #endif
+diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrace.h
+index bc86ce012025..6e8a8f0daee8 100644
+--- a/arch/m68k/include/asm/ptrace.h
++++ b/arch/m68k/include/asm/ptrace.h
+@@ -18,6 +18,12 @@
+ 	(struct pt_regs *)((char *)current_thread_info() + THREAD_SIZE) - 1
+ #define current_user_stack_pointer() rdusp()
  
--extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
-+asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
- 				      unsigned long, unsigned long,
- 				      unsigned long, unsigned long);
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ #define arch_has_single_step()	(1)
  
-@@ -28,7 +28,7 @@ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
- #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
- #define __SYSCALL_NORETURN __SYSCALL
+ #ifdef CONFIG_MMU
+diff --git a/arch/microblaze/include/asm/ptrace.h b/arch/microblaze/include/asm/ptrace.h
+index 17982292a64f..69e10658d7a9 100644
+--- a/arch/microblaze/include/asm/ptrace.h
++++ b/arch/microblaze/include/asm/ptrace.h
+@@ -20,5 +20,11 @@ static inline long regs_return_value(struct pt_regs *regs)
+ 	return regs->r3;
+ }
  
--#define __SYSCALL(nr, sym) extern asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
-+#define __SYSCALL(nr, sym) asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- #include <asm/syscalls_32.h>
- #undef  __SYSCALL
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ #endif /* __ASSEMBLER__ */
+ #endif /* _ASM_MICROBLAZE_PTRACE_H */
+diff --git a/arch/nios2/include/asm/ptrace.h b/arch/nios2/include/asm/ptrace.h
+index 96cbcd40c7ce..d120d8ecb187 100644
+--- a/arch/nios2/include/asm/ptrace.h
++++ b/arch/nios2/include/asm/ptrace.h
+@@ -70,6 +70,12 @@ struct switch_stack {
+ #define user_stack_pointer(regs)	((regs)->sp)
+ extern void show_regs(struct pt_regs *);
  
-diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
-index 943d414f2..555e65e66 100644
---- a/arch/x86/um/sys_call_table_64.c
-+++ b/arch/x86/um/sys_call_table_64.c
-@@ -9,7 +9,7 @@
- #include <linux/cache.h>
- #include <asm/syscall.h>
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ #define current_pt_regs() \
+ 	((struct pt_regs *)((unsigned long)current_thread_info() + THREAD_SIZE)\
+ 		- 1)
+diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
+index 62e9916078ec..632d4ce3334d 100644
+--- a/arch/um/include/asm/ptrace-generic.h
++++ b/arch/um/include/asm/ptrace-generic.h
+@@ -29,6 +29,12 @@ struct pt_regs {
  
--extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
-+asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
- 				      unsigned long, unsigned long,
- 				      unsigned long, unsigned long);
+ #define PTRACE_OLDSETOPTIONS 21
  
-@@ -24,7 +24,7 @@ extern asmlinkage long sys_ni_syscall(unsigned long, unsigned long,
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ #ifdef CONFIG_BINFMT_ELF_FDPIC
+ #define PTRACE_GETFDPIC		31
+ #define PTRACE_GETFDPIC_EXEC	0
+diff --git a/arch/xtensa/include/asm/ptrace.h b/arch/xtensa/include/asm/ptrace.h
+index d0568ff6d349..97b14418955e 100644
+--- a/arch/xtensa/include/asm/ptrace.h
++++ b/arch/xtensa/include/asm/ptrace.h
+@@ -103,6 +103,12 @@ static inline unsigned long regs_return_value(struct pt_regs *regs)
+ 	return regs->areg[2];
+ }
  
- #define __SYSCALL_NORETURN __SYSCALL
- 
--#define __SYSCALL(nr, sym) extern asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
-+#define __SYSCALL(nr, sym) asmlinkage long sym(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long);
- #include <asm/syscalls_64.h>
- #undef  __SYSCALL
++static inline void instruction_pointer_set(struct pt_regs *regs,
++					   unsigned long val)
++{
++	instruction_pointer(regs) = val;
++}
++
+ int do_syscall_trace_enter(struct pt_regs *regs);
+ void do_syscall_trace_leave(struct pt_regs *regs);
  
 -- 
-2.56.1
+2.47.3
 
 
