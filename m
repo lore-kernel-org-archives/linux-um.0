@@ -2,124 +2,107 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3088A606A31C
-	for <linux-um@archiver.kernel.org>; Mon, 16 Nov 2026 18:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08833606A31C
+	for <linux-um@archiver.kernel.org>; Mon, 16 Nov 2026 23:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vWfLtjt3;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=KdHj0mrw
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Xxhd84rk;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cuac3FNc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=; b=vWfLtjt3qctYpI
-	/b1ojo04LE6R6IUZEK9rRwOpVGj0rn/fgyXDwC/HoqAtrStGWLoOnt9NpJ+2AnJtYtwocsbmOKFdt
-	SzgaXoPUwJvd2Vr6quSqT7lXdCAAQ/M6nhfqEoo7WYa4PXzhthW3fYoJbuTJRxGZMTDPyI0KYzd0n
-	y78IDjuywlfhu122B8d7U/jfeM0pZhzZKb4+qRPzD7yhcH3D0S1xM/exWbjFvaS+s6RF4MVjF6T51
-	8IKOgT4Ly7CxzMw+E8Q3WUxg3oimixaAvHITB4ELkPB9c6zAxEnxiz4hy+UOIJ0kC5uSa6tDQy6qU
-	pB+WNurc1cS3RUgEZAHw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	Content-Transfer-Encoding:Cc:To:Message-Id:Content-Type:MIME-Version:Subject:
+	Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Unsubscribe-Post:List-Owner;
+	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=; b=Xxhd84rku3Wko2/BQ5ljET/Crk
+	uZw3KW46JCtJ2J85CrTTphF2MvHLN3Q32YIcY8ya/cTmFEovYnoKzQMXB/AiZNwapCV0O0kaqpkH+
+	JDynPIFH7k4MpefILHc31I4uTK6LBC4rnsCdDJW5GdGN6TUQqKAh1wNaWTHyToKJJuw7IzE2q6Sx+
+	f5q5e6k9aC9f1IaKyfQ4KGxzwDdlDoXuWfaedKTprjxZk0j85iPLiZD8w/ZQfT9QPe1hqUc/Vdp+A
+	vKjlMd+qtZEJqXTwddXUKQ1tg6YCgCQEcJw1r3mwsOP9Md9dxEk1T4taZYJ8M5lixEwBL1vyiubCH
+	jJDFCPwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xT1AH-00000003VDB-39rV;
-	Mon, 16 Nov 2026 18:10:49 +0000
-Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
+	id 1xT6Lx-00000004Btk-1xvQ;
+	Mon, 16 Nov 2026 23:43:13 +0000
+Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xT1AD-00000003VCf-1HMV
+	id 1xT6Lw-00000004BtS-0ONm
 	for linux-um@lists.infradead.org;
-	Mon, 16 Nov 2026 18:10:47 +0000
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-6b785ca42ebso5788506a12.2
-        for <linux-um@lists.infradead.org>; Mon, 16 Nov 2026 10:10:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794852643; cv=none;
-        d=google.com; s=arc-20260327;
-        b=Rlf+TaIqaPfHffpiJOGRvzthTGfIHS+KYgh3FqUV7e2KxHP7FbaftmtUxg7tbPO+m/
-         WLPfU1MR9y1rgU5E7GIUSz7xKlWWdtjpIOQ1U8lrhFu7jbuHURjxUvcD3CwjsNogt4WG
-         it/DTxrhjL5wk9xROamTIgkwd5+fk6D3GWpIV8XgAJkzqx4VGAvEPirH2jiVLtotOWtL
-         u5pcyZKy/ugopg3uY81tr0e8YH01EGpsI8KMMdxw+hY42911YTGJyLgyIqEPgJdlZzh1
-         TV5gSKlsNrwFMAIjw3i40Cj1cLKMk12nZf3DaHb2noIOiBeiFjMNCXa9BSYMNYRvgnkJ
-         5/Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
-        fh=ah3YFWfqTYrwSCN4uR7NsJLKTanTeFzZoXhsyTFaK+Q=;
-        b=s5fvrKFvetg393zj7sbIfEVUdZURsPcB5crKdHmeI5LS8yg5O8iiZOtYJURnSIzbNf
-         O8rW99PQuVmNYTL8BEfUaWWu8uisAnYPQCYhbCRkktOCaukYenDACbuB9SUWLNx9aHm5
-         0yShxE4QS/CbgzfmuLE68B5T6VJ0ztIuR1I0R/2QwMNWP1mHwledk1nur6kJeIi9Fc6M
-         n/zzb5uSSC+qg5ctxUA5wvbThoW+ovN9//x2xnfJmJ1X5UkTAh/oJUZYYE0uhAzq9Mqs
-         J0hzms/KMRet4JYTnkdcM9bJ0X9iA+nGrzzLmcQZEaOAZ5H5/Pyuv+SWsU7FDSTF07cS
-         nTxg==;
-        darn=lists.infradead.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794852643; x=1795457443; darn=lists.infradead.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
-        b=KdHj0mrwUi4lusFOy10MHeYlkt5bvC5n+kB+VO2mF1ohB69OjYBtfqCVkb1V7h3qh3
-         +2AcjX++VUBvzFej011Hw/A2aMceLOlav3k+NLLWpib6xffAfFORlEEBjuXcIgzMhamr
-         Ps/RjRIfpxGpr8rj1NLA8PuvfA40wdyGw6IuinyiQO9zqCaLnPlrU5Wu+ZuAfikBgy/u
-         sql9cnqQg1/KCK0TgZTskAWM4yI4QPxWqWc7xxjLXAsC9qxNJoB2PGK2Xb/GFcpe27cb
-         FRzaQmQqVYpiMIrhusjz44hEdeJmojrFAT5537Dsmkx2pY64lh5p7uba0qimx4ZVSdX4
-         yB6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794852643; x=1795457443;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
-        b=LzIqaZDU6iqnpU0GWgwDJBFuWVtHLev1/XFKzWe5bcbWsriieTfjLx+zRuvnFqmkjU
-         5dkj51uD+DvKWd3WtMU3YuVknkBKIwIzUHN8HxTtgfKD/kiHVMIcrzrYtLJ9BRzLQZzJ
-         ATp51whOF2lToCsUacXQ6blRzDb7TBX7PsKw/YWqjxnpsQSfyv/NH+nAYlkQYHxVuPDH
-         4Qe9JhLngrfkc87imoHdwUNem93C8cimOSKU+HvPHYfonEGLyNIW444Yzg/626cM4xXj
-         +kqC5m/pPcmymXMkI9u/R2bGjZPiyul1HX4QVaD7Fs/Y+grqwZVv8/04GwDQkB7+lByw
-         wPuA==
-X-Forwarded-Encrypted: i=1; AL+hErGPhsQ0PXqMFWm/q5XtMyudmXEn9mkMwHOj5hgh4su+ZXThPw85jBZpYHmWSaHS2oSHj3m06AEQBg==@lists.infradead.org
-X-Gm-Message-State: APuU4Z+EAgQQDsqlGDA/A9rj5Yv9VhUySA5xGaP8l2mqvjF4Gp/cQg3m
-	rizsG70KBEsLIXS2PTqTjN5LZkQ0G57VSO3XCe928LpknLyICNBUWZ1PiRBOMl3W5sXfsxhEX8m
-	Ie2rzuVlgAy5gApexAZ5Q/bibxUBIO14=
-X-Gm-Gg: AYBFou1QvLi65VPSSjosF+vm0O2qj9ZdXPYX0W92DrLli1v96/aFAvowln7XG1W+cQC
-	t2Y6RV9A0Dgm4hVreFRq1je3W4boloisLgRDeIqSgMM/PLT4XRwweY7uHG6Vd5YSs6gs/YBZqz3
-	XyKwzVf/Hmjg5hYsuIOiVtJMCy57UrcuJUOTXZ7OwaNSiMcT77zr9LVWY3wyrcQli5gpOH1idl2
-	gDoP0lZKF7F1LkgqGZP6+17mrFrTmgPhQVRdpWs1eiCDVLgUqTzASh/v5kR/hYjlTFtB/XLoyZX
-	SrSysu8uGe34POz9zRGreuz3mMViw7zletMuF+Bf+LakUAqL3OljL0hTIPijbQO5G+FXwOGk9mo
-	NI9bY7p+TUOPxEUVlb7hGDlYKkvQLrsTQBsUkHxcsRIGVBNj1LJ9q6k9eNtRYNeWXwRBCzyfH5S
-	Ae13M/3nlclTlazCj8yXbVwV36BdR5hJH54KLosAYC4eAU
-X-Received: by 2002:aa7:c4cc:0:b0:6b4:1037:2bb1 with SMTP id
- 4fb4d7f45d1cf-6b7c0bc27a9mr6612692a12.22.1794852642773; Mon, 16 Nov 2026
- 10:10:42 -0800 (PST)
+	Mon, 16 Nov 2026 23:43:12 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7A954456B6;
+	Mon, 16 Nov 2026 23:43:11 +0000 (UTC)
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794872591;
+	b=3EXYEP/VHtgbs6cfQQvYLUDgup7DRQprd1NBJqdjFh2rnao/Xy2PHBvSsiJgKe9mcP97
+	 CyhYoJukPfkzT+SqP4TdxkjBy09tjneCPJFasdUTcnxDrSVlX/CXPfuyap2H3akfEWTNJ
+	 QcfrEXvFxkkPbnPnkKuCKCZiU2s5UmXoROtdObiQpjAdbUb+fztrSRT1+x1KVQjHWO00f
+	 ihhuGnsjAopICsnkLc/Iefqggd3AfXtipObBmRUzrOxFi9oueKTslue+yeDAb+LF5NJ9P
+	 A/GZkUa8kfyiBz9bcSl0cQpogYPjTUfohBL1LmLCHIE3iE5JifgQPYk2BYQ6YmJ2Lhw==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794872591;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=;
+	b=ASXDsbgtGfa1nOkIdLZ9Mmw0T1z8J42puNaWLjw1UL2FiVWQQ8v+sTP1y/4Z0obURzsu
+	 mS2+317eYbSbGMs6tqnC3q9Fny0YISsibF9tBkUPuEaBXVZTOfOzF3GF9YPnaNTX5MaLt
+	 hg+UlaLBHzX+NBhakipBiEBXqcPJuXKKybP1gz1zM75gnMVCTShwky37Upx5snX3det/L
+	 p1NXKpowOW4okIkuuWxJBsu83cRUBjXjke1ocQhk8QcYig9oUa7VuK/O3In5UVUZ38cCm
+	 dJPStmTLTqICvUkI35rB7pZ8FWPGMc1MWnUvWrQ8Gji8mpu5tBmQgTCP/fE6pyjWO4Q==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id C5F061F000C4;
+	Mon, 16 Nov 2026 23:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794872591;
+	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=cuac3FNcQyI77ZfxSz/79kJ7LlBzaJuEuwPGmVgTm8s62G5DniyvYJgMk4ywfJBCU
+	 hZ9K35l/qo7S5sElnwlx87r7/dW/BY/vYPJRAxfcTNmoxgZdOOfa2BXTql1D4EKzKS
+	 K9jaWdfgF2o3enAST3FvmNdPgHrK+S00kVqHLVprRPrEAClNVH6vCpYllLnNH7KcPO
+	 KXfaHyt8bQZdI7vJODEjOBnCdPOmcu+iSHsW2D+qv/J7tlndZvPH3YYyPwWmrqwoVu
+	 mMsuYS0eNWkijxKD6/YDSthm8IJeLbH8BUK9j9ZYBXQkhgc2yJXvriX2RA8IocNkuv
+	 5REg816NgFl7Q==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 537F04A62C;
+	Mon, 16 Nov 2026 23:43:10 +0000 (UTC)
+From: Brad Fitzpatrick via B4 Relay <devnull+bradfitz.tailscale.com@kernel.org>
+Date: Mon, 16 Nov 2026 23:43:10 +0000
+Subject: [PATCH] um: time-travel: don't use uninitialized fds from START
+ ACK
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-References: <20261114184720.373178-1-renzo@cs.unibo.it> <20261114184720.373178-2-renzo@cs.unibo.it>
-In-Reply-To: <20261114184720.373178-2-renzo@cs.unibo.it>
-From: Magnus Lindholm <linmag7@gmail.com>
-Date: Mon, 16 Nov 2026 19:10:30 +0100
-X-Gm-Features: AclHuK-3zf0u-_tVqqSwOuwnlXe0JuQIB0eE-s6YSpQo7rK-ZYPGihb4jDlFOAE
-Message-ID: <CA+=Fv5QPMYffznpkrEhZ3pMWtpHwNUUa3OaHxLexu8S47a7tRQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] asm/ptrace.h: add instruction_pointer_set
-To: Renzo Davoli <renzo@cs.unibo.it>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>, Alexey Gladkov <legion@kernel.org>, 
-	Eugene Syromyatnikov <evgsyr@gmail.com>, Davide Berardi <berardi.dav@gmail.com>, 
-	"Dmitry V . Levin" <ldv@strace.io>, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, strace-devel@lists.strace.io, 
-	linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261116_101045_386908_F23E8D61 
-X-CRM114-Status: GOOD (  16.31  )
-X-Spam-Score: -0.8 (/)
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261116-bradfitz-um-tt-start-ack-fds-v1-1-c98901dfba85@tailscale.com>
+X-B4-Tracking: v=1; b=H4sIAA2V+2oC/yXMSwrCMBAA0KuUWTuQFIzRq4iLfCY6ilUy0yItv
+ XujLt/mLSBUmQRO3QKVJhZ+DQ1210G6heFKyLkZetM7a63DWEMurDOOT1RF0VAVQ3pgyYLROxM
+ O/uj3JkMr3pUKf379+fK3jPFOSb8nrOsGKAwxxYAAAAA=
+X-Change-ID: 20261116-bradfitz-um-tt-start-ack-fds-b860a789850d
+To: Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Mordechay Goodstein <mordechay.goodstein@intel.com>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Brad Fitzpatrick <bradfitz@tailscale.com>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794872590; l=3107;
+ i=bradfitz@tailscale.com; s=20261011; h=from:subject:message-id;
+ bh=svJ5VLX3SY7Jwr6l6XQ1OWwW8bhiwm/+jQGOHWzz8T0=;
+ b=IOkJl5/z0TBUNrib7G4B/VeY4RTdfS4W6M/93O6qhhvWvl0no+N7OU0egfkK5LnBL2JdBbfBE
+ 4/KxOKojlN/Dz9GzqVCiDuFx7wEyva2Tm4jpJMDzkO/BdC0/LOYQcNx
+X-Developer-Key: i=bradfitz@tailscale.com; a=ed25519;
+ pk=RL25YdOUenVJzQaiZDrw/Aqu9ZEwUQBon30yMHGsIKY=
+X-Endpoint-Received: by B4 Relay for bradfitz@tailscale.com/20261011 with
+ auth_id=1152
+X-Original-From: Brad Fitzpatrick <bradfitz@tailscale.com>
+Content-Transfer-Encoding: 7bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,181 +112,96 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: bradfitz@tailscale.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_GMAIL_RCVD,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-Hi Renzo,
+From: Brad Fitzpatrick <bradfitz@tailscale.com>
 
-On Sat, Nov 14, 2026 at 7:47=E2=80=AFPM Renzo Davoli <renzo@cs.unibo.it> wr=
-ote:
->
-> Add an instruction_pointer_set function for architectures that do
-> not currently provide one.
->
-> Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
-> ---
->  arch/alpha/include/asm/ptrace.h      | 6 ++++++
->  arch/hexagon/include/asm/ptrace.h    | 6 ++++++
->  arch/m68k/include/asm/ptrace.h       | 6 ++++++
->  arch/microblaze/include/asm/ptrace.h | 6 ++++++
->  arch/nios2/include/asm/ptrace.h      | 6 ++++++
->  arch/um/include/asm/ptrace-generic.h | 6 ++++++
->  arch/xtensa/include/asm/ptrace.h     | 6 ++++++
->  7 files changed, 42 insertions(+)
->
-> diff --git a/arch/alpha/include/asm/ptrace.h b/arch/alpha/include/asm/ptr=
-ace.h
-> index 45d1229344b6..1a6f073e892e 100644
-> --- a/arch/alpha/include/asm/ptrace.h
-> +++ b/arch/alpha/include/asm/ptrace.h
-> @@ -33,6 +33,12 @@ static __always_inline bool regs_irqs_disabled(struct =
-pt_regs *regs)
->         return arch_irqs_disabled_flags(regs->ps);
->  }
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  /* Syscall emulation defines */
->  #define PTRACE_SYSEMU                  0x1d
->  #define PTRACE_SYSEMU_SINGLESTEP       0x1e
-> diff --git a/arch/hexagon/include/asm/ptrace.h b/arch/hexagon/include/asm=
-/ptrace.h
-> index ed35da1ee685..0a121f6e3bfc 100644
-> --- a/arch/hexagon/include/asm/ptrace.h
-> +++ b/arch/hexagon/include/asm/ptrace.h
-> @@ -18,6 +18,12 @@ extern const char *regs_query_register_name(unsigned i=
-nt offset);
->         ((struct pt_regs *) \
->          ((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  #if CONFIG_HEXAGON_ARCH_VERSION >=3D 4
->  #define arch_has_single_step() (1)
->  #endif
-> diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrac=
-e.h
-> index bc86ce012025..6e8a8f0daee8 100644
-> --- a/arch/m68k/include/asm/ptrace.h
-> +++ b/arch/m68k/include/asm/ptrace.h
-> @@ -18,6 +18,12 @@
->         (struct pt_regs *)((char *)current_thread_info() + THREAD_SIZE) -=
- 1
->  #define current_user_stack_pointer() rdusp()
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  #define arch_has_single_step() (1)
->
->  #ifdef CONFIG_MMU
-> diff --git a/arch/microblaze/include/asm/ptrace.h b/arch/microblaze/inclu=
-de/asm/ptrace.h
-> index 17982292a64f..69e10658d7a9 100644
-> --- a/arch/microblaze/include/asm/ptrace.h
-> +++ b/arch/microblaze/include/asm/ptrace.h
-> @@ -20,5 +20,11 @@ static inline long regs_return_value(struct pt_regs *r=
-egs)
->         return regs->r3;
->  }
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  #endif /* __ASSEMBLER__ */
->  #endif /* _ASM_MICROBLAZE_PTRACE_H */
-> diff --git a/arch/nios2/include/asm/ptrace.h b/arch/nios2/include/asm/ptr=
-ace.h
-> index 96cbcd40c7ce..d120d8ecb187 100644
-> --- a/arch/nios2/include/asm/ptrace.h
-> +++ b/arch/nios2/include/asm/ptrace.h
-> @@ -70,6 +70,12 @@ struct switch_stack {
->  #define user_stack_pointer(regs)       ((regs)->sp)
->  extern void show_regs(struct pt_regs *);
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  #define current_pt_regs() \
->         ((struct pt_regs *)((unsigned long)current_thread_info() + THREAD=
-_SIZE)\
->                 - 1)
-> diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/p=
-trace-generic.h
-> index 62e9916078ec..632d4ce3334d 100644
-> --- a/arch/um/include/asm/ptrace-generic.h
-> +++ b/arch/um/include/asm/ptrace-generic.h
-> @@ -29,6 +29,12 @@ struct pt_regs {
->
->  #define PTRACE_OLDSETOPTIONS 21
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  #ifdef CONFIG_BINFMT_ELF_FDPIC
->  #define PTRACE_GETFDPIC                31
->  #define PTRACE_GETFDPIC_EXEC   0
-> diff --git a/arch/xtensa/include/asm/ptrace.h b/arch/xtensa/include/asm/p=
-trace.h
-> index d0568ff6d349..97b14418955e 100644
-> --- a/arch/xtensa/include/asm/ptrace.h
-> +++ b/arch/xtensa/include/asm/ptrace.h
-> @@ -103,6 +103,12 @@ static inline unsigned long regs_return_value(struct=
- pt_regs *regs)
->         return regs->areg[2];
->  }
->
-> +static inline void instruction_pointer_set(struct pt_regs *regs,
-> +                                          unsigned long val)
-> +{
-> +       instruction_pointer(regs) =3D val;
-> +}
-> +
->  int do_syscall_trace_enter(struct pt_regs *regs);
->  void do_syscall_trace_leave(struct pt_regs *regs);
->
-> --
-> 2.47.3
->
+When the kernel connects to an external time-travel controller, it
+expects the ACK of its UM_TIMETRAVEL_START message to carry two file
+descriptors: the shared memory area and a log file. It reads them with
+os_rcv_fd_msg() into an uninitialized on-stack array, and then uses
+both array elements whenever the message itself was received in full.
 
-The Alpha change looks good and applies cleanly on my for-next,
-including the generic-entry fixes.
+os_rcv_fd_msg() leaves the array untouched if the message came without
+an SCM_RIGHTS control message. That is what any controller that does
+not implement the shared memory extension sends, which the protocol
+allows: such controllers are why the kernel falls back to message
+based scheduling. In that case the kernel passes stack garbage to
+mmap() and then close()s both values.
 
-Tested both series together on my AlphaServer ES40. The ptrace
-selftests passed on all three CPUs, including syscall skipping
-and instruction-pointer modification.
+With CONFIG_INIT_STACK_ALL_ZERO, the default where the compiler
+supports it, the garbage is 0, so the kernel closes its own stdin. The
+next file descriptor it opens, the epoll instance used for IRQs, then
+becomes fd 0:
 
-For the Alpha part:
+  $ ls -l /proc/$(pidof linux)/fd
+  0 -> anon_inode:[eventpoll]
+  1 -> /tmp/uml.log
+  2 -> /tmp/uml.log
+  3 -> /dev/shm/#200843
+  4 -> socket:[216518625]
 
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
-Tested-by: Magnus Lindholm <linmag7@gmail.com>
+Without stack initialization the kernel may instead close, or map as
+the scheduling area, any file descriptor at all.
 
-Thanks,
-Magnus
+Initialize the array to -1 and only use the descriptors that were
+actually received. With the fix, fd 0 stays what it was and the epoll
+instance gets the next free number.
+
+Fixes: bfb80d8bc92f ("um: add shared memory optimisation for time-travel=ext")
+Signed-off-by: Brad Fitzpatrick <bradfitz@tailscale.com>
+---
+ arch/um/kernel/time.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index d620b6d6310a5..bcb141b419722 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -141,15 +141,23 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
+ 	}
+ 
+ 	if (unlikely(mode == TTMH_READ_START_ACK)) {
+-		int fd[UM_TIMETRAVEL_SHARED_MAX_FDS];
++		int fd[UM_TIMETRAVEL_SHARED_MAX_FDS] = {
++			[0 ... UM_TIMETRAVEL_SHARED_MAX_FDS - 1] = -1,
++		};
+ 
+ 		ret = os_rcv_fd_msg(time_travel_ext_fd, fd,
+ 				    ARRAY_SIZE(fd), msg, sizeof(*msg));
+ 		if (ret == sizeof(*msg)) {
+-			time_travel_setup_shm(fd[UM_TIMETRAVEL_SHARED_MEMFD],
+-					      msg->time & UM_TIMETRAVEL_START_ACK_ID);
++			/*
++			 * A controller without shared memory support
++			 * sends no file descriptors with its ACK.
++			 */
++			if (fd[UM_TIMETRAVEL_SHARED_MEMFD] >= 0)
++				time_travel_setup_shm(fd[UM_TIMETRAVEL_SHARED_MEMFD],
++						      msg->time & UM_TIMETRAVEL_START_ACK_ID);
+ 			/* we don't use the logging for now */
+-			os_close_file(fd[UM_TIMETRAVEL_SHARED_LOGFD]);
++			if (fd[UM_TIMETRAVEL_SHARED_LOGFD] >= 0)
++				os_close_file(fd[UM_TIMETRAVEL_SHARED_LOGFD]);
+ 		}
+ 	} else {
+ 		ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
+
+---
+base-commit: 7ea2308ccebce754fd1ac6295f26983a6878045d
+change-id: 20261116-bradfitz-um-tt-start-ack-fds-b860a789850d
+
+Best regards,
+--  
+Brad Fitzpatrick <bradfitz@tailscale.com>
+
+
 
