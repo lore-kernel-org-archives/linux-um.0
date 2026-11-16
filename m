@@ -2,107 +2,132 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08833606A31C
-	for <linux-um@archiver.kernel.org>; Mon, 16 Nov 2026 23:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED76606A31C
+	for <linux-um@archiver.kernel.org>; Tue, 17 Nov 2026 00:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Xxhd84rk;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cuac3FNc
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=dKOMfPRH;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=kRzcoJ66;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=sxTVMqnc
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Cc:To:Message-Id:Content-Type:MIME-Version:Subject:
-	Date:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
+	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=; b=Xxhd84rku3Wko2/BQ5ljET/Crk
-	uZw3KW46JCtJ2J85CrTTphF2MvHLN3Q32YIcY8ya/cTmFEovYnoKzQMXB/AiZNwapCV0O0kaqpkH+
-	JDynPIFH7k4MpefILHc31I4uTK6LBC4rnsCdDJW5GdGN6TUQqKAh1wNaWTHyToKJJuw7IzE2q6Sx+
-	f5q5e6k9aC9f1IaKyfQ4KGxzwDdlDoXuWfaedKTprjxZk0j85iPLiZD8w/ZQfT9QPe1hqUc/Vdp+A
-	vKjlMd+qtZEJqXTwddXUKQ1tg6YCgCQEcJw1r3mwsOP9Md9dxEk1T4taZYJ8M5lixEwBL1vyiubCH
-	jJDFCPwg==;
+	bh=VclKIlHHA6sJRvKYQDUB0ymsoIETh0nxUoTC2xTBROc=; b=dKOMfPRH7Govte5eZfS2dkQ18l
+	/qlyLciSwsbGsGGQBTYbdazbAkWAWhvX0aV9QfzYaI2Wisx8ktbDpO6kG2NiEZD0UQrWrgeLepSh/
+	VoEI+b21m+Z2YgfTy9Z29DlA3LyQW94CzLSoCVASI1UE3pfTw/Krf7EO8L8vnFGwCkgXCp2bOblT1
+	EbnODWonk7QMn5xwrrDSNK6jAJfSJaZdEkPcUSwXknG7C3qTm+N0WRiV/LvUbCE+MUdvjiHVPBfLR
+	oihIlT66+5ybbFlwDnz6ERvUCs/06pLE2CoZ9pL817Q9q+SEq3bW93bdfSnXtkNYmtwz9bcA+gb2Y
+	fF3qHh5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xT6Lx-00000004Btk-1xvQ;
-	Mon, 16 Nov 2026 23:43:13 +0000
-Received: from sea.source.kernel.org ([2600:3c0a:e001:78e:0:1991:8:25])
+	id 1xT6du-00000004E3f-0iNz;
+	Tue, 17 Nov 2026 00:01:46 +0000
+Received: from fout-a8-smtp.messagingengine.com ([103.168.172.151])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xT6Lw-00000004BtS-0ONm
+	id 1xT6dh-00000004E1n-0rTe
 	for linux-um@lists.infradead.org;
-	Mon, 16 Nov 2026 23:43:12 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7A954456B6;
-	Mon, 16 Nov 2026 23:43:11 +0000 (UTC)
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1794872591;
-	b=3EXYEP/VHtgbs6cfQQvYLUDgup7DRQprd1NBJqdjFh2rnao/Xy2PHBvSsiJgKe9mcP97
-	 CyhYoJukPfkzT+SqP4TdxkjBy09tjneCPJFasdUTcnxDrSVlX/CXPfuyap2H3akfEWTNJ
-	 QcfrEXvFxkkPbnPnkKuCKCZiU2s5UmXoROtdObiQpjAdbUb+fztrSRT1+x1KVQjHWO00f
-	 ihhuGnsjAopICsnkLc/Iefqggd3AfXtipObBmRUzrOxFi9oueKTslue+yeDAb+LF5NJ9P
-	 A/GZkUa8kfyiBz9bcSl0cQpogYPjTUfohBL1LmLCHIE3iE5JifgQPYk2BYQ6YmJ2Lhw==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1794872591;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=;
-	b=ASXDsbgtGfa1nOkIdLZ9Mmw0T1z8J42puNaWLjw1UL2FiVWQQ8v+sTP1y/4Z0obURzsu
-	 mS2+317eYbSbGMs6tqnC3q9Fny0YISsibF9tBkUPuEaBXVZTOfOzF3GF9YPnaNTX5MaLt
-	 hg+UlaLBHzX+NBhakipBiEBXqcPJuXKKybP1gz1zM75gnMVCTShwky37Upx5snX3det/L
-	 p1NXKpowOW4okIkuuWxJBsu83cRUBjXjke1ocQhk8QcYig9oUa7VuK/O3In5UVUZ38cCm
-	 dJPStmTLTqICvUkI35rB7pZ8FWPGMc1MWnUvWrQ8Gji8mpu5tBmQgTCP/fE6pyjWO4Q==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id C5F061F000C4;
-	Mon, 16 Nov 2026 23:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794872591;
-	bh=90J7NfY2utkKUmptN6ZK3A2BwSBVX+JEiTL57egocE4=;
-	h=From:Date:Subject:To:Cc:Reply-To;
-	b=cuac3FNcQyI77ZfxSz/79kJ7LlBzaJuEuwPGmVgTm8s62G5DniyvYJgMk4ywfJBCU
-	 hZ9K35l/qo7S5sElnwlx87r7/dW/BY/vYPJRAxfcTNmoxgZdOOfa2BXTql1D4EKzKS
-	 K9jaWdfgF2o3enAST3FvmNdPgHrK+S00kVqHLVprRPrEAClNVH6vCpYllLnNH7KcPO
-	 KXfaHyt8bQZdI7vJODEjOBnCdPOmcu+iSHsW2D+qv/J7tlndZvPH3YYyPwWmrqwoVu
-	 mMsuYS0eNWkijxKD6/YDSthm8IJeLbH8BUK9j9ZYBXQkhgc2yJXvriX2RA8IocNkuv
-	 5REg816NgFl7Q==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 537F04A62C;
-	Mon, 16 Nov 2026 23:43:10 +0000 (UTC)
-From: Brad Fitzpatrick via B4 Relay <devnull+bradfitz.tailscale.com@kernel.org>
-Date: Mon, 16 Nov 2026 23:43:10 +0000
-Subject: [PATCH] um: time-travel: don't use uninitialized fds from START
- ACK
+	Tue, 17 Nov 2026 00:01:41 +0000
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id DE63EEC087F
+	for <linux-um@lists.infradead.org>; Mon, 16 Nov 2026 19:01:29 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Mon, 16 Nov 2026 19:01:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
+	:subject:to:to; s=fm3; t=1794873689; x=1794960089; bh=VclKIlHHA6
+	sJRvKYQDUB0ymsoIETh0nxUoTC2xTBROc=; b=kRzcoJ667cUXvisSe1N6SZcN4q
+	WnY09eXeCv+dtJ4kiKJdT9thSHgftISUXwwUr0WFuueS74+x21ZUpM97toG1DkzM
+	9wA679dC0R89tzqXIfMF2s/PtfAG/78f0+gfRrC2jW551PHQku+jVzIzR5cgftQP
+	li0HSIsl52Ckp/adATHQCRplZ2bGz/pGvqHggMF4VHkDrNyb8EdzdT1DmMj5RBxk
+	/AZqTFlpzBwwKIEuJcZfekuU1ZVkRS6sTcdFlHEnvq+gZJjI3CygLtE8/Xx9arLh
+	ALraIstQq/QEq4R9kGH9+Jz4M658Cn0JBWX7jDcn4UyKHUAMuIthigmjKRMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1794873689; x=1794960089; bh=VclKIlHHA6sJRvKYQDUB0ymsoIET
+	h0nxUoTC2xTBROc=; b=sxTVMqncODQsJB3CdIxwydPijrkwtkL9GR+b2Fd5OM5j
+	p57hYxuZfc8iJMiSS7wRl7ofwvljsbTNSuU7rnorRFL85aAecrcnF+UMBUx4BPlg
+	YuHXMKrcYA600CjY+Nfuvqe2FtZX20G4HD80JVbjzrHeI4Lh6LnCzFDu7ZhtYeEy
+	fUbCdynP1/ysBOv+bHvMAqZmo+7ITybhB9qT1BTQ/xS8L+Sqlb2e2LCkey9fQvpC
+	YDTMfTozFCG5g+w/DHejGWiMHEkbITz6sYFFvXqudHmoeChW7yrgItSsCJZyelt2
+	InZTMoS9XXCtbFdWIsLhUNnI5xK+bOEWJVAl776EPg==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=sign d=ownmail.net a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1794873689; d=ownmail.net;
+	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm3:rsa-sha256:yfzN8CtpSO1BiuIG9Qn+azN9jA/2KMyTvNNiikD2g+9jTOK
+	zHyFTp1NfKShnc51PNpE5dxf2A8taiovo8zN+REzU6yNK+kPVsftyfcqlI+LOG4N
+	WPfKKrHHsDoccMXySLxqD6rx4QfxiosKs61WTaQ0w/F9HlV35naVX+RSaFvk2bVd
+	BRzCzD0SwocwnGBw7k7tOaJDr9pwws5Jf7b0Cj5kfqDO2k7UqRrqt9XPaaI7tArP
+	lm+ITsX6OEk28/dwbnATZQbXX/jjLu0LxTSo/mi8P3MjrY0fTrZym7kaThoz/8Eu
+	6MEYKbaIieDo5IQmd4z/h8ufr4aRuDgCXR2VDiQ==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=mi-m=1; hc=10;
+	hn=cc,content-transfer-encoding,date,feedback-id,from,
+	message-id,mime-version,reply-to,subject,to;
+Message-Instance: m=1; h=sha256:DHMeLMEDMgA1DsP9ifE/HQN9j5FDVtbY1HGX4wUdWKE=:rfa9m0UcUgaCLag8g7pw3/CotcToDQzfpQPsiR5Ld1o=;
+X-ME-Sender: <xms:WJn7akNlHS6nh1LPAdeQ8mJieXw0dTqL30HtmkQ8WSKSwLh2gdBQPg>
+    <xme:WJn7asQAFB1AaS9BVITpRd2Ma6qfnNP4h41W0GxyDvxI6B2a8mWoJbaKqbFHpooda
+    eMMaqVh2ECpfY2a5hbCbUFZGlokquvgOkAolJvf2GIiOtpZUAs>
+X-ME-Received: <xmr:WJn7av5vE6I4wSNgOH9D42nCte-LZAFL_IHJiaUlLsZQUDR_wQSajghF6BLBsmdbULCMhJAzYKTQ9IjAtLJA4s6bVJvtKQY>
+X-ME-Proxy-Cause: dmFkZTEasDYJk7gUKjj95qJVCDLZ9z5UC3lFOr3mxXp2NqpnduBj0huNRvY2bKuTgCo4S3
+    /ya8LB3Lk1oB3klihdJ8BJX7HvucoWWfwxXQGZVCiOL7v1xyZ9E98HqZfATW3DsfVt7Buf
+    HDDi7kdFSz9V0lrnyG8NHXxthuyOZNaaxSoPUxOpn/Lx6gss1jQ90vOmLNUrp6zNAp1xK/
+    E4mh4beTE7vRnNF/4JgosJzZk15qzccfwiemAiZKTwiIk+j4r/xWrb9oLBME2rnW+IoIvW
+    0V/qJU0eecbujgkGwVUDIsxD3Y6lpRQk5PP5i06J9n0ZK3tSwD2jlIApyzfnpXecO0aekI
+    YP7JC9DDnt1xRq9JFMoLPhAYpZkAtVNVNSH5gEoZIi7C0aPBBsQBMIViGuIiKDao50lB9F
+    p6tN48LqvrHWNcKcaWmtCOeMnAkIkfTTnVk9/JKz/eYXPvTAtHz5Mvx5G2IUqqpw7j5cte
+    OB/XPM6N/K5BcHWjLoCm5nM9RVsNCib50G3J2xslJ3/rzsBiKDyfUjfU+8KsQEsWr1Ur/t
+    gHkZmHuiiGV4Uc4653RVdjM/u8Tw79N1YjLfxU/d6QHtzCJrdCvtEZ5UzyiMIVlPeCsmol
+    fRQfVzoheGRV/H6KdXDBWV8edCUkBEw3bhvtVjD8eIAhz4kEOMh3VLZBCI5A
+X-ME-Proxy: <xmx:WJn7avaKyKXmKVjcLrcBrlYWOhs0GdLqhy2PEMb0vkme78mxFeL_4Q>
+    <xmx:WJn7ajbMKXjXNIp0U6ft9ml21M-9hQPLEi8q6uLIIA94zBBqbhzD5g>
+    <xmx:WJn7ai0-eejyGrgasRnIdMps7wNS0XmZWgUdbySiZaLmd17dG8K2Qw>
+    <xmx:WJn7arYqthUhGb2DFEgLfdNlRGKnc-gg5Cs0osnHyattF9CnN6zuFA>
+    <xmx:WZn7ahWueiiJZNMoiG7ULnt1omal0J4HlDPfylQ0ZSRLnwPdbysG7_i2>
+Feedback-ID: i9d664b8f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 16 Nov 2026 19:01:23 -0500 (EST)
+From: NeilBrown <neilb@ownmail.net>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Cc: Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu,
+	Jan Kara <jack@suse.cz>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Hyunchul Lee <hyc.lee@gmail.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu,
+	linux-fsdevel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	ntfs@lists.linux.dev,
+	linux-xfs@vger.kernel.org
+Subject: [PATCH v2 0/4] multiple-filesystems: prepare for changes to VFS locking
+Date: Tue, 17 Nov 2026 10:54:57 +1100
+Message-ID: <20261117000115.1433875-1-neilb@ownmail.net>
+X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261116-bradfitz-um-tt-start-ack-fds-v1-1-c98901dfba85@tailscale.com>
-X-B4-Tracking: v=1; b=H4sIAA2V+2oC/yXMSwrCMBAA0KuUWTuQFIzRq4iLfCY6ilUy0yItv
- XujLt/mLSBUmQRO3QKVJhZ+DQ1210G6heFKyLkZetM7a63DWEMurDOOT1RF0VAVQ3pgyYLROxM
- O/uj3JkMr3pUKf379+fK3jPFOSb8nrOsGKAwxxYAAAAA=
-X-Change-ID: 20261116-bradfitz-um-tt-start-ack-fds-b860a789850d
-To: Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Mordechay Goodstein <mordechay.goodstein@intel.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Brad Fitzpatrick <bradfitz@tailscale.com>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794872590; l=3107;
- i=bradfitz@tailscale.com; s=20261011; h=from:subject:message-id;
- bh=svJ5VLX3SY7Jwr6l6XQ1OWwW8bhiwm/+jQGOHWzz8T0=;
- b=IOkJl5/z0TBUNrib7G4B/VeY4RTdfS4W6M/93O6qhhvWvl0no+N7OU0egfkK5LnBL2JdBbfBE
- 4/KxOKojlN/Dz9GzqVCiDuFx7wEyva2Tm4jpJMDzkO/BdC0/LOYQcNx
-X-Developer-Key: i=bradfitz@tailscale.com; a=ed25519;
- pk=RL25YdOUenVJzQaiZDrw/Aqu9ZEwUQBon30yMHGsIKY=
-X-Endpoint-Received: by B4 Relay for bradfitz@tailscale.com/20261011 with
- auth_id=1152
-X-Original-From: Brad Fitzpatrick <bradfitz@tailscale.com>
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261116_160133_678763_862E03C2 
+X-CRM114-Status: GOOD (  11.74  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,96 +137,57 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: bradfitz@tailscale.com
+Reply-To: NeilBrown <neil@brown.name>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Brad Fitzpatrick <bradfitz@tailscale.com>
+In this v2:
+ - shmem patch is dropped - it isn't necessary and the is a problem
+   with it which isn't worth fixing at this point
+ - configfs patch is dropped - Al didn't like it and it isn't 
+   necessary
+ - ovl patch is dropped - I probably need to solve that a different 
+    way and it is significant enough that it deserves to be separate from
+    this series
+ - slight renaming of bool var and goto labels in first patch
 
-When the kernel connects to an external time-travel controller, it
-expects the ACK of its UM_TIMETRAVEL_START message to carry two file
-descriptors: the shared memory area and a log file. It reads them with
-os_rcv_fd_msg() into an uninitialized on-stack array, and then uses
-both array elements whenever the message itself was received in full.
+Original description, updated.
 
-os_rcv_fd_msg() leaves the array untouched if the message came without
-an SCM_RIGHTS control message. That is what any controller that does
-not implement the shared memory extension sends, which the protocol
-allows: such controllers are why the kernel falls back to message
-based scheduling. In that case the kernel passes stack garbage to
-mmap() and then close()s both values.
+I am working on changes to directory locking.  The medium term goal is
+to lift d_alloc_parallel() locking above i_rwsem, so d_alloc_paralle()
+can be run unlocked, and consequently cannot be called when ->i_rwsem is
+held.
 
-With CONFIG_INIT_STACK_ALL_ZERO, the default where the compiler
-supports it, the garbage is 0, so the kernel closes its own stdin. The
-next file descriptor it opens, the epoll instance used for IRQs, then
-becomes fd 0:
+This patch set makes small changes to a number of filesystems which each
+require just one patch.  Patch series for nfs, afs, cifs, fuse, cephfs
+have been posted separately
 
-  $ ls -l /proc/$(pidof linux)/fd
-  0 -> anon_inode:[eventpoll]
-  1 -> /tmp/uml.log
-  2 -> /tmp/uml.log
-  3 -> /dev/shm/#200843
-  4 -> socket:[216518625]
+The main requirements are:
+ 1/ that d_alloc_parallel() not be called while i_rwsem is held.
+    Places which currently do this can be changed to use d_alloc_trylock(),
+    or d_duplicate(), or change to drop and retake the parent lock.
 
-Without stack initialization the kernel may instead close, or map as
-the scheduling area, any file descriptor at all.
+ 2/ a dentry must not be d_drop()ed while an operation is ongoing, as an
+    unlocked d_alloc_parallel() would then be able to create a new
+    dentry with the same name.  d_splice_alias() can now work with a
+    hash dentry, so often the d_drop() can simply be dropped.  Other
+    times it can be moved to after the operation has completed.
 
-Initialize the array to -1 and only use the descriptors that were
-actually received. With the fix, fd 0 stays what it was and the epoll
-instance gets the next free number.
+I think it would be best for these to land in the VFS tree and would
+appreciate Acks from relevant maintainer.
 
-Fixes: bfb80d8bc92f ("um: add shared memory optimisation for time-travel=ext")
-Signed-off-by: Brad Fitzpatrick <bradfitz@tailscale.com>
----
- arch/um/kernel/time.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index d620b6d6310a5..bcb141b419722 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -141,15 +141,23 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
- 	}
- 
- 	if (unlikely(mode == TTMH_READ_START_ACK)) {
--		int fd[UM_TIMETRAVEL_SHARED_MAX_FDS];
-+		int fd[UM_TIMETRAVEL_SHARED_MAX_FDS] = {
-+			[0 ... UM_TIMETRAVEL_SHARED_MAX_FDS - 1] = -1,
-+		};
- 
- 		ret = os_rcv_fd_msg(time_travel_ext_fd, fd,
- 				    ARRAY_SIZE(fd), msg, sizeof(*msg));
- 		if (ret == sizeof(*msg)) {
--			time_travel_setup_shm(fd[UM_TIMETRAVEL_SHARED_MEMFD],
--					      msg->time & UM_TIMETRAVEL_START_ACK_ID);
-+			/*
-+			 * A controller without shared memory support
-+			 * sends no file descriptors with its ACK.
-+			 */
-+			if (fd[UM_TIMETRAVEL_SHARED_MEMFD] >= 0)
-+				time_travel_setup_shm(fd[UM_TIMETRAVEL_SHARED_MEMFD],
-+						      msg->time & UM_TIMETRAVEL_START_ACK_ID);
- 			/* we don't use the logging for now */
--			os_close_file(fd[UM_TIMETRAVEL_SHARED_LOGFD]);
-+			if (fd[UM_TIMETRAVEL_SHARED_LOGFD] >= 0)
-+				os_close_file(fd[UM_TIMETRAVEL_SHARED_LOGFD]);
- 		}
- 	} else {
- 		ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
-
----
-base-commit: 7ea2308ccebce754fd1ac6295f26983a6878045d
-change-id: 20261116-bradfitz-um-tt-start-ack-fds-b860a789850d
-
-Best regards,
---  
-Brad Fitzpatrick <bradfitz@tailscale.com>
+Thanks,
+NeilBrown
 
 
+ [PATCH v2 1/4] VFS/xfs/ntfs: drop parent lock across
+ [PATCH v2 2/4] coda: don't d_drop() early.
+ [PATCH v2 3/4] hostfs: don't d_drop() before d_splice_alias() in
+ [PATCH v2 4/4] procfs: drop parent lock for d_alloc_parallel() in
 
