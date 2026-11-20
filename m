@@ -2,65 +2,69 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673BA606A320
-	for <linux-um@archiver.kernel.org>; Fri, 20 Nov 2026 07:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA07606A320
+	for <linux-um@archiver.kernel.org>; Fri, 20 Nov 2026 13:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=aBC81qC0
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=t+EeiCXV;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BLPFOBmp
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=A5p512q1vWE8Uy9SPysuh8aKMj7lGxs0o4LND/TLe8s=; b=aBC81qC04q/npJ
-	GgPz9pVKFbTD4wf97tjlK1C84XwZGK6kjiOTuf9RtGWMLb81ajbupMsCDpHkQRhUD38tcdo4M9c2f
-	rzFt6YP+9Q+EgCzBfzlQRLq9DMfb6LOzKJULzK82MJZBvcAdzo/9qLeykYZfyER57wKmNtrnC/mEl
-	6QDYT0yfj7dT/1TJQEhBMNa5L84O3zl2LNSytP0Nqw4n02F5EhPUPQyeXOTav73lZ2FgFpz4dWfut
-	C87ooN129JmpsElyKpqa0ar+RMflLXsKZ8lvHQvkkundRNdqafMfv2lw6VzkozzKFeAiA9NVkYmUH
-	ruEFppNn35ObREcXEihA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=bjsloV/HcKsVj7z9+HkdbWf0MogK/qby7SPqWG2uzjE=; b=t+EeiCXVHYbeRMS6ZssLn6SkXU
+	hi7t7NUhsbVkMnmzIF4IjqmPVF/q/5b5eSxwHnr5DOxQcq+cyifhbILtlZ1cSKBbMf+W9yuo1eJ8F
+	2V4/SC8C4rQiuEICEZfY+1k9kVHnohzNB3g4YCQsG+WNVa6+P5IU5M0aR9V3GSyaKhdGoFgEB7hmm
+	nIjVtjaqOvFnGgxCWG2wI2/6ck0mQTt0/abBihB1KCQvAJpOucYTP4zCBbezHMObitHp6YG+2iepe
+	OjCu8hW6vFBWgbzFE/9R/JUU+vi7Ky8DubR6Jw4DDUeoSvBZXw/c7+0g6IuJUWE4IGQhm917JSkbx
+	yfHmTfhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUJJI-0000000EGse-2Xyf;
-	Fri, 20 Nov 2026 07:45:28 +0000
-Received: from ns3.kot-begemot.co.uk ([31.70.137.218])
+	id 1xUOlz-0000000F6fE-1BY0;
+	Fri, 20 Nov 2026 13:35:27 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xUJJF-0000000EGr5-00PQ
+	id 1xUOly-0000000F6f6-0Ox9
 	for linux-um@lists.infradead.org;
-	Fri, 20 Nov 2026 07:45:27 +0000
-Received: from [192.168.19.6] (helo=jain.kot-begemot.co.uk)
-	by ns3.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xUJ1z-00000002Hv4-3XfP;
-	Fri, 20 Nov 2026 07:27:36 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xUIo7-0000000E1eN-2ICf;
-	Fri, 20 Nov 2026 07:27:33 +0000
-Message-ID: <aa262899-6b0c-47b8-b099-a8aa83a2a881@cambridgegreys.com>
-Date: Fri, 20 Nov 2026 07:27:32 +0000
+	Fri, 20 Nov 2026 13:35:26 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 8901860F89;
+	Fri, 20 Nov 2026 13:35:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6FD11F000C4;
+	Fri, 20 Nov 2026 13:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795181725;
+	bh=bjsloV/HcKsVj7z9+HkdbWf0MogK/qby7SPqWG2uzjE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=BLPFOBmpNPHpPFx0FWOYG24EYgD7CUJ6t1qXvqZvlVs6L6nHAmWejU+nksKDRzX3E
+	 f/XCAUy92isyUIw3hdQtZ8BNA3hNpUFMmXAmE6dS8UXxYkJEb1gOJmqlVhSFk8eLTN
+	 Hr3CspzOnm4nCBGB4u961t4qHU47LXPtLvnwyk+mDXbXxfeqCLDjKcRpAAgj5U+hz7
+	 5H0cR7yQatjexLmeVub/wDBbYwWsYymhDblsgHz9sezq4uP4rKtf9ZYcoolylc2PGX
+	 5TO1ramemZqDM7Zh1yS04udn5oCJsiE7pzpoF1fOaXS+TEyxhkFqjvFL0mnj/wsE9h
+	 DH/9sDXLIxCDQ==
+Date: Fri, 20 Nov 2026 14:35:18 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: NeilBrown <neil@brown.name>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Jan Kara <jack@suse.cz>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Namjae Jeon <linkinjeon@kernel.org>, 
+	Hyunchul Lee <hyc.lee@gmail.com>, Carlos Maiolino <cem@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-kernel@vger.kernel.org, codalist@coda.cs.cmu.edu, linux-fsdevel@vger.kernel.org, 
+	linux-um@lists.infradead.org, ntfs@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] VFS/xfs/ntfs: drop parent lock across
+ d_alloc_parallel() in d_add_ci()
+Message-ID: <20261120-veranda-tiger-seemeilen-397d57fb2258@brauner>
+References: <20261117000115.1433875-1-neilb@ownmail.net>
+ <20261117000115.1433875-2-neilb@ownmail.net>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: vector: Don't clean up NAPI that was never set up
-To: shyckless@gmail.com, johannes@sipsolutions.net, richard@nod.at
-Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-References: <20261119-uml-vector-napi-v1-1-b3751cf4fa60@gmail.com>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <20261119-uml-vector-napi-v1-1-b3751cf4fa60@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261119_234525_047202_3CC06D86 
-X-CRM114-Status: GOOD (  25.08  )
-X-Spam-Score: -1.9 (-)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261117000115.1433875-2-neilb@ownmail.net>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,101 +75,62 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=4.0.1
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On 19/11/2026 22:39, Suyuan Wang via B4 Relay wrote:
-> From: Suyuan Wang <stevewong@hust.edu.cn>
-> 
-> vector_net_open() calls vector_net_close() on any failure once
-> vp->fds is set, and vector_net_close() then runs napi_disable() and
-> netif_napi_del() unconditionally. But the NAPI context is only added
-> and enabled after build_transport_data() and the header buffer
-> allocations, so a failure in any of those disables a NAPI context that
-> was never added. napi_disable() locks n->dev, which is still NULL:
-> 
->    ip link set vec0 up   (vec0:transport=gre,...,rx_key=1, no tx_key)
->    Kernel panic - not syncing: Kernel mode fault at addr 0x910
->     napi_disable+0x4e/0x9e
->     vector_net_close+0x2b9/0x87d
->     vector_net_open+0x105d/0x106f
->     __dev_open+0x244/0x334
-> 
-> Record in vp->napi_enabled whether vector_net_open() got as far as
-> enabling NAPI, and only disable and delete it in vector_net_close()
-> when it did. NAPI is still enabled only after the queues and buffers
-> that vector_poll() uses are set up.
-> 
-> Found with a static analysis tool and checked by hand.
-> 
-> Fixes: b35507a4cfb2 ("um: Migrate vector drivers to NAPI")
-> Cc: stable@vger.kernel.org
-> Co-developed-by: Kaixuan Li <kaixuan.li@ntu.edu.sg>
-> Signed-off-by: Kaixuan Li <kaixuan.li@ntu.edu.sg>
-> Signed-off-by: Suyuan Wang <stevewong@hust.edu.cn>
-> ---
-> Tested with UML (seccomp=on) on top of the um fixes branch: with a GRE
-> vector device missing tx_key, "ip link set vec0 up" panics without the
-> patch and fails cleanly with -EINVAL with it, also when repeated. A raw
-> vector device on the host's lo still goes up and down twice as before.
-> ---
->   arch/um/drivers/vector_kern.c | 9 +++++++--
->   arch/um/drivers/vector_kern.h | 1 +
->   2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 8008278ccee7..021f14780b45 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -1137,8 +1137,12 @@ static int vector_net_close(struct net_device *dev)
->   		um_free_irq(vp->tx_irq, dev);
->   		vp->tx_irq = 0;
->   	}
-> -	napi_disable(&vp->napi);
-> -	netif_napi_del(&vp->napi);
-> +	/* vector_net_open() may fail before setting up NAPI */
-> +	if (vp->napi_enabled) {
-> +		napi_disable(&vp->napi);
-> +		netif_napi_del(&vp->napi);
-> +		vp->napi_enabled = false;
-> +	}
->   	if (vp->fds->rx_fd > 0) {
->   		if (vp->bpf)
->   			uml_vector_detach_bpf(vp->fds->rx_fd, vp->bpf);
-> @@ -1260,6 +1264,7 @@ static int vector_net_open(struct net_device *dev)
->   		netif_napi_add_weight(vp->dev, &vp->napi, vector_poll, NAPI_POLL_WEIGHT);
->   
->   	napi_enable(&vp->napi);
-> +	vp->napi_enabled = true;
->   
->   	/* READ IRQ */
->   	err = um_request_irq(
-> diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-> index 5f0ceb80779d..e1b697266fa7 100644
-> --- a/arch/um/drivers/vector_kern.h
-> +++ b/arch/um/drivers/vector_kern.h
-> @@ -118,6 +118,7 @@ struct vector_private {
->   
->   	bool rexmit_scheduled;
->   	bool opened;
-> +	bool napi_enabled;
->   	bool in_write_poll;
->   	bool in_error;
->   
-> 
-> 
-> 
-> 
-> 
+On Tue, Nov 17, 2026 at 10:54:58AM +1100, NeilBrown wrote:
+> We don't need to keep the parent lock held when d_add_ci() is run - the
+> VFS doesn't need it as dentry is exclusively held due to
+> DCACHE_PAR_LOOKUP and the filesystem has finished its work.
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+I'm not sure that holds? Only d_alloc_parallel() honours
+DCACHE_PAR_LOOKUP. lookup_one_qstr_excl() still uses d_alloc() and
+relies on the exclusive lock to guarantee that there are no in-lookup
+children at all. That stops being true here:
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+> +		if (lookup_flags & LOOKUP_SHARED)
+> +			inode_unlock_shared(d_inode(dentry->d_parent));
+> +		else
+> +			inode_unlock(d_inode(dentry->d_parent));
+> +		must_relock = true;
+>  		found = d_alloc_parallel(dentry->d_parent, name);
+
+So if "Foo" exists on an ascii-ci xfs:
+
+P1: stat("FOO")                      P2: unlink("Foo")
+lookup_slow()
+-> xfs_vn_ci_lookup()
+   -> d_add_ci(dentry, X, "Foo")
+      -> inode_unlock_shared(dir)
+      -> found = d_alloc_parallel()
+                                     start_dirop()
+                                     -> inode_lock_nested(dir)
+                                     -> lookup_one_qstr_excl("Foo")
+                                        -> d2 = d_alloc()
+                                        -> xfs_vn_ci_lookup()
+                                           -> d_splice_alias(X, d2)
+                                     vfs_unlink()
+                                     -> xfs_vn_unlink()
+                                        -> d_invalidate(d2)
+                                     inode_unlock(dir)
+      -> d_splice_alias(X, found)
+
+IOW, "Foo" ends up as a hashed positive dentry for an unlinked inode
+that nothing revalidates.
+
+open("Foo", O_CREAT) then opens the orphan instead of creating a new
+file and O_EXCL fails with EEXIST. Do a rename() instead of the unlink()
+and "Foo" keeps pointing to what is now "Bar". ntfs gets there the same
+way.
+
+Before this patch lookup_slow() held the lock shared across all of
+that so start_dirop() couldn't get in between.
+
+So afaict this needs "VFS: use d_alloc_parallel() in
+lookup_one_qstr_excl()" from your RFC to go in first. Unless I'm
+missing something obvious.
 
