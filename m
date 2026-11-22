@@ -2,104 +2,108 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2C5606A320
-	for <linux-um@archiver.kernel.org>; Sun, 22 Nov 2026 12:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4E4606A32C
+	for <linux-um@archiver.kernel.org>; Sun, 22 Nov 2026 13:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=1Vvhvn4M;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Pl78x+Zb
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=zzhByqC8;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=qzz3DxJS
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=nS1Wyq0+teU+0NPEh7FueTOvVWx377NaWwBlgjjiVaM=; b=1Vvhvn4MX16Dh9c40U4I6NSu2q
-	1eoHKqeyhNlSEAkk4mpe60+sgfTF70d+4Sru1Zhpn7n6+ErgLOLpIaxP3ADDfSNkTIfkU5/deJVOW
-	J2RgE6rf2VQ9fbwlYJkFF23AYHDtHyHDZbBOPFmxmrJ+4jOUUlEfXUWQ9vW67M3vAF00kINbkXsiy
-	XsNL1paPbsqAH4sW1zPYLGE4Vkn5mSQgoW7UFIuq5uY9bzY1RPBk0Ea1agcLaxpjAapruBIKV5rvJ
-	nXY2RhLOYv816RNbCWt1pwdXytCCoGlPrx3u2asi0MM5tZFKWL41/uLwioqzMEGMV3e2uI2j9SyIL
-	ObW4RtPA==;
+	bh=E19SZfpkDiocYs9XnZbWGHZ66N7bbdKVZ4Xp3vsd+Pg=; b=zzhByqC8aonHMA0JPTOPhiSwy3
+	2Yz3nD2BWAz7MSKaZJ9MgBQqv9gdhlsBomD3BUxSEEJQI3lWPFro4mcCEd9mfY67H0u88i8YnhewI
+	yU4+AjkEewLBPgGuZnbXmVFYlm+nYk7ystNIPkz4mPxwsNZgip1kEvGzmlW4zlwlGXYF/nY8WosDP
+	2hF1XVqbNUW0lQlQp4rid3hOlc7TDKw71tcJRTQY1ieA2HVqUP7MKGpcLL5KHYWhxqj+zU3tvCu4F
+	kDlPoMp6gY9A0NLfvxlB9GkOarNG/+fXwCsCIl444X8ztg0jI2VVN+oAZ6IxWYpiHzvalN4Lzxw06
+	jj2CCHUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xV6oy-000000016O0-3FRX;
-	Sun, 22 Nov 2026 12:37:28 +0000
-Received: from tor.source.kernel.org ([2600:3c04:e001:324:0:1991:8:25])
+	id 1xV7pE-000000019Pi-0vUd;
+	Sun, 22 Nov 2026 13:41:48 +0000
+Received: from mail-yx1-xb136.google.com ([2607:f8b0:4864:20::b136])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xV6ow-000000016Ns-3sSx
+	id 1xV7pB-000000019PK-1hrR
 	for linux-um@lists.infradead.org;
-	Sun, 22 Nov 2026 12:37:27 +0000
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6079861884;
-	Sun, 22 Nov 2026 12:37:26 +0000 (UTC)
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795351045;
-	b=AUzRbPBd9jJZFrJv1WeJZC1I4/xGQj7pny4FOAF6KqckiJ52L5KdVwpEn4PolxdUKMyH
-	 Rwtq2TbpWNPfrG//vOe/DW3tzJRSGxjuTLfBgXM/F3C6wob6CB/ENKAHLKkWXOe+YLja1
-	 SHxM6WpLzwo6a10rVlvN5kJgntqfgoEZeW4/8E4VHNimuYRgfywOBEvVncTftjCbN649P
-	 qfBBSrvSVGiu/601HOPyPti2s/kHJto/tTxTfgFFOFLt4NoVh3MJC5zvzKtmTavSBWPuu
-	 cMXIBt6XakQSF5M3CZNcT1t5vCe5GjIi598KPDDOebWSizlxfurVfGkl1/QoWEziivA==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795351045;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:
-	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To;
-	bh=nS1Wyq0+teU+0NPEh7FueTOvVWx377NaWwBlgjjiVaM=;
-	b=K7tCC1YGjI2rwWkDwKaRjZo27YHjM2Ljqk5iKGGMpeShoZjJlyxwUNItxU5Pw+M8fxfR
-	 ufO8vC8RglNqw0nnQe9IBCEWWJA0Kz3R17P/+hmmp6RVRpMYALCB+jhePr+084TcJJA8U
-	 gQDi6t5GO399OxaHy56q3tqZ0Aa6cnzFEuez6dzxV75Iyy2BShPfpfGiWqRZFfdbo/OEZ
-	 CK7BS1DAfI98svb84hIT88y7sWUprdRb8Mvhuz9u41LwENuu3fzLXl54noU6RvXW6sH1h
-	 2TmgIWkB7cUHUDEl6Idc6aHl8l73BhdxQIQ49x6EpvwpsL3lFO6Jp5rpkaPf0nin8CA==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 0F8791F000C4;
-	Sun, 22 Nov 2026 12:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795351045;
-	bh=nS1Wyq0+teU+0NPEh7FueTOvVWx377NaWwBlgjjiVaM=;
-	h=From:Date:Subject:To:Cc:Reply-To;
-	b=Pl78x+ZbHLXHOA1CeaR/tzviB4YaDS+6f87Lem7hbHRv0kr1bUGwZea5Ba+cxjuj7
-	 eBqE1KRv0UgRt1DX/ohPYjwtYVfODUd3hHirHgPLXo1XKu36G35kUfV8wAEufkqFcf
-	 DdXKbl/wo9RUD4tZ8ox7QfTCBKbSksWKHq98ZYk1ASHz6PjRwR0GMH4iPB0v8XRmUH
-	 XIiBiKQj93kMlxu7pkgAfIje0MaYxcEqzA3TFnqhbx8Wenx+xWYX04mgGzZflO4iOx
-	 ks1fLHKqrsmj/V2FtMqtlQ+I8dqOGi5srfm/B0RndVSrJro/FY3LDAIos95sfChP1K
-	 vpSumRDB7Dvjw==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 90BDB4C02B;
-	Sun, 22 Nov 2026 12:37:14 +0000 (UTC)
-From: Suyuan Wang via B4 Relay <devnull+shyckless.gmail.com@kernel.org>
-Date: Sun, 22 Nov 2026 12:37:14 +0000
-Subject: [PATCH] um: line: Free the read IRQ when the write IRQ request
- fails
+	Sun, 22 Nov 2026 13:41:47 +0000
+Received: by mail-yx1-xb136.google.com with SMTP id 956f58d0204a3-67da69e7c31so2403244d50.3
+        for <linux-um@lists.infradead.org>; Sun, 22 Nov 2026 05:41:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1795354903; cv=none;
+        d=google.com; s=arc-20260327;
+        b=AOWZ+X7AExhPw/eH5lwjYxCqgtwkohSSVV63ZGeqhwKN9DDIf0lAaodVLZ8zhb9OwX
+         i+4Lyws1YWS5xXA5wfxce570UTPbEYMOaVojceLc4qEaWFiHwSHbp3bkxadsKbbctViy
+         USvPyRO1raByXyLDh0NP0Cvgky9j6tvPuHxbnN8X0t21jp32IKg8oMc+EyVzoFfqpRCU
+         pmzsIc5KBAXzeMcBnV8L1bfINpNzoazOfRmT3l9HFPozohDqfmLqDwZ71qCYh9rlz8tE
+         uTVrP+AdnhEKo/ZcqjJBQSJ4jGbA+3B4OIpHj0dH6lVWS+M9PTlI7RvAcnWZCF16yuub
+         ZbNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=E19SZfpkDiocYs9XnZbWGHZ66N7bbdKVZ4Xp3vsd+Pg=;
+        fh=/gBKL856m721509318RIdz8U4fuFWBADYUOnmaP+UV8=;
+        b=T8q2s9PbOjEau2X+6bjZi7eswyiWP7YIu0FN5ni1rzKFLrQnsCj1SD48bdTJ+gRUTP
+         imHL2iSTNULdGRe1PaEinvAEFwsMI4zHb+n5GoYkZaAxpWh+JHNaZ9y/WtajW0mxeZV1
+         nJU9fjeb37T8+aQIEU/k9LPmZGUccxUfh4oojbEfAmJwA03FN6+rX/v5HPmxMXXWYdsz
+         Bx9e/FWlakL8F+Ii6G+DaGVfrhvthzFxg9owRMpunDskMHfdcwQHW1lI5RagW5ToKyCI
+         sjD3p65iRnAWv/izeg3IgHJ0CtzZP2+rYyvFcQ0YQrYMZ73kDYLZd8LSEOoIOFeSehHn
+         eNvw==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795354903; x=1795959703; darn=lists.infradead.org;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=E19SZfpkDiocYs9XnZbWGHZ66N7bbdKVZ4Xp3vsd+Pg=;
+        b=qzz3DxJSABrYVIFxosmQ7B2wFOXInQQibOVseuS3QJs1T+JoVvlzQtqp4S0/NvOXiC
+         8sdkbvsZsUmJI8Q4U0RMYGMSXuBWMcJOGmQdFVpTkCy5rBndGGgUu8en09SxLPuhpO4Q
+         v19LUuGqnebyiuQQALuQN7F+uzhjywF1+UDLgGjNgmOK3+mYDLthUm9ifVOg+ZUAdWaX
+         J7/bvdgYh/Fa5QnlpvDpaitI8PZyua2ghi0Hbed5iVyp4u7cVROtwZ6KjDcY2SJzYu0B
+         xUBvoCvbM53e7VJwB9TU6aM6269mHj6lywjSoBFZEQn7mjF0qPnuHw1Ees7M4c6BqK9L
+         npaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795354903; x=1795959703;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=E19SZfpkDiocYs9XnZbWGHZ66N7bbdKVZ4Xp3vsd+Pg=;
+        b=URpaTKcu+xQWIfgoerZ2zEgM434dJPLKo0OEJoDVb7RdWIVAQCv8WJEHrqKilB+h/8
+         NsZW9joiN+LFPFFdx2rTxWolUfL47o//QDehi2/dbJSdhJL6eZKdmA8lNoolLP48dyyx
+         zuVJueMnp9wG/iOTnGg18L7WID+SnDmJDuaEM2c8QMjWFiaC93f7M24y+9SXbLoA8gD7
+         TZA+ChK4jehhNBY5Iu1G5Dy0GHSDUmXGXXjJMPP+IgfAWrBNYoArV8KXA7gFxc51o6bG
+         ukNx1UA9UuecVMN8JTHAW4UFXQjlm7F0fhCySp8p3Yp3T7wbLMQaLHcswxRPVfHTVECJ
+         Uj2w==
+X-Gm-Message-State: APuU4Z8HKTu5e+v138YzpmxnZlFrMDGeXiVMUM/NwVcYD++fvZjCHODS
+	j4CcntuclYmr/Vkf8czMnJDTFUNSWDJQhdAU/+UnnVnhz6b4JO1pWBeGnjp1bOMCj1wr0uWFn9J
+	h/PQCcKsV0b9C2/nIyD7dELaP3Qdq/BZTv13GaUE=
+X-Gm-Gg: AZFdTZdZPXNZdjCqYGrSEN/Abdo8AGewXHKipF/UO1wvBuIXXj5jBjcOv8ppFsV0iD+
+	jk2MuRAvA9AatzSJjR+DvkkgrrlPvMsKSURDYD4idUd3HXxPLsuTTkWPP+7u3vZtIAgq6XTb30j
+	RvFLQzWsEO/sQQ/nlcAfU62yRdiMb0/D2wFWwvOAWyCf/eHUIqgxrCopwG7RXO2aOnVzK5Yo3Hf
+	z2qeWUCU+Ll6ZjJole29hoPFNrdRIIiPGFk9z1VDdFkptvwJBkDEihE4kbZfMWp3Pf7YfBCmhj6
+	O9x69QwzPwnd525Jixqmb893JpqiqG2mmm616kqWTV87JxCMjuB0ZwwOo1NHyHsNfkTgfSi2Ih6
+	bYibGBMuYa31+IMRYQwe9IbfzHcnPX5ZLTl8=
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261122-uml-line-irq-v1-1-64b525cf8d2f@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAPnhAmsC/yXMyw5AMBCF4VeRWWui4+5VxMJlMELRIhLx7orld
- 5LzX2BIMxnInAs0HWx4VhbSdaDuS9WR4MYa0MNISkSxT6MYWdldr8JPieIYkyCUCPayaGr5/HJ
- 58dvs1UD19jbgvh/S+U5ncAAAAA==
-X-Change-ID: 20261122-uml-line-irq-39ee77284512
-To: johannes@sipsolutions.net, anton.ivanov@cambridgegreys.com, 
- richard@nod.at
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795351033; l=1580;
- i=shyckless@gmail.com; s=default; h=from:subject:message-id;
- bh=EbX7KODF5wd8UgFNPa78Kwlbo1tt/cnAoI1sKqIv8xo=;
- b=aJAuyN16nWR2Vppc4QoXL1GhbRI+Pv7Eg/ats+Kvd4l/cImMnwPfjvpR06CzeWnvnPwoXf2QL
- Y3JSi2SS7ULCUub3MVqA8RxPuGPJQ+hWe5hFPWJyFhlzGLh8hJmiyf9
-X-Developer-Key: i=shyckless@gmail.com; a=ed25519;
- pk=pMtccVGiWES3bV+7YBFuBclkvq2n2HBHQ5azaBrK2lY=
-X-Endpoint-Received: by B4 Relay for shyckless@gmail.com/default with
- auth_id=1498
-X-Original-From: Suyuan Wang <shyckless@gmail.com>
+X-Received: by 2002:a05:690e:1287:b0:67d:b5fe:1ce1 with SMTP id
+ 956f58d0204a3-67df44101bfmr3527022d50.20.1795354903250; Sun, 22 Nov 2026
+ 05:41:43 -0800 (PST)
+Received: from 138594053405 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 22 Nov 2026 07:41:43 -0600
+From: Haikal Firmansyah <haikalfirmansyh.kernel@gmail.com>
+Date: Sun, 22 Nov 2026 07:41:42 -0600
+X-Gm-Features: Aa3M54om3IqOhvlaFMMnrPPkhsIA35eOVqgBmU5x5UIKas2_YQR0hsR_R6MSvyY
+Message-ID: <CAB2K5aBaXG7Jhi+0UyVfpGan+5XXch5zOg3tM3=kqnO1+8F=fA@mail.gmail.com>
+Subject: [PATCH 0/5] um: Use the generic vDSO for UML/x86
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20261122_054145_492606_E72B7067 
+X-CRM114-Status: GOOD (  10.31  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,60 +113,75 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: shyckless@gmail.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: Suyuan Wang <stevewong@hust.edu.cn>
+This series replaces UML's hand-written x86_64 vDSO with the generic
+vDSO framework (lib/vdso).
 
-line_setup_irq() requests the read IRQ first and then the write IRQ.
-If the write IRQ request fails, it returns the error without freeing
-the read IRQ. Its caller, open_chan(), then calls close_chan(), but
-close_one_chan() only frees the IRQs of a channel that is enabled, and
-the channel was never marked enabled. So the read IRQ stays registered
-for an fd that close_one_chan() then closes.
+Since 2011 UML/x86_64 has shipped a vDSO that turns every __vdso_*
+call into a syscall so that UML can trap it (Richard Weinberger,
+"um: implement a x86_64 vDSO").  That was the right call when UML had
+no way to give userspace a trustworthy clock, but it means every
+clock_gettime() still pays a full syscall round trip: about 36 us
+in our guest measurements.
 
-Free the read IRQ in line_setup_irq() before returning the error.
+The guest can read the host TSC with RDTSC without a trap,
+so there is no need to bounce to the kernel for time at all.  This
+series calibrates the host TSC at boot, switches the timekeeper
+clocksource to it, and lets the generic vDSO interpolate the time
+in userspace from the TSC and the vvar, following the same pattern
+as arch/x86/entry/vdso.  Measured in the guest:
 
-Found with a static analysis tool and checked by hand.
+  clock_gettime(CLOCK_REALTIME): median 70 ns, against
+  36,535 ns via the raw syscall. In the boot where the
+  syscall baseline was measured the vDSO median was 80 ns,
+  so the same-boot speedup is 457x; at the typical 70 ns
+  median it is about 520x. Monotonicity, drift and reboot
+  gates pass, 6 boots on 7.4-rc3, 0 segfaults.
 
-Fixes: d14ad81f800a ("uml: handle errors on opening host side of consoles")
-Cc: stable@vger.kernel.org
-Co-developed-by: Kaixuan Li <kaixuan.li@ntu.edu.sg>
-Signed-off-by: Kaixuan Li <kaixuan.li@ntu.edu.sg>
-Signed-off-by: Suyuan Wang <stevewong@hust.edu.cn>
----
-Compile tested with ARCH=um (W=1, no new warnings); the failure path wasn't run.
----
- arch/um/drivers/line.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The patches:
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index c851a592809c..5589fa68871e 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -273,8 +273,12 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
- 		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_WRITE,
- 				     line_write_interrupt, 0,
- 				     driver->write_irq_name, data);
--		if (err < 0)
-+		if (err < 0) {
-+			/* the caller won't free it, the channel isn't enabled */
-+			if (input)
-+				um_free_irq(line->read_irq, data);
- 			return err;
-+		}
- 
- 		line->write_irq = err;
- 	}
+  1. um: vdso: add shadow headers for the vDSO build
+  2. um: Kconfig: select generic vDSO options for UML (MMU only)
+  3. um: time: use the host TSC as clocksource for the vDSO
+  4. um: vdso: add the generic vDSO alongside the syscall-shim vDSO
+  5. um: vdso: wire up the vvar mapping, layout and build (MMU only)
 
+Three things I want to be upfront about.  First, patch 1 adds shadow
+copies of four asm/vdso headers because the x86 ones cannot be
+reused verbatim in the UML vDSO build (rdtsc_ordered() needs plain
+"lfence; rdtsc" as the ALTERNATIVE patching machinery is not
+available there; cpu_relax is already defined by UML with its own
+time-travel handling).  These are workarounds for UML build
+limitations, and I am open to a cleaner fix if reviewers prefer
+one.  Second, the generic vDSO is MMU-only: patch 2 selects the
+generic-vDSO Kconfig options only "if MMU" (following the
+arch/riscv precedent), because the pulled-in generic code calls
+MMU-only functions and would break the NOMMU build.  NOMMU UML
+keeps the existing syscall-shim vDSO, and the NOMMU build and
+link are verified.  Third, getcpu and getrandom are deliberately
+not exported: there is no guest CPU number in userspace (an x86
+RDPID read would return the host CPU), and the RNG vvar page is
+out of scope; libc falls back to the syscall for both.
 
+This series is based on vanilla Linux 7.4-rc3.  It was developed and
+tested in a UML guest (4 vCPUs, 256 MB, seccomp mode).  The 32-bit
+(i386) build passes, but UML builds a vDSO only for x86_64 upstream
+(arch/x86/um/Makefile includes vdso/ only in the 64-bit branch), so
+the vDSO speedup here is x86_64-only and i386 is unaffected.  It has
+not yet been tested outside that setup, and I would appreciate review
+and test reports.
 
+The commit messages and this cover letter were drafted with the
+help of an AI assistant; the code itself is my own work, tested
+and measured in the UML guest.
 
+Signed-off-by: Haikal Firmansyah <haikalfirmansyh.kernel@gmail.com>
 
