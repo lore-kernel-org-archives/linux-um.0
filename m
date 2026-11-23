@@ -2,61 +2,61 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB05606A33B
-	for <linux-um@archiver.kernel.org>; Mon, 23 Nov 2026 13:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D214E606A331
+	for <linux-um@archiver.kernel.org>; Mon, 23 Nov 2026 13:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=YVDKl3L1;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=y2qrpUFH;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=XY2hGy4c
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=M2N9XYV+;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=AdnWR/fT;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=CiSYPSUw
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=4eFtOIUXlB/3zrN30y5Vr5c5KdL9zNbkcXs+QwRBLLo=; b=YVDKl3L1E/USJl
-	LkzW8aTBBGXAcbmZV7jHrvzjOuUIoQkiTxF6joGBRIH64+KKA9IjOzZxE2a8oPVrpbzItG5blnCa0
-	lVVHmB094aAAGN3Wq6c23cglT1heuAtR2EDWbdyAe+Jum7A+43pnwaKVmBooR7weLjuiZSaASAhCt
-	8n2GnTkCcbbkjGCFj5TQSrTzOPX2++JrAJrtsBYSKy9HDgPxL5stTkObib7Bk/o/TOqiBB2EdZayO
-	P+OnKDrI1bkmiKkeCJqfIr7biw4ypkd8/25ZVrNPycF+1LEu60a4xUr0nrmUjXAEOBohT7xkYKzvv
-	mK/Dxrnsh/Dk24qZTa/w==;
+	List-Owner; bh=wbaUWZC28smuRoW90pWpaXz3GGY4MsOKGg8st7PIjvw=; b=M2N9XYV+1dkEzn
+	nssVM9W1iPAaBm/NKby59C/kZQ1ZSNW6V/xX81c+NacPQNOZwYoJ54iA74k9r7KeMbXORY4GD05vb
+	bQZLzHvKNCeWb7Ay6Zkaxo7cKvGG5Ki2RtKE4XlltoJ35FQHOulaxkC+gL17Zzay8J9hDEZH6dXb2
+	ZpRHXFJpcWoYRVCkBT4c2uNZEaztvtWuDutoN8beVh5QhjYRCo7KX6qW1HtsAu0Vveo9LqnBTM7Oe
+	G5YjU82RW9oJWouyRLaV/T4MaJa1FuNW/RB8TJ1ZmWAsUDuXyWTQlpy2ojkgPjuPi5IAPAElEt6Hp
+	tiLpLKky+YQ5xsPQcHPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVUSN-00000003eJg-0Qp6;
+	id 1xVUSN-00000003eKh-3LE0;
 	Mon, 23 Nov 2026 13:51:43 +0000
 Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVUS5-00000003dz6-31hs;
+	id 1xVUS5-00000003dz5-1sxj;
 	Mon, 23 Nov 2026 13:51:27 +0000
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1795441883;
+	s=2020; t=1795441882;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4eFtOIUXlB/3zrN30y5Vr5c5KdL9zNbkcXs+QwRBLLo=;
-	b=y2qrpUFHjyo+0pMBHaWwUhYXbTJNPIcVR4whnZwubVPwGrLaE+1Mmk2Mwi5WKuQDu7n6iK
-	IxT3kxQpnVBBexAnF0ihS5lfLDaFO2yZB/xnwdS5zoFeUyigBfLzBR9hxvT3x4gDmc+6ZJ
-	flIELvpITzh8VhPCfJya5ZOTnXK/xiterHEPXNFbpa5f+Qizmz2LKuMplLRNcmsaccPT71
-	bzlF810zu1Rww5Diqxf9sA0ClHmhjYZs9LcDI8M2QN/FteZKxNbWWCxFnzgO4x1Y2LXygE
-	/0EP1KSgGHVkf/dr39ZaV3wh4xEEjOL8onok1E/zu4qmvtjdVXNW+2xfMnH4iQ==
+	bh=wbaUWZC28smuRoW90pWpaXz3GGY4MsOKGg8st7PIjvw=;
+	b=AdnWR/fT44yXzm+ht95OqsrELNCyH358idfw54sxV+82ZCQh8b1aIvskImaSeMPYYiPAGX
+	tMSFHMm39iz7ISqX2w8pj4D8L/qzXb1g+WS97tFqN8moTMNum/DjAz0AOhUR9mHeaYQxj9
+	5LZEWcHDHmfyVG3iQ0WvT8vFcoQbpRxTznUUUuQTu76cbBTyn3KQ4CodP8l937jaO91ZuP
+	Qt441N7af+F5t3S2BxLy/sH8WAJ3bW5O4y6lY0UQw0K7A+UQhTXKdNOY7nqA7niM/tyffr
+	0vxJK9JiP8+NfpneuW9wJzwcEPrvj3p/SNvKjKHMhV35bVoateZvXcf6rspcBQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1795441883;
+	s=2020e; t=1795441882;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4eFtOIUXlB/3zrN30y5Vr5c5KdL9zNbkcXs+QwRBLLo=;
-	b=XY2hGy4cWmay/FFPNrPlsYtYrkhSLiBVvC67xaDxTH8uahrD+vR0WYB/jdZNhsfoWk9NzD
-	rmVwXtqSDk1V2JAg==
-Date: Mon, 23 Nov 2026 14:50:57 +0100
-Subject: [PATCH v6 06/11] riscv: vdso: Enable the vdsocheck tool
+	bh=wbaUWZC28smuRoW90pWpaXz3GGY4MsOKGg8st7PIjvw=;
+	b=CiSYPSUwyavYYl1x/i+wWbxPyj9epV9FlY90gd2wiTfE4WxtGjnCDB5MgwLKxaEC26eTmC
+	kUVvWJED9GTdvTAw==
+Date: Mon, 23 Nov 2026 14:50:56 +0100
+Subject: [PATCH v6 05/11] powerpc/vdso: Enable the vdsocheck tool
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20261123-vdso-absolute-reloc-v6-6-161e218dd217@linutronix.de>
+Message-Id: <20261123-vdso-absolute-reloc-v6-5-161e218dd217@linutronix.de>
 References: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
 In-Reply-To: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -98,16 +98,16 @@ Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arnaldo Carvalho de Melo <acme@redhat.com>, 
  Peter Zijlstra <peterz@infradead.org>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795441872; l=3576;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795441872; l=3226;
  i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=MntGa2c7F/hFX8g0jBZrZAZFlve/PN+fivtH3qTBWPk=;
- b=E0OeOrGeIR7bOANcC60kOQeCX/ghNoL4OOe/6jVEwOUqPM8BuZA5TNCH2kWGUvAnrKk1cra32
- Sqyo9hLfgFEAlCARi9PB7WSaGZbX9p2AcUfrE8XdPahGDH8DoZdd3Qg
+ bh=Cgbtb7qSJ3AcXOvZFi0BZIPMWqlXOiwZ1bBjbdIILZ8=;
+ b=tf9jQyiu6Hx303xQeraxjP8OCezqMY+3qKghsgR/OWQajoh6hO04aKYTX/3KWhg5DquWsJP8b
+ aAXQOlfMR3eDCtoARUDmA0kN0uVLstrGS/+wTZDeacxxM2luRimKr84
 X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
  pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261123_055125_914546_76C8F941 
-X-CRM114-Status: GOOD (  12.21  )
+X-CRM114-CacheID: sfid-20261123_055125_784413_04F6FDC2 
+X-CRM114-Status: GOOD (  11.14  )
 X-Spam-Score: -4.4 (----)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -135,75 +135,70 @@ Wire it up for the architecture.
 
 Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- arch/riscv/Kconfig              |  1 +
- arch/riscv/kernel/vdso/Makefile |  4 ++--
- lib/vdso/check/vdsocheck.rs     | 26 ++++++++++++++++++++++++++
- 3 files changed, 29 insertions(+), 2 deletions(-)
+ arch/powerpc/Kconfig              |  1 +
+ arch/powerpc/kernel/vdso/Makefile |  4 ++--
+ lib/vdso/check/vdsocheck.rs       | 27 +++++++++++++++++++++++++++
+ 3 files changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index e7891a2a89da..2a0f5fbcd7e3 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -226,6 +226,7 @@ config RISCV
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index c3b6cd655606..1c4a75c3a830 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -327,6 +327,7 @@ config PPC
+ 	select SYSCTL_EXCEPTION_TRACE
  	select THREAD_INFO_IN_TASK
  	select TRACE_IRQFLAGS_SUPPORT
- 	select UACCESS_MEMCPY if !MMU
-+	select VDSO_CHECK if MMU
- 	select VDSO_DATASTORE if MMU
- 	select VDSO_GETRANDOM if MMU && 64BIT
- 	select USER_STACKTRACE_SUPPORT
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index c023046a3fd7..b15039d0309e 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -75,7 +75,7 @@ endif
- $(obj)/$(vdso_o): $(obj)/$(vdso_so)
++	select VDSO_CHECK
+ 	select VDSO_DATASTORE
+ 	select VDSO_GETRANDOM
+ 	#
+diff --git a/arch/powerpc/kernel/vdso/Makefile b/arch/powerpc/kernel/vdso/Makefile
+index 0d1a49529885..b2e399e10273 100644
+--- a/arch/powerpc/kernel/vdso/Makefile
++++ b/arch/powerpc/kernel/vdso/Makefile
+@@ -82,9 +82,9 @@ targets += vdso64.lds
+ CPPFLAGS_vdso64.lds += -P -C
  
  # link rule for the .so file, .lds has to be first
--$(obj)/$(vdso_so_dbg): $(obj)/$(vdso_lds) $(obj-vdso) FORCE
-+$(obj)/$(vdso_so_dbg): $(obj)/$(vdso_lds) $(obj-vdso) $(vdsocheck) FORCE
- 	$(call if_changed,vdsold_and_check)
- LDFLAGS_$(vdso_so_dbg) = -shared -soname=linux-vdso.so.1 \
- 	--build-id=sha1 --eh-frame-hdr
-@@ -97,7 +97,7 @@ include/generated/$(vdso_offsets): $(obj)/$(vdso_so_dbg) FORCE
- # The DSO images are built using a special linker script
- # Make sure only to export the intended __vdso_xxx symbol offsets.
- quiet_cmd_vdsold_and_check = VDSOLD  $@
--      cmd_vdsold_and_check = $(LD) $(CFI_FULL) $(ld_flags) -T $(filter-out FORCE,$^) -o $@.tmp && \
-+      cmd_vdsold_and_check = $(LD) $(CFI_FULL) $(ld_flags) -T $(filter-out FORCE $(vdsocheck),$^) -o $@.tmp && \
-                    $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
-                    rm $@.tmp && \
-                    $(cmd_vdso_check)
+-$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o FORCE
++$(obj)/vdso32.so.dbg: $(obj)/vdso32.lds $(obj-vdso32) $(obj)/vgettimeofday-32.o $(obj)/vgetrandom-32.o $(obj)/crtsavres-32.o $(vdsocheck) FORCE
+ 	$(call if_changed,vdso32ld_and_check)
+-$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o FORCE
++$(obj)/vdso64.so.dbg: $(obj)/vdso64.lds $(obj-vdso64) $(obj)/vgettimeofday-64.o $(obj)/vgetrandom-64.o $(vdsocheck) FORCE
+ 	$(call if_changed,vdso64ld_and_check)
+ 
+ # assembly rules for the .S files
 diff --git a/lib/vdso/check/vdsocheck.rs b/lib/vdso/check/vdsocheck.rs
-index da58ff220eab..37455d326110 100644
+index 0d5ceaca34d7..da58ff220eab 100644
 --- a/lib/vdso/check/vdsocheck.rs
 +++ b/lib/vdso/check/vdsocheck.rs
-@@ -96,6 +96,32 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
+@@ -69,6 +69,33 @@ fn allowed_relocations_for_machine(machine: u16) -> Option<AllowedRelocations<'s
              ..Default::default()
          }
          .into(),
-+        bindings::EM_RISCV => AllowedRelocations {
++        bindings::EM_PPC => AllowedRelocations {
 +            in_object_file: &[
-+                16, /* R_RISCV_BRANCH */
-+                17, /* R_RISCV_JAL */
-+                18, /* R_RISCV_CALL */
-+                19, /* R_RISCV_CALL_PLT */
-+                23, /* R_RISCV_PCREL_HI20 */
-+                24, /* R_RISCV_PCREL_LO12_I */
-+                25, /* R_RISCV_PCREL_LO12_S */
-+                33, /* R_RISCV_ADD8 */
-+                34, /* R_RISCV_ADD16 */
-+                35, /* R_RISCV_ADD32 */
-+                36, /* R_RISCV_ADD64 */
-+                37, /* R_RISCV_SUB8 */
-+                38, /* R_RISCV_SUB16 */
-+                39, /* R_RISCV_SUB32 */
-+                40, /* R_RISCV_SUB64 */
-+                43, /* R_RISCV_ALIGN */
-+                44, /* R_RISCV_RVC_BRANCH */
-+                45, /* R_RISCV_RVC_JUMP */
-+                51, /* R_RISCV_RELAX */
-+                57, /* R_RISCV_32_PCREL */
++                10,  /* R_PPC_REL24 */
++                11,  /* R_PPC_REL14 */
++                26,  /* R_PPC_REL32 */
++                249, /* R_PPC_REL16 */
++                250, /* R_PPC_REL16_LO */
++                251, /* R_PPC_REL16_HI */
++                252, /* R_PPC_REL16_HA */
++            ],
++            ..Default::default()
++        }
++        .into(),
++        bindings::EM_PPC64 => AllowedRelocations {
++            in_object_file: &[
++                10,  /* R_PPC64_REL24 */
++                11,  /* R_PPC64_REL14 */
++                26,  /* R_PPC64_REL32 */
++                44,  /* R_PPC64_REL64 */
++                249, /* R_PPC64_REL16 */
++                250, /* R_PPC64_REL16_LO */
++                251, /* R_PPC64_REL16_HI */
++                252, /* R_PPC64_REL16_HA */
 +            ],
 +            ..Default::default()
 +        }
