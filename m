@@ -2,113 +2,132 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FB6606A334
-	for <linux-um@archiver.kernel.org>; Mon, 23 Nov 2026 13:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D3D606A31E
+	for <linux-um@archiver.kernel.org>; Mon, 23 Nov 2026 20:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lO6y8cCm;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=rCXDMhbM;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=Vihz+OSm
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=l47YmaFU;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=GUqi7D/+;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=GeCTSuUL
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=JPmhvZcQZsMI6w6eJvQYmGXP4b/7L7ItLiKaLRPpFiQ=; b=lO6y8cCmnagZAb
-	BklIopzt0wXuvZwGMS6UWU35eWzUE6x5PCTCgiRMHoIbqEKLuKs6eAIDFTg41e+ZvilM+BzH05uLd
-	Y1yFBCRzj0ExERz0R/sRABQunFr47Y6Bqpwt2Qlb4mURdK0639y0RYegKuUguc5hnRUHqrXP2vUJ5
-	agqHsYbgHaYkodNl9BIagUJnmr3hak+5HV6Vybp0Bdqj8KRwtRyHxkcvZWbtKHkkeT6RApI2up3ZN
-	4o/BALpv63AFSVQoYv9KmeqrvTooDNLSbBI1E8fWgmfNA/ucLqCZn0lfyXOpW9rQ42hHnAqSSpT/r
-	Xnx6nigzydtTCKlAQZpQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:
+	References:In-reply-to:Subject:Cc:To:From:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=o9zLSXJuEnjCYOHrQ29UaL5++JY+uZSugjvH7QOgkgM=; b=l47YmaFUBrjeJYoPt9V8eu1H+P
+	E8U1c+XcIOf4120Xs36rJ957dJOWXLCxCSaJ/rxuu45PhHL65SJqimFrmHtLvK/LdTdyvf2u6Pvn1
+	OVOf36H0M56dnrjmRWVKvY1RV6V4rAeZhG3iNs5Fz/EnHdBSJ/PNT3wtffKf8vwUwzVJvb7sxfOrN
+	Rvk5FJUfQHn+mbEEkp4QNeOecFbPyctZDP5jQqTKcPDuBsE3guvobfGcAyrOHxeXitiyPQ4e8GP8H
+	5F8ocBba24ti1sLuzdoyzW9B6o50/FCh9OZgxrY/c8hHyHdb0bPSBk6cggSDT9w/UJZyLNPkqNaa1
+	uej9AqQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVUSk-00000003es2-3yKG;
-	Mon, 23 Nov 2026 13:52:06 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1xVayJ-00000004siK-4ANj;
+	Mon, 23 Nov 2026 20:49:07 +0000
+Received: from fout-a2-smtp.messagingengine.com ([103.168.172.145])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVUSL-00000003eG7-3IEX;
-	Mon, 23 Nov 2026 13:51:49 +0000
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1795441899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JPmhvZcQZsMI6w6eJvQYmGXP4b/7L7ItLiKaLRPpFiQ=;
-	b=rCXDMhbMNovmfoO6qyadNrRk7f6HVHBen34hmO8c2sCJxmWlrI+kuN6Fu1RHeKKsk6EY24
-	E0SacrConMBbHsRxfbnnA1QmrkSNG5ig6+9Hj82q0+fcZzQog4JMvSX6BdBkvLPKAZY09a
-	cmajQWcX84aMnEYYUqKcjQOYaLNnWLHV9hW4r1F+KoYJyRFvRAAJZbR87Cv1533ZENWlNL
-	1IH3b3cUootBgp4GSIrRdqXPpBA39+LY1KQmZGiOE+gUNUvfwW3zvseTDo78nzug9YZv0c
-	Nf0/IEvGQ27iEzT9+d3kiH4e7e72aytWDiOonz7mndTpsY7S1mpQeK4PjYtpeQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1795441899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JPmhvZcQZsMI6w6eJvQYmGXP4b/7L7ItLiKaLRPpFiQ=;
-	b=Vihz+OSme/gaZLLhdpsDZx8NOwH494utLHXdBxi1jGqiwVH9qbyOTU05x0YmhKAKY4MP4H
-	F0xPTtLbZf0pAzDg==
-Date: Mon, 23 Nov 2026 14:51:02 +0100
-Subject: [PATCH v6 11/11] vDSO: Automatically enable VDSO_CHECK
+	id 1xVayE-00000004shd-2J7u
+	for linux-um@lists.infradead.org;
+	Mon, 23 Nov 2026 20:49:04 +0000
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 0F6C5EC1FFD
+	for <linux-um@lists.infradead.org>; Mon, 23 Nov 2026 15:49:01 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Mon, 23 Nov 2026 15:49:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
+	1795466941; x=1795553341; bh=o9zLSXJuEnjCYOHrQ29UaL5++JY+uZSugjv
+	H7QOgkgM=; b=GUqi7D/+zOLrqWSCzm+MYwrgGUjLKLl+XyO3sqEMlbWx7SCD96N
+	xOr7y+zBHvOJU64RURKgirlFowf3Nwr3aEDK51YyBQlTYsXZPHXQBIekNZKCnUv4
+	KsJ7waiQTqtIfKfIciO2t0+seQCxjIoBE/jzWA+bLsUFuvppgIe1oUUDuduARfs0
+	t3JPhbBc3ixP9z2lo3LiqRiZ6svS6iP3JqTZaE4IPjo6wwG/9Hk1S2y/EdvPD7i7
+	VeW9Ha3EU2WYxmJ3DxwIb2mHDAm2WO5nWwgvgUT3UiPRd1agj+ERpo+8YO9P8RIa
+	pHNuAA3m5BdklG2F+1juF+ysaWNVwkdTd2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1795466941; x=
+	1795553341; bh=o9zLSXJuEnjCYOHrQ29UaL5++JY+uZSugjvH7QOgkgM=; b=G
+	eCTSuULw905Aod95KYVphrgcfjTxFP0oxax/QIzCt7Z08DmPbXq87xmjvsq87B1o
+	T7FpSf/jOkxbzNfI9K9UvX8+L+n3jzN0UFd38r6Kqug7Mikbl1O/2EmrG2SO3FI1
+	KHnotRnxKL/i6//1NMYSCNNAQD5Lw8zQIP5We+msQKoeN8HunYpxYa/NgEin0FBL
+	OrwyXhfhr1+ovrOEMzpq4EqB2X4zDBEfT7EuPoC4GZVcDg7QuNgDviNaNXLJmX39
+	10qq1kOBTAvLEMe0kGmTgufHnX1lPRueLiduAXke6LIBKcNxkA/MXcp84nvwDaqA
+	INQFdl5CmGnTdw0oHc84w==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=sign d=ownmail.net a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1795466941; d=ownmail.net;
+	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
+	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
+	s=fm3:rsa-sha256:nKNHBFQwr6ksG/KqKOR4R2/LADVwmltxlliTMt25a4yenxZ
+	xzveqTEE27lRSVW20IGe9/99LpsPvPzMs8hLWATcT9cHA7vAXPI5Gkedixsszjyz
+	fBPAQGgG0b5BR1EMZW7nMM6YUtYo/vtpu5P11OQ8Dovd9Bm9X20PgEBiGBsz3M0V
+	KqMlWPrrWyCFk4cals7OuTzS1d14ZbAg9tRx3H2J0O9PX+IPGzoRZtLjaBR3HUO+
+	HKdYetKWt0PkxQdnx90vxxhfxGTsjEnt9NvX8GYgSuXT23beqCOCcmjF9xJePv3O
+	p9KhYo9g5djGyjlsMan0NcYs75dEvgs3DiEC3/g==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
+	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
+	action=mi-m=1; hc=13;
+	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
+	from,in-reply-to,message-id,mime-version,references,reply-to,
+	subject,to;
+Message-Instance: m=1; h=sha256:iRsZPrvVIwPX/h3pXgxfTnT/eDywSz9BnLpkefyq+Ow=:TQjb9nmWbWE1VynL6JHeebg3yoN+S4zxdXHZHN+WKgw=;
+X-ME-Sender: <xms:u6YEa7TXivWPuJUmQwTofE3_mOq1Vd-dGbfdKdCpR8XRf4mdVhKkOA>
+    <xme:u6YEa-FAq9luXdWY2R16GtwHX7z9lzSVvh-3xidwqcC_0YdC1p2FjR8MM26AohERW
+    8Y2RTcrRVy8N0Cfpe0u2k3jK-WQI80vUAOYxgi3mQC340Hcf-54>
+X-ME-Received: <xmr:u6YEa1fKzxLr8_1Q8wvmXU9XFcWRl1eA7ksz9FFvxFJ4ilMV2X37c48RFAVhVI5O2MjFjpePCFj_Mpy26V917zelIABh1kc>
+X-ME-Proxy-Cause: dmFkZTECMQJK4fdkHy0fWLPUcFTfrq9t91uSnuEGiUSnuJVoCkINLH+FzKpB2tSIh00Nhk
+    5BK9SRt/YA6/FrvyPQt1zAAzcR5cOsyqFz7nx9uu0f4KSe3wR0kPiRBN+OVBWFQfytz/nn
+    yyGl8KiMZ8B/aculVSmccW/8zngN0Q/vdl6AlkON9HCNZS3RB6++ZKfrcMUpGub8gwOvLm
+    AfxvFEkzIq6zthR7ARiUVw30kV7XdmJ780kxcA9EMVKyogzFKXYyTyYLNb86ZISYUb8d/z
+    rFvorNZzKKTgs8fkSA6/DEx90/h/JJKzOE5MWqhdr2fZujknKzF4prwngvHkH/gzMXhOjI
+    W2qJFidfdQhutil75qA7q28SL5utgHyPCYjGk3jbYPNIWOTW+lgKSOHM9PFUOVE4MR33Yb
+    yQOG+YP7xrsB3fg8W8oObe16vE6p/BlLe0wvL9GnHvZqPldBX7whsOfLYvg8K3vS3y7Ztv
+    vtLFOJ6eyHRKhRwQUJBelmJtRhZB0ya0x0/gCpihCgyIW69Pz9HM2foCdkHyEPxE8i33+l
+    gb6gKLN69B9x5kOtGKlbuEucLQnIluC26ckmgsXzWq+85qJTrQQHreucLfGmT62E6CMJmN
+    wfzX1snjy9o8lEEGvvcxDAvGTgc3an/ek3fbgvvdrM0gP8oQwfzLkuvh788w
+X-ME-Proxy: <xmx:u6YEa9v4MlfSFvBYUW3AaaxOuVN6K8LRsbr3wpg2UnQhGQakfgongQ>
+    <xmx:u6YEa7dUUoaxCTu3vhu-0mhfleuvvFLqCPMmBXEj7KynRAJsHDJseg>
+    <xmx:u6YEaxpDSw_mNUDwFA2fQi7eSu1e-qmUbgp2qhZsZ4P45ocBhlqw1A>
+    <xmx:u6YEa58xC17HGroqH_gvx4Lperpo4blG6Pv2gD5Od9dlgym1vNWEag>
+    <xmx:vaYEa5q6WPtMSV6UnT0CuFMsOg-aNwZnOEi6QNWbCtNynKKtn7P9IXVR>
+Feedback-ID: i9d664b8f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 23 Nov 2026 15:48:54 -0500 (EST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20261123-vdso-absolute-reloc-v6-11-161e218dd217@linutronix.de>
-References: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
-In-Reply-To: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>, 
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- Andy Lutomirski <luto@kernel.org>, 
- Vincenzo Frascino <vincenzo.frascino@arm.com>, Kees Cook <kees@kernel.org>, 
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
- "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Russell King <linux@armlinux.org.uk>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
- Gary Guo <gary@garyguo.net>, 
- =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
- Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, 
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
- Danilo Krummrich <dakr@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
- Christophe Leroy <chleroy@kernel.org>, Boqun Feng <boqun@kernel.org>, 
- Nicolas Schier <nsc@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- llvm@lists.linux.dev, linux-mm@kvack.org, linux-um@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
- loongarch@lists.linux.dev, linux-s390@vger.kernel.org, 
- linux-mips@vger.kernel.org, rust-for-linux@vger.kernel.org, 
- linux-kbuild@vger.kernel.org, Jan Stancek <jstancek@redhat.com>, 
- Arnaldo Carvalho de Melo <acme@redhat.com>, 
- Peter Zijlstra <peterz@infradead.org>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795441872; l=4650;
- i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
- bh=tCXUwkZUh4Hl18kwgGqhcWJoeos+T/6rMQq0M5SHQdY=;
- b=gvQ6fSLlDUp8t1Kpx0/BBIhQ7AihqhesygBcKjwQL0dpVUoOyS5DoqWuOa59xHy5yVuHPzbgt
- Z/t2kJ3fm0ZAJfn4xh2H2o29XKP0jwDQOX8shG9Arg4eFHtoqbgV9U/
-X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
- pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
+From: NeilBrown <neilb@ownmail.net>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Jan Harkes" <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+ "Jan Kara" <jack@suse.cz>, "Richard Weinberger" <richard@nod.at>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Namjae Jeon" <linkinjeon@kernel.org>, "Hyunchul Lee" <hyc.lee@gmail.com>,
+ "Carlos Maiolino" <cem@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
+ "Amir Goldstein" <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, linux-fsdevel@vger.kernel.org,
+ linux-um@lists.infradead.org, ntfs@lists.linux.dev, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] VFS/xfs/ntfs: drop parent lock across
+ d_alloc_parallel() in d_add_ci()
+In-reply-to: <20261120-veranda-tiger-seemeilen-397d57fb2258@brauner>
+References: <20261117000115.1433875-1-neilb@ownmail.net>
+  <20261117000115.1433875-2-neilb@ownmail.net>
+  <20261120-veranda-tiger-seemeilen-397d57fb2258@brauner>
+Date: Tue, 24 Nov 2026 07:48:49 +1100
+Message-id: <179546692990.1728055.10797595669821351188@noble.neil.brown.name>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261123_055143_776407_998487C9 
-X-CRM114-Status: GOOD (  10.59  )
-X-Spam-Score: -4.4 (----)
+X-CRM114-CacheID: sfid-20261123_124903_017227_9052741A 
+X-CRM114-Status: GOOD (  19.91  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,162 +137,78 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: NeilBrown <neil@brown.name>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-2.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-All architectures using the generic vDSO library should enable
-VDSO_CHECK. Now that this is the case, enable VDSO_CHECK automatically.
+On Sat, 21 Nov 2026, Christian Brauner wrote:
+> On Tue, Nov 17, 2026 at 10:54:58AM +1100, NeilBrown wrote:
+> > We don't need to keep the parent lock held when d_add_ci() is run - the
+> > VFS doesn't need it as dentry is exclusively held due to
+> > DCACHE_PAR_LOOKUP and the filesystem has finished its work.
+> 
+> I'm not sure that holds? Only d_alloc_parallel() honours
+> DCACHE_PAR_LOOKUP. lookup_one_qstr_excl() still uses d_alloc() and
+> relies on the exclusive lock to guarantee that there are no in-lookup
+> children at all. That stops being true here:
+> 
+> > +		if (lookup_flags & LOOKUP_SHARED)
+> > +			inode_unlock_shared(d_inode(dentry->d_parent));
+> > +		else
+> > +			inode_unlock(d_inode(dentry->d_parent));
+> > +		must_relock = true;
+> >  		found = d_alloc_parallel(dentry->d_parent, name);
+> 
+> So if "Foo" exists on an ascii-ci xfs:
+> 
+> P1: stat("FOO")                      P2: unlink("Foo")
+> lookup_slow()
+> -> xfs_vn_ci_lookup()
+>    -> d_add_ci(dentry, X, "Foo")
+>       -> inode_unlock_shared(dir)
+>       -> found = d_alloc_parallel()
+>                                      start_dirop()
+>                                      -> inode_lock_nested(dir)
+>                                      -> lookup_one_qstr_excl("Foo")
+>                                         -> d2 = d_alloc()
+>                                         -> xfs_vn_ci_lookup()
+>                                            -> d_splice_alias(X, d2)
+>                                      vfs_unlink()
+>                                      -> xfs_vn_unlink()
+>                                         -> d_invalidate(d2)
+>                                      inode_unlock(dir)
+>       -> d_splice_alias(X, found)
+> 
+> IOW, "Foo" ends up as a hashed positive dentry for an unlinked inode
+> that nothing revalidates.
+> 
+> open("Foo", O_CREAT) then opens the orphan instead of creating a new
+> file and O_EXCL fails with EEXIST. Do a rename() instead of the unlink()
+> and "Foo" keeps pointing to what is now "Bar". ntfs gets there the same
+> way.
+> 
+> Before this patch lookup_slow() held the lock shared across all of
+> that so start_dirop() couldn't get in between.
+> 
+> So afaict this needs "VFS: use d_alloc_parallel() in
+> lookup_one_qstr_excl()" from your RFC to go in first. Unless I'm
+> missing something obvious.
+> 
 
-Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
----
- arch/arm/mm/Kconfig    | 1 -
- arch/arm64/Kconfig     | 1 -
- arch/loongarch/Kconfig | 1 -
- arch/mips/Kconfig      | 1 -
- arch/powerpc/Kconfig   | 1 -
- arch/riscv/Kconfig     | 1 -
- arch/s390/Kconfig      | 1 -
- arch/sparc/Kconfig     | 1 -
- arch/x86/Kconfig       | 1 -
- lib/vdso/Kconfig       | 2 ++
- 10 files changed, 2 insertions(+), 9 deletions(-)
+Yes, I see that now - thanks.
+And that means we don't need LOOKUP_SHARED at all.
 
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 7f55ed37f464..41d7b495ec45 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -943,7 +943,6 @@ config VDSO
- 	depends on AEABI && MMU && CPU_V7
- 	default y if ARM_ARCH_TIMER
- 	select GENERIC_GETTIMEOFDAY
--	select VDSO_CHECK
- 	help
- 	  Place in the process address space an ELF shared object
- 	  providing fast implementations of gettimeofday and
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index df22b4ed5e29..1075bc661833 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -258,7 +258,6 @@ config ARM64
- 	select TRACE_IRQFLAGS_NMI_SUPPORT
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select USER_STACKTRACE_SUPPORT
--	select VDSO_CHECK
- 	select VDSO_GETRANDOM
- 	select VMAP_STACK
- 	help
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index ad4cafeddbb8..b5ed4881d3c0 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -211,7 +211,6 @@ config LOONGARCH
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select USE_PERCPU_NUMA_NODE_ID
- 	select USER_STACKTRACE_SUPPORT
--	select VDSO_CHECK
- 	select VDSO_DATASTORE
- 	select VDSO_GETRANDOM
- 	select ZONE_DMA32 if 64BIT
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 31c247c2faeb..ed17c9b1624c 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -106,7 +106,6 @@ config MIPS
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select ARCH_HAS_ELFCORE_COMPAT
- 	select HAVE_ARCH_KCSAN if 64BIT
--	select VDSO_CHECK
- 
- config MIPS_FIXUP_BIGPHYS_ADDR
- 	bool
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 1c4a75c3a830..c3b6cd655606 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -327,7 +327,6 @@ config PPC
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
- 	select TRACE_IRQFLAGS_SUPPORT
--	select VDSO_CHECK
- 	select VDSO_DATASTORE
- 	select VDSO_GETRANDOM
- 	#
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 2a0f5fbcd7e3..e7891a2a89da 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -226,7 +226,6 @@ config RISCV
- 	select THREAD_INFO_IN_TASK
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select UACCESS_MEMCPY if !MMU
--	select VDSO_CHECK if MMU
- 	select VDSO_DATASTORE if MMU
- 	select VDSO_GETRANDOM if MMU && 64BIT
- 	select USER_STACKTRACE_SUPPORT
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 71a614832886..7138d923d86f 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -289,7 +289,6 @@ config S390
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TTY
- 	select USER_STACKTRACE_SUPPORT
--	select VDSO_CHECK
- 	select VDSO_GETRANDOM
- 	select VIRT_CPU_ACCOUNTING
- 	select VMAP_STACK
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 90df77235184..742ffff8c37f 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -114,7 +114,6 @@ config SPARC64
- 	select ARCH_SUPPORTS_SCHED_SMT if SMP
- 	select ARCH_SUPPORTS_SCHED_MC  if SMP
- 	select ARCH_HAS_LAZY_MMU_MODE
--	select VDSO_CHECK
- 	select GENERIC_GETTIMEOFDAY
- 
- config ARCH_PROC_KCORE_TEXT
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 09d3aa04ee82..58dce0b66179 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -302,7 +302,6 @@ config X86
- 	select HAVE_UNSTABLE_SCHED_CLOCK
- 	select HAVE_UNWIND_USER_FP		if X86_64
- 	select HAVE_USER_RETURN_NOTIFIER
--	select VDSO_CHECK
- 	select VDSO_GETRANDOM			if X86_64
- 	select HOTPLUG_PARALLEL			if SMP && X86_64
- 	select HOTPLUG_SMT			if SMP
-diff --git a/lib/vdso/Kconfig b/lib/vdso/Kconfig
-index 559f5534831e..741de1abe923 100644
---- a/lib/vdso/Kconfig
-+++ b/lib/vdso/Kconfig
-@@ -6,6 +6,7 @@ config VDSO_DATASTORE
- config GENERIC_GETTIMEOFDAY
- 	bool
- 	select VDSO_DATASTORE
-+	select VDSO_CHECK
- 	help
- 	  This is a generic implementation of gettimeofday vdso.
- 	  Each architecture that enables this feature has to
-@@ -21,6 +22,7 @@ config GENERIC_VDSO_OVERFLOW_PROTECT
- config VDSO_GETRANDOM
- 	bool
- 	select VDSO_DATASTORE
-+	select VDSO_CHECK
- 	help
- 	  Selected by architectures that support vDSO getrandom().
- 
+The AFS patches also drop and retake the lock, so they need to be after
+d_alloc_parallel() is used in lookup_one_qstr_excl(), and also after the
+d_drop() changes.  So I think I should combine the AFS patch set with
+this one.  I'll try that and check that it still makes sense.
 
--- 
-2.56.1
+Thanks,
+NeilBrown
 
 
