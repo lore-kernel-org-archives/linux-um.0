@@ -2,131 +2,85 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987E8606A321
-	for <linux-um@archiver.kernel.org>; Mon, 23 Nov 2026 20:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A62606A685
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 02:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=RBwEgnb6;
-	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=Qk2zZbxU;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=UfMUy/Ss
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=jeQBfGIp;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MOzH5Rru
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:
-	References:In-reply-to:Subject:Cc:To:From:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Unsubscribe-Post:List-Owner;
-	bh=7wNwm3nBSKYEO3ZsBLQilTK2hdyTPsdyQ2l3ESaYKDQ=; b=RBwEgnb6wQ2EIQMkgChu5wNKTA
-	5Sf+wMnGtgaM5VBWNgJNP8LCdTw4bh54BgWy25YERwblykKbyWc7z4WrgPoEfQ3VDs/PrLgrvv3xg
-	Gp1yeE6NDKCXw2UNl6V+tTtj0J67y5Ns2syi4eksdlKfTBWqvx+hHoueDzJpy9SYROd6b9mLLN0K5
-	UUeNXcCUiq/0WkIppeUAGQfXcSQK18Z430QfRrjUMLCi7crNdQvF3UVlsZVCm8BReYOii19iBsap6
-	jhBuc2f/XaqH9PmcWYs9GVQv6p7abuou0QnuatTl4mrqPw3LCf6LyFiP1wiMbQQKt8SYSEfmKXmi8
-	kTcJVGAA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
+	List-Owner; bh=tdesGFo2gvb7lstfuQLq+1yzVhj59qUZoNASZ3nLc64=; b=jeQBfGIpbJj7xv
+	nyjI5TGegadUqpQGfp64Xq3Atat848e9gNl60d0myLEJBX0Lh2McWngA6LN6MIW1awFi8ORoEpT6g
+	UG6She52+WrHq3LNyA+czqbdeK2eoUPEYg+1wzXJUa5p1O20UnPy7NCqz+C8dQvTeFvT31465rmVM
+	BtNfGp2F44QwuZNyB3QppfrIml1GlnuwYsr5PiY4Ku/0E2BVRQ2YJjD76cK+n+AofJs1nzPjjkIHh
+	uZ1Yyt7aer1H9QqKORh3w3fZxwhe31PIWfEzY15CP5Zo+pMbhxB0MpTZnpO2zrfHMTbxVOzAV9yuS
+	nvAI1VBdSOzroGexqONg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVazi-00000004t3a-1Kt8;
-	Mon, 23 Nov 2026 20:50:34 +0000
-Received: from fhigh-a7-smtp.messagingengine.com ([103.168.172.158])
+	id 1xW2PR-00000008E08-1yVT;
+	Wed, 25 Nov 2026 02:06:57 +0000
+Received: from sea.source.kernel.org ([172.234.252.31])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xVazd-00000004t2X-44AH
+	id 1xW2PP-00000008E02-41Pl
 	for linux-um@lists.infradead.org;
-	Mon, 23 Nov 2026 20:50:32 +0000
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id BA88C14003AD
-	for <linux-um@lists.infradead.org>; Mon, 23 Nov 2026 15:50:28 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Mon, 23 Nov 2026 15:50:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm3; t=
-	1795467028; x=1795553428; bh=7wNwm3nBSKYEO3ZsBLQilTK2hdyTPsdyQ2l
-	3ESaYKDQ=; b=Qk2zZbxU2Aui9OQqqvYvqyPFFydbIhediLXcMerExjkx/xb+T8M
-	h/Qu/BOiv0zkkO7IaTm+Bl9RAHezGJjVpRT0dIodJqclRh43bL7Jhgu9pULqv+Ja
-	KmxyvzgM4NAhmBQZe9jg9Dno1/1XSACw8jleRt1qMaB8zShiengb7J5PIy9qu26w
-	BSsjr7eNpRePlF4io9DVr9Kq9wzWQCowR6m5Y2OmFmUT23izjYmAqdNybGgl9mnu
-	au4bDV8zDHJGg3nZMHw+HSBEYc52wCwqd1apAPnIs2u9nw4M0xQJm3mBi7HYQ1Pq
-	RXAIYXWAjT3ErfePIklQ1nP2L6fdUl9PJOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1795467028; x=
-	1795553428; bh=7wNwm3nBSKYEO3ZsBLQilTK2hdyTPsdyQ2l3ESaYKDQ=; b=U
-	fMUy/SsP1HWB/ZWJlerzDa+vezVqwgWDqLWCe1vnDDKcfE/bmxCM6QIRpq+i16nh
-	ECxW4/17qdeb9ZUx0AsHxpyja2K2zIICcab0YD1HQhsUS4zV+r4UjiXdfIQf4XeD
-	/Bzaa0Q0bigLbG+DriwEXkDoxz6AaP/z8JM6SZ0rR2r4t2HjLH9VSW3xPvsAPBZ0
-	v5x5UZFTg1crf5p9arXzhkiiWZfsY55MLk675B9cVzTvAMBVcV7eYk2TYqn3/H7X
-	iyLZ/SyWGb7FW7zL4bvug53L+Gf0I6pK1t5DenOLw82Vb/1LjkwB67whjS5GSyPE
-	6q87D1xEg2aGSEnlgLaaA==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=sign d=ownmail.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1795467028; d=ownmail.net;
-	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
-	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:XJZRo1CT7MX1yPD2iWO6pneXFfB5/NJD/cGjMMncf9V2feV
-	IfyJwox3HSnSDwtb5d6gIZUvSTO3VGr+9W1EVbj7dl8rTatH75JZT+dX/Tk49fhB
-	SlJal3yGTdXAGS/hVLrmRWhIBkK9Io+2/eT0AOH5zezOfb0DzZiba1CiBut0zz2T
-	36XBN+2fxiJnC3NyYUT9vqWADLccDxwZUSTNzDtmutgobFynL4B6C/5MsbK6lTiQ
-	VWXqoBIcWe4Z+fRIeC1xOS+E9DK5X1J4CMr8s9s+GqKdO4U/3syw1NzKmVImwZ3L
-	zX0ZQ0Hud0dNSK7ilg+HZpwjFVUgv2PYvg0arJw==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=mi-m=1; hc=13;
-	hn=cc,content-transfer-encoding,content-type,date,feedback-id,
-	from,in-reply-to,message-id,mime-version,references,reply-to,
-	subject,to;
-Message-Instance: m=1; h=sha256:Np/fWzmHZC5erycw7HnvO+QCIip28SFy+uUQS6N7pK0=:m0FG7+Uh2WED7ZvyFUpiUoHsdyufIrpxlBwM/xTCTIU=;
-X-ME-Sender: <xms:FKcEa5kO4iN0rylq_HdwL1JiMb7xxFJs7Whg83Gr-DQS9CHLmoMkEA>
-    <xme:FKcEa2NEhOVipYCXS_EJCKd7oCiPIXG5Eda5s8aZo8bhb3fnbd7V8wtceTw1HPtCq
-    gQFI1v_wZrEdmptyzpP2lQdSzW4mqb61933chuxO8VjF3Oql8o>
-X-ME-Received: <xmr:FKcEa47PvA8BntpSaUFEQDceUQ76YK2njWNe8DCCqa_6uGHOaYQzOlxFwK729TxFyMs9WQ068bMfDRM__QAg-FVnFhW-CAc>
-X-ME-Proxy-Cause: dmFkZTGC/swz0pxpsPkswi5DsSiLwwOeEwGs5e7U5/fwF8vzMGgEmQupo2yU3CQdPHeXr7
-    mGbCB/U88ktr6GSAQSn2dc2ASCs/k0e580Zj3lhFBFNM3un6r2cd5t4uCPBIpA+E6XZckt
-    YseQXMD5tnrMT/dOTg2cmfHREwHGKsjFQEjfrvSPts30IHDXrMhIhLjlgST3xVcTeAEtL+
-    YZv0a4E/fdIWeSB2bkuGjkOJL6KZUHWY2633W5wDKYU/UlNG02mgKVLCuyGZM67SJx1jiY
-    Y5x3kuNlP3ieJWqhWTO7+wIJiXN/JSqg+jHnFH+4WSWoDhLO7B8xm8kQXOWSlXnXk1YNJ9
-    H8EmltLrurw0ZsY+f5DiqCGpygE2tNHDiRDFdkv5VsU6b/bbR5Hv2u9kAKg1iUsi7XNaVH
-    LK0gYGLPXKC7XjvJqsHxikpkoBdfEQjFffnFIE366sSgvXq9OjCmZ5q8PNFodunZ7OupbG
-    vWhJTsRg3TG8Kuz4ZUGZwAf8OxI+ihuuBnOUunjPrqxi9LyJkqWNa2IW1wk747kWJJsdP+
-    WrldQ3MUv5DLkWkOX2Z42puMLD3OJyJJlCpzlrHv9aSz1FfmB6uqpncg4058UbDveFiBMW
-    qY05guPEhXiGdsQBLfHO5mPnhXZbecKnJMt7y0ZCj2q5DOzEwp5UfRFnLn8w
-X-ME-Proxy: <xmx:FKcEax2qvNRJSOyrDv1A_bFGjj_sEnoxtPuthY-rxGsIJVt4Dd_GLQ>
-    <xmx:FKcEa-qFjCO3QcdkyfwzYV2dje60Uw_vo0KlqdPjlLqq6b-BzzKIBw>
-    <xmx:FKcEazmewNerqlvgmX7-hf_Y5pTmi_UOKaNjCSUaDMVrXlFfShtLcQ>
-    <xmx:FKcEa4TmpeeewTZFgRHFWFGR2x0LlzKzUNImlqWe2FSnBP9Rpc8Taw>
-    <xmx:FKcEa--DIOSc6ypvM7zC9IJlcYJzptHEu_Bv1ZVhnaSd_GHCOovNkxw4>
-Feedback-ID: i9d664b8f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Nov 2026 15:50:23 -0500 (EST)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	Wed, 25 Nov 2026 02:06:56 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 5A4824004E;
+	Wed, 25 Nov 2026 02:06:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 249CD1F000D2;
+	Wed, 25 Nov 2026 02:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795572415;
+	bh=tdesGFo2gvb7lstfuQLq+1yzVhj59qUZoNASZ3nLc64=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=MOzH5RrubIHH0xdG1qa6SXAy8I5qToyyikEPfeVC69kcczGmBTHG27KlWgF7AcPmW
+	 hOVgpskgrRAwzYrpvmF8wIfgNdsmNo+hQ8nqq7MzOPxsR8SOrVE2XEaxos23b/AoE+
+	 kAb4/Vzk8V5qUSfW557O0CaKOut+w8pbnSCMrYLhr5PlgeV+uCwSoXHQgUiNIsvpwR
+	 y/wrpNHWmlknXQuRTKfo52SM+TbKLUibkxcbk9vWW1g0BFXQshnibZMCcS9+Yi9jin
+	 ZZ9QzPwD+gds3gz6+ZgPw+syb3jV0z99X6dgBmHr4tR2WI52ZVRwepncoPkUH3cE7A
+	 XU3ctJ5nBQjkg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Bill Wendling <morbo@google.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Chuck Wolber <chuck@wolber.net>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Justin Stitt <justinstitt@google.com>,
+	kasan-dev@googlegroups.com,
+	linux-kbuild@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	llvm@lists.linux.dev,
+	Marco Elver <elver@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nsc@kernel.org>,
+	Peter Oberparleiter <oberpar@linux.ibm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Thomas Gleixner <tglx@kernel.org>,
+	x86@kernel.org
+Subject: [PATCH v3 18/19] gcov: add MC/DC condition coverage support
+Date: Tue, 24 Nov 2026 21:06:02 -0500
+Message-ID: <20261125020603.3934222-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261125020603.3934222-1-sashal@kernel.org>
+References: <20261125020603.3934222-1-sashal@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Jan Harkes" <jaharkes@cs.cmu.edu>
-Cc: "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Namjae Jeon" <linkinjeon@kernel.org>, "Hyunchul Lee" <hyc.lee@gmail.com>,
- "Carlos Maiolino" <cem@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
- "Amir Goldstein" <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
- ntfs@lists.linux.dev, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] coda: don't d_drop() early.
-In-reply-to: <20261120173041.bd3xeidt4ndkmimd@cs.cmu.edu>
-References: <20261117000115.1433875-1-neilb@ownmail.net>
-  <20261117000115.1433875-3-neilb@ownmail.net>
-  <20261120173041.bd3xeidt4ndkmimd@cs.cmu.edu>
-Date: Tue, 24 Nov 2026 07:50:21 +1100
-Message-id: <179546702143.1728055.104338881046944851@noble.neil.brown.name>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261123_125030_974730_9C995BDA 
-X-CRM114-Status: GOOD (  25.53  )
-X-Spam-Score: -2.1 (--)
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,73 +90,86 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: NeilBrown <neil@brown.name>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Sat, 21 Nov 2026, Jan Harkes wrote:
-> On Mon, Nov 16, 2026 at 07:09:14PM -0500, NeilBrown wrote:
-> > From: NeilBrown <neil@brown.name>
-> >=20
-> > Proposed locking changes will mean that calling d_drop() could
-> > effectively unlock the name allowing a parallel lookup to proceed.
-> > For this reason it should only be called *after* the attempt to create a
-> > symlink (in this case) has completed (whether successfully or not).
-> >=20
-> > So move the d_drop() to after the venus_symlink() call.
-> >=20
-> > Doing this also means that if the upcall that handles venus_symlink()
-> > happens to look up the name being created, it will get -ENOENT rather
-> > then a possible deadlock.
-> >=20
-> > Signed-off-by: NeilBrown <neil@brown.name>
->=20
-> Acked-by: Jan Harkes <jaharkes@cs.cmu.edu>
+Support CONFIG_COVERAGE_MCDC with gcov, using GCC's MC/DC condition
+coverage instrumentation (-fcondition-coverage), which is available
+since GCC 14. The data is shown by "gcov --conditions".
 
-Thanks,
-NeilBrown
+Add -fcondition-coverage to the gcov compiler flags when enabled, and
+disable the warnings about decisions it leaves out, as is done for
+Clang. Both are gated on the config option to avoid Clang warnings
+about unknown options.
 
->=20
-> I was sort of already assuming that the userspace cache manager should
-> never ever traverse into the mounted /coda file system tree because
-> there is only a finite pool of worker threads. But it is good to know
-> that this change would fix at least one possible deadlock.
->=20
-> > ---
-> >  fs/coda/dir.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/fs/coda/dir.c b/fs/coda/dir.c
-> > index a85be5962e62..b47299527b65 100644
-> > --- a/fs/coda/dir.c
-> > +++ b/fs/coda/dir.c
-> > @@ -249,13 +249,13 @@ static int coda_symlink(const struct mnt_idmap *idm=
-ap,
-> >  	if (symlen > CODA_MAXPATHLEN)
-> >  		return -ENAMETOOLONG;
-> > =20
-> > +	error =3D venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
-> > +			      symname, symlen);
-> >  	/*
-> > -	 * This entry is now negative. Since we do not create
-> > +	 * This entry is still negative. Since we did not create
-> >  	 * an inode for the entry we have to drop it.
-> >  	 */
-> >  	d_drop(de);
-> > -	error =3D venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
-> > -			      symname, symlen);
-> > =20
-> >  	/* mtime is no good anymore */
-> >  	if (!error)
-> > --=20
-> > 2.50.0.107.gf914562f5916.dirty
-> >=20
->=20
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+---
+ kernel/coverage/Kconfig   | 7 +++++--
+ kernel/coverage/gcov/fs.c | 3 ++-
+ scripts/Makefile.gcov     | 5 +++++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/coverage/Kconfig b/kernel/coverage/Kconfig
+index 173a321741f87..77df4c04945dc 100644
+--- a/kernel/coverage/Kconfig
++++ b/kernel/coverage/Kconfig
+@@ -108,8 +108,8 @@ config COVERAGE_PROFILE_ALL
+ 
+ config COVERAGE_MCDC
+ 	bool "Measure modified condition/decision coverage (MC/DC)"
+-	depends on LLVM_COV_KERNEL
+-	depends on CLANG_VERSION >= 220000 || !WERROR
++	depends on LLVM_COV_KERNEL || (GCOV_KERNEL && CC_HAS_CONDITION_COVERAGE)
++	depends on !(LLVM_COV_KERNEL && CLANG_VERSION < 220000 && WERROR)
+ 	help
+ 	  MC/DC verifies that each condition of a boolean decision has been
+ 	  shown to independently affect the outcome of the decision. It is
+@@ -119,6 +119,9 @@ config COVERAGE_MCDC
+ 	  Decisions that the compiler can't instrument are not measured, and
+ 	  only get branch coverage.
+ 
++	  With gcov this requires GCC 14 or later, and the data is shown by
++	  "gcov --conditions".
++
+ 	  If unsure, say N.
+ 
+ config LLVM_COV_MCDC_MAX_CONDITIONS
+diff --git a/kernel/coverage/gcov/fs.c b/kernel/coverage/gcov/fs.c
+index fe1b85d54ede0..aa51e76c0e530 100644
+--- a/kernel/coverage/gcov/fs.c
++++ b/kernel/coverage/gcov/fs.c
+@@ -861,7 +861,8 @@ void gcov_event(enum gcov_action action, struct gcov_info *info)
+ }
+ 
+ static const struct coverage_backend gcov_backend = {
+-	.name	= "gcov",
++	.name		= "gcov",
++	.features	= IS_ENABLED(CONFIG_COVERAGE_MCDC) ? "mcdc" : NULL,
+ };
+ 
+ /* Create debugfs entries. */
+diff --git a/scripts/Makefile.gcov b/scripts/Makefile.gcov
+index 1cfe04d89b0a2..977c8ee023f68 100644
+--- a/scripts/Makefile.gcov
++++ b/scripts/Makefile.gcov
+@@ -18,4 +18,9 @@ CFLAGS_COVERAGE	+= $(call try-run,\
+ 	cmp -s "$$TMP.ubase" "$$TMP.utest",\
+ 	-fprofile-update=prefer-atomic)
+ endif
++ifdef CONFIG_COVERAGE_MCDC
++CFLAGS_COVERAGE	+= -fcondition-coverage
++# As for Clang: KCFLAGS=-Wcoverage-too-many-conditions lists what's left out.
++KBUILD_CFLAGS	+= -Wno-coverage-too-many-conditions
++endif
+ export CFLAGS_COVERAGE
+-- 
+2.53.0
 
 
