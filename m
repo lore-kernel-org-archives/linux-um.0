@@ -2,158 +2,117 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8474606A31E
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 19:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA0E606A32E
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 21:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fJHESy3P;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=b4o1XNDl
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=CNdq8BFN;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mq49p9IU
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
 	List-Unsubscribe-Post:List-Owner;
-	bh=gjkmUYAQqhObZomEhSZvG/YB77KWT+YtxY8LYQ+JXBM=; b=fJHESy3PVU0XihXJmVllEN3NF+
-	JNvs262XHvZbVx8GnkxGrf8Nuhaa06ETN62rtyfpyGznjoyfAfb3JP2JTpBh/V1x0pktqQ6lY+fIE
-	4wrc2+16S18MCPgeeivhvw47YdOf7VCzVRrylPjtLoYTPexf6r4jcVmZvdci2wQ2CjP2+toA1RAJh
-	1gcgvMM3xxJD325+p5cc8Enwdp0lj80sufkLd8UTI0UsTTiH1IzxtvZ1SmLUwFSgY65Ynp/dFc3o2
-	7nByhyFsqQZCNYfIiyiNEyNvUpARyeIF5C87TjJ1qIGkXpYotRufGcuPlE4igxbgFaQ8x2QxunRo1
-	UP0fxRXg==;
+	bh=60kyMXIH5oxacfi0kIXucfPpSjIf0lxOoUeaDl5buic=; b=CNdq8BFN84xozYRAFARTgpwqSK
+	q/6IoQo0T798X3jl2C7GtUIxDt8xm/Q5tjMPnYJR7969LtehMeTS1cJrsM/WARumg7GNBqAlpEnRp
+	gomGpiF/p6MywqYCBvSpougbrLFWB4z/rw8Dzd4SWk2o+XHVZBsuK5oxkINOPZYlYm78UNUp43au2
+	BEX7laojxcBWNsfjWVgdoKiw/VM/2rY43GLh4xCkBYpvv7Sei3KDMT3bnGNSt+lAQXJCJOdY9FY1n
+	c89SQjHNHo0auHkuvT6ifdQGWBdNqpT/Dl/o2Q0TFeSGa9yaHwtzfJRTM4nkiigjN0f5wYbcedNoV
+	m5jB3Hbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWIXw-0000000B7Dj-2BXi;
-	Wed, 25 Nov 2026 19:20:48 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1xWKgh-0000000BNWL-3WMZ;
+	Wed, 25 Nov 2026 21:37:59 +0000
+Received: from tor.source.kernel.org ([172.105.4.254])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWIXt-0000000B7D3-12rk;
-	Wed, 25 Nov 2026 19:20:46 +0000
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6APGYdNb1999322;
-	Wed, 25 Nov 2026 19:19:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=gjkmUY
-	AQqhObZomEhSZvG/YB77KWT+YtxY8LYQ+JXBM=; b=b4o1XNDlfljukz22wGJQ0h
-	hFDvCKahLQE5+oELMoxpvR8yus1xr/9HFGs7jXKfv24NedjQNfOPAQLQsOYaYxmJ
-	dUFE5fhXckqAuW0PYjKLfUY4rjnJnXiiEJ3J6heXYs/hWnlWwEUIeiE6+U2PbLg2
-	8YmBlg57Xz94o6TGMiXCPGRFMqcx7uqeKTvP5PT0Ve/GxmJjLufrD15klX7U8Hzv
-	zal0O8X8xVHjp69b9e+a0liO17XVYXOOvkfuUiwLL6YKgBmTbYUQ+hOU7A7uWYN1
-	Af/9bgIBBKYXWxK+4RRNAGIaKYwc8nTS7EMTL98PhsZN4n/5Bz49Dm62UQ2Sqx/g
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4j34fae8qk-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 25 Nov 2026 19:19:44 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6APJJJGp505545;
-	Wed, 25 Nov 2026 19:19:43 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4j5uxx22n6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Nov 2026 19:19:43 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6APJJdNd42139928
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Nov 2026 19:19:39 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EBD8220043;
-	Wed, 25 Nov 2026 19:19:38 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 75D8420040;
-	Wed, 25 Nov 2026 19:19:14 +0000 (GMT)
-Received: from shivang.upadyay (unknown [9.67.112.155])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 25 Nov 2026 19:19:14 +0000 (GMT)
-Date: Thu, 26 Nov 2026 00:49:10 +0530
-From: Shivang Upadhyay <shivangu@linux.ibm.com>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kees Cook <kees@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <lossin@kernel.org>,
-        Andreas Hindborg <a.hindborg@kernel.org>,
-        Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-        Danilo Krummrich <dakr@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-        Christophe Leroy <chleroy@kernel.org>, Boqun Feng <boqun@kernel.org>,
-        Nicolas Schier <nsc@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-mips@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Jan Stancek <jstancek@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v6 05/11] powerpc/vdso: Enable the vdsocheck tool
-Message-ID: <awc0rvqmahY6cHtv@shivang.upadyay>
-References: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
- <20261123-vdso-absolute-reloc-v6-5-161e218dd217@linutronix.de>
+	id 1xWKgZ-0000000BNVx-3j83;
+	Wed, 25 Nov 2026 21:37:52 +0000
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id E85BE60230;
+	Wed, 25 Nov 2026 21:37:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0AD41F000C6;
+	Wed, 25 Nov 2026 21:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795642670;
+	bh=60kyMXIH5oxacfi0kIXucfPpSjIf0lxOoUeaDl5buic=;
+	h=From:Subject:Date:To:Cc;
+	b=Mq49p9IUviztHKgBHD0Jsq63jIlzruPhIWld2Xsc7qz+X6oTRPsKGX6N5KksA07Ny
+	 CATzkgBG3Mxldfdp92CY1L+XkTNdySuhRXdbYlkZOpDvfmuZCu4DiPXDtZ5+7wx0pU
+	 kwolEUhlHBDHnAEvkXaS85TJoGKYJwuUCuYzWtBHT7FJL8xQQAodvmquqJSsdZUBhy
+	 YEJeL14E6/iK/Pe0R1bWfeHMJDhf2jx15+8iyp83GGVtOcZ8TbwfZe/N9akz4DZi+M
+	 tYrTY9Jflg71R5j/zwYNnDGvJJXGFPhwzR8W47osHvNy1fCdHASo2o8+t6VUafAutz
+	 XTNiJH6MgkJow==
+From: "Harry Yoo (Meta)" <harry@kernel.org>
+Subject: [PATCH slab/for-next v2 00/14] mm/slab: mandate SLAB_MAY_ACCOUNT
+ for __GFP_ACCOUNT allocations to avoid wasting memory for slab metadata
+Date: Wed, 25 Nov 2026 21:37:01 +0000
+Message-Id: <20261125-memalloc-prof-dont-waste-slabobj-ext-metadata-v2-0-7c680f02a734@kernel.org>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261123-vdso-absolute-reloc-v6-5-161e218dd217@linutronix.de>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTI1MDA3NiBTYWx0ZWRfX3whPefz46WC1
- hNygsADgWWH3q76IQ97vzHqlw0KVrxx7r7UAw5SVuBqmP03DlIHvveHdnCb8I+LFUdhf3IBTEF4
- 8I0LKw8A6RDat+2jMShRhIdJyHC/snbMARzB3j97ZRg4dk9eQk6Kb/c17OPxkgsEeh56QxlIgDC
- wUPWuvr9YTBgUtvA8T8GCqkSSvcvT95hsmx8Ct0PUUDgvFCs7cWvxl/cHPmpiD4Kk1M2+/XY3xk
- DLiaxWKhSrSivaxvdgJ1EA4G7gz0ulJrAaMk8ySQ2/S47CSLA2FI3plB5nV4GNPFWQXLUfRWPHl
- QcXK+Qe1+YjjykPhUcW6RI716uPTfT8UPFmL8V6qwT/f4oC1rJT58R1VQobyjiFZ9MGmwr6WlCS
- z5ZKV+GghS12zlmcdRFYX61cx8WcuTghM7JYnVHIKLaR9Q0N8q8XzXIjmtuCeYWzKrV/9/k7FwS
- CZCtvJAPPqeb1X+3DCw==
-X-Proofpoint-ORIG-GUID: 9DuPW81bc1Ne1-Acmq-ZFQ1oXTeQgO4D
-X-Authority-Analysis: v=2.4 cv=U6QHnuru c=1 sm=1 tr=0 ts=6b0734d1 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=8nJEP1OIZ-IA:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8
- a=K52B-zMjTZoA2OaJzQcA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
-X-Proofpoint-GUID: kgd6ntmKeCF4y3vpHzpfFLVurSHBIu2a
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMTI1MDA3NiBTYWx0ZWRfXwLCiikm0vVyM
- 9boHPXPDQcdJQkQPxTdXN6x3x8c/RPGIYsu6hqtP046Hh/4b5uaJA5LSJKyG0fXuE8vE282QQVw
- jau+sQ3OeVvDMeZGSzccJJHxqp+Tqsg=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
- definitions=2026-11-25_04,2026-11-25_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 impostorscore=0
- clxscore=1011 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2611040001
- definitions=main-2611250076
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_112045_587845_6B8CB609 
-X-CRM114-Status: GOOD (  13.11  )
-X-Spam-Score: -2.6 (--)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAP1UB2sC/5WOTQ6CMBCFr2Jm7Wh/kIgr72FcDDCFKramragx3
+ N2CJ3D5MvO9930gcrAc4bD6QODRRutdDmq9gqYn1zHaNmdQQpVSyAJvfKNh8A3egzfYepfwSTE
+ xxoFqX1+QXyk/JWopEerCVIVmU5W7PeTOe2BjX8veCWZia3xAlxk4/87xUV+4SfPmDPQ2Jh/ei
+ 98oF+ynouSfKqNEgaIq90IQaa3F8crB8bDxoYPzNE1fu7frgAwBAAA=
+X-Change-ID: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
+To: Vlastimil Babka <vbabka@kernel.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Suren Baghdasaryan <surenb@google.com>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, 
+ Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
+ David Rientjes <rientjes@google.com>, Muchun Song <muchun.song@linux.dev>, 
+ Hao Ge <hao.ge@linux.dev>, Pedro Falcato <pfalcato@suse.de>, 
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+ "Harry Yoo (Meta)" <harry@kernel.org>, 
+ "Liam R. Howlett" <liam@infradead.org>, Alice Ryhl <aliceryhl@google.com>, 
+ Andrew Ballance <andrewjballance@gmail.com>, 
+ Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Jiayuan Chen <jiayuan.chen@linux.dev>, netdev@vger.kernel.org, 
+ Kees Cook <kees@kernel.org>, David Hildenbrand <david@kernel.org>, 
+ Lorenzo Stoakes <ljs@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Robin Murphy <robin.murphy@arm.com>, "Joerg Roedel (AMD)" <joro@8bytes.org>, 
+ Amir Goldstein <amir73il@gmail.com>, 
+ Casey Schaufler <casey@schaufler-ca.com>, Paul Moore <paul@paul-moore.com>, 
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+ linux-security-module@vger.kernel.org, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Eric Dumazet <edumazet@kernel.org>, maple-tree@lists.infradead.org, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Jason Xing <kerneljasonxing@gmail.com>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Mina Almasry <almasrymina@google.com>, 
+ =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
+ Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+ Juri Lelli <juri.lelli@redhat.com>, 
+ Vincent Guittot <vincent.guittot@linaro.org>, 
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
+ K Prateek Nayak <kprateek.nayak@amd.com>, 
+ Anshuman Khandual <anshuman.khandual@arm.com>, 
+ linux-arm-kernel@lists.infradead.org, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ linuxppc-dev@lists.ozlabs.org, Niklas Schnelle <schnelle@linux.ibm.com>, 
+ Matthew Rosato <mjrosato@linux.ibm.com>, 
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
+ Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, iommu@lists.linux.dev, 
+ linux-s390@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+ linux-um@lists.infradead.org, cgroups@vger.kernel.org
+X-Mailer: b4 0.16.0
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,39 +123,339 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-18.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-On Mon, Nov 23, 2026 at 02:50:56PM +0100, Thomas Weißschuh wrote:
-> +        bindings::EM_PPC64 => AllowedRelocations {
-> +            in_object_file: &[
-> +                10,  /* R_PPC64_REL24 */
-> +                11,  /* R_PPC64_REL14 */
-> +                26,  /* R_PPC64_REL32 */
-> +                44,  /* R_PPC64_REL64 */
-> +                249, /* R_PPC64_REL16 */
-> +                250, /* R_PPC64_REL16_LO */
-> +                251, /* R_PPC64_REL16_HI */
-> +                252, /* R_PPC64_REL16_HA */
-> +            ],
-Seems to excluise list of all reletive relocations.
-I only could find the following being actually used, for defconfig ppc64le.
-But good to have all there.
+TL;DR
+-----
 
-[root@system vdso]# for i in `ls *.o`; do objdump -r -SD $i  | grep -oP 'R_PPC\w*' ; done | sort |  uniq
-R_PPC64_REL16_HA
-R_PPC64_REL16_LO
-R_PPC64_REL24
-R_PPC64_REL32
-R_PPC64_REL64
-[root@system vdso]#
+The purpose of this series is to convert existing slab users that
+specify __GFP_ACCOUNT on allocations to specify SLAB_MAY_ACCOUNT on
+cache creation, to reduce memory waste for slab metadata with
+CONFIG_MEMCG=y && CONFIG_MEM_ALLOC_PROFILING=y.
 
-Looks good. Feel free to add,
-Reviewed-by: Shivang Upadhyay <shivangu@linux.ibm.com>
+Longer version of the cover letter
+----------------------------------
 
-~Shivang.
+Currently, there are two ways to charge slab objects to memory
+cgroups: 1) specify SLAB_ACCOUNT during cache creation, or 2) specify
+__GFP_ACCOUNT on allocation. The latter method made it impossible to
+assume that certain slab caches are never charged to memory cgroups.
+
+Since commit d4404b0f5b8b ("mm/slab: stop allocating objcg pointers when
+unnecessary"), slabobj_ext allocates the space for the objcg pointer
+only for caches with SLAB_MAY_ACCOUNT. However, kmem_cache_create() sets
+the flag on every cache, because any cache may be used with
+__GFP_ACCOUNT.
+
+As a result, sizeof(struct obj_cgroup *) bytes are wasted for each
+unaccounted slab object when both memalloc profiling and memcg are
+enabled. This is suboptimal when memalloc profiling is used to
+profile memory allocations on production.
+
+So, let's make memcg charging opt-in and stop wasting memory!
+
+New rule for slab users: a cache must specify SLAB_MAY_ACCOUNT
+(explicitly or implied by SLAB_ACCOUNT) for its objects to be charged
+to a memcg. Otherwise __GFP_ACCOUNT is ignored and triggers a warning on
+debug kernels (CONFIG_DEBUG_VM=y).
+
+The approach is quite straightforward, but converting all caches that
+may pass __GFP_ACCOUNT without SLAB_ACCOUNT at once is not.
+As a best-effort approach, I swept the whole tree (with help of an
+LLM) for paths that pass __GFP_ACCOUNT into slab allocations either
+directly or indirectly.
+
+While I tried to make sure the sweep is exhaustive, there can be a
+missing conversion. However that is not a correctness problem:
+the objects are just no longer charged to memcgs. Patch 13 adds
+VM_WARN_ON_ONCE in __memcg_slab_post_alloc_hook() to catch such a
+missing conversion.
+
+Patch 1 allows passing SLAB_MAY_ACCOUNT to kmem_cache_create(),
+patches 2-12 specify SLAB_MAY_ACCOUNT for the caches found by
+the sweep, and patch 14 stops setting SLAB_MAY_ACCOUNT on all caches.
+
+Memory savings and testing
+--------------------------
+
+On an idle x86 VM with both memalloc profiling and memcg enabled,
+slabobj_ext memory (the alloc_slab_obj_exts entry in /proc/allocinfo)
+drops from 1,280KB to 910KB (-29%) after boot. The savings are expected
+to be larger on real workloads, which allocate far more unaccounted slab
+objects (8 bytes per unaccounted slab object).
+
+Each tested cache was verified with the warning in patch 13:
+I confirmed that 1) the warning is triggered without the conversion,
+and 2) specifying SLAB_MAY_ACCOUNT resolves it. However I could not test
+io-pgtable_armv7s_l2 and sun50i's pt_pool caches due to lack of the
+hardware and emulation support. So they are compile-tested only.
+
+  cache                  tested  environment
+  ---------------------  ------  -----------------------
+  radix_tree_node        yes     x86
+  maple_node             yes     x86
+  buffer_head            yes     x86
+  skbuff_head_cache      yes     x86
+  fanotify_*_event       yes     x86
+  smack_rule             yes     x86
+  io-pgtable_armv7s_l2   no      compile-tested only
+  thread_stack           yes     ppc64le (64K pages)
+  pgd_cache (arm64)      yes     arm64 (64K pages)
+  PGT_CACHE (powerpc)    yes     ppc64le
+  PCI_DMA_*_tables       yes     s390x (zPCI + vfio)
+  hostfs_inode_cache     yes     UML
+  sun50i pt_pool         no      compile-tested only
+
+Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+---
+Changes in v2:
+- Rebased onto the latest slab/for-next.
+- Collected Acked-by from Jakub and Reviewed-by from Casey. Thanks!
+- Patch 1
+  - Resolve "sysfs: cannot create duplicate filename" warning by
+    encoding SLAB_MAY_ACCOUNT in create_unique_id() (kernel test robot,
+    Sashiko).
+  - Define SLAB_MAY_ACCOUNT in tools/include/linux/slab.h to fix
+    the build of tools/testing/{radix-tree,vma} (Mike, Sashiko).
+- Swept the tree again on the new base. No new cache needs
+  SLAB_MAY_ACCOUNT.
+- Re-tested all the conversions on the new base.
+- Link to v1: https://patch.msgid.link/20261021-memalloc-prof-dont-waste-slabobj-ext-metadata-v1-0-096800aa3330@kernel.org
+
+Range-diff against v1:
+
+ 1:  f749199b4fde !  1:  31425f1e4a92 mm/slab: allow passing SLAB_MAY_ACCOUNT to kmem_cache_create()
+    @@ Commit message
+         Callers will specify SLAB_MAY_ACCOUNT for caches whose objects may be
+         allocated with __GFP_ACCOUNT. Accept the flag in SLAB_CORE_FLAGS.
+     
+    +    SLAB_MAY_ACCOUNT prevents merging but is not part of the sysfs ID. This
+    +    was fine while all mergeable caches had the flag. Now that callers may
+    +    specify it, encode it in create_unique_id() to keep the ID unique.
+    +
+    +    Define the flag in tools/ as well to avoid breaking the userspace tests.
+    +
+         Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+     
+      ## mm/slab.h ##
+    @@ mm/slab.h: void flush_rcu_sheaves_on_cache(struct kmem_cache *s);
+      			 SLAB_NO_USER_FLAGS | SLAB_KMALLOC | SLAB_NO_MERGE)
+      
+      #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
+    +
+    + ## mm/slub.c ##
+    +@@ mm/slub.c: static char *create_unique_id(struct kmem_cache *s)
+    + 		*p++ = 'a';
+    + 	if (s->flags & SLAB_ACCOUNT)
+    + 		*p++ = 'A';
+    ++	if (s->flags & SLAB_MAY_ACCOUNT)
+    ++		*p++ = 'M';
+    + 	if (s->flags & SLAB_DEBUG_NOOP)
+    + 		*p++ = 'N';
+    + 	if (p != name + 1)
+    +
+    + ## tools/include/linux/slab.h ##
+    +@@ tools/include/linux/slab.h: enum _slab_flag_bits {
+    + 	_SLAB_PANIC,
+    + 	_SLAB_TYPESAFE_BY_RCU,
+    + 	_SLAB_ACCOUNT,
+    ++	_SLAB_MAY_ACCOUNT,
+    + 	_SLAB_FLAGS_LAST_BIT
+    + };
+    + 
+    +@@ tools/include/linux/slab.h: enum _slab_flag_bits {
+    + #define SLAB_TYPESAFE_BY_RCU	__SLAB_FLAG_BIT(_SLAB_TYPESAFE_BY_RCU)
+    + #ifdef CONFIG_MEMCG
+    + # define SLAB_ACCOUNT		__SLAB_FLAG_BIT(_SLAB_ACCOUNT)
+    ++# define SLAB_MAY_ACCOUNT	__SLAB_FLAG_BIT(_SLAB_MAY_ACCOUNT)
+    + #else
+    + # define SLAB_ACCOUNT		__SLAB_FLAG_UNUSED
+    ++# define SLAB_MAY_ACCOUNT	__SLAB_FLAG_UNUSED
+    + #endif
+    + 
+    + void *kmalloc(size_t size, gfp_t gfp);
+ 2:  7bde3ab6533f !  2:  9323ceca452f lib/maple_tree: specify SLAB_MAY_ACCOUNT for maple_node cache
+    @@ Commit message
+         Path: mtree_insert_range(GFP_KERNEL_ACCOUNT) -> mas_nomem()
+           -> mas_alloc_nodes() -> kmem_cache_alloc(maple_node_cache)
+     
+    -    Assisted-by: LLM
+         Cc: "Liam R. Howlett" <liam@infradead.org>
+         Cc: Alice Ryhl <aliceryhl@google.com>
+         Cc: Andrew Ballance <andrewjballance@gmail.com>
+ 3:  1c34ea46a76e !  3:  0558bdf4936a lib/xarray: specify SLAB_MAY_ACCOUNT for radix_tree_node cache
+    @@ Commit message
+           -> xas_store() -> xas_alloc() (gfp |= __GFP_ACCOUNT)
+           -> kmem_cache_alloc_lru(radix_tree_node_cachep)
+     
+    -    Assisted-by: LLM
+         Cc: Matthew Wilcox <willy@infradead.org>
+         Cc: linux-fsdevel@vger.kernel.org
+         Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+ 4:  d9e638c3320d !  4:  96f41e2fa6db fs/buffer: specify SLAB_MAY_ACCOUNT for buffer_head cache
+    @@ Commit message
+         Path: ext4_getblk() -> folio_alloc_buffers(GFP_NOFS | __GFP_ACCOUNT)
+           -> alloc_buffer_head() -> kmem_cache_zalloc(bh_cachep)
+     
+    -    Assisted-by: LLM
+         Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+         Cc: Christian Brauner <brauner@kernel.org>
+         Cc: Jan Kara <jack@suse.cz>
+ 5:  c986fd19aacd !  5:  4f6b86b850c7 net: skbuff: specify SLAB_MAY_ACCOUNT for skbuff_head_cache
+    @@ Commit message
+           -> alloc_skb_with_frags() -> __alloc_skb()
+           -> kmem_cache_alloc_node(skbuff_head_cache)
+     
+    -    Assisted-by: LLM
+         Cc: "David S. Miller" <davem@davemloft.net>
+         Cc: Eric Dumazet <edumazet@google.com>
+         Cc: Jakub Kicinski <kuba@kernel.org>
+    @@ Commit message
+         Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+         Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
+         Cc: netdev@vger.kernel.org
+    +    Acked-by: Jakub Kicinski <kuba@kernel.org>
+         Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+     
+      ## net/core/skbuff.c ##
+ 6:  c86eb6c221f7 !  6:  c6f61c47e801 kernel/fork: specify SLAB_MAY_ACCOUNT for thread_stack cache
+    @@ Commit message
+           -> dup_task_struct() -> alloc_thread_stack_node()
+           -> kmem_cache_alloc_node(thread_stack_cache, THREADINFO_GFP)
+     
+    -    Assisted-by: LLM
+         Cc: Kees Cook <kees@kernel.org>
+         Cc: David Hildenbrand <david@kernel.org>
+         Cc: Lorenzo Stoakes <ljs@kernel.org>
+ 7:  a37935e9f1d8 !  7:  7c448f3688f4 arm64/mm: specify SLAB_MAY_ACCOUNT for pgd_cache
+    @@ Commit message
+         Path (e.g. 64K pages): copy_process() -> mm_init() -> pgd_alloc()
+           -> kmem_cache_alloc(pgd_cache, GFP_PGTABLE_USER)
+     
+    -    Assisted-by: LLM
+         Cc: Catalin Marinas <catalin.marinas@arm.com>
+         Cc: Will Deacon <will@kernel.org>
+         Cc: Mark Rutland <mark.rutland@arm.com>
+ 8:  948c9aa21dbf !  8:  8d5c29a8d6d6 powerpc/mm: specify SLAB_MAY_ACCOUNT for pgtable caches
+    @@ Commit message
+           -> kmem_cache_alloc(PGT_CACHE(PGD_INDEX_SIZE),
+                               pgtable_gfp_flags(mm, GFP_KERNEL))
+     
+    -    Assisted-by: LLM
+         Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+         Cc: Michael Ellerman <mpe@ellerman.id.au>
+         Cc: Nicholas Piggin <npiggin@gmail.com>
+ 9:  0b2d6a632aeb !  9:  9e68e442c86b iommu: specify SLAB_MAY_ACCOUNT for slab-backed page table caches
+    @@ Commit message
+           iommu_map(GFP_KERNEL_ACCOUNT) -> sun50i_iommu_map()
+             -> sun50i_dte_get_page_table() -> kmem_cache_zalloc(iommu->pt_pool)
+     
+    -    Assisted-by: LLM
+         Cc: Will Deacon <will@kernel.org>
+         Cc: Robin Murphy <robin.murphy@arm.com>
+         Cc: "Joerg Roedel (AMD)" <joro@8bytes.org>
+10:  df629ca9f8a3 ! 10:  0fb6578f9d32 fanotify: specify SLAB_MAY_ACCOUNT for event caches
+    @@ Commit message
+           -> fanotify_alloc_event(GFP_KERNEL_ACCOUNT)
+           -> kmem_cache_alloc(fanotify_{fid,path,perm,mnt}_event_cachep)
+     
+    -    Assisted-by: LLM
+         Cc: Jan Kara <jack@suse.cz>
+         Cc: Amir Goldstein <amir73il@gmail.com>
+         Cc: linux-fsdevel@vger.kernel.org
+11:  d3fd8833b207 ! 11:  cd123bafe26d smack: specify SLAB_MAY_ACCOUNT for smack_rule cache
+    @@ Commit message
+           -> security_prepare_creds(GFP_KERNEL_ACCOUNT) -> smack_cred_prepare()
+           -> smk_copy_rules() -> kmem_cache_zalloc(smack_rule_cache)
+     
+    -    Assisted-by: LLM
+         Cc: Casey Schaufler <casey@schaufler-ca.com>
+         Cc: Paul Moore <paul@paul-moore.com>
+         Cc: James Morris <jmorris@namei.org>
+         Cc: "Serge E. Hallyn" <serge@hallyn.com>
+         Cc: linux-security-module@vger.kernel.org
+    +    Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+         Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+     
+      ## security/smack/smack_lsm.c ##
+12:  e491d907f0da ! 12:  33a8d0abf54e hostfs: specify SLAB_MAY_ACCOUNT for inode cache
+    @@ Commit message
+         Path: lookup -> hostfs_iget() -> hostfs_alloc_inode()
+           -> alloc_inode_sb(sb, hostfs_inode_cache, GFP_KERNEL_ACCOUNT)
+     
+    -    Assisted-by: LLM
+         Cc: Richard Weinberger <richard@nod.at>
+         Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+         Cc: Johannes Berg <johannes@sipsolutions.net>
+13:  495470a3e8c2 ! 13:  3dd416de21c1 mm/memcontrol: do not allow charging objects without SLAB_MAY_ACCOUNT
+    @@ Commit message
+         is never charged does not access the objcg slot again, and the free
+         path already skips such caches via slab_needs_objcg().
+     
+    -    Assisted-by: LLM # Changelog
+         Cc: Johannes Weiner <hannes@cmpxchg.org>
+         Cc: Michal Hocko <mhocko@kernel.org>
+         Cc: Shakeel Butt <shakeel.butt@linux.dev>
+14:  84b9be2d2d42 ! 14:  533a72d59074 mm/slab: do not set SLAB_MAY_ACCOUNT for all caches
+    @@ Commit message
+         the objcg slot in slabobj_ext for caches that are never charged to a
+         memcg.
+     
+    -    Assisted-by: LLM # Changelog
+         Signed-off-by: Harry Yoo (Meta) <harry@kernel.org>
+     
+      ## include/linux/slab.h ##
+
+---
+Harry Yoo (Meta) (14):
+      mm/slab: allow passing SLAB_MAY_ACCOUNT to kmem_cache_create()
+      lib/maple_tree: specify SLAB_MAY_ACCOUNT for maple_node cache
+      lib/xarray: specify SLAB_MAY_ACCOUNT for radix_tree_node cache
+      fs/buffer: specify SLAB_MAY_ACCOUNT for buffer_head cache
+      net: skbuff: specify SLAB_MAY_ACCOUNT for skbuff_head_cache
+      kernel/fork: specify SLAB_MAY_ACCOUNT for thread_stack cache
+      arm64/mm: specify SLAB_MAY_ACCOUNT for pgd_cache
+      powerpc/mm: specify SLAB_MAY_ACCOUNT for pgtable caches
+      iommu: specify SLAB_MAY_ACCOUNT for slab-backed page table caches
+      fanotify: specify SLAB_MAY_ACCOUNT for event caches
+      smack: specify SLAB_MAY_ACCOUNT for smack_rule cache
+      hostfs: specify SLAB_MAY_ACCOUNT for inode cache
+      mm/memcontrol: do not allow charging objects without SLAB_MAY_ACCOUNT
+      mm/slab: do not set SLAB_MAY_ACCOUNT for all caches
+
+ arch/arm64/mm/pgd.c                |  2 +-
+ arch/powerpc/mm/init-common.c      |  3 ++-
+ drivers/iommu/io-pgtable-arm-v7s.c |  2 +-
+ drivers/iommu/s390-iommu.c         |  4 ++--
+ drivers/iommu/sun50i-iommu.c       |  3 ++-
+ fs/buffer.c                        |  2 +-
+ fs/hostfs/hostfs_kern.c            |  2 +-
+ fs/notify/fanotify/fanotify_user.c | 10 ++++++----
+ include/linux/slab.h               | 16 +++++++++++++---
+ kernel/fork.c                      |  3 ++-
+ lib/maple_tree.c                   |  2 +-
+ lib/radix-tree.c                   |  2 +-
+ mm/memcontrol.c                    |  6 ++++++
+ mm/slab.h                          |  2 +-
+ mm/slab_common.c                   |  8 +++-----
+ mm/slub.c                          |  2 ++
+ net/core/skbuff.c                  |  2 +-
+ security/smack/smack_lsm.c         |  2 +-
+ tools/include/linux/slab.h         |  3 +++
+ 19 files changed, 50 insertions(+), 26 deletions(-)
+---
+base-commit: 0b0985aeb9979c5fa5c3b872cecdf97ed4ed2b3e
+change-id: 20261014-memalloc-prof-dont-waste-slabobj-ext-metadata-34f943ef9658
+
+Best regards,
+--  
+Cheers,
+Harry / Hyeonggon
+
 
