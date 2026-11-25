@@ -2,12 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90EB606A326
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DACB606A334
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=WNOjhVyl;
-	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=gy8gyfZ4;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=02i952YD
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=tKdKRRKL;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=va1d3aw8;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=FW5JIddi
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
@@ -15,91 +15,91 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=AzPOlMVHZqiqc4/SgqzoQdQv5n3zt50otXb6Pd/4k7k=; b=WNOjhVylHhJWOX3F5WfbKOstQZ
-	EZRnRENDVWcR2nDKC4+1vNIpwBEbi7c1fTaz63zvApGtapMB5Q6vFFvMw3t8mt9tr3ufYuAdx2PMF
-	2UPGt+9Op3iqHUhcZPFzXa9TzQeFbMQG1fyADTJLTmvrVHzbxGvdmtpqu0ihqcjGCvkFytuPJVrbM
-	ojcobulcZcPPFn4KxQltK8P/wc0hMPxAXhRKbY0ahCNsI5NQX2XmnWq538w5CBRB7swGq0KYpljTN
-	Aq4yaYSA0JBl/gkb6+7UVVhmrm/1BvyYArzUkjUX3ua5eFndnPwdHN4rTnsXH9w4/cGZQpss6UMW+
-	63+00T4w==;
+	bh=dCHNhqHkrzrz2mDQOu+WPZ6RNgUvqMqCKviUggAFHfg=; b=tKdKRRKLABSJQu+dFzdR4AH9oj
+	ib7PhhmiDS4hyUJhIuU0kQAHRWstlBZOx7ytz6Y5X9J8b0rC4vJky1Ooq4WcWU6tdCA60lsOQj1A8
+	36mO9g3p+Daec142JgwAbh4d3KJCP8B+6ODbjQe5DoJH3HOg2Q80S3z0/EBl/MMj448gS75f6ja4l
+	IfmXahLW3i39+cavNmfT3v16yUHkwhqWk0PgXcMy2lGPsmpawFmMiCku1OrUpfiDuh3DmQe8d8So6
+	TfeV7ymjuDcjag5w35ZJo5yBDJcQO5mrfDwJgN4XokGFjICMB/QVSVcXdiZACPiOB4suN5ppWoDWI
+	UB/3kJ9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3yW-00000008Lht-2ouT;
-	Wed, 25 Nov 2026 03:47:16 +0000
+	id 1xW3yc-00000008Lk1-3W8e;
+	Wed, 25 Nov 2026 03:47:22 +0000
 Received: from fout-a1-smtp.messagingengine.com ([103.168.172.144])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3yT-00000008Lfp-0OL4
+	id 1xW3ya-00000008LiO-1dut
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 03:47:15 +0000
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 3A912EC0A77
-	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:47:12 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Tue, 24 Nov 2026 22:47:12 -0500
+	Wed, 25 Nov 2026 03:47:21 +0000
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 9BA26EC0A77
+	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:47:19 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Tue, 24 Nov 2026 22:47:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578432;
-	 x=1795664832; bh=AzPOlMVHZqiqc4/SgqzoQdQv5n3zt50otXb6Pd/4k7k=; b=
-	gy8gyfZ4IsAyiyhdZpu+AAcnon6FxbvcKZAH67uCOhevq4EBx6ingwn1NFNduwmB
-	lSFGlF9S8zDmX+nl3BAOSmcbp1rv9+1ZwX4zwAmjHvHwcmId6xUxACMW8QjaNVRz
-	33CaP6hqh6G2dCESZAgi5UcKgQZL1W61thRUHjPbHI5dmqmmvoswKs/8GAMvAFyk
-	67xu6GcRNT09oADMoLLRhfolZxxOggjXmYRQATAON2UfWD1qyWywqdHkkN0j6WTJ
-	F45weesc8BJGHBBIpzkoAr0dF2ceCRibOCFiw9f3leIwjCep4Lm3nQs0NkKUltrm
-	FoFGQGYf9UG3yBVkCp0Nzg==
+	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578439;
+	 x=1795664839; bh=dCHNhqHkrzrz2mDQOu+WPZ6RNgUvqMqCKviUggAFHfg=; b=
+	va1d3aw84KksXRSBIx4FJ2okx4+klG2QAdorkc5ywg1CK+o7Qu71/nyD343nA0Jc
+	dhr/Gc90CmS3WDRIJN/+eJ2HjH8lpBtDy3BslQii0YxQQvx24BuOQY8eF/EK6DGc
+	jDE1+VL+Qy169Ckh4wlxJ5XHGxY7aT1G7QqgHS9uQGNYEpiVlmszXuS3LgTAKY8T
+	WNqTn/xVoLZhoIR2yL3uiJZA0zptePeCkXFR/Ty+Hwu0aClyvqGsJVXBhtUjBGGU
+	WZ0peyBkgLxzMqtS0Mrypt8cS6/53Toj4vzEwYNgWV8vkPkm6r2NCq04xQ5NpQA1
+	N6Y4LJ+8u2tyKeEito65IA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1795578432; x=1795664832; bh=A
-	zPOlMVHZqiqc4/SgqzoQdQv5n3zt50otXb6Pd/4k7k=; b=02i952YDBlWC7Y20J
-	6z0OnWAX/5jCN8q8R9n4UNhS4e1Ilpr1mK5AU9nJyRpLBxdbVTYFIc3dYn1mS5HY
-	2hlMa66OcgOevp6LW1metaJTkhW30boHrjmS47M8XLT/VSRwFvHr+m4QP9Im/cQ3
-	Byvk4nn3Xy9XBlmwTF1PQ/7ksGxDSIAhbfFioSeLLPkVpTQ2ByHSOqe18K1VrDPP
-	+N2eeDl14iOT3sK8AFeu7Psx3SqrB9hf1k2Gg+Tpkxiug4ZFCLLJWW2VVidlSKNc
-	9zHjh85zUHUkXrUExA8q+2PkzG912OS6+LVO0Twsepg3qI9P0wwhhTQqBAQAjpyL
-	7ay+Q==
+	:x-me-sender:x-sasl-enc; s=fm3; t=1795578439; x=1795664839; bh=d
+	CHNhqHkrzrz2mDQOu+WPZ6RNgUvqMqCKviUggAFHfg=; b=FW5JIddiieTGO+cqe
+	hcQkgxBGwppM9POYHLDt6pG/23xq02TJyjltZpK+6g/2X9uWjYRCsbp4f3iqIVku
+	XV9SpPLQl2GWRApWr1/DWppdhsWVm9uNnYTqA9on3sZnvfQ/W+jXsr+InIWbefUS
+	8o3tnuU01nkB024NTzpwJODIdMGT9lMLwokFmu/XQiPTWRVeIuPiu6ehsTCEiwGW
+	mNBXyw7aWiriP/TDPPS2DLtLz7SqTEWd2DkbOS17DrL2rv0F5iFLDf2hHnKL+udl
+	FYipxENZCJAAjWmfndXsTtnziTard3IO/fuQCw/g6hI2OYH0vAZQCF0c7a3tVCzw
+	JYGOA==
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=sign d=ownmail.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1795578432; d=ownmail.net;
+DKIM2-Signature: i=1; m=1; t=1795578439; d=ownmail.net;
 	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
 	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:hfuQr4VO4rh2oFBkCMYSIX7vfXPv6t/DvNkDA30aZ904rIr
-	XfM4oJha/HHGndo9Ibjdla4VtG9AtEQ/4uYMsThUMhY3597zIqGpBoAgSwWGKi2y
-	sHECtdnEBmgLRpGajiiqgmV9XqDtnZTqavMhKoPv0Arks07477uNkA9rocoeD3Rl
-	wZgnPdorQvrxDHM5jUTtANGFRLndBKiGj05/CbD9j6MOhrAZgp0t9Nm2/HfW3Ohy
-	aAtYlxxg4337pGEa2E7jlzWbpmW6XZ6GlhH0P8s320/iV2pYGU10dvthJETaXvGR
-	PvjArrJex6EN1uuakwlH8ny3q5XMU3/2CeDd1jA==;
+	s=fm3:rsa-sha256:uHgqfhxG+6esve3LUk/1S5sR6Vy0kgULSa6T8m3Tw1NzU0G
+	OEHWLiSiiTX6WkoGvBOPb+PzIo+geO0YiscIEu1VtQnpC2ZhlYfwKrxuyGgtAbTD
+	IMFFCFj3Lyb+HbhCLv0Bt1ptt0UvEHynMeQoAyd7Jw8ejyR6Wd//3u6nq8i4CFZW
+	Y1qqsa6QDEILozgb9dVa0Gw7AFrJ0o55Agt5ikhMeAT7uesBarhc5tjrRbwqFF5j
+	ldE2Qq5jDROMmoAq/ygQheCCY1vQrq0vKaS0P6n5X9ILxpfO01MOCTrmd3e44GEi
+	3gF47Lz5kV7DoTKgNp8lWomfed8eBpDXRdUkqMQ==;
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=mi-m=1; hc=12;
 	hn=cc,content-transfer-encoding,date,feedback-id,from,
 	in-reply-to,message-id,mime-version,references,reply-to,subject,
 	to;
-Message-Instance: m=1; h=sha256:RD0FEtnSzWfH+vKgEHpbzbmLQC/tAjD/w3+E25bb39s=:7URP8i6yCyfjAojTIW7hW0N69jYbi2sSG0eZznjZ5rs=;
-X-ME-Sender: <xms:P1oGa1e34C6GE5-NHRQ4AwTmMKL7d9mYUYfbV2h_dmf6DHDcRTagkA>
-    <xme:P1oGa6KXfWU2FmqYEUTCkVa3vxWnPp7R3QwpsB8Ei5RkjNr2u0aGl7BD7i2snNldX
-    _MCXIChMFJ0DVc5bcnAdgW2ttMNzkctU0PyO9KlEvDsNjuUYQ>
-X-ME-Received: <xmr:P1oGazlu_AOoySPq_CRSc2atF7B7Ug9ePM4OJNZyBaekp592NpcR9YemYWjZXAsAYQDcHmXgilxLfVkLw8pglVK_eIVrNys>
-X-ME-Proxy-Cause: dmFkZTEgJWZqpeB1G6uHGGBU6x40PrNG27hQ+jt9Lh/fFZDifRYVox/yFszE97r/YEtkaJ
-    KRb3hWZBDeHiP3IXgYpP+sgktOTZkGMiRowoA6X7MFDbKSIb68Rj8vtaZPNrSaRg/gDxs/
-    F+sW5WPeitMItRuWH5tRIxy1ko0NkBH3Bq8qy6P20upVNgxiUUYO3j/DJmI0CsQEpHI0Gv
-    TKZrQCtr784YSLr69vVucN5VgKQBLOyKB5D7OOwSjEXCKn5Tq+GGsGCcZ9yvfN2rh8H3HL
-    ajpmllZ0Cec+MdVbVECc+rKqe0c63zkgsLFEqTKRY2xmzJRQct9vlP6JYIKJxxkuZBYTWH
-    lL24OS8tOC0qeAI5D0MTTzKjVM7zBArhkmFht6NnRRRxjR2tMG/d5eWLX5Q5q0lQh1Zhzy
-    KXSkRYBIbeActZsP7jvWZPtO270txyn2QCoDrNo8UPjkc10jFcp8EEGU77OlmKYO3ZdCbe
-    Ft4oCvJJKEiNTLHxVL521nEGlrNcrNobB/v3AhD3dsj0tDNXIOoA0ufhpcJMRXS/AE0wQ6
-    QYnMk8TpDAbDtHk1SvdB4kFE6sMT96/zIHH/pa0Z7eQWF3TEYkwc22vHADye66DCmM51ra
-    HA4FVnlTeLq74pf3IkduO16ncf6wp5qxlq2c0QrKrAlz1nhrac8yIloAaU8w
-X-ME-Proxy: <xmx:P1oGa2FcxKy82SCEbXl88bPVsd5mze1QbhUxL9cftauw0ZRIt0agVw>
-    <xmx:P1oGa8dvZVwblR6zPFjnUdp943JSM5rP2GRMeUXc4I9RWqXwqAL3XQ>
-    <xmx:P1oGazE545O8xgJKUHbipJKA4aiLUqwy-k-Ycj11UTqnngsJsNRJqg>
-    <xmx:P1oGa2GomYevlOQVyGEpQ3OEJT2wRGUpqWap4G7MB_rCPq9UdET8lQ>
-    <xmx:QFoGa3o436QseuGE6ze2itzssSFUBgbAgmEt_jmRO1R3eERDa3hfL0PI>
+Message-Instance: m=1; h=sha256:w7IvvJbIcnCTYqHB4sNx8kYi67Yq0w+ucVxZGu+sY4Y=:gMYcM06M86YJ9UdGbkaR2cCHQB6Y0einrDMBHpb3ffE=;
+X-ME-Sender: <xms:R1oGa2GWIhPFFgR0emympFg5thHmpkZ04X7oHV2p0PHgddxncdllHw>
+    <xme:R1oGa-SKJA3XOQaXzRv4vqCxAgtgUW7YanUpSleGoHkRAJgEuLAQ8toJiwSWeGvvo
+    -QzyT8S_bGR3cxKikVjUjrW9pwNgmp3PMP7JmLK5w_T70BV0AU>
+X-ME-Received: <xmr:R1oGa1NNd-EoKNVfdkDi4ggicxB4RUQLj4nz0vzEr7yKghWoRMPaj8ciZKkaGVnWJn-l3nMDpP29AbK5pwrUpM8Um2v8n-Q>
+X-ME-Proxy-Cause: dmFkZTFR427OSMpMhBUq2c/PRD6RmqRpXHsHavEQEoZib45veoj0ON4Fee0fFpAMf6IRZD
+    7ioshD0AaEWr7quPZ3VJk4MkgPxfK4VajmEfAasmF1N4QuQ1Nx4fAT27aU1zZmPYaReDqx
+    rfP5UHReFgze/pUM1YUaeJAgJLGWSi2iJU/qcqRk+B4M1TsPMqQDofdX/Jn7SjcVJvCtNm
+    zdB65WAuETFQQDYBDZIOHXvboBphMIm2vyy1TKs+e7zZqPSqTzzCVyEWo2arAfhj68hGFx
+    kBzHUYnaQIV/eTYhsd/MgvSt0+AvaXUSwYNCdWWq7bBlwHpxfTlmsOfayzrTTRF9w5P7E+
+    NhwDTVyxSr56UGePiE1r6hEUm4rr62pt0ea1crZBNCZZ3iI5npQNpdqKexwLE2ey5zPQVT
+    kDhkVCmNPqxKgalPyvC2iQjnNVaXgdGBhj7v8CWR4NKmycHqHQEput8fYFsOTUivOijkd/
+    C7WmEDTTEDydJUKJW7nxu2LiMovm6yLdR5YhhMqM/S4XNtznI8gHyXT2wyiXDgmPbfr/hb
+    I2RDigEYftuQLDbApMxygEBRb/yjHao/gw/eOEnlNiIU9+mBBu2A7WIxyoMNXYtPZkjjt1
+    QxiRJEhoblSgSdCJokLOY/H9/3MPCto/MK3arCn6QkBj6Fyz8ygF2suOcrVg
+X-ME-Proxy: <xmx:R1oGa3O2fpbpCsTARlOuVg0NnavpbZEL2-aFG55og_QXkWbY8JEoYg>
+    <xmx:R1oGa3H1QfK6v0Dbn27qqEhWQ1CmUScikM3Zr2XG4Q8cHIH-55BV1Q>
+    <xmx:R1oGa5Pelic14_ayqIwY0DjQCUd_Ggg1CXUR28uIxq4C1P7Lnek_Mg>
+    <xmx:R1oGaxsfBUQHWNeYcwSDv3DRdYfBrAsciAzU4jESmw7oXOgY-Cs_8w>
+    <xmx:R1oGa7wqWlJ5rmNRv9gfnvyM_oJXD96fN3FJTTsN-1oGR9hSUDlVUkDS>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Nov 2026 22:47:07 -0500 (EST)
+ 24 Nov 2026 22:47:14 -0500 (EST)
 From: NeilBrown <neilb@ownmail.net>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>
@@ -118,9 +118,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-afs@lists.infradead.org
-Subject: [PATCH v3 10/11] procfs: drop parent lock for d_alloc_parallel() in iterate_shared()
-Date: Wed, 25 Nov 2026 14:16:48 +1100
-Message-ID: <20261125034543.4084039-11-neilb@ownmail.net>
+Subject: [PATCH v3 11/11] afs: lookup_atsys to drop and reclaim lock.
+Date: Wed, 25 Nov 2026 14:16:49 +1100
+Message-ID: <20261125034543.4084039-12-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20261125034543.4084039-1-neilb@ownmail.net>
 References: <20261125034543.4084039-1-neilb@ownmail.net>
@@ -128,8 +128,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261124_194713_911606_B3009E3F 
-X-CRM114-Status: GOOD (  18.84  )
+X-CRM114-CacheID: sfid-20261124_194720_634958_9BB428D3 
+X-CRM114-Status: GOOD (  14.21  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,177 +152,61 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: NeilBrown <neil@brown.name>
 
-When procfs finds a name in iterate_shared() that isn't in the dcache it
-*must* add it so that it can have a stable inode number to report
-(inodes are only accessible from the dcache in procfs).
+If afs is asked to lookup a name ending with @sys, it needs to look up
+a different name for which it might need to allocate a dentry with
+d_alloc_parallel().
+This is done while the parent lock is held which will be a problem in
+a future patch where the ordering of the parent lock and
+d_alloc_parallel() locking is reversed.
 
-It uses d_alloc_parallel().  A planned change to locking will make it
-unsafe to call d_alloc_parallel() while holding the directory lock.
-
-Other filesystems which prime the dcache in iterate_shared() use
-d_alloc_trylock() which is safe but can fail if it races with ->lookup.
-As procfs cannot handle failure we need something better.
-
-procfs doesn't *need* the parent to be locked.  There are no shared data
-structures accessed that don't have their own locking.  So it is safe to
-drop and re-take the parent lock.  We could do this around the whole
-iteration, but as failure of d_alloc_trylock() is rare it is more
-efficient to drop and retake it just around a call of d_alloc_parallel()
-when d_alloc_trylock does fail.
-
-Other code that drops and retakes the lock in iterate_shared needs to
-be careful to check S_DEAD which could be set while the lock is
-dropped.  This is not needed in procfs as the flag is never set.
-
-As d_alloc_trylock() calls try_lookup_noperm(), we can skip that call
-and simplify the code.
+There is no actual need to hold the lock during this nested lookup, so
+with this patch we drop the lock and reclaim it, and use
+lookup_noperm_unlocked().
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/proc/base.c        | 41 +++++++++++++++++++------------
- fs/proc/proc_sysctl.c | 57 ++++++++++++++++++++++++++-----------------
- 2 files changed, 59 insertions(+), 39 deletions(-)
+ fs/afs/dir.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 7685660c3624..cdf0a869f26b 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2104,26 +2104,33 @@ bool proc_fill_cache(struct file *file, struct dir_context *ctx,
- 	struct qstr qname = QSTR_INIT(name, len);
- 	struct inode *inode;
- 	unsigned type = DT_UNKNOWN;
-+	bool must_relock = false;
- 	ino_t ino = 1;
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index bc90b30d8b57..7ed5ff63c90e 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -938,6 +938,12 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
+ 	refcount_inc(&subs->usage);
+ 	read_unlock(&net->sysnames_lock);
  
--	child = try_lookup_noperm(&qname, dir);
--	if (IS_ERR(child))
--		goto end_instantiate;
-+	child = d_alloc_trylock(dir, &qname);
- 
--	if (!child) {
-+	if (child == ERR_PTR(-EWOULDBLOCK)) {
-+		/*
-+		 * Need to drop directory lock, which isn't really
-+		 * needed here anyway.  As rmdir never happens in procfs
-+		 * we don't need to be concerned about S_DEAD being set
-+		 * while unlocked.
-+		 */
-+		inode_unlock_shared(dir->d_inode);
-+		must_relock = true;
- 		child = d_alloc_parallel(dir, &qname);
--		if (IS_ERR(child))
--			goto end_instantiate;
--		if (d_in_lookup(child)) {
--			struct dentry *res;
--			res = instantiate(child, task, ptr);
--			d_lookup_done(child);
--			if (unlikely(res)) {
--				dput(child);
--				child = res;
--				if (IS_ERR(child))
--					goto end_instantiate;
--			}
-+	}
-+	if (IS_ERR(child))
-+		goto end_instantiate;
-+	if (d_in_lookup(child)) {
-+		struct dentry *res;
-+		res = instantiate(child, task, ptr);
-+		d_lookup_done(child);
-+		if (unlikely(res)) {
-+			dput(child);
-+			child = res;
-+			if (IS_ERR(child))
-+				goto end_instantiate;
++	/*
++	 * We need the directory to be unlocked so we can perform other lookups.
++	 * We don't really need the lock any more. The in-lookup status of
++	 * dentry gives us sufficient exclusion.
++	 */
++	inode_unlock_shared(dir);
+ 	for (i = 0; i < subs->nr; i++) {
+ 		name = subs->subs[i];
+ 		len = dentry->d_name.len - 4 + strlen(name);
+@@ -947,7 +953,7 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
  		}
- 	}
- 	inode = d_inode(child);
-@@ -2131,6 +2138,8 @@ bool proc_fill_cache(struct file *file, struct dir_context *ctx,
- 	type = inode->i_mode >> 12;
- 	dput(child);
- end_instantiate:
-+	if (must_relock)
-+		inode_lock_shared(dir->d_inode);
- 	return dir_emit(ctx, name, len, ino, type);
- }
  
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index eeebf813668e..ea3287ab9d21 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -687,38 +687,49 @@ static bool proc_sys_fill_cache(struct file *file,
- 	struct inode *inode;
- 	struct qstr qname;
- 	ino_t ino = 0;
-+	bool must_relock = false;
-+	bool ret = false;
- 	unsigned type = DT_UNKNOWN;
- 
--	qname.name = table->procname;
--	qname.len  = strlen(table->procname);
--	qname.hash = full_name_hash(dir, qname.name, qname.len);
--
--	child = d_lookup(dir, &qname);
--	if (!child) {
-+	qname = QSTR(table->procname);
-+	child = d_alloc_trylock(dir, &qname);
-+	if (child == ERR_PTR(-EWOULDBLOCK)) {
-+		/*
-+		 * Need to drop directory lock, which isn't really
-+		 * needed here anyway.  As rmdir never happens in procfs
-+		 * we don't need to be concerned about S_DEAD being set
-+		 * while unlocked.
-+		 */
-+		inode_unlock_shared(dir->d_inode);
-+		must_relock = true;
- 		child = d_alloc_parallel(dir, &qname);
--		if (IS_ERR(child))
--			return false;
--		if (d_in_lookup(child)) {
--			struct dentry *res;
--			inode = proc_sys_make_inode(dir->d_sb, head, table);
--			res = d_splice_alias_ops(inode, child,
--						 &proc_sys_dentry_operations);
--			d_lookup_done(child);
--			if (unlikely(res)) {
--				dput(child);
--
--				if (IS_ERR(res))
--					return false;
--
--				child = res;
--			}
-+	}
-+	if (IS_ERR(child))
-+		goto out;
-+	if (d_in_lookup(child)) {
-+		struct dentry *res;
-+		inode = proc_sys_make_inode(dir->d_sb, head, table);
-+		res = d_splice_alias_ops(inode, child,
-+					 &proc_sys_dentry_operations);
-+		d_lookup_done(child);
-+		if (unlikely(res)) {
-+			dput(child);
-+
-+			if (IS_ERR(res))
-+				goto out;
-+
-+			child = res;
- 		}
- 	}
- 	inode = d_inode(child);
- 	ino  = inode->i_ino;
- 	type = inode->i_mode >> 12;
- 	dput(child);
--	return dir_emit(ctx, qname.name, qname.len, ino, type);
-+	ret = dir_emit(ctx, qname.name, qname.len, ino, type);
-+out:
-+	if (must_relock)
-+		inode_lock_shared(dir->d_inode);
-+	return ret;
- }
- 
- static bool proc_sys_link_fill_cache(struct file *file,
+ 		strcpy(p, name);
+-		ret = lookup_noperm(&QSTR(buf), dentry->d_parent);
++		ret = lookup_noperm_unlocked(&QSTR(buf), dentry->d_parent);
+ 		if (IS_ERR(ret) || d_is_positive(ret))
+ 			goto out_s;
+ 		dput(ret);
+@@ -958,6 +964,12 @@ static struct dentry *afs_lookup_atsys(struct inode *dir, struct dentry *dentry)
+ 	 */
+ 	ret = NULL;
+ out_s:
++	/*
++	 * Cannot take parent lock while we hold an in-lookup dentry so
++	 * must make sure that lookup is done.
++	 */
++	d_lookup_done(dentry);
++	inode_lock_shared(dir);
+ 	afs_put_sysnames(subs);
+ 	kfree(buf);
+ out_p:
 -- 
 2.50.0.107.gf914562f5916.dirty
 
