@@ -2,33 +2,33 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952CA606A339
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 16:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27AF606A33F
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 16:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=cSoKA2R7
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=iacmSwIx
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=Jo4brAk8pZ44dB2D7iMlRmssmlqwyJvTKWacTh0/QBU=; b=cSoKA2R77AM6kf
-	csODrPsozln+5E5gMmOjv+Dt/VVK+PjhH8PO/xEajde/WQBGFmgV46Ynl0u5SvfOzE1m3l3+Mk4NG
-	YuY5iSMVDy0Trim7TLOlF83zIN1hsnQE+8U+5ysbBHjcTYDeWvxCRWfYXs9hWg/mRXWZZ31ByyYTz
-	7W8lflw9KrmCpHIRLx7IVUtbM9BP1H1kB/R2L0ihVEjZTndrItJ6LI93yag5sIKPZO84T4Vc2fDRV
-	A+URUBjeHKp5Hhl+1dDjqTiJ+nfoWLRdeLkUhiubo2W4KDkgl+jVBhrPBRz3uWtDWRfipVSsYm7Nm
-	IuamYxlGxwDYfQaWsz6g==;
+	List-Owner; bh=G6T7jpstO8PkN3s/pf9ze2EnC64looMz52Ecp4aw0pc=; b=iacmSwIxJsfeBk
+	c22FPxsmoNPI8q/oklmBphYINlMImgoqqy2lWu0W6g5I4iG/5lgXr25gfVCaMhzP4oFxQGSEnmxqf
+	QWQ7tGFAkREpwjV4EJZ1JVed+T8TWaOzLGZpMK6NS6CwGllZEyUlu0CoodcBYZhnsGHaKr4AlwC7G
+	WUvZpAkBKKvfa+8ISBsIECjFICS/0H/AHk784rnrVoQ5zwI0rcQqYslBqq7X40cUjrePWN72Ror2m
+	CDPmOLOerb2xTH2wtgZwl2j+/cBxCPPtAKfsGdYVaWNaYSdolAkFmTIzllSa+WX1wg4XWfC2bdRQR
+	6u/hl+AbkKoeSthqsd8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFWS-0000000AUiD-1N7o;
-	Wed, 25 Nov 2026 16:07:04 +0000
+	id 1xWFWV-0000000AUkZ-1drB;
+	Wed, 25 Nov 2026 16:07:07 +0000
 Received: from bambi.snowrabbit.org ([182.48.54.220])
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFWO-0000000AUgG-0AZN
+	id 1xWFWR-0000000AUhG-0e0g
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 16:07:03 +0000
+	Wed, 25 Nov 2026 16:07:05 +0000
 Received: by bambi.snowrabbit.org (Postfix, from userid 3001)
-	id 59579C9318; Thu, 26 Nov 2026 01:06:59 +0900 (JST)
+	id 6E425C935F; Thu, 26 Nov 2026 01:07:01 +0900 (JST)
 From: Showta Ishizaki <zakinko@snowrabbit.org>
 To: "Michael S. Tsirkin" <mst@redhat.com>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
@@ -55,9 +55,9 @@ Cc: Eric Dumazet <edumazet@kernel.org>,
 	linux-um@lists.infradead.org,
 	linux-doc@vger.kernel.org,
 	Showta Ishizaki <zakinko@snowrabbit.org>
-Subject: [PATCH RFC net v8 2/6] um: vector: trim skbs before verifying the header
-Date: Thu, 26 Nov 2026 01:06:43 +0900
-Message-ID: <20261126.rfcv8.99797.2.zakinko@snowrabbit.org>
+Subject: [PATCH RFC net v8 3/6] virtio_net: parse tunnel csum_start little-endian
+Date: Thu, 26 Nov 2026 01:06:44 +0900
+Message-ID: <20261126.rfcv8.99797.3.zakinko@snowrabbit.org>
 In-Reply-To: <20261126.rfcv8.99797.0.zakinko@snowrabbit.org>
 References: <20261126.rfcv8.99797.0.zakinko@snowrabbit.org>
 X-Archived-By: <archiver.kernel.org>
@@ -65,8 +65,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_080700_305678_23121941 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20261125_080703_618117_DE3D65E4 
+X-CRM114-Status: GOOD (  11.49  )
 X-Spam-Score: -1.9 (-)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,61 +87,45 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: "Michael S. Tsirkin" <mst@redhat.com>
 
-The vector receive path over-allocates the skb and only trims it
-to the received length after the transport header is verified.
+All tunnel related virtio features are > 32, so none of this
+functionality can be enabled on legacy mixed-endian device.
 
-A follow up patch will complete the packet checksum in software within
-virtio_net_hdr_to_skb so we need the packet trimmed (otherwise the
-checksum would be computed incorrectly over the unreceived tail of the
-buffer).
+Accordingly, all tunnel header fields, csum_start included, are
+little-endian.
 
-Trim first, so the import sees the packet as it was received.
+The nested virtio net header import parses csum_start that way, but the
+inner transport offset is parsed with the endianness specified by the
+interface.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+If tun is misconfigured to legacy big-endian mode while the tunnel
+features are enabled, the two parses of this field disagree, and the
+value stored in skb->inner_transport_header - which is only
+bounds-checked from below - can point past the end of the packet, where
+GSO segmentation later dereferences it.
+
+To fix, parse the field little-endian in both places.
+
+Fixes: a2fb4bc4e2a6 ("net: implement virtio helpers to handle UDP GSO tunneling.")
+Cc: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Showta Ishizaki <zakinko@snowrabbit.org>
 ---
- arch/um/drivers/vector_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/virtio_net.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index e902e78c5..828bd6199 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -873,6 +873,7 @@ static int vector_legacy_rx(struct vector_private *vp)
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index fc9667176..3135dae03 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -490,7 +490,7 @@ virtio_net_hdr_tnl_to_skb(struct sk_buff *skb,
+ 	inner_l3min = virtio_l3min(inner_isv6);
+ 	outer_l3min = ETH_HLEN + virtio_l3min(outer_isv6);
  
- 	if (skb != NULL) {
- 		if (pkt_len > vp->header_size) {
-+			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					vp->header_rxbuffer, skb, vp);
-@@ -887,7 +888,6 @@ static int vector_legacy_rx(struct vector_private *vp)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb, pkt_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			vp->dev->stats.rx_bytes += skb->len;
- 			vp->dev->stats.rx_packets++;
-@@ -989,6 +989,8 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
- 		if (mmsg_vector->msg_len > vp->header_size) {
-+			pskb_trim(skb,
-+				mmsg_vector->msg_len - vp->rx_header_size);
- 			if (vp->header_size > 0) {
- 				header_check = vp->verify_header(
- 					mmsg_vector->msg_hdr.msg_iov->iov_base,
-@@ -1013,8 +1015,6 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb,
--				mmsg_vector->msg_len - vp->rx_header_size);
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			/*
- 			 * We do not need to lock on updating stats here
+-	inner_th = __virtio16_to_cpu(little_endian, hdr->csum_start);
++	inner_th = __virtio16_to_cpu(true, hdr->csum_start);
+ 	inner_nh = le16_to_cpu(vhdr->inner_nh_offset);
+ 	outer_th = le16_to_cpu(vhdr->outer_th_offset);
+ 	if (outer_th < outer_l3min ||
 -- 
 2.54.0 (Apple Git-157)
 
