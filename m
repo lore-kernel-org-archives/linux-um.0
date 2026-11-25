@@ -2,12 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6A9606A321
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1928B606A326
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lHy/gkhK;
-	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=D3z9PhsR;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=OiBXUgTn
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=DLEfSwX2;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=UXS7+lxA;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=Ms9lWP08
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
@@ -15,91 +15,91 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=UBXcku4BANKUZbouEAZSdvrf1Tj7sDqkutD5xhyaTdU=; b=lHy/gkhKLq40nrEz38Lt3i339G
-	fQUxpAvRLoFLgZT27cX6jhSfDwNOjv/sXR6mWoc+hStZlqrzmZgaUMLeWRAqpnUmW6EleF7J0aEQu
-	3CGnB2HY8t/BYvd/a78lsjow8B5ZfZXhjUsGiYNwAos4EvgEj+ClyiErWPg6QklO2Lgk6TPmypKEo
-	xA+Ap+lTgYU/bNPWH9btphHawExTfCRo9Amqq2c3YIzV+8CqjSLIjZStR8gipOUh25BYWgiRUChlu
-	KHto4fBEK09F8kYQIFlWsmfzK5SKm5d51hvB52OR/WedG0yCAn7UBnrF882X2ldQRsx9VErYLhyRU
-	ybReE5GQ==;
+	bh=ZJj42sbdWeB/wLiTmyNjdZ8BVwwPFHh83C2++A0reDg=; b=DLEfSwX29WTeDgZgWjHx5U4OBk
+	EYkyAmS7K9OMcG5is+kPl1HzqZlsxzDXFmRZu2Rkzx5yBGZksTAJPhB3ucT0Fs7qkYPfp79g2GJbh
+	Fr4tlLqQzo5alf7CleowKqqbjv8nyJJMr1pE4AbUZOP2ELwsi92acYbgbcURigsrqIu0oCvV3OjY5
+	yoX0qANCwPczBVeAoBkucshMfzI7/j3faB8fNBLRJ+qcFbzBlHbFXtxceW0Fd81oxe3f05s8pjSgS
+	uROiaAmj6LZXXXu4Nuguo9I87FLU4qn4e58ulnjlPmufydGsLvCc+YPEMUWWpzlC4++iucMDvWxAr
+	nqUSRu6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3yD-00000008LZD-27WC;
-	Wed, 25 Nov 2026 03:46:57 +0000
+	id 1xW3yH-00000008LbY-3TL3;
+	Wed, 25 Nov 2026 03:47:01 +0000
 Received: from fhigh-a2-smtp.messagingengine.com ([103.168.172.153])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3y7-00000008LWQ-0DyN
+	id 1xW3yE-00000008LZb-1aRO
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 03:46:55 +0000
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 425FC1400368
-	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:46:50 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Tue, 24 Nov 2026 22:46:50 -0500
+	Wed, 25 Nov 2026 03:47:00 +0000
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 99F57140036E
+	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:46:57 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-12.internal (MEProxy); Tue, 24 Nov 2026 22:46:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578410;
-	 x=1795664810; bh=UBXcku4BANKUZbouEAZSdvrf1Tj7sDqkutD5xhyaTdU=; b=
-	D3z9PhsRibw/jyqnbd/8dr8DJKN+MwbzBNR2DYz6yI7s6PJhWjN95ZMc3t9QevST
-	fgUANP+XeTEKYRHXXPV0Su+JQ3TA9nQpBm+Alij+YJ+O25ispInHAJNKVfon2iEp
-	ZATaQkZq5GtxckU/qeGHHSr4asGmVtJg33ofoQS3Dj7ynzVv2+5c2MRMbBq8wEtn
-	Auzu11LyMAOuFLpWtjdP3hEXLB15gAbnl0q9U13kCXGSmu/VZ6MndrYmYiF7ffsU
-	mg1EIl3dlSud2LyGPevtQnZOfOHFwvcx0maCU1QZA2jIuMB2QzIYUE7MG9e/SSCD
-	Wjk34Clz9rxVi1//dv9X8g==
+	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578417;
+	 x=1795664817; bh=ZJj42sbdWeB/wLiTmyNjdZ8BVwwPFHh83C2++A0reDg=; b=
+	UXS7+lxA2gWzpwnXWJ/0DUPdLAmseAlhdb1N4fEFA0AzBjqGVjW6w960RQwEk4dt
+	SaoSyfNlrLjcT1bqWukMtSSOIKyVfybXCZl9HY9w+c4jy2oLMUE9ltJkYR3WnBb1
+	hipcMd2qL76w5eWPkAXmz0RgxGTOKMR3I4AgOD4oViagTDGwJ9+3Cu+NfKaiU4I9
+	LUQCyroOmK8N26fsoJql/bfzJ/gXS4Uf3/EMGIb4fmYP2a4Hh7GFrV5Qw9YfHhnB
+	7xzsRei4AnHVywy1oqZFp2ZebkmJZm++n0rd1Uw2/ZiWbdARuik3IyNSwF7uagq/
+	IrD+U+qBi/YhZNX0jAlXvg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1795578410; x=1795664810; bh=U
-	BXcku4BANKUZbouEAZSdvrf1Tj7sDqkutD5xhyaTdU=; b=OiBXUgTntQ5FeIDi9
-	n76km4wA9oBDeWcYm1cIGPkHZRGW6N6ApFlJU2BdUWqvjo8OgCB0lO3sluWhLIoy
-	TtE0XNZoD0Yhk4QvGAGlNdJ2VIpljleK6bLVpjGm2LbGV0H7W/kzQeCJN/IHNQJh
-	0Zo4VdEjUPkeXASS/Oyysy75ra0GQufJ+fMIW8cr9cifFziDc7Y5+oUQAP46QYpa
-	7oDLRqiKMq2lZwQ202e/fsftpMndRdE+BZtT2kV/gOX81z59XOqjNPYkp2YAsxrJ
-	K/eq7a91d5mkPQtPVotIekz+73IzxbRoUWt0Yz/JlAu1JWKBYgzMSrs3fv35+N+u
-	0j2Lw==
+	:x-me-sender:x-sasl-enc; s=fm3; t=1795578417; x=1795664817; bh=Z
+	Jj42sbdWeB/wLiTmyNjdZ8BVwwPFHh83C2++A0reDg=; b=Ms9lWP08MTQLfhK9I
+	Qn8mYgol/GVVMj8AZ1ViRbJnK2HnL/lN5WwDUsHB0ZzG4j8BRR33EILL6JCzBL+p
+	zzsMIzPoCBzVdhR8O3r8bArMALljb2nrq+Tb2Xr5tFcbuFNReYFbKIh0DM60MukH
+	YXpNazz4FD4oD3Vc+scCN0C1uA67v1UZOpGi1w+VpD5mJexhfQvgZUZQ4/2JC9zY
+	jQtiWDYJf7xvUgb3RRR7P73Z2vpVZU5aVcrq1hHmcNR9ZEaEHveT7NIol8Z0yf/I
+	KGJj4rvF3FuvP/0U9u4IMo9fubVaYfR+4EEq2+a6lpS7zgTmkbld5Kziw1nfuo/d
+	0uHxw==
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=sign d=ownmail.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1795578410; d=ownmail.net;
+DKIM2-Signature: i=1; m=1; t=1795578417; d=ownmail.net;
 	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
 	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:VU8+nE0qeWB86ty67K9U6WNTYm1Un5yc2MM35VrGPOyMato
-	hBh++Nzqmh83AFaAzAPLAYdXFTB5u/6YKrYvIyXEqJhUCNcZF0FBYzf6ZdAeHE2t
-	8u8+wc7CKxPY0HgWaqlRb10HbaH2yhp5gcxKchLjYfTCm2jN/pGLwX4n+GvZwlbW
-	beVWskchqzfC9DWUUYHG3ophixpzXQmCVBu+lxtv1RbcXHfaZtBtM6A4EltsPZCb
-	63q5YVZ3E2fpXu4lDyfqxMhju7tbz6bxBPiuCLIQRaXS2IGuPgTUdSiLUex4wnxJ
-	cdSS+hBBkggH88WcVawwsLqJ37iUy1xUMGeZDFQ==;
+	s=fm3:rsa-sha256:VBapPgr2izn5CWVYdz7byU+/JZ7wjTovNiskVVVWSyzve2B
+	NJTHm2CDTF7MbLbqQKJ1E1ZYZePh4QdBC8RHnfU2FCdSvGYvPnUR1Ir7ZMcRfGwk
+	+IZsE1E+EmMXDd9enCmToTmrNdSxcGsU241Sz9uijpnf0UYuqSKeCJXi70+wL46l
+	u/lkHhrItwPIt8kpy0DJ5NeT1icGyZYQbxBHS6AyFcopioJ1nGx3BHtsTA5v3OFf
+	zFItwqL39BN2tBgaeHKr4JEzu/ZVUBWzDYZ2YkjsYBeLcsZ1u8luf3J/7nJgjHGd
+	tdle5OTqDrDH45ysgo1ZZq2hPJhqrcNCY0Bt4OQ==;
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=mi-m=1; hc=12;
 	hn=cc,content-transfer-encoding,date,feedback-id,from,
 	in-reply-to,message-id,mime-version,references,reply-to,subject,
 	to;
-Message-Instance: m=1; h=sha256:qhXvgrzkw6Ruu030e3itkJdTYm3rUf3nAGH3FAeMnfA=:zA9GEHp1eIGnK4tGy8YN/9i+8sZXWBuy1Zpf109ei4Q=;
-X-ME-Sender: <xms:KloGa4dlKkVE_dG8XPuSoMuqSZJhxKE8LVXIwM8nhzTCzh9e7hE-Ew>
-    <xme:KloGa7rWp-acdw7zo7AC15Gf6Q1kR04aPLtlL2RLLlSePe7bgUfKxpDZUUsIYSTDp
-    69QBAvoAuxPKiqexoOAhEp6EwpvMkBmDdLqYicAjfPrTeuSwAg>
-X-ME-Received: <xmr:KloGa07Bj2QLpFy4Y5-S0MK4lM8NEImoSveoZT3EFD1RWFxywhwl4D81VdvGJrjfbHUZhe_CvCcfWvIys-t3sQMFRqeWqTQ>
-X-ME-Proxy-Cause: dmFkZTE4HtNMS82oETeKxjFsMonchsNmutSXRF8P4Wz/gL5NuR+PmnhI7BdBjNpxinbAbR
-    gE9fr8C0GNc0SnxE2B+IXDaaoddndfcEJfJtcWeI4ytNiRF08hWb9RlxFjA1qgM4oFyoJi
-    /AdIhJNfEVO0oVTJtQVCvv+X67aNRews2LQwnM5uAbOmmoGahsFhP1aXSbisfk+ds7cJJ0
-    OsFbDOPt7ZICh4tniydbOvMlt1+f+7jVXUCHPaOJHWPFgfTUvPivbmMoJSDdfil0VmV1q/
-    2QMjPNE1ltm0/CAvjxy3k0MqWfenoOEUWjyOM0HmgbohwH+N/2hScfzSSITnIBzePDS5Dt
-    vrEJcWcGcRscohUpQEDjaTWG/IdAvCa37ziXe2Z5To667kLN9lI4AOPPZ2QW3dS//toHMK
-    M1ZwFdOXHsGSc3ILp2vVgN6Zc0Rkf4su6sUUDh4gm4bljoZot9WVcaW8assVGalY3Mx5xy
-    RHBkQoEgztQZteoFdBmQqEVrNeySVqmG9iqsBHAETgtxlenWh/IjSSYwuGxEchmnvirT9m
-    Tt/iNJJmAWzf7iIRk8j9UUolVxg8xm0WEWqTdg1n+tStAFvodxq6NnaZH//ztqcokpBMB4
-    2B0N0duNgIhRcYVqYezcO16d6fUZznULSH+l2w9Kw44fr3YMz1HIVPJQFTsg
-X-ME-Proxy: <xmx:KloGa7BWKOvNskizRjLpWVYYlNQZm7-TmGn_etbYgKwDv7hDWDEZXA>
-    <xmx:KloGa2bgIGVo5fyO04sueOhVd-BUXqae89IPsFLbsR1u4kTPMf_tpA>
-    <xmx:KloGa_J37x2RkPpO7f2UopAcjHH2nIoO2FHLKG-EcfumSFjILyvCAg>
-    <xmx:KloGa_DM1C90JgLs3zpRQomBAnIcAS1pGlEaCn7QtFBRBiFnLyZ4tA>
-    <xmx:KloGaxi9rO0OvJP2zbbRNDcFR028vlWe-RrO3BaalUaHDKeMQKoKGh5m>
+Message-Instance: m=1; h=sha256:20zyX+aJVxI6AdffA4cfGs+HiNU58mrbjTUKFbNNm2E=:GXqxxZ4nCPcItWLOjAOkRMljcoG+dv30mbjjfSpSE9k=;
+X-ME-Sender: <xms:MVoGa9UT3ReJzgDm5mJCOWmgwj2XS1DwMjv6wScah8A4RNa7NuTkkQ>
+    <xme:MVoGa0gtMtwQcyIZzskWsstVyR8Z9lNfmKrMguUzhgHM52bZF3VKAEs9OB-EBmYai
+    aFS81Odg-LVZaioewKRZHbqnPnOtcWiOydpxcNz7oJVh1p9cg4>
+X-ME-Received: <xmr:MVoGa-dJW7bs-11limHQgtdWvM0GDZiC0G5w1swfm8UWxKx37nuJ9M694ZaIyC2LI8gfADQzL_PsVoibTbk2RTbCj3NE2uo>
+X-ME-Proxy-Cause: dmFkZTFR427OSMpMhBUq2c/PRD6RmqRpXHsHavEQEoZib45veoj0ON4Fee0fFpAMf6IRZD
+    7ioshD0AaEWr7quPZ3VJk4MkgPxfK4VajmEfAasmF1N4QuQ1Nx4fAT27aU1zZmPYaReDqx
+    rfP5UHReFgze/pUM1YUaeJAgJLGWSi2iJU/qcqRk+B4M1TsPMqQDofdX/Jn7SjcVJvCtNm
+    zdB65WAuETFQQDYBDZIOHXvboBphMIm2vyy1TKs+e7zZqPSqTzzCVyEWo2arAfhj68hGFx
+    kBzHUYnaQIV/eTYhsd/MgvSt0+AvaXUSwYNCdWWq7bBlwHpxfTlmsOfayzrTTRF9w5P7PC
+    SeV47q2FuIOfIZMVMhjQJ/dV/n+UX7M13OfpguGdXETZW7FLzQD+0u8vOwdyWIeG/Rqfjj
+    ldiwC3mEq+O4w6xJoCtCeoRdzm+TdpYlWciZU3Zr/spSi9hCkb2asl/hDkxdr/iBGpaEVc
+    Wgjnk7v4NkGAHlXWLVLtVocs6pAuXej1OcPShJyoiefm39JjmByC7698NkQXBXMiK2UQBS
+    b4VQwlpkDfgY4xj3/1Iu6AX+P4PEPegy0xCfQZo19Lh7HHwW3ATKqVwoxYXEs2EdjHUKNe
+    BToL94ArJdkyJ35bnFMG0/y9neOegnqPekF7/+9nsevG0ndRJcVZ1HC4j9Uw
+X-ME-Proxy: <xmx:MVoGa3c57kDACDFsxCkBg-qlZlZt_91HC9yabde746SqbBhsQsn3Ng>
+    <xmx:MVoGayVWIvPmv-mcbj9goU5U7ww_0gj9iKrOhk5h4zN3894or7pH_w>
+    <xmx:MVoGazfD8VsFGaOqfFkVzQG-xJYpixl1vVKq90dZ_orFPEE_IwKmJA>
+    <xmx:MVoGa-_QUzdS0ek1aNZ4XXiw6p_2N3eJF5CG0dH6aBwsAN7v5WuGUQ>
+    <xmx:MVoGayDbV5vJzu94SozIPPVYMOQQIzeqf0IYhjiRr_MCXHpvYz71KVXJ>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Nov 2026 22:46:45 -0500 (EST)
+ 24 Nov 2026 22:46:52 -0500 (EST)
 From: NeilBrown <neilb@ownmail.net>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>
@@ -118,9 +118,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-afs@lists.infradead.org
-Subject: [PATCH v3 07/11] Revert "VFS: Add LOOKUP_SHARED flag."
-Date: Wed, 25 Nov 2026 14:16:45 +1100
-Message-ID: <20261125034543.4084039-8-neilb@ownmail.net>
+Subject: [PATCH v3 08/11] VFS: use d_alloc_parallel() in lookup_one_qstr_excl().
+Date: Wed, 25 Nov 2026 14:16:46 +1100
+Message-ID: <20261125034543.4084039-9-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20261125034543.4084039-1-neilb@ownmail.net>
 References: <20261125034543.4084039-1-neilb@ownmail.net>
@@ -128,8 +128,8 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261124_194651_313671_63F4E150 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20261124_194658_482972_D6432629 
+X-CRM114-Status: GOOD (  28.35  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,107 +152,210 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: NeilBrown <neil@brown.name>
 
-This reverts commit cc47a1ba1983116ee7a720a79197eb5299ae5d31.
+lookup_one_qstr_excl() is used for lookups prior to directory
+modifications (other than open(O_CREATE)), whether create, remove,
+or rename.
 
-It turns out that we need to make all ->lookup calls happen under shared
-lock *before* the places where I planned to use LOOKUP_SHARED.
-So LOOKUP_SHARED won't be needed.  Let's discard it.
+A future patch will lift lookup out of the i_rwsem lock that protects
+the directory during these operations (only taking a shared lock if the
+target name is not yet in the dcache).
+
+To prepare for this change and particularly to allow lookup to
+always be done outside the parent i_rwsem, change lookup_one_qstr_excl()
+to use d_alloc_parallel().
+
+For the target of create and rename some filesystems skip the
+preliminary lookup and combine it with the main operation.  This is only
+safe if the operation has exclusive access to the dentry.  Currently
+this is guaranteed by an exclusive lock on the directory.
+d_alloc_parallel() provides alternate exclusive access (in the case
+where the name isn't in the dcache and ->lookup will be called).
+
+As a result of this change, ->lookup is now only ever called with a
+d_in_lookup() dentry.  Consequently we can remove the d_in_lookup()
+check from d_add_ci() which is only used in ->lookup.
+
+The caller must now ensure d_lookup_done() is called at an appropriate
+time, and must not assume that it can test for positive or negative
+dentries without confirming that the dentry is no longer d_in_lookup() -
+unless it is filesystem code acting on itself and *knows* that
+->lookup() always completes the lookup (currently true for all
+filesystems other than NFS).  This is all handled in start_creating()
+and end_dirop() and friends.
+At present only LOOKUP_EXCL and LOOKUP_RENAME_TARGET might result in
+an in-lookup dentry after a successful ->lookup, but that might change.
+
+Note that as lookup_one_qstr_excl() is called with an exclusive lock on
+the directory, d_alloc_parallel() cannot race with another thread and
+cannot return a non-in-lookup dentry.  However that is expected to
+change so that case is handled with this patch.
+
+As mentioned, with this change it is safe for d_alloc_parallel() to be
+called without holding ->i_rwsem on the parent.  This holds providing
+that any filesystem which uses d_alloc() or d_alloc_name() and then
+instantiates the dentry, only does so in a context where ->lookup cannot
+instantiate a (positive) dentry with the same name without relying
+on ->i_rwsem.
+This is already the case. e.g.
+ - some filesystem use simple_lookup which only instantiates negative
+   dentry.  A race with d_alloc() will mean the negative entry added with
+   simple_lookup() will be later in the hash chain and so never found.
+ - some filesystems only use d_alloc() during fs creation, before
+   ->lookup is possible.
 
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/namei.c            | 20 +++++++++-----------
- include/linux/namei.h |  3 +--
- 2 files changed, 10 insertions(+), 13 deletions(-)
+ Documentation/filesystems/porting.rst | 14 ++++++++++
+ fs/dcache.c                           | 16 +++---------
+ fs/namei.c                            | 37 +++++++++++++++++++--------
+ 3 files changed, 45 insertions(+), 22 deletions(-)
 
+diff --git a/Documentation/filesystems/porting.rst b/Documentation/filesystems/porting.rst
+index e41466904501..78df8842bddb 100644
+--- a/Documentation/filesystems/porting.rst
++++ b/Documentation/filesystems/porting.rst
+@@ -1422,3 +1422,17 @@ helpers take a ``const struct mnt_idmap *``. mnt_idmap() and file_mnt_idmap()
+ return one. The idmapping is immutable so nothing should have modified it
+ anyway. References are taken and dropped via mnt_idmap_get() and
+ mnt_idmap_put() as before, both accept a const pointer.
++
++---
++
++**mandatory**
++
++All start_creating and start_renaming functions may return a
++d_in_lookup() dentry.  end_dirop() calls the necessary d_lookup_done().
++If the caller *knows* which filesystem is being used, it may know that
++this is not possible.  Otherwise it must be careful testing if the
++dentry is positive or negative as the lookup may not have been performed
++yet.
++
++inode_operations.lookup() is now only ever called with a d_in_lookup()
++dentry.
+diff --git a/fs/dcache.c b/fs/dcache.c
+index ba17f49f8a63..2ad39c1515b7 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2472,18 +2472,10 @@ struct dentry *d_add_ci(struct dentry *dentry, struct inode *inode,
+ 		iput(inode);
+ 		return found;
+ 	}
+-	if (d_in_lookup(dentry)) {
+-		found = d_alloc_parallel(dentry->d_parent, name);
+-		if (IS_ERR(found) || !d_in_lookup(found)) {
+-			iput(inode);
+-			return found;
+-		}
+-	} else {
+-		found = d_alloc(dentry->d_parent, name);
+-		if (!found) {
+-			iput(inode);
+-			return ERR_PTR(-ENOMEM);
+-		} 
++	found = d_alloc_parallel(dentry->d_parent, name);
++	if (IS_ERR(found) || !d_in_lookup(found)) {
++		iput(inode);
++		return found;
+ 	}
+ 	res = d_splice_alias(inode, found);
+ 	if (res) {
 diff --git a/fs/namei.c b/fs/namei.c
-index 925aeb63bfa1..6d63a4c08495 100644
+index 6d63a4c08495..cfd37044a516 100644
 --- a/fs/namei.c
 +++ b/fs/namei.c
-@@ -1939,7 +1939,7 @@ static noinline struct dentry *lookup_slow(const struct qstr *name,
- 	struct inode *inode = dir->d_inode;
- 	struct dentry *res;
- 	inode_lock_shared(inode);
--	res = __lookup_slow(name, dir, flags | LOOKUP_SHARED);
-+	res = __lookup_slow(name, dir, flags);
- 	inode_unlock_shared(inode);
- 	return res;
+@@ -1785,13 +1785,13 @@ static struct dentry *lookup_dcache(const struct qstr *name,
  }
-@@ -1953,7 +1953,7 @@ static struct dentry *lookup_slow_killable(const struct qstr *name,
  
- 	if (inode_lock_shared_killable(inode))
- 		return ERR_PTR(-EINTR);
--	res = __lookup_slow(name, dir, flags | LOOKUP_SHARED);
-+	res = __lookup_slow(name, dir, flags);
- 	inode_unlock_shared(inode);
- 	return res;
+ /*
+- * Parent directory has inode locked exclusive.  This is one
+- * and only case when ->lookup() gets called on non in-lookup
+- * dentries - as the matter of fact, this only gets called
+- * when directory is guaranteed to have no in-lookup children
+- * at all.
+- * Will return -ENOENT if name isn't found and LOOKUP_CREATE wasn't passed.
+- * Will return -EEXIST if name is found and LOOKUP_EXCL was passed.
++ * Parent directory has inode locked.
++ * d_lookup_done() must be called before the dentry is dput().
++ * If the dentry is not d_in_lookup():
++ *   Will return -ENOENT if name isn't found and LOOKUP_CREATE wasn't passed.
++ *   Will return -EEXIST if name is found and LOOKUP_EXCL was passed.
++ * If it is d_in_lookup() then these conditions can only be checked by the
++ * file system when carrying out the intent (create or rename).
+  */
+ static struct dentry *lookup_one_qstr_excl(const struct qstr *name,
+ 					   struct dentry *base, unsigned int flags)
+@@ -1809,14 +1809,24 @@ static struct dentry *lookup_one_qstr_excl(const struct qstr *name,
+ 	if (unlikely(IS_DEADDIR(dir)))
+ 		return ERR_PTR(-ENOENT);
+ 
+-	dentry = d_alloc(base, name);
+-	if (unlikely(!dentry))
+-		return ERR_PTR(-ENOMEM);
++	dentry = d_alloc_parallel(base, name);
++	if (unlikely(IS_ERR(dentry)))
++		return dentry;
++	if (unlikely(!d_in_lookup(dentry)))
++		/* Raced with another thread which did the lookup */
++		goto found;
+ 
+ 	old = dir->i_op->lookup(dir, dentry, flags);
+ 	if (unlikely(old)) {
++		d_lookup_done(dentry);
+ 		dput(dentry);
+ 		dentry = old;
++	} else if (d_in_lookup(dentry)) {
++		/* We cannot check for errors resulting from LOOKUP_ flags.
++		 * The caller will have to wait for any create-etc attempt
++		 * to get relevant errors.
++		 */
++		return dentry;
+ 	}
+ found:
+ 	if (IS_ERR(dentry))
+@@ -2938,6 +2948,7 @@ static struct dentry *__start_dirop(struct dentry *parent, struct qstr *name,
+  * The lookup is performed and necessary locks are taken so that, on success,
+  * the returned dentry can be operated on safely.
+  * The qstr must already have the hash value calculated.
++ * The dentry may be d_in_lookup().
+  *
+  * Returns: a locked dentry, or an error.
+  *
+@@ -2959,6 +2970,7 @@ void end_dirop(struct dentry *de)
+ {
+ 	if (!IS_ERR(de)) {
+ 		inode_unlock(de->d_parent->d_inode);
++		d_lookup_done(de);
+ 		dput(de);
+ 	}
  }
-@@ -4446,14 +4446,12 @@ static struct dentry *lookup_open(struct nameidata *nd, struct file *file,
- 	int error, create_error;
- 	umode_t mode;
- 	bool got_write;
--	unsigned int shared_flag;
+@@ -3918,8 +3930,10 @@ __start_renaming(struct renamedata *rd, int lookup_flags,
+ 	return 0;
  
- retry:
- 	open_flag = op->open_flag;
- 	got_write = false;
- 	mode = op->mode;
- 	create_error = 0;
--	shared_flag = (open_flag & O_CREAT) ? 0 : LOOKUP_SHARED;
+ out_dput_d2:
++	d_lookup_done(d2);
+ 	dput(d2);
+ out_dput_d1:
++	d_lookup_done(d1);
+ 	dput(d1);
+ out_unlock:
+ 	unlock_rename(rd->old_parent, rd->new_parent);
+@@ -4014,6 +4028,7 @@ __start_renaming_dentry(struct renamedata *rd, int lookup_flags,
+ 	return 0;
  
- 	if (open_flag & (O_CREAT | O_TRUNC | O_WRONLY | O_RDWR)) {
- 		got_write = !mnt_want_write(nd->path.mnt);
-@@ -4462,10 +4460,10 @@ static struct dentry *lookup_open(struct nameidata *nd, struct file *file,
- 		 * a different error; we'll be dropping this one anyway.
- 		 */
- 	}
--	if (shared_flag)
--		inode_lock_shared(dir_inode);
--	else
-+	if (open_flag & O_CREAT)
- 		inode_lock(dir_inode);
-+	else
-+		inode_lock_shared(dir_inode);
+ out_dput_d2:
++	d_lookup_done(d2);
+ 	dput(d2);
+ out_unlock:
+ 	unlock_rename(old_dentry->d_parent, rd->new_parent);
+@@ -4123,6 +4138,8 @@ EXPORT_SYMBOL(start_renaming_two_dentries);
  
- 	if (unlikely(IS_DEADDIR(dir_inode))) {
- 		dentry = ERR_PTR(-ENOENT);
-@@ -4534,7 +4532,7 @@ static struct dentry *lookup_open(struct nameidata *nd, struct file *file,
- 
- 	if (d_in_lookup(dentry)) {
- 		struct dentry *res = dir_inode->i_op->lookup(dir_inode, dentry,
--							     nd->flags | shared_flag);
-+							     nd->flags);
- 		d_lookup_done(dentry);
- 		if (unlikely(res)) {
- 			if (IS_ERR(res)) {
-@@ -4582,10 +4580,10 @@ static struct dentry *lookup_open(struct nameidata *nd, struct file *file,
- 		if (file->f_mode & FMODE_OPENED)
- 			fsnotify_open(file);
- 	}
--	if (shared_flag)
--		inode_unlock_shared(dir_inode);
--	else
-+	if ((open_flag & O_CREAT) || create_error)
- 		inode_unlock(dir_inode);
-+	else
-+		inode_unlock_shared(dir_inode);
- 
- 	if (got_write)
- 		mnt_drop_write(nd->path.mnt);
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index c4436e5c2ba6..da5b4ccca1b5 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -32,9 +32,8 @@ enum { MAX_NESTED_LINKS = 8 };
- #define LOOKUP_CREATE		BIT(17)	/* ... in object creation */
- #define LOOKUP_EXCL		BIT(18)	/* ... in target must not exist */
- #define LOOKUP_RENAME_TARGET	BIT(19)	/* ... in destination of rename() */
--#define LOOKUP_SHARED		BIT(20) /* Parent lock is held shared */
- 
--/* 3 spare bits for intent */
-+/* 4 spare bits for intent */
- 
- /* Scoping flags for lookup. */
- #define LOOKUP_NO_SYMLINKS	BIT(24) /* No symlink crossing. */
+ void end_renaming(struct renamedata *rd)
+ {
++	d_lookup_done(rd->old_dentry);
++	d_lookup_done(rd->new_dentry);
+ 	unlock_rename(rd->old_parent, rd->new_parent);
+ 	dput(rd->old_dentry);
+ 	dput(rd->new_dentry);
 -- 
 2.50.0.107.gf914562f5916.dirty
 
