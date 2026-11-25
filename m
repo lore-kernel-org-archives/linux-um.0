@@ -2,72 +2,107 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDF2606A33F
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 16:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1232606A326
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 16:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Ox6B9CUj
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=GjL7KPNy;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ZdFRT97k
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=7YB7UL0sucy3/7oJUhtDU4Mp/84PzZO7y1sht4zAS4U=; b=Ox6B9CUjHREOPL
-	hEkP5j9GyTPMNq8I4y5RaBgFzEV2F48hQf1SyWLnvS269RoRT7vFYlGn4i0FShp6iNnqW5lrQ5YFE
-	Sqsh/IOfvKABcgt1FkWqbH35eWTkS/H/TW7mEg/2F5JwjfHVGhI7tsdE3AFQDseVJ65LRZEZgWG0C
-	ZaJc67VMqAHRsrTnaRgb2AYc5PZaFCrs++MkCQjDULH+e5bY7WnrSugjhmR4MrCc5ZrUZJ+C8XCZF
-	qVToVQblQcX9ETaA8llO/S0kGgIqtt1zxoANlGd0/PgugpKcfEY0WoFQxMIFsdlicuHGV4nE8mva6
-	vfLZBPGoWqkSbkXAm1aw==;
+	Content-Type:To:Subject:Message-ID:Date:From:MIME-Version:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Unsubscribe-Post:List-Owner;
+	bh=PV8wTzTWUvsHEZVl6y2MXlhkqFBd10CIFd0R3mue4cc=; b=GjL7KPNyuFyZVfqGJviey0R4jH
+	dCeDAWrqCSnBNb+lyj+dtjzkA767iFD7vNSa5SB2Tz+lhyC0WULbmHh1DCS5ZKDWDf5pIVtyrYopf
+	RZ+//r5mSngUIhWmY6hBZD5gmpqwx/RZ0G18s+C/QOQRK8bvWAJvqzElPLqxx/Lemv5ZYcrIVzeAr
+	1SlCu4bRgRAgXFwR3n1YniQOWcrwCLsYoNf92ub9znpcC4otURo+dgahqGv3rJDvwCUSS3sUjv7fp
+	hEuQ1gpBXDlqzRUejfuV7ZSRbfNMqXb3z+kIHxCz8pwDHFUesmq5xjRcQAJib2mCTwM9JD16DonHV
+	iDukCmcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFWW-0000000AUl3-0HTK;
-	Wed, 25 Nov 2026 16:07:08 +0000
-Received: from bambi.snowrabbit.org ([182.48.54.220])
-	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFWS-0000000AUhn-13xm
+	id 1xWFed-0000000AWPy-3ivj;
+	Wed, 25 Nov 2026 16:15:31 +0000
+Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
+	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
+	id 1xWFeb-0000000AWOe-1tw3
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 16:07:06 +0000
-Received: by bambi.snowrabbit.org (Postfix, from userid 3001)
-	id 86332C936A; Thu, 26 Nov 2026 01:07:03 +0900 (JST)
-From: Showta Ishizaki <zakinko@snowrabbit.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowangio@gmail.com>,
-	netdev@vger.kernel.org
-Cc: Eric Dumazet <edumazet@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	=?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Chris Arges <carges@cloudflare.com>,
-	Paulos Yibelo <habte.yibelo@gmail.com>,
-	=?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	virtualization@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	Showta Ishizaki <zakinko@snowrabbit.org>
-Subject: [PATCH RFC net v8 4/6] net: resolve uncommon partial checksums at ingress
-Date: Thu, 26 Nov 2026 01:06:45 +0900
-Message-ID: <20261126.rfcv8.99797.4.zakinko@snowrabbit.org>
-In-Reply-To: <20261126.rfcv8.99797.0.zakinko@snowrabbit.org>
-References: <20261126.rfcv8.99797.0.zakinko@snowrabbit.org>
+	Wed, 25 Nov 2026 16:15:30 +0000
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-6bb06dc1ffcso379073a12.3
+        for <linux-um@lists.infradead.org>; Wed, 25 Nov 2026 08:15:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1795623327; cv=none;
+        d=google.com; s=arc-20260327;
+        b=lC2GzpqArmRaSO7zSq1xgmjxA+k84Mn4Av0Wf7MfKZ86KZTEEBAx9Vy/T8pkSfNR9F
+         BxYfqEBP5Rq82Bl6qh7nVtmmS+8QYf7Df8dIDcALKv+/5cT9MJogZ1zoFcY3TOS9KJaB
+         woa+JAkwRGESrRpclrDfTNRdWwUK1Y2hUAxQl0MYdH5mg+hJV15ly3bFZ0kLLJzyiEJ6
+         ELZQ0gxrU8QU62bnPRmfwY8KKY0h5Rbq8lArbmy65Lto+TbJSqGYB6IiN11ZK5Mj7YNo
+         xjcLm7Zgl+TGF2PpLFBNmmxajZZLL8mken/jKwGBKj13cUoRbpVgU6Pjo+FZnawCLjJm
+         1kMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:dkim-signature;
+        bh=PV8wTzTWUvsHEZVl6y2MXlhkqFBd10CIFd0R3mue4cc=;
+        fh=vcTBE6aZToHDd3T+mF51wmloaphBs0LcUvrjBX/M/ig=;
+        b=NdhYz/W3olMEo23QKD9gmsea0klMZgXR7TTQJamfCz8HExefBnkJWssriHsIzAH7IK
+         P8uwbchdTGZqlhkIjVBThhcwFoy42qIiFpeIaFATfqfdqSZHmbVw8PjIwtswSs+CbNPv
+         ubYVd4xuk/ln18KjF5hPBQilKBsTZvAYJVQpXpmPyolf4FOl/++DxHzD+8arUHG4vMA6
+         TwavaTWVbMWDrclX9vhXegJbxaZunQz9QIvYdL0CkpM2x/+C318kYveOd9QJJRMHIYkn
+         MYv23CPA3cT1jvGb+OJU4JzSSrKcWg8RFlgAgyZxWQNsGIVPcUXjttWxNWYjbMP6g3Cu
+         nOhg==;
+        darn=lists.infradead.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795623327; x=1796228127; darn=lists.infradead.org;
+        h=content-transfer-encoding:content-type:to:subject:message-id:date
+         :from:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=PV8wTzTWUvsHEZVl6y2MXlhkqFBd10CIFd0R3mue4cc=;
+        b=ZdFRT97kPao6iWV1OG/BiXzVb4ekJerZhzPgkQSGOTM/w1+eC90LPkpEqm2d4TTN3x
+         YnvmoR+ZUExP5vyt6oQ7cKPnoa54XYh1dw+RLeii54WAz9O2kWKjj+ODmdOX9g0YQ6dm
+         n162jBEd3NQ5e6qe3q/J+w1gYBPYpQtxdyBvGP5hVkBO9+ewn1humWvJOmJCb5fyb+HD
+         XDxCa7Ob/jgseitiEmCLnLSII6QsIg4lrgahvrWSf4MPfNY6b96u2b5wpm0mDv4Bu+PV
+         1sItJyV5TTd0C2rpJVXC7c+2z71EYTDDZHDtMSbwvrnIYH4iYTOFio0EWSw8C54meOoo
+         I2DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795623327; x=1796228127;
+        h=content-transfer-encoding:content-type:to:subject:message-id:date
+         :from:mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=PV8wTzTWUvsHEZVl6y2MXlhkqFBd10CIFd0R3mue4cc=;
+        b=qLWDUxnRrQqUYsv3a5XSq5+Zzg6Z+MXjPGPZc201YlNxVcN7f/L3VqS6niyrXHJ2HH
+         iOAFrz90QeUm3uqIvxzI3FDeQaJgPRcVDhoRbeKU/NnOneHq7wIxB82OMmccuIBtH4qd
+         N+NOpRvaxHhymdXCUZM8VrfoiXFDhgmfWDvTtZvvMrPdL1ynNdF6ApnzJF7jlJCC4Yw8
+         Q98hS3miAw74dvvdu0fZ8y5W577YWO2jRMiYDGXoktEjsRArDzjcpwzQLvfT6u8SPDMI
+         s2OAPJZ47YFdofbvFw9W93WOJ4PTQol8EsA+vSZKy2IwQwXgtOrWfy6MqDGII0lcgGnK
+         lnmw==
+X-Gm-Message-State: APuU4Z9NvkXQSDUJohHtNhWXYoKbv4BPDDRQAOCedZitvUq7Gu3L8fhz
+	4mDhn9mF4/Fgj0ikTlmxMLGeaAkhtX8i9XsYi2D/08bJpBbgl4YJ6txJyTxfM+m5JEvOIze9E1g
+	KoQVCLvS5/npHl1vQzVTRpKtHRJCaBxoMqtIq7m4=
+X-Gm-Gg: AZFdTZcvHUnt7mdswwvVpTtdfGw6Ht+QR9GbVLxdrxrIhOrfdjQhuSlQ7XZziU9Tqmu
+	vNMtzkR6qQv9qKajhqBURosnj31Ui5viwJxOgZdGDMBhltGipz/79B5vRGZVC0GcqI2eLnNGr79
+	B2h6SSnXGkkLKpkgaz7Gqo0QFDZH0/+oCxHRbbJhug4mdXlJ5g/X9lPPXiHibLMP9o4NmnAeg/D
+	ntBIWzewqwyOw5z7rEPetQJJ7dhn4lNuuJ+LrHS3OQhNvCv50hiDXWSDhgyhAf2DkSmbGCXYN7v
+	evq/V7lI9GsOZ7ITxaePmW8sMCHxaWLsGMToSbj5sQCBbdNOMT799LlX8FtCPo+H3fMLsIDhVeX
+	4sQecOPWaaoZNZXSs7PpT5sJpBpfZAH3/p/BpMsF4YrHHkMyJEM4as6oHACmJ45gJQ1SsVjfKDN
+	svcPQEi+MI4rkOcUwv+h79CkkhBdnl/DIO2Gx8/HYjubwPkSvtfvPLCvbqILSlOArS+TOrhw==
+X-Received: by 2002:a17:907:7081:b0:c40:5ee3:8694 with SMTP id
+ a640c23a62f3a-c513a84b292mr1353293266b.4.1795623327106; Wed, 25 Nov 2026
+ 08:15:27 -0800 (PST)
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Johan ter Mors <johan.termors@gmail.com>
+Date: Wed, 25 Nov 2026 17:15:15 +0100
+X-Gm-Features: Aa3M54r5ewsCDfN4Fjp_D67aE4EQlkugNAjG2Bd1ksDEld-_CD2ocMIsaFfiO1I
+Message-ID: <CAPM+r-+XCeM01ZXAj8Cti5qL1iaFrGrV+dYSumWD8585O3swew@mail.gmail.com>
+Subject: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
+To: linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_080704_651033_E1107013 
-X-CRM114-Status: GOOD (  30.23  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261125_081529_532379_AEE7D0D5 
+X-CRM114-Status: GOOD (  15.49  )
+X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,333 +113,133 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=4.0.1
+X-Spam-Status: No, score=-2.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-From: "Michael S. Tsirkin" <mst@redhat.com>
+Hi,
 
-As reported first by Paulos Yibelo <habte.yibelo@gmail.com> (after which
-others, credited below, found more ways the bug can affect users) a
-virtio net header can place CHECKSUM_PARTIAL at any in-packet offset.
-If that state is retained, later checksum completion can modify the
-packet after protocol processing has made decisions from it.
+While parsing TcpExt counters inside our lab guests (own lean UML
+builds), we hit a reproducible case where stdio line readers (fgets
+and getline) silently mis-read /proc/net/netstat =E2=80=94 while every raw
+read of the same file, on the same boot, is byte-exact. The same
+statically linked binary behaves correctly on a non-UML host kernel.
+We have not found an earlier report, so here is the full picture. We
+could not pin the final mechanism; the data is attached so you can
+judge it directly.
 
-Let's fix that: let's validate csum_start and csum_offset and only keep
-CHECKSUM_PARTIAL when csum_start and csum_offset match a parsed TCP or
-UDP header, while handling VLAN headers, IPv4 options and IPv6 extension
-headers.  Complete other non-GSO checksums immediately, before any
-protocol processing runs.
+Observed:
 
-We can't easily "complete the checksum" for GSO we don't recognize - GSO
-assumes knowledge of the protocol. We could segment ignoring the
-checksum then do whatever csum_start and csum_offset say, but that
-seems like an overkill for something that shouldn't happen.
+  - Which stdio call mis-assembles varies per process instance of the
+    same binary; within one instance it is deterministic per fopen.
+    Captured byte-exactly across instances on 7.3.6 and 6.12.117:
+      * fgets(buf, 16384) mis-assembles in most instances. Two shapes:
+          (i) the TcpExt *names* record is lost except its first byte,
+              which fuses onto the next record: the stream starts
+              "TTcpExt: 0 0 ...". 2002 of 4197 bytes on 7.3.6; 1718 of
+              3862 on 6.12.117 =E2=80=94 exactly the names-line length is
+              missing, and memcmp proves the output is the pure
+              subsequence "T" + rest-of-file;
+          (ii) full-length output (4197/4197) in which the names
+              string is absent and 16-byte windows exist that appear
+              NOWHERE in the file =E2=80=94 the reader's own stale process
+              memory mixed into the assembled stream.
+      * In other instances fgets(buf, 4096) mis-assembled (names-line
+        length missing, plus foreign windows) while fgets(buf, 16384)
+        was byte-exact in the same process; in another instance
+        getline() returned full-length output with foreign windows.
+        So no fgets size is a safe workaround.
+      * Three fresh fopen() repeats of fgets(16384) in one instance
+        where the earlier calls were all byte-exact stayed correct =E2=80=
+=94
+        but we have not seen a rule predicting which instance fails.
+  - Scope sweep, both UML kernels: 20 /proc files (net/netstat, snmp,
+    dev, sockstat, softnet_stat, tcp, udp, unix, mounts, cpuinfo,
+    version, self/limits, self/status, vmstat, meminfo, stat, uptime,
+    loadavg, ...) x 6 reader patterns (getline, fgets 512/4096/16384/
+    65536, fread 16384): every file reads byte-exact with every
+    pattern EXCEPT /proc/net/netstat.
+  - fread(buf, 16384) and explicit setvbuf() configurations (4096/
+    8192/16384-byte buffers, _IONBF, _IOLBF) have so far never
+    mis-assembled (limited number of instances observed), and raw
+    read() is byte-exact in every pattern we tried: single reads of
+    18 sizes (2048 .. 131072) at offset 0, sequential pairs, and
+    lseek(K)+read() sweeps across the record boundaries =E2=80=94 on the sa=
+me
+    boots where stdio mis-assembles.
+  - The identical binary on a non-UML host kernel (5.10.134) is
+    correct for every pattern in every instance.
+  - Reproduces on 6.12.117, 7.3.5 and 7.3.6 UML (own lean builds;
+    defconfig + MPTCP/HOSTFS/BLK_DEV_INITRD/RD_GZIP/VETH/NET_NS, and
+    SYN_COOKIES/IPV6 on 7.3.6; DEBUG_INFO/BTF off; two small
+    ptrace-only lab patches that do not touch procfs).
+  - We do not have a non-UML kernel >=3D 6.12 in this lab (no
+    hypervisor), so a stock-kernel control is still open =E2=80=94 running =
+the
+    reproducer on any regular 6.12/7.x box would pin the scope nicely.
 
-There's some risk here:
-- non-gso packets which can't be parsed get checksum calculated in
-  software, adding performance overhead
-- gso packets which can't be parsed get dropped
+Security note: we checked this explicitly before reporting. The
+mis-assembled output contains only file bytes plus, in the mixing
+shape, the reader's own stale process memory =E2=80=94 never anything outsi=
+de
+the reading process (the kernel's raw read path is byte-exact on the
+same boots, verified down to writes into stack buffers; memcmp
+controls prove the file content was stable). No crash, no splat, no
+privilege effect in any run; the reader is its own only victim. So we
+do not consider this a security issue =E2=80=94 it is a correctness bug for
+common parsing patterns, and monitoring agents parsing
+/proc/net/netstat with stdio on UML silently lose the TcpExt field
+names.
 
-Note that for zero copy, userspace can change the data after the
-checksum has been calculated.  This is fundamental to zero copy by
-design, and the only outcome is a bad checksum and a packet drop.
+Minimal reproducer (static glibc, reads the file, prints three
+numbers):
 
-To mitigate the risks, a later patch will add a sysctl knob to
-bypass the resolution. This is reasonable if the setup is such that
-there is no protocol processing at all.
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <string.h>
+int main(void) {
+    FILE *f =3D fopen("/proc/net/netstat", "r");
+    static char line[16384], all[65536];
+    int tot =3D 0, l1 =3D -1;
+    while (fgets(line, sizeof line, f)) {
+        int n =3D (int)strlen(line);
+        if (l1 < 0) l1 =3D n;
+        if (tot + n < (int)sizeof all) { memcpy(all + tot, line, n); tot +=
+=3D n; }
+    }
+    printf("first-line=3D%d total=3D%d names=3D%s\n", l1, tot,
+           tot > 0 && memmem(all, tot, "SyncookiesSent", 14) ? "yes" : "NO"=
+);
+    return 0;
+}
 
-UDP tunnel headers get the same handling on the inner header.
+On UML 7.3.6, failing instance A:  first-line=3D1 total=3D2002 names=3DNO
+                                   (names lost, fused)
+On UML 7.3.6, failing instance B:  first-line=3D2196 total=3D4197 names=3DN=
+O
+                                   (full length, stale-memory mixing)
+Correct instance of the same binary on the same guest:
+                                   first-line=3D2196 total=3D4197 names=3Dy=
+es
 
-Packets without VIRTIO_NET_HDR_F_NEEDS_CSUM are unaffected.
+Because every raw read of the same file is correct on the same boots,
+we suspect the fault sits in the interaction between the UML
+syscall-return delivery and glibc stdio's line assembly rather than in
+seq_file's data path; the per-instance randomness (same binary, same
+pattern, byte-exact in one instance and mis-assembled in the next)
+suggests the failure depends on the reader process's layout/state. We
+cannot split that further from user space, and a ptrace-based tracer
+on UML is not a reliable witness (the guest kernel already ptraces its
+own user processes for syscall emulation, so a second ptrace layer
+distorts what it observes).
 
-Note a fundamental limitation of this approach: an nf/BPF program
-that tweaks the payload of a packet in flight may rely on the
-checksum being fixed up later, assuming the packet carries
-CHECKSUM_PARTIAL.
+Kernel log clean on all runs; happy to provide the full diagnostic
+sources, serial logs and the saved UML vmlinux files, and to test
+patches or hypotheses.
 
-For metadata that fails validation the checksum
-is now completed at input, so such edits leave a stale checksum
-and the packet is dropped at the receiver.  Protocols whose
-transport header we cannot parse (anything but TCP and UDP) are
-affected even when the metadata is self-consistent.
-
-The sysctl added later in the series is the escape hatch for these setups,
-but it is a very blunt tool.
-
-Reported-by: Paulos Yibelo <habte.yibelo@gmail.com>
-Reported-by: Chris Arges <carges@cloudflare.com>
-Fixes: f43798c27684 ("tun: Allow GSO using virtio_net_hdr")
-Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-[showta: rebased, the parsing helpers are in the tree already; has_eth
- passed to virtio_net_hdr_to_skb() instead of using the device type;
- the tnl_csum_negotiated check kept ahead of the validation; a tunnel
- packet with bad inner metadata is dropped here, the next patch handles
- the ones too small to segment]
-Signed-off-by: Showta Ishizaki <zakinko@snowrabbit.org>
----
- arch/um/drivers/vector_transports.c |   2 +-
- drivers/net/tun_vnet.h              |   4 +-
- include/linux/virtio_net.h          | 132 ++++++++++++++++++++++++++--
- net/packet/af_packet.c              |  14 ++-
- 4 files changed, 140 insertions(+), 12 deletions(-)
-
-diff --git a/arch/um/drivers/vector_transports.c b/arch/um/drivers/vector_transports.c
-index 8b7548458..2dc4cf992 100644
---- a/arch/um/drivers/vector_transports.c
-+++ b/arch/um/drivers/vector_transports.c
-@@ -210,7 +210,7 @@ static int raw_verify_header(
- 		return 1;
- 
- 	skb_set_network_header(skb, ETH_HLEN);
--	if (virtio_net_hdr_to_skb(skb, vheader,
-+	if (virtio_net_hdr_to_skb(skb, vheader, true,
- 			virtio_legacy_is_little_endian()) < 0)
- 		return -1;
- 	return 0;
-diff --git a/drivers/net/tun_vnet.h b/drivers/net/tun_vnet.h
-index 3364e08dd..5411258ee 100644
---- a/drivers/net/tun_vnet.h
-+++ b/drivers/net/tun_vnet.h
-@@ -180,7 +180,9 @@ static inline int tun_vnet_hdr_put(int sz, struct iov_iter *iter,
- static inline int tun_vnet_hdr_to_skb(unsigned int flags, struct sk_buff *skb,
- 				      const struct virtio_net_hdr *hdr)
- {
--	return virtio_net_hdr_to_skb(skb, hdr, tun_vnet_is_little_endian(flags));
-+	/* Only tap.c, where a frame always starts with an Ethernet header. */
-+	return virtio_net_hdr_to_skb(skb, hdr, true,
-+				     tun_vnet_is_little_endian(flags));
- }
- 
- /*
-diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-index 3135dae03..e9057767b 100644
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -190,6 +190,77 @@ virtio_net_l4_start(struct sk_buff *skb, unsigned int nhoff, __be16 proto,
- 	return false;
- }
- 
-+/* Does checksum metadata match a known TCP or UDP header? */
-+static inline bool
-+virtio_net_csum_partial_ok_at_offset(struct sk_buff *skb, u8 hdr_gso_type,
-+				     unsigned int nhoff, __be16 proto)
-+{
-+	unsigned int thoff;
-+	int ip_proto;
-+
-+	if (!virtio_net_l4_start(skb, nhoff, proto, &thoff, &ip_proto))
-+		return false;
-+
-+	if (skb_checksum_start_offset(skb) != thoff)
-+		return false;
-+
-+	switch (ip_proto) {
-+	case IPPROTO_TCP:
-+		if (skb->csum_offset != offsetof(struct tcphdr, check) ||
-+		    !pskb_may_pull(skb, thoff + sizeof(struct tcphdr)))
-+			return false;
-+		break;
-+	case IPPROTO_UDP:
-+		if (skb->csum_offset != offsetof(struct udphdr, check) ||
-+		    !pskb_may_pull(skb, thoff + sizeof(struct udphdr)))
-+			return false;
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	switch (hdr_gso_type & ~VIRTIO_NET_HDR_GSO_ECN) {
-+	case VIRTIO_NET_HDR_GSO_NONE:
-+		return true;
-+	case VIRTIO_NET_HDR_GSO_TCPV4:
-+		return proto == htons(ETH_P_IP) && ip_proto == IPPROTO_TCP;
-+	case VIRTIO_NET_HDR_GSO_TCPV6:
-+		return proto == htons(ETH_P_IPV6) && ip_proto == IPPROTO_TCP;
-+	case VIRTIO_NET_HDR_GSO_UDP:
-+	case VIRTIO_NET_HDR_GSO_UDP_L4:
-+		return ip_proto == IPPROTO_UDP;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static inline bool
-+virtio_net_csum_partial_ok(struct sk_buff *skb, bool has_eth,
-+			   u8 hdr_gso_type)
-+{
-+	int nhoff;
-+	__be16 proto;
-+
-+	if (!virtio_net_l3_start(skb, has_eth, &nhoff, &proto))
-+		return false;
-+
-+	return virtio_net_csum_partial_ok_at_offset(skb, hdr_gso_type, nhoff,
-+						   proto);
-+}
-+
-+/*
-+ * Handle a packet whose checksum metadata does not match the packet:
-+ * GSO packets are dropped, as segmentation needs one checksum per
-+ * segment; others are completed in software.
-+ */
-+static inline int __virtio_net_resolve_csum_partial_mismatch(struct sk_buff *skb)
-+{
-+	if (skb_is_gso(skb))
-+		return -EINVAL;
-+
-+	return skb_checksum_help(skb) ?: 1;
-+}
-+
- static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
- 					  const struct virtio_net_hdr *hdr,
- 					  bool little_endian, u8 hdr_gso_type)
-@@ -336,11 +407,38 @@ static inline int __virtio_net_hdr_to_skb(struct sk_buff *skb,
- 	return 0;
- }
- 
-+/*
-+ * @has_eth: the frame starts with an Ethernet header, see
-+ * virtio_net_l3_start().
-+ *
-+ * Return value:
-+ * 0 - success
-+ * >0 - checksum was completed in software (slow path)
-+ * <0 - failure
-+ */
- static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
- 					const struct virtio_net_hdr *hdr,
--					bool little_endian)
-+					bool has_eth, bool little_endian)
- {
--	return __virtio_net_hdr_to_skb(skb, hdr, little_endian, hdr->gso_type);
-+	typeof(skb->transport_header) old_transport = skb->transport_header;
-+	int ret = __virtio_net_hdr_to_skb(skb, hdr, little_endian,
-+					  hdr->gso_type);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	if (likely(skb->ip_summed != CHECKSUM_PARTIAL ||
-+		   virtio_net_csum_partial_ok(skb, has_eth, hdr->gso_type)))
-+		return 0;
-+
-+	/*
-+	 * Here we do not trust the checksum metadata.
-+	 * __virtio_net_hdr_to_skb set the transport header to csum_start
-+	 * from virtio hdr, restore it to a known good value.
-+	 */
-+	skb->transport_header = old_transport;
-+
-+	return __virtio_net_resolve_csum_partial_mismatch(skb);
- }
- 
- /* This function must be called after virtio_net_hdr_from_skb(). */
-@@ -447,6 +545,12 @@ virtio_net_tnl_offsets_ok(struct sk_buff *skb, bool has_eth, bool outer_isv6,
- 	return ip_proto == IPPROTO_UDP && outer_th == thoff;
- }
- 
-+/*
-+ * Return value:
-+ * 0 - success
-+ * >0 - checksum was completed in software (slow path)
-+ * <0 - failure
-+ */
- static inline int
- virtio_net_hdr_tnl_to_skb(struct sk_buff *skb,
- 			  const struct virtio_net_hdr_v1_hash_tunnel *vhdr,
-@@ -459,16 +563,20 @@ virtio_net_hdr_tnl_to_skb(struct sk_buff *skb,
- 	unsigned int inner_nh, outer_th, inner_th;
- 	unsigned int inner_l3min, outer_l3min;
- 	u8 gso_inner_type, gso_tunnel_type;
-+	__be16 inner_proto;
- 	bool outer_isv6, inner_isv6;
- 	int ret;
- 
- 	gso_tunnel_type = hdr->gso_type & VIRTIO_NET_HDR_GSO_UDP_TUNNEL;
- 	if (!gso_tunnel_type)
--		return virtio_net_hdr_to_skb(skb, hdr, little_endian);
-+		return virtio_net_hdr_to_skb(skb, hdr, has_eth, little_endian);
- 
- 	/* Tunnel not supported/negotiated, but the hdr asks for it. */
- 	if (!tnl_hdr_negotiated)
- 		return -EINVAL;
-+	if (hdr->flags & VIRTIO_NET_HDR_F_UDP_TUNNEL_CSUM &&
-+	    !tnl_csum_negotiated)
-+		return -EINVAL;
- 
- 	/* Either ipv4 or ipv6. */
- 	if (gso_tunnel_type == VIRTIO_NET_HDR_GSO_UDP_TUNNEL)
-@@ -521,12 +629,20 @@ virtio_net_hdr_tnl_to_skb(struct sk_buff *skb,
- 			return -EINVAL;
- 	}
- 
--	skb_set_inner_protocol(skb, inner_isv6 ? htons(ETH_P_IPV6) :
--						 htons(ETH_P_IP));
--	if (hdr->flags & VIRTIO_NET_HDR_F_UDP_TUNNEL_CSUM) {
--		if (!tnl_csum_negotiated)
--			return -EINVAL;
-+	inner_proto = inner_isv6 ? htons(ETH_P_IPV6) : htons(ETH_P_IP);
- 
-+	/* NEEDS_CSUM is set, so this is CHECKSUM_PARTIAL.  A packet whose
-+	 * inner metadata does not match cannot be segmented, and completing
-+	 * the inner checksum alone would leave the outer one to the seed
-+	 * the sender put there.
-+	 */
-+	if (unlikely(!virtio_net_csum_partial_ok_at_offset(skb, gso_inner_type,
-+							   inner_nh,
-+							   inner_proto)))
-+		return -EINVAL;
-+
-+	skb_set_inner_protocol(skb, inner_proto);
-+	if (hdr->flags & VIRTIO_NET_HDR_F_UDP_TUNNEL_CSUM) {
- 		skb_shinfo(skb)->gso_type |= SKB_GSO_UDP_TUNNEL_CSUM;
- 	} else {
- 		skb_shinfo(skb)->gso_type |= SKB_GSO_UDP_TUNNEL;
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 930e85e4b..c07a01969 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -2778,6 +2778,16 @@ static int tpacket_parse_header(struct packet_sock *po, void *frame,
- 	return tp_len;
- }
- 
-+/* The device says how its frames start. */
-+static int packet_vnet_hdr_to_skb(struct sk_buff *skb,
-+				  const struct virtio_net_hdr *vnet_hdr)
-+{
-+	bool has_eth = skb->dev->type == ARPHRD_ETHER ||
-+		       skb->dev->type == ARPHRD_LOOPBACK;
-+
-+	return virtio_net_hdr_to_skb(skb, vnet_hdr, has_eth, vio_le());
-+}
-+
- static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
- {
- 	struct sk_buff *skb = NULL;
-@@ -2941,7 +2951,7 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
- 		}
- 
- 		if (has_vnet_hdr) {
--			if (virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le()) < 0) {
-+			if (packet_vnet_hdr_to_skb(skb, &vnet_hdr) < 0) {
- 				tp_len = -EINVAL;
- 				goto tpacket_error;
- 			}
-@@ -3163,7 +3173,7 @@ static int packet_snd(struct socket *sock, struct msghdr *msg, size_t len)
- 		skb->no_fcs = 1;
- 
- 	if (vnet_hdr_sz) {
--		err = virtio_net_hdr_to_skb(skb, &vnet_hdr, vio_le());
-+		err = packet_vnet_hdr_to_skb(skb, &vnet_hdr);
- 		if (err < 0)
- 			goto out_free;
- 		len += vnet_hdr_sz;
--- 
-2.54.0 (Apple Git-157)
-
+Thanks,
+Johan ter Mors =E2=80=94 independent researcher
 
