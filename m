@@ -2,101 +2,104 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16762606A32D
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5664B606A329
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=tYb5UBL+;
-	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=DC+u0VGj;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=XWfVsu7y
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Umel5mbX;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=Q1+wqOY/;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=SsYA5V8Y
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date
+	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=te+85rs6L0Tu1kg3pduPz/TdZSjogt/uQT+qd17wdHs=; b=tYb5UBL+Lk6XcQs49KuUE+qR8o
-	3t1OQHRWmm0UMMHrrDlhgEHSK7RlSQ4zfwwVm5HDvNvHiRdh2iPvPGz3FujtNc7yv9U3xQiEnwcmX
-	7vzOOctpPX/a4VLijYHtmjlDla94jJD/qaKmwm/3o7obFELQHGP8KRIREPNHZAuq6FrHBFE7AG7nZ
-	gcT0CrB/jxO8plCiPUC/qFOQaCWnnHVdl/YFQIxarAZseuMLtzVTIrmwYwL2Os+joci7mg2cZwNos
-	uDSqIF4PlG1G6Sh/uYKSvZohU69YinNXvmJ56cV+4wFlB0jGiUEw94GD2xjt23uL9e1+Ua/BPAwIM
-	VY1oqwOA==;
+	bh=vhC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=Umel5mbXd4rEZAYiAKX6Zq0B91
+	IYjDObjMvvJ45EtEjsi06M0KVlRoCcSCzUUH8xJjqmWwS7kfyJ/5wew4ZyecJfPm8BTW1/YUnCsw3
+	YvtF1ktmk6XmckXnkdkO18aa9akk7Ujecc9ntsW0HFLn++r4+9h9CLbXxux6400jrkVaQyblBEU+c
+	vN3tDsu2TRHGsL4ot7KrZd4+OzKJXvwRBEz45+1gywGV0Z4vCU9OcR/8exdjZoteg7ZhZna+xXEuT
+	4WRUtmGKut10TSVA6GKKL3VoG3ulGUEBK891ruvIaNF54dqI6SpGqZY7myCbHLwvQu0gdGx9iyb2/
+	KBth8UzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3xM-00000008LB8-3jFQ;
-	Wed, 25 Nov 2026 03:46:04 +0000
-Received: from fout-a1-smtp.messagingengine.com ([103.168.172.144])
+	id 1xW3xS-00000008LEN-04Mb;
+	Wed, 25 Nov 2026 03:46:10 +0000
+Received: from fhigh-a2-smtp.messagingengine.com ([103.168.172.153])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3xJ-00000008L8Z-15wS
+	id 1xW3xP-00000008LBk-0Uyo
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 03:46:02 +0000
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id 95F13EC0AB7
-	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:45:57 -0500 (EST)
+	Wed, 25 Nov 2026 03:46:08 +0000
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B6070140034A
+	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:46:05 -0500 (EST)
 Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Tue, 24 Nov 2026 22:45:57 -0500
+  by phl-compute-05.internal (MEProxy); Tue, 24 Nov 2026 22:46:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to; s=fm3; t=1795578357; x=1795664757; bh=te+85rs6L0
-	Tu1kg3pduPz/TdZSjogt/uQT+qd17wdHs=; b=DC+u0VGjhueZqVxgfl8gwONxO0
-	oBznNlhevQZAEAUu+r36xA99W9a9oR+jxpqC0ewn+eOrkywE/xQovHK/m2PhgbEt
-	w/WqSmu/Mp/+NLdzQOcxqlnZktZ/VptSZIXPnic7A9VEQzydJHU8c9l9c0HXP8z3
-	f1he6adItjEocphVGvzCUH+kIBRclWbZPbMkXnjAUjsuiCKHvNYFST0JZfXvg51+
-	E3Kmnk9n2GVvrKFXB6b7QKX5lb4E1fU9uE94Kn2BHUjcVEZ04lX3LMz3+7lrs04G
-	5NwUPM2ZDarNyDzQVAHVCnOk3z8yIAz2Sj7RLAYYnm+qAV03b9yERUvzt19w==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578365;
+	 x=1795664765; bh=vhC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=
+	Q1+wqOY/nixv5edzYOqKmcnUuP0LQYY5P2oH1IwVEVjB0LRZuaVpoCrDw/OPtutm
+	ESy9zcxe0ge0hIwSKCUH6d3riwFqN8cot44v6uaAlAtso3AnoUjCou+litdH/BEw
+	T3uVRgHIn21e38FacsiolNx24xDyXkHVUPXVRd9eU7aNG7gajqBbPOflb3zY80t4
+	aN5dpPwTEIFJLsejLj//9IAobyuTXpgOROeT8Ud2jlFPEdxtOeFgT05Yzrf+qI8g
+	FOGuKIeQX/MEuTiFO6gJUXUUMMaqf0ZiRQnB2D15v5+SfpnOXpZLS1DYneMRDBP/
+	ey4XudtplRoz5QpCBUOS8w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1795578357; x=1795664757; bh=te+85rs6L0Tu1kg3pduPz/TdZSjo
-	gt/uQT+qd17wdHs=; b=XWfVsu7y8NvcqBvkgx6AQvHsBOkiuzcZwrYGZAQC5Bhw
-	vtE73miMY/vLyuOzg7Fzu4YU/9mYTRcY9IbDQoMFdLPz9gIU4Jb6C0GuVa50930P
-	N47f5oHBminLjxjgiJrSvY/WviUSIwjgeioIxb7Ef8j5qMI5OMX+U7Uvl/uPut+c
-	XNRI9jNeGdAAvDDR9ODf+8mtIlkxnXcXFgUVptDEny1wot8IIFIHeuH/H7K5dRnA
-	qhD4TOLXn2+K/4QTaa7B6t+0ZsNAsx5UtxPBnU67byV4jDP7vT+gjyB5akeC8Fjx
-	FRMlEZGvWGU+Pd6GWCo9JSO/Iy/DPLIUyCFvoS/xaA==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1795578365; x=1795664765; bh=v
+	hC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=SsYA5V8YoHMoCQkdG
+	8aamsWHTJtXdx0K7dWFdeAdaTbCl6P2w78mlWckosu+QNT3pifuSD3rR4blfp3Wf
+	60u9O2HdB3k8MbDAvVT/ghmgUFOgh4DqvTX04/nM8XAPxenJE5xyv0OTs/kc3dR+
+	Gzll4uvsFANInENFbp7u4mRaCCYBq5AlsnbS72+b3/HuuABWNDI/Iqre3QEnks3w
+	Ku89dr1wHL7ler7eXJvWV7S8urcSIuiCv5NRdUbRqKJMWWLTMu0EVSlOvnQfaOW6
+	svwPhlbH7fBk4M8DOgkSHDBFaeQflhHNRjH90edd8CJkhcdQc8s8hToj7BW59fl9
+	cFtdQ==
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=sign d=ownmail.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1795578357; d=ownmail.net;
+DKIM2-Signature: i=1; m=1; t=1795578365; d=ownmail.net;
 	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
 	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:PKC2dOxo7RWcZXgmHVzo/Z9j6IQUPFZ4Fl62YX8huh8rK8E
-	3BM7oaap1F4j11yyqdQpa0307Ak1cM+MkQWlKAUkHP0Ec6dY7VK/o2uF98P0ZsuA
-	iGLz71rh67WF2G91ft7gfUIQfvaA7tQdSt6g3MigVAO3433hAze6b64X4CFdOjFw
-	QAsRh/4qi7fXt+kE+M8T1VjlkELQXEsQmEJV4LwD0tbyu/crV0+ZbjNdyLXTGOaX
-	GB+gZU2krudPEl1YiOM/9wtxQQnu+sy7fRGk835OpyHPZdvB7BNjL4H+Q4ZWJFaf
-	ekCoPIOQcM4oREgFnJvjdlMl9ds8+Yk/KKxIWvA==;
+	s=fm3:rsa-sha256:PubyuGezwUL3gIkpz520FwohCD0ElGo0kJdpYH409bjNPQc
+	ppM/dWGWZpdC4JwoPW2aXx7sROAg0VnGn4xRBYpejrWlSBPVpYAvast0sX3za5Ja
+	z9453E81Y3q0qwp6ybyzR6EKLEWjLmLlmMQ6I551pTp+tj2s4xNh4yBWmK+JzTUa
+	8Cfmsdokak28Wj5Qv2c1JRwmk67rzYeWssnNlTcRSWqGMH8T233IrimO22mxEjU+
+	+TDzDGiSoKanAf8IeUsxQnVJHdua8+p7Q1Ar7QE3vMu7zBtsuqTmpXBWu/FPyDZG
+	7RdfcWj/09Cv9HGo441ZNM4Z+7hU7HLreIKkTGg==;
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=mi-m=1; hc=10;
+	action=mi-m=1; hc=12;
 	hn=cc,content-transfer-encoding,date,feedback-id,from,
-	message-id,mime-version,reply-to,subject,to;
-Message-Instance: m=1; h=sha256:6gIgKmEK+V1m8xQeD9wAvM2W7KHH8KguQF7kcD8RfFw=:KIpdI8wXTkKfTbClohnjMMutdVqFsf8UXtyA3Nw66JM=;
-X-ME-Sender: <xms:81kGawuuyqWvXHqmVqljAlQedszfwZO9EA5rtQ4yIqdPSULxXEBooA>
-    <xme:81kGa0ZascAx2U54dKCZxqpgQPp59dWetNxPpwyHddGeX1TQjNJEVQxN93auHIoTc
-    mgGiFiYYiADfxRvTjlS7giTm7NNr6TYs6fqN3vnSjRL6-VmnxE>
-X-ME-Received: <xmr:81kGaw2mFQG2xymvtRzybD_q0_b4KW8DdRwXRcAvZXOxbkcp-qjpqpXXz2uPS4v5lw>
-X-ME-Proxy-Cause: dmFkZTGHTDLHrhSdcFVSltAhItO5CQcE/TjFbuhiumOu22/hJvNr30J77pkfAtY26o2DMg
-    VSD3uY+/cuaDJ4Sh2bWyrrkqZBASGKCdjQbH6pMHWkkbOYJMg5HQITRhPlC6KnXFgzK1io
-    I1b2u1NNTXTg/nkeE00xO7eBghnrtGEl7S/Rn5evCukV0GkFGzbkDSZAXnsLIpDwTTZ6bD
-    TJMeI+IavU+KlNcB+hcEpXWHmEnj4UwjAz83EM4764K87HVhTIQ+CSy4s3TFg2j0TXM1eZ
-    QVHK8rdWI846K2nUNW9gZUmN1pKfh+FdDUZxf2KFlC+9FBLtsS+qj3sdT5Stx/bTFOO0IX
-    q2V4lTFYErE5TfSXc249mMlVKib+slQADVsyE+fJ38+pWN3L/9jBGZV7687vBrpIz+shzY
-    bbPYsXQHsP+JSxeCQtQFGLBK2XK5r99hpxQzRfWuMqs2sdH1L00+aJXV3VTnSH96fP0qhs
-    9ZJwyCNOH1dTJdSqthybpeDIaCydF8GMHm7UDWxXVYcCwuy43S0CZQRLQROy40JUa6Go2m
-    H0oo/eT2fYlff7D3LTvaO9jt7PJKUBLZWWzfngmG5PQ06bP2f86MBc+pcEK3LfV/dE9nd0
-    89wPPfXq1YcsILR/jFv3tqMVus8/YqE0wtK5YaZ1LttvH40YoChtPmCo+Rjw
-X-ME-Proxy: <xmx:81kGa6WZGWgAoyTx_rB0U6xCgY_RO7sCFffzTnybvXOgXC7HreJn2A>
-    <xmx:81kGa7udaydsCniw3bdpJEdSckm6DO_jRFs2PacG2UL_RGiWvRKacQ>
-    <xmx:81kGaxUCvoegXUpv2RRc4kkXsnG5Ce32qXDxBS90PBFrvEj5G1uvfg>
-    <xmx:81kGa3UJbtZmsHlTig2b9B6lM4eldHbONHWbgqNQBM966-au78wlfQ>
-    <xmx:9VkGax7pJjaB4qXIZwDpaWUtfa98NSvU5HEyDycAnKopGiGBuoisihSY>
+	in-reply-to,message-id,mime-version,references,reply-to,subject,
+	to;
+Message-Instance: m=1; h=sha256:aczLsbyhzVPdHm5hCYK/zgEeHJCzlj6C0j/IjR6R0rg=:m48h43R0vdMJ5ex7CmVr71oScc25CmsJQRrS0xAhUYk=;
+X-ME-Sender: <xms:_VkGa3XNZsA8sjsM7inap5z3ze_gk-PSa5yKma-bKWaAs3VMZbDWEg>
+    <xme:_VkGa2j2Gzt8zihI0AVaxToN6vnGmUYtkc8PTqd26uLIr1KsSeYOwpzTRKgfqeppd
+    ak9fyDXyY2hsJy5YXVUoFLUAZTCWrMHsbyaTJjtzmT_9uPbPw>
+X-ME-Received: <xmr:_VkGa4esGFR6IpgSNmR-vc-hw1fFRJHcjHY0AJheq5JYp3hUFWpep130K0fwKap3lMYYBK8OuoLvptp69g2A66DMkAyJNjo>
+X-ME-Proxy-Cause: dmFkZTEynqFP7J5CyP864zJ/XBXUDXSwXypje4KQHx8Td74dpnR0VUtokV1VIo6Vx6RvWY
+    OwcUpg/bo5jA9DF1nhHbEWSmkeBRQExzYYNm6zYQ4OlhmT8++hv04QLhCP77UTRa+ts0Zn
+    emG1u4CBc9EwIQZMHpuGtkFzNaPM0COhHCVGi+vUdiGKTo3oTFKBSdfX5nxIKQZvHQpAoR
+    JpPaJpl8D3VaaEmf1HZfBeZUeFh1WggTkTCrotD4I8diURcXOaSBUF/YM1mWjxdOr0yho5
+    GSRzb/bSajGZoPtTNw69mn1JgOv5z8FPk55EPMBJOvn4tHIN4QhGRcsvm9DrK4aqK7Nvow
+    DrAExY6fCjhjyduW1b4R0elDpafecHvbKjpUrCh0g0ItLBmPYbvPVjZ/0n7RGqaufRYwrH
+    oTSs5dtRdzGKtq6JegF8loWZ5jMeBZcnt1u2yAFRE34iK4JTdIxD3wpXap0Pi6CZpqpYrl
+    J2l1iDMDe22XNIIOuy/yIvICSj4dxDrehZMImxgpFhk36FFRsuJmVXQGwxf/2ZAWiBD911
+    tB+KuUcOhG4fpwyB6fJlQ8zNl077zwWva407aPXe+syOf1bUYH/05vX6jKExKB13eEh+iz
+    iqjfHEYoRTcScfABjAYp0KUcH/Y2eCddrCymhmPviXcxj5BTJE4BC8ABVfaw
+X-ME-Proxy: <xmx:_VkGa5f3rDylbpUBvj7qwzcaxK8odyWGjEJMHBZ33C3C90-xLybVHg>
+    <xmx:_VkGa8UJqofeOKYFFHnRbb7vy6hH7X4Q7x7KVenCgu57VNkJ2yVThQ>
+    <xmx:_VkGa1f-mtyrbRqCl2H05BNF1imdZEP5lWLIUuqWKbLOnQ3vh0hSDg>
+    <xmx:_VkGa4-9AEyb-EdOlbOq5lYxFwvKj_hbQajmw8lUnhylDF13jmuQ1w>
+    <xmx:_VkGa0AUR5cuNet8qktnqnqBGQh723XJ7fitRDrJYocl03dPkz7OumyN>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Nov 2026 22:45:51 -0500 (EST)
+ 24 Nov 2026 22:46:00 -0500 (EST)
 From: NeilBrown <neilb@ownmail.net>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>
@@ -115,16 +118,18 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-afs@lists.infradead.org
-Subject: [PATCH v3 00/11] multiple-filesystems: prepare for changes to VFS locking
-Date: Wed, 25 Nov 2026 14:16:38 +1100
-Message-ID: <20261125034543.4084039-1-neilb@ownmail.net>
+Subject: [PATCH v3 01/11] coda: don't d_drop() early.
+Date: Wed, 25 Nov 2026 14:16:39 +1100
+Message-ID: <20261125034543.4084039-2-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
+In-Reply-To: <20261125034543.4084039-1-neilb@ownmail.net>
+References: <20261125034543.4084039-1-neilb@ownmail.net>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261124_194601_453038_3483D901 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20261124_194607_255730_DF7705B0 
+X-CRM114-Status: GOOD (  12.49  )
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -137,64 +142,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Reply-To: NeilBrown <neil@brown.name>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=4.0.1
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
-(ACKs for hostfs and afs still sought).
+From: NeilBrown <neil@brown.name>
 
-For this version I have included the AFS patches, included
-"use d_alloc_parallel() in lookup_one_qstr_excl().
-The latter patch is needed to make it safe to use
-d_alloc_parallel() outside of i_rwsem.  This is, in turn,
-needed for the three patch which drop i_rwsem before
-calling d_alloc_parallel() (which is preparation for
-inverting the order between i_rwsem and d_alloc_parallel()).
+Proposed locking changes will mean that calling d_drop() could
+effectively unlock the name allowing a parallel lookup to proceed.
+For this reason it should only be called *after* the attempt to create a
+symlink (in this case) has completed (whether successfully or not).
 
-I've also reverted the LOOKUP_SHARED patch as I now see that was a
-mistake.
+So move the d_drop() to after the venus_symlink() call.
 
-Thanks,
-NeilBrown
+Doing this also means that if the upcall that handles venus_symlink()
+happens to look up the name being created, it will get -ENOENT rather
+then a possible deadlock.
 
-Original description, updated.
+Acked-by: Jan Harkes <jaharkes@cs.cmu.edu>
+Signed-off-by: NeilBrown <neil@brown.name>
+---
+ fs/coda/dir.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I am working on changes to directory locking.  The medium term goal is
-to lift d_alloc_parallel() locking above i_rwsem, so d_alloc_paralle()
-can be run unlocked, and consequently cannot be called when ->i_rwsem is
-held.
+diff --git a/fs/coda/dir.c b/fs/coda/dir.c
+index a85be5962e62..b47299527b65 100644
+--- a/fs/coda/dir.c
++++ b/fs/coda/dir.c
+@@ -249,13 +249,13 @@ static int coda_symlink(const struct mnt_idmap *idmap,
+ 	if (symlen > CODA_MAXPATHLEN)
+ 		return -ENAMETOOLONG;
+ 
++	error = venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
++			      symname, symlen);
+ 	/*
+-	 * This entry is now negative. Since we do not create
++	 * This entry is still negative. Since we did not create
+ 	 * an inode for the entry we have to drop it.
+ 	 */
+ 	d_drop(de);
+-	error = venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
+-			      symname, symlen);
+ 
+ 	/* mtime is no good anymore */
+ 	if (!error)
 
-This patch set makes small changes to a number of filesystems which each
-require just one patch.  Patch series for nfs, cifs, fuse, cephfs
-have been posted separately
+base-commit: 4843f6873f7c4835e62f2c73ba0fd538e57a2f22
+-- 
+2.50.0.107.gf914562f5916.dirty
 
-The main requirements are:
- 1/ that d_alloc_parallel() not be called while i_rwsem is held.
-    Places which currently do this can be changed to use d_alloc_trylock(),
-    or d_duplicate(), or change to drop and retake the parent lock.
-
- 2/ a dentry must not be d_drop()ed while an operation is ongoing, as an
-    unlocked d_alloc_parallel() would then be able to create a new
-    dentry with the same name.  d_splice_alias() can now work with a
-    hash dentry, so often the d_drop() can simply be dropped.  Other
-    times it can be moved to after the operation has completed.
-
-I think it would be best for these to land in the VFS tree and would
-appreciate Acks from relevant maintainer.
-
- [PATCH v3 01/11] coda: don't d_drop() early.
- [PATCH v3 02/11] hostfs: don't d_drop() before d_splice_alias() in
- [PATCH v3 03/11] afs: don't unhash/rehash dentries during
- [PATCH v3 04/11] afs: use d_splice_alias() in afs_vnode_new_inode()
- [PATCH v3 05/11] afs: use d_alloc_trylock in afs_sillyrename()
- [PATCH v3 06/11] afs: use d_duplicate()
- [PATCH v3 07/11] Revert "VFS: Add LOOKUP_SHARED flag."
- [PATCH v3 08/11] VFS: use d_alloc_parallel() in
- [PATCH v3 09/11] VFS: drop parent lock across d_alloc_parallel() in
- [PATCH v3 10/11] procfs: drop parent lock for d_alloc_parallel() in
- [PATCH v3 11/11] afs: lookup_atsys to drop and reclaim lock.
 
