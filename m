@@ -2,12 +2,12 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5664B606A329
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF96B606A32E
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 03:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Umel5mbX;
-	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=Q1+wqOY/;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=SsYA5V8Y
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=VX96Cpef;
+	dkim=pass (2048-bit key, unprotected) header.d=ownmail.net header.i=@ownmail.net header.a=rsa-sha256 header.s=fm3 header.b=uVJtjK/k;
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=DlNzxpVr
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
 	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
@@ -15,91 +15,91 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	:Subject:Cc:To:From:Content-Type:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
 	List-Unsubscribe-Post:List-Owner;
-	bh=vhC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=Umel5mbXd4rEZAYiAKX6Zq0B91
-	IYjDObjMvvJ45EtEjsi06M0KVlRoCcSCzUUH8xJjqmWwS7kfyJ/5wew4ZyecJfPm8BTW1/YUnCsw3
-	YvtF1ktmk6XmckXnkdkO18aa9akk7Ujecc9ntsW0HFLn++r4+9h9CLbXxux6400jrkVaQyblBEU+c
-	vN3tDsu2TRHGsL4ot7KrZd4+OzKJXvwRBEz45+1gywGV0Z4vCU9OcR/8exdjZoteg7ZhZna+xXEuT
-	4WRUtmGKut10TSVA6GKKL3VoG3ulGUEBK891ruvIaNF54dqI6SpGqZY7myCbHLwvQu0gdGx9iyb2/
-	KBth8UzA==;
+	bh=C7sWl1wG48MQ07r4zoW2vh68HNiuHxVXcgb2L1fNbYE=; b=VX96Cpefu+kYGJQgZlzIlp99pf
+	0VEDGu5G6JmhGgPSnKRSugnvRaDg0BqDjOzBq9xT6knPodngE2XAlSWzwPByBYVYV/tYcUQUF6LP3
+	8AEvJMeZN1O/Xjm+hrq4adPFP0A9qq8V7bVM60t6AwyXNddPurWHXKSp8ezXPUzeB1jAwlZOaRlMs
+	wF4f0hvtBzpRA6bkYTAlSh7fhglWjd3SEDkLsDJLPTd4xko1wi/RrqEyd4kiyRBlP/ZZaVL7SBwTl
+	44Tu4cCVmSdNA1ybKGsOB8YIDJ9VVFd5GDcESc2MNlnYvOPO9pJ7eS6wyd6SDkivZzerqrAJ+Z4+e
+	LIIoaRcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3xS-00000008LEN-04Mb;
-	Wed, 25 Nov 2026 03:46:10 +0000
-Received: from fhigh-a2-smtp.messagingengine.com ([103.168.172.153])
+	id 1xW3xa-00000008LI0-1n7Y;
+	Wed, 25 Nov 2026 03:46:18 +0000
+Received: from fout-a1-smtp.messagingengine.com ([103.168.172.144])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xW3xP-00000008LBk-0Uyo
+	id 1xW3xW-00000008LFz-2Pjm
 	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 03:46:08 +0000
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id B6070140034A
-	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:46:05 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Tue, 24 Nov 2026 22:46:05 -0500
+	Wed, 25 Nov 2026 03:46:17 +0000
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id A873FEC09B4
+	for <linux-um@lists.infradead.org>; Tue, 24 Nov 2026 22:46:13 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Tue, 24 Nov 2026 22:46:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578365;
-	 x=1795664765; bh=vhC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=
-	Q1+wqOY/nixv5edzYOqKmcnUuP0LQYY5P2oH1IwVEVjB0LRZuaVpoCrDw/OPtutm
-	ESy9zcxe0ge0hIwSKCUH6d3riwFqN8cot44v6uaAlAtso3AnoUjCou+litdH/BEw
-	T3uVRgHIn21e38FacsiolNx24xDyXkHVUPXVRd9eU7aNG7gajqBbPOflb3zY80t4
-	aN5dpPwTEIFJLsejLj//9IAobyuTXpgOROeT8Ud2jlFPEdxtOeFgT05Yzrf+qI8g
-	FOGuKIeQX/MEuTiFO6gJUXUUMMaqf0ZiRQnB2D15v5+SfpnOXpZLS1DYneMRDBP/
-	ey4XudtplRoz5QpCBUOS8w==
+	:reply-to:reply-to:subject:subject:to:to; s=fm3; t=1795578373;
+	 x=1795664773; bh=C7sWl1wG48MQ07r4zoW2vh68HNiuHxVXcgb2L1fNbYE=; b=
+	uVJtjK/kqBeLCHeTuAHRJuLlf3RPlcath2fFONrOMLHy+oKwGL1wpxT3pS2agxig
+	0J+LVxx3Gbm7TXxFLoKND6VP5K/bjuUB8aU2CbSmWaWmqD7dq8Ra+qHdd69d7yhH
+	WrQdVd7GTdbbOmj3DKvaowfj+2/CYrCswVxxc6VT5ZNf73AQjd7ugBDmlVW+3rKZ
+	wk7f/uT3ClLF7ZbC8fMVAflfI3ASxPieHksWGlt1qEeGvee4UyuWW7NHvICSiSDs
+	iT1Tk0yD4XELKo2AWBFzE/zZ7jnDGgLd8YHEM3eWycSGBXQMWUCvbeqTE0+Ba/ar
+	fR27hTwhoD8KywuFByw03g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1795578365; x=1795664765; bh=v
-	hC5fsQg8d45Bifcf6O71h8hSOeLuwv1nI5aMDxT/f8=; b=SsYA5V8YoHMoCQkdG
-	8aamsWHTJtXdx0K7dWFdeAdaTbCl6P2w78mlWckosu+QNT3pifuSD3rR4blfp3Wf
-	60u9O2HdB3k8MbDAvVT/ghmgUFOgh4DqvTX04/nM8XAPxenJE5xyv0OTs/kc3dR+
-	Gzll4uvsFANInENFbp7u4mRaCCYBq5AlsnbS72+b3/HuuABWNDI/Iqre3QEnks3w
-	Ku89dr1wHL7ler7eXJvWV7S8urcSIuiCv5NRdUbRqKJMWWLTMu0EVSlOvnQfaOW6
-	svwPhlbH7fBk4M8DOgkSHDBFaeQflhHNRjH90edd8CJkhcdQc8s8hToj7BW59fl9
-	cFtdQ==
+	:x-me-sender:x-sasl-enc; s=fm3; t=1795578373; x=1795664773; bh=C
+	7sWl1wG48MQ07r4zoW2vh68HNiuHxVXcgb2L1fNbYE=; b=DlNzxpVrSoePkYu9v
+	NF8GJpmu9FXSNB01Xmzx1wvX0kQgU0j3eZF+eztbtQABZNd2wmFyQrVaFVgtNfz2
+	v7bkIuWRjANsIsASGAAqP/WUuHmxIcWa05q8PnsiQxRkv1THlOSkGT6zw+qoQpKH
+	ef2WOxyAm8MvZMPdl4jGJJGcyDMWkOjADw/GDrcLcoYQfjQItIK3n1lUxxMShIfJ
+	/GT7VsbQbZuNs4mcJP+l7aLK8HouyTW/E8DIx2ehg3dhhh8+rRizrgBdumi0E4kd
+	W66/ElL77DmIimEpr+Fg03gujFcLEzaOafsI3mmsQQFDR2tWtAeLhO0hVFa1oUSL
+	kHt/g==
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=sign d=ownmail.net a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1795578365; d=ownmail.net;
+DKIM2-Signature: i=1; m=1; t=1795578373; d=ownmail.net;
 	mf=PG5laWxiQG93bm1haWwubmV0Pg==;
 	rt=PGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+;
-	s=fm3:rsa-sha256:PubyuGezwUL3gIkpz520FwohCD0ElGo0kJdpYH409bjNPQc
-	ppM/dWGWZpdC4JwoPW2aXx7sROAg0VnGn4xRBYpejrWlSBPVpYAvast0sX3za5Ja
-	z9453E81Y3q0qwp6ybyzR6EKLEWjLmLlmMQ6I551pTp+tj2s4xNh4yBWmK+JzTUa
-	8Cfmsdokak28Wj5Qv2c1JRwmk67rzYeWssnNlTcRSWqGMH8T233IrimO22mxEjU+
-	+TDzDGiSoKanAf8IeUsxQnVJHdua8+p7Q1Ar7QE3vMu7zBtsuqTmpXBWu/FPyDZG
-	7RdfcWj/09Cv9HGo441ZNM4Z+7hU7HLreIKkTGg==;
+	s=fm3:rsa-sha256:BzepbYnR1mUNOUa9isB2EOx52vmQRXYib7ONMcMPIQkN7Km
+	WaMfm01yHak9o1SawI0flXqaWCTYfuhs6c32vIjVq3suG8DIvFZczXCzTUMf0XUr
+	OTbNYXfWY1WaR7rWCCYPMJqH7tqeBR3/h6E18tSZ6RiwifFgJY6TCeOUKmfjf9H/
+	1pFZmnMOYOR0bQXmEY8h4LDoJ6LfAD60O8tngusklL0NJ3nQeahFqOMAkXUDZwTe
+	vUo5LiVR7Cmm15l6tzluSfA3j1aA8LJvq2TgGgaqpucz6cwphbkjwHDR3YLYlwuv
+	pL09HkkGh0V53hB8Q4P9tWPJI98QpnV66r/tGmg==;
 X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
 	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
 	action=mi-m=1; hc=12;
 	hn=cc,content-transfer-encoding,date,feedback-id,from,
 	in-reply-to,message-id,mime-version,references,reply-to,subject,
 	to;
-Message-Instance: m=1; h=sha256:aczLsbyhzVPdHm5hCYK/zgEeHJCzlj6C0j/IjR6R0rg=:m48h43R0vdMJ5ex7CmVr71oScc25CmsJQRrS0xAhUYk=;
-X-ME-Sender: <xms:_VkGa3XNZsA8sjsM7inap5z3ze_gk-PSa5yKma-bKWaAs3VMZbDWEg>
-    <xme:_VkGa2j2Gzt8zihI0AVaxToN6vnGmUYtkc8PTqd26uLIr1KsSeYOwpzTRKgfqeppd
-    ak9fyDXyY2hsJy5YXVUoFLUAZTCWrMHsbyaTJjtzmT_9uPbPw>
-X-ME-Received: <xmr:_VkGa4esGFR6IpgSNmR-vc-hw1fFRJHcjHY0AJheq5JYp3hUFWpep130K0fwKap3lMYYBK8OuoLvptp69g2A66DMkAyJNjo>
+Message-Instance: m=1; h=sha256:KKPLl7NOjgl4PUEDrs6CD/OeuuCjs3Y6C8+VT2udHV4=:Xd1WqezOWR4RGPff0oXZeRAR/TSzcmc9gClT/ovY9uY=;
+X-ME-Sender: <xms:BFoGa3PKtOwxUwkZpViaqRwLM60pvm2UTcI_JQ1z0-14fVuLcq8NPg>
+    <xme:BFoGa47ixKdcBLDhCGczbRSygGRbY7bGID5BdiwAtbWJVPCJMHnI6j3Gnv3kcIupU
+    RssUQLPMMAwsi7DPxbeNe6a7I8vZcvyImfC2QhSGvOJVXo7hcY>
+X-ME-Received: <xmr:BFoGa7VcNwOKoKDCpg6IWBH_2M_tw5767rDkPAQypRXCyrYinMLGTdg5Chvih2ajqY6kIBchkPEE2rNxeuGu_vekhZCZM58>
 X-ME-Proxy-Cause: dmFkZTEynqFP7J5CyP864zJ/XBXUDXSwXypje4KQHx8Td74dpnR0VUtokV1VIo6Vx6RvWY
     OwcUpg/bo5jA9DF1nhHbEWSmkeBRQExzYYNm6zYQ4OlhmT8++hv04QLhCP77UTRa+ts0Zn
     emG1u4CBc9EwIQZMHpuGtkFzNaPM0COhHCVGi+vUdiGKTo3oTFKBSdfX5nxIKQZvHQpAoR
     JpPaJpl8D3VaaEmf1HZfBeZUeFh1WggTkTCrotD4I8diURcXOaSBUF/YM1mWjxdOr0yho5
-    GSRzb/bSajGZoPtTNw69mn1JgOv5z8FPk55EPMBJOvn4tHIN4QhGRcsvm9DrK4aqK7Nvow
-    DrAExY6fCjhjyduW1b4R0elDpafecHvbKjpUrCh0g0ItLBmPYbvPVjZ/0n7RGqaufRYwrH
-    oTSs5dtRdzGKtq6JegF8loWZ5jMeBZcnt1u2yAFRE34iK4JTdIxD3wpXap0Pi6CZpqpYrl
-    J2l1iDMDe22XNIIOuy/yIvICSj4dxDrehZMImxgpFhk36FFRsuJmVXQGwxf/2ZAWiBD911
-    tB+KuUcOhG4fpwyB6fJlQ8zNl077zwWva407aPXe+syOf1bUYH/05vX6jKExKB13eEh+iz
-    iqjfHEYoRTcScfABjAYp0KUcH/Y2eCddrCymhmPviXcxj5BTJE4BC8ABVfaw
-X-ME-Proxy: <xmx:_VkGa5f3rDylbpUBvj7qwzcaxK8odyWGjEJMHBZ33C3C90-xLybVHg>
-    <xmx:_VkGa8UJqofeOKYFFHnRbb7vy6hH7X4Q7x7KVenCgu57VNkJ2yVThQ>
-    <xmx:_VkGa1f-mtyrbRqCl2H05BNF1imdZEP5lWLIUuqWKbLOnQ3vh0hSDg>
-    <xmx:_VkGa4-9AEyb-EdOlbOq5lYxFwvKj_hbQajmw8lUnhylDF13jmuQ1w>
-    <xmx:_VkGa0AUR5cuNet8qktnqnqBGQh723XJ7fitRDrJYocl03dPkz7OumyN>
+    GSRzb/bSajGZoPtTNw69mn1JgOv5z8FPk55EPMBJOvn4tHIN4QhGRcsvm9DrK4aqK7NvD2
+    Auh3n7/rDjlV67SzcxugKanVYG5RjCb+2NOn7i5iXuy1FXFNhK6aoTMbjaXLP86pYz8Ryi
+    /xaDjmigZlJ9MzIuCR1/cpAYWU8RM0/OSl8D30BwPV295xbiau2P46CfJBhXPmmAmbwfAA
+    rMYnwG0NgcznoAzShUK/LdM32r9rzQJvvXIyjKY9pSIX3gv40Ug5iE5k0g+Fqaspj1Stnt
+    Q9On8TYylyL1Vwi7PINVpAOrfn5rfcbPZMFI9FpdLNXs+rdEi8K7Q6RAmcTrnkSDl3Ud9C
+    7gTClZteLBjWpe1mA2wn5DDy0iuc9YeQ9wLFR38CzkpMdV5riazKCBcxy66Q
+X-ME-Proxy: <xmx:BVoGay1Pb62Umx6kGOGGYs5ti2Gs4wBbDevP3TetIprCpZNgrv0qsw>
+    <xmx:BVoGa6MYYvfGpcjV5mkkETu-8Z7WFPT_UmOF76FH0StQi9gMWAEIng>
+    <xmx:BVoGa93G_APMlc8X2Es31MMyo9WNoNXWyJxQ1I1bnc39BTUkzwXrsw>
+    <xmx:BVoGa52CU_oHN-uQUXv_6U9Kw8RijGEzNEj7wU2ccjFQ_3qEPWatOg>
+    <xmx:BVoGa2bN0PF56IAc24GwBM3OzhUNEMeljhz6gvsZ7nSZKLA4AQlU7WUT>
 Feedback-ID: i9d664b8f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Nov 2026 22:46:00 -0500 (EST)
+ 24 Nov 2026 22:46:08 -0500 (EST)
 From: NeilBrown <neilb@ownmail.net>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>
@@ -118,9 +118,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-afs@lists.infradead.org
-Subject: [PATCH v3 01/11] coda: don't d_drop() early.
-Date: Wed, 25 Nov 2026 14:16:39 +1100
-Message-ID: <20261125034543.4084039-2-neilb@ownmail.net>
+Subject: [PATCH v3 02/11] hostfs: don't d_drop() before d_splice_alias() in hostfs_mkdir()
+Date: Wed, 25 Nov 2026 14:16:40 +1100
+Message-ID: <20261125034543.4084039-3-neilb@ownmail.net>
 X-Mailer: git-send-email 2.50.0.107.gf914562f5916.dirty
 In-Reply-To: <20261125034543.4084039-1-neilb@ownmail.net>
 References: <20261125034543.4084039-1-neilb@ownmail.net>
@@ -128,8 +128,9 @@ X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261124_194607_255730_DF7705B0 
-X-CRM114-Status: GOOD (  12.49  )
+X-CRM114-CacheID: sfid-20261124_194614_859501_903EB470 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-Spam-Score: -2.1 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,46 +153,28 @@ X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 
 From: NeilBrown <neil@brown.name>
 
-Proposed locking changes will mean that calling d_drop() could
-effectively unlock the name allowing a parallel lookup to proceed.
-For this reason it should only be called *after* the attempt to create a
-symlink (in this case) has completed (whether successfully or not).
+hostfs_mkdir() uses d_drop() and d_splice_alias() to ensure it has the
+right dentry after a mkdir.
+d_drop() is no longer needed here and will cause problem for future
+changes to directory locking.  So remove the d_drop().
 
-So move the d_drop() to after the venus_symlink() call.
-
-Doing this also means that if the upcall that handles venus_symlink()
-happens to look up the name being created, it will get -ENOENT rather
-then a possible deadlock.
-
-Acked-by: Jan Harkes <jaharkes@cs.cmu.edu>
 Signed-off-by: NeilBrown <neil@brown.name>
 ---
- fs/coda/dir.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/hostfs/hostfs_kern.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/coda/dir.c b/fs/coda/dir.c
-index a85be5962e62..b47299527b65 100644
---- a/fs/coda/dir.c
-+++ b/fs/coda/dir.c
-@@ -249,13 +249,13 @@ static int coda_symlink(const struct mnt_idmap *idmap,
- 	if (symlen > CODA_MAXPATHLEN)
- 		return -ENAMETOOLONG;
- 
-+	error = venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
-+			      symname, symlen);
- 	/*
--	 * This entry is now negative. Since we do not create
-+	 * This entry is still negative. Since we did not create
- 	 * an inode for the entry we have to drop it.
- 	 */
- 	d_drop(de);
--	error = venus_symlink(dir_inode->i_sb, coda_i2f(dir_inode), name, len,
--			      symname, symlen);
- 
- 	/* mtime is no good anymore */
- 	if (!error)
-
-base-commit: 4843f6873f7c4835e62f2c73ba0fd538e57a2f22
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 613146e76dec..7cf25c29cb78 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -700,7 +700,6 @@ static struct dentry *hostfs_mkdir(const struct mnt_idmap *idmap, struct inode *
+ 		dentry = ERR_PTR(err);
+ 	} else {
+ 		inode = hostfs_iget(dentry->d_sb, file);
+-		d_drop(dentry);
+ 		dentry = d_splice_alias(inode, dentry);
+ 	}
+ 	__putname(file);
 -- 
 2.50.0.107.gf914562f5916.dirty
 
