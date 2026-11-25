@@ -2,65 +2,158 @@ Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C03606A691
-	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 16:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8474606A31E
+	for <linux-um@archiver.kernel.org>; Wed, 25 Nov 2026 19:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=UU6QOdZu
+	dkim=pass (2048-bit key) header.d=lists.infradead.org header.i=@lists.infradead.org header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fJHESy3P;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.a=rsa-sha256 header.s=pp1 header.b=b4o1XNDl
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Unsubscribe-Post:
-	List-Owner; bh=tSxh6DwLNmz7EyfDz5NfHF0oAWvGew0gIHmykfmlnJY=; b=UU6QOdZuY0/1Lz
-	6Mxc+q4XDsUTS2otQb9IMCKCSw1jcGsF8nDCIYtd1t6lHcrcooR7XjTzaK5EBpwrvAbOtfb0HqU3J
-	0LUxJxUmP45zy6OpXgMTuall5jrXA62X15yBiKWSBqvGMdvD73K/VXPaNZHAgnKDwWFQdzd+bqsbg
-	CcC2weBoH0oVEUsi9tITJM4mrzglmcX0EG2y04l4EActG64X7Vkz7tFnqGy5T6p9QeX5pMp+zD1q2
-	Yu9CD1hm4doyUk+TFwsU9QRXcRd3A3f8+wQ378TALbv0/Q5ZBlAxhtDMltoF76CKMn9TpIfI3c9hF
-	djHuOS66/IJfRHXAvZ2g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Unsubscribe-Post:List-Owner;
+	bh=gjkmUYAQqhObZomEhSZvG/YB77KWT+YtxY8LYQ+JXBM=; b=fJHESy3PVU0XihXJmVllEN3NF+
+	JNvs262XHvZbVx8GnkxGrf8Nuhaa06ETN62rtyfpyGznjoyfAfb3JP2JTpBh/V1x0pktqQ6lY+fIE
+	4wrc2+16S18MCPgeeivhvw47YdOf7VCzVRrylPjtLoYTPexf6r4jcVmZvdci2wQ2CjP2+toA1RAJh
+	1gcgvMM3xxJD325+p5cc8Enwdp0lj80sufkLd8UTI0UsTTiH1IzxtvZ1SmLUwFSgY65Ynp/dFc3o2
+	7nByhyFsqQZCNYfIiyiNEyNvUpARyeIF5C87TjJ1qIGkXpYotRufGcuPlE4igxbgFaQ8x2QxunRo1
+	UP0fxRXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFtI-0000000AZZD-2CCb;
-	Wed, 25 Nov 2026 16:30:40 +0000
-Received: from ns3.kot-begemot.co.uk ([31.70.137.218])
+	id 1xWIXw-0000000B7Dj-2BXi;
+	Wed, 25 Nov 2026 19:20:48 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.100.1 #2 (Red Hat Linux))
-	id 1xWFt1-0000000AZGD-0sWz
-	for linux-um@lists.infradead.org;
-	Wed, 25 Nov 2026 16:30:37 +0000
-Received: from [192.168.19.6] (helo=jain.kot-begemot.co.uk)
-	by ns3.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xWFsv-00000002fOj-3i0W;
-	Wed, 25 Nov 2026 16:30:18 +0000
-Received: from [192.168.21.17]
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.98.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1xWFcP-00000001ZP4-02ls;
-	Wed, 25 Nov 2026 16:30:16 +0000
-Message-ID: <2a8cbf32-4fd3-4aaf-87dd-6a2a7638f6c9@cambridgegreys.com>
-Date: Wed, 25 Nov 2026 16:30:14 +0000
+	id 1xWIXt-0000000B7D3-12rk;
+	Wed, 25 Nov 2026 19:20:46 +0000
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6APGYdNb1999322;
+	Wed, 25 Nov 2026 19:19:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=gjkmUY
+	AQqhObZomEhSZvG/YB77KWT+YtxY8LYQ+JXBM=; b=b4o1XNDlfljukz22wGJQ0h
+	hFDvCKahLQE5+oELMoxpvR8yus1xr/9HFGs7jXKfv24NedjQNfOPAQLQsOYaYxmJ
+	dUFE5fhXckqAuW0PYjKLfUY4rjnJnXiiEJ3J6heXYs/hWnlWwEUIeiE6+U2PbLg2
+	8YmBlg57Xz94o6TGMiXCPGRFMqcx7uqeKTvP5PT0Ve/GxmJjLufrD15klX7U8Hzv
+	zal0O8X8xVHjp69b9e+a0liO17XVYXOOvkfuUiwLL6YKgBmTbYUQ+hOU7A7uWYN1
+	Af/9bgIBBKYXWxK+4RRNAGIaKYwc8nTS7EMTL98PhsZN4n/5Bz49Dm62UQ2Sqx/g
+	==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4j34fae8qk-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 25 Nov 2026 19:19:44 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.11/8.18.1.11) with ESMTP id 6APJJJGp505545;
+	Wed, 25 Nov 2026 19:19:43 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4j5uxx22n6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 25 Nov 2026 19:19:43 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6APJJdNd42139928
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 25 Nov 2026 19:19:39 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EBD8220043;
+	Wed, 25 Nov 2026 19:19:38 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 75D8420040;
+	Wed, 25 Nov 2026 19:19:14 +0000 (GMT)
+Received: from shivang.upadyay (unknown [9.67.112.155])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 25 Nov 2026 19:19:14 +0000 (GMT)
+Date: Thu, 26 Nov 2026 00:49:10 +0530
+From: Shivang Upadhyay <shivangu@linux.ibm.com>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kees Cook <kees@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <lossin@kernel.org>,
+        Andreas Hindborg <a.hindborg@kernel.org>,
+        Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+        Danilo Krummrich <dakr@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+        Christophe Leroy <chleroy@kernel.org>, Boqun Feng <boqun@kernel.org>,
+        Nicolas Schier <nsc@kernel.org>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev, linux-mm@kvack.org,
+        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-mips@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Jan Stancek <jstancek@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v6 05/11] powerpc/vdso: Enable the vdsocheck tool
+Message-ID: <awc0rvqmahY6cHtv@shivang.upadyay>
+References: <20261123-vdso-absolute-reloc-v6-0-161e218dd217@linutronix.de>
+ <20261123-vdso-absolute-reloc-v6-5-161e218dd217@linutronix.de>
 X-Archived-By: <archiver.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?Q?Re=3A_UML=3A_/proc/net/netstat_silently_mis-read_by_stdio?=
- =?UTF-8?Q?_line_readers_=28fgets/getline=29_=E2=80=94_raw_reads_of_every_si?=
- =?UTF-8?Q?ze_are_byte-exact=2C_all_other_/proc_files_are_unaffected?=
-To: Johan ter Mors <johan.termors@gmail.com>, linux-um@lists.infradead.org
-Cc: richard@nod.at, johannes@sipsolutions.net
-References: <CAPM+r-Jaz9c0d1F3QP_5aZDnRMGVmzWDrp-FMUcvUv5e2RpB_g@mail.gmail.com>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <CAPM+r-Jaz9c0d1F3QP_5aZDnRMGVmzWDrp-FMUcvUv5e2RpB_g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+In-Reply-To: <20261123-vdso-absolute-reloc-v6-5-161e218dd217@linutronix.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMTI1MDA3NiBTYWx0ZWRfX3whPefz46WC1
+ hNygsADgWWH3q76IQ97vzHqlw0KVrxx7r7UAw5SVuBqmP03DlIHvveHdnCb8I+LFUdhf3IBTEF4
+ 8I0LKw8A6RDat+2jMShRhIdJyHC/snbMARzB3j97ZRg4dk9eQk6Kb/c17OPxkgsEeh56QxlIgDC
+ wUPWuvr9YTBgUtvA8T8GCqkSSvcvT95hsmx8Ct0PUUDgvFCs7cWvxl/cHPmpiD4Kk1M2+/XY3xk
+ DLiaxWKhSrSivaxvdgJ1EA4G7gz0ulJrAaMk8ySQ2/S47CSLA2FI3plB5nV4GNPFWQXLUfRWPHl
+ QcXK+Qe1+YjjykPhUcW6RI716uPTfT8UPFmL8V6qwT/f4oC1rJT58R1VQobyjiFZ9MGmwr6WlCS
+ z5ZKV+GghS12zlmcdRFYX61cx8WcuTghM7JYnVHIKLaR9Q0N8q8XzXIjmtuCeYWzKrV/9/k7FwS
+ CZCtvJAPPqeb1X+3DCw==
+X-Proofpoint-ORIG-GUID: 9DuPW81bc1Ne1-Acmq-ZFQ1oXTeQgO4D
+X-Authority-Analysis: v=2.4 cv=U6QHnuru c=1 sm=1 tr=0 ts=6b0734d1 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=8nJEP1OIZ-IA:10 a=zJRp6_cAMcgA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VnNF1IyMAAAA:8
+ a=K52B-zMjTZoA2OaJzQcA:9 a=3ZKOabzyN94A:10 a=wPNLvfGTeEIA:10
+X-Proofpoint-GUID: kgd6ntmKeCF4y3vpHzpfFLVurSHBIu2a
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMTI1MDA3NiBTYWx0ZWRfXwLCiikm0vVyM
+ 9boHPXPDQcdJQkQPxTdXN6x3x8c/RPGIYsu6hqtP046Hh/4b5uaJA5LSJKyG0fXuE8vE282QQVw
+ jau+sQ3OeVvDMeZGSzccJJHxqp+Tqsg=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-11-25_04,2026-11-25_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 impostorscore=0
+ clxscore=1011 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2611040001
+ definitions=main-2611250076
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.9.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20261125_083023_440396_FC48D2A0 
-X-CRM114-Status: GOOD (  30.18  )
-X-Spam-Score: -1.9 (-)
+X-CRM114-CacheID: sfid-20261125_112045_587845_6B8CB609 
+X-CRM114-Status: GOOD (  13.11  )
+X-Spam-Score: -2.6 (--)
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,146 +164,39 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-8.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=4.0.1
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=4.0.1
 X-Spam-Checker-Version: SpamAssassin 4.0.1 (2024-03-26) on
 	aws-us-west-2-korg-listserv-alma10-1
 
+On Mon, Nov 23, 2026 at 02:50:56PM +0100, Thomas Wei�schuh wrote:
+> +        bindings::EM_PPC64 => AllowedRelocations {
+> +            in_object_file: &[
+> +                10,  /* R_PPC64_REL24 */
+> +                11,  /* R_PPC64_REL14 */
+> +                26,  /* R_PPC64_REL32 */
+> +                44,  /* R_PPC64_REL64 */
+> +                249, /* R_PPC64_REL16 */
+> +                250, /* R_PPC64_REL16_LO */
+> +                251, /* R_PPC64_REL16_HI */
+> +                252, /* R_PPC64_REL16_HA */
+> +            ],
+Seems to excluise list of all reletive relocations.
+I only could find the following being actually used, for defconfig ppc64le.
+But good to have all there.
 
+[root@system vdso]# for i in `ls *.o`; do objdump -r -SD $i  | grep -oP 'R_PPC\w*' ; done | sort |  uniq
+R_PPC64_REL16_HA
+R_PPC64_REL16_LO
+R_PPC64_REL24
+R_PPC64_REL32
+R_PPC64_REL64
+[root@system vdso]#
 
-On 25/11/2026 16:24, Johan ter Mors wrote:
-> [Quick note before the report: my earlier mail of today carried a
-> mangled Subject header — my mail client put the intended maintainer
-> Cc addresses into the subject line, so the report went out without a
-> usable subject and without the maintainer Cc. This thread is the same
-> report with a corrected envelope; please treat this copy as the
-> report. The mangled original is archived here, for the record:
-> 
-> https://lore.kernel.org/linux-um/CAPM+r-+XCeM01ZXAj8Cti5qL1iaFrGrV+dYSumWD8585O3swew@mail.gmail.com/
-> ]
-> 
-> Hi,
-> 
-> While parsing TcpExt counters inside our lab guests (own lean UML
-> builds), we hit a reproducible case where stdio line readers (fgets
-> and getline) silently mis-read /proc/net/netstat — while every raw
-> read of the same file, on the same boot, is byte-exact. The same
-> statically linked binary behaves correctly on a non-UML host kernel.
-> We have not found an earlier report, so here is the full picture. We
-> could not pin the final mechanism; the data is attached so you can
-> judge it directly.
-> 
-> Observed:
-> 
->    - Which stdio call mis-assembles varies per process instance of the
->      same binary; within one instance it is deterministic per fopen.
->      Captured byte-exactly across instances on 7.3.6 and 6.12.117:
->        * fgets(buf, 16384) mis-assembles in most instances. Two shapes:
->            (i) the TcpExt *names* record is lost except its first byte,
->                which fuses onto the next record: the stream starts
->                "TTcpExt: 0 0 ...". 2002 of 4197 bytes on 7.3.6; 1718 of
->                3862 on 6.12.117 — exactly the names-line length is
->                missing, and memcmp proves the output is the pure
->                subsequence "T" + rest-of-file;
->            (ii) full-length output (4197/4197) in which the names
->                string is absent and 16-byte windows exist that appear
->                NOWHERE in the file — the reader's own stale process
->                memory mixed into the assembled stream.
->        * In other instances fgets(buf, 4096) mis-assembled (names-line
->          length missing, plus foreign windows) while fgets(buf, 16384)
->          was byte-exact in the same process; in another instance
->          getline() returned full-length output with foreign windows.
->          So no fgets size is a safe workaround.
->        * Three fresh fopen() repeats of fgets(16384) in one instance
->          where the earlier calls were all byte-exact stayed correct —
->          but we have not seen a rule predicting which instance fails.
->    - Scope sweep, both UML kernels: 20 /proc files (net/netstat, snmp,
->      dev, sockstat, softnet_stat, tcp, udp, unix, mounts, cpuinfo,
->      version, self/limits, self/status, vmstat, meminfo, stat, uptime,
->      loadavg, ...) x 6 reader patterns (getline, fgets 512/4096/16384/
->      65536, fread 16384): every file reads byte-exact with every
->      pattern EXCEPT /proc/net/netstat.
->    - fread(buf, 16384) and explicit setvbuf() configurations (4096/
->      8192/16384-byte buffers, _IONBF, _IOLBF) have so far never
->      mis-assembled (limited number of instances observed), and raw
->      read() is byte-exact in every pattern we tried: single reads of
->      18 sizes (2048 .. 131072) at offset 0, sequential pairs, and
->      lseek(K)+read() sweeps across the record boundaries — on the same
->      boots where stdio mis-assembles.
->    - The identical binary on a non-UML host kernel (5.10.134) is
->      correct for every pattern in every instance.
->    - Reproduces on 6.12.117, 7.3.5 and 7.3.6 UML (own lean builds;
->      defconfig + MPTCP/HOSTFS/BLK_DEV_INITRD/RD_GZIP/VETH/NET_NS, and
->      SYN_COOKIES/IPV6 on 7.3.6; DEBUG_INFO/BTF off; two small
->      ptrace-only lab patches that do not touch procfs).
->    - We do not have a non-UML kernel >= 6.12 in this lab (no
->      hypervisor), so a stock-kernel control is still open — running the
->      reproducer on any regular 6.12/7.x box would pin the scope nicely.
-> 
-> Security note: we checked this explicitly before reporting. The
-> mis-assembled output contains only file bytes plus, in the mixing
-> shape, the reader's own stale process memory — never anything outside
-> the reading process (the kernel's raw read path is byte-exact on the
-> same boots, verified down to writes into stack buffers; memcmp
-> controls prove the file content was stable). No crash, no splat, no
-> privilege effect in any run; the reader is its own only victim. So we
-> do not consider this a security issue — it is a correctness bug for
-> common parsing patterns, and monitoring agents parsing
-> /proc/net/netstat with stdio on UML silently lose the TcpExt field
-> names.
-> 
-> Minimal reproducer (static glibc, reads the file, prints three
-> numbers):
-> 
-> #define _GNU_SOURCE
-> #include <stdio.h>
-> #include <string.h>
-> int main(void) {
->      FILE *f = fopen("/proc/net/netstat", "r");
->      static char line[16384], all[65536];
->      int tot = 0, l1 = -1;
->      while (fgets(line, sizeof line, f)) {
->          int n = (int)strlen(line);
->          if (l1 < 0) l1 = n;
->          if (tot + n < (int)sizeof all) { memcpy(all + tot, line, n); tot += n; }
->      }
->      printf("first-line=%d total=%d names=%s\n", l1, tot,
->             tot > 0 && memmem(all, tot, "SyncookiesSent", 14) ? "yes" : "NO");
->      return 0;
-> }
-> 
-> On UML 7.3.6, failing instance A:  first-line=1 total=2002 names=NO
->                                     (names lost, fused)
-> On UML 7.3.6, failing instance B:  first-line=2196 total=4197 names=NO
->                                     (full length, stale-memory mixing)
-> Correct instance of the same binary on the same guest:
->                                     first-line=2196 total=4197 names=yes
-> 
-> Because every raw read of the same file is correct on the same boots,
-> we suspect the fault sits in the interaction between the UML
-> syscall-return delivery and glibc stdio's line assembly rather than in
-> seq_file's data path; the per-instance randomness (same binary, same
-> pattern, byte-exact in one instance and mis-assembled in the next)
-> suggests the failure depends on the reader process's layout/state. We
-> cannot split that further from user space, and a ptrace-based tracer
-> on UML is not a reliable witness (the guest kernel already ptraces its
-> own user processes for syscall emulation, so a second ptrace layer
-> distorts what it observes).
-> 
-> Kernel log clean on all runs; happy to provide the full diagnostic
-> sources, serial logs and the saved UML vmlinux files, and to test
-> patches or hypotheses.
-> 
-> Thanks,
-> Johan ter Mors — independent researcher
-> 
-> 
+Looks good. Feel free to add,
+Reviewed-by: Shivang Upadhyay <shivangu@linux.ibm.com>
 
-I have never observed this. Quick question - can you reproduce it with a kernel build without multipath TCP?
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
+~Shivang.
 
